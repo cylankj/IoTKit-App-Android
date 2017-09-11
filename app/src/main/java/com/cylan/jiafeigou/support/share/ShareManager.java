@@ -262,7 +262,7 @@ public class ShareManager {
             }
             dialog = null;
             if (activity != null) {
-                LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING));
+                LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING), true);
             }
             AppLogger.e("网址分享,不带上传");
             if (activity != null) {

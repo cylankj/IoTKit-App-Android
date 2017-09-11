@@ -212,7 +212,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void showClearingCacheProgress() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.ClearingTips));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.ClearingTips), true);
     }
 
     @Override

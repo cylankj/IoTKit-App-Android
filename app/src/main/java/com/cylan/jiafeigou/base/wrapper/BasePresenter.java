@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -30,7 +31,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -43,7 +43,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     protected JFGSourceManager sourceManager;
     protected IDPTaskDispatcher taskDispatcher;
     protected AppCmd appCmd;
-    private Map<LIFE_CYCLE, CompositeSubscription> lifeCycleCompositeSubscriptionMap;
+    private Map<LIFE_CYCLE, MapSubscription> lifeCycleCompositeSubscriptionMap;
 
     protected V mView;
 
@@ -96,11 +96,9 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
     @CallSuper
     protected void onRegisterSubscription() {
-        registerSubscription(
-                LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceSyncSub(),
-                getLoginStateSub(),
-                getDeleteDataRspSub()
-        );
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeviceSyncSub", getDeviceSyncSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeleteDataRspSub", getDeleteDataRspSub());
     }
 
     @CallSuper
@@ -114,7 +112,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
      */
     protected void onUnRegisterSubscription(LIFE_CYCLE lifeCycle) {
         if (lifeCycleCompositeSubscriptionMap != null) {
-            CompositeSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.remove(lifeCycle);
+            MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.remove(lifeCycle);
             unSubscribe(compositeSubscription);
         }
     }
@@ -150,7 +148,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onLoginStateChanged, e -> {
                     e.printStackTrace();
-                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getLoginStateSub());//出现异常了要重现注册
+                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());//出现异常了要重现注册
                 });
     }
 
@@ -166,7 +164,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
                     onDeviceSync();
                 }, e -> {
                     e.printStackTrace();//打印错误日志以便排错
-                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceSyncSub());//基类不能崩,否则一些功能异常
+                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeviceSyncSub", getDeviceSyncSub());//基类不能崩,否则一些功能异常
                 });
     }
 
@@ -181,7 +179,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
                 }, e -> {
                     e.printStackTrace();
-                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeleteDataRspSub());
+                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeleteDataRspSub", getDeleteDataRspSub());
                 });
     }
 
@@ -244,7 +242,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
         LIFE_CYCLE_DESTROY,
     }
 
-    protected void registerSubscription(LIFE_CYCLE lifeCycle, Subscription... subscriptions) {
+    protected void registerSubscription(LIFE_CYCLE lifeCycle, String tag, Subscription subscription) {
         if (lifeCycleCompositeSubscriptionMap == null) {
             synchronized (this) {
                 if (lifeCycleCompositeSubscriptionMap == null) {
@@ -252,17 +250,15 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
                 }
             }
         }
-        CompositeSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.get(lifeCycle);
+        MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.get(lifeCycle);
 
         if (compositeSubscription == null) {
-            compositeSubscription = new CompositeSubscription();
+            compositeSubscription = new MapSubscription();
             lifeCycleCompositeSubscriptionMap.put(lifeCycle, compositeSubscription);
         }
 
-        if (subscriptions != null) {
-            for (Subscription subscription : subscriptions) {
-                compositeSubscription.add(subscription);
-            }
+        if (subscription != null) {
+            compositeSubscription.add(subscription, tag);
         }
     }
 

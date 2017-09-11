@@ -66,8 +66,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceUnBindSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getLoadSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#getDeviceUnBindSub", getDeviceUnBindSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#getLoadSub", getLoadSub());
     }
 
     protected Subscription getLoadSub() {
@@ -207,8 +207,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 //                        }
                     }
                 });
-        
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"BaseViewablePresenter#startViewer", subscribe);
     }
 
     protected boolean shouldShowPreview() {
@@ -219,7 +219,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void cancelViewer() {
         Subscription subscribe = stopViewer().subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#cancelViewer",subscribe);
     }
 
     protected boolean disconnectBeforePlay() {
@@ -406,7 +406,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         mView.onDismiss();
                     }
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#dismiss",subscribe);
     }
 
     @Override
@@ -421,7 +421,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"BaseViewablePresenter#switchSpeaker", subscribe);
     }
 
     @Override
@@ -436,7 +436,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#switchMicrophone",subscribe);
     }
 
     private Observable<Boolean> setMicrophone(boolean on) {

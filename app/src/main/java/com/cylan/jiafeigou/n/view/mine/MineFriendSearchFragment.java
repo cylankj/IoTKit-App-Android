@@ -164,7 +164,7 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
 
     @Override
     public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getActivity(), getContext().getString(resId, (Object[]) args));
+        LoadingDialog.showLoading(getActivity(), getContext().getString(resId, (Object[]) args), true);
     }
 
     @Override

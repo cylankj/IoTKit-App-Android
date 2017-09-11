@@ -43,13 +43,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getPageScrolledSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getPageScrolledSub",getPageScrolledSub());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeleteWonderfulSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getDeleteWonderfulSub",getDeleteWonderfulSub());
     }
 
     @Override
@@ -143,7 +143,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     AppLogger.d(e.getMessage());
                     mView.onQueryTimeLineCompleted();
                 }, () -> mView.onQueryTimeLineCompleted());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startRefresh",subscribe);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, () -> {
                     mView.onQueryTimeLineCompleted();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"HomeWonderfulPresenterImpl#startLoadMore", subscribe);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"HomeWonderfulPresenterImpl#deleteTimeline", subscribe);
     }
 
     @Override

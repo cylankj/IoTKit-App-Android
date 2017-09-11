@@ -170,6 +170,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     TextView cameraUpgrading;
     @BindView(R.id.imv_toolbar_message)
     ImageViewTip ivt_newMessageTips;
+    @BindView(R.id.act_panorama_camera_banner_bad_net_work_close)
+    ImageView bannerTextInformationClose;
 
     private AlertDialog deviceReportDialog;
 
@@ -464,9 +466,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 try {
                     EventData eventData = JacksonFactory.getDefaultInstance().fromString(youtube, EventData.class);
                     rtmpAddress = eventData.getIngestionAddress();
-                } catch (IOException e) {
+                } catch (Exception e) {
+                    livePlatform = -1;
                     AppLogger.e(MiscUtils.getErr(e));
                 }
+
             }
             break;
             case 2: {
@@ -744,6 +748,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onHideBadNetWorkBanner();
     }
 
+    public void showBannerTextInformation(String text, boolean hasClose) {
+        int childIndex = bannerSwitcher.getDisplayedChild();
+        if (childIndex == 0) {
+            bannerSwitcher.showNext();
+        }
+        bannerWarmingTitle.setText(text);
+        bannerTextInformationClose.setVisibility(hasClose ? View.VISIBLE : View.GONE);
+    }
+
     @OnClick(R.id.act_panorama_camera_banner_bad_net_work_configure)
     public void clickedConfigureNetWorkBanner() {
         AppLogger.d("clickedConfigureNetWorkBanner");
@@ -893,6 +906,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
     }
 
+    @Override
+    public void onRtmpQueryResponse(DpMsgDefine.DPCameraLiveRtmpStatus unpackData) {
+        if (unpackData.flag != 3 && unpackData.error == 0) {
+            onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, true, true);
+        }
+    }
+
+    @Override
+    public void onRtmpAddressError() {
+        rtmpAddress = null;
+        livePlatform = -1;
+        showBannerTextInformation(getString(R.string.LIVE_FAILED), false);
+    }
+
     public void onDeviceUpgrade() {
         upgrading = true;
         cameraUpgrading.setVisibility(View.VISIBLE);
@@ -1033,9 +1060,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 bannerSwitcher.showNext();
             }
             onRefreshControllerView(false, false);
-
-            bannerWarmingTitle.setText(netType == -1 ? R.string.Tap1_DisconnectedPleaseCheck :
-                    connectionType == -1 ? R.string.Tips_Device_TimeoutRetry : R.string.Tap1_Offline);
+            int info = netType == -1 ? R.string.Tap1_DisconnectedPleaseCheck :
+                    connectionType == -1 ? R.string.Tips_Device_TimeoutRetry : R.string.Tap1_Offline;
+            showBannerTextInformation(getString(info), true);
 //            bannerWarmingTitle.setText(connectionType == -1 ? R.string.Tips_Device_TimeoutRetry :
 //                    netType != -1 ? R.string.Tap1_Offline : R.string.Tap1_DisconnectedPleaseCheck);
             loadingBar.setState(connectionType == -1 ? JConstant.PLAY_STATE_LOADING_FAILED : JConstant.PLAY_STATE_IDLE, null);

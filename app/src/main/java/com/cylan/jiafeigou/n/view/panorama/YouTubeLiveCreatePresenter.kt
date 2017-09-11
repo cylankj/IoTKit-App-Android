@@ -37,6 +37,8 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                     YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { mView.showLoading(R.string.CREATING, false) }
+                .doOnTerminate { mView.hideLoading() }
                 .subscribe({
                     val json = JacksonFactory.getDefaultInstance().toString(it)
                     PreferencesUtils.putString(JConstant.YOUTUBE_PREF_CONFIGURE, json)
@@ -55,6 +57,6 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                         }
                     }
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe)
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast", subscribe)
     }
 }

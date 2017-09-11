@@ -121,7 +121,7 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
 
     @Override
     public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getActivity(), getString(resId, (Object[]) args));
+        LoadingDialog.showLoading(getActivity(), getString(resId, (Object[]) args), true);
     }
 
     @Override

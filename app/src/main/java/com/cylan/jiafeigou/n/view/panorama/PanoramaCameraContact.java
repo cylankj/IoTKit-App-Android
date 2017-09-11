@@ -4,6 +4,7 @@ import android.support.annotation.IntDef;
 
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,6 +44,10 @@ public interface PanoramaCameraContact {
         void onDeviceOnLine();
 
         void onSendCameraRtmpResponse(int code);
+
+        void onRtmpQueryResponse(DpMsgDefine.DPCameraLiveRtmpStatus unpackData);
+
+        void onRtmpAddressError();
 
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})

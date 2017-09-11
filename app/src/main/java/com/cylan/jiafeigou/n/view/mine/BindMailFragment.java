@@ -233,7 +233,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
 
     @Override
     public void showLoading(int resId, Object... args) {
-        LoadingDialog.showLoading(getActivity(), getString(resId, args));
+        LoadingDialog.showLoading(getActivity(), getString(resId, args), true);
     }
 
     @Override

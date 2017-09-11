@@ -175,7 +175,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showSendReqPro() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.is_creating));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.is_creating), true);
     }
 
     /**

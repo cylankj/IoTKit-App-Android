@@ -126,7 +126,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
                         }
                     }
                 }
-                LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+                LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
                 basePresenter.getPid(etInputBox.getText().toString().trim());
                 break;
         }

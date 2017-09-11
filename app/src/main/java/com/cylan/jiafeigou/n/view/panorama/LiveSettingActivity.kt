@@ -29,7 +29,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     override fun initViewAndListener() {
         super.initViewAndListener()
         rtmp_type_tabs.setOnTabSelectedListener(this)
-        switchRtmpPage(rtmp_type_tabs.selectedTabPosition)
+        switchRtmpPage(PreferencesUtils.getInt(JConstant.LIVE_PLATFORM_KEY, 0))
         /*这里可能以后又会有一大堆判断,返回键*/
         custom_toolbar.setBackAction { onBackPressed() }
         custom_toolbar.setRightAction { saveLiveConfigure() }
@@ -42,7 +42,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
 
     private fun saveLiveConfigure() {
         PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
-        finish()
+
         when (rtmp_type_tabs.selectedTabPosition) {
 
             0 -> {
@@ -61,9 +61,10 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
             }
             3 -> {
                 //rtmp
-
+//               rtmpFragment.
             }
         }
+        finish()
     }
 
 
@@ -84,6 +85,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
             1 -> ActivityUtils.replaceFragmentNoAnimation(R.id.page_container, supportFragmentManager, youtubeFragment)
             2 -> ActivityUtils.replaceFragmentNoAnimation(R.id.page_container, supportFragmentManager, weiboFragment)
             3 -> ActivityUtils.replaceFragmentNoAnimation(R.id.page_container, supportFragmentManager, rtmpFragment)
+            else -> ActivityUtils.replaceFragmentNoAnimation(R.id.page_container, supportFragmentManager, facebookFragment)
         }
     }
 }

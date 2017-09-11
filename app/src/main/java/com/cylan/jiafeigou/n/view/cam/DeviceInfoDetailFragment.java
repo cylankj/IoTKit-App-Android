@@ -405,7 +405,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.SD_INFO_2));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.SD_INFO_2), true);
     }
 
     @Override

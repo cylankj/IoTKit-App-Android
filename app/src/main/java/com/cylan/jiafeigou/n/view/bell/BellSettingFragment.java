@@ -121,7 +121,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                     switch (id) {
                         case R.id.tv_dialog_btn_right:
                             presenter.clearBellRecord(uuid);
-                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), true);
                     }
                 });
                 mClearRecordFragment.show(getActivity().getSupportFragmentManager(), "ClearBellRecordFragment");
@@ -138,7 +138,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                             presenter.unbindDevice();
-                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), true);
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null);
                 AlertDialogManager.getInstance().showDialog(getString(R.string.SURE_DELETE_1, name), getActivity(), builder);

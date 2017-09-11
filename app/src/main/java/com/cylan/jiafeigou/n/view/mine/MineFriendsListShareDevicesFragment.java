@@ -197,7 +197,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqProgress() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
     }
 
     /**
@@ -237,7 +237,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
     @Override
     public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getActivity(), getString(resId, (Object[]) args));
+        LoadingDialog.showLoading(getActivity(), getString(resId, (Object[]) args), true);
     }
 
     @Override

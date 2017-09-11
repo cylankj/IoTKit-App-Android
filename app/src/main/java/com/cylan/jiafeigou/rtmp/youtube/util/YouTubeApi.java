@@ -14,6 +14,7 @@
 
 package com.cylan.jiafeigou.rtmp.youtube.util;
 
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -289,12 +290,133 @@ public class YouTubeApi {
         return resultList;
     }
 
+    public interface LiveEvent {
+        void execute() throws Exception;
+
+        void cancel();
+    }
+
+    public static class YoutubeStartEvent implements LiveEvent {
+
+        private YouTube youtube;
+        private String broadcastId;
+        private String boundStreamId;
+        private volatile boolean finished = false;
+
+        public YoutubeStartEvent(YouTube youtube, String broadcastId, String boundStreamId) {
+            this.youtube = youtube;
+            this.broadcastId = broadcastId;
+            this.boundStreamId = boundStreamId;
+        }
+
+        public void execute() throws Exception {
+            AppLogger.w(" YOUTUBE:broadcastId is:" + broadcastId + ",boundStreamId is" + boundStreamId);
+            if (finished) return;
+            //获取稳定的码率
+            boolean hasActiveStream = false;
+
+            while (!hasActiveStream && !finished) {
+                YouTube.LiveStreams.List liveStreamRequest = youtube.liveStreams().list("id,status");
+                liveStreamRequest.setId(boundStreamId);
+                LiveStreamListResponse streamListResponse = liveStreamRequest.execute();
+                List<LiveStream> items = streamListResponse.getItems();
+                AppLogger.w("YOUTUBE:获取稳定码率" + JacksonFactory.getDefaultInstance().toPrettyString(items));
+                if (items != null && items.size() > 0 && items.get(0).getStatus().getStreamStatus().equals("active")) {
+                    hasActiveStream = true;//已经有了稳定的码率了
+                    AppLogger.w("YOUTUBE:已经收到了稳定的码率,将切换 BroadCast 到 Testing 状态");
+                } else {
+                    SystemClock.sleep(2000);
+                }
+            }
+            LiveBroadcastListResponse execute1 = youtube.liveBroadcasts().list("id,status").setId(broadcastId).execute();
+            LiveBroadcast broadcast = null;
+            if (execute1.getItems().size() > 0) {
+                broadcast = execute1.getItems().get(0);
+                AppLogger.w(broadcast.toPrettyString());
+                String status = broadcast.getStatus().getLifeCycleStatus();
+                if ("live".equals(status)) {
+                    AppLogger.w("当前已经是直播状态了,直接返回就行了");
+                    return;
+                } else if ("complete".equals(status)) {
+                    throw new IllegalArgumentException("当前直播已结束,不可再直播");
+                }
+            } else {
+                throw new IllegalArgumentException("当前频道不存在");
+            }
+            boolean hasChangeToTesting = false;
+            if ("testing".equals(broadcast.getStatus().getLifeCycleStatus()) || "testStarting".equals(broadcast.getStatus().getLifeCycleStatus())) {
+                hasChangeToTesting = true;
+
+            }
+            if (!finished && !hasChangeToTesting) {
+//                if (broadcast!=null&&broadcast.getStatus().getLifeCycleStatus())
+                YouTube.LiveBroadcasts.Transition liveTransitionRequest = youtube.liveBroadcasts().transition("testing", broadcastId, "id,status");
+                broadcast = liveTransitionRequest.execute();
+                AppLogger.w("YOUTUBE:切换 Transition 到 testing" + JacksonFactory.getDefaultInstance().toPrettyString(broadcast));
+                if (!broadcast.getStatus().getLifeCycleStatus().equals("testStarting") && !broadcast.getStatus().getLifeCycleStatus().equals("testing")) {
+                    AppLogger.w("YOUTUBE:testStarting 失败了");
+                    return;
+                }
+            }
+
+            while (!hasChangeToTesting && !finished) {
+                LiveBroadcastListResponse status = youtube.liveBroadcasts().list("status").setId(broadcastId).execute();
+                List<LiveBroadcast> list = status.getItems();
+                AppLogger.w("YOUTUBE:获取切换结果:" + JacksonFactory.getDefaultInstance().toPrettyString(list));
+                if (list != null && list.size() > 0 && list.get(0).getStatus().getLifeCycleStatus().equals("testing")) {
+                    hasChangeToTesting = true;
+                } else {
+                    SystemClock.sleep(2000);
+                }
+            }
+
+            if (!finished) {
+                Transition transition = youtube.liveBroadcasts().transition("live", broadcastId, "status");
+                LiveBroadcast execute = transition.execute();
+                AppLogger.w("YOUTUBE:切换 Transition 到 Live" + JacksonFactory.getDefaultInstance().toPrettyString(execute));
+                if (execute == null || (!execute.getStatus().getLifeCycleStatus().equals("liveStarting") && !execute.getStatus().getLifeCycleStatus().equals("live"))) {
+                    AppLogger.w("YOUTUBE:liveStarting 失败");
+                    return;
+                }
+            }
+
+            boolean hasChangeToActive = false;
+            while (!hasChangeToActive && !finished) {
+                LiveBroadcastListResponse status = youtube.liveBroadcasts().list("status").setId(broadcastId).execute();
+                List<LiveBroadcast> list = status.getItems();
+                AppLogger.w("YOUTUBE:获取切换到 Live 后的结果:" + JacksonFactory.getDefaultInstance().toPrettyString(status));
+                if (list != null && list.size() > 0 && list.get(0).getStatus().getLifeCycleStatus().contains("live")) {
+                    hasChangeToActive = true;
+                    AppLogger.w("YOUTUBE:直播状态已经切换到激活状态了,可以查看直播了");
+                } else {
+                    SystemClock.sleep(2000);
+                }
+            }
+
+        }
+
+        public void cancel() {
+            finished = true;
+            youtube = null;
+            broadcastId = null;
+            boundStreamId = null;
+        }
+    }
+
 
     public static void startEvent(YouTube youtube, String broadcastId, String boundStreamId)
             throws IOException {
-
         AppLogger.w(" YOUTUBE:broadcastId is:" + broadcastId + ",boundStreamId is" + boundStreamId);
-
+        LiveBroadcastListResponse execute1 = youtube.liveBroadcasts().list("id,status").setId(broadcastId).execute();
+        if (execute1.getItems().size() > 0) {
+            LiveBroadcast broadcast = execute1.getItems().get(0);
+            AppLogger.w(broadcast.toPrettyString());
+            String status = broadcast.getStatus().getLifeCycleStatus();
+            if ("live".equals(status)) {
+                AppLogger.w("当前已经是直播状态了,直接返回就行了");
+                return;
+            }
+        }
 
         //获取稳定的码率
         boolean hasActiveStream = false;
@@ -309,18 +431,9 @@ public class YouTubeApi {
                 hasActiveStream = true;//已经有了稳定的码率了
                 AppLogger.w("YOUTUBE:已经收到了稳定的码率,将切换 BroadCast 到 Testing 状态");
             } else {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    AppLogger.e(MiscUtils.getErr(e));
-                }
+                SystemClock.sleep(3000);
             }
         }
-
-//        LiveBroadcast liveBroadcast1 = youtube.liveBroadcasts().update("id,contentDetails", liveBroadcast).execute();
-
-//        AppLogger.w("YOUTUBE:设置 MonitorStream enable:" + JacksonFactory.getDefaultInstance().toPrettyString(liveBroadcast1));
-
 
         YouTube.LiveBroadcasts.Transition liveTransitionRequest = youtube.liveBroadcasts().transition("testing", broadcastId, "id,status");
         LiveBroadcast broadcast = liveTransitionRequest.execute();

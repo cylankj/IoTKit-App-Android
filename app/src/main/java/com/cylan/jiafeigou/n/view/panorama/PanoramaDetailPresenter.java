@@ -51,7 +51,8 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getReportMsgSub(), getNetWorkMonitorSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getReportMsgSub", getReportMsgSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
     }
 
     @Override
@@ -131,7 +132,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 //                    }, e -> {
 //                        AppLogger.e(e.getMessage());
 //                    });
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaDetailPresenter#delete", subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3  
             Subscription subscribe = Observable.just(version)
@@ -153,7 +154,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         e.printStackTrace();
                         AppLogger.d(e.getMessage());
                     });
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaDetailPresenter#delete1", subscribe);
 
         }
     }

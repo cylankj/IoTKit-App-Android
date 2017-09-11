@@ -9,31 +9,31 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/y20">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y121">
+        android:layout_height="@dimen/y121"
+        android:background="@color/color_white"
+        android:orientation="vertical"
+        android:padding="@dimen/y5">
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_white"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
             android:gravity="start|top"
             android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
-            android:padding="@dimen/y15"
             android:textSize="@dimen/sp14" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_marginBottom="@dimen/y15"
-            android:layout_marginEnd="@dimen/y15"
             android:text="110"
-
             android:textColor="@color/color_adadad"
             android:textSize="@dimen/sp13" />
 
-    </FrameLayout>
+    </LinearLayout>
 
 
     <com.cylan.jiafeigou.widget.SettingItemView0

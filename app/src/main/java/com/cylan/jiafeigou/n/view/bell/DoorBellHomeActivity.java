@@ -428,7 +428,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                                 presenter.deleteBellCallRecord(list);
                                 bellCallRecordListAdapter.setMode(0);
                                 showEditBar(false);
-                                LoadingDialog.showLoading(DoorBellHomeActivity.this, getString(R.string.DELETEING));
+                                LoadingDialog.showLoading(DoorBellHomeActivity.this, getString(R.string.DELETEING), true);
                             }
                         }, getString(R.string.CANCEL), null, false);
                 break;

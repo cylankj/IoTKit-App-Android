@@ -59,7 +59,7 @@ class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), Yo
                         }
                     }
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe)
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveList", subscribe)
     }
 
     override fun getLiveFromDevice() {
@@ -82,6 +82,6 @@ class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), Yo
                 }, {
 
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe)
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"YouTubeLiveSettingPresenter#getLiveFromDevice", subscribe)
     }
 }

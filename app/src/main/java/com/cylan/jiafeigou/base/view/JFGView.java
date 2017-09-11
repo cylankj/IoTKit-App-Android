@@ -19,11 +19,12 @@ public interface JFGView {
 
     Activity getActivityContext();
 
-    void showLoading(int resId, Object... args);
+    void showLoading(int resId, boolean cancelable, Object... args);
 
     void hideLoading();
 
     AlertDialog getAlert();
+
 
     void showToast(String msg);
 

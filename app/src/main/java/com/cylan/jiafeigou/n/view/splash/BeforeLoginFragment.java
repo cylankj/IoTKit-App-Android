@@ -123,7 +123,7 @@ public class BeforeLoginFragment extends Fragment {
                 btnToLogin.setEnabled(false);
                 btnToRegister.setEnabled(false);
                 btnLookAround.setEnabled(false);
-                LoadingDialog.showLoading(getActivity(), getString(R.string.PLEASE_WAIT));
+                LoadingDialog.showLoading(getActivity(), getString(R.string.PLEASE_WAIT), true);
             }
         }
     }

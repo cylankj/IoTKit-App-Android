@@ -58,7 +58,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "MineShareContentPresenterImpl#unShareContent",subscribe);
     }
 
     @Override
@@ -83,13 +83,13 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> mView.showLoading(R.string.LOADING))
+                .doOnSubscribe(() -> mView.showLoading(R.string.LOADING, true))
                 .doOnTerminate(() -> mView.hideLoading())
                 .subscribe(result -> {
                     mView.onShareContentResponse(result, refresh);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"MineShareContentPresenterImpl#loadFromServer", subscribe);
     }
 }

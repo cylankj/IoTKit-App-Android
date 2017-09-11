@@ -105,7 +105,7 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
 
     @Override
     public void showSendHint() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
     }
 
     @Override

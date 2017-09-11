@@ -273,7 +273,17 @@ public class DP {
     public void test517() throws IOException {
 //        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
 //        Object value = objectMapper.readValue(new byte[]{-107, 2, -95, 2, 1, 0, 1}, Object.class);
-        DpMsgDefine.DPCameraLiveRtmpStatus rtmpStatus = DpUtils.unpackData(new byte[]{-107, 2, -95, 2, 1, 0, 1}, DpMsgDefine.DPCameraLiveRtmpStatus.class);
+        DpMsgDefine.DPCameraLiveRtmpStatus rtmpStatus = DpUtils.unpackData(new byte[]{-107,2,-38,0,51,114,116,109,112,58,47,47,97,46,114,116,109,112,46,121,111,117,116,117,98,101,46,99,111,109,47,108,105,118,101,50,47,51,114,97,117,45,101,57,106,99,45,107,54,106,100,45,54,122,55,48,2,-50,89,-74,80,52,0}, DpMsgDefine.DPCameraLiveRtmpStatus.class);
         System.out.println(rtmpStatus);
+    }
+
+    @Test
+    public void testMethod() {
+        methodName();
+
+    }
+
+    public void methodName() {
+        System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
     }
 }

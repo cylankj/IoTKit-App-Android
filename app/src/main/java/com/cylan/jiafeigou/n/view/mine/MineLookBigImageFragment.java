@@ -164,7 +164,7 @@ public class MineLookBigImageFragment extends IBaseFragment implements MineLookB
     }
 
     public void showLoadImageProgress() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
     }
 
 

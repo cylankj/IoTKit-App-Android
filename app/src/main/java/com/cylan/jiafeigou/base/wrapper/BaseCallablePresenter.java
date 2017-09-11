@@ -115,7 +115,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"BaseCallablePresenter#newCall", subscribe);
     }
 
     @Override
@@ -128,7 +128,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     public void loadPreview(String url) {
         Subscription subscription = load(BellPuller.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscription);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"BaseCallablePresenter#loadPreview", subscription);
     }
 
     protected Observable<Long> load(String url) {

@@ -277,7 +277,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                         getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                             basePresenter.unbindDevice();
-                            LoadingDialog.showLoading(this, getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(this, getString(R.string.DELETEING), true);
                         }, getString(R.string.CANCEL), null);
             }
             break;
@@ -356,7 +356,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     switch (id) {
                         case R.id.tv_dialog_btn_right:
                             basePresenter.clearBellRecord(uuid);
-                            LoadingDialog.showLoading(this, getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(this, getString(R.string.DELETEING), true);
                     }
                 });
                 mClearRecordFragment.show(getSupportFragmentManager(), "ClearBellRecordFragment");
@@ -473,7 +473,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(this, getString(R.string.SD_INFO_2));
+        LoadingDialog.showLoading(this, getString(R.string.SD_INFO_2), true);
     }
 
     @Override
@@ -833,7 +833,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             getAlertDialogManager()
                     .showDialog(this, getString(R.string.Start_Hotspot), getString(R.string.Start_Hotspot_Prompt, net.ssid), getString(R.string.OK), (dialog, which) -> {
                         ToastUtil.showToast(getString(R.string.Instructions_Sent));
-                        LoadingDialog.showLoading(this, getString(R.string.SETTING));
+                        LoadingDialog.showLoading(this, getString(R.string.SETTING), true);
                         ToastUtil.showToast(getString(R.string.Instructions_Sent));
                         Subscription subscription = basePresenter.switchApModel(1)
                                 .subscribeOn(Schedulers.io())

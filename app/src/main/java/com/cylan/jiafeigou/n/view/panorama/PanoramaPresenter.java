@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
@@ -31,6 +32,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeScopes;
@@ -63,6 +65,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private volatile boolean isRecording = false;
     private volatile boolean isRtmpLive = false;
     private volatile boolean hasSDCard;
+    private YouTubeApi.LiveEvent liveEvent;
 
     @Override
     public boolean isApiAvailable() {
@@ -70,28 +73,45 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return event != null && event.ApiType >= 0;
     }
 
-    private void startLiveEventByPlatform(int platform) throws IOException {
+    private void startLiveEventByPlatform(int platform) {
+
         switch (platform) {
             case 0: {
 
             }
             break;
             case 1: {
-                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mView.getAppContext(), YouTubeScopes.all());
-                credential.setSelectedAccountName(PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME));
-                YouTube youTube = new YouTube.Builder(AndroidHttp.newCompatibleTransport(),
-                        JacksonFactory.getDefaultInstance(),
-                        credential
-                )
-                        .setApplicationName(mView.getAppContext().getString(R.string.app_name))
-                        .build();
-                String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null);
-                EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
-                if (eventData != null) {
-                    YouTubeApi.startEvent(youTube, eventData.getId(), eventData.getEvent().getContentDetails().getBoundStreamId());
+                try {
+                    GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mView.getAppContext(), YouTubeScopes.all());
+                    credential.setSelectedAccountName(PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME));
+                    YouTube youTube = new YouTube.Builder(AndroidHttp.newCompatibleTransport(),
+                            JacksonFactory.getDefaultInstance(),
+                            credential
+                    )
+                            .setApplicationName(mView.getAppContext().getString(R.string.app_name))
+                            .build();
+                    String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null);
+                    EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
+                    if (eventData != null) {
+                        liveEvent = new YouTubeApi.YoutubeStartEvent(youTube, eventData.getId(), eventData.getEvent().getContentDetails().getBoundStreamId());
+                        liveEvent.execute();
+                    }
+                } catch (IllegalArgumentException e) {
+                    AppLogger.w(MiscUtils.getErr(e));
+                    PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE);
+                    AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                        mView.onRtmpAddressError();
+                    });
+                } catch (GoogleJsonResponseException e) {
+                    AppLogger.w(MiscUtils.getErr(e));
+                    PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE);
+                    AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                        mView.onRtmpAddressError();
+                    });
+                } catch (Exception e) {
+                    AppLogger.w(MiscUtils.getErr(e));
                 }
             }
-            break;
             case 2: {
 
             }
@@ -101,11 +121,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             }
             break;
         }
+
     }
 
     @Override
     public void cameraLiveRtmpCtrl(int livePlatform, String url, int enable) {
-        Observable.just("cameraLiveRtmpCtrl")
+        Subscription subscribe = Observable.just("cameraLiveRtmpCtrl")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -126,20 +147,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .map(rsp -> {
                     if (rsp != null && rsp.rets != null && rsp.rets.size() > 0) {
                         JFGDPMsgRet msgRet = rsp.rets.get(0);
+                        if (msgRet.ret == 0) {
+                            startLiveEventByPlatform(livePlatform);
+                        }
                         return msgRet.ret;
                     }
                     return -1;
-                })
-                .filter(rsp -> {
-                    if (rsp == 0) {
-                        try {
-                            startLiveEventByPlatform(livePlatform);
-                        } catch (IOException e) {
-                            AppLogger.e(MiscUtils.getErr(e));
-                            e.printStackTrace();
-                        }
-                    }
-                    return rsp == 0;
                 })
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .first()
@@ -154,15 +167,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"PanoramaPresenter#cameraLiveRtmpCtrl", subscribe);
     }
 
     @Override
     public void onViewAttached(PanoramaCameraContact.View view) {
         super.onViewAttached(view);
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-
         hasSDCard = status.hasSdcard;
     }
 
@@ -174,6 +186,15 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
+    public void onViewDetached() {
+        super.onViewDetached();
+        if (liveEvent != null) {
+            liveEvent.cancel();
+            liveEvent = null;
+        }
+    }
+
+    @Override
     protected boolean disconnectBeforePlay() {
         return true;
     }
@@ -182,11 +203,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
 //        registerSubscription(getApiMonitorSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, newVersionRspSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getReportMsgSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getNetWorkMonitorSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceRecordStateSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, makeNewMsgSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaPresenter#newVersionRspSub", newVersionRspSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getReportMsgSub",getReportMsgSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getNetWorkMonitorSub",getNetWorkMonitorSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getDeviceRecordStateSub",getDeviceRecordStateSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#makeNewMsgSub",makeNewMsgSub());
     }
 
     private Subscription getDeviceRecordStateSub() {
@@ -344,7 +365,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                             + ",timestamp is:" + dpCameraLiveRtmpStatus.timestamp
                                             + ",error is:" + dpCameraLiveRtmpStatus.error
                                     );
-
+                                    mView.onRtmpQueryResponse(dpCameraLiveRtmpStatus);
                                     if (dpCameraLiveRtmpStatus.error != 0) {
                                         // TODO: 2017/9/9 出错了
                                         isRtmpLive = false;
@@ -393,7 +414,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(e);
                     mView.onReportDeviceError(-1, false);//timeout
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#makePhotograph",subscribe);
     }
 
     @Override
@@ -435,7 +456,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return rsp;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getResolution(uuid))
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getResolution(uuid).onErrorResumeNext(Observable.just(null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
                     if (ret != null && ret.ret == 0) {
@@ -444,7 +465,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine(uuid))
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine(uuid).onErrorResumeNext(Observable.just(null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
                     if (ret != null && ret.powerline == 1) {
@@ -456,7 +477,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery(uuid).observeOn(AndroidSchedulers.mainThread())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery(uuid).onErrorResumeNext(Observable.just(null)).observeOn(AndroidSchedulers.mainThread())
                         .map(bat -> {
                             if (bat != null) {
                                 this.battery = bat.battery;
@@ -485,10 +506,39 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         })
 
                 )
-                .onErrorResumeNext(throwable -> {
-                    AppLogger.e(throwable.getMessage());
-                    return Observable.just(null);
-                })
+                .flatMap(ret -> Observable.just("517")
+                        .observeOn(Schedulers.io())
+                        .map(cmd -> {
+                            ArrayList<JFGDPMsg> params = new ArrayList<>();
+                            try {
+                                params.add(new JFGDPMsg(517, 0, new byte[]{0}));
+                                return BaseApplication.getAppComponent().getCmd().robotGetData(uuid, params, 1, false, 0);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        })
+                        .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(rsp -> {
+                            if (rsp != null && rsp.map != null && rsp.map.size() > 0) {
+                                ArrayList<JFGDPMsg> jfgdpMsgs = rsp.map.get(517);
+                                if (jfgdpMsgs != null && jfgdpMsgs.size() > 0) {
+                                    JFGDPMsg msg = jfgdpMsgs.get(0);
+                                    try {
+                                        DpMsgDefine.DPCameraLiveRtmpStatus unpackData = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPCameraLiveRtmpStatus.class);
+                                        if (unpackData != null) {
+                                            isRtmpLive = unpackData.flag == 1 && unpackData.error == 0;
+                                            mView.onRtmpQueryResponse(unpackData);
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }
+                            return rsp;
+                        }).onErrorResumeNext(Observable.just(null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onDeviceInitFinish();//初始化成功,可以播放视频了
@@ -496,7 +546,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(MiscUtils.getErr(e));
                 });
 
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaPresenter#checkAndInitRecord", subscribe);
     }
 
     @Override
@@ -514,7 +564,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#switchVideoResolution",subscribe);
     }
 
     @Override
@@ -545,7 +595,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 //                    shouldRefreshRecord = false;
                     mView.onReportDeviceError(-1, false);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaPresenter#startVideoRecord", subscribe);
     }
 
     @Override
@@ -572,7 +622,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onReportDeviceError(-1, false);
                     AppLogger.e(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaPresenter#stopVideoRecord",  subscribe);
     }
 
     @Override
@@ -590,7 +640,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(MiscUtils.getErr(e));
                     mView.onSDFormatResult(-1);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaPresenter#formatSDCard", subscribe);
     }
 
     public void refreshVideoRecordUI(int offset, @PanoramaCameraContact.View.PANORAMA_RECORD_MODE int type) {
@@ -605,7 +655,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     isRecording = true;
                     mView.onRefreshVideoRecordUI(second, type);
                 }, AppLogger::e);
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaPresenter#refreshVideoRecordUI", subscribe);
     }
 
     private Subscription makeNewMsgSub() {

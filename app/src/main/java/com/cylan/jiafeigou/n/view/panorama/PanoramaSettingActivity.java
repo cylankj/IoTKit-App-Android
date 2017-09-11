@@ -138,7 +138,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
                 getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                 getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                     presenter.unBindDevice();
-                    LoadingDialog.showLoading(this, getString(R.string.DELETEING));
+                    LoadingDialog.showLoading(this, getString(R.string.DELETEING), true);
                 }, getString(R.string.CANCEL), null, false);
     }
 

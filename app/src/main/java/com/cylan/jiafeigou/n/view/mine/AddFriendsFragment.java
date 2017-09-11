@@ -74,7 +74,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
         super.onStart();
         if (basePresenter != null) {
             basePresenter.getFriendListData();
-            LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+            LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
             if (basePresenter != null) {
                 basePresenter.start();
                 basePresenter.getFriendListData();
@@ -180,7 +180,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.getting));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.getting), true);
     }
 
     /**

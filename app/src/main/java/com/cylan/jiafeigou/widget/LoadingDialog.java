@@ -71,9 +71,10 @@ public class LoadingDialog extends AppCompatDialog {
     }
 
 
-    public static void showLoading(Context context, String content) {
-        showLoading(context, content, true, null);
+    public static void showLoading(Context context, String content, boolean cancelable) {
+        showLoading(context, content, cancelable, null);
     }
+
 
     public static void showLoading(Context context) {
         showLoading(context, "", true, null);

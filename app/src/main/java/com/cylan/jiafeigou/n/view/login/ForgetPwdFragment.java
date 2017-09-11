@@ -257,7 +257,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
     }
 
     @Override

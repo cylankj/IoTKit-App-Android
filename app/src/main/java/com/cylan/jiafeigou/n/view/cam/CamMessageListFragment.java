@@ -456,7 +456,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (TextUtils.equals(getString(R.string.CANCEL), tvCamMessageListEdit.getText()))
                     return;
                 if (basePresenter != null && basePresenter.getDateList().size() == 0) {
-                    LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
+                    LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
                     AppLogger.d("日期加载中...");
                     basePresenter.refreshDateList(true);
                 }

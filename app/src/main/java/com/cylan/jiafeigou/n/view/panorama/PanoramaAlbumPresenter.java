@@ -84,9 +84,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
 //        registerSubscription(monitorPanoramaAPI());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, monitorSDCardUnMount());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#monitorSDCardUnMount", monitorSDCardUnMount());
 //        registerSubscription(monitorDeleteUpdateSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getNetWorkMonitorSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
     }
 
 
@@ -168,7 +168,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#checkSDCardAndInit",subscribe);
     }
 
     @Override
@@ -232,7 +232,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     });
         }
         if (fetchLocation != -1)
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, fetchSubscription);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaAlbumPresenter#fetch", fetchSubscription);
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromServer(int time) {

@@ -171,8 +171,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     }
 
     @Override
-    public void showLoading(int resId, Object... args) {
-        LoadingDialog.showLoading(getActivity(), getString(resId, args));
+    public void showLoading(int resId, boolean cancelable, Object... args) {
+        LoadingDialog.showLoading(getActivity(), getString(resId, args), cancelable);
     }
 
     @Override

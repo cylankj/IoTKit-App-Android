@@ -146,7 +146,7 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
 
     @Override
     public void showUpLoadPro() {
-        LoadingDialog.showLoading(this, getString(R.string.Tap3_Uploading));
+        LoadingDialog.showLoading(this, getString(R.string.Tap3_Uploading), true);
     }
 
     @Override
