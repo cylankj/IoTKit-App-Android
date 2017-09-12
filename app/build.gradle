@@ -380,6 +380,8 @@ dependencies {
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
     //youtube-live-api
     compile 'com.google.api-client:google-api-client:1.22.0'
+
+    compile 'net.openid:appauth:0.2.0'
 }
 
 /////////////////编译过滤器/////////////////////////////////
