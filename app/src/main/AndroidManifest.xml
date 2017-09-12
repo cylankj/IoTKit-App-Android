@@ -779,11 +779,29 @@
 
         <activity android:name=".n.view.activity.ApSettingActivity">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
+
+        <!--<intent-filter>-->
+        <!--需要在接收结果的Activity注册-->
+        <!--<action android:name="com.google.codelabs.appauth.HANDLE_AUTHORIZATION_RESPONSE"/>-->
+        <!--<category android:name="android.intent.category.DEFAULT"/>-->
+        <!--</intent-filter>-->
+        <!---->
+        <activity android:name="net.openid.appauth.RedirectUriReceiverActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="com.google.codelabs.appauth" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
