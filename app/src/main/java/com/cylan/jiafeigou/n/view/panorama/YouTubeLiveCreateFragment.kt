@@ -83,6 +83,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
 
     private fun createLiveEvent() {
         presenter.createLiveBroadcast(mCredential, title, description, startTime, endTime)
+
     }
 
     @OnClick(R.id.youtube_create_live_start_time)

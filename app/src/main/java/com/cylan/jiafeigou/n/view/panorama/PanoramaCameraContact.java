@@ -12,6 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.CONNECTION_MODE.BAD_NETWORK;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.CONNECTION_MODE.DEVICE_OFFLINE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.CONNECTION_MODE.FINE;
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LONG;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_NONE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT;
@@ -43,7 +44,7 @@ public interface PanoramaCameraContact {
 
         void onDeviceOnLine();
 
-        void onSendCameraRtmpResponse(int code);
+        void onSendCameraRtmpResponse(boolean code);
 
         void onRtmpQueryResponse(DpMsgDefine.DPCameraLiveRtmpStatus unpackData);
 
@@ -76,7 +77,7 @@ public interface PanoramaCameraContact {
             int MODE_LIVE = 3;
         }
 
-        @IntDef({MODE_NONE, MODE_SHORT, MODE_LONG})
+        @IntDef({MODE_NONE, MODE_SHORT, MODE_LONG, MODE_LIVE})
         @Retention(RetentionPolicy.SOURCE)
         @interface PANORAMA_RECORD_MODE {
             int MODE_NONE = 0;

@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -23,6 +24,7 @@ import org.msgpack.core.MessageUnpacker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,13 +275,14 @@ public class DP {
     public void test517() throws IOException {
 //        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
 //        Object value = objectMapper.readValue(new byte[]{-107, 2, -95, 2, 1, 0, 1}, Object.class);
-        DpMsgDefine.DPCameraLiveRtmpStatus rtmpStatus = DpUtils.unpackData(new byte[]{-107,2,-38,0,51,114,116,109,112,58,47,47,97,46,114,116,109,112,46,121,111,117,116,117,98,101,46,99,111,109,47,108,105,118,101,50,47,51,114,97,117,45,101,57,106,99,45,107,54,106,100,45,54,122,55,48,2,-50,89,-74,80,52,0}, DpMsgDefine.DPCameraLiveRtmpStatus.class);
+        DpMsgDefine.DPCameraLiveRtmpStatus rtmpStatus = DpUtils.unpackData(new byte[]{-107, 2, -38, 0, 51, 114, 116, 109, 112, 58, 47, 47, 97, 46, 114, 116, 109, 112, 46, 121, 111, 117, 116, 117, 98, 101, 46, 99, 111, 109, 47, 108, 105, 118, 101, 50, 47, 51, 114, 97, 117, 45, 101, 57, 106, 99, 45, 107, 54, 106, 100, 45, 54, 122, 55, 48, 2, -50, 89, -74, 80, 52, 0}, DpMsgDefine.DPCameraLiveRtmpStatus.class);
         System.out.println(rtmpStatus);
     }
 
     @Test
     public void testMethod() {
-        methodName();
+        String ssss = new GoogleAuthorizationCodeRequestUrl("985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com", "http://www.baidu.com", Arrays.asList("sssss")).build();
+        System.out.println(ssss);
 
     }
 

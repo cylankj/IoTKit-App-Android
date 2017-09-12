@@ -14,16 +14,23 @@
 
 package com.cylan.jiafeigou.rtmp.youtube.util;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTube.LiveBroadcasts.Transition;
+import com.google.api.services.youtube.YouTubeScopes;
 import com.google.api.services.youtube.model.CdnSettings;
 import com.google.api.services.youtube.model.IngestionInfo;
 import com.google.api.services.youtube.model.LiveBroadcast;
@@ -48,6 +55,7 @@ public class YouTubeApi {
     public static final String RTMP_URL_KEY = "rtmpUrl";
     public static final String BROADCAST_ID_KEY = "broadcastId";
     private static final int FUTURE_DATE_OFFSET_MILLIS = 5 * 1000;
+    private static YouTube youTube;
 
     public static EventData createLiveEvent(YouTube youtube, String description,
                                             String title, long startTime, long endTime) throws IOException {
@@ -80,6 +88,7 @@ public class YouTubeApi {
         broadcast.setSnippet(broadcastSnippet);
         broadcast.setStatus(status);
         broadcast.setContentDetails(contentDetails);
+
 
         // Create the insert request
         YouTube.LiveBroadcasts.Insert liveBroadcastInsert = youtube
@@ -129,6 +138,86 @@ public class YouTubeApi {
         return eventData;
     }
 
+    public static EventData createLiveEvent2(YouTube youtube, String description,
+                                             String title, long startTime, long endTime) throws IOException {
+        // We need a date that's in the proper ISO format and is in the future,
+        // since the API won't
+        // create events that start in the past.
+        LiveBroadcastSnippet broadcastSnippet = new LiveBroadcastSnippet();
+        broadcastSnippet.setTitle(title);
+        if (startTime == 0) {
+            startTime = System.currentTimeMillis();
+        }
+        broadcastSnippet.setScheduledStartTime(new DateTime(new Date(startTime), TimeZone.getDefault()));
+        if (endTime > startTime) {
+            broadcastSnippet.setScheduledEndTime(new DateTime(new Date(endTime), TimeZone.getDefault()));
+        }
+        broadcastSnippet.setDescription(description);
+
+        LiveBroadcastContentDetails contentDetails = new LiveBroadcastContentDetails();
+        MonitorStreamInfo monitorStream = new MonitorStreamInfo();
+        monitorStream.setEnableMonitorStream(true);
+        contentDetails.setMonitorStream(monitorStream);
+        contentDetails.set("projection", "360");//这里控制以360 视角直播
+
+        // Create LiveBroadcastStatus with privacy status.
+        LiveBroadcastStatus status = new LiveBroadcastStatus();
+        status.setPrivacyStatus("public");
+
+        LiveBroadcast broadcast = new LiveBroadcast();
+        broadcast.setKind("youtube#liveBroadcast");
+        broadcast.setSnippet(broadcastSnippet);
+        broadcast.setStatus(status);
+        broadcast.setContentDetails(contentDetails);
+
+
+        // Create the insert request
+        YouTube.LiveBroadcasts.Insert liveBroadcastInsert = youtube
+                .liveBroadcasts().insert("snippet,status,contentDetails",
+                        broadcast);
+
+        // Request is executed and inserted broadcast is returned
+        LiveBroadcast returnedBroadcast = liveBroadcastInsert.execute();
+
+        // Create a snippet with title.
+        LiveStreamSnippet streamSnippet = new LiveStreamSnippet();
+        streamSnippet.setTitle(title);
+
+        // Create content distribution network with format and ingestion
+        // type.
+        CdnSettings cdn = new CdnSettings();
+        cdn.setFormat("1080p");
+        cdn.setIngestionType("rtmp");
+
+        LiveStream stream = new LiveStream();
+        stream.setKind("youtube#liveStream");
+        stream.setSnippet(streamSnippet);
+        stream.setCdn(cdn);
+
+        // Create the insert request
+        YouTube.LiveStreams.Insert liveStreamInsert = youtube.liveStreams()
+                .insert("snippet,cdn", stream);
+
+        // Request is executed and inserted stream is returned
+        LiveStream returnedStream = liveStreamInsert.execute();
+
+        // Create the bind request
+        YouTube.LiveBroadcasts.Bind liveBroadcastBind = youtube
+                .liveBroadcasts().bind(returnedBroadcast.getId(),
+                        "id,snippet,contentDetails,status");
+
+        // Set stream id to bind
+        liveBroadcastBind.setStreamId(returnedStream.getId());
+
+        // Request is executed and bound broadcast is returned
+        LiveBroadcast liveBroadcast = liveBroadcastBind.execute();
+
+        EventData eventData = new EventData();
+        eventData.setEvent(liveBroadcast);
+        IngestionInfo ingestionInfo = returnedStream.getCdn().getIngestionInfo();
+        eventData.setIngestionAddress(ingestionInfo.getIngestionAddress() + "/" + ingestionInfo.getStreamName());
+        return eventData;
+    }
 
     public static void createLiveEvent(YouTube youtube, String description,
                                        String name) {
@@ -290,10 +379,46 @@ public class YouTubeApi {
         return resultList;
     }
 
+    public static boolean checkBroadcast(YouTube youtube, String broadcastId) {
+        try {
+            LiveBroadcastListResponse response = youtube.liveBroadcasts().list("id,status").setId(broadcastId).execute();
+            if (response.getItems().size() > 0) {
+                LiveBroadcast broadcast = response.getItems().get(0);
+                return "ready".equals(broadcast.getStatus().getLifeCycleStatus());
+            }
+        } catch (Exception e) {
+            AppLogger.w(MiscUtils.getErr(e));
+        }
+        return false;
+    }
+
     public interface LiveEvent {
         void execute() throws Exception;
 
         void cancel();
+    }
+
+    public static class YoutubeStopEvent implements LiveEvent {
+
+        private YouTube youtube;
+        private String broadcastId;
+
+        public YoutubeStopEvent(YouTube youTube, String broadcastId) {
+            this.youtube = youTube;
+            this.broadcastId = broadcastId;
+        }
+
+        @Override
+        public void execute() throws Exception {
+            Transition transitionRequest = youtube.liveBroadcasts().transition(
+                    "completed", broadcastId, "status");
+            transitionRequest.execute();
+        }
+
+        @Override
+        public void cancel() {
+
+        }
     }
 
     public static class YoutubeStartEvent implements LiveEvent {
@@ -505,5 +630,35 @@ public class YouTubeApi {
         }
         IngestionInfo ingestionInfo = streamList.get(0).getCdn().getIngestionInfo();
         return ingestionInfo.getIngestionAddress() + "/" + ingestionInfo.getStreamName();
+    }
+
+    public static YouTube getYoutube(Context context) {
+        if (youTube == null) {
+            synchronized (YouTubeApi.class) {
+                if (youTube == null) {
+                    String account = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME);
+                    if (!TextUtils.isEmpty(account)) {
+                        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(context, YouTubeScopes.all());
+                        credential.setSelectedAccountName(account);
+                        youTube = new YouTube.Builder(AndroidHttp.newCompatibleTransport(),
+                                JacksonFactory.getDefaultInstance(),
+                                credential
+                        )
+                                .setApplicationName(context.getString(R.string.app_name))
+                                .build();
+                    }
+                }
+            }
+        }
+        return youTube;
+    }
+
+    public static class YoutubeLiveStartFlow {
+
+        public void setEventListener() {
+
+        }
+
+
     }
 }
