@@ -5,8 +5,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +17,7 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -24,6 +27,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 /**
  * 网络工具类
@@ -162,7 +170,7 @@ public class NetUtils {
 
     public static ConnectivityManager getConnectivityManager(Context context) {
         return (ConnectivityManager) context.
-                getSystemService(Context.CONNECTIVITY_SERVICE);
+                getSystemService(CONNECTIVITY_SERVICE);
     }
 
 
@@ -171,7 +179,7 @@ public class NetUtils {
     }
 
     public static WifiManager getWifiManager() {
-        return (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        return (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
 
@@ -380,7 +388,7 @@ public class NetUtils {
     public static boolean isNetworkAvailable(Context context) {
         context = ContextUtils.getContext();
         ConnectivityManager connectivity = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+                .getSystemService(CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo info = connectivity.getActiveNetworkInfo();
             if (info != null && info.isConnected()) {
@@ -434,7 +442,7 @@ public class NetUtils {
 
     public static String getRouterMacAddress() {
         Context context = ContextUtils.getContext();
-        WifiManager mWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager mWifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifi.isWifiEnabled()) {
             WifiInfo wifiInfo = mWifi.getConnectionInfo();
             String netMac = wifiInfo.getBSSID(); //获取被连接网络的mac地址
@@ -451,7 +459,7 @@ public class NetUtils {
 
     private boolean isNetworkAvailable(Application context) {
         //得到网络连接信息
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
         //去进行判断网络是否连接
         if (manager.getActiveNetworkInfo() != null) {
             return manager.getActiveNetworkInfo().isAvailable();
@@ -494,7 +502,7 @@ public class NetUtils {
     }
 
     public static String getReadableIp() {
-        WifiManager mWifi = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager mWifi = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifi.isWifiEnabled()) {
             WifiInfo wifiInfo = mWifi.getConnectionInfo();
             return intToIp(wifiInfo.getIpAddress());
@@ -578,4 +586,190 @@ public class NetUtils {
             "Mozilla/5.0 (Linux; Android 5.1.1; SHIELD Tablet Build/LMY48C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Safari/537.36",
             "Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-T550 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.3 Chrome/38.0.2125.102 Safari/537.36"
     };
+
+
+    //三星 S6-7.0 S7-7.0(api:24)
+    // note3-5.0(api:21)
+    // 小米3-4.4(api:19)
+    // 魅族Pro6-6.0(api:23)
+
+    //小米6-7.1(api:25) 失败。
+    public static boolean createHotSpot(WifiManager wifiManager, final String ssid, final String pwd) {
+        if (wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
+        WifiConfiguration netConfig = new WifiConfiguration();
+        netConfig.SSID = ssid;
+        netConfig.preSharedKey = pwd;
+        if (TextUtils.isEmpty(netConfig.preSharedKey)) {
+            netConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            netConfig.allowedAuthAlgorithms.clear();
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        } else {
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            netConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+            //from system_settings_source
+            netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+            netConfig.allowedKeyManagement.set(4);
+        }
+        try {
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+//                //1.save config
+//                Object listener = Class.forName("android.net.wifi.WifiManager$ActionListener");
+//                Method save = wifiManager.getClass().getMethod("save", WifiConfiguration.class, listener.getClass());
+//                save.invoke(wifiManager, netConfig, null);
+//                //2.connect
+//                Method connect = wifiManager.getClass().getMethod("connect", WifiConfiguration.class, listener.getClass());
+//                connect.invoke(wifiManager, netConfig, null);
+//                //3.start
+//                ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(CONNECTIVITY_SERVICE);
+//                listener = Class.forName("android.net.ConnectivityManager$OnStartTetheringCallback");
+//                Method startTethering = connectivityManager.getClass().getMethod("startTethering", Integer.TYPE, Boolean.TYPE, listener.getClass());
+//                startTethering.invoke(connectivityManager, 0, true, null);
+//                return true;
+//            }
+
+            Method setWifiApMethod = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+            boolean apstatus = (Boolean) setWifiApMethod.invoke(wifiManager, netConfig, true);
+            Method isWifiApEnabledmethod = wifiManager.getClass().getMethod("isWifiApEnabled");
+            while (!(Boolean) isWifiApEnabledmethod.invoke(wifiManager)) {
+            }
+            Method getWifiApStateMethod = wifiManager.getClass().getMethod("getWifiApState");
+            int apstate = (Integer) getWifiApStateMethod.invoke(wifiManager);
+            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
+            netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
+            Log.e("CLIENT", "\nSSID:" + netConfig.SSID + "\nPassword:" + netConfig.preSharedKey + "\n");
+            return true;
+        } catch (Exception e) {
+            Log.e("ConfigAp", "", e);
+            return false;
+        }
+    }
+
+    public static boolean createHotSpot(final String ssid, final String pwd) {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        return createHotSpot(wifiManager, ssid, pwd);
+    }
+
+
+    public static class ClientScanResult {
+        private String IpAddr;
+        private String HWAddr;
+        private String Device;
+        private boolean isReachable;
+
+        public ClientScanResult(String ipAddr, String hWAddr, String device, boolean isReachable) {
+            super();
+            this.IpAddr = ipAddr;
+            this.HWAddr = hWAddr;
+            this.Device = device;
+            this.isReachable = isReachable;
+        }
+
+        public String getIpAddr() {
+            return IpAddr;
+        }
+
+        public void setIpAddr(String ipAddr) {
+            IpAddr = ipAddr;
+        }
+
+
+        public String getHWAddr() {
+            return HWAddr;
+        }
+
+        public void setHWAddr(String hWAddr) {
+            HWAddr = hWAddr;
+        }
+
+
+        public String getDevice() {
+            return Device;
+        }
+
+        public void setDevice(String device) {
+            Device = device;
+        }
+
+
+        public boolean isReachable() {
+            return isReachable;
+        }
+
+        public void setReachable(boolean isReachable) {
+            this.isReachable = isReachable;
+        }
+
+        @Override
+        public String toString() {
+            return "ClientScanResult{" +
+                    "IpAddr='" + IpAddr + '\'' +
+                    ", HWAddr='" + HWAddr + '\'' +
+                    ", Device='" + Device + '\'' +
+                    ", isReachable=" + isReachable +
+                    '}';
+        }
+    }
+
+    /**
+     * Gets a list of the clients connected to the Hotspot
+     *
+     * @param onlyReachables   {@code false} if the list should contain unreachable (probably disconnected) clients, {@code true} otherwise
+     * @param reachableTimeout Reachable Timout in miliseconds
+     */
+    public static ArrayList<ClientScanResult> getClientList(final boolean onlyReachables,
+                                                            final int reachableTimeout) {
+        final ArrayList<ClientScanResult> result = new ArrayList<>();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("/proc/net/arp"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] splitted = line.split(" +");
+                if ((splitted != null) && (splitted.length >= 4)) {
+                    // Basic sanity check
+                    String mac = splitted[3];
+                    if (mac.matches("..:..:..:..:..:..")) {
+                        boolean isReachable = InetAddress.getByName(splitted[0]).isReachable(reachableTimeout);
+                        if (!onlyReachables || isReachable) {
+                            result.add(new ClientScanResult(splitted[0], splitted[3], splitted[5], isReachable));
+                        }
+                    }
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            Log.e("", e.toString());
+            return null;
+        } finally {
+            CloseUtils.closeQuietly(br);
+        }
+    }
+
+    /**
+     * 获取连上hotsSpot
+     *
+     * @return
+     */
+    public static Observable<ArrayList<ClientScanResult>> getReachableDevs() {
+        return Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .map(s -> NetUtils.getClientList(true, 1000));
+    }
 }

@@ -137,6 +137,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svSettingDeviceLogo;
     @BindView(R.id.siv_target_leveledBFS)
     SettingItemView0 svTargetLevelBFS;
+    @BindView(R.id.sv_setting_device_ap)
+    SettingItemView0 svSettingDeviceAp;
 
     private String uuid;
     //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
@@ -1164,5 +1166,37 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void onData(List<PropertyItem> propertyItems) {
         Log.i(JConstant.CYLAN_TAG, "数据库数据发生了变化,需要更新显示");
+    }
+
+    @OnClick(R.id.sv_setting_device_ap)
+    public void onCheckDeviceAp() {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+            //wifi直连，客户端连接了设备
+            startActivity(new Intent(this, ApSettingActivity.class)
+                    .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+        } else {
+            final DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+            if (JFGRules.isDeviceOnline(net)) {
+                //客户端与设备在同一局域网下。
+                String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+                String remoteSSid = net.ssid;
+                if (!TextUtils.isEmpty(localSSid) && TextUtils.equals(localSSid, remoteSSid)) {
+                    //bingo
+                    startActivity(new Intent(this, ApSettingActivity.class)
+                            .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+                } else {
+                    AlertDialogManager.getInstance().showDialog(this, "remoteSSid" + remoteSSid,
+                            getString(R.string.setwifi_check, remoteSSid),
+                            getString(R.string.OK), (dialog, which) -> {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            }, getString(R.string.CANCEL), null);
+                }
+            } else {
+                //离线
+                handleJumpToConfig(true);
+            }
+        }
+
     }
 }

@@ -7,7 +7,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.objectbox.android.transform'
 apply plugin: 'kotlin-android-extensions'
-
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -150,7 +149,7 @@ android {
         }
     }
 
-    packagingOptions {
+    packagingOptions{
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/DEPENDENCIES'
@@ -270,62 +269,49 @@ greendao {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     //这种方式可以解决:Warning:Conflict with dependency 'com.google.guava:guava'. Resolved versions for app (18.0) and test app (19.0) differ. See http://g.co/androidstudio/app-test-app-conflict for details.
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-annotations:+'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:+'
 
     }
-
     //////////////test///////////////////////
-
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
-
     //前者在test/，后者在androidTest
     testCompile rootProject.ext.testRobolectric
     testCompile rootProject.ext.testAssertj
     testCompile rootProject.ext.testJunit4
-
     //    testCompile rootProject.ext.annotation
     testCompile rootProject.ext.testMockio
     androidTestCompile rootProject.ext.testRules
     androidTestCompile rootProject.ext.testRunner
-
     //强制使用高版本，引用rootProject.ext.annotation，无效
-
     //    androidTestCompile 'com.android.support:support-annotations:23.3.0'
     androidTestCompile(rootProject.ext.testEspresso, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     /////////////////android///////////////////////
     compile rootProject.ext.appcompat
     compile rootProject.ext.appSupport
     compile rootProject.ext.recyclerView
     compile rootProject.ext.appDesign
     compile rootProject.ext.appCardview
-
     /////////////////android///////////////////////
     compile rootProject.ext.butterknife
     kapt rootProject.ext.butterknifeApt
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
     kapt rootProject.ext.permisApt
-
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     compile rootProject.ext.buglySdk
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
     testCompile rootProject.ext.leakcanaryAndroidNoOp
-
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
-
     //glide
     compile rootProject.ext.glide
-
     //渠道包
     compile files('libs/open_sdk_r5781.jar')
     compile files('libs/mid-sdk-2.3.jar')
@@ -339,7 +325,6 @@ dependencies {
                 ext : 'aar'
         ])
     }
-
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile('com.mikepenz:fastadapter:2.6.2@aar') {
@@ -348,13 +333,9 @@ dependencies {
     compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
     compile 'com.mikepenz:materialize:1.0.2@aar'
     compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
-
     //可以单独使用，不需要依赖下方的扩展包
-
     //RxJava扩展支持，根据需要添加
-
     //可以单独使用，不需要依赖下方的扩展包
-
     //RxJava扩展支持，根据需要添加
     compile 'com.cylan.ext:annotations:0.1.0'
     kapt project(':processor')
@@ -390,12 +371,16 @@ dependencies {
     compile 'org.msgpack:msgpack-core:0.8.13'
     compile 'org.msgpack:jackson-dataformat-msgpack:+'
     compile 'com.google.code.gson:gson:2.8.1'
-
-    //    compile 'de.greenrobot:java-common:2.3.1'
+//    compile 'de.greenrobot:java-common:2.3.1'
     compile "io.objectbox:objectbox-android:$objectBoxVersion"
     compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
     kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
     kapt "com.android.databinding:compiler:2.3.3"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+    //youtube-live-api
+    compile 'com.google.api-client:google-api-client:1.22.0'
+
+    compile 'net.openid:appauth:0.2.0'
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0'
 
     //youtube rtmp 配置 配置

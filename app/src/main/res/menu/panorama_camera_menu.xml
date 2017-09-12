@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:icon="@drawable/camera720_icon_no_talk_selector"  android:title=""/>
+    <item
+        android:icon="@drawable/camera720_icon_no_talk_selector"
+        android:title="" />
 </menu>
