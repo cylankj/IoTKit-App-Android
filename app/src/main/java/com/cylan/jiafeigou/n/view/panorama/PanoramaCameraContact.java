@@ -132,5 +132,7 @@ public interface PanoramaCameraContact {
 
         void cameraLiveRtmpCtrl(int livePlatform, String url, int enable);
 
+        void clean();
+
     }
 }

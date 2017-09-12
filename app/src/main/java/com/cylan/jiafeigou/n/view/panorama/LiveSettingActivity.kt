@@ -29,7 +29,9 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     override fun initViewAndListener() {
         super.initViewAndListener()
         rtmp_type_tabs.setOnTabSelectedListener(this)
-        switchRtmpPage(PreferencesUtils.getInt(JConstant.LIVE_PLATFORM_KEY, 0))
+        val position = PreferencesUtils.getInt(JConstant.LIVE_PLATFORM_KEY, 0)
+//        switchRtmpPage(position)
+        rtmp_type_tabs.getTabAt(position)!!.select()
         /*这里可能以后又会有一大堆判断,返回键*/
         custom_toolbar.setBackAction { onBackPressed() }
         custom_toolbar.setRightAction { saveLiveConfigure() }

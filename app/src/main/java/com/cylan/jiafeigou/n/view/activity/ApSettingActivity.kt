@@ -96,7 +96,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             }
             ToastUtil.showToast("设计缺陷:确保sim正常使用")
             val fullCid: String = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID)
-            LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot))
+            LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot), true)
 //            basePresenter.addSubscription("getDevicePortrait",
             UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
                     .flatMap { r -> UdpDevice.sendWifiInfo(r, ssid, pwd, 3, UdpConstant.IP, UdpConstant.PORT) }
@@ -111,8 +111,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                         if (!result) throw RxEvent.HelperBreaker("setHotSpotFailed")
                     }
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        r ->
+                    .subscribe({ r ->
                         Log.d("...", ",发送wifi配置成功，即将开启热点,,...:" + Gson().toJson(r))
                         LoadingDialog.dismissLoading()
                     }, { r ->

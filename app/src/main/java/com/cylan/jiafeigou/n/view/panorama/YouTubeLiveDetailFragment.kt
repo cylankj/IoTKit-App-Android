@@ -30,7 +30,7 @@ class YouTubeLiveDetailFragment : BaseFragment<BasePresenter<JFGView>>() {
         private set
         get() {
             if (field == null) {
-                val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
+                val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE+":"+uuid, null)
                 if (!TextUtils.isEmpty(broadcast)) {
                     field = JacksonFactory.getDefaultInstance().fromString(broadcast, EventData::class.java)
                 }

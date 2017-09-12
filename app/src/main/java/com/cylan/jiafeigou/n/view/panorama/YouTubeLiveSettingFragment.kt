@@ -81,7 +81,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     private var youtubeEvent: EventData? = null
         private set
         get() {
-            val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
+            val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null)
             if (!TextUtils.isEmpty(broadcast)) {
                 field = try {
                     JacksonFactory.getDefaultInstance().fromString(broadcast, EventData::class.java)

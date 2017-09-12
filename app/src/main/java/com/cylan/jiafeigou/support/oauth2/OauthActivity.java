@@ -5,9 +5,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
@@ -24,6 +28,13 @@ import net.openid.appauth.TokenResponse;
 public class OauthActivity extends Activity {
 
     private static final String LOG_TAG = "OauthActivity";
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME);
+        test(string);
+    }
 
     public void test(final String clientId) {
         AuthorizationServiceConfiguration serviceConfiguration = new AuthorizationServiceConfiguration(
@@ -65,6 +76,7 @@ public class OauthActivity extends Activity {
                     } else {
                         if (tokenResponse != null) {
                             authState.update(tokenResponse, exception);
+
                             persistAuthState(authState);
                             Log.i(LOG_TAG, String.format("Token Response [ Access Token: %s, ID Token: %s ]", tokenResponse.accessToken, tokenResponse.idToken));
                         }

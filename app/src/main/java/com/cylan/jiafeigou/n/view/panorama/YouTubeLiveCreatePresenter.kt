@@ -41,7 +41,7 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                 .doOnTerminate { mView.hideLoading() }
                 .subscribe({
                     val json = JacksonFactory.getDefaultInstance().toString(it)
-                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_CONFIGURE, json)
+                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, json)
                     mView.onCreateLiveBroadcastSuccess(it)
                     AppLogger.w("返回的结果为:$json")
                 }, {

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -88,7 +89,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 )
                         .setApplicationName(mView.getAppContext().getString(R.string.app_name))
                         .build();
-                String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null);
+                String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
                 EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
                 if (eventData != null) {
                     if (enable == 1) {
@@ -283,7 +284,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 })
                 .subscribe(result -> {
                     if (result != null && result.error == 0) {
-                        refreshVideoRecordUI(result.timestamp, PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
                     } else {
                         AppLogger.d("失败了");
                     }
@@ -291,6 +292,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.w(MiscUtils.getErr(e));
                 });
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "PanoramaPresenter#cameraLiveRtmpCtrl", subscribe);
+    }
+
+    @Override
+    public void clean() {
+        if (liveEvent != null) {
+            liveEvent.cancel();
+            liveEvent = null;
+        }
     }
 
     @Override
@@ -316,6 +325,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             liveEvent = null;
         }
     }
+
 
     @Override
     protected boolean disconnectBeforePlay() {
@@ -497,7 +507,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                         isRtmpLive = false;
                                     } else {
                                         isRtmpLive = true;
-                                        refreshVideoRecordUI(dpCameraLiveRtmpStatus.timestamp, PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                                        refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000L) - dpCameraLiveRtmpStatus.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
                                     }
 
                                 }
@@ -651,8 +661,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                             isRtmpLive = unpackData.flag == 1 && unpackData.error == 0;
                                             mView.onRtmpQueryResponse(unpackData);
                                         }
+                                        AppLogger.w("517 消息为:" + new Gson().toJson(unpackData));
                                     } catch (IOException e) {
-                                        e.printStackTrace();
+                                        AppLogger.e(MiscUtils.getErr(e));
                                     }
 
                                 }

@@ -463,7 +463,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             break;
             case 1: {
                 bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_youtube_selector);
-                String youtube = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null);
+                String youtube = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
                 try {
                     EventData eventData = JacksonFactory.getDefaultInstance().fromString(youtube, EventData.class);
                     rtmpAddress = eventData.getIngestionAddress();
@@ -638,6 +638,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     if (livePlatform == -1 || TextUtils.isEmpty(rtmpAddress)) {
                         clickedBottomPanelLiveSetting();
                     } else {
+                        showBottomPanelInformation(getString(R.string.LIVE_CREATING, getPlatformString(livePlatform)), false);
                         presenter.cameraLiveRtmpCtrl(livePlatform, rtmpAddress, 1);
                     }
                 } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
@@ -650,6 +651,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         bottomPanelPhotoGraphItem.setEnabled(false);
 
+    }
+
+    private String getPlatformString(int livePlatform) {
+        switch (livePlatform) {
+            case 0:
+                return getString(R.string.LIVE_PLATFORM_FACEBOOK);
+            case 1:
+                return getString(R.string.LIVE_PLATFORM_YOUTUBE);
+            case 2:
+                return getString(R.string.LIVE_PLATFORM_WEIBO);
+            case 3:
+                return "RTMP";
+        }
+        return "RTMP";
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
@@ -724,8 +739,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onBackClick() {
         if (!hideVideoModePop()) {
 //            presenter.dismiss();
-            finish();
+//            finish();
         }
+        onBackPressed();
         AppLogger.w("clickedToolBarBackMenu");
     }
 
@@ -754,6 +770,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         bannerWarmingTitle.setText(text);
         bannerTextInformationClose.setVisibility(hasClose ? View.VISIBLE : View.GONE);
+    }
+
+    public void showBottomPanelInformation(String text, boolean hasDot) {
+        int childIndex = bottomPanelSwitcher.getDisplayedChild();
+        if (childIndex == 0) {
+            bottomPanelSwitcher.showNext();
+        }
+        bottomPanelSwitcherItem2Information.setText(text);
+        bottomPanelSwitcherItem2DotIndicator.setVisibility(hasDot ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.act_panorama_camera_banner_bad_net_work_configure)
@@ -898,10 +923,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onSendCameraRtmpResponse(boolean code) {
         if (code) {
             // TODO: 2017/9/9 成功了
-
+            showBottomPanelInformation(getString(R.string.LIVE_TESTING), false);
             AppLogger.w("rtmp 配置消息发送成功");
         } else {
             // TODO: 2017/9/9 失败了
+            onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, presenter.getLiveAction().hasResolution, false);
             AppLogger.w("rtmp 配置消息发送失败了");
         }
     }
@@ -921,7 +947,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 PreferencesUtils.remove(JConstant.FACEBOOK_PREF_CONFIGURE);
                 break;
             case 1:
-                PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE);
+                PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid);
                 break;
             case 2:
                 PreferencesUtils.remove(JConstant.WEIBO_PREF_CONFIGURE);
@@ -968,7 +994,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         // TODO: 2017/9/5 先初始化
         panoramaViewMode = viewMode;
-        panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
         bottomPanelAlbumItem.setVisibility(View.VISIBLE);
         bottomPanelMoreItem.setVisibility(View.VISIBLE);
         bottomCountDownLine.setVisibility(View.GONE);
@@ -989,16 +1014,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         switch (viewMode) {
             case PANORAMA_VIEW_MODE.MODE_PICTURE: {
+                panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
                 bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_picture);
                 bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_photograph_selector);
             }
             break;
             case PANORAMA_VIEW_MODE.MODE_VIDEO: {
+                panoramaRecordMode = record ? panoramaRecordMode : PANORAMA_RECORD_MODE.MODE_NONE;
                 bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
                 bottomPanelPhotoGraphItem.setImageResource(record ? R.drawable.camera720_icon_video_recording_selector : R.drawable.camera720_icon_short_video_selector);
             }
             break;
             case PANORAMA_VIEW_MODE.MODE_LIVE: {
+                panoramaRecordMode = record ? PANORAMA_RECORD_MODE.MODE_LIVE : PANORAMA_RECORD_MODE.MODE_NONE;
                 bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_rtmp);
                 bottomPanelPhotoGraphItem.setImageResource(record ? R.drawable.camera720_icon_video_recording_selector : R.drawable.camera720_icon_live_recording_selector);
             }
@@ -1023,7 +1051,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelSwitcher.setEnabled(finalEnable);
         bottomPanelPictureMode.setEnabled(finalEnable);
         bottomPanelVideoMode.setEnabled(finalEnable);
-        bottomPanelRtmpMode.setEnabled(finalEnable);
+//        bottomPanelRtmpMode.setEnabled(finalEnable);
 
         bottomPanelMoreItem.setEnabled(finalEnable);
 
@@ -1165,9 +1193,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         panoramaRecordMode = type;
         if (!presenter.getLiveAction().hasResolution) return;
-        if (bottomPanelSwitcher.getDisplayedChild() == 0) {
-            bottomPanelSwitcher.showNext();
-        }
+//        if (bottomPanelSwitcher.getDisplayedChild() == 0) {
+//            bottomPanelSwitcher.showNext();
+//        }
         if (bottomPanelAlbumItem.getVisibility() == View.VISIBLE) {
             bottomPanelAlbumItem.setVisibility(View.GONE);
         }
@@ -1187,9 +1215,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         switch (type) {
             case PANORAMA_RECORD_MODE.MODE_LONG:
-                bottomPanelSwitcherItem2Information.setText(TimeUtils.getHHMMSS(offset * 1000L));
+//                bottomPanelSwitcherItem2Information.setText(TimeUtils.getHHMMSS(offset * 1000L));
                 int visibility = bottomPanelSwitcherItem2DotIndicator.getVisibility();
-                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+                showBottomPanelInformation(TimeUtils.getHHMMSS(offset * 1000L), visibility != View.VISIBLE);
+//                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
                 break;
             case PANORAMA_RECORD_MODE.MODE_SHORT:
                 if (bottomCountDownLine.getVisibility() != View.VISIBLE) {
@@ -1205,8 +1234,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     countDownAnimator.setInterpolator(new LinearInterpolator());
                     countDownAnimator.addUpdateListener(animation -> {
                         float sec = (float) animation.getAnimatedValue();
-
-                        bottomPanelSwitcherItem2Information.setText((int) (8.0f * sec + 0.5f) + "S");
+                        showBottomPanelInformation((int) (8.0f * sec + 0.5f) + "S", false);
+//                        bottomPanelSwitcherItem2Information.setText((int) (8.0f * sec + 0.5f) + "S");
                         if (sec == 0) {
 //                            presenter.shouldRefreshUI(false);
                             RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
@@ -1217,9 +1246,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 }
                 break;
             case MODE_LIVE: {
-                bottomPanelSwitcherItem2Information.setText(TimeUtils.getHHMMSS(offset * 1000L));
                 int v = bottomPanelSwitcherItem2DotIndicator.getVisibility();
-                bottomPanelSwitcherItem2DotIndicator.setVisibility(v == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+                showBottomPanelInformation(TimeUtils.getHHMMSS(offset * 1000L), v != View.VISIBLE);
+//                bottomPanelSwitcherItem2Information.setText(TimeUtils.getHHMMSS(offset * 1000L));
+//                int v = bottomPanelSwitcherItem2DotIndicator.getVisibility();
+//                bottomPanelSwitcherItem2DotIndicator.setVisibility(v == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
             }
             break;
             default:
