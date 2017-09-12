@@ -790,11 +790,11 @@
             android:name=".n.view.panorama.LiveSettingActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".support.oauth2.OauthActivity">
-            <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+            <!--&lt;!&ndash;<action android:name="android.intent.action.MAIN" />&ndash;&gt;-->
 
-            <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--&lt;!&ndash;<category android:name="android.intent.category.LAUNCHER" />&ndash;&gt;-->
+            <!--</intent-filter>-->
         </activity>
     </application>
 
