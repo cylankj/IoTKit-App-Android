@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
@@ -51,6 +53,7 @@ import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -61,6 +64,7 @@ import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,6 +77,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -198,12 +203,52 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
 
+        svSettingDeviceAp.setVisibility(JFGRules.isPan720(device.getPid()) || BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         initBackListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateHotSpotConnection();
+    }
+
+    private void updateHotSpotConnection() {
+        //720设备
+        final Device device = basePresenter.getDevice();
+        if (!JFGRules.isPan720(device.pid)) return;
+        //1.系统热点开启，2.读取硬件设备描述文件，过滤。
+        boolean isWifiApEnabled = NetUtils.isWifiApEnabled();
+        if (!isWifiApEnabled) return;
+        Subscription ssu = Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .map(s -> {
+                    ArrayList<NetUtils.ClientScanResult> list = NetUtils.getClientList(true, 1000);
+                    if (ListUtils.isEmpty(list)) return null;
+                    //设备的mac
+                    final String mac = device.$(202, "");
+                    for (NetUtils.ClientScanResult ret : list) {
+                        if (TextUtils.equals(mac.toLowerCase(), ret.getHWAddr().toLowerCase())) {
+                            return ret;
+                        }
+                    }
+                    return null;
+                })
+                .filter(ret -> ret != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    WifiConfiguration netConfig = NetUtils.getWifiApConfiguration();
+                    if (netConfig == null) return;
+                    AppLogger.d("netConfig:" + new Gson().toJson(netConfig));
+                    svSettingDeviceAp.setTvSubTitle(netConfig.SSID);
+                }, AppLogger::e);
+        basePresenter.addSub(ssu, "ssu");
     }
 
     @Override
