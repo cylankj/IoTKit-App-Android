@@ -169,7 +169,10 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
         // 6.0-7.1
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             //7.1 以上需要 手工设置
-            jump2HotSpotSettings()
+            AlertDialogManager.getInstance().showDialog(this, "7.1NotAuto", getString(R.string.HOTSPOT_NOTAUTO_OPEN_POP),
+                    getString(R.string.OK), { _, _ ->
+                jump2HotSpotSettings()
+            }, getString(R.string.CANCEL), null)
             return true
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1
@@ -185,8 +188,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
     fun jump2HotSpotSettings() {
         //7.1手机需要权限 WRITE_SETTINGS权限
         val intent = Intent("com.android.settings.TetherSettings")
-        intent.setClassName("com.android.settings",
-                "com.android.settings.TetherSettings")
+        intent.setClassName("com.android.settings", "com.android.settings.TetherSettings")
         val cName: ComponentName = intent.resolveActivity(packageManager)
         if (cName != null && !TextUtils.isEmpty(cName.packageName)) {
             //got it
