@@ -17,15 +17,18 @@
         android:padding="@dimen/y5">
 
         <EditText
+            android:id="@+id/setting_weibo_description"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@null"
             android:gravity="start|top"
             android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
+            android:maxEms="110"
             android:textSize="@dimen/sp14" />
 
         <TextView
+            android:id="@+id/setting_weibo_description_remain_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
@@ -37,12 +40,13 @@
 
 
     <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/setting_weibo_account_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y20"
         android:background="@color/color_white"
         app:sv_sub_title="Jane"
-        app:sv_title="@string/LIVE_PLATFORM_FACEBOOK"
+        app:sv_title="@string/LIVE_PLATFORM_WEIBO"
         app:sv_v_divider="true" />
 
 </LinearLayout>

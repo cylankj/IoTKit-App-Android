@@ -309,7 +309,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/y15"
                     android:layout_marginStart="@dimen/y15"
-                    android:drawableStart="@drawable/panorama_redording_red_dot"
                     android:gravity="center"
                     android:maxLines="1"
                     android:text="ddddddddddddddddddddddddddddddddddddddd"

@@ -59,7 +59,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
             }
             2 -> {
                 //weibo
-
+                PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION, weiboFragment.getWeiboLiveDescription())
             }
             3 -> {
                 //rtmp

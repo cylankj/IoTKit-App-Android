@@ -393,15 +393,22 @@ public class YouTubeApi {
     }
 
     public interface LiveEvent {
+
+        boolean hasFinished();
+
         void execute() throws Exception;
 
         void cancel();
+
+        void  setTimeout(long timeout);
     }
 
     public static class YoutubeStopEvent implements LiveEvent {
 
         private YouTube youtube;
         private String broadcastId;
+        private volatile boolean hasFinished = false;
+        private long timeout;
 
         public YoutubeStopEvent(YouTube youTube, String broadcastId) {
             this.youtube = youTube;
@@ -409,15 +416,39 @@ public class YouTubeApi {
         }
 
         @Override
+        public boolean hasFinished() {
+            return hasFinished;
+        }
+
+        @Override
         public void execute() throws Exception {
-            Transition transitionRequest = youtube.liveBroadcasts().transition(
-                    "completed", broadcastId, "status");
-            transitionRequest.execute();
+            AppLogger.w("正在结束 youtubu 直播,id 为:" + broadcastId);
+            long start = SystemClock.currentThreadTimeMillis();
+            LiveBroadcastListResponse response = youtube.liveBroadcasts().list("id,status").setId(broadcastId).execute();
+            if (response != null && response.getItems().size() > 0) {
+                LiveBroadcast broadcast = response.getItems().get(0);
+                AppLogger.w("正在查询当前直播状态,只有正在直播中的 broadcast 才能结束" + broadcast.toPrettyString());
+                if ("live".equals(broadcast.getStatus().getLifeCycleStatus())) {
+                    Transition transitionRequest = youtube.liveBroadcasts().transition(
+                            "completed", broadcastId, "status");
+                    LiveBroadcast execute = transitionRequest.execute();
+                    AppLogger.w("执行结果为:" + execute.toPrettyString());
+                    hasFinished = true;
+                    return;
+                }
+            }
+            hasFinished = true;
+            AppLogger.w("还有这种骚操作?");
         }
 
         @Override
         public void cancel() {
+            hasFinished = true;
+        }
 
+        @Override
+        public void setTimeout(long timeout) {
+            this.timeout=timeout;
         }
     }
 
@@ -432,6 +463,11 @@ public class YouTubeApi {
             this.youtube = youtube;
             this.broadcastId = broadcastId;
             this.boundStreamId = boundStreamId;
+        }
+
+        @Override
+        public boolean hasFinished() {
+            return finished;
         }
 
         public void execute() throws Exception {
@@ -461,11 +497,14 @@ public class YouTubeApi {
                 String status = broadcast.getStatus().getLifeCycleStatus();
                 if ("live".equals(status)) {
                     AppLogger.w("当前已经是直播状态了,直接返回就行了");
+                    finished = true;
                     return;
                 } else if ("complete".equals(status)) {
+                    finished = true;
                     throw new IllegalArgumentException("当前直播已结束,不可再直播");
                 }
             } else {
+                finished = true;
                 throw new IllegalArgumentException("当前频道不存在");
             }
             boolean hasChangeToTesting = false;
@@ -480,6 +519,7 @@ public class YouTubeApi {
                 AppLogger.w("YOUTUBE:切换 Transition 到 testing" + JacksonFactory.getDefaultInstance().toPrettyString(broadcast));
                 if (!broadcast.getStatus().getLifeCycleStatus().equals("testStarting") && !broadcast.getStatus().getLifeCycleStatus().equals("testing")) {
                     AppLogger.w("YOUTUBE:testStarting 失败了");
+                    finished = true;
                     return;
                 }
             }
@@ -501,6 +541,7 @@ public class YouTubeApi {
                 AppLogger.w("YOUTUBE:切换 Transition 到 Live" + JacksonFactory.getDefaultInstance().toPrettyString(execute));
                 if (execute == null || (!execute.getStatus().getLifeCycleStatus().equals("liveStarting") && !execute.getStatus().getLifeCycleStatus().equals("live"))) {
                     AppLogger.w("YOUTUBE:liveStarting 失败");
+                    finished = true;
                     return;
                 }
             }
@@ -513,11 +554,12 @@ public class YouTubeApi {
                 if (list != null && list.size() > 0 && list.get(0).getStatus().getLifeCycleStatus().contains("live")) {
                     hasChangeToActive = true;
                     AppLogger.w("YOUTUBE:直播状态已经切换到激活状态了,可以查看直播了");
+                    finished = true;
                 } else {
                     SystemClock.sleep(2000);
                 }
             }
-
+            finished = true;
         }
 
         public void cancel() {
@@ -525,6 +567,11 @@ public class YouTubeApi {
             youtube = null;
             broadcastId = null;
             boundStreamId = null;
+        }
+
+        @Override
+        public void setTimeout(long timeout) {
+
         }
     }
 

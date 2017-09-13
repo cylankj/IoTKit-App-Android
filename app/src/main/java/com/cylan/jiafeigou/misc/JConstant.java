@@ -175,6 +175,9 @@ public class JConstant {
     public static final String WEIBO_PREF_CONFIGURE = "WEIBO_PREF_CONFIGURE";
     public static final String RTMP_PREF_CONFIGURE = "RTMP_PREF_CONFIGURE";
 
+    public static final String WEIBO_PREF_DESCRIPTION = "WEIBO_PREF_DESCRIPTION";
+    public static final String OPEN_LOGIN_MAP = "OPEN_LOGIN_MAP";
+
 
     public static String getAIText(int[] objects) {
         StringBuilder result = new StringBuilder();

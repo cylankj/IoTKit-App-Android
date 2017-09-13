@@ -128,6 +128,10 @@ public class SettingItemView0 extends RelativeLayout {
         return tvTitle.getText();
     }
 
+    public void setTitle(CharSequence title) {
+        this.tvTitle.setText(title);
+    }
+
     public void showRedHint(boolean show) {
         imgvRedHint.setVisibility(show ? VISIBLE : GONE);
     }

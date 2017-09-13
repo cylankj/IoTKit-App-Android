@@ -71,6 +71,7 @@ public final class BaseInitializationManager {
     private BaseForwardHelper forwardHelper;
     private IProperty iProperty;
     private boolean hasInitFinished = false;
+    private UMShareConfig config;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -165,12 +166,17 @@ public final class BaseInitializationManager {
                 "https://api.weibo.com/oauth2/default.html");
         PlatformConfig.setTwitter(PackageUtils.getMetaString(ContextUtils.getContext(), "TWITTER_APP_KEY"),
                 PackageUtils.getMetaString(ContextUtils.getContext(), "TWITTER_APP_SECRET"));
-        UMShareConfig config = new UMShareConfig();
+        config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);
         config.isOpenShareEditActivity(true);
         config.setSinaAuthType(UMShareConfig.AUTH_TYPE_SSO);
         config.setFacebookAuthType(UMShareConfig.AUTH_TYPE_SSO);
         UMShareAPI.get(appContext).setShareConfig(config);
+    }
+
+
+    public UMShareConfig getConfig() {
+        return config;
     }
 
     private void initDeviceInformationFetcher() {

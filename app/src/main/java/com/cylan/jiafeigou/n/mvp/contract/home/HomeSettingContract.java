@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
+import android.app.Activity;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -68,7 +70,7 @@ public interface HomeSettingContract {
          */
         Subscription getAccountInfo();
 
-        void logOut(String account);
+        void logOut(String account, Activity activity);
     }
 
 }
