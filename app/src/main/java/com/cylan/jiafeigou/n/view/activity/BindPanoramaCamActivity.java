@@ -163,7 +163,9 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
-
+        if (getIntent().getBooleanExtra(JConstant.KEY_720_CONFIG_HOT_SPOT, false)) {
+            finish();
+        }
     }
 
     @OnClick(R.id.iv_explain_gray)

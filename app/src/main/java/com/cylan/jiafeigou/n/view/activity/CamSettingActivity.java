@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -51,6 +52,7 @@ import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -61,6 +63,7 @@ import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,6 +76,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -198,12 +202,52 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
 
+        svSettingDeviceAp.setVisibility(JFGRules.isPan720(device.getPid()) ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         initBackListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateHotSpotConnection();
+    }
+
+    private void updateHotSpotConnection() {
+        //720设备
+        final Device device = basePresenter.getDevice();
+        if (!JFGRules.isPan720(device.pid)) return;
+        //1.系统热点开启，2.读取硬件设备描述文件，过滤。
+        boolean isWifiApEnabled = NetUtils.isWifiApEnabled();
+        if (!isWifiApEnabled) return;
+        Subscription ssu = Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .map(s -> {
+                    ArrayList<NetUtils.ClientScanResult> list = NetUtils.getClientList(true, 1000);
+                    if (ListUtils.isEmpty(list)) return null;
+                    //设备的mac
+                    final String mac = device.$(202, "");
+                    for (NetUtils.ClientScanResult ret : list) {
+                        if (TextUtils.equals(mac.toLowerCase(), ret.getHWAddr().toLowerCase())) {
+                            return ret;
+                        }
+                    }
+                    return null;
+                })
+                .filter(ret -> ret != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    WifiConfiguration netConfig = NetUtils.getWifiApConfiguration();
+                    if (netConfig == null) return;
+                    AppLogger.d("netConfig:" + new Gson().toJson(netConfig));
+                    svSettingDeviceAp.setTvSubTitle(netConfig.SSID);
+                }, AppLogger::e);
+        basePresenter.addSub(ssu, "ssu");
     }
 
     @Override
@@ -495,8 +539,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         return getString(R.string.SD_NORMAL);
     }
 
-
     private void handleJumpToConfig(boolean justSend) {
+        handleJumpToConfig(justSend, false);
+    }
+
+    /**
+     * @param justSend
+     * @param justConnectAp 720设备，配置手机热点时，需要停止下一步
+     */
+    private void handleJumpToConfig(boolean justSend, boolean justConnectAp) {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) {
             finishExt();
@@ -543,6 +594,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 }
                 if (JFGRules.isPan720(device.pid)) {
                     intent.putExtra("just_config", true);
+                    intent.putExtra(JConstant.KEY_720_CONFIG_HOT_SPOT, justConnectAp);
                 }
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 startActivity(intent);
@@ -601,22 +653,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             view.setEnabled(enable);
         }
     }
-
-
-//    private void initInfoDetailFragment() {
-//        //should load
-//        if (informationWeakReference == null || informationWeakReference.get() == null) {
-//            informationWeakReference = new WeakReference<>(DeviceInfoDetailFragment.newInstance(null));
-//        }
-//    }
-
-
-//    private void initVideoAutoRecordFragment() {
-//        //should load
-//        if (videoAutoRecordFragmentWeakReference == null || videoAutoRecordFragmentWeakReference.get() == null) {
-//            videoAutoRecordFragmentWeakReference = new WeakReference<>(VideoAutoRecordFragment.newInstance(null));
-//        }
-//    }
 
     private void initFirmwareHint(Device device) {
         try {
@@ -1176,27 +1212,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             startActivity(new Intent(this, ApSettingActivity.class)
                     .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
         } else {
-            final DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-            if (JFGRules.isDeviceOnline(net)) {
-                //客户端与设备在同一局域网下。
-                String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-                String remoteSSid = net.ssid;
-                if (!TextUtils.isEmpty(localSSid) && TextUtils.equals(localSSid, remoteSSid)) {
-                    //bingo
-                    startActivity(new Intent(this, ApSettingActivity.class)
-                            .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
-                } else {
-                    AlertDialogManager.getInstance().showDialog(this, "remoteSSid" + remoteSSid,
-                            getString(R.string.setwifi_check, remoteSSid),
-                            getString(R.string.OK), (dialog, which) -> {
-                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            }, getString(R.string.CANCEL), null);
-                }
-            } else {
-                //离线
-                handleJumpToConfig(true);
-            }
+            handleJumpToConfig(true, true);
         }
-
     }
 }

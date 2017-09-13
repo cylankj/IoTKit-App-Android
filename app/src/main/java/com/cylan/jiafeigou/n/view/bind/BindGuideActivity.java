@@ -11,7 +11,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -167,29 +166,36 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void tryLoadConfigApFragment() {
-        final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-        if (info == null || !ApFilter.accept(info.getSSID()) || NetUtils.getNetType(ContextUtils.getContext()) != ConnectivityManager.TYPE_WIFI) {
-            AppLogger.i("bind: " + info);
-            return;
-        }
+        try {
+            final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+            if (info == null || !ApFilter.accept(info.getSSID()) || NetUtils.getNetType(ContextUtils.getContext()) != ConnectivityManager.TYPE_WIFI) {
+                AppLogger.i("bind: " + info);
+                return;
+            }
+            if (getIntent().getBooleanExtra(JConstant.KEY_720_CONFIG_HOT_SPOT, false)) {
+                finishExt();//720
+                return;
+            }
 
-        String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
-        if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), getUuid())
-                && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
-            Bundle bundle = new Bundle();
-            bundle.putString("PanoramaConfigure", panoramaConfigure);
-            bundle.putBoolean("Success", true);
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
-            ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), newInstance, android.R.id.content);
-        } else {
-            Intent intent = getIntent();
-            intent.setClass(this, ConfigWifiActivity.class);
-            intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
-            startActivity(intent);
-            finish();
+            String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+            if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), getUuid())
+                    && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
+                Bundle bundle = new Bundle();
+                bundle.putString("PanoramaConfigure", panoramaConfigure);
+                bundle.putBoolean("Success", true);
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+                ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
+                ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), newInstance, android.R.id.content);
+            } else {
+                Intent intent = getIntent();
+                intent.setClass(this, ConfigWifiActivity.class);
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+                startActivity(intent);
+                finish();
+            }
+        } finally {
+            if (autoBack != null) autoBack.cancel();
         }
-        if (autoBack != null) autoBack.cancel();
     }
 
     @OnClick(R.id.iv_explain_gray)

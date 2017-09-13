@@ -8,7 +8,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,6 +31,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static android.content.Context.WIFI_SERVICE;
 
 /**
  * 网络工具类
@@ -623,8 +623,8 @@ public class NetUtils {
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
             //from system_settings_source
-            netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
-            netConfig.allowedKeyManagement.set(4);
+            // netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+            //netConfig.allowedKeyManagement.set(4);
         }
         try {
 //
@@ -646,18 +646,38 @@ public class NetUtils {
 
             Method setWifiApMethod = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
             boolean apstatus = (Boolean) setWifiApMethod.invoke(wifiManager, netConfig, true);
-            Method isWifiApEnabledmethod = wifiManager.getClass().getMethod("isWifiApEnabled");
-            while (!(Boolean) isWifiApEnabledmethod.invoke(wifiManager)) {
-            }
-            Method getWifiApStateMethod = wifiManager.getClass().getMethod("getWifiApState");
-            int apstate = (Integer) getWifiApStateMethod.invoke(wifiManager);
-            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
-            netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
+//            Method isWifiApEnabledMethod = wifiManager.getClass().getMethod("isWifiApEnabled");
+//            while (!(Boolean) isWifiApEnabledMethod.invoke(wifiManager)) {
+//            }
+//            Method getWifiApStateMethod = wifiManager.getClass().getMethod("getWifiApState");
+//            int apstate = (Integer) getWifiApStateMethod.invoke(wifiManager);
+//            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
+//            netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
             Log.e("CLIENT", "\nSSID:" + netConfig.SSID + "\nPassword:" + netConfig.preSharedKey + "\n");
             return true;
         } catch (Exception e) {
             Log.e("ConfigAp", "", e);
             return false;
+        }
+    }
+
+    public static boolean isWifiApEnabled() {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
+        try {
+            Method isWifiApEnabledMethod = wifiManager.getClass().getMethod("isWifiApEnabled");
+            return (Boolean) isWifiApEnabledMethod.invoke(wifiManager);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static WifiConfiguration getWifiApConfiguration() {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
+        try {
+            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
+            return (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
+        } catch (Exception e) {
+            return null;
         }
     }
 

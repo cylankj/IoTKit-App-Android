@@ -399,9 +399,6 @@ dependencies {
 
     //youtube-live-api
     compile 'com.google.api-client:google-api-client:1.22.0'
-//    compile 'net.openid:appauth:0.2.0'
-    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0'
-
     //youtube rtmp 配置 配置
     compile 'com.google.android.gms:play-services-plus:+'
     compile 'com.google.android.gms:play-services-auth:+'
@@ -420,7 +417,6 @@ dependencies {
     compile 'pub.devrel:easypermissions:0.4.3'
     compile 'com.androidkun:XTabLayout:1.1.3'
     compile 'com.github.worker8:RadioGroupPlus:v1.0.1'
-    compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'net.openid:appauth:0.2.0'
 }
 
