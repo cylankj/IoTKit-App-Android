@@ -203,7 +203,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
 
-        svSettingDeviceAp.setVisibility(JFGRules.isPan720(device.getPid()) || BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
+        svSettingDeviceAp.setVisibility(JFGRules.isPan720(device.getPid()) ? View.VISIBLE : View.GONE);
 
     }
 

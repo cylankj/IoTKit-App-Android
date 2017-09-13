@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.utils.*
 import com.cylan.jiafeigou.widget.LoadingDialog
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_ap_setting.*
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -97,8 +98,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             ToastUtil.showToast("设计缺陷:确保sim正常使用")
             val fullCid: String = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID)
             LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot))
-//            basePresenter.addSubscription("getDevicePortrait",
-            UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
+            val s: Subscription = UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
                     .flatMap { r -> UdpDevice.sendWifiInfo(r, ssid, pwd, 3, UdpConstant.IP, UdpConstant.PORT) }
                     .subscribeOn(Schedulers.newThread())
                     .delay(500, TimeUnit.MILLISECONDS)
@@ -114,7 +114,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                     .subscribe({
                         r ->
                         Log.d("...", ",发送wifi配置成功，即将开启热点,,...:" + Gson().toJson(r))
-                        LoadingDialog.dismissLoading()
+//                        LoadingDialog.dismissLoading()//等待成功
                     }, { r ->
                         val result: String = r.localizedMessage
                         if (result.contains("ingFailed")) {
@@ -127,6 +127,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                         ToastUtil.showToast(getString(R.string.Start_Failed))
                         Log.d("...", ",,,...:" + r)
                     })
+            basePresenter.addSubscription("getDevicePortrait", s)
         }
         //默认显示
         ViewUtils.showPwd(et_ap_pwd, true)

@@ -623,8 +623,8 @@ public class NetUtils {
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
             //from system_settings_source
-            netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
-            netConfig.allowedKeyManagement.set(4);
+            // netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+            //netConfig.allowedKeyManagement.set(4);
         }
         try {
 //
@@ -646,13 +646,13 @@ public class NetUtils {
 
             Method setWifiApMethod = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
             boolean apstatus = (Boolean) setWifiApMethod.invoke(wifiManager, netConfig, true);
-            Method isWifiApEnabledMethod = wifiManager.getClass().getMethod("isWifiApEnabled");
-            while (!(Boolean) isWifiApEnabledMethod.invoke(wifiManager)) {
-            }
-            Method getWifiApStateMethod = wifiManager.getClass().getMethod("getWifiApState");
-            int apstate = (Integer) getWifiApStateMethod.invoke(wifiManager);
-            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
-            netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
+//            Method isWifiApEnabledMethod = wifiManager.getClass().getMethod("isWifiApEnabled");
+//            while (!(Boolean) isWifiApEnabledMethod.invoke(wifiManager)) {
+//            }
+//            Method getWifiApStateMethod = wifiManager.getClass().getMethod("getWifiApState");
+//            int apstate = (Integer) getWifiApStateMethod.invoke(wifiManager);
+//            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
+//            netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
             Log.e("CLIENT", "\nSSID:" + netConfig.SSID + "\nPassword:" + netConfig.preSharedKey + "\n");
             return true;
         } catch (Exception e) {
