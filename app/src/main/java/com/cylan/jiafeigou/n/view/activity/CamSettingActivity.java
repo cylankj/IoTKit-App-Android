@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
@@ -540,8 +539,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         return getString(R.string.SD_NORMAL);
     }
 
-
     private void handleJumpToConfig(boolean justSend) {
+        handleJumpToConfig(justSend, false);
+    }
+
+    /**
+     * @param justSend
+     * @param justConnectAp 720设备，配置手机热点时，需要停止下一步
+     */
+    private void handleJumpToConfig(boolean justSend, boolean justConnectAp) {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) {
             finishExt();
@@ -588,6 +594,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 }
                 if (JFGRules.isPan720(device.pid)) {
                     intent.putExtra("just_config", true);
+                    intent.putExtra(JConstant.KEY_720_CONFIG_HOT_SPOT, justConnectAp);
                 }
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 startActivity(intent);
@@ -646,22 +653,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             view.setEnabled(enable);
         }
     }
-
-
-//    private void initInfoDetailFragment() {
-//        //should load
-//        if (informationWeakReference == null || informationWeakReference.get() == null) {
-//            informationWeakReference = new WeakReference<>(DeviceInfoDetailFragment.newInstance(null));
-//        }
-//    }
-
-
-//    private void initVideoAutoRecordFragment() {
-//        //should load
-//        if (videoAutoRecordFragmentWeakReference == null || videoAutoRecordFragmentWeakReference.get() == null) {
-//            videoAutoRecordFragmentWeakReference = new WeakReference<>(VideoAutoRecordFragment.newInstance(null));
-//        }
-//    }
 
     private void initFirmwareHint(Device device) {
         try {
@@ -1221,27 +1212,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             startActivity(new Intent(this, ApSettingActivity.class)
                     .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
         } else {
-            final DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-            if (JFGRules.isDeviceOnline(net)) {
-                //客户端与设备在同一局域网下。
-                String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-                String remoteSSid = net.ssid;
-                if (!TextUtils.isEmpty(localSSid) && TextUtils.equals(localSSid, remoteSSid)) {
-                    //bingo
-                    startActivity(new Intent(this, ApSettingActivity.class)
-                            .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
-                } else {
-                    AlertDialogManager.getInstance().showDialog(this, "remoteSSid" + remoteSSid,
-                            getString(R.string.setwifi_check, remoteSSid),
-                            getString(R.string.OK), (dialog, which) -> {
-                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            }, getString(R.string.CANCEL), null);
-                }
-            } else {
-                //离线
-                handleJumpToConfig(true);
-            }
+            handleJumpToConfig(true, true);
         }
-
     }
 }
