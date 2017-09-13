@@ -284,7 +284,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 mView.showBottomPanelInformation(context.getString(R.string.LIVE_CREATING, getPlatformString(context, 3)), false);
                 String defaultContent = context.getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT);
                 String content = PreferencesUtils.getString(JConstant.WEIBO_PREF_DESCRIPTION, defaultContent);
-                WeiboLiveCreate weiboLiveCreate = new WeiboLiveCreate(mView.getAppContext(), PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"), null);
+                WeiboLiveCreate weiboLiveCreate = new WeiboLiveCreate(mView.getAppContext(), PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"), oauth2AccessToken);
                 weiboLiveCreate.setAc(mView.getActivityContext());
                 weiboLiveCreate.setTitle(defaultContent);
                 weiboLiveCreate.setHeight("1080");
@@ -391,6 +391,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRtmpAddressError();
                     } else if (e instanceof WeiboException) {
 
+                    } else {
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     }
                     AppLogger.w(MiscUtils.getErr(e));
                 });

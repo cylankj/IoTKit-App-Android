@@ -245,7 +245,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     WifiConfiguration netConfig = NetUtils.getWifiApConfiguration();
                     if (netConfig == null) return;
                     AppLogger.d("netConfig:" + new Gson().toJson(netConfig));
-                    svSettingDeviceAp.setTvSubTitle(netConfig.SSID);
+                    svSettingDeviceAp.setSubTitle(netConfig.SSID);
                 }, AppLogger::e);
         basePresenter.addSub(ssu, "ssu");
     }

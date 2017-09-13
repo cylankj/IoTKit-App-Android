@@ -71,7 +71,8 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
             val expiration = fromJson["expires_in"] as Long
             if (expiration - System.currentTimeMillis() <= 0) {
                 //过期了
-
+                account = null
+                PreferencesUtils.remove(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.SINA.toString())
             } else {
                 accessToken = fromJson["accessToken"] as String
                 account = fromJson["name"] as String

@@ -97,14 +97,10 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             }
             ToastUtil.showToast("设计缺陷:确保sim正常使用")
             val fullCid: String = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID)
-<<<<<<< HEAD
             LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot), true)
 //            basePresenter.addSubscription("getDevicePortrait",
             UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
-=======
-            LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot))
             val s: Subscription = UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
->>>>>>> hunt
                     .flatMap { r -> UdpDevice.sendWifiInfo(r, ssid, pwd, 3, UdpConstant.IP, UdpConstant.PORT) }
                     .subscribeOn(Schedulers.newThread())
                     .delay(500, TimeUnit.MILLISECONDS)
