@@ -46,15 +46,6 @@
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp15" />
 
-            <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/sv_setting_device_ap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                hunt:sv_image_src="@drawable/setting_icon_information"
-                hunt:sv_sub_title="@string/EQUIPMENT_INFO"
-                hunt:sv_title="@string/EQUIPMENT_INFO"
-                hunt:sv_v_divider="true"
-                hunt:sv_v_image_show="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_device_detail"
@@ -159,6 +150,16 @@
                 android:clickable="true"
                 hunt:sv_image_src="@drawable/setting_icon_ap"
                 hunt:sv_title="@string/Tap1_OutdoorMode"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_ap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_image_src="@drawable/setting_icon_mobile_hotspot"
+                hunt:sv_sub_title="@string/Tap1_Setting_Unopened"
+                hunt:sv_title="@string/SETTINGS_MOBILE_HOTSPOT"
                 hunt:sv_v_divider="true"
                 hunt:sv_v_image_show="true" />
 

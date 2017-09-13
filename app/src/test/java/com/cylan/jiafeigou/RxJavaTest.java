@@ -19,6 +19,7 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 17-2-17.
@@ -202,16 +203,38 @@ public class RxJavaTest {
 
     @Test
     public void testDPWrapper() throws Exception {
-        MessageBufferPacker messageBufferPacker = MessagePack.newDefaultBufferPacker();
-        messageBufferPacker.packArrayHeader(3)
-                .packLong(0).packLong(0)
-                .packArrayHeader(3)
-                .packInt(1).packInt(4).packInt(3);
-        byte[] byteArray = messageBufferPacker.toByteArray();
-        String toJson = MessagePack.newDefaultUnpacker(byteArray).unpackValue().toJson();
-        JsonArray jsonElements = new Gson().fromJson(toJson, JsonArray.class);
-//        JsonArray objects = DPIDCameraObjectDetect.INSTANCE.getObjects(jsonElements);
+//        MessageBufferPacker messageBufferPacker = MessagePack.newDefaultBufferPacker();
+//        messageBufferPacker.packArrayHeader(3)
+//                .packLong(0).packLong(0)
+//                .packArrayHeader(3)
+//                .packInt(1).packInt(4).packInt(3);
+//        byte[] byteArray = messageBufferPacker.toByteArray();
+//        String toJson = MessagePack.newDefaultUnpacker(byteArray).unpackValue().toJson();
+//        JsonArray jsonElements = new Gson().fromJson(toJson, JsonArray.class);
+////        JsonArray objects = DPIDCameraObjectDetect.INSTANCE.getObjects(jsonElements);
+//
+////        System.out.println(objects);
 
-//        System.out.println(objects);
+        Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<String, Object>() {
+                    @Override
+                    public Object call(String s) {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                })
+                .timeout(1,TimeUnit.SECONDS)
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        System.out.println("finish");
+                    }
+                });
+        Thread.sleep(100000);
     }
 }

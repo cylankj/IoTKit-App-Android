@@ -49,7 +49,7 @@ public class OauthActivity extends Activity {
         builder.setScopes("profile");
         AuthorizationRequest request = builder.build();
         AuthorizationService authorizationService = new AuthorizationService(getApplicationContext());
-        String action = "OauthActivity.HANDLE_AUTHORIZATION_RESPONSE";
+        String action = "com.google.codelabs.appauth.HANDLE_AUTHORIZATION_RESPONSE";
         Intent postAuthorizationIntent = new Intent(action);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), request.hashCode(), postAuthorizationIntent, 0);
         authorizationService.performAuthorizationRequest(request, pendingIntent);
@@ -64,7 +64,6 @@ public class OauthActivity extends Activity {
         AuthorizationResponse response = AuthorizationResponse.fromIntent(intent);
         AuthorizationException error = AuthorizationException.fromIntent(intent);
         final AuthState authState = new AuthState(response, error);
-
         if (response != null) {
             Log.i(LOG_TAG, String.format("Handled Authorization Response %s ", authState.toJsonString()));
             AuthorizationService service = new AuthorizationService(this);
@@ -76,7 +75,6 @@ public class OauthActivity extends Activity {
                     } else {
                         if (tokenResponse != null) {
                             authState.update(tokenResponse, exception);
-
                             persistAuthState(authState);
                             Log.i(LOG_TAG, String.format("Token Response [ Access Token: %s, ID Token: %s ]", tokenResponse.accessToken, tokenResponse.idToken));
                         }
@@ -112,7 +110,7 @@ public class OauthActivity extends Activity {
         if (intent != null) {
             String action = intent.getAction();
             switch (action) {
-                case "OauthActivity.HANDLE_AUTHORIZATION_RESPONSE":
+                case "com.google.codelabs.appauth.HANDLE_AUTHORIZATION_RESPONSE":
                     if (!intent.hasExtra(USED_INTENT)) {
                         handleAuthorizationResponse(intent);
                         intent.putExtra(USED_INTENT, true);

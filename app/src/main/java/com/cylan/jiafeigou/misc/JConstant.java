@@ -479,4 +479,6 @@ public class JConstant {
     public static final String KEY_ANIM_SUB_TITLE = "KEY_ANIM_SUB_TITLE";
     public static final String KEY_NEXT_STEP = "NEXT_STEP";
 
+
+    public static final String KEY_720_CONFIG_HOT_SPOT = "720_config_ap";
 }
