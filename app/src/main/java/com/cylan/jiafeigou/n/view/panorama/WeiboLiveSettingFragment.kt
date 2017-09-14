@@ -81,6 +81,11 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        account = account
+    }
+
     @OnTextChanged(R.id.setting_weibo_description)
     fun onDescriptionChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         setting_weibo_description_remain_count.text = "${110 - s.length}"

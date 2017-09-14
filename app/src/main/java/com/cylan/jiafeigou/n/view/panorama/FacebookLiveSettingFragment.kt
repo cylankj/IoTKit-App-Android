@@ -77,13 +77,18 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     override fun initViewAndListener() {
         super.initViewAndListener()
         setting_facebook_account_item.title = getString(R.string.LIVE_ACCOUNT, getString(R.string.LIVE_PLATFORM_FACEBOOK))
-        account = null
+
         val map = PreferencesUtils.getString(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.FACEBOOK.toString(), null)
         if (map != null) {
             val fromJson = Gson().fromJson(map, Map::class.java)
             account = fromJson["name"] as String
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        account = account
     }
 
     @OnClick(R.id.setting_facebook_permission)

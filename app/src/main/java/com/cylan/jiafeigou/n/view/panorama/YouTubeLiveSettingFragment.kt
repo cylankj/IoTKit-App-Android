@@ -119,6 +119,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     override fun onStart() {
         super.onStart()
+        account = account
         loadLiveBroadCast()
     }
 
