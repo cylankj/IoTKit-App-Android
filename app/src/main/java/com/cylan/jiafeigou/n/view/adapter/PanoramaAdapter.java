@@ -114,28 +114,29 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
 //        holder.setVisibility(R.id.iv_album_icon_720_camera, (item.location == 1 || item.location == 2) ? View.VISIBLE : View.GONE);
 
         holder.setVisibility(R.id.iv_album_icon_720_camera, View.GONE);
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
-        if (downloadInfo != null && downloadInfo.getState() == DownloadManager.FINISH) {
-            Glide.with(getContext())
-                    .load(downloadInfo.getTargetPath())
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .error(R.drawable.wonderful_pic_place_holder)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
-                        @Override
-                        protected void setResource(GlideDrawable resource) {
-                            view.setImageDrawable(resource);
-                            holder.setBackgroundResource(R.id.rl_album_bottom_shape, R.drawable.bottom_black_top_white_color);
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            holder.setBackgroundResource(R.id.rl_album_bottom_shape, android.R.color.transparent);
-                        }
-                    });
-        } else {
+        // TODO: 2017/9/14  如果设置了 GlideModule 则本地视频加载不出来,很奇怪,暂时没有解决办法,所有注释掉
+//        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
+//        if (downloadInfo != null && downloadInfo.getState() == DownloadManager.FINISH) {
+//            Glide.with(getContext())
+//                    .load(downloadInfo.getTargetPath())
+//                    .placeholder(R.drawable.wonderful_pic_place_holder)
+//                    .error(R.drawable.wonderful_pic_place_holder)
+//                    .centerCrop()
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
+//                        @Override
+//                        protected void setResource(GlideDrawable resource) {
+//                            view.setImageDrawable(resource);
+//                            holder.setBackgroundResource(R.id.rl_album_bottom_shape, R.drawable.bottom_black_top_white_color);
+//                        }
+//
+//                        @Override
+//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                            super.onLoadFailed(e, errorDrawable);
+//                            holder.setBackgroundResource(R.id.rl_album_bottom_shape, android.R.color.transparent);
+//                        }
+//                    });
+//        } else {
             Glide.with(getContext())
                     .load(new PanoramaThumbURL(uuid, item.fileName))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
@@ -155,7 +156,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                             holder.setBackgroundResource(R.id.rl_album_bottom_shape, android.R.color.transparent);
                         }
                     });
-        }
+//        }
         TextView view = holder.getView(R.id.tv_album_download_progress);
 
         decideDownload(item);//涉及到了公网,局域网,和移动网络,及照片视频不同的逻辑 放在 presenter 里做比较麻烦,直接放在 item来处理了
