@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.panorama
 
 import android.os.Bundle
 import android.widget.CompoundButton
+import android.widget.ScrollView
 import butterknife.OnCheckedChanged
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
@@ -9,7 +10,10 @@ import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil
+import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil
 import com.cylan.jiafeigou.utils.ViewUtils
+import kotlinx.android.synthetic.main.activity_live_setting.*
 import kotlinx.android.synthetic.main.layout_rtmp.*
 
 /**
@@ -26,7 +30,7 @@ class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-
+        initKeyBoard()
     }
 
     @OnCheckedChanged(R.id.rtmp_password_show)
@@ -41,6 +45,15 @@ class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
 
     fun getRtmpSecretKey(): String {
         return rtmp_et_miyao.text.trim().toString()
+    }
+
+    private fun initKeyBoard() {
+        KeyboardUtil.attach(activity, activity.panel_root, { isShowing ->
+            if (isShowing) {
+                activity.live_setting_scroller.fullScroll(ScrollView.FOCUS_DOWN)
+            }
+        })
+        KPSwitchConflictUtil.attach(activity.panel_root, rtmp_et_miyao)
     }
 
     companion object {

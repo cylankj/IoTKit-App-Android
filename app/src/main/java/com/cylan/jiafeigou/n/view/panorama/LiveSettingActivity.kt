@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
+import com.cylan.jiafeigou.utils.IMEUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_live_setting.*
@@ -87,6 +88,10 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        IMEUtils.hide(this)
+    }
 
     override fun onTabReselected(tab: XTabLayout.Tab?) {
 
