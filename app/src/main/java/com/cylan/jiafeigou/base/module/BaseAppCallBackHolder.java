@@ -201,7 +201,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller, false));
         try {
             String url = new JFGGlideURL(jfgDoorBellCaller.cid, jfgDoorBellCaller.time + ".jpg", jfgDoorBellCaller.regionType).toURL().toString();
-             BellPuller.getInstance().launchBellLive(jfgDoorBellCaller.cid, null, jfgDoorBellCaller.time);
+             BellPuller.getInstance().launchBellLive(jfgDoorBellCaller.cid, url, jfgDoorBellCaller.time);
             AppLogger.d("门铃截图地址:" + url);
         } catch (MalformedURLException e) {
             AppLogger.e(e);

@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
@@ -706,7 +707,14 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (resource != null && !resource.isRecycled())
+                            mBellLiveVideoPicture.setImageBitmap(resource);
+                    }
 
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        AppLogger.d("err:" + MiscUtils.getErr(e));
+                        super.onLoadFailed(e, errorDrawable);
                     }
                 });
     }
