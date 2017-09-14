@@ -24,13 +24,18 @@
         android:background="@color/color_white">
 
         <EditText
+            android:id="@+id/setting_rtmp_host"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
             android:gravity="start"
-            android:hint="rtmp://"
-            android:padding="@dimen/y15"
-            android:textColorHint="@color/color_cecece" />
+            android:hint="@string/LIVE_RTMP_HINT"
+            android:paddingEnd="@dimen/y15"
+            android:paddingStart="@dimen/y15"
+            android:paddingTop="@dimen/y5"
+            android:textColor="@color/color_666666"
+            android:textColorHint="@color/color_cecece"
+            android:textSize="@dimen/sp14" />
     </FrameLayout>
 
     <TextView
@@ -39,7 +44,7 @@
         android:layout_marginTop="@dimen/y20"
         android:paddingEnd="@dimen/y15"
         android:paddingStart="@dimen/y15"
-        android:text="@string/RTMP_SERVER_URL"
+        android:text="@string/RTMP_STREAM_KEY"
         android:textColor="@color/color_888888"
         android:textSize="@dimen/sp14" />
 
@@ -56,19 +61,25 @@
             android:layout_height="@dimen/y54"
             android:layout_toStartOf="@+id/rtmp_password_show"
             android:background="@null"
-            android:hint="请输入密钥"
-            android:padding="@dimen/y15"
-            android:textColorHint="@color/color_cecece" />
+            android:hint="@string/LIVE_RTMP_ENTER_KEY"
+            android:inputType="textPassword"
+            android:paddingStart="@dimen/y15"
+            android:textColor="@color/color_666666"
+            android:textColorHint="@color/color_cecece"
+            android:textSize="@dimen/sp14" />
 
-        <ImageView
+        <CheckBox
             android:id="@+id/rtmp_password_show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/y15"
-            android:layout_marginStart="@dimen/y15"
-            android:src="@drawable/icon_lock_noshow_password" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y7"
+            android:background="@drawable/icon_common_show_pwd_selector"
+            android:button="@null"
+            android:checked="false" />
 
     </RelativeLayout>
 </LinearLayout>

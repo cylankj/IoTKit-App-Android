@@ -47,8 +47,6 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         super.initViewAndListener()
         custom_toolbar.setBackAction { activity.onBackPressed() }
         custom_toolbar.setRightAction { createLiveEvent() }
-
-
     }
 
     private val title: String

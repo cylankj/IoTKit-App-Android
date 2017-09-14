@@ -172,11 +172,16 @@ public class JConstant {
 
     public static final String FACEBOOK_PREF_CONFIGURE = "FACEBOOK_PREF_CONFIGURE";
     public static final String YOUTUBE_PREF_CONFIGURE = "YOUTUBE_PREF_CONFIGURE";
-    public static final String WEIBO_PREF_CONFIGURE = "WEIBO_PREF_CONFIGURE";
+    public static final String WEIBO_PREF_LIVE_ID = "WEIBO_PREF_LIVE_ID";
     public static final String RTMP_PREF_CONFIGURE = "RTMP_PREF_CONFIGURE";
 
     public static final String WEIBO_PREF_DESCRIPTION = "WEIBO_PREF_DESCRIPTION";
     public static final String OPEN_LOGIN_MAP = "OPEN_LOGIN_MAP";
+    public static final String WEIBO_PREF_LIVE_URL = "WEIBO_PREF_LIVE_URL";
+    public static final String facebook_PREF_PERMISSION_KEY = "facebook_PREF_PERMISSION_KEY";
+
+
+
 
 
     public static String getAIText(int[] objects) {

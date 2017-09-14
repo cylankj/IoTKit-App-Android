@@ -155,9 +155,61 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         siv_mode_motion.setOnCheckedChangeListener(this::onSwitcherModeMotion);
 
         sivWatchVideoSwitcher.setOnCheckedChangeListener(this::clickWatchVideoSwitcher);
-
+        rlAlarmSettingContainer.setOnCheckedChangeListener(this::onCheckButtonChanged);
         onSDCardSync(status);
         onRecordWatcherSync(recordWatcher);
+    }
+
+    private void onCheckButtonChanged(RadioGroupPlus radioGroupPlus, int checkedId) {
+        switch (checkedId) {
+            case R.id.auto_record_mode_motion: {
+                siv_mode_motion.setRadioButtonChecked(false);
+                if (!hasSdcard()) {//先提示没有 sd卡再提示关闭移动侦测
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
+                    return;
+                }
+                if (!alarmDisable()) {
+                    openAlarm(0);
+                    return;
+                }
+                siv_mode_motion.setRadioButtonChecked(true);
+//                rbMotion.setChecked(true);
+                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                flag.value = 0;
+                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                siv_mode_24_hours.setRadioButtonChecked(false);
+                siv_mode_never.setRadioButtonChecked(false);
+            }
+            break;
+            case R.id.auto_record_mode_24_hours: {
+                siv_mode_24_hours.setRadioButtonChecked(false);
+                if (!hasSdcard()) {
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
+                    return;
+                }
+                siv_mode_24_hours.setRadioButtonChecked(true);
+                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                flag.value = 1;
+                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                siv_mode_motion.setRadioButtonChecked(false);
+                siv_mode_never.setRadioButtonChecked(false);
+            }
+            break;
+            case R.id.auto_record_mode_never: {
+                siv_mode_never.setRadioButtonChecked(false);
+                if (!hasSdcard()) {
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
+                    return;
+                }
+                siv_mode_never.setRadioButtonChecked(true);
+                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                flag.value = 2;
+                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                siv_mode_24_hours.setRadioButtonChecked(false);
+                siv_mode_motion.setRadioButtonChecked(false);
+            }
+            break;
+        }
     }
 
     private void onSwitcherModeMotion(CompoundButton button, boolean checked) {
@@ -216,52 +268,19 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @OnClick({R.id.lLayout_mode_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
     public void onClick(View view) {
+        int checkId = -1;
         switch (view.getId()) {
-            case R.id.lLayout_mode_motion: {
-                if (!hasSdcard()) {//先提示没有 sd卡再提示关闭移动侦测
-                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
-                    return;
-                }
-                if (!alarmDisable()) {
-                    openAlarm(0);
-                    return;
-                }
-                siv_mode_motion.setRadioButtonChecked(true);
-//                rbMotion.setChecked(true);
-                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
-                flag.value = 0;
-                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                siv_mode_24_hours.setRadioButtonChecked(false);
-                siv_mode_never.setRadioButtonChecked(false);
-            }
-            break;
-            case R.id.lLayout_mode_24_hours: {
-                if (!hasSdcard()) {
-                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
-                    return;
-                }
-                siv_mode_24_hours.setRadioButtonChecked(true);
-                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
-                flag.value = 1;
-                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                siv_mode_motion.setRadioButtonChecked(false);
-                siv_mode_never.setRadioButtonChecked(false);
-            }
-            break;
-            case R.id.lLayout_mode_never: {
-                if (!hasSdcard()) {
-                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
-                    return;
-                }
-                siv_mode_never.setRadioButtonChecked(true);
-                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
-                flag.value = 2;
-                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                siv_mode_24_hours.setRadioButtonChecked(false);
-                siv_mode_motion.setRadioButtonChecked(false);
-            }
-            break;
+            case R.id.lLayout_mode_motion:
+                checkId = R.id.auto_record_mode_motion;
+                break;
+            case R.id.lLayout_mode_24_hours:
+                checkId = R.id.auto_record_mode_24_hours;
+                break;
+            case R.id.lLayout_mode_never:
+                checkId = R.id.auto_record_mode_never;
+                break;
         }
+        onCheckButtonChanged(rlAlarmSettingContainer, checkId);
     }
 
     private void openAlarm(final int index) {

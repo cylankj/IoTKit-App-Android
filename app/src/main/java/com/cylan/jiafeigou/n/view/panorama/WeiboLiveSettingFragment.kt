@@ -68,7 +68,7 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
         val fromJson = Gson().fromJson(map, Map::class.java)
         if (fromJson != null) {
             //检测 token 有效性
-            val expiration = fromJson["expires_in"] as Long
+            val expiration = (fromJson["expires_in"] as String).toLong()
             if (expiration - System.currentTimeMillis() <= 0) {
                 //过期了
                 account = null
@@ -95,7 +95,7 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
     fun selectAccount() {
         if (account != null) {
             AlertDialog.Builder(context)
-                    .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_YOUTUBE)))
+                    .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_WEIBO)))
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { _, _ ->
                         account = null

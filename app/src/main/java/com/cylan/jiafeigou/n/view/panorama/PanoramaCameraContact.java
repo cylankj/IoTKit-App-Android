@@ -142,5 +142,6 @@ public interface PanoramaCameraContact {
 
         void clean();
 
+        int getBattery();
     }
 }
