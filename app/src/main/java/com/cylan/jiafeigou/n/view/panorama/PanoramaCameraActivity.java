@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -143,10 +142,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     ViewSwitcher bottomPanelSwitcher;
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information)
     TextView bottomPanelSwitcherItem2Information;
-//    @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information_record_time)
+    //    @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information)
 //    TextView bottomPanelSwitcherItem2TimeText;
-//    @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information_red_dot)
-//    ImageView bottomPanelSwitcherItem2DotIndicator;
+    @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information_red_dot)
+    ImageView bottomPanelSwitcherItem2DotIndicator;
 
     @BindView(R.id.act_panorama_camera_video_container)
     FrameLayout videoLiveContainer;
@@ -1084,12 +1083,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         switch (type) {
             case PANORAMA_RECORD_MODE.MODE_LONG:
-                Drawable drawable = bottomPanelSwitcherItem2Information.getCompoundDrawables()[0];
-
                 bottomPanelSwitcherItem2Information.setText(TimeUtils.getHHMMSS(offset * 1000L));
-//                bottomPanelSwitcherItem2Information.setCompoundDrawables();
-//                int visibility = bottomPanelSwitcherItem2DotIndicator.getVisibility();
-//                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+                int visibility = bottomPanelSwitcherItem2DotIndicator.getVisibility();
+                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
                 break;
             case PANORAMA_RECORD_MODE.MODE_SHORT:
                 if (bottomCountDownLine.getVisibility() != View.VISIBLE) {
@@ -1110,7 +1106,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         bottomPanelSwitcherItem2Information.setText((int) (8.0f * sec + 0.5f) + "S");
                         if (sec == 0) {
 //                            presenter.shouldRefreshUI(false);
-//                            RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
+                            RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
                             onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true, false);
                         }
                     });

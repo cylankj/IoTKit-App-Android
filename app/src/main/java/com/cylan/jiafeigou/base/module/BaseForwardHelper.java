@@ -58,7 +58,7 @@ public class BaseForwardHelper {
 
     public <T> Observable<T> sendForward(String uuid, int msgId, Object msg, int forwardType) {//forwardType:0 服务器透传;1:本地透传
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
-                .filter(accountArrived -> accountArrived.account.isOnline())
+//                .filter(accountArrived -> accountArrived.account.isOnline())
                 .first()
                 .observeOn(Schedulers.io())
                 .map(accountArrived -> {
