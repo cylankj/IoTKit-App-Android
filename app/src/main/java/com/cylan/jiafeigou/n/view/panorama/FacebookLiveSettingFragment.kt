@@ -7,6 +7,7 @@ import android.view.View
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
+import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
@@ -96,8 +97,15 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
 
     @OnClick(R.id.setting_facebook_account_item)
     fun selectAccount() {
-        if (account != null) {
-            AlertDialog.Builder(context)
+        when {
+            DataSourceManager.getInstance().loginType == 7 -> {
+                AlertDialog.Builder(context)
+                        .setMessage("缺少语言包:当前加菲狗/doby使用Facebook登录，暂不能解绑该账号")
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.OK, null)
+                        .show()
+            }
+            account != null -> AlertDialog.Builder(context)
                     .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_FACEBOOK)))
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { _, _ ->
@@ -108,8 +116,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
                         dialog.dismiss()
                     })
                     .show()
-        } else {
-            UMShareAPI.get(context).getPlatformInfo(activity, SHARE_MEDIA.FACEBOOK, this)
+            else -> UMShareAPI.get(context).getPlatformInfo(activity, SHARE_MEDIA.FACEBOOK, this)
         }
     }
 
