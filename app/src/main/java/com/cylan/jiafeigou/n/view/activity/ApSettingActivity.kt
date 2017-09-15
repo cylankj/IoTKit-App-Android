@@ -78,7 +78,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             val ssid: String = et_ap_name.text.toString()
             val pwd: String = et_ap_pwd.text.toString()
             if (TextUtils.isEmpty(ssid)) {
-                ToastUtil.showToast("缺语言包：请输入热点名称")
+                ToastUtil.showToast(getString(R.string.HOTSPOT_NEME_HINT))
                 return@setOnClickListener
             }
             if (TextUtils.isEmpty(pwd)) {

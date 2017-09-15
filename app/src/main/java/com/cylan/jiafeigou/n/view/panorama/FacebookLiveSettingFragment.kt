@@ -59,16 +59,26 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
             setting_facebook_permission.visibility = if (TextUtils.isEmpty(field)) View.GONE else View.VISIBLE
         }
 
-    private var permission: Int = 0
+    // enum{'EVERYONE', 'ALL_FRIENDS', 'FRIENDS_OF_FRIENDS', 'SELF'}
+
+    private var permission: String = "EVERYONE"
         set(value) {
             field = value
             when (field) {
-                0 -> {
+                "EVERYONE" -> {//公开
+                    setting_facebook_permission.subTitle = getString(R.string.FACEBOOK_PERMISSIONS_PUBLIC)
                 }
-                1 -> {
+                "ALL_FRIENDS" -> {//好友
+                    setting_facebook_permission.subTitle = getString(R.string.FACEBOOK_PERMISSIONS_FRIENDS)
                 }
-                2 -> {
-//                    JConstant.FACEBOOK_PERMISSION_PUBLIC
+                "FRIENDS_OF_FRIENDS" -> {//朋友的朋友
+                    setting_facebook_permission.subTitle = getString(R.string.FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS)
+                }
+                "SELF" -> {//仅自己
+                    setting_facebook_permission.subTitle = getString(R.string.FACEBOOK_PERMISSIONS_ONLYME)
+                }
+                else -> {
+
                 }
             }
         }
@@ -91,11 +101,16 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
         account = account
     }
 
+    fun getFacebookDescription(): String {
+        val text = setting_facebook_description.text
+        return if (TextUtils.isEmpty(text)) setting_facebook_description.hint.trim().toString() else text.trim().toString()
+    }
+
     @OnClick(R.id.setting_facebook_permission)
     fun setFacebookPermission() {
         val instance = FacebookLivePermissionFragment.newInstance()
         instance.setCallBack {
-            //          PreferencesUtils.putString(JConstant.facebook_PREF_PERMISSION_KEY,it)
+            permission = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, "EVERYONE")
         }
         ActivityUtils.addFragmentSlideInFromRight(fragmentManager, instance, android.R.id.content)
     }
@@ -105,7 +120,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
         when {
             DataSourceManager.getInstance().loginType == 7 -> {
                 AlertDialog.Builder(context)
-                        .setMessage("缺少语言包:当前加菲狗/doby使用Facebook登录，暂不能解绑该账号")
+                        .setMessage(getString(R.string.LIVE_UNABLE_UNBIND, getString(R.string.app_name), getString(R.string.LIVE_PLATFORM_FACEBOOK)))
                         .setCancelable(false)
                         .setPositiveButton(R.string.OK, null)
                         .show()

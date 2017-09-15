@@ -457,21 +457,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         livePlatform = PreferencesUtils.getInt(JConstant.LIVE_PLATFORM_KEY, -1);
         switch (livePlatform) {
             case 0: {
-                String configure = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_CONFIGURE, null);
                 bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_facebook_selector);
             }
             break;
             case 1: {
                 bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_youtube_selector);
-                String youtube = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
-//                try {
-//                    EventData eventData = JacksonFactory.getDefaultInstance().fromString(youtube, EventData.class);
-//                    rtmpAddress = eventData.getIngestionAddress();
-//                } catch (Exception e) {
-//                    livePlatform = -1;
-//                    AppLogger.e(MiscUtils.getErr(e));
-//                }
-
             }
             break;
             case 2: {
@@ -984,7 +974,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onRtmpAddressError() {
         switch (livePlatform) {
             case 0:
-                PreferencesUtils.remove(JConstant.FACEBOOK_PREF_CONFIGURE);
+                PreferencesUtils.remove(JConstant.FACEBOOK_PREF_DESCRIPTION);
                 break;
             case 1:
                 PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid);

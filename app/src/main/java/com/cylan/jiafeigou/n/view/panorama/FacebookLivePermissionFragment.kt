@@ -3,7 +3,8 @@ package com.cylan.jiafeigou.n.view.panorama
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
-import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.utils.PreferencesUtils
 import kotlinx.android.synthetic.main.fragment_live_permission.*
 
 /**
@@ -22,59 +23,54 @@ class FacebookLivePermissionFragment : BaseFragment<LivePremissionContract.Prese
     override fun initViewAndListener() {
         super.initViewAndListener()
         custom_toolbar.setBackAction { activity.onBackPressed() }
+        initSelectedPermission()
         fragment_facebook_live_permission.setOnCheckedChangeListener { _, checkId ->
-            this.checkId = checkId
+            when (checkId) {
+                R.id.live_permission_friends_of_friends -> {
+                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name)
+                }
+                R.id.live_permission_friends -> {
+                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.ALL_FRIENDS.name)
+                }
+                R.id.live_permission_only_me -> {
+                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.SELF.name)
+                }
+                R.id.live_permission_public -> {
+                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.EVERYONE.name)
+                }
+            }
         }
     }
 
-    var checkId: Int = -1
+    private fun initSelectedPermission() {
+        val p = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY, FACEBOOK_PERMISSION.EVERYONE.name)
+        when (p) {
+            FACEBOOK_PERMISSION.EVERYONE.name -> {
+                fragment_facebook_live_permission.check(R.id.live_permission_public)
+            }
+            FACEBOOK_PERMISSION.ALL_FRIENDS.name -> {
+                fragment_facebook_live_permission.check(R.id.live_permission_friends)
+            }
+            FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name -> {
+                fragment_facebook_live_permission.check(R.id.live_permission_friends_of_friends)
+            }
+            FACEBOOK_PERMISSION.SELF.name -> {
+                fragment_facebook_live_permission.check(R.id.live_permission_only_me)
+            }
+        }
+    }
 
 
     override fun onDetach() {
         super.onDetach()
-        if (callBack != null) {
-//            when (checkId) {
-//                R.id.live_permission_public -> {
-//                }
-//                R.id.live_permission_friends -> {
-//
-//                }
-//                R.id.live_permission_only_me -> {
-//
-//                }
-//                R.id.live_permission_close_friends -> {
-//
-//                }
-//                R.id.live_permission_acquaintance -> {
-//
-//                }
-//                R.id.live_permission_family -> {
-//
-//                }
-//                R.id.live_permission_good_friends -> {
-//
-//                }
-//
-//            }
-            AppLogger.w("$checkId")
-//            callBack.callBack()
-        }
-
     }
 
-    companion object {
 
-        const val FACEBOOK_PERMISSION_PUBLIC = 0
-        const val FACEBOOK_PERMISSION_FRIENDS = 1
-        const val FACEBOOK_PERMISSION_ONLY_ME = 2
-        const val FACEBOOK_PERMISSION_CLOSE_FRIENDS = 3
-        const val FACEBOOK_PERMISSION_ACQUAINTANCE = 4
-        const val FACEBOOK_PERMISSION_FAMILY = 5
-        const val FACEBOOK_PERMISSION_GOOD_FRIENDS = 6
+    companion object {
+        enum class FACEBOOK_PERMISSION { EVERYONE, ALL_FRIENDS, FRIENDS_OF_FRIENDS, SELF }
 
         fun newInstance(): FacebookLivePermissionFragment {
             val fragment = FacebookLivePermissionFragment()
-            R.id.live_permission_close_friends
             return fragment
         }
     }

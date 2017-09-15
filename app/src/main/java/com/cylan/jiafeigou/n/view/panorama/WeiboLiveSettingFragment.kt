@@ -102,7 +102,7 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
         when {
             DataSourceManager.getInstance().loginType == 4 -> {
                 AlertDialog.Builder(context)
-                        .setMessage("缺少语言包:当前加菲狗/doby使用新浪微博登录，暂不能解绑该账号")
+                        .setMessage(getString(R.string.LIVE_UNABLE_UNBIND, getString(R.string.app_name), getString(R.string.LIVE_PLATFORM_WEIBO)))
                         .setCancelable(false)
                         .setPositiveButton(R.string.OK, null)
                         .show()

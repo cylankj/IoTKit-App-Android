@@ -289,6 +289,11 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         listener?.invoke()
     }
 
+    override fun onCreateLiveBroadcastTimeout() {
+        AppLogger.w("wow~ ⊙o⊙,超时了啊,是不是没开代理?")
+        ToastUtil.showToast(getString(R.string.Request_TimeOut))
+    }
+
     var listener: (() -> Unit)? = null
 
     companion object {

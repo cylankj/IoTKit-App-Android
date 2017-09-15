@@ -36,7 +36,7 @@
             android:focusable="true"
             app:sv_radio_button_id="@+id/live_permission_public"
             app:sv_show_radio_button="true"
-            app:sv_title="公开"
+            app:sv_title="@string/FACEBOOK_PERMISSIONS_PUBLIC"
             app:sv_v_divider="true" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
@@ -46,7 +46,7 @@
             android:focusable="true"
             app:sv_radio_button_id="@+id/live_permission_friends"
             app:sv_show_radio_button="true"
-            app:sv_title="好友"
+            app:sv_title="@string/FACEBOOK_PERMISSIONS_FRIENDS"
             app:sv_v_divider="true" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
@@ -56,7 +56,7 @@
             android:focusable="true"
             app:sv_radio_button_id="@+id/live_permission_only_me"
             app:sv_show_radio_button="true"
-            app:sv_title="仅自己"
+            app:sv_title="@string/FACEBOOK_PERMISSIONS_ONLYME"
             app:sv_v_divider="true" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
@@ -64,9 +64,9 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:sv_radio_button_id="@+id/live_permission_close_friends"
+            app:sv_radio_button_id="@+id/live_permission_friends_of_friends"
             app:sv_show_radio_button="true"
-            app:sv_title="朋友的朋友"
+            app:sv_title="@string/FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS"
             app:sv_v_divider="true" />
 
         <!--<com.cylan.jiafeigou.widget.SettingItemView0-->

@@ -53,7 +53,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
 
             0 -> {
                 //facebook
-                PreferencesUtils.getString(JConstant.FACEBOOK_PREF_CONFIGURE, null)
+                PreferencesUtils.putString(JConstant.FACEBOOK_PREF_DESCRIPTION + ":" + uuid, facebookFragment.getFacebookDescription())
                 //todo
                 finish()
             }
@@ -64,7 +64,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
             }
             2 -> {
                 //weibo
-                PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION, weiboFragment.getWeiboLiveDescription())
+                PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, weiboFragment.getWeiboLiveDescription())
                 finish()
             }
             3 -> {
@@ -78,9 +78,9 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
                     ToastUtil.showToast(getString(R.string.RTMP_ERROR_TIPS))
                 } else {
                     if (rtmpServer.endsWith("/")) {
-                        PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE, "$rtmpServer$secretKey")
+                        PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE + ":" + uuid, "$rtmpServer$secretKey")
                     } else {
-                        PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE, "$rtmpServer/$secretKey")
+                        PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE + ":" + uuid, "$rtmpServer/$secretKey")
                     }
                     finish()
                 }
@@ -94,7 +94,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     }
 
     override fun onTabReselected(tab: XTabLayout.Tab?) {
-
+        switchRtmpPage(tab!!.position)
     }
 
     override fun onTabUnselected(tab: XTabLayout.Tab?) {

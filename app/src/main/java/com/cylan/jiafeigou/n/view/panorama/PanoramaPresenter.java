@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
@@ -45,9 +46,17 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.exception.WeiboHttpException;
 import com.sina.weibo.sdk.net.RequestListener;
+import com.umeng.facebook.AccessToken;
+import com.umeng.facebook.FacebookRequestError;
+import com.umeng.facebook.FacebookSdk;
+import com.umeng.facebook.GraphRequest;
+import com.umeng.facebook.HttpMethod;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.weibo.live.WeiboLiveCreate;
 import com.weibo.live.WeiboLiveDelete;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -190,7 +199,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .timeout(120, TimeUnit.SECONDS)
                 .subscribe(result -> {
                     if (result != null && result.error == 0) {
-                        refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        if (!isRtmpLive) {
+                            isRtmpLive = true;
+                            refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        }
                     } else {
                         AppLogger.d("失败了");
                     }
@@ -271,7 +283,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 Context context = mView.getAppContext();
                 mView.showBottomPanelInformation(context.getString(R.string.LIVE_CREATING, getPlatformString(context, 2)), false);
                 String defaultContent = context.getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT);
-                String content = PreferencesUtils.getString(JConstant.WEIBO_PREF_DESCRIPTION, defaultContent);
+                String content = PreferencesUtils.getString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, defaultContent);
                 WeiboLiveCreate weiboLiveCreate = new WeiboLiveCreate(mView.getAppContext(), PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"), oauth2AccessToken);
                 weiboLiveCreate.setAc(mView.getActivityContext());
                 weiboLiveCreate.setTitle(defaultContent);
@@ -291,12 +303,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             String url = (String) result.get("url");
                             String id = (String) result.get("id");
                             if (!TextUtils.isEmpty(id)) {
-                                PreferencesUtils.putString(JConstant.WEIBO_PREF_LIVE_ID, id);
+                                PreferencesUtils.putString(JConstant.WEIBO_PREF_LIVE_ID + ":" + uuid, id);
                             }
                             if (TextUtils.isEmpty(url)) {
                                 // TODO: 2017/9/13 获取 URL 失败了
                             } else {
-                                PreferencesUtils.putString(JConstant.WEIBO_PREF_LIVE_URL, url);
+                                PreferencesUtils.putString(JConstant.WEIBO_PREF_LIVE_URL + ":" + uuid, url);
                                 subscriber.onNext(url);
                             }
                             subscriber.onCompleted();
@@ -370,7 +382,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result != null && result.error == 0) {
-                        refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        if (!isRtmpLive) {
+                            isRtmpLive = true;
+                            refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        }
                     } else {
                         AppLogger.d("失败了");
                     }
@@ -419,10 +434,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
                     String map = PreferencesUtils.getString(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.SINA.toString(), null);
                     Oauth2AccessToken oauth2AccessToken = Oauth2AccessToken.parseAccessToken(map);
-                    String liveId = PreferencesUtils.getString(JConstant.WEIBO_PREF_LIVE_ID, null);
+                    String liveId = PreferencesUtils.getString(JConstant.WEIBO_PREF_LIVE_ID + ":" + uuid, null);
                     if (oauth2AccessToken == null || oauth2AccessToken.getExpiresTime() - System.currentTimeMillis() <= 0 || TextUtils.isEmpty(liveId)) {
 //                        mView.showRtmpLiveSetting();
                         // TODO: 2017/9/14 没有 token ,还有这种操作?
+                        if (oauth2AccessToken != null && oauth2AccessToken.getExpiresTime() - System.currentTimeMillis() <= 0) {
+                            PreferencesUtils.remove(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.SINA.toString());
+                        }
                         subscriber.onError(new IllegalArgumentException("token 或者 直播 id 不存在"));
                     } else {
                         Context context = mView.getAppContext();
@@ -431,8 +449,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         liveDelete.deleteLive(new RequestListener() {
                             @Override
                             public void onComplete(String s) {
-                                PreferencesUtils.remove(JConstant.WEIBO_PREF_LIVE_URL);
-                                PreferencesUtils.remove(JConstant.WEIBO_PREF_LIVE_ID);
+                                PreferencesUtils.remove(JConstant.WEIBO_PREF_LIVE_URL + ":" + uuid);
+                                PreferencesUtils.remove(JConstant.WEIBO_PREF_LIVE_ID + ":" + uuid);
                                 subscriber.onNext(s);
                                 subscriber.onCompleted();
                             }
@@ -512,7 +530,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .timeout(120, TimeUnit.SECONDS)
                 .subscribe(result -> {
                     if (result != null && result.error == 0) {
-                        refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        if (!isRtmpLive) {
+                            isRtmpLive = true;
+                            refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - result.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                        }
                     } else {
                         AppLogger.d("失败了");
                     }
@@ -558,6 +579,83 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopYoutubeLiveRtmp", subscribe);
     }
 
+    private void startFacebookRtmpLive() {
+        Subscription subscribe = Observable.just("startFacebookRtmpLive")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())//新建线程吧,以免阻塞 IO 线程
+                .map(cmd -> {
+                    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                    String defaultContent = ContextUtils.getContext().getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT);
+                    String description = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_DESCRIPTION + ":" + uuid, defaultContent);
+                    String privacy = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, "EVERYONE");
+                    Bundle params = new Bundle();
+//                    params.putString("content_tags", "panorama,全景");
+                    params.putString("description", description);
+                    params.putString("privacy", String.format("{value:\"%s\"}", privacy));
+                    params.putString("status", "LIVE_NOW");
+//                    params.putBoolean("save_vod", true);
+                    params.putBoolean("stop_on_delete_stream", true);
+//                    params.putString("stream_type", "REGULAR");
+                    params.putString("title", defaultContent);
+                    params.putBoolean("is_spherical", true);
+                    String graphPath = String.format("/%s/live_videos", accessToken.getUserId());
+                    GraphRequest graphRequest = new GraphRequest(accessToken, graphPath, params, HttpMethod.POST);
+                    AppLogger.w("Facebook 请求参数为:" + graphRequest.toString());
+                    return graphRequest.executeAndWait();
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(120, TimeUnit.SECONDS, Observable.just(null))
+                .subscribe(response -> {
+                    FacebookRequestError responseError = response.getError();
+                    boolean resultOK = responseError == null;
+                    AppLogger.w("创建 Facebook 直播返回的结果为:" + response.toString());
+                    if (!resultOK) {
+                        AppLogger.w("创建 Facebook 失败了");
+                        mView.onRtmpAddressError();
+                    } else {
+                        try {
+                            JSONObject object = response.getJSONObject();
+                            String streamUrl = object.getString("stream_url");
+                            String videoId = object.getString("id");//直播流 id 用来删除直播用
+                            if (!TextUtils.isEmpty(videoId)) {
+                                PreferencesUtils.putString(JConstant.FACEBOOK_PREF_VIDEO_ID + ":" + uuid, videoId);
+                            }
+                            if (!TextUtils.isEmpty(streamUrl)) {
+                                startRtmpLive(streamUrl);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startFacebookRtmpLive", subscribe);
+
+    }
+
+    private void stopFacebookRtmpLive() {
+        Subscription subscribe = Observable.just("stopFacebookRtmpLive")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())
+                .map(cmd -> {
+                    String videoId = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_VIDEO_ID + ":" + uuid, null);
+                    if (!TextUtils.isEmpty(videoId)) {
+                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                        GraphRequest graphRequest = new GraphRequest(accessToken, videoId, null, HttpMethod.DELETE);
+                        return graphRequest.executeAndWait();
+                    }
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .subscribe(response -> stopRtmpLive(), e -> {
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopFacebookRtmpLive", subscribe);
+    }
+
     private String getPlatformString(Context context, int livePlatform) {
         switch (livePlatform) {
             case 0:
@@ -577,7 +675,21 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         switch (livePlatform) {
             case 0://facebook
             {
-
+                if (!FacebookSdk.isInitialized()) {
+                    FacebookSdk.sdkInitialize(mView.getAppContext(), () -> {
+                        if (enable == 1) {
+                            startFacebookRtmpLive();
+                        } else if (enable == 0) {
+                            stopFacebookRtmpLive();
+                        }
+                    });
+                } else {
+                    if (enable == 1) {
+                        startFacebookRtmpLive();
+                    } else if (enable == 0) {
+                        stopFacebookRtmpLive();
+                    }
+                }
             }
             break;
             case 1://youtube
@@ -614,7 +726,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             case 3://rtmp
             {
                 if (enable == 1) {
-                    String url = PreferencesUtils.getString(JConstant.RTMP_PREF_CONFIGURE, null);
+                    String url = PreferencesUtils.getString(JConstant.RTMP_PREF_CONFIGURE + ":" + uuid, null);
                     AppLogger.w("rtmp 播放的地址为:" + url);
                     if (TextUtils.isEmpty(url) || !url.startsWith("rtmp://")) {
                         AppLogger.w("非法的 rtmp 地址");
@@ -997,8 +1109,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     try {
                                         DpMsgDefine.DPCameraLiveRtmpStatus unpackData = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPCameraLiveRtmpStatus.class);
                                         if (unpackData != null) {
-                                            isRtmpLive = unpackData.flag == 1 && unpackData.error == 0;
                                             mView.onRtmpQueryResponse(unpackData);
+                                            if (unpackData.error == 0 && unpackData.flag == 2 && !isRtmpLive) {
+                                                isRtmpLive = true;
+                                                refreshVideoRecordUI((int) ((SystemClock.currentThreadTimeMillis() / 1000) - unpackData.timestamp), PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LIVE);
+                                            }
                                         }
                                         AppLogger.w("517 消息为:" + new Gson().toJson(unpackData));
                                     } catch (IOException e) {

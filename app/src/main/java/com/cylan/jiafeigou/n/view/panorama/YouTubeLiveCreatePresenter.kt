@@ -17,6 +17,7 @@ import com.google.api.services.youtube.YouTube
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by yanzhendong on 2017/9/7.
@@ -39,11 +40,17 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mView.showLoading(R.string.CREATING, false) }
                 .doOnTerminate { mView.hideLoading() }
+                .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
-                    val json = JacksonFactory.getDefaultInstance().toString(it)
-                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, json)
-                    mView.onCreateLiveBroadcastSuccess(it)
-                    AppLogger.w("返回的结果为:$json")
+                    if (it == null) {
+                        //120 秒超时了啊
+                        mView.onCreateLiveBroadcastTimeout()
+                    } else {
+                        val json = JacksonFactory.getDefaultInstance().toString(it)
+                        PreferencesUtils.putString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, json)
+                        mView.onCreateLiveBroadcastSuccess(it)
+                        AppLogger.w("返回的结果为:$json")
+                    }
                 }, {
                     when (it) {
                         is GooglePlayServicesAvailabilityIOException -> {

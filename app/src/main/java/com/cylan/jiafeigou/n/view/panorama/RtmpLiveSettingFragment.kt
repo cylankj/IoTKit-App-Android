@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama
 
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import android.widget.CompoundButton
 import android.widget.ScrollView
 import butterknife.OnCheckedChanged
@@ -30,7 +31,7 @@ class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        initKeyBoard()
+
     }
 
     @OnCheckedChanged(R.id.rtmp_password_show)
@@ -47,8 +48,20 @@ class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
         return rtmp_et_miyao.text.trim().toString()
     }
 
+    override fun onStart() {
+        super.onStart()
+        initKeyBoard()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        KeyboardUtil.detach(activity, listener)
+    }
+
+    private lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
+
     private fun initKeyBoard() {
-        KeyboardUtil.attach(activity, activity.panel_root, { isShowing ->
+        listener = KeyboardUtil.attach(activity, activity.panel_root, { isShowing ->
             if (isShowing) {
                 activity.live_setting_scroller.fullScroll(ScrollView.FOCUS_DOWN)
             }

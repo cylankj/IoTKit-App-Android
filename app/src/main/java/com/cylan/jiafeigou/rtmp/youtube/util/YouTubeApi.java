@@ -62,6 +62,7 @@ public class YouTubeApi {
         // We need a date that's in the proper ISO format and is in the future,
         // since the API won't
         // create events that start in the past.
+        AppLogger.w("正在创建 YouTube 直播:" + ",description:" + description + ",title:" + title + ",startTime:" + startTime + ",endTime:" + endTime);
         LiveBroadcastSnippet broadcastSnippet = new LiveBroadcastSnippet();
         broadcastSnippet.setTitle(title);
         if (startTime == 0) {
@@ -98,6 +99,8 @@ public class YouTubeApi {
         // Request is executed and inserted broadcast is returned
         LiveBroadcast returnedBroadcast = liveBroadcastInsert.execute();
 
+        AppLogger.w("YouTube 插入 Broadcast 返回的结果为:" + returnedBroadcast.toPrettyString());
+
         // Create a snippet with title.
         LiveStreamSnippet streamSnippet = new LiveStreamSnippet();
         streamSnippet.setTitle(title);
@@ -119,7 +122,7 @@ public class YouTubeApi {
 
         // Request is executed and inserted stream is returned
         LiveStream returnedStream = liveStreamInsert.execute();
-
+        AppLogger.w("创建 Stream 返回的结果为:" + returnedBroadcast.toPrettyString());
         // Create the bind request
         YouTube.LiveBroadcasts.Bind liveBroadcastBind = youtube
                 .liveBroadcasts().bind(returnedBroadcast.getId(),
@@ -130,7 +133,7 @@ public class YouTubeApi {
 
         // Request is executed and bound broadcast is returned
         LiveBroadcast liveBroadcast = liveBroadcastBind.execute();
-
+        AppLogger.w("绑定 Broadcast 和 stream 返回的结果为:" + liveBroadcast.toPrettyString());
         EventData eventData = new EventData();
         eventData.setEvent(liveBroadcast);
         IngestionInfo ingestionInfo = returnedStream.getCdn().getIngestionInfo();
@@ -650,7 +653,7 @@ public class YouTubeApi {
             LiveBroadcastListResponse status = youtube.liveBroadcasts().list("status").setId(broadcastId).execute();
             List<LiveBroadcast> list = status.getItems();
             AppLogger.w("YOUTUBE:获取切换到 Live 后的结果:" + JacksonFactory.getDefaultInstance().toPrettyString(status));
-            if (list != null && list.size() > 0 && list.get(0).getStatus().getLifeCycleStatus().contains("live")) {
+            if (list != null && list.size() > 0 && list.get(0).getStatus().getLifeCycleStatus().equals("live")) {
                 hasChangeToActive = true;
                 AppLogger.w("YOUTUBE:直播状态已经切换到激活状态了,可以查看直播了");
             } else {
