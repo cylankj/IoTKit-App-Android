@@ -256,7 +256,7 @@
 
         <ViewSwitcher
             android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -264,38 +264,39 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <RadioGroup
-            android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:orientation="horizontal">
+                android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <RadioButton
-            android:id="@+id/act_panorama_camera_bottom_panel_picture"
-            android:layout_width="@dimen/y26"
-            android:layout_height="@dimen/y26"
-            android:button="@drawable/camera720_icon_camera_selector"
-            android:checked="true" />
+                <RadioButton
+                    android:id="@+id/act_panorama_camera_bottom_panel_picture"
+                    android:layout_width="@dimen/y26"
+                    android:layout_height="@dimen/y26"
+                    android:button="@drawable/camera720_icon_camera_selector"
+                    android:checked="true" />
 
-            <RadioButton
-            android:id="@+id/act_panorama_camera_bottom_panel_video"
-            android:layout_width="@dimen/y26"
-            android:layout_height="@dimen/y26"
-            android:layout_marginEnd="@dimen/y32"
-            android:layout_marginStart="@dimen/y32"
-            android:button="@drawable/camera720_icon_video_selector" />
+                <RadioButton
+                    android:id="@+id/act_panorama_camera_bottom_panel_video"
+                    android:layout_width="@dimen/y26"
+                    android:layout_height="@dimen/y26"
+                    android:layout_marginEnd="@dimen/y32"
+                    android:layout_marginStart="@dimen/y32"
+                    android:button="@drawable/camera720_icon_video_selector" />
 
-            <RadioButton
-            android:id="@+id/act_panorama_camera_bottom_panel_rtmp"
-            android:layout_width="@dimen/y26"
-            android:layout_height="@dimen/y26"
-            android:button="@drawable/camera720_icon_live_selector" />
+                <RadioButton
+                    android:id="@+id/act_panorama_camera_bottom_panel_rtmp"
+                    android:layout_width="@dimen/y26"
+                    android:layout_height="@dimen/y26"
+                    android:button="@drawable/camera720_icon_live_selector" />
             </RadioGroup>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -311,7 +312,6 @@
                     android:layout_marginStart="@dimen/y15"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="ddddddddddddddddddddddddddddddddddddddd"
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp16" />
             </LinearLayout>
