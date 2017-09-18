@@ -305,7 +305,8 @@
                 <ImageView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/panorama_redording_red_dot" />
 
                 <TextView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
