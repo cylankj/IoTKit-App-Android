@@ -982,6 +982,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //                    netType != -1 ? R.string.Tap1_Offline : R.string.Tap1_DisconnectedPleaseCheck);
             loadingBar.setState(connectionType == -1 ? JConstant.PLAY_STATE_LOADING_FAILED : JConstant.PLAY_STATE_IDLE, null);
             RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
+            onRefreshViewModeUI(panoramaViewMode, false, false);
 
             /*播放失败了需要显示黑屏,但又不能移除 surfaceview ,因为创建 surfaceview 会使屏幕产出闪烁的效果*/
             videoLiveContainer.setVisibility(View.INVISIBLE);
