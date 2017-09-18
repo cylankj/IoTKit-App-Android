@@ -34,6 +34,8 @@ import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.UdpDevice;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -1208,11 +1210,23 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @OnClick(R.id.sv_setting_device_ap)
     public void onCheckDeviceAp() {
+        Log.d("CamSettingActivity", "......");
+        UdpDevice.pingDevice(UdpConstant.IP, uuid)
+                .subscribe(s -> AppLogger.d("............." + s), AppLogger::e);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
             //wifi直连，客户端连接了设备
             startActivity(new Intent(this, ApSettingActivity.class)
                     .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+        } else if (JFGRules.isDeviceOnline(uuid)) {
+            //设备与客户端在线。
+            String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+            String remoteSSid = device.$(201, new DpMsgDefine.DPNet()).ssid;
+            if (TextUtils.equals(localSSid, remoteSSid) && !TextUtils.isEmpty(localSSid)) {
+                //公网局域网
+                startActivity(new Intent(this, ApSettingActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+            }
         } else {
             boolean isWifiApEnabled = NetUtils.isWifiApEnabled();
             if (!isWifiApEnabled) {
