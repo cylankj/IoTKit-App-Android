@@ -95,16 +95,10 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
 
                 return@setOnClickListener
             }
-            ToastUtil.showToast("设计缺陷:确保sim正常使用")
+//            ToastUtil.showToast("设计缺陷:确保sim正常使用")
             val fullCid: String = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID)
-<<<<<<< HEAD
-            LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot), true)
-//            basePresenter.addSubscription("getDevicePortrait",
-            UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
-=======
-            LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot))
+            LoadingDialog.showLoading(this, getString(R.string.HOTSPOT_OPENING), true)
             val s: Subscription = UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
->>>>>>> hunt
                     .flatMap { r -> UdpDevice.sendWifiInfo(r, ssid, pwd, 3, UdpConstant.IP, UdpConstant.PORT) }
                     .subscribeOn(Schedulers.newThread())
                     .delay(500, TimeUnit.MILLISECONDS)
@@ -134,8 +128,9 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                     })
             basePresenter.addSubscription("getDevicePortrait", s)
         }
-        //默认显示
-        ViewUtils.showPwd(et_ap_pwd, true)
+        //默认密文
+        ViewUtils.showPwd(et_ap_pwd, false)
+        cb_show_pwd.isChecked = false
         cb_show_pwd.setOnCheckedChangeListener { _, isChecked ->
             ViewUtils.showPwd(et_ap_pwd, isChecked)
         }

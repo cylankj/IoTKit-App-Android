@@ -57,6 +57,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.utils.WifiUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -245,7 +246,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     WifiConfiguration netConfig = NetUtils.getWifiApConfiguration();
                     if (netConfig == null) return;
                     AppLogger.d("netConfig:" + new Gson().toJson(netConfig));
-                    svSettingDeviceAp.setTvSubTitle(netConfig.SSID);
+                    svSettingDeviceAp.setSubTitle(netConfig.SSID);
                 }, AppLogger::e);
         basePresenter.addSub(ssu, "ssu");
     }
@@ -553,6 +554,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             finishExt();
             return;
         }
+        AppLogger.d("deviceNet:" + device.$(201, new DpMsgDefine.DPNet()));
+        AppLogger.d("clientNet:" + NetUtils.getNetName(ContextUtils.getContext()));
         if (JFGRules.isFreeCam(device.pid)) {
             //freeCam直接进入
             Intent intent = new Intent(this, BindCamActivity.class);
@@ -1214,5 +1217,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             handleJumpToConfig(true, true);
         }
+
     }
 }
