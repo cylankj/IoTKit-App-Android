@@ -1095,7 +1095,7 @@
   <string name="getting">获取中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">未发现Micro SD卡</string>
-  <string name="help_url">https://%1$s:8081/helps/zh&#8211;rCN%2$s.html</string>
+  <string name="help_url">https://%1$s:8081/helps/zh-rCN%2$s.html</string>
   <string name="infrared_night_vision">红外夜视</string>
   <string name="infrared_night_vision_Descript">开启红外夜视可在光线较暗的环境下得到清晰的视频画面</string>
   <string name="isStorageLow">Micro SD卡存储空间不足，无法下载。</string>
