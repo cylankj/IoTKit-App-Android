@@ -22,6 +22,8 @@ public interface YouTubeLiveCreateContract {
         void onUserRecoverableAuthIOException(@NotNull UserRecoverableAuthIOException it);
 
         void onCreateLiveBroadcastSuccess(@Nullable EventData eventData);
+
+        void onCreateLiveBroadcastTimeout();
     }
 
     interface Presenter extends JFGPresenter<View> {

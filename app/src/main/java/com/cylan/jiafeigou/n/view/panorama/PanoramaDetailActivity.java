@@ -753,7 +753,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 //            } else
             if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
                 download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
-                download.setEnabled(bean != null && bean.alarmMsg != null);
+                download.setEnabled(true);
             } else if (downloadInfo.getState() == DownloadManager.FINISH) {
                 download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Downloaded);
                 download.setEnabled(bean != null && bean.alarmMsg != null);

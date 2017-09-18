@@ -496,7 +496,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
                     JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     if (jfgAccount != null) {
-                        basePresenter.logOut(jfgAccount.getAccount());
+                        basePresenter.logOut(jfgAccount.getAccount(), getActivity());
                         //进入登陆页 login page
                         Intent intent = new Intent(getContext(), SmartcallActivity.class);
                         intent.putExtra(JConstant.FROM_LOG_OUT, true);

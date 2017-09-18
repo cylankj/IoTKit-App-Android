@@ -24,6 +24,7 @@
         app:ct_title_color="@color/color_black" />
 
     <ScrollView
+        android:id="@+id/live_setting_scroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -78,16 +79,16 @@
             <FrameLayout
                 android:id="@+id/page_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" />
 
-            </FrameLayout>
+            <com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout
+                android:id="@+id/panel_root"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y200"
+                android:orientation="vertical"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 
-    <com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout
-        android:id="@+id/panel_root"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y200"
-        android:orientation="vertical"
-        android:visibility="gone" />
+
 </LinearLayout>

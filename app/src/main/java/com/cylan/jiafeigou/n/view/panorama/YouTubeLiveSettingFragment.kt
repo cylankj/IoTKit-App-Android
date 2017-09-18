@@ -113,12 +113,13 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-
+        setting_youtube_account_item.title = getString(R.string.LIVE_ACCOUNT, getString(R.string.LIVE_PLATFORM_YOUTUBE))
 
     }
 
     override fun onStart() {
         super.onStart()
+        account = account
         loadLiveBroadCast()
     }
 

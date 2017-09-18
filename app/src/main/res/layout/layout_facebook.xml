@@ -11,15 +11,17 @@
 
 
     <EditText
+        android:id="@+id/setting_facebook_description"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y121"
         android:background="@color/color_white"
         android:gravity="start|top"
         android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
-        android:padding="@dimen/y15"
+        android:padding="@dimen/y5"
         android:textSize="@dimen/sp14" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/setting_facebook_account_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y20"
@@ -29,11 +31,11 @@
         app:sv_v_divider="true" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/facebook_permission"
+        android:id="@+id/setting_facebook_permission"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_white"
-        app:sv_sub_title="Jane"
-        app:sv_title="权限设置" />
+        app:sv_sub_title="公开"
+        app:sv_title="@string/LIVE_FACEBOOK_PERMISSIONS" />
 
 </LinearLayout>

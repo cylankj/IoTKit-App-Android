@@ -14,6 +14,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeReque
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.facebook.AccessToken;
+import com.umeng.facebook.GraphRequest;
+import com.umeng.facebook.HttpMethod;
 
 import org.junit.Test;
 import org.msgpack.MessagePack;
@@ -288,5 +291,11 @@ public class DP {
 
     public void methodName() {
         System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
+    }
+
+    @Test
+    public void testGraphPath() {
+        GraphRequest graphRequest = new GraphRequest(AccessToken.getCurrentAccessToken(), "/{user-id}/live_videos", null, HttpMethod.POST);
+        System.out.println(graphRequest.toString());
     }
 }

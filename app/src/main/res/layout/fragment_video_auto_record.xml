@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/y72"
+            hunt:sv_radio_button_id="@+id/auto_record_mode_motion"
             hunt:sv_show_radio_button="true"
             hunt:sv_sub_title="@string/RECORD_INFO_0"
             hunt:sv_title="@string/RECORD_MODE"
@@ -49,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_motion"
+            hunt:sv_radio_button_id="@+id/auto_record_mode_24_hours"
             hunt:sv_sub_title="@string/RECORD_INFO_1"
             hunt:sv_title="@string/RECORD_MODE_1"
             hunt:sv_v_divider="true" />
@@ -58,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_24_hours"
+            hunt:sv_radio_button_id="@+id/auto_record_mode_never"
             hunt:sv_sub_title="@string/RECORD_INFO_2"
             hunt:sv_title="@string/RECORD_MODE_2"
             hunt:sv_v_divider="true" />

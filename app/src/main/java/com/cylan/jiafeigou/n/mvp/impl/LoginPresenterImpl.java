@@ -281,6 +281,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         @Override
         public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
             AppLogger.e("授权完成,返回码为:" + i + ",返回信息为:" + new Gson().toJson(map));
+            PreferencesUtils.putString(JConstant.OPEN_LOGIN_MAP + share_media.toString(), new Gson().toJson(map));
             String account = map.get("uid");
             String token = map.get("accessToken");
             if (TextUtils.isEmpty(token)) {

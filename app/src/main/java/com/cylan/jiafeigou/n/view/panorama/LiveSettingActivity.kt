@@ -1,13 +1,17 @@
 package com.cylan.jiafeigou.n.view.panorama
 
 import android.content.Intent
+import android.text.TextUtils
 import com.androidkun.xtablayout.XTabLayout
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent
 import com.cylan.jiafeigou.base.wrapper.BaseActivity
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
+import com.cylan.jiafeigou.utils.IMEUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
+import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_live_setting.*
 
 class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSettingContact.View, XTabLayout.OnTabSelectedListener {
@@ -49,29 +53,48 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
 
             0 -> {
                 //facebook
-                PreferencesUtils.getString(JConstant.FACEBOOK_PREF_CONFIGURE, null)
+                PreferencesUtils.putString(JConstant.FACEBOOK_PREF_DESCRIPTION + ":" + uuid, facebookFragment.getFacebookDescription())
                 //todo
                 finish()
             }
             1 -> {
                 //youtube
-                PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
+//                PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
+                finish()
             }
             2 -> {
                 //weibo
-
+                PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, weiboFragment.getWeiboLiveDescription())
+                finish()
             }
             3 -> {
                 //rtmp
-//               rtmpFragment.
+                val rtmpServer = rtmpFragment.getRtmpServer()
+                val secretKey = rtmpFragment.getRtmpSecretKey()
+                if (TextUtils.isEmpty(rtmpServer) || "rtmp://" == rtmpServer) {
+                    AppLogger.w("非法的 rtmp 地址")
+                    ToastUtil.showToast(getString(R.string.RTMP_EMPTY_TIPS))
+                } else if (!rtmpServer.startsWith("rtmp://")) {
+                    ToastUtil.showToast(getString(R.string.RTMP_ERROR_TIPS))
+                } else {
+                    if (rtmpServer.endsWith("/")) {
+                        PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE + ":" + uuid, "$rtmpServer$secretKey")
+                    } else {
+                        PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE + ":" + uuid, "$rtmpServer/$secretKey")
+                    }
+                    finish()
+                }
             }
         }
-        finish()
     }
 
+    override fun onStop() {
+        super.onStop()
+        IMEUtils.hide(this)
+    }
 
     override fun onTabReselected(tab: XTabLayout.Tab?) {
-
+        switchRtmpPage(tab!!.position)
     }
 
     override fun onTabUnselected(tab: XTabLayout.Tab?) {

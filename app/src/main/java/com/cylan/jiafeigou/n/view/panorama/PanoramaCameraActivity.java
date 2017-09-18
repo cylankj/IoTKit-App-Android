@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -62,7 +63,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
-import com.cylan.jiafeigou.rtmp.youtube.util.EventData;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -81,7 +81,6 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CommonPanoramicView;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -199,7 +198,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
      */
     private int preNetType = -1;
     private int livePlatform;
-    private String rtmpAddress;
+    private boolean apMode;
+    //    private String rtmpAddress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -457,21 +457,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         livePlatform = PreferencesUtils.getInt(JConstant.LIVE_PLATFORM_KEY, -1);
         switch (livePlatform) {
             case 0: {
-                String configure = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_CONFIGURE, null);
                 bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_facebook_selector);
             }
             break;
             case 1: {
                 bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_youtube_selector);
-                String youtube = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
-                try {
-                    EventData eventData = JacksonFactory.getDefaultInstance().fromString(youtube, EventData.class);
-                    rtmpAddress = eventData.getIngestionAddress();
-                } catch (Exception e) {
-                    livePlatform = -1;
-                    AppLogger.e(MiscUtils.getErr(e));
-                }
-
             }
             break;
             case 2: {
@@ -578,7 +568,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_live_setting)
-    public void clickedBottomPanelLiveSetting() {
+    @Override
+    public void showRtmpLiveSetting() {
         AppLogger.w("clickedBottomPanelLiveSetting");
         Intent intent = new Intent(this, LiveSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
@@ -633,17 +624,25 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             break;
             case PANORAMA_VIEW_MODE.MODE_LIVE: {
                 if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_NONE) {
+                    //先要判断是否是 AP 模式
+                    if (apMode) {
+                        showAPLiveAlert();
+                        return;
+                    } else if (presenter.getBattery() < 5) {
+                        showLiveBatteryLowAlert();
+                        return;
+                    }
+
                     panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LIVE;
-                    AppLogger.w("将进行 live 直播");
-                    if (livePlatform == -1 || TextUtils.isEmpty(rtmpAddress)) {
-                        clickedBottomPanelLiveSetting();
+                    if (livePlatform == -1) {
+                        showRtmpLiveSetting();
                     } else {
-                        showBottomPanelInformation(getString(R.string.LIVE_CREATING, getPlatformString(livePlatform)), false);
-                        presenter.cameraLiveRtmpCtrl(livePlatform, rtmpAddress, 1);
+                        AppLogger.w("将进行 live 直播");
+                        presenter.cameraLiveRtmpCtrl(livePlatform, 1);
                     }
                 } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
                     AppLogger.w("将结束 live 直播");
-                    presenter.cameraLiveRtmpCtrl(livePlatform, "", 0);
+                    presenter.cameraLiveRtmpCtrl(livePlatform, 0);
                 }
                 bottomPanelLoading.setVisibility(View.GONE);
             }
@@ -651,6 +650,28 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         bottomPanelPhotoGraphItem.setEnabled(false);
 
+    }
+
+    private void showLiveBatteryLowAlert() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.Tap1_LowPower)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, null)
+                .show();
+    }
+
+    public void showAPLiveAlert() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.LIVE_LANMODE_POP)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    Intent intent = new Intent(this, CamSettingActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
+                            R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show();
     }
 
     private String getPlatformString(int livePlatform) {
@@ -772,6 +793,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bannerTextInformationClose.setVisibility(hasClose ? View.VISIBLE : View.GONE);
     }
 
+    @Override
     public void showBottomPanelInformation(String text, boolean hasDot) {
         int childIndex = bottomPanelSwitcher.getDisplayedChild();
         if (childIndex == 0) {
@@ -920,23 +942,31 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    public void onSendCameraRtmpResponse(boolean code) {
-        if (code) {
-            // TODO: 2017/9/9 成功了
-            showBottomPanelInformation(getString(R.string.LIVE_TESTING), false);
-            AppLogger.w("rtmp 配置消息发送成功");
-        } else {
-            // TODO: 2017/9/9 失败了
-            onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, presenter.getLiveAction().hasResolution, false);
-            AppLogger.w("rtmp 配置消息发送失败了");
+    public void onSendCameraLiveResponse(int i, boolean success) {
+        if (i == 1) {//开启的响应
+            if (success) {
+                // TODO: 2017/9/9 成功了
+                if (livePlatform == 1) {
+                    showBottomPanelInformation(getString(R.string.LIVE_TESTING), false);
+                }
+                AppLogger.w("rtmp 配置消息发送成功");
+            } else {
+                // TODO: 2017/9/9 失败了
+                onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, presenter.getLiveAction().hasResolution, false);
+                AppLogger.w("rtmp 配置消息发送失败了");
+            }
+        } else if (i == 0) {//结束的响应
+
         }
     }
 
     @Override
     public void onRtmpQueryResponse(DpMsgDefine.DPCameraLiveRtmpStatus unpackData) {
         if (unpackData.flag != 3 && unpackData.error == 0) {
-            panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LIVE;
-            onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, true, true);
+            if (panoramaRecordMode != PANORAMA_RECORD_MODE.MODE_LIVE) {
+                panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LIVE;
+                onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, true, true);
+            }
         }
     }
 
@@ -944,19 +974,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onRtmpAddressError() {
         switch (livePlatform) {
             case 0:
-                PreferencesUtils.remove(JConstant.FACEBOOK_PREF_CONFIGURE);
+                PreferencesUtils.remove(JConstant.FACEBOOK_PREF_DESCRIPTION);
                 break;
             case 1:
                 PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid);
                 break;
             case 2:
-                PreferencesUtils.remove(JConstant.WEIBO_PREF_CONFIGURE);
+                PreferencesUtils.remove(JConstant.WEIBO_PREF_LIVE_ID);
                 break;
             case 3:
                 PreferencesUtils.remove(JConstant.RTMP_PREF_CONFIGURE);
                 break;
         }
-        rtmpAddress = null;
+//        rtmpAddress = null;
         livePlatform = -1;
         showBannerTextInformation(getString(R.string.LIVE_FAILED), false);
     }
@@ -1007,7 +1037,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             bottomPanelSwitcher.showPrevious();
         }
         if (enable) hideLoading();
-        onRefreshControllerView(enable, false);
+
         setting.setEnabled(true);
         ivt_newMessageTips.setEnabled(true);
         popOption.dismiss();
@@ -1064,10 +1094,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onRefreshConnectionMode(int connectionType) {//1:mobile,0:wifi
-        if (upgrading) return;
 
-        bannerSwitcher.setVisibility(View.VISIBLE);
-        cameraUpgrading.setVisibility(View.GONE);
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (TextUtils.isEmpty(mac)) {
@@ -1077,9 +1104,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             }
         }
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-        boolean apMode = JFGRules.isAPDirect(uuid, mac);
+        apMode = JFGRules.isAPDirect(uuid, mac);
         boolean isOnline = net.net > 0;
         int netType = NetUtils.getNetType(this);
+
+        if (upgrading) return;
+
+        bannerSwitcher.setVisibility(View.VISIBLE);
+        cameraUpgrading.setVisibility(View.GONE);
+
         bannerConnectionIcon.setImageResource(apMode ? R.drawable.camera720_icon_ap : R.drawable.camera720_icon_wifi);
         bannerConnectionIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.GONE);
         bannerConnectionText.setVisibility(upgrading ? View.INVISIBLE : View.VISIBLE);
@@ -1094,6 +1127,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (apMode) {//ap 模式禁用对讲功能
             onSpeaker(false);
             onMicrophone(false);
+            //ap 模式下不需要再跟新 liveRecording 了
+            if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
+                RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
+            }
         }
         if ((!apMode && !isOnline) || connectionType == -1) {
 
@@ -1119,7 +1156,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (bannerSwitcher.getDisplayedChild() == 1) {
             bannerSwitcher.showPrevious();
         }
-
 
         onHideBadNetWorkBanner();//不管是 WiFi 还是移动网络,都应该隐藏网络不好的 banner
 

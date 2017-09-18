@@ -32,6 +32,10 @@ public interface PanoramaCameraContact {
 
     interface View extends ViewableView {
 
+        void showRtmpLiveSetting();
+
+        void showBottomPanelInformation(String text, boolean hasDot);
+
         void onBellBatteryDrainOut();
 
         void onDeviceBatteryChanged(Integer battery);
@@ -44,7 +48,7 @@ public interface PanoramaCameraContact {
 
         void onDeviceOnLine();
 
-        void onSendCameraRtmpResponse(boolean code);
+        void onSendCameraLiveResponse(int i, boolean code);
 
         void onRtmpQueryResponse(DpMsgDefine.DPCameraLiveRtmpStatus unpackData);
 
@@ -130,9 +134,14 @@ public interface PanoramaCameraContact {
 
         boolean isApiAvailable();
 
-        void cameraLiveRtmpCtrl(int livePlatform, String url, int enable);
+        void startYoutubeLiveRtmp(String url);
+
+        void stopYoutubeLiveRtmp();
+
+        void cameraLiveRtmpCtrl(int livePlatform, int enable);
 
         void clean();
 
+        int getBattery();
     }
 }

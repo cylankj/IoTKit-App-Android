@@ -16,6 +16,7 @@
 //
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -35,6 +37,8 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -67,11 +71,33 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         return new Subscription[]{getAccountInfo()};
     }
 
+    private SHARE_MEDIA parseLoginType(int loginType) {
+        SHARE_MEDIA share_media = null;
+        switch (loginType) {
+            case 3:
+                share_media = SHARE_MEDIA.QQ;
+                break;
+            case 4:
+                share_media = SHARE_MEDIA.SINA;
+                break;
+            case 6:
+                share_media = SHARE_MEDIA.TWITTER;
+                break;
+            case 7:
+                share_media = SHARE_MEDIA.FACEBOOK;
+                break;
+        }
+        return share_media;
+    }
+
     /**
      * 退出登录
      */
     @Override
-    public void logOut(String account) {
+    public void logOut(String account, Activity activity) {
+        int loginType = DataSourceManager.getInstance().getLoginType();
+        PreferencesUtils.remove(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.SINA.toString());
+        UMShareAPI.get(activity).deleteOauth(activity, parseLoginType(loginType), null);
         BaseApplication.getAppComponent().getSourceManager().logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(retAccount -> {

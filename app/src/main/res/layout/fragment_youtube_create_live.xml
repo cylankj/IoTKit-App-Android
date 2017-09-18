@@ -112,6 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_white"
+                android:visibility="gone"
                 app:sv_sub_title="@string/NO_SET"
                 app:sv_title="@string/TO"
                 app:sv_v_divider="true" />
@@ -124,7 +125,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:paddingEnd="@dimen/y15"
                 android:paddingStart="@dimen/y15"
-                android:text="@string/LIVE_DETAIL_DEL_END_TIME"
+                android:text="@string/LIVE_DETAIL_ADD_END_TIME"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp16" />
         </LinearLayout>

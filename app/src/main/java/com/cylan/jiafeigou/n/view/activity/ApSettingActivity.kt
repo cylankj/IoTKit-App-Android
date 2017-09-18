@@ -78,7 +78,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             val ssid: String = et_ap_name.text.toString()
             val pwd: String = et_ap_pwd.text.toString()
             if (TextUtils.isEmpty(ssid)) {
-                ToastUtil.showToast("缺语言包：请输入热点名称")
+                ToastUtil.showToast(getString(R.string.HOTSPOT_NEME_HINT))
                 return@setOnClickListener
             }
             if (TextUtils.isEmpty(pwd)) {
@@ -98,6 +98,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
 //            ToastUtil.showToast("设计缺陷:确保sim正常使用")
             val fullCid: String = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID)
             LoadingDialog.showLoading(this, getString(R.string.HOTSPOT_OPENING), true)
+            UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
             val s: Subscription = UdpDevice.getDevicePortrait(fullCid, UdpConstant.PORT, UdpConstant.IP)
                     .flatMap { r -> UdpDevice.sendWifiInfo(r, ssid, pwd, 3, UdpConstant.IP, UdpConstant.PORT) }
                     .subscribeOn(Schedulers.newThread())

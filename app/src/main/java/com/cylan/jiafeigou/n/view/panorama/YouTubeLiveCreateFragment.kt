@@ -47,8 +47,6 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         super.initViewAndListener()
         custom_toolbar.setBackAction { activity.onBackPressed() }
         custom_toolbar.setRightAction { createLiveEvent() }
-
-
     }
 
     private val title: String
@@ -289,6 +287,11 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
 
     override fun onCreateLiveBroadcastSuccess(eventData: EventData?) {
         listener?.invoke()
+    }
+
+    override fun onCreateLiveBroadcastTimeout() {
+        AppLogger.w("wow~ ⊙o⊙,超时了啊,是不是没开代理?")
+        ToastUtil.showToast(getString(R.string.Request_TimeOut))
     }
 
     var listener: (() -> Unit)? = null
