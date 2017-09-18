@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +65,21 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void onResume() {
         super.onResume();
-        customToolbar.setBackAction((View v) -> {
-            showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
-        });
+        customToolbar.setBackAction((View v) -> showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false));
+        try {
+            View view = getView();
+            view.setFocusableInTouchMode(true);
+            view.requestFocus();
+            view.setOnKeyListener((v, keyCode, event) -> {
+                if (keyCode == KeyEvent.KEYCODE_BACK
+                        && event.getAction() == KeyEvent.ACTION_UP) {
+                    showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
+                    return true;
+                }
+                return false;
+            });
+        } catch (Exception e) {
+        }
     }
 
     @Override
