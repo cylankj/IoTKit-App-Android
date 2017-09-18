@@ -99,6 +99,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     override fun onStart() {
         super.onStart()
         account = account
+        permission = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, "EVERYONE")
     }
 
     fun getFacebookDescription(): String {
