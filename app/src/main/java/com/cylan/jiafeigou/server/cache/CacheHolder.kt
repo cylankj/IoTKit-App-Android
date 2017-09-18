@@ -157,11 +157,11 @@ var emptyPropertyItemList: MutableList<PropertyItem> = mutableListOf()
 
 fun getProperty(uuid: String? = "", msgId: Long): PropertyItem = BaseApplication.getPropertyItemBox()[msgIdKey(uuid, msgId)] ?: EMPTY_PROPERTY_ITEM
 
-fun getPropertyQuery(uuid: String? = "", msgId: Long): Query<PropertyItem> = BaseApplication.getPropertyItemBox().query().equal(PropertyItem_.__ID_PROPERTY, msgIdKey(uuid, msgId)).build()
+//fun getPropertyQuery(uuid: String? = "", msgId: Long): Query<PropertyItem> = BaseApplication.getPropertyItemBox().query().equal(PropertyItem_.__ID_PROPERTY, msgIdKey(uuid, msgId)).build()
 
-fun getPropertyList(uuid: String? = "", msgId: Long): MutableList<PropertyItem> = BaseApplication.getPropertyItemBox().query().equal(PropertyItem_.uuid, uuid ?: "").equal(PropertyItem_.msgId, msgId.toLong()).build().find()
+//fun getPropertyList(uuid: String? = "", msgId: Long): MutableList<PropertyItem> = BaseApplication.getPropertyItemBox().query().equal(PropertyItem_.uuid, uuid ?: "").equal(PropertyItem_.msgId, msgId.toLong()).build().find()
 
-fun getPropertyListQuery(uuid: String? = "", msgId: Long): Query<PropertyItem> = BaseApplication.getPropertyItemBox().query().equal(PropertyItem_.uuid, uuid ?: "").equal(PropertyItem_.msgId, msgId.toLong()).build()
+//fun getPropertyListQuery(uuid: String? = "", msgId: Long): Query<PropertyItem> = BaseApplication.getPropertyItemBox().query().equal(PropertyItem_.uuid, uuid ?: "").equal(PropertyItem_.msgId, msgId.toLong()).build()
 
 fun saveProperty(uuid: String? = "", valueMap: MutableMap<Long, List<*>>?, hashStrategy: ((String?, Long, Long) -> Long?)?) = try {
     {
