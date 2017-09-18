@@ -8,10 +8,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -28,7 +26,7 @@ public class UdpDevice {
      * @param fullCid 12位cid
      * @return
      */
-    public Observable<String> pingDevice(final String fullCid) {
+    public static Observable<String> pingDevice(final String ip, final String fullCid) {
         rx.Observable<String> result = RxBus.getCacheInstance().toObservable(JfgUdpMsg.PingAck.class)
                 .subscribeOn(Schedulers.newThread())
                 .timeout(2, TimeUnit.SECONDS)
@@ -39,9 +37,9 @@ public class UdpDevice {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(ip,
                                 UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(ip,
                                 UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();

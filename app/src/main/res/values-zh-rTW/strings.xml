@@ -282,7 +282,7 @@
   <string name="HOME">主頁</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">無法連接到熱點</string>
   <string name="HOTSPOT_CONNECT_FAILED">連接失敗，請重試</string>
-  <string name="HOTSPOT_DEFAULT">Cam&#8211;Hotspot</string>
+  <string name="HOTSPOT_DEFAULT">Cam-Hotspot</string>
   <string name="HOTSPOT_DEVICE_CONNECTING">等待設備連接</string>
   <string name="HOTSPOT_NAME">熱點: %s</string>
   <string name="HOTSPOT_NEME_HINT">請輸入熱點名稱</string>
@@ -1074,13 +1074,13 @@
   <string name="WIFI_OFF">您的手機未打開WiFi開關，請打開後重試</string>
   <string name="WIFI_PWD">WiFi密碼</string>
   <string name="WIFI_PWD_1">WiFi密碼：</string>
-  <string name="WIFI_SET_2">1.請檢查設備WiFi燈是否藍色閃爍,如果沒有,請長按WiFi鍵約3秒 \n2.打開iPhone的設置&#8211;>無線網路,選擇\“%s\”加入，密碼8個1</string>
-  <string name="WIFI_SET_3">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;**&#8211;******”加入，密碼8個1</string>
-  <string name="WIFI_SET_3_1">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;ML&#8211;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_2">1.請檢查設備WiFi燈是否藍色閃爍,如果沒有,請長按WiFi鍵約3秒 \n2.打開iPhone的設置->無線網路,選擇\“%s\”加入，密碼8個1</string>
+  <string name="WIFI_SET_3">請在系統設置->無線區域網，選擇“DOG-**-******”加入，密碼8個1</string>
+  <string name="WIFI_SET_3_1">請在系統設置->無線區域網，選擇“DOG-ML-******”加入，密碼8個1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暫不支持5GHz的WiFi信號</string>
-  <string name="WIFI_SET_RS">請在系統設置&#8211;>無線區域網，選擇“RS&#8211;CAM&#8211;******”加入，密碼8個1</string>
-  <string name="WIFI_SET_VER">請在系統設置&#8211;>無線區域網，選擇“%s”加入，密碼8個1</string>
+  <string name="WIFI_SET_RS">請在系統設置->無線區域網，選擇“RS-CAM-******”加入，密碼8個1</string>
+  <string name="WIFI_SET_VER">請在系統設置->無線區域網，選擇“%s”加入，密碼8個1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1111,7 +1111,7 @@
   <string name="connecting_ap">正在連接&#8230;</string>
   <string name="contacts_auth">通訊錄</string>
   <string name="copy">複製</string>
-  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
+  <string name="copyrightEn">Copyright ©2005-%s Cylan.All Rights Reserved.</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n可能是一個電話號碼，你可以：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1135,7 +1135,7 @@
   <string name="please_choose_wifi">請選擇WiFi網路</string>
   <string name="receive_new_news">收到%s條新訊息</string>
   <string name="rename">編輯名稱</string>
-  <string name="service_phonenum">+86 400&#8211;716&#8211;3232</string>
+  <string name="service_phonenum">+86 400-716-3232</string>
   <string name="set_failed">設定失敗</string>
   <string name="setwifi_check">請設置手機連接到“%s”WiFi網路，再進行配置</string>
   <string name="share_content">最近我在用這款APP，配合一個攝像機可以隨時隨地看到家裏，非常好用！推薦你也試試</string>

@@ -163,7 +163,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
     }
 
     override fun onBackPressed() {
-        finishExt()
+        ct_tool_bar.performClick();
     }
 
     fun needTurnOnWriteSetting(): Boolean {
