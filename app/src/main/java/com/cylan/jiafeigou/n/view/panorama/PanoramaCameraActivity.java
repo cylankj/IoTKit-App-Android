@@ -260,6 +260,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelAlbumItem.showHint(false);
 
         initPanoramaVideoView();
+        panoramaViewMode = PreferencesUtils.getInt(JConstant.PANORAMA_VIEW_MODE, PANORAMA_VIEW_MODE.MODE_PICTURE);
+        onRefreshViewModeUI(panoramaViewMode, false, false);
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -403,6 +405,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             onRefreshConnectionMode(-1);
         }
         onRefreshViewModeUI(panoramaViewMode, false, false);
+        onRefreshControllerView(false, false);
     }
 
     @Override
@@ -530,6 +533,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         presenter.cancelViewer();
         preNetType = -1;
+        PreferencesUtils.putInt(JConstant.PANORAMA_VIEW_MODE, panoramaViewMode);
     }
 
     @Override
@@ -638,6 +642,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         showRtmpLiveSetting();
                     } else {
                         AppLogger.w("将进行 live 直播");
+                        bottomPanelAlbumItem.setVisibility(View.GONE);
                         presenter.cameraLiveRtmpCtrl(livePlatform, 1);
                     }
                 } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
@@ -670,7 +675,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                             R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
                 })
-                .setNegativeButton(R.string.CANCEL, null)
+                .setNegativeButton(R.string.CANCEL, (dialog, which) -> onRefreshControllerView(presenter.getLiveAction().hasResolution, false))
                 .show();
     }
 
@@ -702,7 +707,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void switchViewerModeToPicture() {
         AppLogger.w("switchViewerModeToPicture");
         hideVideoModePop();
-        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_PICTURE, true, false);
+        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_PICTURE, presenter.getLiveAction().hasResolution, false);
+        onRefreshControllerView(presenter.getLiveAction().hasResolution, true);
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_video)
@@ -712,15 +718,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             PreferencesUtils.putBoolean(JConstant.KEY_PANORAMA_POP_HINT, false);
             showVideoModePop();
         }
-        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_VIDEO, true, false);
+        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_VIDEO, presenter.getLiveAction().hasResolution, false);
+        onRefreshControllerView(presenter.getLiveAction().hasResolution, true);
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_rtmp)
     public void switchViewerModeToRtmpLive() {
         AppLogger.w("switchViewerModeToRtmpLive");
-        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, true, false);
-        // TODO: 2017/9/9 just for test
-        bottomPanelPhotoGraphItem.setEnabled(true);
+        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, presenter.getLiveAction().hasResolution, false);
+        onRefreshControllerView(presenter.getLiveAction().hasResolution, true);
     }
 
 
@@ -819,6 +825,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             startActivity(intent);
         }
     }
+
 
     public void clickedQuickMenuItem1SwitchMic(View view) {
         AppLogger.w("clickedQuickMenuItem1SwitchMic");
@@ -953,6 +960,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             } else {
                 // TODO: 2017/9/9 失败了
                 onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, presenter.getLiveAction().hasResolution, false);
+                onRefreshControllerView(presenter.getLiveAction().hasResolution, false);
                 AppLogger.w("rtmp 配置消息发送失败了");
             }
         } else if (i == 0) {//结束的响应
@@ -965,7 +973,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (unpackData.flag != 3 && unpackData.error == 0) {
             if (panoramaRecordMode != PANORAMA_RECORD_MODE.MODE_LIVE) {
                 panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LIVE;
-                onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, true, true);
+                onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, presenter.getLiveAction().hasResolution, true);
+                onRefreshControllerView(presenter.getLiveAction().hasResolution, false);
             }
         }
     }
@@ -989,6 +998,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //        rtmpAddress = null;
         livePlatform = -1;
         showBannerTextInformation(getString(R.string.LIVE_FAILED), false);
+    }
+
+    @Override
+    public void onShowLiveCreateView() {
+
     }
 
     public void onDeviceUpgrade() {
@@ -1047,22 +1061,40 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
                 bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_picture);
                 bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_photograph_selector);
+                bottomPanelLivePlatform.setVisibility(View.GONE);
+                ViewGroup.LayoutParams layoutParams = bottomPanelMoreItem.getLayoutParams();
+                int pixelSize = getResources().getDimensionPixelSize(R.dimen.y43);
+                layoutParams.width = pixelSize;
+                layoutParams.height = pixelSize;
+                bottomPanelMoreItem.setLayoutParams(layoutParams);
             }
             break;
             case PANORAMA_VIEW_MODE.MODE_VIDEO: {
                 panoramaRecordMode = record ? panoramaRecordMode : PANORAMA_RECORD_MODE.MODE_NONE;
                 bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
                 bottomPanelPhotoGraphItem.setImageResource(record ? R.drawable.camera720_icon_video_recording_selector : R.drawable.camera720_icon_short_video_selector);
+                bottomPanelLivePlatform.setVisibility(View.GONE);
+                ViewGroup.LayoutParams layoutParams = bottomPanelMoreItem.getLayoutParams();
+                int pixelSize = getResources().getDimensionPixelSize(R.dimen.y43);
+                layoutParams.width = pixelSize;
+                layoutParams.height = pixelSize;
+                bottomPanelMoreItem.setLayoutParams(layoutParams);
             }
             break;
             case PANORAMA_VIEW_MODE.MODE_LIVE: {
                 panoramaRecordMode = record ? PANORAMA_RECORD_MODE.MODE_LIVE : PANORAMA_RECORD_MODE.MODE_NONE;
                 bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_rtmp);
                 bottomPanelPhotoGraphItem.setImageResource(record ? R.drawable.camera720_icon_video_recording_selector : R.drawable.camera720_icon_live_recording_selector);
+                bottomPanelLivePlatform.setVisibility(View.VISIBLE);
+                ViewGroup.LayoutParams layoutParams = bottomPanelMoreItem.getLayoutParams();
+                int pixelSize = getResources().getDimensionPixelSize(R.dimen.y26);
+                layoutParams.width = pixelSize;
+                layoutParams.height = pixelSize;
+                bottomPanelMoreItem.setLayoutParams(layoutParams);
             }
             break;
         }
-
+        onRefreshControllerView(enable && presenter.getLiveAction().hasResolution, false);
 //        bottomPanelPhotoGraphItem.setImageResource(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.drawable.camera720_icon_photograph_selector : record ? R.drawable.camera720_icon_video_recording_selector : R.drawable.camera720_icon_short_video_selector);
 //        bottomPanelSwitcherItem1ViewMode.check(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.id.act_panorama_camera_bottom_panel_picture : R.id.act_panorama_camera_bottom_panel_video);
 
@@ -1081,7 +1113,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelSwitcher.setEnabled(finalEnable);
         bottomPanelPictureMode.setEnabled(finalEnable);
         bottomPanelVideoMode.setEnabled(finalEnable);
-//        bottomPanelRtmpMode.setEnabled(finalEnable);
+
+        bottomPanelRtmpMode.setEnabled(finalEnable);
+        bottomPanelLivePlatform.setEnabled(finalEnable);
 
         bottomPanelMoreItem.setEnabled(finalEnable);
 
@@ -1228,15 +1262,34 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
         }
         panoramaRecordMode = type;
-        if (!presenter.getLiveAction().hasResolution) return;
-//        if (bottomPanelSwitcher.getDisplayedChild() == 0) {
-//            bottomPanelSwitcher.showNext();
-//        }
+        if (!presenter.getLiveAction().hasResolution && type != PANORAMA_RECORD_MODE.MODE_LIVE) {
+            //第二个条件是为了测试用的,
+            return;
+        }
+
+        if (bottomPanelSwitcher.getDisplayedChild() == 0) {
+            bottomPanelSwitcher.showNext();
+        }
         if (bottomPanelAlbumItem.getVisibility() == View.VISIBLE) {
             bottomPanelAlbumItem.setVisibility(View.GONE);
         }
-        if (bottomPanelMoreItem.getVisibility() == View.VISIBLE) {
-            bottomPanelMoreItem.setVisibility(View.GONE);
+        if (type == PANORAMA_RECORD_MODE.MODE_LIVE) {
+            if (bottomPanelMoreItem.getVisibility() != View.VISIBLE) {
+                bottomPanelMoreItem.setVisibility(View.VISIBLE);
+            }
+            if (!bottomPanelMoreItem.isEnabled()) {
+                bottomPanelMoreItem.setEnabled(true);
+            }
+            if (bottomPanelLivePlatform.getVisibility() == View.VISIBLE) {
+                bottomPanelLivePlatform.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            if (bottomPanelMoreItem.getVisibility() == View.VISIBLE) {
+                bottomPanelMoreItem.setVisibility(View.INVISIBLE);
+            }
+            if (bottomPanelLivePlatform.getVisibility() == View.VISIBLE) {
+                bottomPanelLivePlatform.setVisibility(View.INVISIBLE);
+            }
         }
 
         if (bottomPanelLoading.getVisibility() != View.GONE) {
@@ -1275,7 +1328,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         if (sec == 0) {
 //                            presenter.shouldRefreshUI(false);
                             RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
-                            onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true, false);
+                            onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, presenter.getLiveAction().hasResolution, false);
+                            onRefreshControllerView(presenter.getLiveAction().hasResolution, false);
                         }
                     });
                     countDownAnimator.start();
@@ -1298,7 +1352,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onReportDeviceError(int err, boolean sync) {
-        onRefreshViewModeUI(panoramaViewMode, true, false);
+        onRefreshViewModeUI(panoramaViewMode, presenter.getLiveAction().hasResolution, false);
+        onRefreshControllerView(presenter.getLiveAction().hasResolution, false);
         onRefreshControllerViewVisible(true);
         bottomPanelPhotoGraphItem.setEnabled(presenter.getLiveAction().hasResolution);//有长按事件,需要特殊对待
         switch (err) {

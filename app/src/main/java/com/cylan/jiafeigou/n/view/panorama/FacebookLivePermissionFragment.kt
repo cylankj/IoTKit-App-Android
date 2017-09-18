@@ -20,6 +20,25 @@ class FacebookLivePermissionFragment : BaseFragment<LivePremissionContract.Prese
         return R.layout.fragment_live_permission
     }
 
+    private var permission: String? = null
+        set(value) {
+            field = value
+            when (field) {
+                FACEBOOK_PERMISSION.EVERYONE.name -> {
+                    fragment_facebook_live_permission.check(R.id.live_permission_public)
+                }
+                FACEBOOK_PERMISSION.ALL_FRIENDS.name -> {
+                    fragment_facebook_live_permission.check(R.id.live_permission_friends)
+                }
+                FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name -> {
+                    fragment_facebook_live_permission.check(R.id.live_permission_friends_of_friends)
+                }
+                FACEBOOK_PERMISSION.SELF.name -> {
+                    fragment_facebook_live_permission.check(R.id.live_permission_only_me)
+                }
+            }
+        }
+
     override fun initViewAndListener() {
         super.initViewAndListener()
         custom_toolbar.setBackAction { activity.onBackPressed() }
@@ -27,42 +46,33 @@ class FacebookLivePermissionFragment : BaseFragment<LivePremissionContract.Prese
         fragment_facebook_live_permission.setOnCheckedChangeListener { _, checkId ->
             when (checkId) {
                 R.id.live_permission_friends_of_friends -> {
-                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name)
+                    permission = FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name
+//                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name)
                 }
                 R.id.live_permission_friends -> {
-                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.ALL_FRIENDS.name)
+                    permission = FACEBOOK_PERMISSION.ALL_FRIENDS.name
+//                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.ALL_FRIENDS.name)
                 }
                 R.id.live_permission_only_me -> {
-                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.SELF.name)
+                    permission = FACEBOOK_PERMISSION.SELF.name
+//                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.SELF.name)
                 }
                 R.id.live_permission_public -> {
-                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.EVERYONE.name)
+                    permission = FACEBOOK_PERMISSION.EVERYONE.name
+//                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.EVERYONE.name)
                 }
             }
         }
     }
 
     private fun initSelectedPermission() {
-        val p = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY, FACEBOOK_PERMISSION.EVERYONE.name)
-        when (p) {
-            FACEBOOK_PERMISSION.EVERYONE.name -> {
-                fragment_facebook_live_permission.check(R.id.live_permission_public)
-            }
-            FACEBOOK_PERMISSION.ALL_FRIENDS.name -> {
-                fragment_facebook_live_permission.check(R.id.live_permission_friends)
-            }
-            FACEBOOK_PERMISSION.FRIENDS_OF_FRIENDS.name -> {
-                fragment_facebook_live_permission.check(R.id.live_permission_friends_of_friends)
-            }
-            FACEBOOK_PERMISSION.SELF.name -> {
-                fragment_facebook_live_permission.check(R.id.live_permission_only_me)
-            }
-        }
+        permission = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, FACEBOOK_PERMISSION.EVERYONE.name)
     }
 
 
     override fun onDetach() {
         super.onDetach()
+        callBack.callBack(permission)
     }
 
 

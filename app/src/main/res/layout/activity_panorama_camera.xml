@@ -256,54 +256,58 @@
 
         <ViewSwitcher
             android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!--<RadioGroup-->
-            <!--android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="horizontal">-->
+            <RadioGroup
+            android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y8"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <!--<RadioButton-->
-            <!--android:id="@+id/act_panorama_camera_bottom_panel_picture"-->
-            <!--android:layout_width="@dimen/y26"-->
-            <!--android:layout_height="@dimen/y26"-->
-            <!--android:button="@drawable/camera720_icon_camera_selector"-->
-            <!--android:checked="true" />-->
+            <RadioButton
+            android:id="@+id/act_panorama_camera_bottom_panel_picture"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:button="@drawable/camera720_icon_camera_selector"
+            android:checked="true" />
 
-            <!--<RadioButton-->
-            <!--android:id="@+id/act_panorama_camera_bottom_panel_video"-->
-            <!--android:layout_width="@dimen/y26"-->
-            <!--android:layout_height="@dimen/y26"-->
-            <!--android:layout_marginEnd="@dimen/y32"-->
-            <!--android:layout_marginStart="@dimen/y32"-->
-            <!--android:button="@drawable/camera720_icon_video_selector" />-->
+            <RadioButton
+            android:id="@+id/act_panorama_camera_bottom_panel_video"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:layout_marginEnd="@dimen/y32"
+            android:layout_marginStart="@dimen/y32"
+            android:button="@drawable/camera720_icon_video_selector" />
 
-            <!--<RadioButton-->
-            <!--android:id="@+id/act_panorama_camera_bottom_panel_rtmp"-->
-            <!--android:layout_width="@dimen/y26"-->
-            <!--android:layout_height="@dimen/y26"-->
-            <!--android:button="@drawable/camera720_icon_live_selector" />-->
-            <!--</RadioGroup>-->
+            <RadioButton
+            android:id="@+id/act_panorama_camera_bottom_panel_rtmp"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:button="@drawable/camera720_icon_live_selector" />
+            </RadioGroup>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/y15"
+                android:paddingStart="@dimen/y15">
 
                 <ImageView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/y8"
                     android:layout_toStartOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
                     android:src="@drawable/panorama_redording_red_dot" />
 
@@ -312,8 +316,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginEnd="@dimen/y15"
-                    android:layout_marginStart="@dimen/y15"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:maxLines="1"
@@ -347,13 +349,13 @@
             android:id="@+id/act_panorama_bottom_panel_camera_photograph"
             android:layout_width="@dimen/y70"
             android:layout_height="@dimen/y70"
+            android:layout_marginBottom="@dimen/y18"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             android:src="@drawable/camera720_icon_photograph_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_bottom_panel_switcher_menu" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ProgressBar
             android:id="@+id/act_panorama_bottom_panel_loading"
@@ -380,8 +382,8 @@
 
         <ImageButton
             android:id="@+id/act_panorama_camera_bottom_panel_more"
-            android:layout_width="@dimen/y40"
-            android:layout_height="@dimen/y40"
+            android:layout_width="@dimen/y43"
+            android:layout_height="@dimen/y43"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             android:src="@drawable/camera720_icon_more_selector"

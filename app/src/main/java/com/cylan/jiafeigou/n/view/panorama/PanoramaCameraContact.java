@@ -54,6 +54,8 @@ public interface PanoramaCameraContact {
 
         void onRtmpAddressError();
 
+        void onShowLiveCreateView();
+
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)

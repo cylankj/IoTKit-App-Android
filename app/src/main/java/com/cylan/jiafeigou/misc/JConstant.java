@@ -179,6 +179,7 @@ public class JConstant {
     public static final String OPEN_LOGIN_MAP = "OPEN_LOGIN_MAP";
     public static final String WEIBO_PREF_LIVE_URL = "WEIBO_PREF_LIVE_URL";
     public static final String FACEBOOK_PREF_PERMISSION_KEY = "FACEBOOK_PREF_PERMISSION_KEY";
+    public static final String PANORAMA_VIEW_MODE = "PANORAMA_VIEW_MODE";
     public static String FACEBOOK_PREF_VIDEO_ID = "FACEBOOK_PREF_VIDEO_ID";
 
 

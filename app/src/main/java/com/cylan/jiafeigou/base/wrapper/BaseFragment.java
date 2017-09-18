@@ -104,9 +104,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (presenter != null) {
             presenter.onViewDetached();
         }
-        if (callBack != null) {
-            callBack.callBack(callBack);
-        }
     }
 
     protected abstract void setFragmentComponent(FragmentComponent fragmentComponent);

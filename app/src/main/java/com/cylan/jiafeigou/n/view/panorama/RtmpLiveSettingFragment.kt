@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_live_setting.*
 import kotlinx.android.synthetic.main.layout_rtmp.*
 
+
 /**
  * Created by yanzhendong on 2017/9/7.
  */
@@ -63,7 +64,12 @@ class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
     private fun initKeyBoard() {
         listener = KeyboardUtil.attach(activity, activity.panel_root, { isShowing ->
             if (isShowing) {
+                val focused = rtmp_et_miyao.isFocused
                 activity.live_setting_scroller.fullScroll(ScrollView.FOCUS_DOWN)
+                if (focused) {
+                    rtmp_et_miyao.post { rtmp_et_miyao.requestFocus() }
+                }
+
             }
         })
         KPSwitchConflictUtil.attach(activity.panel_root, rtmp_et_miyao)

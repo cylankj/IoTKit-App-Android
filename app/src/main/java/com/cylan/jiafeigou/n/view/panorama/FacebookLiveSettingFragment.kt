@@ -110,7 +110,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     fun setFacebookPermission() {
         val instance = FacebookLivePermissionFragment.newInstance()
         instance.setCallBack {
-            permission = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_PERMISSION_KEY + ":" + uuid, "EVERYONE")
+            permission = it as? String ?: "EVERYONE"
         }
         ActivityUtils.addFragmentSlideInFromRight(fragmentManager, instance, android.R.id.content)
     }
