@@ -20,6 +20,12 @@ public class ShareOptionMenuDialog extends DialogFragment {
     private DialogShareOptionMenuBinding shareBinding;
     private ShareOptionClickListener listener;
     private DialogInterface.OnCancelListener dismiss;
+    private ShareOptionClickListener instance = shareItemType -> {
+        dismiss();
+        if (listener != null) {
+            listener.onShareOptionClick(shareItemType);
+        }
+    };
 
     public static ShareOptionMenuDialog newInstance(ShareOptionClickListener listener, boolean showTimeLine, boolean showWechatFriends, boolean showQQ, boolean showQZone, boolean showWeibo, boolean showTwitter, boolean showFacebook, boolean showLinks, DialogInterface.OnCancelListener dismiss) {
         ShareOptionMenuDialog dialog = new ShareOptionMenuDialog();
@@ -42,9 +48,7 @@ public class ShareOptionMenuDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         shareBinding = DialogShareOptionMenuBinding.inflate(inflater);
-        if (listener != null) {
-            shareBinding.setOptionListener(listener);
-        }
+        shareBinding.setOptionListener(instance);
         Bundle arguments = getArguments();
         shareBinding.tvShareToTimeline.setVisibility(arguments.getBoolean("showTimeLine", true) ? View.VISIBLE : View.GONE);
         shareBinding.tvShareToWechatFriends.setVisibility(arguments.getBoolean("showWechatFriends", true) ? View.VISIBLE : View.GONE);

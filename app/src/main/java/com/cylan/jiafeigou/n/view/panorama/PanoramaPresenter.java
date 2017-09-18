@@ -78,7 +78,6 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter {
 
     private boolean isFirst = true;
-    //    private boolean shouldRefreshRecord = false;
     private volatile int battery = -1;
     private volatile boolean charge = false;
     private boolean notifyBatteryLow = true;
@@ -86,7 +85,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private volatile boolean isRtmpLive = false;
     private volatile boolean hasSDCard;
     private volatile boolean isInProgress = false;
-//    private YouTubeApi.LiveEvent liveEvent;
 
     @Override
     public boolean isApiAvailable() {
@@ -153,7 +151,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return null;
                 })
-                .timeout(30, TimeUnit.SECONDS)
+                .timeout(60, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> isInProgress = true)
                 .doOnTerminate(() -> isInProgress = false)
@@ -163,15 +161,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         // TODO: 2017/9/12 没有异常,正常播放了
                     } else if (error instanceof IllegalArgumentException) {
                         mView.onRtmpAddressError();
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     } else if (error instanceof GoogleJsonResponseException) {
                         mView.onRtmpAddressError();
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     } else {
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                         AppLogger.w(MiscUtils.getErr(error));
                     }
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mView.onRtmpAddressError();
                     }
+                    mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
+                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startYoutubeLiveRtmp", subscribe);
@@ -217,6 +220,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
                         EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
                         YouTubeApi.endEvent(youTube, eventData.getId());
+                        PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid);
                     } catch (Exception e) {
                         AppLogger.w(MiscUtils.getErr(e));
                         return e;
@@ -318,12 +322,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         }, e -> {
                             if (e instanceof TimeoutException) {
                                 mView.onRtmpAddressError();
+                                mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                             } else if (e instanceof WeiboHttpException) {
                                 int statusCode = ((WeiboHttpException) e).getStatusCode();
                                 mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                             } else {
                                 mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                             }
+                            RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
                             AppLogger.w(MiscUtils.getErr(e));
                         }
                 );
@@ -432,7 +438,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (e instanceof TimeoutException) {
                         mView.onRtmpAddressError();
                     }
+                    mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
+                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
                 });
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startRtmpLive", subscribe);
     }
@@ -518,11 +526,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                         }
                     }
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(MiscUtils.getErr(e));
+                    mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
+                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
                 });
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startFacebookRtmpLive", subscribe);
 
@@ -570,6 +581,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         Context context = ContextUtils.getContext();
         if (enable == 1) {
             mView.showBottomPanelInformation(context.getString(R.string.LIVE_CREATING, getPlatformString(context, livePlatform)), false);
+            mView.onShowLiveCreateView();
         }
         switch (livePlatform) {
             case 0://facebook

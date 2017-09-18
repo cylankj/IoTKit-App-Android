@@ -154,7 +154,7 @@ public class ShareManager {
             if (lifeCircle != null) {
                 lifeCircle.dismiss();
                 ((Application) ContextUtils.getContext()).unregisterActivityLifecycleCallbacks(lifeCircle);
-                AppLogger.d("清理");
+                AppLogger.w("清理");
             }
         }
 
@@ -165,7 +165,7 @@ public class ShareManager {
 
         @Override
         public void onStart(SHARE_MEDIA share_media) {
-            AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+            AppLogger.w("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
 //            if (activity != null) {
 //                LoadingDialog.showLoading(activity.getSupportFragmentManager(), activity.getResources().getString(R.string.LOADING));
 //            }
@@ -173,7 +173,7 @@ public class ShareManager {
 
         @Override
         public void onResult(SHARE_MEDIA share_media) {
-            AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
+            AppLogger.w("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
             if (activity != null) {
                 ToastUtil.showPositiveToast(activity.getString(R.string.Tap3_ShareDevice_SuccessTips));
             }
@@ -182,7 +182,7 @@ public class ShareManager {
 
         @Override
         public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-            AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
+            AppLogger.w("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
             if (activity != null) {
                 if (!UMShareAPI.get(activity).isInstall(activity, share_media)) {
                     ToastUtil.showNegativeToast(activity.getString(R.string.Tap1_Album_Share_NotInstalledTips, getPlatformString(share_media)));
@@ -195,7 +195,7 @@ public class ShareManager {
 
         @Override
         public void onCancel(SHARE_MEDIA share_media) {
-            AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
+            AppLogger.w("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
             if (activity != null) {
                 ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_SuccessTips));
             }
@@ -264,7 +264,7 @@ public class ShareManager {
             if (activity != null) {
                 LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING), true);
             }
-            AppLogger.e("网址分享,不带上传");
+            AppLogger.w("网址分享,不带上传");
             if (activity != null) {
                 com.umeng.socialize.ShareAction shareAction = new com.umeng.socialize.ShareAction(activity);
                 UMWeb web = new UMWeb(webLink);
@@ -324,7 +324,7 @@ public class ShareManager {
 
         @Override
         public void onShareOptionClick(int shareItemType) {
-            AppLogger.e("H5分享模式,在指定的 fragment 里分享");
+            AppLogger.w("H5分享模式,在指定的 fragment 里分享");
             if (dialog != null) dialog.dismiss();
             dialog = null;
             if (activity != null) {
@@ -362,7 +362,14 @@ public class ShareManager {
         @Override
         public void onShareOptionClick(int shareItemType) {
             super.onShareOptionClick(shareItemType);
-            AppLogger.e("图片分享,直接分享");
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            dialog = null;
+            if (activity != null) {
+                LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING), true);
+            }
+            AppLogger.w("图片分享,直接分享");
             if (activity != null) {
                 com.umeng.socialize.ShareAction shareAction = new com.umeng.socialize.ShareAction(activity);
                 SHARE_MEDIA platform = getPlatform(shareItemType);

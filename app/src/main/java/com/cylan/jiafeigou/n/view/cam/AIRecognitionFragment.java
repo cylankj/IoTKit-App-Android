@@ -46,7 +46,7 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
     FastItemAdapter<AISelectionItem> itemAdapter;
 
     private AISelectionItem[] prefabObjs = new AISelectionItem[]{
-            new AISelectionItem(1, R.drawable.icon_man_hl, R.drawable.icon_man, ContextUtils.getContext().getString(R.string.AI_HUMAN)),//人形
+            new AISelectionItem(1, R.drawable.icon_people_hl, R.drawable.icon_people, ContextUtils.getContext().getString(R.string.AI_HUMAN)),//人形
             new AISelectionItem(2, R.drawable.icon_cat_hl, R.drawable.icon_cat, ContextUtils.getContext().getString(R.string.AI_CAT)),//猫
             new AISelectionItem(3, R.drawable.icon_dog_hl, R.drawable.icon_dog, ContextUtils.getContext().getString(R.string.AI_DOG)),//狗
             new AISelectionItem(4, R.drawable.icon_car_hl, R.drawable.icon_car, ContextUtils.getContext().getString(R.string.AI_VEHICLE)),//车辆

@@ -260,7 +260,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelAlbumItem.showHint(false);
 
         initPanoramaVideoView();
-        panoramaViewMode = PreferencesUtils.getInt(JConstant.PANORAMA_VIEW_MODE, PANORAMA_VIEW_MODE.MODE_PICTURE);
+        panoramaViewMode = PreferencesUtils.getInt(JConstant.PANORAMA_VIEW_MODE + ":" + uuid, PANORAMA_VIEW_MODE.MODE_PICTURE);
         onRefreshViewModeUI(panoramaViewMode, false, false);
     }
 
@@ -533,7 +533,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         presenter.cancelViewer();
         preNetType = -1;
-        PreferencesUtils.putInt(JConstant.PANORAMA_VIEW_MODE, panoramaViewMode);
+        PreferencesUtils.putInt(JConstant.PANORAMA_VIEW_MODE + ":" + uuid, panoramaViewMode);
     }
 
     @Override
@@ -643,6 +643,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     } else {
                         AppLogger.w("将进行 live 直播");
                         bottomPanelAlbumItem.setVisibility(View.GONE);
+
                         presenter.cameraLiveRtmpCtrl(livePlatform, 1);
                     }
                 } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
@@ -1002,7 +1003,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowLiveCreateView() {
-
+        bottomPanelAlbumItem.setVisibility(View.INVISIBLE);
+        bottomPanelLivePlatform.setVisibility(View.INVISIBLE);
+        bottomPanelMoreItem.setEnabled(true);
+        bottomPanelMoreItem.setVisibility(View.VISIBLE);
     }
 
     public void onDeviceUpgrade() {

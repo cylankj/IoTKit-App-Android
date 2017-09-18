@@ -671,7 +671,7 @@ public class YouTubeApi {
             AppLogger.w("正在查询当前直播状态,只有正在直播中的 broadcast 才能结束" + broadcast.toPrettyString());
             if ("live".equals(broadcast.getStatus().getLifeCycleStatus())) {
                 Transition transitionRequest = youtube.liveBroadcasts().transition(
-                        "completed", broadcastId, "status");
+                        "complete", broadcastId, "status");
                 LiveBroadcast execute = transitionRequest.execute();
                 AppLogger.w("执行结果为:" + execute.toPrettyString());
                 return;
