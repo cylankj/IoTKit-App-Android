@@ -57,7 +57,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.utils.WifiUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -1215,7 +1214,44 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             startActivity(new Intent(this, ApSettingActivity.class)
                     .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
         } else {
-            handleJumpToConfig(true, true);
+            boolean isWifiApEnabled = NetUtils.isWifiApEnabled();
+            if (!isWifiApEnabled) {
+                handleJumpToConfig(true, true);
+                return;
+            }
+            if (!NetUtils.isWifiApEnabled()) {
+                ToastUtil.showToast(getString(R.string.DEVICE_OFFLINE6));
+                return;
+            }
+            Subscription ssu = Observable.just("")
+                    .subscribeOn(Schedulers.io())
+                    .map(s -> {
+                        ArrayList<NetUtils.ClientScanResult> list = NetUtils.getClientList(true, 1000);
+                        if (ListUtils.isEmpty(list)) return null;
+                        //设备的mac
+                        final String mac = device.$(202, "");
+                        NetUtils.ClientScanResult result = null;
+                        for (NetUtils.ClientScanResult ret : list) {
+                            if (TextUtils.equals(mac.toLowerCase(), ret.getHWAddr().toLowerCase())) {
+                                result = ret;
+                                break;
+                            }
+                        }
+                        return result;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> {
+                        //
+                        if (result == null) {
+                            handleJumpToConfig(true, true);
+                        } else {
+                            AppLogger.d("连上热点");
+                            //wifi直连，客户端连接了设备
+                            startActivity(new Intent(this, ApSettingActivity.class)
+                                    .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+                        }
+                    }, AppLogger::e);
+            basePresenter.addSub(ssu, "ssuu");
         }
 
     }
