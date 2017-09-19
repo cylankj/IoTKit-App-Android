@@ -55,8 +55,15 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     private var account: String? = null
         set(value) {
             field = value
-            setting_facebook_account_item.subTitle = if (TextUtils.isEmpty(field)) getString(R.string.NO_SET) else field
-            setting_facebook_permission.visibility = if (TextUtils.isEmpty(field)) View.GONE else View.VISIBLE
+            if (TextUtils.isEmpty(field)) {
+                setting_facebook_account_item.subTitle = getString(R.string.LIVE_ACCOUNT_UNBOUND)
+                setting_facebook_account_item.showDivider(false)
+                setting_facebook_permission.visibility = View.GONE
+            } else {
+                setting_facebook_account_item.subTitle = field
+                setting_facebook_account_item.showDivider(false)
+                setting_facebook_permission.visibility = View.VISIBLE
+            }
         }
 
     // enum{'EVERYONE', 'ALL_FRIENDS', 'FRIENDS_OF_FRIENDS', 'SELF'}

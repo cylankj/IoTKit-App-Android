@@ -59,12 +59,14 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     private var account: String? = null
         set(value) {
             field = value
-            setting_youtube_account_item.subTitle = field ?: getString(R.string.NO_SET)
-            setting_youtube_option_container.visibility = if (field == null) View.GONE else View.VISIBLE
-            if (field != null) {
-                PreferencesUtils.putString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME, field)
-            } else {
+            if (TextUtils.isEmpty(field)) {
+                setting_youtube_account_item.subTitle = getString(R.string.LIVE_ACCOUNT_UNBOUND)
+                setting_youtube_option_container.visibility = View.GONE
                 PreferencesUtils.remove(JConstant.YOUTUBE_PREF_ACCOUNT_NAME)
+            } else {
+                setting_youtube_account_item.subTitle = field
+                setting_youtube_option_container.visibility = View.VISIBLE
+                PreferencesUtils.putString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME, field)
             }
         }
         get() {

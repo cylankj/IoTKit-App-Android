@@ -42,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_white"
+                android:focusableInTouchMode="true"
                 android:paddingBottom="@dimen/y10"
                 android:paddingTop="@dimen/y10"
                 app:xTabIndicatorColor="@color/color_36BDFF"

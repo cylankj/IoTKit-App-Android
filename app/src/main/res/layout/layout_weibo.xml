@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/y121"
         android:background="@color/color_white"
-        android:orientation="vertical"
-        android:padding="@dimen/y5">
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/setting_weibo_description"
@@ -25,6 +24,9 @@
             android:gravity="start|top"
             android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
             android:maxEms="110"
+            android:paddingEnd="@dimen/y15"
+            android:paddingStart="@dimen/y15"
+            android:paddingTop="@dimen/y15"
             android:textSize="@dimen/sp14" />
 
         <TextView
@@ -32,6 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
+            android:paddingBottom="@dimen/y5"
+            android:paddingEnd="@dimen/y5"
             android:text="110"
             android:textColor="@color/color_adadad"
             android:textSize="@dimen/sp13" />
@@ -47,6 +51,6 @@
         android:background="@color/color_white"
         app:sv_sub_title="Jane"
         app:sv_title="@string/LIVE_PLATFORM_WEIBO"
-        app:sv_v_divider="true" />
+        app:sv_v_divider="false" />
 
 </LinearLayout>

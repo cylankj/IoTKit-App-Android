@@ -17,7 +17,7 @@
         android:background="@color/color_white"
         app:sv_sub_title="Jane"
         app:sv_title="@string/LIVE_PLATFORM_YOUTUBE"
-        app:sv_v_divider="true" />
+        app:sv_v_divider="false" />
 
     <LinearLayout
         android:id="@+id/setting_youtube_option_container"

@@ -58,7 +58,7 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
     var account: String? = null
         set(value) {
             field = value
-            setting_weibo_account_item.subTitle = if (TextUtils.isEmpty(field)) getString(R.string.NO_SET) else field
+            setting_weibo_account_item.subTitle = if (TextUtils.isEmpty(field)) getString(R.string.LIVE_ACCOUNT_UNBOUND) else field
         }
 
     override fun initViewAndListener() {

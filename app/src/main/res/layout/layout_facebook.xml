@@ -17,7 +17,9 @@
         android:background="@color/color_white"
         android:gravity="start|top"
         android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
-        android:padding="@dimen/y5"
+        android:paddingEnd="@dimen/y15"
+        android:paddingStart="@dimen/y15"
+        android:paddingTop="@dimen/y15"
         android:textSize="@dimen/sp14" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
