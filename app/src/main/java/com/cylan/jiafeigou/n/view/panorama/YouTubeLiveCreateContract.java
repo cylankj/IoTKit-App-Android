@@ -24,11 +24,15 @@ public interface YouTubeLiveCreateContract {
         void onCreateLiveBroadcastSuccess(@Nullable EventData eventData);
 
         void onCreateLiveBroadcastTimeout();
+
+        void onAuthorizationException();
     }
 
     interface Presenter extends JFGPresenter<View> {
 
         void createLiveBroadcast(GoogleAccountCredential credential, String title, String description, long startTime, long endTime);
+
+        void createLiveBroadcast(String title, String description, long startTime, long endTime);
     }
 
 }

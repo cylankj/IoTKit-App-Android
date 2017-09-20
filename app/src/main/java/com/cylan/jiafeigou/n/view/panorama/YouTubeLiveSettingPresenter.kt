@@ -33,6 +33,7 @@ class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), Yo
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map {
+
                     val youTube = YouTube.Builder(
                             AndroidHttp.newCompatibleTransport(),
                             JacksonFactory.getDefaultInstance(),
@@ -82,6 +83,6 @@ class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), Yo
                 }, {
 
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"YouTubeLiveSettingPresenter#getLiveFromDevice", subscribe)
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveFromDevice", subscribe)
     }
 }

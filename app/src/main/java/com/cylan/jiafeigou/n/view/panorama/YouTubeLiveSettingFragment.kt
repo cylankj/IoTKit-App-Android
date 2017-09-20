@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.support.annotation.MainThread
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.View
@@ -17,6 +18,8 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.support.oauth2.AuthStateManager
+import com.cylan.jiafeigou.support.oauth2.Configuration
 import com.cylan.jiafeigou.support.share.ShareManager
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.MiscUtils
@@ -28,9 +31,21 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.youtube.YouTubeScopes
 import kotlinx.android.synthetic.main.layout_youtube.*
+import net.openid.appauth.*
+import okio.Okio
+import org.json.JSONException
+import org.json.JSONObject
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
+import java.nio.charset.Charset
 
 /**
  * Created by yanzhendong on 2017/9/7.
@@ -43,6 +58,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 5001
         private const val REQUEST_ACCOUNT_PICKER = 8000
         private const val REQUEST_AUTHORIZATION = 8001
+        private const val REQUEST_AUTHORIZATION_REQ = 8002
 
 
         fun newInstance(uuid: String): YouTubeLiveSettingFragment {
@@ -63,6 +79,8 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                 setting_youtube_account_item.subTitle = getString(R.string.LIVE_ACCOUNT_UNBOUND)
                 setting_youtube_option_container.visibility = View.GONE
                 PreferencesUtils.remove(JConstant.YOUTUBE_PREF_ACCOUNT_NAME)
+                AuthStateManager.getInstance(context).replace(AuthState())
+                PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid)
             } else {
                 setting_youtube_account_item.subTitle = field
                 setting_youtube_option_container.visibility = View.VISIBLE
@@ -75,6 +93,8 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
             if (field != null) {
                 setting_youtube_account_item.subTitle = field ?: getString(R.string.NO_SET)
                 setting_youtube_option_container.visibility = if (field == null) View.GONE else View.VISIBLE
+            } else if (manager.current.isAuthorized) {
+                fetchUserInfo()
             }
             return field
         }
@@ -126,6 +146,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     }
 
     private fun loadLiveBroadCast() {
+        account = null;youtubeEvent = null
         if (account != null && youtubeEvent != null) {
             setting_youtube_option_container.visibility = View.VISIBLE
             live_event_container.visibility = View.VISIBLE
@@ -144,7 +165,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
             ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeCreateFragment, android.R.id.content)
         } else {
             AlertDialog.Builder(context)
-                    .setMessage("创建新直播,将会使当前地址失效,是否创建?")
+                    .setMessage(R.string.LIVE_CREATE_NEW_LIVE)
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { dialog, _ ->
                         dialog.dismiss()
@@ -165,7 +186,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         ShareManager.byWeb(activity)
                 .withTitle(youtubeEvent?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT))
                 .withDescription(youtubeEvent?.event?.snippet?.description ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT))
-                .withUrl("https://www.youtube.com/watch?v=${youtubeEvent?.id}")
+                .withUrl(youtubeEvent?.watchUri)
                 .withThumbRes(R.mipmap.ic_launcher)
                 .shareWithLink()
     }
@@ -203,8 +224,93 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                 }
 
             }
+            REQUEST_AUTHORIZATION_REQ -> {
+                val response = AuthorizationResponse.fromIntent(data!!)
+                val ex = AuthorizationException.fromIntent(data)
+                manager.updateAfterAuthorization(response, ex)
+                if (response?.authorizationCode != null) run {
+                    // authorization code exchange is required
+                    manager.updateAfterAuthorization(response, ex)
+                    exchangeAuthorizationCode(response)
+                }
+            }
         }
     }
+
+    @MainThread
+    private fun performTokenRequest(
+            request: TokenRequest,
+            callback: AuthorizationService.TokenResponseCallback) {
+        val clientAuthentication: ClientAuthentication
+        try {
+            clientAuthentication = manager.current.clientAuthentication
+        } catch (ex: ClientAuthentication.UnsupportedAuthenticationMethod) {
+            AppLogger.w("Token request cannot be made, client authentication for the token " + "endpoint could not be constructed (%s)" + ex.toString())
+            return
+        }
+
+        authorizationService.performTokenRequest(
+                request,
+                clientAuthentication,
+                callback)
+    }
+
+    private fun exchangeAuthorizationCode(authorizationResponse: AuthorizationResponse) {
+        performTokenRequest(authorizationResponse.createTokenExchangeRequest(),
+                AuthorizationService.TokenResponseCallback { tokenResponse, authException ->
+                    manager.updateAfterTokenResponse(tokenResponse, authException)
+                    if (manager.current.isAuthorized) {
+                        fetchUserInfo()
+                    }
+                })
+    }
+
+    @MainThread
+    private fun fetchUserInfo() {
+        manager.current.performActionWithFreshTokens(authorizationService, { accessToken, idToken, ex ->
+            if (ex != null) {
+                AppLogger.e("Token refresh failed when fetching user info")
+                activity.runOnUiThread { account = null }
+                return@performActionWithFreshTokens
+            }
+
+            val discovery = manager.current.authorizationServiceConfiguration!!.discoveryDoc
+
+            val userInfoEndpoint: URL
+            try {
+                userInfoEndpoint = URL(discovery!!.userinfoEndpoint!!.toString())
+            } catch (urlEx: MalformedURLException) {
+                AppLogger.e("Failed to construct user info endpoint URL" + urlEx)
+                activity.runOnUiThread { account = null }
+                return@performActionWithFreshTokens
+            }
+
+            Schedulers.newThread().createWorker().schedule {
+                try {
+                    val conn = userInfoEndpoint.openConnection() as HttpURLConnection
+                    conn.setRequestProperty("Authorization", "Bearer " + accessToken)
+                    conn.instanceFollowRedirects = false
+                    val response = Okio.buffer(Okio.source(conn.inputStream))
+                            .readString(Charset.forName("UTF-8"))
+                    AndroidSchedulers.mainThread().createWorker().schedule {
+                        val jsonObject = JSONObject(response)
+                        if (jsonObject.has("name")) {
+                            account = jsonObject.getString("name")
+                        }
+                    }
+                } catch (ioEx: IOException) {
+                    AppLogger.e("Network error when querying userinfo endpoint" + ioEx)
+                } catch (jsonEx: JSONException) {
+                    AppLogger.e("Failed to parse userinfo response")
+                }
+            }
+        })
+
+    }
+
+    private val authorizationService: AuthorizationService by lazy { AuthorizationService(context) }
+    private val configuration: Configuration by lazy { Configuration.getInstance(context) }
+    private val manager: AuthStateManager by lazy { AuthStateManager.getInstance(context) }
 
     /**
      * Attempts to set the account used with the API credentials. If an account
@@ -230,34 +336,88 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                         dialog.dismiss()
                     })
                     .show()
-        } else if (EasyPermissions.hasPermissions(context, Manifest.permission.GET_ACCOUNTS)) {
+        } else if (isGooglePlayServicesAvailable()) {
+            //有 Google 服务,优先使用 Google 服务
+            if (EasyPermissions.hasPermissions(context, Manifest.permission.GET_ACCOUNTS)) {
 //            if (account != null && liveBroadcastId != null) {
 //                presenter.getLiveList(mCredential, liveBroadcastId!!)
 //            }
-            if (TextUtils.isEmpty(account)) {
-                // Start a dialog from which the user can choose an account
-                if (isGooglePlayServicesAvailable()) {
-                    startActivityForResult(AccountPicker.newChooseAccountIntent(
-                            null,
-                            null,
-                            arrayOf(GoogleAccountManager.ACCOUNT_TYPE),
-                            true,
-                            null,
-                            null,
-                            null,
-                            null),
-                            REQUEST_ACCOUNT_PICKER)
-                } else {
-                    acquireGooglePlayServices()
+                if (TextUtils.isEmpty(account)) {
+                    // Start a dialog from which the user can choose an account
+                    if (isGooglePlayServicesAvailable()) {
+                        startActivityForResult(AccountPicker.newChooseAccountIntent(
+                                null,
+                                null,
+                                arrayOf(GoogleAccountManager.ACCOUNT_TYPE),
+                                true,
+                                null,
+                                null,
+                                null,
+                                null),
+                                REQUEST_ACCOUNT_PICKER)
+                    } else {
+                        acquireGooglePlayServices()
+                    }
                 }
+            } else {
+                // Request the GET_ACCOUNTS permission via a user dialog
+                EasyPermissions.requestPermissions(this,
+                        getString(R.string.permission_auth, getString(R.string.contacts_auth)),
+                        REQUEST_PERMISSION_GET_ACCOUNTS,
+                        Manifest.permission.GET_ACCOUNTS)
             }
         } else {
-            // Request the GET_ACCOUNTS permission via a user dialog
-            EasyPermissions.requestPermissions(this,
-                    getString(R.string.permission_auth, getString(R.string.contacts_auth)),
-                    REQUEST_PERMISSION_GET_ACCOUNTS,
-                    Manifest.permission.GET_ACCOUNTS)
+            if (manager.current.isAuthorized) {
+                fetchUserInfo()
+            } else {
+                AuthorizationServiceConfiguration.fetchFromUrl(configuration.discoveryUri!!, { serviceConfiguration, ex ->
+                    if (ex == null) {
+                        manager.replace(AuthState(serviceConfiguration!!))
+                        val authorizationRequest = AuthorizationRequest
+                                .Builder(serviceConfiguration, configuration.clientId!!, ResponseTypeValues.CODE, configuration.redirectUri)
+                                .setScopes(
+                                        AuthorizationRequest.Scope.PROFILE,
+                                        YouTubeScopes.YOUTUBE,
+                                        YouTubeScopes.YOUTUBEPARTNER,
+                                        YouTubeScopes.YOUTUBEPARTNER_CHANNEL_AUDIT,
+                                        YouTubeScopes.YOUTUBE_READONLY,
+                                        YouTubeScopes.YOUTUBE_UPLOAD)
+                                .build()
+
+                        val requestIntent = authorizationService.getAuthorizationRequestIntent(authorizationRequest)
+                        startActivityForResult(requestIntent, REQUEST_AUTHORIZATION_REQ)
+                    }
+                })
+            }
         }
+// else if (EasyPermissions.hasPermissions(context, Manifest.permission.GET_ACCOUNTS)) {
+////            if (account != null && liveBroadcastId != null) {
+////                presenter.getLiveList(mCredential, liveBroadcastId!!)
+////            }
+//            if (TextUtils.isEmpty(account)) {
+//                // Start a dialog from which the user can choose an account
+//                if (isGooglePlayServicesAvailable()) {
+//                    startActivityForResult(AccountPicker.newChooseAccountIntent(
+//                            null,
+//                            null,
+//                            arrayOf(GoogleAccountManager.ACCOUNT_TYPE),
+//                            true,
+//                            null,
+//                            null,
+//                            null,
+//                            null),
+//                            REQUEST_ACCOUNT_PICKER)
+//                } else {
+//                    acquireGooglePlayServices()
+//                }
+//            }
+//        } else {
+//            // Request the GET_ACCOUNTS permission via a user dialog
+//            EasyPermissions.requestPermissions(this,
+//                    getString(R.string.permission_auth, getString(R.string.contacts_auth)),
+//                    REQUEST_PERMISSION_GET_ACCOUNTS,
+//                    Manifest.permission.GET_ACCOUNTS)
+//        }
     }
 
 

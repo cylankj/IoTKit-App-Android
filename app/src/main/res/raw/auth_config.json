@@ -1,0 +1,20 @@
+//{
+//  "client_id": "",
+//  "redirect_uri": "net.openid.appauthdemo:/oauth2redirect",
+//  "authorization_scope": "openid email profile",
+//  "discovery_uri": "",
+//  "authorization_endpoint_uri": "",
+//  "token_endpoint_uri": "",
+//  "registration_endpoint_uri": "",
+//  "https_required": true
+//}
+//601708158824-kubfd6isstupjams1cfekkp8c29iunte.apps.googleusercontent.com
+//PREFIX.apps.googleusercontent.com
+
+//464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb.apps.googleusercontent.com
+{
+  "client_id": "464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb.apps.googleusercontent.com",
+  "redirect_uri": "com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb:/oauth2redirect",
+  "authorization_scope": "openid email profile",
+  "discovery_uri": "https://accounts.google.com/.well-known/openid-configuration"
+}

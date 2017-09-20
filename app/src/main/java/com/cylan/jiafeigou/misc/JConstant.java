@@ -167,6 +167,7 @@ public class JConstant {
     public static final String LIVE_PLATFORM_KEY = "LIVE_PLATFORM_KEY";
 
     public static final String FACEBOOK_PREF_ACCOUNT_NAME = "FACEBOOK_PREF_ACCOUNT_NAME";
+    public static final String FACEBOOK_PREF_TOKEN_RESPONSE = "FACEBOOK_PREF_TOKEN_RESPONSE";
     public static final String YOUTUBE_PREF_ACCOUNT_NAME = "YOUTUBE_PREF_ACCOUNT_NAME";
     public static final String WEIBO_PREF_ACCOUNT_NAME = "WEIBO_PREF_ACCOUNT_NAME";
 

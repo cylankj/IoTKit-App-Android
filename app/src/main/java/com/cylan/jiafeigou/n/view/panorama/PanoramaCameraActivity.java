@@ -262,6 +262,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         initPanoramaVideoView();
         panoramaViewMode = PreferencesUtils.getInt(JConstant.PANORAMA_VIEW_MODE + ":" + uuid, PANORAMA_VIEW_MODE.MODE_PICTURE);
         onRefreshViewModeUI(panoramaViewMode, false, false);
+//        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, false, false);//just for test
+        showRtmpLiveSetting();
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {

@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.support.oauth2.AuthStateManager
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.cylan.jiafeigou.utils.TimeUtils
 import com.cylan.jiafeigou.utils.ToastUtil
@@ -26,6 +27,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTubeScopes
 import kotlinx.android.synthetic.main.fragment_youtube_create_live.*
+import net.openid.appauth.AuthState
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -33,6 +35,18 @@ import pub.devrel.easypermissions.EasyPermissions
  * Created by yanzhendong on 2017/9/6.
  */
 class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Presenter>(), YouTubeLiveCreateContract.View {
+    override fun onAuthorizationException() {
+        AppLogger.w("无效的授权信息")
+        AuthStateManager.getInstance(context).replace(AuthState())
+        PreferencesUtils.remove(JConstant.YOUTUBE_PREF_ACCOUNT_NAME)
+        PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid)
+        ToastUtil.showToast(getString(R.string.LIVE_AUTHO_FAILED))
+        if (listener != null) {
+            listener!!.invoke()
+        } else {
+            fragmentManager.popBackStack()
+        }
+    }
 
 
     override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
@@ -80,8 +94,11 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         }
 
     private fun createLiveEvent() {
-        presenter.createLiveBroadcast(mCredential, title, description, startTime, endTime)
-
+        if (isGooglePlayServicesAvailable()) {
+            presenter.createLiveBroadcast(mCredential, title, description, startTime, endTime)
+        } else {
+            presenter.createLiveBroadcast(title, description, startTime, endTime)
+        }
     }
 
     @OnClick(R.id.youtube_create_live_start_time)
@@ -115,6 +132,8 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
     }
 
     private val mCredential: GoogleAccountCredential by lazy {
+
+
         val credential = GoogleAccountCredential.usingOAuth2(
                 activity.applicationContext, YouTubeScopes.all())
                 .setBackOff(ExponentialBackOff())
@@ -286,7 +305,11 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
     }
 
     override fun onCreateLiveBroadcastSuccess(eventData: EventData?) {
-        listener?.invoke()
+        if (listener != null) {
+            listener!!.invoke()
+        } else {
+            fragmentManager.popBackStack()
+        }
     }
 
     override fun onCreateLiveBroadcastTimeout() {

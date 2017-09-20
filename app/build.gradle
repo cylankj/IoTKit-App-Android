@@ -155,7 +155,7 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/rxjava.properties'
-        pickFirst  'META-INF/*'
+        pickFirst 'META-INF/*'
     }
 
 
@@ -188,7 +188,8 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "cylan",
                                     "TWITTER_APP_KEY"    : "kvWyAC3sYGxaEmfkKDVWrKFa7",
                                     "TWITTER_APP_SECRET" : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
-                                    "FACEBOOK_APP_KEY"   : "444251309281886"
+                                    "FACEBOOK_APP_KEY"   : "444251309281886",
+                                    'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
 
             ]
         }
@@ -196,30 +197,31 @@ android {
             applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.doby.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 100043669",
-                                    "VID"                : "\\ 0002",
-                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
-                                    "qqAppId"            : "\\ 1106279832",
-                                    "qqAppKey"           : "vqSXNT11dsbu24io",
-                                    "mtaAppKey"          : "ATQ1JV694AKT",
-                                    "weChatAppId"        : "wx81d893be5216671c",
-                                    "weChatAppSecret"    : "b867a2e433701bc00dffda2099655d7e",
-                                    "sinaAppKey"         : "\\ 2444488421",
-                                    "sinaAppSecret"      : "dfba216fe44f0d6613cdda1557790a31",
-                                    "SERVER"             : "yun.jfgou.com:443",
-                                    "GCM_APP_ID"         : "\\ 985304692675",
-                                    "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "\\ 5981759669387",
-                                    "XiaoMiAppKey"       : "AFtTDKfrkO6y1WpxoGDbCw==",
-                                    "BUGLY_APPID"        : "f1f2edf649",
-                                    "BUGLY_APP_VERSION"  : versionName,
-                                    "BUGLY_APP_CHANNEL"  : "doby",
-                                    "TWITTER_APP_KEY"    : "P4mZddIEumAsk7OnzNWpcrQy8",
-                                    "TWITTER_APP_SECRET" : "1T5Pg7UBRVkq6OSvOs9EBEGiMXVLYmAeOdW3HPTazuqjWyzRAm",
-                                    "FACEBOOK_APP_KEY"   : "1698182270477391"
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES"  : "com.cylan.doby.hms.update.provider",
+                                    "HW_APP_ID"            : "\\ 100043669",
+                                    "VID"                  : "\\ 0002",
+                                    "VKEY"                 : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "qqAppId"              : "\\ 1106279832",
+                                    "qqAppKey"             : "vqSXNT11dsbu24io",
+                                    "mtaAppKey"            : "ATQ1JV694AKT",
+                                    "weChatAppId"          : "wx81d893be5216671c",
+                                    "weChatAppSecret"      : "b867a2e433701bc00dffda2099655d7e",
+                                    "sinaAppKey"           : "\\ 2444488421",
+                                    "sinaAppSecret"        : "dfba216fe44f0d6613cdda1557790a31",
+                                    "SERVER"               : "yun.jfgou.com:443",
+                                    "GCM_APP_ID"           : "\\ 985304692675",
+                                    "ApplicationId"        : applicationId,
+                                    "XiaoMiAppId"          : "\\ 5981759669387",
+                                    "XiaoMiAppKey"         : "AFtTDKfrkO6y1WpxoGDbCw==",
+                                    "BUGLY_APPID"          : "f1f2edf649",
+                                    "BUGLY_APP_VERSION"    : versionName,
+                                    "BUGLY_APP_CHANNEL"    : "doby",
+                                    "TWITTER_APP_KEY"      : "P4mZddIEumAsk7OnzNWpcrQy8",
+                                    "TWITTER_APP_SECRET"   : "1T5Pg7UBRVkq6OSvOs9EBEGiMXVLYmAeOdW3HPTazuqjWyzRAm",
+                                    "FACEBOOK_APP_KEY"     : "1698182270477391",
                                     //<error>Desktop applications only support the oauth_callback value 'oob'</error>
                                     //新增的app需要在twitter后台,填上callbackUrl
+                                    'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
             ]
         }
         _cell_c {
@@ -249,7 +251,8 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "cell_c",
                                     "TWITTER_APP_KEY"    : "",
                                     "TWITTER_APP_SECRET" : "",
-                                    "FACEBOOK_APP_KEY"   : ""
+                                    "FACEBOOK_APP_KEY"   : "",
+                                    'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
             ]
         }
     }
@@ -406,7 +409,7 @@ dependencies {
     compile 'pub.devrel:easypermissions:0.4.3'
     compile 'com.androidkun:XTabLayout:1.1.3'
     compile 'com.github.worker8:RadioGroupPlus:v1.0.1'
-    compile 'net.openid:appauth:0.2.0'
+    compile 'net.openid:appauth:0.7.0'
 }
 
 /////////////////编译过滤器/////////////////////////////////
