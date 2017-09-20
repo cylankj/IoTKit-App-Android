@@ -295,38 +295,24 @@ public class RxBusTest {
 
     @Test
     public void testTimeout() throws InterruptedException {
-        getString().flatMap((String s) ->
-                RxBus.getCacheInstance().toObservable(String.class)
-                        .filter((String string) -> {
-                            System.out.println("get string: " + string);
-                            return string.equals("good");
-                        }))
-                .timeout(800, TimeUnit.MILLISECONDS, Observable.just(1)
-                        .map(new Func1<Integer, String>() {
-                            @Override
-                            public String call(Integer integer) {
-                                System.out.println("timeout");
-                                return "timeout";
-                            }
-                        }))
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        RxBus.getCacheInstance().hasObservers();
-                        System.out.println("finish: " + s);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+        Observable.create(subscriber -> {
+            Observable.just("")
+                    .subscribeOn(Schedulers.newThread())
+                    .delay(3, TimeUnit.SECONDS)
+                    .subscribe(s -> subscriber.onError(new IllegalArgumentException("结束了")));
+            subscriber.onNext("开始");
+        })
 
-                        System.out.println("err: " + throwable.getLocalizedMessage());
-                    }
+                .flatMap(o -> RxBus.getCacheInstance().toObservable(String.class))
+                .subscribe(o -> System.out.println("result?" + o),
+                        throwable -> System.out.println("err?" + throwable));
+
+        Observable.interval(1, TimeUnit.SECONDS)
+                .subscribe(aLong -> {
+                    RxBus.getCacheInstance().post("" + aLong);
+                    System.out.println("send?" + aLong);
                 });
-        Thread.sleep(500);
-        Thread.sleep(500);
-        RxBus.getCacheInstance().post("budui");
-        RxBus.getCacheInstance().post("zailai");
-        RxBus.getCacheInstance().post("nihao");
+        Thread.sleep(10000);
     }
 
     private Observable<String> getString() {
@@ -339,6 +325,18 @@ public class RxBusTest {
                 });
     }
 
+    private Observable<String> timeoutObservable(long timeout) {
+        return Observable.create(subscriber -> {
+            Observable.just("")
+                    .subscribeOn(Schedulers.newThread())
+                    .delay(timeout, TimeUnit.MILLISECONDS)
+                    .subscribe(s -> {
+                        subscriber.onError(new IllegalArgumentException("结束了"));
+                        subscriber.onCompleted();
+                    });
+            subscriber.onNext("开始");
+        });
+    }
 
     @Test
     public void testZip() {
