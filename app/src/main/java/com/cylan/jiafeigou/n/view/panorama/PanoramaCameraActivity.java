@@ -63,6 +63,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -263,7 +264,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         panoramaViewMode = PreferencesUtils.getInt(JConstant.PANORAMA_VIEW_MODE + ":" + uuid, PANORAMA_VIEW_MODE.MODE_PICTURE);
         onRefreshViewModeUI(panoramaViewMode, false, false);
 //        onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, false, false);//just for test
-        showRtmpLiveSetting();
+//        showRtmpLiveSetting();
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -1011,6 +1012,21 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelMoreItem.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onWeiboException() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.LIVE_SINAWEIBO_UNABLE_LIVE)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    Intent intent = new Intent(this, HomeMineHelpActivity.class);
+                    intent.putExtra(JConstant.KEY_SHOW_SUGGESTION, JConstant.KEY_SHOW_SUGGESTION);
+                    startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(this,
+                            R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show();
+    }
+
     public void onDeviceUpgrade() {
         upgrading = true;
         cameraUpgrading.setVisibility(View.VISIBLE);
@@ -1261,7 +1277,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onRefreshVideoRecordUI(int offset, @PANORAMA_RECORD_MODE int type) {
-        AppLogger.w("onRefreshVideoRecordUI");
+//        AppLogger.w("onRefreshVideoRecordUI");
         if (type == PANORAMA_RECORD_MODE.MODE_LIVE) {
             panoramaViewMode = PANORAMA_VIEW_MODE.MODE_LIVE;
         } else {
@@ -1344,9 +1360,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case MODE_LIVE: {
                 int v = bottomPanelSwitcherItem2DotIndicator.getVisibility();
                 showBottomPanelInformation(TimeUtils.getHHMMSS(offset * 1000L), v != View.VISIBLE);
-//                bottomPanelSwitcherItem2Information.setText(TimeUtils.getHHMMSS(offset * 1000L));
-//                int v = bottomPanelSwitcherItem2DotIndicator.getVisibility();
-//                bottomPanelSwitcherItem2DotIndicator.setVisibility(v == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
             }
             break;
             default:

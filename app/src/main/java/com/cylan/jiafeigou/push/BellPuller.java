@@ -55,7 +55,10 @@ public class BellPuller {
      */
     public void fireBellCalling(Context context, String response, Bundle bundle) {
         System.out.println(PUSH_TAG + "fireBellCalling start:" + context.getPackageName());
-        BaseApplication.getAppComponent().getInitializationManager().initialization();//在这里做初始化
+        if (!BaseApplication.getAppComponent().getInitializationManager().isHasInitFinished()) {
+            BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
+            BaseApplication.getAppComponent().getInitializationManager().initialization();//在这里做初始化
+        }
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         System.out.println(PUSH_TAG + "fireBellCalling end" + sourceManager.getAccount());
         final boolean isBellCall = isBellCall(response);

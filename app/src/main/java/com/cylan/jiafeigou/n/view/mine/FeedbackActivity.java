@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-@Badge(parentTag = "HomeMineHelpFragment")
+@Badge(parentTag = "HomeMineHelpActivity")
 //@RuntimePermissions
 public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackContract.Presenter>
         implements FeedBackContract.View {
@@ -87,7 +87,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     @Override
     protected void onStop() {
         super.onStop();
-        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(HomeMineHelpFragment.class.getSimpleName());
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(HomeMineHelpActivity.class.getSimpleName());
     }
 
     @Override

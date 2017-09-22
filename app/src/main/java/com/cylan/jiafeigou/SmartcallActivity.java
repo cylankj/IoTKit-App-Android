@@ -270,6 +270,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             initSub = Observable.just("init")
                     .observeOn(Schedulers.io())
                     .map(cmd -> {
+                        BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
                         BaseApplication.getAppComponent().getInitializationManager().initialization();
                         return cmd;
                     })

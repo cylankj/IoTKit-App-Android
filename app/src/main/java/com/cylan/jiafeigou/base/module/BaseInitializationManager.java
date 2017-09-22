@@ -123,7 +123,8 @@ public final class BaseInitializationManager {
         Log.d("initialization", "initialization," + Thread.currentThread());
         PerformanceUtils.startTrace("initialization");
         hasInitFinished = false;
-        initAppCmd();
+        // TODO: 2017/9/22 比较坑 单独初始化吧
+//        initAppCmd();
         initOKGo();
         enableDebugOptions();
         initSourceManager();
@@ -262,10 +263,9 @@ public final class BaseInitializationManager {
         dispatcher.setAppCmd(appCmd);
     }
 
-    private void initAppCmd() {
+    public void initAppCmd() {
         try {
             Log.d("initAppCmd", "initAppCmd start");
-            System.loadLibrary("jfgsdk");
             appCmd.setCallBack(callBackHolder);
             appCmd.initNativeParam(vid, vkey, serverAddress, JConstant.ROOT_DIR);
             Log.d("initAppCmd", "initAppCmd end");

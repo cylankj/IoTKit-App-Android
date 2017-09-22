@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.CacheObject;
@@ -44,7 +44,7 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
     @Override
     public void start() {
         super.start();
-        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineHelpActivity.class.getSimpleName());
         if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
         pushManager.getNewList()
                 .subscribeOn(Schedulers.io())

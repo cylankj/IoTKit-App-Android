@@ -141,12 +141,11 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     override fun onStart() {
         super.onStart()
-        account = account
         loadLiveBroadCast()
     }
 
     private fun loadLiveBroadCast() {
-        account = null;youtubeEvent = null
+        account = account;youtubeEvent = youtubeEvent
         if (account != null && youtubeEvent != null) {
             setting_youtube_option_container.visibility = View.VISIBLE
             live_event_container.visibility = View.VISIBLE

@@ -76,7 +76,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
             bean.setAccount(account.getAccount());
             feedBackBeans.add(bean);
         }
-        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineHelpFragment");
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineHelpActivity");
         if (node == null) {
             node = new TreeNode();
         }

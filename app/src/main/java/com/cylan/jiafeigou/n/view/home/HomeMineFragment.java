@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.MineInfoActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
-import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
@@ -409,8 +410,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
-        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), HomeMineHelpFragment.newInstance(new Bundle()),
-                android.R.id.content);
+        Intent intent = new Intent(getContext(), HomeMineHelpActivity.class);
+        startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(getContext(),
+                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+//        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), HomeMineHelpActivity.newInstance(new Bundle()),
+//                android.R.id.content);
         homeMineItemHelp.showHint(false);
     }
 
@@ -500,7 +504,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         count = node == null ? 0 : node.getNodeCount();
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
-        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(HomeMineHelpActivity.class.getSimpleName());
         count = node == null ? 0 : node.getNodeCount();
         homeMineItemHelp.showHint(count > 0);
         //分享管理

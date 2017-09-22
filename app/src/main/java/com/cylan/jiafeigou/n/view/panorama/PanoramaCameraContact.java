@@ -56,6 +56,8 @@ public interface PanoramaCameraContact {
 
         void onShowLiveCreateView();
 
+        void onWeiboException();
+
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)

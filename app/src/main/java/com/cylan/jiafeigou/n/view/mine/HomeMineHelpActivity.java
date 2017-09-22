@@ -4,10 +4,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
@@ -16,8 +13,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
@@ -44,7 +41,8 @@ import butterknife.OnClick;
  * 更新描述   ${TODO}
  */
 @Badge(parentTag = "HomeMineFragment")
-public class HomeMineHelpFragment extends IBaseFragment {
+//用 Fragment 坑很多,不走生命周期
+public class HomeMineHelpActivity extends BaseFullScreenFragmentActivity {
 
     @BindView(R.id.wv_mine_help)
     WebView mWvHelp;
@@ -54,39 +52,23 @@ public class HomeMineHelpFragment extends IBaseFragment {
     ProgressBar vProgress;
 
 
-    public static HomeMineHelpFragment newInstance(Bundle bundle) {
-        HomeMineHelpFragment fragment = new HomeMineHelpFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PreferencesUtils.putBoolean(JConstant.KEY_HELP_GUIDE, false);
         RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
-    }
+        setContentView(R.layout.fragment_mine_help);
+        ButterKnife.bind(this);
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_help, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle.containsKey(JConstant.KEY_SHOW_SUGGESTION)) {
-            customToolbar.setToolbarRightTitle("");
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Intent intent = getIntent();
+        if (intent.hasExtra(JConstant.KEY_SHOW_SUGGESTION)) {
+            customToolbar.setToolbarRightTitle("");
+        }
         showWebView();
     }
 
@@ -102,7 +84,7 @@ public class HomeMineHelpFragment extends IBaseFragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        if (getView() != null) getView().post(() -> initWebView(LinkManager.getHelpWebUrl()));
+        initWebView(LinkManager.getHelpWebUrl());
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
@@ -110,13 +92,12 @@ public class HomeMineHelpFragment extends IBaseFragment {
         switch (view.getId()) {
             //点击退回home_mine的fragment
             case R.id.tv_toolbar_icon:
-                getActivity().getSupportFragmentManager().popBackStack();
+                finish();
                 break;
             //点击进入意见反馈的页面
             case R.id.tv_toolbar_right:
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_toolbar_right));
-                startActivity(new Intent(getActivity(), FeedbackActivity.class));
+                ViewUtils.deBounceClick(findViewById(R.id.tv_toolbar_right));
+                startActivity(new Intent(this, FeedbackActivity.class));
                 break;
         }
     }
@@ -154,10 +135,5 @@ public class HomeMineHelpFragment extends IBaseFragment {
         super.onDestroy();
         mWvHelp.removeAllViews();
         mWvHelp.destroy();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 }

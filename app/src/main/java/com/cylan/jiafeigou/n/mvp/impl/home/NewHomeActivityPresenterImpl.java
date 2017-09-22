@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.util.Log;
-
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -17,7 +15,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import permissions.dispatcher.PermissionUtils;
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -36,12 +33,13 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
         if (account == null && PermissionUtils.hasSelfPermissions(ContextUtils.getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //为什么在这个页面操作：被回收，可以在任何一个页面。
             AppLogger.e("被系统回收了，或者Oppo手机，任何一个权限由->禁止，就会kill.导致整个appInit出错");
-            Observable.just("go")
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(ret -> {
-                        BaseApplication.getAppComponent().getInitializationManager().initialization();
-                        AutoSignIn.getInstance().autoLogin();
-                    }, AppLogger::e);
+            Schedulers.io().createWorker().schedule(() -> {
+                if (!BaseApplication.getAppComponent().getInitializationManager().isHasInitFinished()) {
+                    BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
+                    BaseApplication.getAppComponent().getInitializationManager().initialization();
+                }
+                AutoSignIn.getInstance().autoLogin();
+            });
         }
     }
 

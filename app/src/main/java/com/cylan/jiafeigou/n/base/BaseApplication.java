@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.base;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -39,6 +41,10 @@ import rx.schedulers.Schedulers;
 public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "BaseApplication";
+
+    static {
+        System.loadLibrary("jfgsdk");
+    }
 
     private static AppComponent appComponent;
     private static int viewCount = 0;
@@ -66,21 +72,22 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
 //
-        boxStore = MyObjectBox.builder().androidContext(this).build();
-        propertyItemBox = boxStore.boxFor(PropertyItem.class);
-        deviceBox = boxStore.boxFor(Device.class);
-
 
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
-            viewCount = 0;
             //设计师不需要这个固定通知栏.20170531
 //            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
             PerformanceUtils.startTrace("appInit");
+            viewCount = 0;
             //Dagger2 依赖注入
+            boxStore = MyObjectBox.builder().androidContext(this).build();
+            propertyItemBox = boxStore.boxFor(PropertyItem.class);
+            deviceBox = boxStore.boxFor(Device.class);
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-
-
+            if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                appComponent.getInitializationManager().initAppCmd();
+            }
+            appComponent.getInitializationManager().initialization();
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);
@@ -88,7 +95,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
             PerformanceUtils.stopTrace("appInit");
             PerformanceUtils.startTrace("app2SmartCall");
-//            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
         }
     }
 

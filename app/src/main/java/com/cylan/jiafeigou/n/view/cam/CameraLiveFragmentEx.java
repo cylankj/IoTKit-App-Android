@@ -16,7 +16,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +44,9 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
-import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpActivity;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -176,11 +174,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString(JConstant.KEY_SHOW_SUGGESTION, JConstant.KEY_SHOW_SUGGESTION);
-                ActivityUtils.addFragmentSlideInFromRight(((AppCompatActivity) getContext()).getSupportFragmentManager(),
-                        HomeMineHelpFragment.newInstance(bundle),
-                        android.R.id.content);
+                Intent intent = new Intent(getContext(), HomeMineHelpActivity.class);
+                intent.putExtra(JConstant.KEY_SHOW_SUGGESTION, JConstant.KEY_SHOW_SUGGESTION);
+                startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(getContext(),
+                        R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
             }
         });
         camLiveControlLayer.setFlipListener(new FlipImageView.FlipListener() {

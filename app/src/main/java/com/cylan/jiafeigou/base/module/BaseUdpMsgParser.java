@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.util.Log;
+
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -32,6 +34,8 @@ public class BaseUdpMsgParser {
     public BaseUdpMsgParser() {
     }
 
+    public static final String TAG = "LOCAL_UDP:";
+
     public Subscription initSubscription() {
         return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                 .subscribeOn(Schedulers.io())
@@ -46,7 +50,7 @@ public class BaseUdpMsgParser {
             if (header == null) return;
             MessagePack pack = new MessagePack();
             Value read = pack.read(localUdpMsg.data);
-            AppLogger.e("局域网消息:" + read.toString());
+            Log.i(TAG, read.toString());
             switch (header.cmd) {
                 case UdpConstant.PING_ACK: {
                     JfgUdpMsg.PingAck pingAck = unpackData(localUdpMsg.data, JfgUdpMsg.PingAck.class);
@@ -82,10 +86,10 @@ public class BaseUdpMsgParser {
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                AppLogger.e("解析局域网消息失败了:" + new Gson().toJson(localUdpMsg));
+                Log.i(TAG, "解析局域网消息失败了:" + new Gson().toJson(localUdpMsg));
                 MessagePack pack = new MessagePack();
                 Value read = pack.read(localUdpMsg.data);
-                AppLogger.e("message:" + read.toString());
+                Log.i(TAG, "message:" + read.toString());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
