@@ -131,6 +131,11 @@ public class HomeMineHelpActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
+    protected boolean theLastActivity() {
+        return false;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mWvHelp.removeAllViews();
