@@ -1189,6 +1189,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         isRecording = true;
                     }
                     if (!isInProgress) {
+
                         mView.onRefreshVideoRecordUI(second, type);
                     }
                 }, AppLogger::e);

@@ -84,10 +84,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
             propertyItemBox = boxStore.boxFor(PropertyItem.class);
             deviceBox = boxStore.boxFor(Device.class);
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                appComponent.getInitializationManager().initAppCmd();
-            }
             appComponent.getInitializationManager().initialization();
+            if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initAppCmd());
+            }
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);

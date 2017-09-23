@@ -1284,7 +1284,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
         }
         panoramaRecordMode = type;
-        if (!presenter.getLiveAction().hasResolution && type != PANORAMA_RECORD_MODE.MODE_LIVE) {
+        if (!presenter.getLiveAction().hasResolution /*&& type != PANORAMA_RECORD_MODE.MODE_LIVE*/) {
             //第二个条件是为了测试用的,
             return;
         }
