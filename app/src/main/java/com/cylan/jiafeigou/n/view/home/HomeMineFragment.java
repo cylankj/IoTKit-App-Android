@@ -306,22 +306,23 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         AppLogger.w("user_img:" + url);
 //        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getContext().getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-        if (account != null) {
-            url = isDefaultPhoto(account.getPhotoUrl()) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : account.getPhotoUrl();
-            if (TextUtils.isEmpty(url)) return;//空 不需要加载
-            Glide.with(getContext()).load(url)
-                    .asBitmap()
-                    .error(R.drawable.icon_mine_head_normal)
-                    .placeholder(R.drawable.icon_mine_head_normal)
-                    .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new ImageViewTarget<Bitmap>(ivHomeMinePortrait) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            basePresenter.portraitBlur(Bitmap.createBitmap(resource));
-                        }
-                    });
-        }
+//        if (account != null) {
+        url = isDefaultPhoto(url) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : url;
+        if (TextUtils.isEmpty(url)) return;//空 不需要加载
+        Glide.with(getContext()).load(url)
+                .asBitmap()
+                .error(R.drawable.icon_mine_head_normal)
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new ImageViewTarget<Bitmap>(ivHomeMinePortrait) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        view.setImageBitmap(resource);
+                        basePresenter.portraitBlur(Bitmap.createBitmap(resource));
+                    }
+                });
+//        }
 //                .into(mySimpleTarget);
     }
 

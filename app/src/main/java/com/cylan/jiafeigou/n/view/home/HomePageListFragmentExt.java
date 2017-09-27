@@ -381,8 +381,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         refreshFinish = true;
 //        this.resultList = resultList;
 //        if (!getUserVisibleHint()) return;
-        FastAdapterDiffUtil.set(mItemAdapter, MiscUtils.getHomeItemListFromDevice(resultList), new DiffCallbackImpl<>(), true);
+        ItemAdapter<HomeItem> set = FastAdapterDiffUtil.set(mItemAdapter, MiscUtils.getHomeItemListFromDevice(resultList), new DiffCallbackImpl<>(), true);
         onRefreshFinish();
+        emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
     }
 
     private void enableNestedScroll() {
