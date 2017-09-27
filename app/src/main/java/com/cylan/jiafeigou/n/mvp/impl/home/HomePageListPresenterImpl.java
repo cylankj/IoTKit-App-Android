@@ -8,8 +8,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.BaseForwardHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -71,7 +69,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         if (device != null) {
             for (Device device1 : device) {
                 if (device1 == null) continue;//可能
-                if (JFGRules.isPan720(device1.pid)) {
+                if (JFGRules.isPan720(device1.pid) && JFGRules.isDeviceOnline(device1.uuid)) {//只有在线才发消息,否则没有意义
                     Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
                         if (recordSub != null && !recordSub.isUnsubscribed()) {
                             recordSub.unsubscribe();
@@ -135,8 +133,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription devicesUpdate() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .debounce(10, TimeUnit.SECONDS)
+        return RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(ret -> subUuidList(), throwable -> {
                     addSubscription(devicesUpdate());
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
@@ -156,10 +154,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription JFGAccountUpdate() {
-        return RxBus.getCacheInstance().toObservable(JFGAccount.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(jfgAccount -> {
-                    getView().onAccountUpdate(jfgAccount);
+                    getView().onAccountUpdate(jfgAccount.jfgAccount);
                 }, throwable -> {
                     addSubscription(JFGAccountUpdate());
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
@@ -172,7 +170,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-
         List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
         Functions.INSTANCE.runOnDebug(() -> {
             AppLogger.w("subUuidList?" + ListUtils.getSize(list));
@@ -206,10 +203,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     public void stop() {
         super.stop();
-        unSubscribe(refreshSub);
+//        unSubscribe(refreshSub);
     }
 
-    private Subscription refreshSub;
+//    private Subscription refreshSub;
 
     @Override
     public void fetchDeviceList(boolean manually) {
@@ -217,38 +214,58 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
-        if (refreshSub != null && !refreshSub.isUnsubscribed())
-            return;
-        refreshSub = Observable.just(manually)
-                .subscribeOn(Schedulers.io())
-                .delay(1, TimeUnit.SECONDS)
-                .map((Boolean aBoolean) -> {
-                    if (manually)
-                        BaseApplication.getAppComponent().getCmd().refreshDevList();
-                    // TODO: 2017/9/27 和 DataSource 里重复了,
-//                    BaseApplication.getAppComponent().getSourceManager().syncHomeProperty();
-                    AppLogger.i("fetchDeviceList: " + aBoolean);
-                    return aBoolean;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(aBoolean -> {
-                    RxBus.getCacheInstance().post(new InternalHelp());
-                    return aBoolean;
-                })
-                .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
-                .observeOn(Schedulers.io())
-                .delay(3, TimeUnit.SECONDS)
-                .filter(aBoolean -> getView() != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
-                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-        addSubscription(Observable.just("go")
-                .subscribeOn(Schedulers.io())
-                .delay(30, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null)
-                .subscribe(ret -> mView.onRefreshFinish(),
-                        throwable -> mView.onRefreshFinish()), "30s_timeout");
+//        if (refreshSub != null && !refreshSub.isUnsubscribed()) {
+//            refreshSub.unsubscribe();
+//        }
+
+        if (manually) {
+            Schedulers.io().createWorker().schedule(() -> {
+                BaseApplication.getAppComponent().getCmd().refreshDevList();
+            });
+        }
+
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+            mView.onRefreshFinish();
+        }, 30, TimeUnit.SECONDS);
+
+//        addSubscription(Observable.just("go")
+//                .subscribeOn(Schedulers.io())
+//                .delay(30, TimeUnit.SECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(ret -> mView != null)
+//                .subscribe(ret -> mView.onRefreshFinish(),
+//                        throwable -> mView.onRefreshFinish()), "30s_timeout");
+//
+//        refreshSub = Observable.just(manually)
+//                .subscribeOn(Schedulers.io())
+//                .delay(1, TimeUnit.SECONDS)
+//                .map((Boolean aBoolean) -> {
+//                    if (manually)
+//                        BaseApplication.getAppComponent().getCmd().refreshDevList();
+//                    // TODO: 2017/9/27 和 DataSource 里重复了,
+////                    BaseApplication.getAppComponent().getSourceManager().syncHomeProperty();
+//                    AppLogger.i("fetchDeviceList: " + aBoolean);
+//                    return aBoolean;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(aBoolean -> {
+//                    RxBus.getCacheInstance().post(new InternalHelp());
+//                    return aBoolean;
+//                })
+//                .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
+//                .observeOn(Schedulers.io())
+//                .delay(3, TimeUnit.SECONDS)
+//                .filter(aBoolean -> getView() != null)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
+//                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+//        addSubscription(Observable.just("go")
+//                .subscribeOn(Schedulers.io())
+//                .delay(30, TimeUnit.SECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(ret -> mView != null)
+//                .subscribe(ret -> mView.onRefreshFinish(),
+//                        throwable -> mView.onRefreshFinish()), "30s_timeout");
     }
 
     @Override

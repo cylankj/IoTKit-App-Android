@@ -30,7 +30,7 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 int seq = appCmd.unBindDevice(entity.getUuid());
-                AppLogger.d("正在删除设备+" + entity.getUuid() + "seq:" + seq);
+                AppLogger.w("正在删除设备+" + entity.getUuid() + "seq:" + seq);
                 subscriber.onNext((long) seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

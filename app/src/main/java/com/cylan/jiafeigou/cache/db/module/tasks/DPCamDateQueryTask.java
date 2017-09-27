@@ -100,8 +100,8 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                             finalList.add(item);
                         }
                     }
-                    AppLogger.d("localDateList: " + ListUtils.getSize(finalList) + "," + (System.currentTimeMillis() - performanceTime) + "ms");
-                    AppLogger.d("localDateList: " + finalList);
+                    AppLogger.w("localDateList: " + ListUtils.getSize(finalList) + "," + (System.currentTimeMillis() - performanceTime) + "ms");
+                    AppLogger.w("localDateList: " + finalList);
                     BaseDPTaskResult good = new BaseDPTaskResult();
                     good.setResultCode(0);
                     good.setResultResponse(finalList);

@@ -141,7 +141,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //            srLayoutMainContentHolder.setRefreshing(false);
 //            enableNestedScroll();
 //            if (isVisibleToUser && isResumed() && getActivity() != null) {
-//            }
+//            }        appbar.addOnOffsetChangedListener(this);
+            srLayoutMainContentHolder.setOnRefreshListener(this);
+            onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+            updateAccount.run();
             basePresenter.fetchDeviceList(false);
         } else AppLogger.e("presenter is null");
     }
@@ -221,13 +224,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
-        appbar.addOnOffsetChangedListener(this);
-        srLayoutMainContentHolder.setOnRefreshListener(this);
+
         initListAdapter();
         initProgressBarColor();
         initSomeViewMargin();
-        onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
-        view.post(updateAccount);
+
+//        view.post(updateAccount);
     }
 
     @Override
@@ -262,11 +264,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void initSomeViewMargin() {
-        if (getView() != null) getView().post(() -> {
-            ViewUtils.setFitsSystemWindowsCompat(fLayoutHomeHeaderContainer);
-            ViewUtils.setViewMarginStatusBar(lLayoutHomeGreet);
-            ViewUtils.setViewMarginStatusBar(toolbar);
-        });
+        ViewUtils.setFitsSystemWindowsCompat(fLayoutHomeHeaderContainer);
+        ViewUtils.setViewMarginStatusBar(lLayoutHomeGreet);
+        ViewUtils.setViewMarginStatusBar(toolbar);
     }
 
     /**
@@ -280,7 +280,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * 初始化,progressBar的位置.
      */
     private void initProgressBarColor() {
-        rVDevicesList.post(() -> srLayoutMainContentHolder.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF)));
+        srLayoutMainContentHolder.setColorSchemeColors(rVDevicesList.getContext().getResources().getColor(R.color.color_36BDFF));
     }
 
     @OnClick(R.id.imgV_add_devices)
@@ -452,7 +452,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private Runnable updateAccount = new Runnable() {
         @Override
         public void run() {
-            if (!isAdded()) return;
+//            if (!isAdded()) return;
+
             JFGAccount greetBean = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
             tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)

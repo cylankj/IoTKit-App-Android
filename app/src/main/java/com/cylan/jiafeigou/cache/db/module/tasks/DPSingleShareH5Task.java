@@ -40,9 +40,9 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                 msg602.packValue = entity.getBytes();
                 req.add(msg602);
                 result = appCmd.robotSetDataByTime("", req);
-                AppLogger.d("正在执行分享操作步骤一:设置606 DP消息" + result);
+                AppLogger.w("正在执行分享操作步骤一:设置606 DP消息" + result);
             } catch (Exception e) {
-                AppLogger.d("分享操作步骤一操作失败!!!" + e.getMessage());
+                AppLogger.w("分享操作步骤一操作失败!!!" + e.getMessage());
                 throw new BaseDPTaskException(-2, "分享步骤一失败");
             }
             subscriber.onNext(result);
@@ -54,7 +54,7 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                     long result = -1;
                     int code = rsp.rets.get(0).ret;
                     if (code != 0) throw new BaseDPTaskException(code, "分享步骤一失败");
-                    AppLogger.d("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
+                    AppLogger.w("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
                     try {
                         String remotePath = "/long/" +
                                 Security.getVId() +//vid
@@ -70,18 +70,18 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                         AppLogger.d("分享操作步骤二操作失败,错误信息为:" + e.getMessage());
                         throw new BaseDPTaskException(-3, "分享步骤二失败");
                     }
-                    AppLogger.d("分享操作步骤二操作seq 为" + result);
+                    AppLogger.w("分享操作步骤二操作seq 为" + result);
                     if (result == -1) throw new BaseDPTaskException(-3, "分享步骤二失败");
                     return result;
                 })
                 .flatMap(this::makeHttpDoneResultResponse)
                 .flatMap(rsp -> {
-                    AppLogger.d("putFileToCloud 返回结果码为" + rsp.ret);
+                    AppLogger.w("putFileToCloud 返回结果码为" + rsp.ret);
                     if (rsp.ret != 200) throw new BaseDPTaskException(rsp.ret, "分享步骤二失败");
-                    AppLogger.d("分享操作步骤二执行成功,正在更新本地数据Version" + new Gson().toJson(entity));
+                    AppLogger.w("分享操作步骤二执行成功,正在更新本地数据Version" + new Gson().toJson(entity));
                     return dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
                             .map(dpEntity -> {
-                                AppLogger.d("更新本地数据成功");
+                                AppLogger.w("更新本地数据成功");
                                 dpEntity.setState(DBState.SUCCESS);
                                 dpEntity.update();
                                 BaseDPTaskResult result = new BaseDPTaskResult();

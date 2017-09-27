@@ -74,9 +74,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         if (timeMin != -1) {//向前查询,timeMin可能是隔天的数据了.
             versionMin = Math.max(timeMin, versionMin);
         }
-        AppLogger.d("let'account go for local cache:" + option);
-        AppLogger.d("let'account go for local versionMin:" + versionMin);
-        AppLogger.d("let'account go for local versionMax:" + versionMax);
+        AppLogger.w("let'account go for local cache:" + option);
+        AppLogger.w("let'account go for local versionMin:" + versionMin);
+        AppLogger.w("let'account go for local versionMax:" + versionMax);
         return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
                 versionMin, versionMax, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
@@ -105,7 +105,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 //需要先清空这一天的.
-                AppLogger.d("let'account go for server cache:" + option);
+                AppLogger.w("let'account go for server cache:" + option);
                 long seq = sourceManager.syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
@@ -114,12 +114,12 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                             @Override
                             public void handleInterception(RobotoGetDataRsp data) {
                                 //麻痹的.没有diff,很麻烦,这里肯定是  505,512,222消息了.
-                                AppLogger.d("开始处理 拦截器");
+                                AppLogger.w("开始处理 拦截器");
                                 if (data != null && data.map != null) {
                                     String account = getAppComponent().getSourceManager().getAccount().getAccount();
                                     String uuid = data.identity;
                                     if (data.map.size() == 0) {
-                                        AppLogger.d("没有数据");
+                                        AppLogger.w("没有数据");
                                         //需要根据option,的逻辑来删除本地数据.
                                         if (option.asc) {//向前查询.
                                             long timeEnd = TimeUtils.getSpecificDayEndTime(option.timeStart);
@@ -158,7 +158,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                                 //向前查,但是只有一条.所以清空这个时间戳以前的数据.
                                                 timeMin = 0;
                                             }
-                                            AppLogger.d("只有一条数据");
+                                            AppLogger.w("只有一条数据");
                                         }
                                         //有多条数据,先清空本地这个时间段内的数据.再插入.
                                         dpHelper.deleteDpSync(account, uuid, 505, timeMax, timeMin);
@@ -184,7 +184,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     }
                 })
                 .filter(ret -> {
-                    AppLogger.d("uuid?" + multiEntity.get(0).getUuid() + " ");
+                    AppLogger.w("uuid?" + multiEntity.get(0).getUuid() + " ");
                     return TextUtils.equals(ret.identity, multiEntity.get(0).getUuid());
                 })
                 .map(robotoGetDataRsp -> {

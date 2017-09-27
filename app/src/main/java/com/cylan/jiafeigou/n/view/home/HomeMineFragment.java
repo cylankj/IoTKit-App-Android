@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -292,21 +293,36 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         tvHomeMineNick.setText(name);
     }
 
+    private boolean isDefaultPhoto(String photoUrl) {
+        return TextUtils.isEmpty(photoUrl) || photoUrl.contains("image/default.jpg");
+    }
+
+    public boolean checkOpenLogin() {
+        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
+    }
+
     @Override
     public void setUserImageHeadByUrl(String url) {
-        AppLogger.d("user_img:" + url);
-        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getContext().getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
-        Account account = getAppComponent().getSourceManager().getAccount();
-        if (account == null || getContext() == null) return;
-        AppLogger.d("account Token:" + account.getToken());
-        if (TextUtils.isEmpty(url)) return;//空 不需要加载
-        Glide.with(getContext()).load(url)
-                .asBitmap()
-                .error(R.drawable.icon_mine_head_normal)
-                .placeholder(R.drawable.icon_mine_head_normal)
-                .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mySimpleTarget);
+        AppLogger.w("user_img:" + url);
+//        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getContext().getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        if (account != null) {
+            url = isDefaultPhoto(account.getPhotoUrl()) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : account.getPhotoUrl();
+            if (TextUtils.isEmpty(url)) return;//空 不需要加载
+            Glide.with(getContext()).load(url)
+                    .asBitmap()
+                    .error(R.drawable.icon_mine_head_normal)
+                    .placeholder(R.drawable.icon_mine_head_normal)
+                    .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(new ImageViewTarget<Bitmap>(ivHomeMinePortrait) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            basePresenter.portraitBlur(Bitmap.createBitmap(resource));
+                        }
+                    });
+        }
+//                .into(mySimpleTarget);
     }
 
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {

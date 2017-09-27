@@ -44,14 +44,14 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
         if (!sourceManager.isOnline()) {
             return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
         }
-        AppLogger.d("正在执行离线收藏");
+        AppLogger.w("正在执行离线收藏");
         return dpHelper.saveOrUpdate(entity.getUuid(), entity.getVersion(), entity.getMsgId(), entity.getBytes(), entity.action(), DBState.NOT_CONFIRM, option)
                 .flatMap(entity -> {
                     try {
-                        AppLogger.d("离线收藏步骤一,保存602消息,结果为:" + parser.toJson(entity));
+                        AppLogger.w("离线收藏步骤一,保存602消息,结果为:" + parser.toJson(entity));
                         DpMsgDefine.DPWonderItem wonderItem = DpUtils.unpackData(entity.getBytes(), DpMsgDefine.DPWonderItem.class);
                         if (wonderItem != null) {
-                            AppLogger.d("离线收藏步骤二,保存511消息");
+                            AppLogger.w("离线收藏步骤二,保存511消息");
                             return dpHelper.saveOrUpdate(entity.getUuid(), (long) wonderItem.time, 511, DpUtils.pack(entity.getVersion()), DBAction.SAVED, DBState.SUCCESS, null)
                                     .map(ret -> wonderItem);
                         }
