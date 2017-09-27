@@ -39,13 +39,19 @@ import static android.view.View.VISIBLE;
 
 public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 
-    private Device mDevice;
+    //    private Device mDevice;
     private String uuid;
     private Context mContext;
 
     public HomeItem withUUID(String uuid, Device device) {
         this.uuid = uuid;
-        mDevice = device;
+//        mDevice = device;
+        return this;
+    }
+
+    public HomeItem withUUID(String uuid) {
+        this.uuid = uuid;
+//        mDevice = device;
         return this;
     }
 
@@ -71,11 +77,13 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 
     @Override
     public long getIdentifier() {
-        return mDevice.uuid.hashCode();
+        Device device = getDevice();
+        String uuid = device.uuid == null ? "" : device.uuid;
+        return uuid.hashCode();
     }
 
     public Device getDevice() {
-        return mDevice;
+        return DataSourceManager.getInstance().getDevice(uuid);
     }
 
     public String getUUid() {
@@ -105,7 +113,8 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     private void setItemState(ViewHolder holder, String uuid, DpMsgDefine.DPNet net) {
         //0 net type 网络类型
         int resIdNet = JConstant.getNetTypeRes(net != null ? net.net : -1);
-        if (JFGRules.isPan720(mDevice.pid) && JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""))) {
+        Device device = getDevice();
+        if (JFGRules.isPan720(device.pid) && JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""))) {
             holder.setVisibility(R.id.img_device_state_net, VISIBLE);
             holder.setImageResource(R.id.img_device_state_net, R.drawable.home_icon_ap);
             Object state = DataSourceManager.getInstance().getDeviceState(uuid);
@@ -126,7 +135,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         }
 
         //1 已分享的设备,此设备分享给别的账号.
-        if (mDevice != null && !isPrimaryAccount(mDevice.shareAccount)) {
+        if (device != null && !isPrimaryAccount(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_share, GONE);
         } else {
             if (BaseApplication.getAppComponent().getSourceManager().isDeviceSharedTo(uuid)) {
@@ -137,12 +146,12 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             }
         }
         //2 电量
-        if (mDevice != null && JFGRules.isDeviceOnline(net) && JFGRules.showBattery(mDevice.pid, false)) {//设备在线才显示电量
-            int battery = mDevice.$(206, 0);
-            if (battery <= 20 && (JFGRules.isBell(mDevice.pid) || JFGRules.isFreeCam(mDevice.pid))) {//门铃和freeCam 电量低于20%在线显示
+        if (device != null && JFGRules.isDeviceOnline(net) && JFGRules.showBattery(device.pid, false)) {//设备在线才显示电量
+            int battery = device.$(206, 0);
+            if (battery <= 20 && (JFGRules.isBell(device.pid) || JFGRules.isFreeCam(device.pid))) {//门铃和freeCam 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_battery, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_battery, R.drawable.home_icon_net_battery);
-            } else if (battery <= 50 && JFGRules.is3GCam(mDevice.pid)) {//3G狗 低于50%在线显示
+            } else if (battery <= 50 && JFGRules.is3GCam(device.pid)) {//3G狗 低于50%在线显示
                 holder.setVisibility(R.id.img_device_state_battery, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_battery, R.drawable.home_icon_net_battery);
             } else {
@@ -156,9 +165,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         //3 延时摄影
 
         //4 安全防护
-        DpMsgDefine.DPStandby isStandBY = mDevice.$(508, new DpMsgDefine.DPStandby());
-        boolean safe = mDevice.$(501, false);
-        if (!isStandBY.standby && safe && JFGRules.isCamera(mDevice.pid) && isPrimaryAccount(mDevice.shareAccount) && JFGRules.isDeviceOnline(net)) {
+        DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
+        boolean safe = device.$(501, false);
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && isPrimaryAccount(device.shareAccount) && JFGRules.isDeviceOnline(net)) {
             holder.setVisibility(R.id.img_device_state_safe, VISIBLE);
             holder.setImageResource(R.id.img_device_state_safe, R.drawable.home_icon_net_security);
         } else {
@@ -186,17 +195,18 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
      */
 
     private void handleState(ViewHolder holder) {
-        final String uuid = mDevice.uuid;
-        DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        final String alias = mDevice.alias;
-        final String shareAccount = mDevice.shareAccount;
+        Device device = getDevice();
+        final String uuid = device.uuid;
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        final String alias = device.alias;
+        final String shareAccount = device.shareAccount;
         final boolean deviceOnline = JFGRules.isDeviceOnline(net);
         Log.d("handleState", "handleState: " + uuid + " " + net + "," + deviceOnline);
-        int online = JConstant.getOnlineIcon(mDevice.pid);
-        int offline = JConstant.getOfflineIcon(mDevice.pid);
+        int online = JConstant.getOnlineIcon(device.pid);
+        int offline = JConstant.getOfflineIcon(device.pid);
         boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
 
-        int iconRes = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || (JFGRules.isPan720(mDevice.pid) && apMode) ? online : offline;
+        int iconRes = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || (JFGRules.isPan720(device.pid) && apMode) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!isPrimaryAccount(shareAccount))
@@ -204,7 +214,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
         holder.setImageResource(R.id.img_device_icon, iconRes);
-        handleMsgCountAndTime(holder, uuid, mDevice);
+        handleMsgCountAndTime(holder, uuid, device);
         //右下角状态
         setItemState(holder, uuid, net);
     }
@@ -244,8 +254,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
      */
     private String getPanOnlineMode(final String uuid) {
         boolean serverOnline = BaseApplication.getAppComponent().getSourceManager().isOnline();
-        DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        if (JFGRules.isAPDirect(mDevice.uuid, getDevice().$(202, ""))) {
+        Device device = getDevice();
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        if (JFGRules.isAPDirect(device.uuid, getDevice().$(202, ""))) {
             return mContext.getString(R.string.Tap1_OutdoorMode);
         } else if (/*serverOnline &&*** #114473***/ net.net == 1) {
             //wifi在线

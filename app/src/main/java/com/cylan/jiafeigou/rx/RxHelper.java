@@ -122,7 +122,7 @@ public class RxHelper {
 
         @Override
         public Boolean call(Object object) {
-            AppLogger.i(tag + ":" + enable);
+            AppLogger.w(tag + ":" + enable);
             return enable;
         }
     }

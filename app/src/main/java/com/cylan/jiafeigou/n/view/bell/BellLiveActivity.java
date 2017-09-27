@@ -174,6 +174,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
         newCall();
+
+        //在这里初始化默认的 radio,bug:#120567
+        float videoHeight = fLayoutBellLiveHolder.getMeasuredHeight();
+        float videoWidth = fLayoutBellLiveHolder.getMeasuredWidth();
+        ratio = videoHeight / videoWidth;
     }
 
     private void initHomeListenReceiver() {
@@ -352,6 +357,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (port) {
             customToolbar.setVisibility(View.VISIBLE);
             landBack.setVisibility(View.GONE);
+
             ViewUtils.updateViewHeight(fLayoutBellLiveHolder, ratio);
 //            mBellLiveBack.setText(null);
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);

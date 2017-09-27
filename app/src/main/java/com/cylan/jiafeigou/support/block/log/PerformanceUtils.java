@@ -48,7 +48,7 @@ public class PerformanceUtils {
      * @param tag
      */
     public static void startTrace(String tag) {
-        AppLogger.d("startTrace: " + tag);
+        AppLogger.w("startTrace: " + tag);
         timeCostMap.put(tag, System.currentTimeMillis());
     }
 

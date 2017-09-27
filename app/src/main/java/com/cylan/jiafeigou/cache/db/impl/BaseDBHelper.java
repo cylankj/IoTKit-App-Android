@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
@@ -50,6 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import io.objectbox.BoxStore;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -84,6 +86,7 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     public BaseDBHelper() {
+        BoxStore boxStore = BaseApplication.getBoxStore();
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
 //        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
         DaoMaster master = new DaoMaster(helper.getWritableDb());
@@ -129,9 +132,11 @@ public class BaseDBHelper implements IDBHelper {
 
 
         return getActiveAccount().map(account -> {
-            Log.d("saveDPByteInTx", "saveDPByteInTx:" + uuid);
+            if (BuildConfig.DEBUG) {
+                Log.d("saveDPByteInTx", "saveDPByteInTx:" + uuid);
+            }
             Set<DPEntity> result = new HashSet<>();
-            CacheHolderKt.saveProperty(uuid, (List<?>) msgs, HashStrategyFactory.INSTANCE::select);
+//            CacheHolderKt.saveProperty(uuid, (List<?>) msgs, HashStrategyFactory.INSTANCE::select);
 
 //            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
@@ -145,18 +150,20 @@ public class BaseDBHelper implements IDBHelper {
 //                propertyItems.add(propertyItem);
 
 
+                long select = HashStrategyFactory.INSTANCE.select(uuid, msg.id, msg.version);
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
                 if (dpEntity == null) {
-                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-                    dpEntity = unique(builder);
+                    dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties._id.eq(select)).unique();
+//                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+//                    dpEntity = unique(builder);
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
                 }
                 if (dpEntity == null) {
-                    dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                    dpEntity = new DPEntity(select, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                 }
                 dpEntity.setAction(DBAction.SAVED);
                 dpEntity.setState(DBState.SUCCESS);
@@ -196,20 +203,21 @@ public class BaseDBHelper implements IDBHelper {
 //                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
 //                    );
 //                    propertyItems.add(item);
-
+                    long select = HashStrategyFactory.INSTANCE.select(dataRsp.identity, msg.id, msg.version);
 
                     if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
                     if (dpEntity == null) {
-                        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-                        dpEntity = unique(builder);
+//                        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
+//                        dpEntity = unique(builder);
+                        dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties._id.eq(select)).unique();
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;
                     }
                     if (dpEntity == null) {
-                        dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                        dpEntity = new DPEntity(select, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                     }
                     dpEntity.setAction(DBAction.SAVED);
                     dpEntity.setState(DBState.SUCCESS);
@@ -709,8 +717,8 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Account> logout() {
         // TODO: 2017/8/31 objectbox 可以直接当内存缓存用,不用担心内存重启
-        BaseApplication.getDeviceBox().removeAll();
-        BaseApplication.getPropertyItemBox().removeAll();
+//        BaseApplication.getDeviceBox().removeAll();
+//        BaseApplication.getPropertyItemBox().removeAll();
 
         return getActiveAccount().map(account -> {
             this.dpAccount = null;

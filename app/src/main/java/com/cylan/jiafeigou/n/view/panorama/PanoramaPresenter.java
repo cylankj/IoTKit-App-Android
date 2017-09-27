@@ -150,6 +150,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return null;
                 })
+                .zipWith(RxBus.getCacheInstance().toObservable(PanoramaCameraContact.View.RecordEvent.class)
+                                .first(event -> event == PanoramaCameraContact.View.RecordEvent.RECORD_START_EVENT),
+                        (e, recordEvent) -> e)//这里是为了能够超时用的,因为无法在这个环节查询517 ,所有监听了进度刷新的消息
                 .timeout(60, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> isInProgress = true)
@@ -173,7 +176,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRtmpAddressError();
                     }
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
-                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
+                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startYoutubeLiveRtmp", subscribe);
@@ -228,7 +231,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
-                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE))
+                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT))
                 .subscribe(error -> {
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                 }, e -> {
@@ -313,16 +316,22 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return -1L;
                 })
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).first(setDataRsp -> setDataRsp.seq == seq))
-                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(rsp -> {
+                    // TODO: 2017/9/18 在这里查询517不准确,设备会自己推过来的
+                    boolean success = rsp != null && rsp.rets != null && rsp.rets.size() > 0 && rsp.rets.get(0).ret == 0;
+                    mView.onSendCameraLiveResponse(0, success);
+                    return success;
+                })
+                .zipWith(RxBus.getCacheInstance().toObservable(PanoramaCameraContact.View.RecordEvent.class)
+                                .first(event -> event == PanoramaCameraContact.View.RecordEvent.RECORD_START_EVENT),
+                        (e, recordEvent) -> e)//这里是为了能够超时用的,因为无法在这个环节查询517 ,所有监听了进度刷新的消息
+                .timeout(30, TimeUnit.SECONDS)
                 .doOnSubscribe(() -> isInProgress = true)
                 .doOnTerminate(() -> isInProgress = false)
                 .subscribe(rsp -> {
-                            // TODO: 2017/9/18 在这里查询517不准确,设备会自己推过来的
-                            boolean success = rsp != null && rsp.rets != null && rsp.rets.size() > 0 && rsp.rets.get(0).ret == 0;
-                            mView.onSendCameraLiveResponse(0, success);
                         }, e -> {
-                            RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
+                            RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                             if (e instanceof TimeoutException) {
                                 mView.onRtmpAddressError();
@@ -409,7 +418,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
-                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE))
+                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT))
                 .subscribe(error -> {
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                 }, e -> {
@@ -438,20 +447,26 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return -1L;
                 })
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).first(setDataRsp -> setDataRsp.seq == seq))
-                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(rsp -> {
+                    boolean success = rsp != null && rsp.rets != null && rsp.rets.size() > 0 && rsp.rets.get(0).ret == 0;
+                    mView.onSendCameraLiveResponse(1, success);
+                    return success;
+                })
+                .zipWith(RxBus.getCacheInstance().toObservable(PanoramaCameraContact.View.RecordEvent.class)
+                                .first(event -> event == PanoramaCameraContact.View.RecordEvent.RECORD_START_EVENT),
+                        (e, recordEvent) -> e)//这里是为了能够超时用的,因为无法在这个环节查询517 ,所有监听了进度刷新的消息
+                .timeout(30, TimeUnit.SECONDS)
                 .doOnSubscribe(() -> isInProgress = true)
                 .doOnTerminate(() -> isInProgress = false)
                 .subscribe(rsp -> {
-                    boolean success = rsp != null && rsp.rets != null && rsp.rets.size() > 0 && rsp.rets.get(0).ret == 0;
-                    mView.onSendCameraLiveResponse(1, success);
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mView.onRtmpAddressError();
                     }
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
-                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
+                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                 });
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startRtmpLive", subscribe);
     }
@@ -477,7 +492,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).first(setDataRsp -> setDataRsp.seq == seq))
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
-                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE))
+                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT))
                 .subscribe(rsp -> {
                     boolean success = rsp != null && rsp.rets != null && rsp.rets.size() > 0 && rsp.rets.get(0).ret == 0;
                     mView.onSendCameraLiveResponse(0, success);
@@ -554,7 +569,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     e.printStackTrace();
                     AppLogger.e(MiscUtils.getErr(e));
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
-                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
+                    RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                     if (e instanceof IllegalStateException) {
                         mView.showRtmpLiveSetting();
                     }
@@ -756,7 +771,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 //                            shouldRefreshRecord = false;
                         AppLogger.w("无录像状态:" + new Gson().toJson(deviceState));
                         if (isRecording) {
-                            RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
+                            RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, getLiveAction().hasResolution, false);
                         }
 //                        mView.onRefreshControllerViewVisible(true);
@@ -1132,7 +1147,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(uuid, type)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE))
+                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT))
                 .doOnTerminate(() -> mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, getLiveAction().hasResolution, false))
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
@@ -1176,8 +1191,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         Subscription subscribe = Observable.interval(0, 500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(count -> (int) (count / 2) + offset)
-                .takeUntil(RxBus.getCacheInstance().toObservable(PanoramaCameraContact.View.RecordFinishEvent.class))
-                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE))
+                .takeUntil(RxBus.getCacheInstance().toObservable(PanoramaCameraContact.View.RecordEvent.class)
+                        .filter(event -> event == PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT))
+                .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT))
                 .doOnTerminate(() -> {
                     isRecording = false;
                     isRtmpLive = false;
@@ -1188,8 +1204,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     } else {
                         isRecording = true;
                     }
-                    if (!isInProgress) {
-
+                    if (isInProgress) {
+                        RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_START_EVENT);
+                    } else {
                         mView.onRefreshVideoRecordUI(second, type);
                     }
                 }, AppLogger::e);

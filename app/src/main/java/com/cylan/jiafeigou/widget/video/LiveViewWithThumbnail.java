@@ -325,16 +325,16 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     videoViewWeakReference.get().loadBitmap(resource);
                     imageViewRef.get().setVisibility(VISIBLE);
                     imageViewRef.get().setImageResource(android.R.color.transparent);
-                    AppLogger.d("开始加载全景预览图");
+                    AppLogger.w("开始加载全景预览图");
                 }
             } else {
-                AppLogger.d("开始加载预览图 is null? " + (resource == null));
+                AppLogger.w("开始加载预览图 is null? " + (resource == null));
             }
         }
 
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            AppLogger.d("加载预览图失败 is onLoadFailed: " + MiscUtils.getErr(e));
+            AppLogger.w("加载预览图失败 is onLoadFailed: " + MiscUtils.getErr(e));
             if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
                 return;
             }
@@ -344,23 +344,23 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             imageViewRef.get().setVisibility(VISIBLE);
             imageViewRef.get().setImageBitmap(BitmapFactory.decodeResource(videoViewWeakReference.get().getContext().getResources(),
                     R.drawable.default_diagram_mask));
-            AppLogger.d("开始加载全景预览图");
+            AppLogger.w("开始加载全景预览图");
         }
 
         @Override
         public void onDestroy() {
-            AppLogger.d("加载预览图 is onDestroy");
+            AppLogger.w("加载预览图 is onDestroy");
         }
 
         @Override
         public void onStop() {
             super.onStop();
-            AppLogger.d("加载预览图 is onStop");
+            AppLogger.w("加载预览图 is onStop");
         }
 
         @Override
         public void onLoadCleared(Drawable placeholder) {
-            AppLogger.d("bitmap is onLoadCleared");
+            AppLogger.w("bitmap is onLoadCleared");
         }
     }
 }

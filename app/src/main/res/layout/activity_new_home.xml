@@ -7,11 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".NewHomeActivity">
 
-    <com.cylan.jiafeigou.widget.CustomViewPager
+    <!--<com.cylan.jiafeigou.widget.CustomViewPager-->
+    <!--android:id="@+id/vp_home_content"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_above="@+id/fLayout_new_home_bottom_menu" />-->
+
+    <FrameLayout
         android:id="@+id/vp_home_content"
+        android:layout_above="@+id/fLayout_new_home_bottom_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/fLayout_new_home_bottom_menu" />
+        android:layout_height="match_parent" />
 
 
     <FrameLayout
@@ -61,11 +67,11 @@
             android:background="@color/color_d2d2d2" />
     </FrameLayout>
 
-    <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
-        android:id="@+id/act_main_wonder_indicator_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
+    <!--<com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView-->
+    <!--android:id="@+id/act_main_wonder_indicator_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:visibility="gone" />-->
 
 </RelativeLayout>

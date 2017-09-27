@@ -66,7 +66,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
-        AppLogger.d("OnReportJfgDevices" + gson.toJson(jfgDevices));
+        AppLogger.w("OnReportJfgDevices" + gson.toJson(jfgDevices));
 //        for (JFGDevice device : jfgDevices) {
 //            if (device.uuid.contains("57309")) {
 //                device.alias = "hunt";
@@ -80,73 +80,73 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnUpdateAccount :" + gson.toJson(jfgAccount));
+        AppLogger.w("OnUpdateAccount :" + gson.toJson(jfgAccount));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheAccountEvent(jfgAccount));
     }
 
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
-        AppLogger.d("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size());
+        AppLogger.w("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size());
         BaseApplication.getAppComponent().getSourceManager().cacheHistoryDataList(jfgHistoryVideo);
     }
 
     @Override
     public void OnUpdateHistoryErrorCode(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
-        AppLogger.d("OnUpdateHistoryErrorCode :" + gson.toJson(jfgHistoryVideoErrorInfo));
+        AppLogger.w("OnUpdateHistoryErrorCode :" + gson.toJson(jfgHistoryVideoErrorInfo));
         RxBus.getCacheInstance().post(jfgHistoryVideoErrorInfo);
     }
 
     @Override
     public void OnServerConfig(JFGServerCfg jfgServerCfg) {
-        AppLogger.d("OnServerConfig :" + gson.toJson(jfgServerCfg));
+        AppLogger.w("OnServerConfig :" + gson.toJson(jfgServerCfg));
         RxBus.getCacheInstance().post(jfgServerCfg);
     }
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLogoutByServer:" + i);
+        AppLogger.w("OnLogoutByServer:" + i);
         RxBus.getCacheInstance().post(new RxEvent.PwdHasResetEvent(i));
         BaseApplication.getAppComponent().getSourceManager().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
 
     @Override
     public void OnVideoDisconnect(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
-        AppLogger.d("OnVideoDisconnect :" + gson.toJson(jfgMsgVideoDisconn));
+        AppLogger.w("OnVideoDisconnect :" + gson.toJson(jfgMsgVideoDisconn));
         RxBus.getCacheInstance().post(jfgMsgVideoDisconn);
     }
 
     @Override
     public void OnVideoNotifyResolution(JFGMsgVideoResolution jfgMsgVideoResolution) {
-        AppLogger.d("OnVideoNotifyResolution" + jfgMsgVideoResolution.peer);
+        AppLogger.w("OnVideoNotifyResolution" + jfgMsgVideoResolution.peer);
         RxBus.getCacheInstance().post(jfgMsgVideoResolution);
     }
 
     @Override
     public void OnVideoNotifyRTCP(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
-        Log.d("", "OnVideoNotifyRTCP" + gson.toJson(jfgMsgVideoRtcp));
+        Log.w("", "OnVideoNotifyRTCP" + gson.toJson(jfgMsgVideoRtcp));
         RxBus.getCacheInstance().post(jfgMsgVideoRtcp);
     }
 
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
-        AppLogger.d("OnHttpDone :" + gson.toJson(jfgMsgHttpResult));
+        AppLogger.w("OnHttpDone :" + gson.toJson(jfgMsgHttpResult));
         RxBus.getCacheInstance().post(jfgMsgHttpResult);
     }
 
     @Override
     public void OnRobotTransmitMsg(RobotMsg robotMsg) {
-        AppLogger.d("OnRobotTransmitMsg :" + gson.toJson(robotMsg));
+        AppLogger.w("OnRobotTransmitMsg :" + gson.toJson(robotMsg));
         RxBus.getCacheInstance().post(robotMsg);
     }
 
     @Override
     public void OnRobotMsgAck(int i) {
-        AppLogger.d("OnRobotMsgAck :" + i);
+        AppLogger.w("OnRobotMsgAck :" + i);
     }
 
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-        AppLogger.d("OnRobotGetDataRsp :" + gson.toJson(robotoGetDataRsp));
+        AppLogger.w("OnRobotGetDataRsp :" + gson.toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
 
 
@@ -160,30 +160,30 @@ public class BaseAppCallBackHolder implements AppCallBack {
         robotoGetDataRsp.seq = l;
         robotoGetDataRsp.put(-1, arrayList);//key在这种情况下无用
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
-        AppLogger.d("OnRobotGetDataExRsp :" + s + "," + gson.toJson(arrayList));
+        AppLogger.w("OnRobotGetDataExRsp :" + s + "," + gson.toJson(arrayList));
     }
 
     @Override
     public void OnRobotSetDataRsp(long l, String uuid, ArrayList<JFGDPMsgRet> arrayList) {
-        AppLogger.d("OnRobotSetDataRsp :" + l + gson.toJson(arrayList));
+        AppLogger.w("OnRobotSetDataRsp :" + l + gson.toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, uuid, arrayList));
     }
 
     @Override
     public void OnRobotGetDataTimeout(long l, String s) {
-        AppLogger.d("OnRobotGetDataTimeout :" + l + ":" + s);
+        AppLogger.w("OnRobotGetDataTimeout :" + l + ":" + s);
     }
 
     @Override
     public ArrayList<JFGDPMsg> OnQuerySavedDatapoint(String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.e("这是一个bug");
+        AppLogger.w("这是一个bug");
         return null;
     }
 
     @Override
     public void OnlineStatus(boolean b) {
         if (b != BaseApplication.getAppComponent().getSourceManager().isOnline()) {
-            AppLogger.d("OnlineStatus :" + b);
+            AppLogger.w("OnlineStatus :" + b);
             RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
             BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
         }
@@ -192,42 +192,42 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnResult(JFGResult jfgResult) {
         RxBus.getCacheInstance().post(jfgResult);
-        AppLogger.i("jfgResult [" + jfgResult.event + ":" + jfgResult.code + "]");
+        AppLogger.w("jfgResult [" + jfgResult.event + ":" + jfgResult.code + "]");
     }
 
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
-        AppLogger.d("OnDoorBellCall :" + gson.toJson(jfgDoorBellCaller));
+        AppLogger.w("OnDoorBellCall :" + gson.toJson(jfgDoorBellCaller));
 //        RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller, false));
         try {
             String url = new JFGGlideURL(jfgDoorBellCaller.cid, jfgDoorBellCaller.time + ".jpg", jfgDoorBellCaller.regionType).toURL().toString();
             BellPuller.getInstance().launchBellLive(jfgDoorBellCaller.cid, url, jfgDoorBellCaller.time);
-            AppLogger.d("门铃截图地址:" + url);
+            AppLogger.w("门铃截图地址:" + url);
         } catch (MalformedURLException e) {
-            AppLogger.e(e);
+            AppLogger.w(e);
         }
     }
 
     @Override
     public void OnOtherClientAnswerCall(String s) {
-        AppLogger.d("OnOtherClientAnswerCall:" + s);
+        AppLogger.w("OnOtherClientAnswerCall:" + s);
         RxBus.getCacheInstance().post(new RxEvent.CallResponse(false));
     }
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-        AppLogger.d("OnRobotCountDataRsp :" + l + ":" + s + "");
+        AppLogger.w("OnRobotCountDataRsp :" + l + ":" + s + "");
     }
 
     @Override
     public void OnRobotDelDataRsp(long l, String s, int i) {
-        AppLogger.d("OnRobotDelDataRsp :" + l + " uuid:" + s + " i:" + i);
+        AppLogger.w("OnRobotDelDataRsp :" + l + " uuid:" + s + " i:" + i);
         RxBus.getCacheInstance().post(new RxEvent.DeleteDataRsp(l, s, i));
     }
 
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
+        AppLogger.w("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
 
         /*过渡性使用,将来会废弃*/
@@ -236,7 +236,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnSendSMSResult(int i, String s) {
-        AppLogger.d("OnSendSMSResult :" + i + "," + s);
+        AppLogger.w("OnSendSMSResult :" + i + "," + s);
         //store the token .
         PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, s);
         RxBus.getCacheInstance().post(new RxEvent.SmsCodeResult(i, s));
@@ -244,7 +244,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetFriendListRsp(int ret, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnLocalMessage :" + arrayList.size());
+        AppLogger.w("OnLocalMessage :" + arrayList.size());
 //        arrayList = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
 //            JFGFriendAccount req = new JFGFriendAccount();
@@ -258,7 +258,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int ret, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnGetFriendRequestListRsp:" + arrayList.size());
+        AppLogger.w("OnGetFriendRequestListRsp:" + arrayList.size());
 //        AppLogger.d("测试专用");
 //        arrayList = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
@@ -274,60 +274,60 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
-        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgFriendAccount));
+        AppLogger.w("OnLocalMessage :" + new Gson().toJson(jfgFriendAccount));
         RxBus.getCacheInstance().post(new RxEvent.GetFriendInfoCall(i, jfgFriendAccount));
     }
 
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
-        AppLogger.d("OnCheckFriendAccountRsp :");
+        AppLogger.w("OnCheckFriendAccountRsp :");
         RxBus.getCacheInstance().post(new RxEvent.CheckAccountCallback(i, s, s1, b));
     }
 
     @Override
     public void OnShareDeviceRsp(int i, String s, String s1) {
-        AppLogger.d("OnShareDeviceRsp :" + i + ":" + s + ":" + s1);
+        AppLogger.w("OnShareDeviceRsp :" + i + ":" + s + ":" + s1);
         RxBus.getCacheInstance().post(new RxEvent.ShareDeviceCallBack(i, s, s1));
     }
 
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
-        AppLogger.d("OnUnShareDeviceRsp :" + i + "," + s + "," + s1);
+        AppLogger.w("OnUnShareDeviceRsp :" + i + "," + s + "," + s1);
         RxBus.getCacheInstance().post(new RxEvent.UnShareDeviceCallBack(i, s, s1));
     }
 
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
-        AppLogger.d("OnGetShareListRsp :" + i);
+        AppLogger.w("OnGetShareListRsp :" + i);
         BaseApplication.getAppComponent().getSourceManager().cacheShareList(arrayList);
     }
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("UnShareListByCidEvent :");
+        AppLogger.w("UnShareListByCidEvent :");
         RxBus.getCacheInstance().post(new RxEvent.UnShareListByCidEvent(i, arrayList));
     }
 
     @Override
     public void OnUpdateNTP(int l) {
-        AppLogger.d("OnUpdateNTP :" + l);
+        AppLogger.w("OnUpdateNTP :" + l);
         PreferencesUtils.putInt(JConstant.KEY_NTP_INTERVAL, (int) (System.currentTimeMillis() / 1000 - l));
     }
 
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
-        AppLogger.d("OnForgetPassByEmailRsp :" + s);
+        AppLogger.w("OnForgetPassByEmailRsp :" + s);
         RxBus.getCacheInstance().post(new RxEvent.ForgetPwdByMail(s).setRet(i));
     }
 
     @Override
     public void OnGetAliasByCidRsp(int i, String s) {
-        AppLogger.d("OnGetAliasByCidRsp :" + i + ":" + s);
+        AppLogger.w("OnGetAliasByCidRsp :" + i + ":" + s);
     }
 
     @Override
     public void OnGetFeedbackRsp(int ret, ArrayList<JFGFeedbackInfo> arrayList) {
-        AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
+        AppLogger.w("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
 //        arrayList = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
 //            JFGFeedbackInfo info = new JFGFeedbackInfo();
@@ -343,26 +343,26 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnNotifyStorageType(int i) {
-        AppLogger.d("OnNotifyStorageType:" + i);
+        AppLogger.w("OnNotifyStorageType:" + i);
         //此event是全局使用,不需要删除.因为在DataSourceManager需要用到.
         BaseApplication.getAppComponent().getSourceManager().setStorageType(i);
     }
 
     @Override
     public void OnBindDevRsp(int i, String s) {
-        AppLogger.d("onBindDev: " + i + " uuid:" + s);
+        AppLogger.w("onBindDev: " + i + " uuid:" + s);
         RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s));
         PreferencesUtils.putString(JConstant.BINDING_DEVICE, "");
     }
 
     @Override
     public void OnUnBindDevRsp(int i, String s) {
-        AppLogger.d(String.format(Locale.getDefault(), "OnUnBindDevRsp:%d,%s", i, s));
+        AppLogger.w(String.format(Locale.getDefault(), "OnUnBindDevRsp:%d,%s", i, s));
     }
 
     @Override
     public void OnGetVideoShareUrl(String s) {
-        AppLogger.d(String.format(Locale.getDefault(), "OnGetVideoShareUrl:%s", s));
+        AppLogger.w(String.format(Locale.getDefault(), "OnGetVideoShareUrl:%s", s));
         RxBus.getCacheInstance().post(new RxEvent.GetVideoShareUrlEvent(s));
     }
 
@@ -374,13 +374,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
             BaseForwardHelper.getInstance().dispatcherForward(rawRspMsg);
         } catch (IOException e) {
             e.printStackTrace();
-            AppLogger.e("解析服务器透传消息失败");
+            AppLogger.w("解析服务器透传消息失败");
         }
     }
 
     @Override
     public void OnMultiShareDevices(int i, String s, String s1) {
-        AppLogger.d(String.format(Locale.getDefault(), "check OnMultiShareDevices:%d,%s,%s", i, s, s1));
+        AppLogger.w(String.format(Locale.getDefault(), "check OnMultiShareDevices:%d,%s,%s", i, s, s1));
         RxBus.getCacheInstance().post(new RxEvent.MultiShareDeviceEvent(i, s, s1));
     }
 
@@ -393,12 +393,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotCountMultiDataRsp(long l, Object o) {
 
 
-        AppLogger.d("OnRobotCountMultiDataRsp:" + o.toString());
+        AppLogger.w("OnRobotCountMultiDataRsp:" + o.toString());
     }
 
     @Override
     public void OnRobotGetMultiDataRsp(long l, Object o) {
-        AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
+        AppLogger.w("OnRobotGetMultiDataRsp:" + l + ":" + o);
 
 //        ObjectMapper mapper = CacheHolderKt.getObjectMapper().get();
 //
@@ -441,7 +441,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
                 RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
             }
 
-//            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.INSTANCE::select);
+//            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.RECORD_END_EVENT::select);
             Log.d("OnRobotGetMultiDataRsp", "size: " + count);
         }
     }
@@ -449,7 +449,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetAdPolicyRsp(int i, long l, String picUrl, String tagUrl) {
-        AppLogger.d("OnGetAdPolicyRsp:" + l + ":" + picUrl);
+        AppLogger.w("OnGetAdPolicyRsp:" + l + ":" + picUrl);
 //        l = System.currentTimeMillis() + 2 * 60 * 1000;
 //        tagUrl = "http://www.baidu.com";
 //        picUrl = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
@@ -462,7 +462,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnCheckDevVersionRsp(boolean b, String url, String tagVersion,
                                      String tip, String md5, String cid) {
-        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + url + ":" + tagVersion
+        AppLogger.w("OnCheckDevVersionRsp :" + b + ":" + url + ":" + tagVersion
                 + ":" + tip + ":" + md5 + "," + cid);
 //        isFriend = true;
 //        account = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
@@ -493,7 +493,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
                                            String tagVersion,
                                            String content,
                                            ArrayList<DevUpgradeInfo> arrayList) {
-        AppLogger.d("OnCheckTagDeviceVersionRsp:" + ret + ":" + cid + ",:" + tagVersion + "," + new Gson().toJson(arrayList));
+        AppLogger.w("OnCheckTagDeviceVersionRsp:" + ret + ":" + cid + ",:" + tagVersion + "," + new Gson().toJson(arrayList));
 //        arrayList = testList();
 //        cid = "290000000065";
 //        tagVersion = "1.0.0.009";
@@ -512,12 +512,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUniversalDataRsp(long l, int i, byte[] bytes) {
-        try {
-            Object value = CacheHolderKt.getObjectMapper().get().readValue(bytes, Object.class);
-            Log.i(JConstant.CYLAN_TAG, "OnUniversalDataRsp:" + value);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Object value = CacheHolderKt.getObjectMapper().get().readValue(bytes, Object.class);
+//            Log.w(JConstant.CYLAN_TAG, "OnUniversalDataRsp:" + value);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         RxBus.getCacheInstance().post(new RxEvent.UniversalDataRsp(l, i, bytes));
     }

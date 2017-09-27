@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCmd;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -75,10 +76,10 @@ public class BaseForwardHelper {
                         if (msg != null) {
                             forward.msg = pack(msg);
                         }
-                        AppLogger.d("正在向设备发送透传消息:" + new Gson().toJson(forward) + ":" + new Gson().toJson(msg));
+                        AppLogger.w("正在向设备发送透传消息:" + new Gson().toJson(forward) + ":" + new Gson().toJson(msg));
                         if (forwardType == 0) {
                             int ret = appCmd.SendForwardData(pack(forward));
-                            AppLogger.e("透传消息返回值:" + ret);
+                            AppLogger.w("透传消息返回值:" + ret);
                         } else if (forwardType == 1) {
                             DeviceInformation information = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
                             if (information != null && information.ip != null) {
@@ -106,7 +107,7 @@ public class BaseForwardHelper {
                 dpMsg.packValue = DpUtils.pack(value);
                 params.add(dpMsg);
                 Long seq = appCmd.robotSetData(uuid, params);
-                AppLogger.d("正在向服务器发送 dp消息:" + msgId);
+                AppLogger.w("正在向服务器发送 dp消息:" + msgId);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (Exception e) {
@@ -121,7 +122,7 @@ public class BaseForwardHelper {
 
     private <R> R parserSet(int msgId, RxEvent.SetDataRsp rsp) {
         try {
-            AppLogger.d("收到服务器的 dp 消息");
+            AppLogger.w("收到服务器的 dp 消息");
             if (rsp.rets.size() == 0) return null;
             JFGDPMsgRet msg = rsp.rets.get(0);
             if (msgId == 218) {
@@ -142,7 +143,7 @@ public class BaseForwardHelper {
                 JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
                 params.add(dpMsg);
                 Long seq = appCmd.robotGetData(uuid, params, limit, false, 0);
-                AppLogger.d("正在向服务器发送 dp消息:" + msgId);
+                AppLogger.w("正在向服务器发送 dp消息:" + msgId);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (Exception e) {
@@ -158,7 +159,7 @@ public class BaseForwardHelper {
 
     private <T> T parserGet(int msgId, RobotoGetDataRsp rsp) {
         try {
-            AppLogger.d("收到服务器的 dp 消息");
+            AppLogger.w("收到服务器的 dp 消息");
             if (rsp.map.size() == 0) return null;
             if (rsp.map.get(msgId).size() == 0) return null;
             JFGDPMsg msg = rsp.map.get(msgId).get(0);
@@ -171,7 +172,7 @@ public class BaseForwardHelper {
                 infoRsp.storage_used = status.used;
                 return (T) infoRsp;
             } else if (msgId == 205) {
-                AppLogger.e("当前是否有电源线:" + new MessagePack().read(msg.packValue).toString());
+                AppLogger.w("当前是否有电源线:" + new MessagePack().read(msg.packValue).toString());
                 Boolean aBoolean = unpackData(msg.packValue, boolean.class);
                 PanoramaEvent.MsgPowerLineRsp powerLineRsp = new PanoramaEvent.MsgPowerLineRsp();
                 powerLineRsp.powerline = aBoolean != null && aBoolean ? 1 : 0;
@@ -210,8 +211,10 @@ public class BaseForwardHelper {
 
     public <T> T dispatcherForward(PanoramaEvent.MsgForward forward) {
         try {
-            AppLogger.d("forward:" + new Gson().toJson(forward));
-            AppLogger.d("messagePack:" + new Gson().toJson(new MessagePack().read(forward.msg).toString()));
+            if (BuildConfig.DEBUG) {
+                AppLogger.w("forward:" + new Gson().toJson(forward));
+                AppLogger.w("messagePack:" + new Gson().toJson(new MessagePack().read(forward.msg).toString()));
+            }
             switch (forward.type) {
                 case 1:       //TYPE_FILE_DOWNLOAD_REQ          = 1   下载请求
                 case 3:       //TYPE_FILE_DELETE_REQ            = 3   删除请求

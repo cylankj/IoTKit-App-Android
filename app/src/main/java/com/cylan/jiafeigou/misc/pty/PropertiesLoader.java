@@ -47,7 +47,7 @@ public class PropertiesLoader implements IProperty {
     @Override
     public void initialize() {
         final String content = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
-                "properties.json");
+                "attribute_table.json");
         try {
             propertyFile = new Gson().fromJson(content, PropertyFile.class);
             AppLogger.d("load properties: " + content.length() + "," + propertyFile.getVersion());
@@ -57,7 +57,7 @@ public class PropertiesLoader implements IProperty {
         }
         try {
             final String shareContent = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
-                    "shareProperties.json");
+                    "attribute_table_shared.json");
             sharePropertyFile = new Gson().fromJson(shareContent, PropertyFile.class);
             AppLogger.d("load properties: " + content.length() + "," + sharePropertyFile.getVersion());
         } catch (Exception e) {

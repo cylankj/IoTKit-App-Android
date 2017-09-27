@@ -12,9 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.SharedElementCallback;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -37,11 +37,11 @@ import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -58,7 +58,7 @@ import rx.schedulers.Schedulers;
 public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.Presenter> implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
-    CustomViewPager vpHomeContent;
+    FrameLayout vpHomeContent;
     @BindView(R.id.rgLayout_home_bottom_menu)
     RadioGroup rgLayoutHomeBottomMenu;
 
@@ -75,6 +75,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     private SharedElementCallBackListener sharedElementCallBackListener;
 
     private Subscription subscribe;
+    private HomePageListFragmentExt homePageListFragmentExt;
+    private HomeWonderfulFragmentExt homeWonderfulFragmentExt;
+    private HomeMineFragment homeMineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +97,17 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         basePresenter = new NewHomeActivityPresenterImpl(this);
         AfterLoginService.resumeTryCheckVersion();
 
-
+        showHomeFragment(0);
     }
 
     private void initShowWonderPageSub() {
         subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> vpHomeContent.setCurrentItem(1), e -> AppLogger.d(e.getMessage()));
+                .subscribe(event -> {
+                    showHomeFragment(1);
+//                    vpHomeContent.setCurrentItem(1);
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -111,10 +117,11 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             ToastUtil.showToast(intent.getStringExtra("NewHomeActivity_intent"));
         }
         if (intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_WONDER)) {
-            int cIndex = vpHomeContent.getCurrentItem();
-            if (cIndex != 1) {
-                vpHomeContent.setCurrentItem(1);
-            }
+//            int cIndex = vpHomeContent.getCurrentItem();
+//            if (cIndex != 1) {
+//                vpHomeContent.setCurrentItem(1);
+//        }
+            showHomeFragment(1);
         }
     }
 
@@ -153,8 +160,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     public void showHomeListFragment() {
-        if (vpHomeContent != null)
-            vpHomeContent.setCurrentItem(0);
+//        if (vpHomeContent != null)
+//            vpHomeContent.setCurrentItem(0);
+        showHomeFragment(0);
     }
 
     @Override
@@ -164,6 +172,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             subscribe.unsubscribe();
             subscribe = null;
         }
+        homeWonderfulFragmentExt = null;
+        homePageListFragmentExt = null;
+        homeMineFragment = null;
     }
 
     protected int[] getOverridePendingTransition() {
@@ -175,57 +186,89 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void initMainContentAdapter() {
-        HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+//        HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+//
+//        vpHomeContent.setPagingEnabled(true);
+//        vpHomeContent.setAdapter(viewAdapter);
+//        vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                final int id = position == 0 ? R.id.btn_home_list
+//                        : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
+//                rgLayoutHomeBottomMenu.check(id);
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//                if (state == ViewPager.SCROLL_STATE_IDLE) {
+//                    final int index = vpHomeContent.getCurrentItem();
+//                    if (index == 0 || index == 2) {
+//                        if (RxBus.getCacheInstance().hasObservers())
+//                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled(index));
+//                    }
+//                }
+//            }
+//        });
+    }
 
-        vpHomeContent.setPagingEnabled(true);
-        vpHomeContent.setAdapter(viewAdapter);
-        vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                final int id = position == 0 ? R.id.btn_home_list
-                        : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
-                rgLayoutHomeBottomMenu.check(id);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    final int index = vpHomeContent.getCurrentItem();
-                    if (index == 0 || index == 2) {
-                        if (RxBus.getCacheInstance().hasObservers())
-                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled(index));
-                    }
+    private void showHomeFragment(int index) {
+        switch (index) {
+            case 0: {
+                if (homePageListFragmentExt == null) {
+                    homePageListFragmentExt = HomePageListFragmentExt.newInstance(new Bundle());
                 }
+                ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homePageListFragmentExt);
             }
-        });
+            break;
+            case 1: {
+                if (homeWonderfulFragmentExt == null) {
+                    homeWonderfulFragmentExt = HomeWonderfulFragmentExt.newInstance(new Bundle());
+                    sharedElementCallBackListener = homeWonderfulFragmentExt;
+                    onActivityReenterListener = homeWonderfulFragmentExt;
+                }
+                ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homeWonderfulFragmentExt);
+            }
+            break;
+            case 2: {
+                if (homeMineFragment == null) {
+                    homeMineFragment = HomeMineFragment.newInstance(new Bundle());
+                }
+                ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homeMineFragment);
+            }
+            break;
+        }
     }
 
     private void initBottomMenu() {
         rgLayoutHomeBottomMenu.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.btn_home_list:
-                    if (vpHomeContent.getCurrentItem() != 0) {
-                        vpHomeContent.setCurrentItem(0);
-                    }
+                    showHomeFragment(0);
+//                    if (vpHomeContent.getCurrentItem() != 0) {
+//                        vpHomeContent.setCurrentItem(0);
+//                    }
                     break;
                 case R.id.btn_home_wonderful:
-                    if (vpHomeContent.getCurrentItem() != 1) {
-                        vpHomeContent.setCurrentItem(1);
-                    }
+                    showHomeFragment(1);
+//                    if (vpHomeContent.getCurrentItem() != 1) {
+//                        vpHomeContent.setCurrentItem(1);
+//                    }
                     break;
                 case R.id.btn_home_mine:
-                    if (vpHomeContent.getCurrentItem() != 2) {
-                        vpHomeContent.setCurrentItem(2);
-                    }
+                    showHomeFragment(2);
+//                    if (vpHomeContent.getCurrentItem() != 2) {
+//                        vpHomeContent.setCurrentItem(2);
+//                    }
                     break;
             }
         });
         //自定义的RadioButton,放在RadioGroup中不能被选中
         findViewById(R.id.btn_home_mine)
                 .setOnClickListener(v -> {
-                    if (vpHomeContent.getCurrentItem() != 2) {
-                        vpHomeContent.setCurrentItem(2);
-                    }
+                    rgLayoutHomeBottomMenu.check(R.id.btn_home_mine);
+//                    if (vpHomeContent.getCurrentItem() != 2) {
+//                        vpHomeContent.setCurrentItem(2);
+//                    }
                 });
     }
 

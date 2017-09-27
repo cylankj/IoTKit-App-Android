@@ -15,6 +15,7 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -232,7 +233,6 @@ public class DataSourceManager implements JFGSourceManager {
                 dstArray.add(entry.getKey());
                 queryParameters = BasePropertyParser.getInstance().getAllQueryParameters();
             }
-            AppLogger.e("所有的设备属性为:" + new Gson().toJson(queryParameters));
             MessagePack messagePack = new MessagePack();
             messagePack.register(JFGDPMsg.class);
             int seq = RandomUtils.getRandom(Integer.MAX_VALUE);
@@ -245,7 +245,10 @@ public class DataSourceManager implements JFGSourceManager {
             forward.type = 51;
             forward.mSeq = seq;
             forward.msg = messagePack.write(queryParameters);
-            AppLogger.d("正在向设备发送透传消息:" + new Gson().toJson(forward));
+            if (BuildConfig.DEBUG) {
+                AppLogger.w("所有的设备属性为:" + new Gson().toJson(queryParameters));
+                AppLogger.w("正在向设备发送透传消息:" + new Gson().toJson(forward));
+            }
             appCmd.sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, messagePack.write(forward));
             appCmd.sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, messagePack.write(forward));
         } catch (Exception e) {
@@ -307,7 +310,7 @@ public class DataSourceManager implements JFGSourceManager {
             if (!result.contains(d))
                 result.add(d);
             else {
-                AppLogger.d("yes list contains d: " + d);
+                AppLogger.w("yes list contains d: " + d);
             }
         }
 
@@ -375,7 +378,7 @@ public class DataSourceManager implements JFGSourceManager {
             for (int i = 0; i < ListUtils.getSize(mapList); i++) {
                 appCmd.robotGetMultiData(mapList.get(i), 1, false, 0);
             }
-            AppLogger.d("多查询");
+            AppLogger.w("多查询");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -413,7 +416,7 @@ public class DataSourceManager implements JFGSourceManager {
         map.put(uuid, array);
         try {
             appCmd.robotGetMultiData(map, 1, false, 0);
-            AppLogger.d("多查询");
+            AppLogger.w("多查询");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -512,7 +515,7 @@ public class DataSourceManager implements JFGSourceManager {
         return Observable.just(uuids)
                 .map(devices -> {
                     for (String uuid : devices) {
-                        AppLogger.d("设备已解绑:" + uuid);
+                        AppLogger.w("设备已解绑:" + uuid);
                         Device device = mCachedDeviceMap.get(uuid);
                         mCachedDeviceMap.remove(uuid);
                         String mac = null;
@@ -524,7 +527,7 @@ public class DataSourceManager implements JFGSourceManager {
                         }
                         JFGRules.switchApModel(mac, uuid, 1).subscribe(ret -> {
                             if (ret) {
-                                AppLogger.d("睿视删除设备起 AP 成功了!");
+                                AppLogger.w("睿视删除设备起 AP 成功了!");
                             }
                         }, e -> {
                             AppLogger.e("unBindDevices,Error:" + e.getMessage());
@@ -556,14 +559,14 @@ public class DataSourceManager implements JFGSourceManager {
         Device device = getDevice(uuid);
         if (device != null) {
             try {
-                AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,version:%s,asc:%s,count:%s", uuid, version, asc, count));
+                AppLogger.w(String.format(Locale.getDefault(), "uuid:%s,version:%s,asc:%s,count:%s", uuid, version, asc, count));
                 return appCmd.robotGetDataEx(uuid, asc, version, new long[]{505L, 222L, 512L, 401L}, 0);
             } catch (Exception e) {
-                AppLogger.e("bad ,uuid may be null");
+                AppLogger.w("bad ,uuid may be null");
                 return -1;
             }
         } else {
-            AppLogger.e("bad ,device is null");
+            AppLogger.w("bad ,device is null");
             return -1;
         }
     }
@@ -706,13 +709,13 @@ public class DataSourceManager implements JFGSourceManager {
         } else {
 
         }
-        AppLogger.i("logState update: " + loginState.state);
+        AppLogger.w("logState update: " + loginState.state);
     }
 
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
         if (this.account != null) this.account.setAccount(jfgAccount);
-        AppLogger.i("setJfgAccount:" + (jfgAccount == null));
+        AppLogger.w("setJfgAccount:" + (jfgAccount == null));
     }
 
     @Override
@@ -739,14 +742,14 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribe(s -> {
                     Device device = getDevice(uuid);
                     if (device == null) {
-                        AppLogger.e("device is null:" + uuid);
+                        AppLogger.w("device is null:" + uuid);
                         return;
                     }
                     try {
                         ArrayList<JFGDPMsg> list = new ArrayList<>();
                         for (DataPoint data : value) {
                             boolean result = device.setValue((int) data.getMsgId(), data);
-                            AppLogger.d("update dp:" + result + " " + data.getMsgId());
+                            AppLogger.w("update dp:" + result + " " + data.getMsgId());
                             JFGDPMsg jfgdpMsg = new JFGDPMsg(data.getMsgId(), System.currentTimeMillis());
 
                             jfgdpMsg.packValue = data.toBytes();
@@ -847,12 +850,14 @@ public class DataSourceManager implements JFGSourceManager {
                             if (jfgAccount != null) {
                                 setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
                             } else {
-                                AppLogger.e("jfgAccount is null");
+                                AppLogger.w("jfgAccount is null");
                             }
-                            getCacheInstance().post(account);
                             RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
                             accountArrived.jfgAccount = event.account;
-                            getCacheInstance().postSticky(accountArrived);
+                            if (!BaseApplication.isBackground()) {
+                                getCacheInstance().post(account);
+                                getCacheInstance().postSticky(accountArrived);
+                            }
                             return "";
                         }))
                 .retry((i, e) -> true)
@@ -891,7 +896,7 @@ public class DataSourceManager implements JFGSourceManager {
                         device = event.devices[i];
                         result.remove(device.uuid);
                     }
-                    AppLogger.d("已删除的设备数:" + result.size());
+                    AppLogger.w("已删除的设备数:" + result.size());
                     for (String uuid : result) {
 
                     }
@@ -917,7 +922,9 @@ public class DataSourceManager implements JFGSourceManager {
                             }
                         }
                         syncHomeProperty();
-                        getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+                        if (!BaseApplication.isBackground()) {
+                            getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+                        }
                     } catch (Exception e) {
                         AppLogger.d(e.getMessage());
                         e.printStackTrace();
@@ -998,8 +1005,10 @@ public class DataSourceManager implements JFGSourceManager {
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
                             }
-                            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
-                            AppLogger.d("收到设备同步消息:" + event.arrayList);
+                            if (!BaseApplication.isBackground()) {
+                                RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
+                            }
+                            AppLogger.w("收到设备同步消息:" + event.arrayList);
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
@@ -1097,7 +1106,7 @@ public class DataSourceManager implements JFGSourceManager {
                 } else if (msgId == 401) {
                     DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
                     if (dataPoint.isOK == 1) return; //已接听了,不需要发送通知了
-                    AppLogger.d("may fire a notification: " + msgId);
+                    AppLogger.w("may fire a notification: " + msgId);
 
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();

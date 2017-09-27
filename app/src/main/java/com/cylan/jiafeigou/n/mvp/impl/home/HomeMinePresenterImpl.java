@@ -64,7 +64,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void portraitBlur(Bitmap bitmap) {
         //使用默认的图片
-        AppLogger.e("需要在io线程操作.");
+        AppLogger.w("需要在io线程操作.");
         Observable.just(bitmap)
                 .subscribeOn(Schedulers.io())
                 .map(b -> {
@@ -157,7 +157,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                 .observeOn(Schedulers.io())
                 .map(accountArrived -> {
                     AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
-                    AppLogger.d("监听到用户信息回调!");
+                    AppLogger.w("监听到用户信息回调!");
                     isOpenLogin = signType != null && signType.type >= 3;
                     if (isOpenLogin) {
                         String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
@@ -179,11 +179,11 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                                                             }
                                                         }
                                                         BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
-                                                        AppLogger.e("正在设置第三方登录图像" + resource.getAbsolutePath());
+                                                        AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
                                                         if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
                                                             accountArrived.jfgAccount.setAlias(alias);
                                                             try {
-                                                                AppLogger.e("正在设置第三方登录昵称" + alias);
+                                                                AppLogger.d("正在设置第三方登录昵称" + alias);
                                                                 accountArrived.jfgAccount.resetFlag();
                                                                 accountArrived.jfgAccount.setPhoto(true);
                                                                 BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,7 +25,6 @@
         android:id="@+id/fLayout_bell_live_holder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y288"
-        android:layout_below="@id/custom_toolbar"
         android:background="#000">
 
         <FrameLayout
@@ -89,8 +88,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/fLayout_bell_live_holder">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <include
             layout="@layout/layout_bell_pre_live_hot_seat"
@@ -106,4 +105,4 @@
 
     </FrameLayout>
 
-</RelativeLayout>
+</LinearLayout>

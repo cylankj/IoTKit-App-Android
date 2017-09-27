@@ -1185,7 +1185,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             onMicrophone(false);
             //ap 模式下不需要再跟新 liveRecording 了
             if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
-                RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
+                RxBus.getCacheInstance().post(RecordEvent.RECORD_END_EVENT);
             }
         }
         if ((!apMode && !isOnline) || connectionType == -1) {
@@ -1200,7 +1200,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //            bannerWarmingTitle.setText(connectionType == -1 ? R.string.Tips_Device_TimeoutRetry :
 //                    netType != -1 ? R.string.Tap1_Offline : R.string.Tap1_DisconnectedPleaseCheck);
             loadingBar.setState(connectionType == -1 ? JConstant.PLAY_STATE_LOADING_FAILED : JConstant.PLAY_STATE_IDLE, null);
-            RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
+            RxBus.getCacheInstance().post(RecordEvent.RECORD_END_EVENT);
 
             /*播放失败了需要显示黑屏,但又不能移除 surfaceview ,因为创建 surfaceview 会使屏幕产出闪烁的效果*/
             videoLiveContainer.setVisibility(View.INVISIBLE);
@@ -1349,7 +1349,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //                        bottomPanelSwitcherItem2Information.setText((int) (8.0f * sec + 0.5f) + "S");
                         if (sec == 0) {
 //                            presenter.shouldRefreshUI(false);
-                            RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
+                            RxBus.getCacheInstance().post(RecordEvent.RECORD_END_EVENT);
                             onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, presenter.getLiveAction().hasResolution, false);
                             onRefreshControllerView(presenter.getLiveAction().hasResolution, false);
                         }

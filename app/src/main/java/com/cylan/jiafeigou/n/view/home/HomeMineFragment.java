@@ -107,7 +107,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
         isPrepared = true;
-        lazyLoad();
+
         return view;
     }
 
@@ -126,18 +126,19 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onStart() {
+        super.onStart();
+        //查询好友列表.
+        basePresenter.fetchNewInfo();
+        boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
-            //访客状态
-            Observable.just("go")
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(ret -> {
-                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-                        basePresenter.portraitBlur(bm);
-                    }, AppLogger::e);
+            Schedulers.io().createWorker().schedule(() -> {
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
+                basePresenter.portraitBlur(bm);
+            });
         }
-        super.onStart();
-        boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
+
+        updateHint();
         homeMineItemHelp.showHint(needShowHelp);
     }
 
@@ -262,21 +263,21 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isAdded()) {
-            if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-                //访客状态
-                Observable.just("go")
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(ret -> {
-                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-                            basePresenter.portraitBlur(bm);
-                        }, AppLogger::e);
-            }
-            lazyLoad();
-            //查询好友列表.
-            updateHint();
-        }
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser && isAdded()) {
+//            if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//                //访客状态
+//                Observable.just("go")
+//                        .subscribeOn(Schedulers.io())
+//                        .subscribe(ret -> {
+//                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
+//                            basePresenter.portraitBlur(bm);
+//                        }, AppLogger::e);
+//            }
+//            lazyLoad();
+//            //查询好友列表.
+//            updateHint();
+//        }
     }
 
 

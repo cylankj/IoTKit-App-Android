@@ -51,6 +51,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.Functions;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -66,6 +67,8 @@ import com.google.gson.Gson;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.mikepenz.fastadapter.commons.utils.DiffCallbackImpl;
+import com.mikepenz.fastadapter.commons.utils.FastAdapterDiffUtil;
 
 import java.io.File;
 import java.util.List;
@@ -134,6 +137,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onStart() {
         super.onStart();
         if (basePresenter != null) {
+//            PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, true);
+//            srLayoutMainContentHolder.setRefreshing(false);
+//            enableNestedScroll();
+//            if (isVisibleToUser && isResumed() && getActivity() != null) {
+//            }
             basePresenter.fetchDeviceList(false);
         } else AppLogger.e("presenter is null");
     }
@@ -239,7 +247,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
-                    AppLogger.e("IndexOutOfBoundsException");
+                    AppLogger.w("IndexOutOfBoundsException");
                     rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
                 }
             }
@@ -371,16 +379,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onItemsRsp(List<Device> resultList) {
         refreshFinish = true;
-        this.resultList = resultList;
-        if (!getUserVisibleHint()) return;
-        if (getView() != null) {
-            getView().removeCallbacks(runnable);
-            if (ListUtils.getSize(mItemAdapter.getAdapterItems()) != ListUtils.getSize(resultList)) {
-                updateImmediately();
-            } else {
-                getView().postDelayed(runnable, 300);
-            }
-        }
+//        this.resultList = resultList;
+//        if (!getUserVisibleHint()) return;
+        FastAdapterDiffUtil.set(mItemAdapter, MiscUtils.getHomeItemListFromDevice(resultList), new DiffCallbackImpl<>(), true);
+        onRefreshFinish();
     }
 
     private void enableNestedScroll() {
@@ -446,6 +448,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+
     private Runnable updateAccount = new Runnable() {
         @Override
         public void run() {
@@ -455,7 +458,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
             tvHeaderNickName.requestLayout();
-            AppLogger.w("JFGAccount: " + new Gson().toJson(greetBean));
+            Functions.INSTANCE.runOnDebug(() -> AppLogger.w("JFGAccount: " + new Gson().toJson(greetBean)));
         }
     };
 
@@ -579,7 +582,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             }
         }
 
-        basePresenter.refreshDevices();
+//        basePresenter.refreshDevices();
 
         refreshFinish = false;
     }

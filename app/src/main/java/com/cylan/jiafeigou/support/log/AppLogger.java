@@ -210,7 +210,7 @@ public class AppLogger {
      * @param msg The message you would like logged.
      */
     public static void w(String msg) {
-        final String content = buildMessage(msg);
+//        final String content = buildMessage(msg);
         if (DEBUG)
             android.util.Log.w(TAG, buildMessage(msg));
     }

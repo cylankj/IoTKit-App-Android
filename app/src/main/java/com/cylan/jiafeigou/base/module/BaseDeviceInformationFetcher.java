@@ -7,9 +7,12 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -64,7 +67,9 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
 
     private boolean resolveDeviceInformation(RxEvent.LocalUdpMsg udpMsg) {
         try {
-            AppLogger.d("正在解析 UDP 消息:" + new Gson().toJson(udpMsg));
+            if (BuildConfig.DEBUG) {
+                Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:" + new Gson().toJson(udpMsg));
+            }
             JfgUdpMsg.UdpSecondaryHeard udpHeader = unpackData(udpMsg.data, JfgUdpMsg.UdpSecondaryHeard.class);
             if (udpHeader == null) return false;
             if (!TextUtils.equals(udpHeader.cid, deviceInformation.uuid)) {//说明不是我们需要的消息
@@ -77,7 +82,9 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                 if (pingAck != null && TextUtils.equals(pingAck.cid, deviceInformation.uuid)) {
                     deviceInformation.ip = udpMsg.ip;
                     deviceInformation.port = udpMsg.port;
-                    AppLogger.d("当前设备的局域网 IP 地址为:http://" + udpMsg.ip);
+                    if (BuildConfig.DEBUG) {
+                        Log.e(JConstant.CYLAN_TAG, "当前设备的局域网 IP 地址为:http://" + udpMsg.ip);
+                    }
                     return true;
                 }
             }
@@ -92,7 +99,12 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             //网络状态发生了变化,这里我们判断当前连接的是否是设备AP,如果是设备AP 则主动请求设备信息,这样就做到了全局处理逻辑.
-            AppLogger.d("网络状态发生了变化");
+            if (BuildConfig.DEBUG) {
+                Log.i(JConstant.CYLAN_TAG, "网络状态发生了变化");
+            }
+            if (BaseApplication.isBackground()) {
+                return;//后台不处理了
+            }
             if (!isFetching) {
                 RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
             }
@@ -136,7 +148,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                     if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                         try {
-                            AppLogger.d("fetchDeviceInformation");
+                            AppLogger.w("fetchDeviceInformation");
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
@@ -161,7 +173,6 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                     RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                 }, e -> {
                     isFetching = false;
-                    AppLogger.e(e.toString() + ":" + e.getMessage());
                     Schedulers.io().createWorker().schedule(() -> {
                         if (NetUtils.isPublicNetwork()) {
                             RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);

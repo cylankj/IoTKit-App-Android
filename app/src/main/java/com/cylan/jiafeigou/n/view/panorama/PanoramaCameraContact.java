@@ -117,8 +117,9 @@ public interface PanoramaCameraContact {
 
         void onRefreshControllerViewVisible(boolean visible);
 
-        class RecordFinishEvent {
-            public static final RecordFinishEvent INSTANCE = new RecordFinishEvent();
+        enum RecordEvent {
+            RECORD_START_EVENT,
+            RECORD_END_EVENT
         }
     }
 

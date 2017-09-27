@@ -625,7 +625,7 @@ public class MiscUtils {
         List<HomeItem> list1 = new ArrayList<>(list.size());
         for (Device item : list) {
             Log.d("FromDevice", "item:" + item.pid);
-            list1.add(new HomeItem().withUUID(item.uuid, item));
+            list1.add(new HomeItem().withUUID(item.uuid));
         }
         return list1;
     }

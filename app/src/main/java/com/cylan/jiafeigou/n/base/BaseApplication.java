@@ -42,9 +42,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static final String TAG = "BaseApplication";
 
-    static {
-        System.loadLibrary("jfgsdk");
-    }
+
 
     private static AppComponent appComponent;
     private static int viewCount = 0;

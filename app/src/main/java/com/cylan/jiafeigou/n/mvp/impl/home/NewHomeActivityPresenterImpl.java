@@ -35,8 +35,10 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
             AppLogger.e("被系统回收了，或者Oppo手机，任何一个权限由->禁止，就会kill.导致整个appInit出错");
             Schedulers.io().createWorker().schedule(() -> {
                 if (!BaseApplication.getAppComponent().getInitializationManager().isHasInitFinished()) {
-                    BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
                     BaseApplication.getAppComponent().getInitializationManager().initialization();
+                }
+                if (!BaseApplication.getAppComponent().getInitializationManager().isHasAppCmdInitFinished()) {
+                    BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
                 }
                 AutoSignIn.getInstance().autoLogin();
             });

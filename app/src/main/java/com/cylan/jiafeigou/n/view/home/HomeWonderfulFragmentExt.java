@@ -108,15 +108,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) lazyLoad();
-        else {
-            if (srLayoutMainContentHolder != null)
-                srLayoutMainContentHolder.removeCallbacks(autoLoading);//
-        }
-    }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (getUserVisibleHint()) lazyLoad();
+//        else {
+//            if (srLayoutMainContentHolder != null)
+//                srLayoutMainContentHolder.removeCallbacks(autoLoading);//
+//        }
+//    }
 
     @Override
     protected void initViewAndListener() {
@@ -133,17 +133,24 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
         initSomeViewMargin();
         isPrepaper = true;
-        lazyLoad();
+//        lazyLoad();
     }
 
     private Runnable autoLoading = () -> presenter.startRefresh();
 
-    private void lazyLoad() {
-        if (getUserVisibleHint() && isPrepaper && sourceManager.getAccount() != null && sourceManager.getAccount().isAvailable()) {
-            srLayoutMainContentHolder.setRefreshing(true);
-            srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        srLayoutMainContentHolder.setRefreshing(true);
+        presenter.startRefresh();
     }
+
+//    private void lazyLoad() {
+//        if (getUserVisibleHint() && isPrepaper && sourceManager.getAccount() != null && sourceManager.getAccount().isAvailable()) {
+//            srLayoutMainContentHolder.setRefreshing(true);
+//            srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
+//        }
+//    }
 
     private SimpleDialogFragment initDeleteDialog() {
         if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {

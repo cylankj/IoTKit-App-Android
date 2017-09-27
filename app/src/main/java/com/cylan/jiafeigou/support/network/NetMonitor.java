@@ -125,7 +125,7 @@ public class NetMonitor implements NetworkCallback {
                 if (filterMap != null) {
                     filterMap.remove(callback.getClass().getSimpleName());
                 }
-                AppLogger.d("networkCallback remove:" + callback);
+                AppLogger.w("networkCallback remove:" + callback);
             } catch (Exception e) {
 
             }

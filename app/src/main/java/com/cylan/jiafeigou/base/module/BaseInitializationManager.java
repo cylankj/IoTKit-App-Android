@@ -71,6 +71,7 @@ public final class BaseInitializationManager {
     private BaseForwardHelper forwardHelper;
     private IProperty iProperty;
     private boolean hasInitFinished = false;
+    private boolean hasAppCmdInitFinished = false;
     private UMShareConfig config;
 
     @Inject
@@ -263,11 +264,17 @@ public final class BaseInitializationManager {
         dispatcher.setAppCmd(appCmd);
     }
 
+    public boolean isHasAppCmdInitFinished() {
+        return hasAppCmdInitFinished;
+    }
+
     public void initAppCmd() {
         try {
             Log.d("initAppCmd", "initAppCmd start");
+            System.loadLibrary("jfgsdk");
             appCmd.setCallBack(callBackHolder);
             appCmd.initNativeParam(vid, vkey, serverAddress, JConstant.ROOT_DIR);
+            hasAppCmdInitFinished = true;
             Log.d("initAppCmd", "initAppCmd end");
 //            appCmd.enableLog(true, logPath);
         } catch (Exception e) {
