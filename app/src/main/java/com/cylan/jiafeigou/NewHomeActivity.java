@@ -78,6 +78,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     private HomePageListFragmentExt homePageListFragmentExt;
     private HomeWonderfulFragmentExt homeWonderfulFragmentExt;
     private HomeMineFragment homeMineFragment;
+    private int index = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,7 +213,8 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void showHomeFragment(int index) {
-        switch (index) {
+        if (this.index == index) return;
+        switch (this.index = index) {
             case 0: {
                 if (homePageListFragmentExt == null) {
                     homePageListFragmentExt = HomePageListFragmentExt.newInstance(new Bundle());

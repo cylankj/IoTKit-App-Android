@@ -1,10 +1,7 @@
 package com.cylan.jiafeigou.n.task;
 
-import android.util.Pair;
-
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -32,32 +29,29 @@ public class FetchFriendsTask implements Action1<Object> {
     @Override
     public void call(Object o) {
         AppLogger.d("需要查询db");
-        Observable.zip(getFriendListObservable(), getFriendReqListObservable(),
-                Pair::new)
-                .subscribeOn(Schedulers.io())
+        Observable.zip(getFriendListObservable(), getFriendReqListObservable(), (getFriendList, getAddReqList) -> {
+            ArrayList<JFGFriendAccount> fList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+            ArrayList<JFGFriendRequest> fReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+            TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+            //需要替换数据库
+            try {
+                if (fReqList != null) {
+                    TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(fReqList))
+                            .setObject(fReqList));
+                }
+            } catch (Exception e) {
+                AppLogger.e(e.getMessage());
+            }
+            RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
+            RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
+
+            AppLogger.w("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);
+            AppLogger.w("FetchFriendsTask rsp: " + new Gson().toJson(fReqList));
+            return null;
+        })
                 .timeout(10, TimeUnit.SECONDS)
                 .subscribe(ret -> {
-                    // TODO: 2017/6/29 sssssssss
-                    ArrayList<JFGFriendAccount> fList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
-                    ArrayList<JFGFriendRequest> fReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
-                    TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
-                    //需要替换数据库
-                    try {
-                        BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
-                        if (fReqList != null) {
-                            TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-                            node.setCacheData(new CacheObject().setCount(ListUtils.getSize(fReqList))
-                                    .setObject(fReqList));
-                        }
-                    } catch (Exception e) {
-                        AppLogger.e(e.getMessage());
-                    }
-
-                    RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
-                    RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
-                    AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);
-                    AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fReqList));
-                    throw new RxEvent.HelperBreaker("yes, job done!");
                 }, AppLogger::e);
     }
 

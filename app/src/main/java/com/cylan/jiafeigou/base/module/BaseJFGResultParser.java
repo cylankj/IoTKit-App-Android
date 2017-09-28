@@ -22,13 +22,11 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
-import static com.cylan.jiafeigou.misc.JError.ErrorAccountNotExist;
 
 /**
  * Created by yanzhendong on 2017/4/14.
@@ -69,10 +67,16 @@ BaseJFGResultParser {
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
-                AppLogger.d("登录成功了");
+                AppLogger.w("登录成功了");
                 //最短3s种一次。
-                if (MethodFilter.run("parserResultLoginSuc", 3 * 1000)) {
+                if (login && MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
                     BaseApplication.getAppComponent().getCmd().getAccount();
+                    PushPickerIntentService.start();
+                    Schedulers.io().createWorker().schedule(() -> {
+                        new FetchFriendsTask().call("");
+                        new FetchFeedbackTask().call("");
+                        new SysUnreadCountTask().call("");
+                    });
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                     PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
                     PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
@@ -122,51 +126,25 @@ BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.RessetAccountBack(jfgResult));
                 break;
         }
-        if (login && MethodFilter.run("PushPickerIntentService", 5 * 1000)) {
-            PushPickerIntentService.start();
-            Observable.just(new FetchFeedbackTask(),
-                    new FetchFriendsTask(),
-                    new SysUnreadCountTask())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
-        }
         if (BaseApplication.isBackground()) return;
-        Observable.just(jfgResult.code)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    switch (jfgResult.code) {
-                        case JError.ErrorSMSCodeTimeout:
-//                            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-                            break;
-                        case JError.ErrorSMSCodeNotMatch:
-//                            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
-                            break;
-                        case JError.ErrorInvalidPass:
-//                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
-                            break;
-//                        case JError.ErrorSamePass:
-//                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
-//                            break;
-                        case ErrorAccountNotExist:
-//                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
-                            break;
-                        case JError.ErrorLoginInvalidPass:
-//                            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-                            break;
-                        case JError.ErrorOpenLoginInvalidToken:
-//                            ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
-                            break;
-                        case JError.ErrorConnect:
-                            ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
-                            break;
-                        case JError.ErrorP2PSocket:
-                            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
-                            break;
-                        case JError.ErrorGetCodeTooFrequent:
-//                            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
-                            break;
-                    }
-                }, AppLogger::e);
+//        if (login && MethodFilter.run("PushPickerIntentService", 5 * 1000)) {
+//            PushPickerIntentService.start();
+//            Observable.just(new FetchFeedbackTask(),
+//                    new FetchFriendsTask(),
+//                    new SysUnreadCountTask())
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
+//        }
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+            switch (jfgResult.code) {
+                case JError.ErrorConnect:
+                    ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
+                    break;
+                case JError.ErrorP2PSocket:
+                    ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+                    break;
+            }
+        });
     }
 
     private String getString(int id) {

@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.MethodFilter;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -20,7 +21,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.Functions;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -170,12 +170,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
-        Functions.INSTANCE.runOnDebug(() -> {
+        if (MethodFilter.run("HomePageListPresenterImpl#subUuidList", 5 * 1000)) {
+            List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
             AppLogger.w("subUuidList?" + ListUtils.getSize(list));
-        });
-        getView().onItemsRsp(list);
-        getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+            getView().onItemsRsp(list);
+            getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+        }
     }
 
     /**

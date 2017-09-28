@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -100,6 +101,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private boolean mHasMore;
     private boolean isLoading = false;
     private boolean isPrepaper = false;
+    private View rootView;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -117,6 +119,16 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 //                srLayoutMainContentHolder.removeCallbacks(autoLoading);//
 //        }
 //    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+        if (presenter != null) {
+            presenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
+        }
+    }
+
 
     @Override
     protected void initViewAndListener() {
@@ -592,7 +604,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        if (rootView == null) {
+            rootView = super.onCreateView(inflater, container, savedInstanceState);
+            initViewAndListener();
+        }
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }

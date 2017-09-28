@@ -58,6 +58,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         managerBinding = FragmentMineShareManagerBinding.inflate(inflater);
         unbinder = ButterKnife.bind(this, managerBinding.getRoot());
+        managerBinding.setListener(this);
         return managerBinding.getRoot();
     }
 
@@ -79,7 +80,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        managerBinding.setListener(this);
+//        managerBinding.setListener(this);
     }
 
     public static HomeMineShareManagerFragment newInstance(Bundle bundle) {

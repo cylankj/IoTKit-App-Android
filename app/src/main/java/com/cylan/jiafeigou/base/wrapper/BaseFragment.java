@@ -44,7 +44,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     protected static Toast sToast;
 
     protected FragmentComponent component;
-    private View contentView;
 
     @Override
     public Context getAppContext() {
@@ -70,17 +69,15 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (contentView == null) {
-            if (getContentViewID() != -1) {//!=-1 会启动 butterknife ,==-1:自己设置 view, 可以使用 databinding
-                contentView = inflater.inflate(getContentViewID(), container, false);
-                ButterKnife.bind(this, contentView);
-            } else if (getContentRootView() != null) {
-                contentView = getContentRootView();
-            }
-            if (contentView != null) {
-                contentView.setOnKeyListener(this);
-            }
-            initViewAndListener();
+        View contentView = null;
+        if (getContentViewID() != -1) {//!=-1 会启动 butterknife ,==-1:自己设置 view, 可以使用 databinding
+            contentView = inflater.inflate(getContentViewID(), container, false);
+            ButterKnife.bind(this, contentView);
+        } else if (getContentRootView() != null) {
+            contentView = getContentRootView();
+        }
+        if (contentView != null) {
+            contentView.setOnKeyListener(this);
         }
         return contentView;
     }
@@ -117,7 +114,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (presenter != null) {
             presenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
         }
-//        initViewAndListener();
+        initViewAndListener();
     }
 
     @Override

@@ -6,6 +6,7 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'io.objectbox'
 apply plugin: 'io.objectbox.android.transform'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 //从version.properties中读取versionName
 def vCode
 def vName

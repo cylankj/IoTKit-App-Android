@@ -133,7 +133,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
                 .setMessage(getString(R.string.Tap3_ShareDevice_UnshareTips))
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     dialog.dismiss();
-                    AppLogger.d("正在取消分享");
+                    AppLogger.w("正在取消分享");
                     if (NetUtils.getNetType(getContext()) == -1) {
                         //114228
                         ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
@@ -156,7 +156,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
 
     private boolean onEnterShareDetail(View view, IAdapter<ShareContentItem> iAdapter, ShareContentItem iItem, int position) {
         if (!editMode.get()) {
-            AppLogger.e("将进入分享详情页面");
+            AppLogger.w("将进入分享详情页面");
             Intent launchIntent = ShareContentWebH5Activity.getLaunchIntent(getActivity(), iItem.shareItem);
             startActivity(launchIntent);
         }
@@ -175,7 +175,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     }
 
     public void onBackAction(View view) {
-        AppLogger.e("点击了返回按钮");
+        AppLogger.w("点击了返回按钮");
         getActivity().getSupportFragmentManager().popBackStack();
     }
 
@@ -190,7 +190,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     }
 
     public void onEditShareContent(View view) {
-        AppLogger.d("点击了编辑按钮");
+        AppLogger.w("点击了编辑按钮");
         editMode.set(!editMode.get());
         if (!editMode.get()) {
             adapter.getFastAdapter().deselect();
@@ -226,7 +226,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
 
     @Override
     public void onRefresh() {
-        AppLogger.d("正在刷新");
+        AppLogger.w("正在刷新");
         if (!editMode.get()) {
             presenter.loadFromServer(0, true);
         }

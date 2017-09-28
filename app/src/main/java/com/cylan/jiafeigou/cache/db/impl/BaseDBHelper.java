@@ -178,7 +178,9 @@ public class BaseDBHelper implements IDBHelper {
                 dpEntity = null;
             }
 //            itemBox.put(propertyItems);
-            mEntityDao.insertOrReplaceInTx(result);
+            if (!BaseApplication.isBackground()) {
+                mEntityDao.insertOrReplaceInTx(result);
+            }
             return result;
         });
     }
@@ -233,7 +235,9 @@ public class BaseDBHelper implements IDBHelper {
                 }
             }
 //            itemBox.put(propertyItems);
-            mEntityDao.insertOrReplaceInTx(result);
+            if (!BaseApplication.isBackground()) {
+                mEntityDao.insertOrReplaceInTx(result);
+            }
             return result;
         });
     }
