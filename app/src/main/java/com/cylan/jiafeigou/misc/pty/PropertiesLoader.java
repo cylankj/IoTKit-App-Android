@@ -42,27 +42,37 @@ public class PropertiesLoader implements IProperty {
     }
 
     private PropertyFile propertyFile;
+    private PropertyFile defaultPropertyFile;
     private PropertyFile sharePropertyFile;
 
     @Override
     public void initialize() {
-        final String content = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
-                "properties.json");
         try {
+            String content = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
+                    "attribute_table.json");
             propertyFile = new Gson().fromJson(content, PropertyFile.class);
             AppLogger.d("load properties: " + content.length() + "," + propertyFile.getVersion());
         } catch (Exception e) {
             AppLogger.e("initialize failed: " + e.getLocalizedMessage());
-            throw new IllegalArgumentException("properties.json文件有错");
+            throw new IllegalArgumentException("attribute_table.json文件有错");
         }
         try {
-            final String shareContent = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
-                    "shareProperties.json");
-            sharePropertyFile = new Gson().fromJson(shareContent, PropertyFile.class);
+            String content = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
+                    "attribute_table_default.json");
+            defaultPropertyFile = new Gson().fromJson(content, PropertyFile.class);
+            AppLogger.d("load properties: " + content.length() + "," + propertyFile.getVersion());
+        } catch (Exception e) {
+            AppLogger.e("initialize failed: " + e.getLocalizedMessage());
+            throw new IllegalArgumentException("attribute_table_default.json文件有错");
+        }
+        try {
+            String content = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
+                    "attribute_table_shared.json");
+            sharePropertyFile = new Gson().fromJson(content, PropertyFile.class);
             AppLogger.d("load properties: " + content.length() + "," + sharePropertyFile.getVersion());
         } catch (Exception e) {
             AppLogger.i("initialize failed: " + e.getLocalizedMessage());
-//            throw new IllegalArgumentException("properties.json文件有错");
+            throw new IllegalArgumentException("attribute_table_shared.json文件有错");
         }
     }
 
