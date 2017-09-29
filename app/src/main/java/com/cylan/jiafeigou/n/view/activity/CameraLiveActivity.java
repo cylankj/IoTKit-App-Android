@@ -399,6 +399,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             if (position == 0) {
                 return CameraLiveFragmentEx.newInstance(bundle);
             } else {
+                // TODO: 2017/9/29 人脸和普通是两个 Fragment ,需要判断
+
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
+
+//                if (JFGRules.isFaceFragment(device.pid)) {
+//                    return FaceCameraMessageListFragment.Companion.newInstance(uuid);
+//                }
                 return CamMessageListFragment.newInstance(bundle);
             }
         }

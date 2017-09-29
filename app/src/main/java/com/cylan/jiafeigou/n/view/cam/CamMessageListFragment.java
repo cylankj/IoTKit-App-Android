@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -36,6 +40,7 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
+import com.cylan.jiafeigou.n.view.adapter.CamMessageFaceAdapter;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
@@ -89,11 +94,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @BindView(R.id.lLayout_no_message)
     LinearLayout lLayoutNoMessage;
     @BindView(R.id.rLayout_cam_message_list_top)
-    FrameLayout rLayoutCamMessageListTop;
+    RelativeLayout rLayoutCamMessageListTop;
     @BindView(R.id.tv_msg_full_select)
     TextView tvMsgFullSelect;
     @BindView(R.id.tv_msg_delete)
     TextView tvMsgDelete;
+    @BindView(R.id.apl_cam_message_appbar_layout)
+    AppBarLayout aplCamMessageAppbar;
+    @BindView(R.id.iv_cam_message_arrow)
+    ImageView arrow;
+    @BindView(R.id.cam_message_face)
+    ViewPager rvCamMessageHeaderFaces;
 
 //    private SimpleDialogFragment simpleDialogFragment;
     /**
@@ -101,6 +112,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      */
     private int currentPosition = -1;
     private CamMessageListAdapter camMessageListAdapter;
+    private CamMessageFaceAdapter camMessageFaceAdapter;
     private String uuid;
 
     /**
@@ -112,6 +124,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     public CamMessageListFragment() {
         // Required empty public constructor
+
     }
 
     public static CamMessageListFragment newInstance(Bundle bundle) {
@@ -189,9 +202,63 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         });
         camMessageListAdapter.setOnclickListener(this);
-        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE)
-        ;
+        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
 
+        if (JFGRules.isFaceFragment(getDevice().pid)) {
+            srLayoutCamListRefresh.setNestedScrollingEnabled(true);
+            aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
+            aplCamMessageAppbar.setExpanded(true);
+            tvCamMessageListDate.setClickable(false);
+
+            RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
+            arrowLayoutParams.removeRule(RelativeLayout.END_OF);
+            arrowLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+            arrow.setLayoutParams(arrowLayoutParams);
+
+            RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) tvCamMessageListEdit.getLayoutParams();
+            editLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+
+            camMessageFaceAdapter = new CamMessageFaceAdapter();
+            rvCamMessageHeaderFaces.setAdapter(camMessageFaceAdapter);
+            //just for test
+            List list = new ArrayList();
+            for (int i = 0; i < 100; i++) {
+                list.add("Item" + i);
+            }
+            camMessageFaceAdapter.setFaceItems(list);
+
+
+        } else {
+            RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
+            arrowLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+            arrowLayoutParams.addRule(RelativeLayout.END_OF, R.id.tv_cam_message_list_date);
+            arrow.setLayoutParams(arrowLayoutParams);
+
+            tvCamMessageListDate.setClickable(true);
+
+            RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) tvCamMessageListEdit.getLayoutParams();
+            editLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+
+
+            tvCamMessageListEdit.setLayoutParams(editLayoutParams);
+
+            srLayoutCamListRefresh.setNestedScrollingEnabled(false);
+            aplCamMessageAppbar.setExpanded(false);
+        }
+
+
+    }
+
+    private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
+        Log.i("onMessageAppbarScrolled", "offset is:" + offset + ",total is:" + appBarLayout.getTotalScrollRange());
+        if (Math.abs(offset) == appBarLayout.getTotalScrollRange()) {
+            // TODO: 2017/9/29 更新箭头
+//            arrow.setText("down");
+            arrow.setImageResource(R.drawable.wonderful_arrow_down);
+        } else {
+            arrow.setImageResource(R.drawable.wonderful_arrow_up);
+//            arrow.setText("up");
+        }
     }
 
     private void setupFootView() {
@@ -463,7 +530,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 boolean reset = tvCamMessageListDate.getTag() == null ||
                         ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
                 tvCamMessageListDate.setTag(reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down);
-                ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down, 2);
+//                ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down, 2);
                 if (reset) {
                     AnimatorUtils.slideIn(fLayoutCamMessageListTimeline, false);
                 } else {
@@ -658,6 +725,27 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @OnClick(R.id.tv_msg_delete)
     public void onClick() {
+    }
+
+    @OnClick(R.id.iv_cam_message_arrow)
+    public void onMessageArrowClick() {
+        if (arrow.getDrawable().getConstantState() ==
+                getResources().getDrawable(R.drawable.wonderful_arrow_up).getConstantState()) {
+            arrow.setImageResource(R.drawable.wonderful_arrow_down);
+            if (JFGRules.isFaceFragment(getDevice().pid)) {
+                aplCamMessageAppbar.setExpanded(false, true);
+            } else {
+                onBindClick(tvCamMessageListDate);
+            }
+
+        } else {
+            arrow.setImageResource(R.drawable.wonderful_arrow_up);
+            if (JFGRules.isFaceFragment(getDevice().pid)) {
+                aplCamMessageAppbar.setExpanded(true, true);
+            } else {
+                onBindClick(tvCamMessageListDate);
+            }
+        }
     }
 
 

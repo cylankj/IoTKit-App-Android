@@ -537,6 +537,10 @@ public class JFGRules {
         return !TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1");
     }
 
+    public static boolean isFaceFragment(int pid) {
+        return true;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

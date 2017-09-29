@@ -10,13 +10,19 @@ import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.umeng.facebook.AccessToken;
-import com.umeng.facebook.GraphRequest;
-import com.umeng.facebook.HttpMethod;
 
 import org.junit.Test;
 import org.msgpack.MessagePack;
@@ -24,10 +30,13 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessageUnpacker;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -293,9 +302,101 @@ public class DP {
         System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
     }
 
+
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    public static class DPHeader {
+        public int id;
+    }
+
+    public static class A extends DPHeader {
+        public A() {
+        }
+
+        public A(String n) {
+            this.n = n;
+            id = 888;
+        }
+
+        public String n;
+    }
+
+    public static class B extends DPHeader {
+        public B() {
+
+        }
+
+        public long b;
+
+        public B(long b) {
+            this.b = b;
+            id = 666;
+        }
+    }
+
+
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY, with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    public static class GetDataRsp {
+
+        @JsonDeserialize(using = ContentConverter.class)
+        public Map<Integer, Object> maps;
+
+        @Override
+        public String toString() {
+            return "GetDataRsp{" +
+                    "maps=" + maps +
+                    '}';
+        }
+    }
+
+
+    public static class ContentConverter extends StdDeserializer<Map<Integer, Object>> {
+        protected ContentConverter() {
+            super(Map.class);
+        }
+
+        @Override
+        public Map<Integer, Object> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            Map<Integer, Object> maps = new HashMap<>();
+            TreeNode treeNode = p.readValueAsTree();
+
+            treeNode.get("");
+
+            return maps;
+        }
+    }
+
     @Test
-    public void testGraphPath() {
-        GraphRequest graphRequest = new GraphRequest(AccessToken.getCurrentAccessToken(), "/{user-id}/live_videos", null, HttpMethod.POST);
-        System.out.println(graphRequest.toString());
+    public void testGraphPath() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+
+        List<Object> temp=new ArrayList<>();
+        temp.add(3);
+        temp.add(5);
+        temp.add("DDDDDDDDDDD");
+        byte[] bytes = objectMapper.writeValueAsBytes(temp);
+
+        Object o = objectMapper.readValue(bytes, Object.class);
+        SSS sss = objectMapper.convertValue(o, SSS.class);
+        System.out.println(o);
+        System.out.println(sss);
+
+
+    }
+
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder({"a","b"})
+    public static class SSS{
+      public int a;
+      public int b;
+      public Object bytes;
+
+        @Override
+        public String toString() {
+            return "SSS{" +
+                    "a=" + a +
+                    ", b=" + b +
+                    ", bytes=" + bytes +
+                    '}';
+        }
     }
 }
