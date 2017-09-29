@@ -27,6 +27,8 @@ public interface IProperty {
 
     String property(int pidOrOs, String tag, boolean share);
 
+    String defaultProperty(int pidOrOs, String tag);
+
     /**
      * cam or bell
      *
