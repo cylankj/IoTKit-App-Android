@@ -23,10 +23,27 @@
                 android:layout_height="wrap_content" />
 
             <RelativeLayout
+                android:id="@+id/cam_message_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/cam_message_indicator_page_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/rLayout_cam_message_list_top"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"
                 android:visibility="visible">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y1"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_d2d2d2" />
 
                 <ImageView
                     android:id="@+id/iv_cam_message_arrow"
@@ -63,15 +80,15 @@
                     android:text="@string/EDIT_THEME"
                     android:textColor="@color/common_btn_color_state" />
 
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y1"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_d2d2d2" />
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:background="@color/color_d2d2d2" />
+
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
 

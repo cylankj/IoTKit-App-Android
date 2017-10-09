@@ -5,11 +5,16 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by yanzhendong on 2017/9/29.
@@ -20,6 +25,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     private List faceItems = new ArrayList();
 
     private List<View> cachedViews = new ArrayList<>();
+    private FaceItemEventListener listener;
 
     public void setFaceItems(List faceItems) {
         this.faceItems = faceItems;
@@ -45,7 +51,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
             recyclerView = (RecyclerView) contentView;
         } else {
             contentView = View.inflate(container.getContext(), R.layout.message_face_page, null);
-            recyclerView = (RecyclerView) contentView;
+            recyclerView = (RecyclerView) contentView.findViewById(R.id.message_face_page_item);
             recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 4));
             recyclerView.setAdapter(new FaceItemAdapter());
         }
@@ -67,7 +73,9 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         return POSITION_NONE;
     }
 
-
+    public void setOnFaceItemClickListener(FaceItemEventListener listener) {
+        this.listener = listener;
+    }
 
 
     class FaceItemAdapter extends RecyclerView.Adapter<FaceViewHolder> {
@@ -93,7 +101,20 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         @Override
         public void onBindViewHolder(FaceViewHolder holder, int position) {
             Object o = items.get(this.position * 8 + position);
+            holder.itemView.setOnClickListener(v -> {
+                // TODO: 2017/10/9 点击操作
+                if (listener != null) {
+                    listener.onFaceItemClicked(position, holder.itemView);
+                }
+            });
 
+            holder.itemView.setOnLongClickListener(v -> {
+                // TODO: 2017/10/9 长按弹出菜单提示
+                if (listener != null) {
+                    listener.onFaceItemLongClicked(position, holder.itemView);
+                }
+                return true;
+            });
 
         }
 
@@ -104,9 +125,21 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     }
 
     class FaceViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.img_item_face_selection)
+        public ImageViewTip icon;
+        @BindView(R.id.text_item_face_selection)
+        public TextView text;
+
         public FaceViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
+    public interface FaceItemEventListener {
+
+        void onFaceItemClicked(int position, View faceItem);
+
+        void onFaceItemLongClicked(int position, View faceItem);
+    }
 }

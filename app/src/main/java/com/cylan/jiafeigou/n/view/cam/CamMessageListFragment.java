@@ -12,18 +12,21 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.PopupWindowCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -105,6 +108,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     ImageView arrow;
     @BindView(R.id.cam_message_face)
     ViewPager rvCamMessageHeaderFaces;
+    @BindView(R.id.cam_message_indicator_page_text)
+    TextView tvCamMessageIndicatorPageText;
+    @BindView(R.id.cam_message_indicator)
+    RelativeLayout rlCamMessageIndicator;
 
 //    private SimpleDialogFragment simpleDialogFragment;
     /**
@@ -120,6 +127,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      */
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
+    private PopupWindow popupWindow;
 
 
     public CamMessageListFragment() {
@@ -204,6 +212,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.setOnclickListener(this);
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
 
+        initFaceHeader();
+
+    }
+
+    private void initFaceHeader() {
         if (JFGRules.isFaceFragment(getDevice().pid)) {
             srLayoutCamListRefresh.setNestedScrollingEnabled(true);
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
@@ -217,17 +230,32 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
             RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) tvCamMessageListEdit.getLayoutParams();
             editLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
-
             camMessageFaceAdapter = new CamMessageFaceAdapter();
+            camMessageFaceAdapter.setOnFaceItemClickListener(new CamMessageFaceAdapter.FaceItemEventListener() {
+                @Override
+                public void onFaceItemClicked(int position, View faceItem) {
+
+                }
+
+                @Override
+                public void onFaceItemLongClicked(int position, View faceItem) {
+                    showHeaderFacePopMenu(position, faceItem);
+                }
+            });
             rvCamMessageHeaderFaces.setAdapter(camMessageFaceAdapter);
+            rvCamMessageHeaderFaces.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    tvCamMessageIndicatorPageText.setText(String.format("%s/%s", position, camMessageFaceAdapter.getCount()));
+                }
+            });
             //just for test
             List list = new ArrayList();
             for (int i = 0; i < 100; i++) {
                 list.add("Item" + i);
             }
             camMessageFaceAdapter.setFaceItems(list);
-            rvCamMessageHeaderFaces.requestLayout();
-
+            refreshFaceHeaderIndicator();
         } else {
             RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
             arrowLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
@@ -245,8 +273,61 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             srLayoutCamListRefresh.setNestedScrollingEnabled(false);
             aplCamMessageAppbar.setExpanded(false);
         }
+    }
 
+    private void showHeaderFacePopMenu(int position, View faceItem) {
+        AppLogger.w("showHeaderFacePopMenu:" + position + ",item:" + faceItem);
+        if (popupWindow == null) {
+            View view = View.inflate(getContext(), R.layout.layout_face_page_pop_menu, null);
+            view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            popupWindow = new PopupWindow(view, view.getMeasuredWidth(), view.getMeasuredHeight());
+        }
+        View contentView = popupWindow.getContentView();
 
+        // TODO: 2017/10/9 查看和识别二选一 ,需要判断
+        
+
+        contentView.findViewById(R.id.delete).setOnClickListener(v -> {
+            // TODO: 2017/10/9 删除操作
+            AppLogger.w("将删除面孔");
+
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setView(R.layout.layout_face_delete_pop_alert)
+                    .show();
+            dialog.findViewById(R.id.delete_cancel).setOnClickListener(v1 -> {
+                // TODO: 2017/10/9 取消了 什么也不做
+                dialog.dismiss();
+
+            });
+
+            dialog.findViewById(R.id.delete_only_face).setOnClickListener(v1 -> {
+                // TODO: 2017/10/9 删除这个面孔,不删除下面的消息
+                AppLogger.w("删除这个面孔,不删除下面的消息");
+            });
+
+            dialog.findViewById(R.id.delete_face_and_message).setOnClickListener(v1 -> {
+                // TODO: 2017/10/9 删除这个账号下的面孔和面孔消息
+                AppLogger.w("删除这个账号下的面孔和面孔消息");
+            });
+        });
+
+        contentView.findViewById(R.id.detect).setOnClickListener(v -> {
+            // TODO: 2017/10/9 识别操作
+            AppLogger.w("将识别面孔");
+        });
+
+        contentView.findViewById(R.id.viewer).setOnClickListener(v -> {
+
+        });
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.TOP);
+    }
+
+    private void onClickFaceItem(int position, Object faceItem) {
+
+    }
+
+    private void refreshFaceHeaderIndicator() {
+        rlCamMessageIndicator.setVisibility(camMessageFaceAdapter.getCount() > 1 ? View.VISIBLE : View.GONE);
     }
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {

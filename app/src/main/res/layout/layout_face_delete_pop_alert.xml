@@ -4,14 +4,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.cylan.jiafeigou.widget.ImageViewTip
-        android:id="@+id/img_item_face_selection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher" />
+    <TextView
+        android:id="@+id/delete_only_face"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/text_item_face_selection"
+        android:id="@+id/delete_face_and_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/delete_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

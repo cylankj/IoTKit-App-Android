@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.ads.AdsActivity">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.cylan.jiafeigou.widget.CustomToolbar>
+
+    <ImageView
+        android:id="@+id/face_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/face_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/setting_item_face_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/setting_item_face_manager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

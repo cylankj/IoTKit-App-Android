@@ -615,7 +615,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @OnClick({R.id.act_panorama_detail_bottom_picture_menu_gyroscope, R.id.act_panorama_detail_bottom_video_menu_gyroscope})
     public void clickedGyroscope() {
-        AppLogger.d("clickedGyroscope");
+        AppLogger.w("clickedGyroscope");
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableGyro(!panoramicView720Ext.isGyroEnabled());
             this.gyroEnabled = panoramicView720Ext.isGyroEnabled();
@@ -626,7 +626,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @OnClick({R.id.act_panorama_detail_bottom_video_menu_photograph, R.id.act_panorama_detail_bottom_picture_menu_photograph})
     public void screenShot() {
-        AppLogger.d("clickedPhotograph");
+        AppLogger.w("clickedPhotograph");
         Schedulers.io().createWorker().schedule(() -> {
             if (panoramicView720Ext != null) {
                 panoramicView720Ext.takeSnapshot(true);
@@ -635,7 +635,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void releasePlayer() {
-        AppLogger.d("正在释放播放器!!!");
+        AppLogger.w("正在释放播放器!!!");
         looper = false;
         if (player != 0) {
             long address = player;
@@ -648,7 +648,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @OnClick(R.id.act_panorama_detail_toolbar_share)
     public void clickedShare() {
-        AppLogger.d("点击的分享菜单");
+        AppLogger.w("点击的分享菜单");
         dismissDialogs();
 
         if (!NetUtils.isNetworkAvailable(this)) {
@@ -681,7 +681,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, null)
                     .show();
-            AppLogger.d("视频还未下载完成");
+            AppLogger.w("视频还未下载完成");
 
         } else if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
             ToastUtil.showNegativeToast(getString(R.string.Downloading));
@@ -708,7 +708,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @OnClick(R.id.act_panorama_detail_toolbar_more)
     public void clickedMore() {
-        AppLogger.d("点击了更多菜单");
+        AppLogger.w("点击了更多菜单");
         if (morePopMenu == null) {
             View contentView = LayoutInflater.from(this).inflate(R.layout.item_panorama_more, null);
             contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -781,7 +781,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     presenter.delete(panoramaItem, mode, bean == null || bean.alarmMsg == null ? 0 : bean.alarmMsg.version);
                 })
                 .show();
-        AppLogger.d("将进行删除");
+        AppLogger.w("将进行删除");
 
     }
 
@@ -825,7 +825,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     };
 
     private void processDownload() {
-        AppLogger.d("将进行下载");
+        AppLogger.w("将进行下载");
 
         if (bean != null) {
             if (morePopMenu != null && morePopMenu.isShowing()) {
@@ -871,7 +871,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 DownloadManager.getInstance().addTask(taskKey, request, listener);
                 this.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
             } else {
-                AppLogger.d("非家居模式不能进行下载");
+                AppLogger.w("非家居模式不能进行下载");
             }
         } else {
             String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
@@ -887,14 +887,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 DownloadManager.getInstance().addTask(taskKey, request, listener);
                 this.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
             } else {
-                AppLogger.d("非家居模式不能进行下载");
+                AppLogger.w("非家居模式不能进行下载");
             }
         }
     }
 
     @Override
     public void OnPlayerReady(long l, int i, int i1, int i2) {
-        AppLogger.d("播放器初始化成功了" + i + "," + i1 + "," + i2);
+        AppLogger.w("播放器初始化成功了" + i + "," + i1 + "," + i2);
         JFGPlayer.StartRender(player, panoramicView720Ext);
         isPlay = true;
         runOnUiThread(() -> {
@@ -939,14 +939,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void OnPlayerFailed(long l) {
-        AppLogger.d("播放器初始化失败了");
+        AppLogger.w("播放器初始化失败了");
         runOnUiThread(this::loadPreview);
 
     }
 
     @Override
     public void OnPlayerFinish(long l) {
-        AppLogger.d("播放完成了");
+        AppLogger.w("播放完成了");
         isPlay = false;
         if (looper) {
             runOnUiThread(() -> initPanoramaContent(panoramaItem));
@@ -1083,7 +1083,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
             }
         } else {
-            AppLogger.d("播放器初始化失败");
+            AppLogger.w("播放器初始化失败");
             initPanoramaContent(panoramaItem);
         }
     }

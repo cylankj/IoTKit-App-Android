@@ -8,11 +8,13 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
+import com.cylan.jiafeigou.n.mvp.impl.SetFaceNamePresenter;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AIRecognitionPresenter;
+import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullContract;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureContact;
@@ -90,6 +92,13 @@ public class FragmentModule {
     @PerFragment
     public static YouTubeLiveCreateContract.Presenter provideYoutubeLiveCreatePresenter(BasePresenterInjector injector) {
         YouTubeLiveCreatePresenter presenter = injector.inject(new YouTubeLiveCreatePresenter());
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public static SetFaceNameContact.Presenter provideSetFaceNamePresenter(BasePresenterInjector injector) {
+        SetFaceNameContact.Presenter presenter = injector.inject(new SetFaceNamePresenter());
         return presenter;
     }
 
