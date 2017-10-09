@@ -17,10 +17,10 @@
             android:orientation="vertical"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
-            <android.support.v4.view.ViewPager
+            <com.cylan.jiafeigou.widget.WrapContentViewPager
                 android:id="@+id/cam_message_face"
                 android:layout_width="match_parent"
-                android:layout_height="150dp" />
+                android:layout_height="wrap_content" />
 
             <RelativeLayout
                 android:id="@+id/rLayout_cam_message_list_top"

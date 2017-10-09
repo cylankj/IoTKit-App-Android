@@ -226,7 +226,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 list.add("Item" + i);
             }
             camMessageFaceAdapter.setFaceItems(list);
-
+            rvCamMessageHeaderFaces.requestLayout();
 
         } else {
             RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
@@ -733,6 +733,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 getResources().getDrawable(R.drawable.wonderful_arrow_up).getConstantState()) {
             arrow.setImageResource(R.drawable.wonderful_arrow_down);
             if (JFGRules.isFaceFragment(getDevice().pid)) {
+                aplCamMessageAppbar.requestLayout();
                 aplCamMessageAppbar.setExpanded(false, true);
             } else {
                 onBindClick(tvCamMessageListDate);
@@ -741,6 +742,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         } else {
             arrow.setImageResource(R.drawable.wonderful_arrow_up);
             if (JFGRules.isFaceFragment(getDevice().pid)) {
+                aplCamMessageAppbar.requestLayout();
                 aplCamMessageAppbar.setExpanded(true, true);
             } else {
                 onBindClick(tvCamMessageListDate);

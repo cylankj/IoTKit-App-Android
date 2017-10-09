@@ -67,6 +67,9 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         return POSITION_NONE;
     }
 
+
+
+
     class FaceItemAdapter extends RecyclerView.Adapter<FaceViewHolder> {
 
         private int position;
