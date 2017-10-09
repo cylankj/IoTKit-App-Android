@@ -412,6 +412,11 @@ public class JFGRules {
                 "wired", share);
     }
 
+    public static boolean hasProperty(int pid, final String tag) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                tag, false);
+    }
+
     /**
      * @deprecated 需要一并传入是否为共享账号
      */

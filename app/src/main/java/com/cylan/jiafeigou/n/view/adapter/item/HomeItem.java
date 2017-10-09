@@ -13,9 +13,11 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.Attributes;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -169,8 +171,17 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         if (isStandBY.standby && net != null && net.net > 0) {
             holder.setImageResource(R.id.img_device_state_standby, R.drawable.home_icon_net_standby);
         }
-
-
+        //6.OS:84,有线模式已经连接。
+        final boolean showWiredIcon = JFGRules.hasProperty(mDevice.pid, Attributes.WIREDMODE);
+        if (showWiredIcon) {
+            boolean wiredModeEnable = mDevice.$(225, 0) == 1;
+            boolean wiredModeOnline = mDevice.$(226, 0) == 1;
+            AppLogger.e("缺图标");
+            holder.setVisibility(R.id.img_device_wired, wiredModeEnable && wiredModeOnline ? VISIBLE : GONE);
+            holder.setImageResource(R.id.img_device_wired, R.drawable.home_icon_net_standby);
+        } else {
+            holder.setVisibility(R.id.img_device_wired, GONE);
+        }
     }
 
     /**
@@ -366,6 +377,8 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         ImageView imgDeviceState3;
         @BindView(R.id.img_device_state_standby)
         ImageView imgDeviceState4;
+        @BindView(R.id.img_device_wired)
+        ImageView imgDeviceState5;
 
         com.cylan.jiafeigou.server.cache.Device device;
 
