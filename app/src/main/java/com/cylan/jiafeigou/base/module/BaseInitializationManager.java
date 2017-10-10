@@ -304,4 +304,12 @@ public final class BaseInitializationManager {
             RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         }
     }
+
+    public String getVid() {
+        return vid;
+    }
+
+    public String getVkey() {
+        return vkey;
+    }
 }

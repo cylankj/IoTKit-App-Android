@@ -28,6 +28,11 @@ def boolean hasSignKey() {
     return false
 }
 
+//task importLanguage(type: Exec, description: "更新项目的语言包") {
+//    println("-------------正在更新语言包-------------")
+//
+//}
+
 android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -168,28 +173,28 @@ android {
             applicationId "com.cylan.cleverdog"
             versionName vName
             versionCode vCode//0002,ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 100044173",
-                                    "VID"                : "\\ 0001",
-                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
-                                    "qqAppId"            : "\\ 1106287288",
-                                    "qqAppKey"           : "yNsvacSiQTzArpTg",
-                                    "mtaAppKey"          : "Aqc1103156296",
-                                    "weChatAppId"        : "wx401c2537655ba462",
-                                    "weChatAppSecret"    : "fbb7b851f057882b1f8d3b9fb20506ab",
-                                    "sinaAppKey"         : "\\ 2656168776",
-                                    "sinaAppSecret"      : "f7f61f712dd94d538514799c462d2083",
-                                    "SERVER"             : "yun.jfgou.com:443",
-                                    "GCM_APP_ID"         : "\\ 985304692675",
-                                    "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "\\ 5881759615576",
-                                    "XiaoMiAppKey"       : "MTB5DeGP/CMKSgAiQsUIuw==",
-                                    "BUGLY_APPID"        : "f1f2edf649",
-                                    "BUGLY_APP_VERSION"  : versionName,
-                                    "BUGLY_APP_CHANNEL"  : "cylan",
-                                    "TWITTER_APP_KEY"    : "kvWyAC3sYGxaEmfkKDVWrKFa7",
-                                    "TWITTER_APP_SECRET" : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
-                                    "FACEBOOK_APP_KEY"   : "444251309281886",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES"  : "com.cylan.cleverdog.hms.update.provider",
+                                    "HW_APP_ID"            : "\\ 100044173",
+                                    "VID"                  : "\\ 0001",
+                                    "VKEY"                 : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "qqAppId"              : "\\ 1106287288",
+                                    "qqAppKey"             : "yNsvacSiQTzArpTg",
+                                    "mtaAppKey"            : "Aqc1103156296",
+                                    "weChatAppId"          : "wx401c2537655ba462",
+                                    "weChatAppSecret"      : "fbb7b851f057882b1f8d3b9fb20506ab",
+                                    "sinaAppKey"           : "\\ 2656168776",
+                                    "sinaAppSecret"        : "f7f61f712dd94d538514799c462d2083",
+                                    "SERVER"               : "yun.jfgou.com:443",
+                                    "GCM_APP_ID"           : "\\ 985304692675",
+                                    "ApplicationId"        : applicationId,
+                                    "XiaoMiAppId"          : "\\ 5881759615576",
+                                    "XiaoMiAppKey"         : "MTB5DeGP/CMKSgAiQsUIuw==",
+                                    "BUGLY_APPID"          : "f1f2edf649",
+                                    "BUGLY_APP_VERSION"    : versionName,
+                                    "BUGLY_APP_CHANNEL"    : "cylan",
+                                    "TWITTER_APP_KEY"      : "kvWyAC3sYGxaEmfkKDVWrKFa7",
+                                    "TWITTER_APP_SECRET"   : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
+                                    "FACEBOOK_APP_KEY"     : "444251309281886",
                                     'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
 
             ]
@@ -229,30 +234,30 @@ android {
             applicationId "com.cylan.cleverdog.cell_c"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.cell_c.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 100005405",
-                                    "VID"                : "\\ 0060",
-                                    "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
-                                    "qqAppId"            : "\\ 1104534926",
-                                    "qqAppKey"           : "lfQJHRh8dDCJtwHu",
-                                    "twitterAppKey"      : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
-                                    "twitterAppSecret"   : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
-                                    "mtaAppKey"          : "ATQ1JV694AKT",
-                                    "weChatAppId"        : "wx382033a16e5cc4a5",
-                                    "weChatAppSecret"    : "wx3081bcdae8a842cf",
-                                    "sinaAppKey"         : "\\ 1821035549",
-                                    "sinaAppSecret"      : "",
-                                    "SERVER"             : "yun.jfgou.com:443",
-                                    "GCM_APP_ID"         : "\\ 985304692675",
-                                    "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "\\ 5721736791425",
-                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
-                                    "BUGLY_APPID"        : "2e94bf542f",
-                                    "BUGLY_APP_VERSION"  : versionName,
-                                    "BUGLY_APP_CHANNEL"  : "cell_c",
-                                    "TWITTER_APP_KEY"    : "",
-                                    "TWITTER_APP_SECRET" : "",
-                                    "FACEBOOK_APP_KEY"   : "",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES"  : "com.cylan.cleverdog.cell_c.hms.update.provider",
+                                    "HW_APP_ID"            : "\\ 100005405",
+                                    "VID"                  : "\\ 0060",
+                                    "VKEY"                 : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
+                                    "qqAppId"              : "\\ 1104534926",
+                                    "qqAppKey"             : "lfQJHRh8dDCJtwHu",
+                                    "twitterAppKey"        : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
+                                    "twitterAppSecret"     : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
+                                    "mtaAppKey"            : "ATQ1JV694AKT",
+                                    "weChatAppId"          : "wx382033a16e5cc4a5",
+                                    "weChatAppSecret"      : "wx3081bcdae8a842cf",
+                                    "sinaAppKey"           : "\\ 1821035549",
+                                    "sinaAppSecret"        : "",
+                                    "SERVER"               : "yun.jfgou.com:443",
+                                    "GCM_APP_ID"           : "\\ 985304692675",
+                                    "ApplicationId"        : applicationId,
+                                    "XiaoMiAppId"          : "\\ 5721736791425",
+                                    "XiaoMiAppKey"         : "ICRz/WmxDXeT4XGEWT2aBQ==",
+                                    "BUGLY_APPID"          : "2e94bf542f",
+                                    "BUGLY_APP_VERSION"    : versionName,
+                                    "BUGLY_APP_CHANNEL"    : "cell_c",
+                                    "TWITTER_APP_KEY"      : "",
+                                    "TWITTER_APP_SECRET"   : "",
+                                    "FACEBOOK_APP_KEY"     : "",
                                     'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
             ]
         }
@@ -352,7 +357,7 @@ dependencies {
         transitive = true
     }
     compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
-    compile 'com.mikepenz:materialize:1.0.2@aar'
+    compile 'com.mikepenz:materialize:1.0.3@aar'
     compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
     compile 'com.cylan.ext:annotations:0.1.0'
     kapt project(':processor')
@@ -370,7 +375,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
-    compile 'com.google.android.gms:play-services-gcm:+'
+    compile 'com.google.android.gms:play-services-gcm:11.4.2'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.2@aar'
@@ -383,21 +388,21 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     kapt 'com.google.dagger:dagger-compiler:2.11'
     compile 'com.mcxiaoke.packer-ng:helper:2.0.0'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:+'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
     compile 'org.msgpack:msgpack-core:0.8.13'
-    compile 'org.msgpack:jackson-dataformat-msgpack:+'
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'org.msgpack:jackson-dataformat-msgpack:0.8.13'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile "io.objectbox:objectbox-android:$objectBoxVersion"
     compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
     kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
     kapt "com.android.databinding:compiler:2.3.3"
-    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0'
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.1'
 
     //youtube-live-api
-    compile 'com.google.api-client:google-api-client:1.22.0'
+    compile 'com.google.api-client:google-api-client:1.23.0'
     //youtube rtmp 配置 配置
-    compile 'com.google.android.gms:play-services-plus:+'
-    compile 'com.google.android.gms:play-services-auth:+'
+    compile 'com.google.android.gms:play-services-plus:11.4.2'
+    compile 'com.google.android.gms:play-services-auth:11.4.2'
     compile('com.google.apis:google-api-services-youtube:v3-rev120-1.19.0') {
         exclude group: 'org.apache.httpcomponents', module: "httpclient"
     }

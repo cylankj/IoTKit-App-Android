@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -217,6 +218,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                             mView.onErr();
                         });
         addSubscription(subscription, "DPCamMultiQueryTask");
+    }
+
+    public void getFaceGroupInformation() {
+        BaseInitializationManager initializationManager = BaseApplication.getAppComponent().getInitializationManager();
+//        OkGo.post()
+
     }
 
     private List<IDPEntity> buildMultiEntities(ArrayList<CamMessageBean> beanList) {

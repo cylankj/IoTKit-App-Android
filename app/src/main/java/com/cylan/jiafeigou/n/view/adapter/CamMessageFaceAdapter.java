@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         RecyclerView recyclerView;
         if (cachedViews.size() > 0) {
             contentView = cachedViews.remove(0);
-            recyclerView = (RecyclerView) contentView;
+            recyclerView = (RecyclerView) contentView.findViewById(R.id.message_face_page_item);
         } else {
             contentView = View.inflate(container.getContext(), R.layout.message_face_page, null);
             recyclerView = (RecyclerView) contentView.findViewById(R.id.message_face_page_item);
@@ -104,14 +105,16 @@ public class CamMessageFaceAdapter extends PagerAdapter {
             holder.itemView.setOnClickListener(v -> {
                 // TODO: 2017/10/9 点击操作
                 if (listener != null) {
-                    listener.onFaceItemClicked(position, holder.itemView);
+                    AppLogger.w("点击了面孔条目:" + position);
+                    listener.onFaceItemClicked(this.position, position, holder.itemView);
                 }
             });
 
             holder.itemView.setOnLongClickListener(v -> {
                 // TODO: 2017/10/9 长按弹出菜单提示
                 if (listener != null) {
-                    listener.onFaceItemLongClicked(position, holder.itemView);
+                    AppLogger.w("点击了面孔条目:" + position);
+                    listener.onFaceItemLongClicked(this.position, position, holder.itemView);
                 }
                 return true;
             });
@@ -138,8 +141,8 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     public interface FaceItemEventListener {
 
-        void onFaceItemClicked(int position, View faceItem);
+        void onFaceItemClicked(int page_position, int position, View faceItem);
 
-        void onFaceItemLongClicked(int position, View faceItem);
+        void onFaceItemLongClicked(int page_position, int position, View faceItem);
     }
 }

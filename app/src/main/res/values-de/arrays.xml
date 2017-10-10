@@ -73,7 +73,7 @@
     </string-array>
     <string-array name="video_direction">
         <item>Im Uhrzeigersinn</item>
-        <item>Gegen Uhrzeigersinn (180° drehen)</item>
+        <item>Gegen Uhrzeigersinn (180&#176;&#10; drehen)</item>
     </string-array>
     <string-array name="error_msg">
         <item>数据库错误</item>

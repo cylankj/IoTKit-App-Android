@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.lzy.okserver.download.DownloadInfo;
+import com.lzy.okserver.download.DownloadTask;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -9,22 +9,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/MESSAGES_DELETE_POP" />
+        android:text="@string/MESSAGES_IDENTIFY_POP" />
 
     <TextView
-        android:id="@+id/delete_only_face"
+        android:id="@+id/detect_new_face"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/MESSAGES_DELETE_FACE_BTN" />
+        android:text="@string/MESSAGES_IDENTIFY_CREATE_BTN" />
 
     <TextView
-        android:id="@+id/delete_face_and_message"
+        android:id="@+id/detect_add_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/MESSAGES_DELETE_FACE_MES" />
+        android:text="@string/MESSAGES_IDENTIFY_ADD_BTN" />
 
     <TextView
-        android:id="@+id/delete_cancel"
+        android:id="@+id/detect_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/CANCEL" />

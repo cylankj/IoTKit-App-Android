@@ -25,7 +25,8 @@
             <RelativeLayout
                 android:id="@+id/cam_message_indicator"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/cam_message_indicator_page_text"
@@ -99,34 +100,41 @@
         android:background="@color/color_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_cam_message_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <FrameLayout
+            android:layout_width="@dimen/magin_left"
+            android:layout_height="@dimen/magin_left">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_cam_message_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/lLayout_no_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y147"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/pic_no_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/y16"
+                    android:text="@string/NO_CONTENTS_1"
+                    android:textColor="#aaaaaa"
+                    android:textSize="@dimen/sp15" />
+            </LinearLayout>
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <LinearLayout
-        android:id="@+id/lLayout_no_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y147"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/pic_no_message" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/y16"
-            android:text="@string/NO_CONTENTS_1"
-            android:textColor="#aaaaaa"
-            android:textSize="@dimen/sp15" />
-    </LinearLayout>
 
     <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
         android:id="@+id/fLayout_cam_message_list_timeline"

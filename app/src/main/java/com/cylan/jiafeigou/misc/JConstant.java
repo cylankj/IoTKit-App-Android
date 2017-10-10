@@ -181,6 +181,26 @@ public class JConstant {
     public static final String WEIBO_PREF_LIVE_URL = "WEIBO_PREF_LIVE_URL";
     public static final String FACEBOOK_PREF_PERMISSION_KEY = "FACEBOOK_PREF_PERMISSION_KEY";
     public static final String PANORAMA_VIEW_MODE = "PANORAMA_VIEW_MODE";
+
+    public static class RobotCloudApi {
+        public static final String ROBOTSCLOUD_BASE_API = "http://api.robotscloud.com/v1/";
+        public static final String ROBOTSCLOUD_FACE_QUERY_API = ROBOTSCLOUD_BASE_API + "api.do";
+        public static final String ROBOTSCLOUD_FACE_ADD_API = ROBOTSCLOUD_BASE_API + "";
+        public static final String ROBOTSCLOUD_FACE_UPDATE_API = ROBOTSCLOUD_BASE_API + "";
+        public static final String ROBOTSCLOUD_FACE_DELETE_API = ROBOTSCLOUD_BASE_API + "";
+        public static final String ROBOTSCLOUD_GROUP_QUERY_API = ROBOTSCLOUD_BASE_API + "";
+        public static final String ROBOTSCLOUD_GROUP_ADD_API = ROBOTSCLOUD_BASE_API + "";
+        public static final String ROBOTSCLOUD_GROUP_UPDATE_API = ROBOTSCLOUD_BASE_API + "";
+        public static final String ROBOTSCLOUD_GROUP_DELETE_API = ROBOTSCLOUD_BASE_API + "";
+
+        public static final String ROBOTSCLOUD_VID = "vid";
+        public static final String ROBOTSCLOUD_SERVICE_KEY = "service_key";
+        public static final String ROBOTSCLOUD_BUSINESS = "business";
+        public static final String ROBOTSCLOUD_SERVICETYPE = "serviceType";
+        public static final String ROBOTSCLOUD_SIGN = "sign";
+        public static final String ROBOTSCLOUD_TIMESTAMP = "timestamp";
+    }
+
     public static String FACEBOOK_PREF_VIDEO_ID = "FACEBOOK_PREF_VIDEO_ID";
 
 

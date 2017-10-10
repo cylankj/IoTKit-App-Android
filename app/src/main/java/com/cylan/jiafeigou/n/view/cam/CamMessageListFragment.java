@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -51,6 +52,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -127,7 +129,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      */
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
-    private PopupWindow popupWindow;
 
 
     public CamMessageListFragment() {
@@ -227,26 +228,29 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             arrowLayoutParams.removeRule(RelativeLayout.END_OF);
             arrowLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
             arrow.setLayoutParams(arrowLayoutParams);
-
-            RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) tvCamMessageListEdit.getLayoutParams();
-            editLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
+            if (layoutParams instanceof RelativeLayout.LayoutParams) {
+                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
+                editLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+            }
             camMessageFaceAdapter = new CamMessageFaceAdapter();
             camMessageFaceAdapter.setOnFaceItemClickListener(new CamMessageFaceAdapter.FaceItemEventListener() {
                 @Override
-                public void onFaceItemClicked(int position, View faceItem) {
-
+                public void onFaceItemClicked(int page_position, int position, View faceItem) {
+                    AppLogger.w("onFaceItemClicked");
                 }
 
                 @Override
-                public void onFaceItemLongClicked(int position, View faceItem) {
-                    showHeaderFacePopMenu(position, faceItem);
+                public void onFaceItemLongClicked(int page_position, int position, View faceItem) {
+                    AppLogger.w("onFaceItemLongClicked");
+                    showHeaderFacePopMenu(page_position, position, faceItem);
                 }
             });
             rvCamMessageHeaderFaces.setAdapter(camMessageFaceAdapter);
             rvCamMessageHeaderFaces.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
-                    tvCamMessageIndicatorPageText.setText(String.format("%s/%s", position, camMessageFaceAdapter.getCount()));
+                    refreshFaceHeaderIndicator();
                 }
             });
             //just for test
@@ -264,62 +268,108 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
             tvCamMessageListDate.setClickable(true);
 
-            RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) tvCamMessageListEdit.getLayoutParams();
-            editLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
+            if (layoutParams instanceof RelativeLayout.LayoutParams) {
+                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
+                editLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                tvCamMessageListEdit.setLayoutParams(editLayoutParams);
+            }
 
-
-            tvCamMessageListEdit.setLayoutParams(editLayoutParams);
 
             srLayoutCamListRefresh.setNestedScrollingEnabled(false);
             aplCamMessageAppbar.setExpanded(false);
         }
     }
 
-    private void showHeaderFacePopMenu(int position, View faceItem) {
+    private void showHeaderFacePopMenu(int page_position, int position, View faceItem) {
         AppLogger.w("showHeaderFacePopMenu:" + position + ",item:" + faceItem);
-        if (popupWindow == null) {
-            View view = View.inflate(getContext(), R.layout.layout_face_page_pop_menu, null);
-            view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            popupWindow = new PopupWindow(view, view.getMeasuredWidth(), view.getMeasuredHeight());
-        }
+        View view = View.inflate(getContext(), R.layout.layout_face_page_pop_menu, null);
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        PopupWindow popupWindow = new PopupWindow(view, view.getMeasuredWidth(), view.getMeasuredHeight());
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setOutsideTouchable(true);
         View contentView = popupWindow.getContentView();
 
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断
-        
+
 
         contentView.findViewById(R.id.delete).setOnClickListener(v -> {
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔");
-
-            AlertDialog dialog = new AlertDialog.Builder(getContext())
-                    .setView(R.layout.layout_face_delete_pop_alert)
-                    .show();
-            dialog.findViewById(R.id.delete_cancel).setOnClickListener(v1 -> {
-                // TODO: 2017/10/9 取消了 什么也不做
-                dialog.dismiss();
-
-            });
-
-            dialog.findViewById(R.id.delete_only_face).setOnClickListener(v1 -> {
-                // TODO: 2017/10/9 删除这个面孔,不删除下面的消息
-                AppLogger.w("删除这个面孔,不删除下面的消息");
-            });
-
-            dialog.findViewById(R.id.delete_face_and_message).setOnClickListener(v1 -> {
-                // TODO: 2017/10/9 删除这个账号下的面孔和面孔消息
-                AppLogger.w("删除这个账号下的面孔和面孔消息");
-            });
+            popupWindow.dismiss();
+            showDeleteFaceAlert();
         });
 
         contentView.findViewById(R.id.detect).setOnClickListener(v -> {
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔");
+            popupWindow.dismiss();
+            showDetectFaceAlert();
+
         });
 
         contentView.findViewById(R.id.viewer).setOnClickListener(v -> {
+            popupWindow.dismiss();
+        });
+//        popupWindow.showAtLocation(faceItem,Gravity.TOP,0,0);
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, -(contentView.getMeasuredHeight() + faceItem.getMeasuredHeight()), Gravity.START | Gravity.TOP);
+    }
+
+    private void showDetectFaceAlert() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setView(R.layout.layout_face_detect_pop_alert)
+                .show();
+        dialog.findViewById(R.id.detect_new_face).setOnClickListener(v -> {
+            // TODO: 2017/10/10 跳转到新建面孔页面
+            dialog.dismiss();
+            CreateNewFaceFragment fragment = CreateNewFaceFragment.Companion.newInstance(uuid);
+            fragment.setResultCallback((o, o2, o3) -> {
+                // TODO: 2017/10/10 创建面孔的结果回调
+
+                return null;
+            });
+            ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
+        });
+
+        dialog.findViewById(R.id.detect_add_to).setOnClickListener(v -> {
+            // TODO: 2017/10/10 跳转到面孔管理页面
+            dialog.dismiss();
+            FaceListFragment fragment = FaceListFragment.Companion.newInstance(uuid);
+            fragment.setResultCallback((o, o2, o3) -> {
+                // TODO: 2017/10/10 移动到面孔的结果回调
+
+                return null;
+            });
+            ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
 
         });
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.TOP);
+
+        dialog.findViewById(R.id.detect_cancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+    }
+
+    private void showDeleteFaceAlert() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setView(R.layout.layout_face_delete_pop_alert)
+                .show();
+        dialog.findViewById(R.id.delete_cancel).setOnClickListener(v1 -> {
+            // TODO: 2017/10/9 取消了 什么也不做
+            dialog.dismiss();
+
+        });
+
+        dialog.findViewById(R.id.delete_only_face).setOnClickListener(v1 -> {
+            // TODO: 2017/10/9 删除这个面孔,不删除下面的消息
+            dialog.dismiss();
+            AppLogger.w("删除这个面孔,不删除下面的消息");
+        });
+
+        dialog.findViewById(R.id.delete_face_and_message).setOnClickListener(v1 -> {
+            // TODO: 2017/10/9 删除这个账号下的面孔和面孔消息
+            dialog.dismiss();
+            AppLogger.w("删除这个账号下的面孔和面孔消息");
+        });
     }
 
     private void onClickFaceItem(int position, Object faceItem) {
@@ -327,6 +377,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void refreshFaceHeaderIndicator() {
+        int currentItem = rvCamMessageHeaderFaces.getCurrentItem();
+        tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, camMessageFaceAdapter.getCount()));
         rlCamMessageIndicator.setVisibility(camMessageFaceAdapter.getCount() > 1 ? View.VISIBLE : View.GONE);
     }
 
