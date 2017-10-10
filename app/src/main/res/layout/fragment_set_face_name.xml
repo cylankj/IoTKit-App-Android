@@ -10,6 +10,7 @@
         layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:ct_enable_theme="true"
         app:ct_right_title="@string/FINISHED"
         app:ct_title="@string/NAME" />
 

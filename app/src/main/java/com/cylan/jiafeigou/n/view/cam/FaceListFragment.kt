@@ -37,8 +37,20 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
     override fun initViewAndListener() {
         super.initViewAndListener()
         adapter = FastItemAdapter()
+        adapter.withMultiSelect(false)
         adapter.itemAdapter.withComparator { a, b ->
-            return@withComparator Pinyin.toPinyin(a.text, "").compareTo(Pinyin.toPinyin(b.text, ""))
+            return@withComparator Pinyin.toPinyin(a.faceText, "").compareTo(Pinyin.toPinyin(b.faceText, ""))
+        }
+        when (arguments?.getInt("type", TYPE_ADD_TO)) {
+            TYPE_ADD_TO -> {
+                custom_toolbar.setToolbarTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
+            }
+            TYPE_MOVE_TO -> {
+                custom_toolbar.setToolbarTitle(R.string.MESSAGES_FACE_MOVE)
+            }
+            else -> {
+                custom_toolbar.setToolbarTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
+            }
         }
 
         layoutManager = LinearLayoutManager(context)
@@ -49,8 +61,7 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
                 //TODO 更新右边的 slider
                 val itemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                 val faceItem = adapter.getItem(itemPosition)
-                val pinyin = Pinyin.toPinyin(faceItem.text, "")
-
+                val pinyin = Pinyin.toPinyin(faceItem.faceText, "")
 
 
 //                face_list_slider.setIndex()
@@ -67,11 +78,13 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
     var resultCallback: ((a: Any, b: Any, c: Any) -> Unit)? = null
 
     companion object {
-
-        fun newInstance(uuid: String): FaceListFragment {
+        const val TYPE_ADD_TO = 1
+        const val TYPE_MOVE_TO = 2
+        fun newInstance(uuid: String, type: Int = TYPE_ADD_TO): FaceListFragment {
             val fragment = FaceListFragment()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+            argument.putInt("type", type)
             fragment.arguments = argument
             return fragment
         }

@@ -538,7 +538,19 @@ public class JFGRules {
     }
 
     public static boolean isFaceFragment(int pid) {
-        return true;
+        boolean hasFaceFeature = (pid == 83 || pid == 84);
+        if (!hasFaceFeature) {
+            PropertiesLoader loader = PropertiesLoader.getInstance();
+            String os = loader.property(pid, "OS");
+            try {
+                Integer intOS = Integer.valueOf(os);
+                hasFaceFeature = (intOS == 83 || intOS == 84);
+            } catch (Exception e) {
+            }
+        }
+        //just for test
+        hasFaceFeature = true;
+        return hasFaceFeature;
     }
 
     public static class PlayErr {

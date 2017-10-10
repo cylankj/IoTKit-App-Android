@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageFaceAdapter;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
+import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -84,6 +85,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         View.OnClickListener, OnItemClickListener {
 
 
+    private static final int BAR_TYPE_FACE_COMMON = 0;
+    private static final int BAR_TYPE_NORMAL = 1;
+    private static final int BAR_TYPE_STRANGER = 2;
     @BindView(R.id.tv_cam_message_list_date)
     TextView tvCamMessageListDate;
     @BindView(R.id.tv_cam_message_list_edit)
@@ -114,6 +118,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     TextView tvCamMessageIndicatorPageText;
     @BindView(R.id.cam_message_indicator)
     RelativeLayout rlCamMessageIndicator;
+    @BindView(R.id.iv_back)
+    TextView barBack;
 
 //    private SimpleDialogFragment simpleDialogFragment;
     /**
@@ -185,7 +191,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 }
             }
         });
-//        camMessageListAdapter.setOnItemClickListener(this);
         rvCamMessageList.setAdapter(camMessageListAdapter);
         rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int pastVisibleItems, visibleItemCount, totalItemCount;
@@ -224,20 +229,14 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             aplCamMessageAppbar.setExpanded(true);
             tvCamMessageListDate.setClickable(false);
 
-            RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
-            arrowLayoutParams.removeRule(RelativeLayout.END_OF);
-            arrowLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-            arrow.setLayoutParams(arrowLayoutParams);
-            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
-            if (layoutParams instanceof RelativeLayout.LayoutParams) {
-                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
-                editLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
-            }
+            layoutBarMenu(BAR_TYPE_FACE_COMMON);
+
             camMessageFaceAdapter = new CamMessageFaceAdapter();
             camMessageFaceAdapter.setOnFaceItemClickListener(new CamMessageFaceAdapter.FaceItemEventListener() {
                 @Override
                 public void onFaceItemClicked(int page_position, int position, View faceItem) {
                     AppLogger.w("onFaceItemClicked");
+                    changeContentByHeaderClick(page_position, position, faceItem);
                 }
 
                 @Override
@@ -253,44 +252,100 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     refreshFaceHeaderIndicator();
                 }
             });
-            //just for test
-            List list = new ArrayList();
-            for (int i = 0; i < 100; i++) {
-                list.add("Item" + i);
-            }
-            camMessageFaceAdapter.setFaceItems(list);
+            List<FaceItem> list = new ArrayList<>();
+
+            FaceItem allFace = new FaceItem();
+            allFace.setFaceType(FaceItem.FACE_TYPE_ALL);
+            allFace.setFaceText(getString(R.string.MESSAGES_FILTER_ALL));
+            list.add(allFace);
+
+            FaceItem strangerFace = new FaceItem();
+            strangerFace.setFaceType(FaceItem.FACE_TYPE_STRANGER);
+            strangerFace.setFaceText(getString(R.string.MESSAGES_FILTER_STRANGER));
+            list.add(strangerFace);
+
+            camMessageFaceAdapter.setPreloadFaceItems(list);
             refreshFaceHeaderIndicator();
         } else {
+            tvCamMessageListDate.setClickable(true);
+            srLayoutCamListRefresh.setNestedScrollingEnabled(false);
+            aplCamMessageAppbar.setExpanded(false);
+            layoutBarMenu(BAR_TYPE_NORMAL);
+        }
+    }
+
+    private void layoutBarMenu(int barType) {
+        if (barType == BAR_TYPE_FACE_COMMON) {
+            barBack.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
+            arrowLayoutParams.removeRule(RelativeLayout.END_OF);
+            arrowLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+            arrow.setLayoutParams(arrowLayoutParams);
+//            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
+//            if (layoutParams instanceof RelativeLayout.LayoutParams) {
+//                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
+//                editLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+//            }
+        } else if (barType == BAR_TYPE_NORMAL) {
+            barBack.setVisibility(View.GONE);
             RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
             arrowLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
             arrowLayoutParams.addRule(RelativeLayout.END_OF, R.id.tv_cam_message_list_date);
             arrow.setLayoutParams(arrowLayoutParams);
 
-            tvCamMessageListDate.setClickable(true);
+//            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
+//            if (layoutParams instanceof RelativeLayout.LayoutParams) {
+//                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
+//                editLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//                tvCamMessageListEdit.setLayoutParams(editLayoutParams);
+//            }
 
-            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
-            if (layoutParams instanceof RelativeLayout.LayoutParams) {
-                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
-                editLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                tvCamMessageListEdit.setLayoutParams(editLayoutParams);
-            }
+        } else if (barType == BAR_TYPE_STRANGER) {
+            barBack.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams arrowLayoutParams = (RelativeLayout.LayoutParams) arrow.getLayoutParams();
+            arrowLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+            arrowLayoutParams.addRule(RelativeLayout.END_OF, R.id.tv_cam_message_list_date);
+            arrow.setLayoutParams(arrowLayoutParams);
 
-
-            srLayoutCamListRefresh.setNestedScrollingEnabled(false);
-            aplCamMessageAppbar.setExpanded(false);
+//            ViewGroup.LayoutParams layoutParams = tvCamMessageListEdit.getLayoutParams();
+//            if (layoutParams instanceof RelativeLayout.LayoutParams) {
+//                RelativeLayout.LayoutParams editLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
+//                editLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//                tvCamMessageListEdit.setLayoutParams(editLayoutParams);
+//            }
         }
     }
+
+    @OnClick(R.id.iv_back)
+    public void clickStrangerBack() {
+        AppLogger.w("clickStrangerBack");
+
+    }
+
+    private void changeContentByHeaderClick(int page_position, int position, View faceItem) {
+        FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
+        int faceType = item.getFaceType();
+        if (faceType == FaceItem.FACE_TYPE_STRANGER) {
+            // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
+            layoutBarMenu(BAR_TYPE_STRANGER);
+        } else if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
+            // TODO: 2017/10/10 点击的是熟人,但具体是哪个人还不知道
+            layoutBarMenu(BAR_TYPE_FACE_COMMON);
+        }
+
+    }
+
 
     private void showHeaderFacePopMenu(int page_position, int position, View faceItem) {
         AppLogger.w("showHeaderFacePopMenu:" + position + ",item:" + faceItem);
         View view = View.inflate(getContext(), R.layout.layout_face_page_pop_menu, null);
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         PopupWindow popupWindow = new PopupWindow(view, view.getMeasuredWidth(), view.getMeasuredHeight());
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
         popupWindow.setOutsideTouchable(true);
         View contentView = popupWindow.getContentView();
 
-        // TODO: 2017/10/9 查看和识别二选一 ,需要判断
+        // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
 
 
         contentView.findViewById(R.id.delete).setOnClickListener(v -> {
@@ -309,9 +364,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         });
 
         contentView.findViewById(R.id.viewer).setOnClickListener(v -> {
+            AppLogger.w("将查看面孔详细信息");
             popupWindow.dismiss();
+            FaceInformationFragment fragment = FaceInformationFragment.Companion.newInstance(uuid);
+
+
+            ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
         });
-//        popupWindow.showAtLocation(faceItem,Gravity.TOP,0,0);
         PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, -(contentView.getMeasuredHeight() + faceItem.getMeasuredHeight()), Gravity.START | Gravity.TOP);
     }
 
@@ -334,7 +393,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         dialog.findViewById(R.id.detect_add_to).setOnClickListener(v -> {
             // TODO: 2017/10/10 跳转到面孔管理页面
             dialog.dismiss();
-            FaceListFragment fragment = FaceListFragment.Companion.newInstance(uuid);
+            FaceListFragment fragment = FaceListFragment.Companion.newInstance(uuid, FaceListFragment.TYPE_ADD_TO);
             fragment.setResultCallback((o, o2, o3) -> {
                 // TODO: 2017/10/10 移动到面孔的结果回调
 
@@ -379,7 +438,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void refreshFaceHeaderIndicator() {
         int currentItem = rvCamMessageHeaderFaces.getCurrentItem();
         tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, camMessageFaceAdapter.getCount()));
-        rlCamMessageIndicator.setVisibility(camMessageFaceAdapter.getCount() > 1 ? View.VISIBLE : View.GONE);
+        rlCamMessageIndicator.setVisibility(camMessageFaceAdapter.getTotalCount() > 8 ? View.VISIBLE : View.GONE);
     }
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
@@ -414,7 +473,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
                 Intent intent = getActivity().getIntent();
                 if (intent != null) intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
-                AppLogger.d("刷新数据中...");
+                AppLogger.w("刷新数据中...");
 
                 needRefresh = true;
             }
@@ -505,7 +564,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         LoadingDialog.dismissLoading();
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
-            AppLogger.i("没有数据");
+            AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
             return;
         }

@@ -19,3 +19,14 @@ interface SetFaceNameContact {
     }
 }
 
+interface FaceManagerContact {
+
+    interface View : JFGView {
+
+    }
+
+    interface Presenter : JFGPresenter<View> {
+
+    }
+}
+

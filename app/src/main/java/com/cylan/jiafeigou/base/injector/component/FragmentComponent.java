@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.base.injector.module.FragmentModule;
 import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
+import com.cylan.jiafeigou.n.view.cam.FaceManagerFragment;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
@@ -53,4 +54,6 @@ public interface FragmentComponent {
     void inject(YouTubeLiveCreateFragment fragment);
 
     void inject(SetFaceNameFragment fragment);
+
+    void inject(FaceManagerFragment fragment);
 }

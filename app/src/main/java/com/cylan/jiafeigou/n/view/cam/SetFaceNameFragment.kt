@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
+import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.ToastUtil
@@ -57,6 +58,17 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
         } else {
             //TODO 修改或者新建面孔名称
             presenter.setFaceName(edit_face_name.text.trim())
+        }
+    }
+
+    companion object {
+
+        fun newInstance(uuid: String): SetFaceNameFragment {
+            val fragment = SetFaceNameFragment()
+            val argument = Bundle()
+            argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+            fragment.arguments = argument
+            return fragment
         }
     }
 }

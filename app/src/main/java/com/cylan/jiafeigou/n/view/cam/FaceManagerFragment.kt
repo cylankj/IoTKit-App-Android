@@ -10,8 +10,9 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
-import com.cylan.jiafeigou.base.view.JFGPresenter
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
+import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import kotlinx.android.synthetic.main.fragment_face_manager.*
@@ -19,12 +20,12 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
 /**
  * Created by yanzhendong on 2017/10/9.
  */
-class FaceManagerFragment : BaseFragment<JFGPresenter<*>>() {
+class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
 
-    lateinit var adapter: FastItemAdapter<*>
+    lateinit var adapter: FastItemAdapter<FaceItem>
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
-
+    override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
+        fragmentComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,6 +38,7 @@ class FaceManagerFragment : BaseFragment<JFGPresenter<*>>() {
         super.initViewAndListener()
         val layoutManager = GridLayoutManager(context, 4)
         face_manager_items.layoutManager = layoutManager
+        adapter = FastItemAdapter()
         adapter.withOnClickListener { v, adapter, iItem, position ->
             AppLogger.w("FaceManagerOnItemClicked:$v,$position,$iItem,$adapter")
             if (isEditMode()) {
@@ -57,19 +59,36 @@ class FaceManagerFragment : BaseFragment<JFGPresenter<*>>() {
 
     }
 
-    private var popupWindow: PopupWindow? = null
 
     private fun showFaceManagerPopMenu(position: Int, v: View?) {
-        if (popupWindow == null) {
-            val view = View.inflate(context, R.layout.layout_face_delete_pop_alert, null)
-            view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
+        val view = View.inflate(context, R.layout.layout_face_manager_pop_alert, null)
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
+
+        view.findViewById(R.id.delete).setOnClickListener {
+            AppLogger.w("面孔管理:删除")
+
+        }
+
+        view.findViewById(R.id.move_to).setOnClickListener {
+            AppLogger.w("面孔管理:移动到")
+            FaceListFragment.newInstance(uuid)
         }
         PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)
     }
 
     private fun isEditMode(): Boolean {
         return true
+    }
+
+    companion object {
+        fun newInstance(uuid: String): FaceManagerFragment {
+            val fragment = FaceManagerFragment()
+            val argument = Bundle()
+            argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+            fragment.arguments = argument
+            return fragment
+        }
     }
 
 }

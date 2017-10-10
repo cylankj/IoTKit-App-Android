@@ -1,36 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_white"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.ads.AdsActivity">
 
+
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:ct_enable_theme="true"
+        app:ct_icon="@drawable/nav_tab_back_selector"
+        app:ct_left_title="@string/MESSAGES_FACE_INFO"
+        app:ct_left_title_color="@color/color_white">
 
     </com.cylan.jiafeigou.widget.CustomToolbar>
 
     <ImageView
         android:id="@+id/face_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/face_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="韩梅梅" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/setting_item_face_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:sv_sub_title="韩梅梅"
+        app:sv_title="@string/NAME"
+        app:sv_v_divider="true" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/setting_item_face_manager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        app:sv_title="@string/MESSAGES_FACE_MABAGE" />
 </LinearLayout>
