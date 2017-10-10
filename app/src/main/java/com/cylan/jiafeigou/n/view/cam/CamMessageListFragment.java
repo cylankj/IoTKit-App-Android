@@ -331,6 +331,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         } else if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
             // TODO: 2017/10/10 点击的是熟人,但具体是哪个人还不知道
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
+        }else if (faceType==FaceItem.FACE_TYPE_ALL){
+            // TODO: 2017/10/10 点击的是全部 ,需要刷新所有
+            layoutBarMenu(BAR_TYPE_FACE_COMMON);
         }
 
     }
