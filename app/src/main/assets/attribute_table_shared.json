@@ -11,6 +11,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -28,7 +32,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -56,6 +64,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -73,7 +85,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -101,6 +117,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -118,7 +138,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -146,6 +170,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -163,7 +191,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -191,6 +223,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-72",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -208,7 +244,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -236,6 +276,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-2W-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -253,7 +297,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-2W-",
       "STANDBY": "0",
@@ -281,6 +329,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-2W",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -298,7 +350,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "1, 3.0.0.1011 ",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-2W-",
       "STANDBY": "0",
@@ -326,6 +382,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-2W-V3",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -343,7 +403,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "1, 1.0.0.1008",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-2W-",
       "STANDBY": "0",
@@ -371,6 +435,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-2W-V4",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -388,7 +456,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "1, 1.0.0.1008",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-2W-",
       "STANDBY": "0",
@@ -416,6 +488,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-8W",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -432,7 +508,11 @@
       "PROTECTION": "0",
       "REMOTE_VIEW": "0",
       "SD": "0",
+<<<<<<< HEAD
       "SD/HD": "1.0",
+=======
+      "SD/HD": "1, 2.4.9.0927",
+>>>>>>> hunt
       "SN": "0.0",
       "SOFTVERSION": "0",
       "SSID": "DOG-8W-",
@@ -452,6 +532,101 @@
     },
     {
       "24RECORD": "0",
+<<<<<<< HEAD
+=======
+      "AI_RECOGNITION": "0",
+      "AP": "0",
+      "APCONNECTTING": "0",
+      "AUTORECORD": "0",
+      "BATTERY": "0",
+      "CIDPREFIX": "2901",
+      "CLOUD_STORAGE": "0",
+      "DEVICE": "DOG-10W",
+      "EMPTIED": "0",
+      "FACE_RECOGNITION": "0",
+      "FU": "0",
+      "HANGUP": "0",
+      "INFRAREDVISION": "0",
+      "INTERVAL_ALARM": "0",
+      "IP": "0",
+      "LED": "0",
+      "MAC": "1",
+      "NEVER": "0",
+      "NTSC": "0",
+      "OS": "83",
+      "PID": "1494",
+      "POWER": "0",
+      "PRODUCT": "看家王AI摄像机 ·标准版",
+      "PROTECTION": "0",
+      "REMOTE_VIEW": "0",
+      "SD": "0",
+      "SD/HD": "1, 1.0.0.0026",
+      "SN": "智能摄像机",
+      "SOFTVERSION": "1",
+      "SSID": "DOG-10W-",
+      "STANDBY": "0",
+      "SYSVERSION": "1",
+      "TZ": "0",
+      "UPTIME": "1",
+      "VALUE": "AI_CAMERA_NORMAL",
+      "VIDEO": "0",
+      "VIEW": "矩形",
+      "VIEWANGLE": "0",
+      "VIEW_MODE": "0",
+      "WARMSOUND": "0",
+      "WIFI": "0",
+      "WIFI_INFO": "1",
+      "WIREDMODE": "0"
+    },
+    {
+      "24RECORD": "0",
+      "AI_RECOGNITION": "0",
+      "AP": "0",
+      "APCONNECTTING": "0",
+      "AUTORECORD": "0",
+      "BATTERY": "0",
+      "CIDPREFIX": "2902",
+      "CLOUD_STORAGE": "0",
+      "DEVICE": "DOG-11W",
+      "EMPTIED": "0",
+      "FACE_RECOGNITION": "0",
+      "FU": "0",
+      "HANGUP": "0",
+      "INFRAREDVISION": "0",
+      "INTERVAL_ALARM": "0",
+      "IP": "0",
+      "LED": "0",
+      "MAC": "1",
+      "NEVER": "0",
+      "NTSC": "0",
+      "OS": "84",
+      "PID": "1495",
+      "POWER": "0",
+      "PRODUCT": "看家王AI摄像机 ·户外版",
+      "PROTECTION": "0",
+      "REMOTE_VIEW": "0",
+      "SD": "0",
+      "SD/HD": "1, 1.0.0.0026",
+      "SN": "智能摄像机（户外版）",
+      "SOFTVERSION": "1",
+      "SSID": "DOG-11W-",
+      "STANDBY": "0",
+      "SYSVERSION": "1",
+      "TZ": "0",
+      "UPTIME": "1",
+      "VALUE": "AI_CAMERA_OUTDOOR",
+      "VIDEO": "0",
+      "VIEW": "矩形",
+      "VIEWANGLE": "0",
+      "VIEW_MODE": "0",
+      "WARMSOUND": "0",
+      "WIFI": "0",
+      "WIFI_INFO": "1",
+      "WIREDMODE": "0"
+    },
+    {
+      "24RECORD": "0",
+>>>>>>> hunt
       "AI_RECOGNITION": "1",
       "AP": "0",
       "APCONNECTTING": "1",
@@ -461,6 +636,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-5W",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "1",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -477,7 +656,11 @@
       "PROTECTION": "1",
       "REMOTE_VIEW": "0",
       "SD": "1",
+<<<<<<< HEAD
       "SD/HD": "1,1.0.0.0001",
+=======
+      "SD/HD": "1, 1.0.0.0001",
+>>>>>>> hunt
       "SN": "720°全景摄像机",
       "SOFTVERSION": "0",
       "SSID": "DOG-5W-",
@@ -506,6 +689,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-6W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -522,7 +709,11 @@
       "PROTECTION": "0",
       "REMOTE_VIEW": "0",
       "SD": "0",
+<<<<<<< HEAD
       "SD/HD": "1,1.4.2.2100",
+=======
+      "SD/HD": "1, 1.4.2.2100",
+>>>>>>> hunt
       "SN": "云摄像机",
       "SOFTVERSION": "0",
       "SSID": "DOG-6W-",
@@ -551,6 +742,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-ML",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -596,6 +791,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-DB-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -641,6 +840,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-DB-V3",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -686,6 +889,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-IHOME",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -732,6 +939,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-EN-MG",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -778,6 +989,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -795,7 +1010,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -823,6 +1042,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-CAM-CC3200",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -840,7 +1063,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -867,6 +1094,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-BELL-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -909,6 +1140,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "LS-ZNMY-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -953,6 +1188,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-4W",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -968,7 +1207,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -996,6 +1239,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-4W",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1013,7 +1260,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "1, 3.0.0.1011 ",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -1040,6 +1291,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-3W-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1082,6 +1337,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-3W",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1125,6 +1384,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "RS-CAM",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1170,6 +1433,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "RS-CAM-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1215,6 +1482,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "RS-T826",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1260,6 +1531,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "RS-T824-A0E",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1305,6 +1580,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "RS-V860J-A0-A",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1349,6 +1628,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1364,7 +1647,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -1391,6 +1678,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-BELL",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1433,6 +1724,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1448,7 +1743,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -1475,6 +1774,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-BELL",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1517,6 +1820,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-BELL",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1559,6 +1866,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1574,7 +1885,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -1601,6 +1916,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "PSD-BELL",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1643,6 +1962,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "DOG-1W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1658,7 +1981,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "0.0",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "0",
       "SSID": "DOG-",
       "STANDBY": "0",
@@ -1685,6 +2012,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "ZNWS-BELL-LOCK",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1728,6 +2059,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "CES-BELL-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1773,6 +2108,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "CES-BELL-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1818,6 +2157,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "CES-2W-V1",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1835,7 +2178,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "1, 1.0.0.1008",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-2W-",
       "STANDBY": "0",
@@ -1863,6 +2210,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "CES-2W-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1880,7 +2231,11 @@
       "REMOTE_VIEW": "0",
       "SD": "0",
       "SD/HD": "1, 1.0.0.1008",
+<<<<<<< HEAD
       "SN": "智能摄像头",
+=======
+      "SN": "智能摄像机",
+>>>>>>> hunt
       "SOFTVERSION": "1",
       "SSID": "DOG-2W-",
       "STANDBY": "0",
@@ -1908,6 +2263,10 @@
       "CLOUD_STORAGE": "0",
       "DEVICE": "KKS-BELL-V2",
       "EMPTIED": "0",
+<<<<<<< HEAD
+=======
+      "FACE_RECOGNITION": "0",
+>>>>>>> hunt
       "FU": "0",
       "HANGUP": "0",
       "INFRAREDVISION": "0",
@@ -1989,6 +2348,11 @@
       49,
       81,
       82,
+<<<<<<< HEAD
+=======
+      83,
+      84,
+>>>>>>> hunt
       1071,
       1088,
       1089,
@@ -2006,8 +2370,17 @@
       1348,
       1375,
       1385,
+<<<<<<< HEAD
       1406
     ]
   },
   "version": "20170909"
+=======
+      1406,
+      1494,
+      1495
+    ]
+  },
+  "version": "20170929"
+>>>>>>> hunt
 }

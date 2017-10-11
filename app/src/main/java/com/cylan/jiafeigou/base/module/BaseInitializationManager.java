@@ -7,6 +7,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.cylan.jfgapp.interfases.AppCmd;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -31,6 +32,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okserver.download.DownloadManager;
+import com.squareup.leakcanary.LeakCanary;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
@@ -291,7 +293,8 @@ public final class BaseInitializationManager {
     }
 
     private void initLeakCanary() {
-//        LeakCanary.install((Application) appContext);
+        if (BuildConfig.DEBUG)
+            LeakCanary.install((Application) appContext);
     }
 
     private void enableDebugOptions() {

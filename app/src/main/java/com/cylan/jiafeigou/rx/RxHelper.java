@@ -10,6 +10,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 16-11-11.
@@ -127,7 +128,7 @@ public class RxHelper {
         }
     }
 
-//    public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
+    //    public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
 //        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
 //                .subscribeOn(Schedulers.computation())
 //                .filter((RxUiEvent.BulkDeviceListRsp list) ->
@@ -156,5 +157,21 @@ public class RxHelper {
 //                });
 //    }
 
+    /**
+     * @param timeout 自动结束的Observable<T>
+     * @return
+     */
+    private Observable<String> timeoutObservable(long timeout) {
+        return Observable.create(subscriber -> {
+            Observable.just("")
+                    .subscribeOn(Schedulers.newThread())
+                    .delay(timeout, TimeUnit.MILLISECONDS)
+                    .subscribe(s -> {
+                        subscriber.onError(new IllegalArgumentException("结束了"));
+                        subscriber.onCompleted();
+                    });
+            subscriber.onNext("开始");
+        });
+    }
 
 }

@@ -86,6 +86,17 @@
                 hunt:textSize="@dimen/sp16" />
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_cam_outdoor"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/icon_home_camera_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/DOG_CAMERA_NAME"
+                hunt:textColor="@color/color_666666"
+                hunt:textSize="@dimen/sp16" />
+
+            <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/v_to_bind_camera_cloud"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y67"
