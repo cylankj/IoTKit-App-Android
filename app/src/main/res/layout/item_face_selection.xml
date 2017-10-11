@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <com.cylan.jiafeigou.widget.ImageViewTip
+    <com.cylan.jiafeigou.support.photoselect.CircleImageView
         android:id="@+id/img_item_face_selection"
+        android:layout_width="@dimen/y60"
+        android:layout_height="@dimen/y60"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y20"
+        android:src="@drawable/news_icon_stranger"
+        app:civ_hint_color="@color/color_red"
+        app:civ_hint_radius="@dimen/y4"
+        app:civ_show_hint="true" />
+
+    <ImageView
+        android:id="@+id/stranger_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/text_item_face_selection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="小明" />
+        android:layout_below="@id/img_item_face_selection"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y8"
+        android:text="小明"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp13" />
 
-</LinearLayout>
+</RelativeLayout>

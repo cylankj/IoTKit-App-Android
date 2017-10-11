@@ -30,6 +30,7 @@ public class ImageViewTip extends AppCompatImageView {
     private int pointColor = Color.BLACK;
     private int borderWidth = 0;
     private boolean roundWithin = false;
+
     /**
      * 圆形image,bitmap
      */

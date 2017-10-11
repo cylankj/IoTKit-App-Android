@@ -5,125 +5,135 @@
     android:layout_height="wrap_content"
     android:background="@color/color_white"
     android:clickable="true"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/x10"
-    android:paddingRight="@dimen/x10">
+    android:focusable="true"
+    android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+    <include layout="@layout/layout_message_time_divider" />
 
-        <com.cylan.jiafeigou.widget.FateLineView
-            android:id="@+id/fl_item_time_line"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:paddingLeft="@dimen/x2"
-            android:paddingRight="@dimen/x2"
-            hunt:dashLineColor="@color/color_e8e8e8"
-            hunt:dashLineWidth="@dimen/x2"
-            hunt:innerCircleColor="@color/color_white"
-            hunt:innerCircleRadius="@dimen/x3"
-            hunt:outerCircleColor="@color/color_e8e8e8"
-            hunt:outerCircleRadius="@dimen/x5"
-            hunt:outerCircleStrokeWidth="@dimen/x4"
-            hunt:outerCircleY="@dimen/y22" />
-
-        <RadioButton
-            android:id="@+id/rbtn_item_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/custom_rtbn_style1"
-            android:button="@null"
-            android:clickable="false" />
-    </FrameLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/rLayout_cam_message"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x4"
-        android:layout_marginTop="@dimen/y14"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/x10"
+        android:paddingRight="@dimen/x10">
 
-        <TextView
-            android:id="@+id/tv_cam_message_item_date"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/y26"
-            android:gravity="center"
-            android:textColor="@color/color_666666"
-            android:textSize="@dimen/sp13" />
-
-        <LinearLayout
-            android:id="@+id/lLayout_cam_msg_pics_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_cam_message_item_date"
-            android:layout_marginTop="@dimen/y10"
-            android:orientation="horizontal">
-
-            <com.cylan.jiafeigou.widget.AspectRatioImageView
-                android:id="@+id/imgV_cam_message_pic0"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/x2"
-                android:layout_marginStart="@dimen/x2"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/wonderful_pic_place_holder"
-                hunt:as_ratio="1" />
-
-            <com.cylan.jiafeigou.widget.AspectRatioImageView
-                android:id="@+id/imgV_cam_message_pic1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/x2"
-                android:layout_marginStart="@dimen/x2"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/wonderful_pic_place_holder"
-                hunt:as_ratio="1" />
-        </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/fLayout_cam_message_item_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:layout_below="@+id/lLayout_cam_msg_pics_container"
-            android:layout_gravity="bottom">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_cam_message_item_delete"
+            <com.cylan.jiafeigou.widget.FateLineView
+                android:id="@+id/fl_item_time_line"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="@dimen/x2"
+                android:paddingRight="@dimen/x2"
+                hunt:dashLineColor="@color/color_e8e8e8"
+                hunt:dashLineWidth="@dimen/x2"
+                hunt:innerCircleColor="@color/color_white"
+                hunt:innerCircleRadius="@dimen/x3"
+                hunt:outerCircleColor="@color/color_e8e8e8"
+                hunt:outerCircleRadius="@dimen/x5"
+                hunt:outerCircleStrokeWidth="@dimen/x4"
+                hunt:outerCircleY="@dimen/y22" />
+
+            <RadioButton
+                android:id="@+id/rbtn_item_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:padding="@dimen/x10"
-                android:text="@string/DELETE"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp11" />
-
-
-            <TextView
-                android:id="@+id/tv_jump_next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:drawablePadding="@dimen/x10"
-                android:drawableStart="@drawable/btn_to_live_selector"
-                android:gravity="center"
-                android:text="@string/Tap1_Camera_Messages_ViewTheVideo"
-                android:textColor="@color/color_909090"
-                android:textSize="@dimen/sp11" />
-
+                android:layout_gravity="center"
+                android:background="@drawable/custom_rtbn_style1"
+                android:button="@null"
+                android:clickable="false" />
         </FrameLayout>
 
-        <View
+
+        <RelativeLayout
+            android:id="@+id/rLayout_cam_message"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_below="@+id/fLayout_cam_message_item_bottom"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/x4"
+            android:layout_marginTop="@dimen/y14"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_cam_message_item_date"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y26"
+                android:gravity="center"
+                android:textColor="@color/color_666666"
+                android:textSize="@dimen/sp13" />
+
+            <LinearLayout
+                android:id="@+id/lLayout_cam_msg_pics_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_cam_message_item_date"
+                android:layout_marginTop="@dimen/y10"
+                android:orientation="horizontal">
+
+                <com.cylan.jiafeigou.widget.AspectRatioImageView
+                    android:id="@+id/imgV_cam_message_pic0"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/x2"
+                    android:layout_marginStart="@dimen/x2"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/wonderful_pic_place_holder"
+                    hunt:as_ratio="1" />
+
+                <com.cylan.jiafeigou.widget.AspectRatioImageView
+                    android:id="@+id/imgV_cam_message_pic1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/x2"
+                    android:layout_marginStart="@dimen/x2"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/wonderful_pic_place_holder"
+                    hunt:as_ratio="1" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/fLayout_cam_message_item_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:layout_below="@+id/lLayout_cam_msg_pics_container"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/tv_cam_message_item_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/x10"
+                    android:text="@string/DELETE"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="@dimen/sp11" />
+
+
+                <TextView
+                    android:id="@+id/tv_jump_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:drawablePadding="@dimen/x10"
+                    android:drawableStart="@drawable/btn_to_live_selector"
+                    android:gravity="center"
+                    android:text="@string/Tap1_Camera_Messages_ViewTheVideo"
+                    android:textColor="@color/color_909090"
+                    android:textSize="@dimen/sp11" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:layout_below="@+id/fLayout_cam_message_item_bottom"
+                android:layout_gravity="bottom"
+                android:background="@color/color_e8e8e8" />
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

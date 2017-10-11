@@ -1,8 +1,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/imgV_cam_live_land_nav_back"

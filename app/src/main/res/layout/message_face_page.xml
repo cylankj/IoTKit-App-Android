@@ -8,6 +8,7 @@
         android:id="@+id/message_face_page_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:paddingEnd="@dimen/y15"
+        android:paddingStart="@dimen/y15" />
 
 </LinearLayout>

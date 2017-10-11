@@ -18,6 +18,8 @@ public interface CamMessageListContract {
 
     interface View extends BaseView<Presenter> {
 
+        void onFaceItemQueryRsp();
+
         void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap);
 
         void onListAppend(ArrayList<CamMessageBean> beanArrayList);

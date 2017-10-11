@@ -620,7 +620,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate);
         // TODO: 2017/9/4 此时还没有 rtcp 过来,在这里设置可见性过早,会有一个空的圆圈
 //        liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
-        AppLogger.d("需要重置清晰度");
+
+        // TODO: 2017/10/11
+        boolean hasMicFeature = JFGRules.hasMicFeature(device.pid);
+
+        imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
+        imgVLandCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
+
+        AppLogger.w("需要重置清晰度");
     }
 
     private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
