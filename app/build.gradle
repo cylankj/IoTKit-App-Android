@@ -28,10 +28,22 @@ def boolean hasSignKey() {
     return false
 }
 
-//task importLanguage(type: Exec, description: "更新项目的语言包") {
-//    println("-------------正在更新语言包-------------")
-//
-//}
+task importLanguage(type: Exec, group: "android") {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('local.properties')
+    String CloverDogDir = null
+    if (localProperties.exists()) {
+        properties.load(localProperties.newDataInputStream())
+        CloverDogDir = properties.getProperty('clever_dog_dir')
+    }
+    workingDir "../"
+    def operatingSystem = org.gradle.internal.os.OperatingSystem.current()
+    if (operatingSystem.isWindows()) {
+        commandLine "cmd", "/c", "importLanuage.bat", CloverDogDir
+    } else if (operatingSystem.isUnix()) {
+        commandLine "./importLanuage.sh", CloverDogDir
+    }
+}
 
 android {
     compileOptions {

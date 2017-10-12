@@ -159,6 +159,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, CamMessageBean item) {
+
         switch (viewType) {
             case CamMessageBean.ViewType.TEXT:
                 handleTextContentLayout(holder, item);
@@ -172,6 +173,18 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         if (onClickListener != null) {
             holder.setOnClickListener(R.id.lLayout_cam_msg_container, onClickListener);
             holder.setOnClickListener(R.id.tv_cam_message_item_delete, onClickListener);
+        }
+        boolean faceFragment = JFGRules.isFaceFragment(DataSourceManager.getInstance().getDevice(uuid).pid);
+        boolean sameDay = true;
+        if (layoutPosition > 0) {
+            CamMessageBean bean = getItem(layoutPosition - 1);
+            sameDay = TimeUtils.isSameDay(bean.version, item.version);
+        }
+        holder.setVisibility(R.id.message_time_divider, (sameDay || !faceFragment) ? View.GONE : View.VISIBLE);
+        if (!sameDay && faceFragment) {
+            boolean isToday = TimeUtils.isToday(item.version);
+            String content = TimeUtils.getTimeSpecial(item.version);
+            holder.setText(R.id.time_divider, content);
         }
         //设置删除可见性,共享设备不可删除消息
         Device device = DataSourceManager.getInstance().getDevice(uuid);
@@ -256,6 +269,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContentSD(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
         holder.setVisibility(R.id.tv_jump_next, textShowSdBtn(item) ? View.VISIBLE : View.GONE);
+
+
     }
 
     private void handlePicsLayout(SuperViewHolder holder,

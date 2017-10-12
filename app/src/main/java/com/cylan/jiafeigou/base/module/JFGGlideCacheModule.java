@@ -8,8 +8,11 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.module.GlideModule;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.AvatarLoader;
+import com.cylan.jiafeigou.utils.AvatarRequest;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * Created by yanzhendong on 2017/5/27.
@@ -29,6 +32,6 @@ public class JFGGlideCacheModule implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-
+        glide.register(AvatarRequest.class, InputStream.class, new AvatarLoader.Factory());
     }
 }

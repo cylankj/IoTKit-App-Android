@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.graphics.Rect;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return faceItems.size() / 8 + (faceItems.size() % 8 == 0 ? 0 : 1);
+        return faceItems.size() / 6 + (faceItems.size() % 6 == 0 ? 0 : 1);
     }
 
     public int getTotalCount() {
@@ -71,13 +73,24 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         } else {
             contentView = View.inflate(container.getContext(), R.layout.message_face_page, null);
             recyclerView = (RecyclerView) contentView.findViewById(R.id.message_face_page_item);
-            recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 4));
+            recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 3));
             FastItemAdapter<FaceItem> adapter = new FastItemAdapter<>();
+            recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                @Override
+                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                    if (parent.getChildLayoutPosition(view) % 3 == 1) {
+                        int pixelOffset = ContextUtils.getContext().getResources().getDimensionPixelOffset(R.dimen.y18);
+                        outRect.left = pixelOffset;
+                        outRect.right = pixelOffset;
+                    }
+                }
+            });
             adapter.withOnClickListener((v, adapter1, item, position1) -> {
                 // TODO: 2017/10/9 点击操作
                 if (listener != null) {
+                    FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
                     AppLogger.w("点击了面孔条目:" + position);
-                    listener.onFaceItemClicked(position, position1, v);
+                    listener.onFaceItemClicked(position, position1, viewHolder.itemView, viewHolder.getIcon());
                 }
                 return true;
             });
@@ -85,7 +98,8 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 // TODO: 2017/10/9 长按弹出菜单提示
                 if (listener != null) {
                     AppLogger.w("点击了面孔条目:" + position);
-                    listener.onFaceItemLongClicked(position, position1, v);
+                    FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
+                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon());
                 }
                 return true;
             });
@@ -94,7 +108,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         container.addView(contentView);
         FastItemAdapter<FaceItem> adapter = (FastItemAdapter<FaceItem>) recyclerView.getAdapter();
 //        adapter.init(position, faceItems);
-        List<FaceItem> faceItems = this.faceItems.subList(8 * position, Math.min(8, this.faceItems.size() - 8 * position));
+        List<FaceItem> faceItems = this.faceItems.subList(6 * position, Math.min(6, this.faceItems.size() - 6 * position));
         adapter.set(faceItems);
         adapter.notifyDataSetChanged();
         return contentView;
@@ -116,7 +130,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     }
 
     public FaceItem getGlobalItem(int page_position, int position) {
-        int globalPosition = page_position * 8 + position;
+        int globalPosition = page_position * 6 + position;
 
         if (globalPosition > faceItems.size()) {
             return null;
@@ -133,6 +147,10 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
         this.preload.addAll(list);
         setFaceItems(null);
+    }
+
+    public boolean hasPreloadFaceItems() {
+        return preload != null && preload.size() > 0;
     }
 
 
@@ -199,8 +217,8 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     public interface FaceItemEventListener {
 
-        void onFaceItemClicked(int page_position, int position, View faceItem);
+        void onFaceItemClicked(int page_position, int position, View parent, View icon);
 
-        void onFaceItemLongClicked(int page_position, int position, View faceItem);
+        void onFaceItemLongClicked(int page_position, int position, View parent, View icon);
     }
 }

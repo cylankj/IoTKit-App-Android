@@ -6,7 +6,8 @@ import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.widget.ImageViewTip
+import com.cylan.jiafeigou.support.photoselect.CircleImageView
+import com.cylan.jiafeigou.utils.AvatarRequest
 import com.mikepenz.fastadapter.items.AbstractItem
 
 /**
@@ -27,6 +28,7 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
     var faceText: String? = null
     var faceId: Int = 0
     var faceType: Int = 0 //熟人或者陌生人
+
     var faceIcon: String? = null //图片地址
 
     @SuppressLint("ResourceType")
@@ -46,9 +48,23 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
         when (faceType) {
             FACE_TYPE_ALL -> {
                 //todo UI图导入
+                holder.icon.setImageResource(R.drawable.news_icon_all_selector)
             }
             FACE_TYPE_STRANGER -> {
                 //todo 多图片合成
+                //http://img.taopic.com/uploads/allimg/120727/201995-120HG1030762.jpg
+                val avatarRequest = AvatarRequest.Builder()
+                        .addAvatar("http://img.taopic.com/uploads/allimg/120727/201995-120HG1030762.jpg")
+                        .addAvatar("http://img.taopic.com/uploads/allimg/120727/201995-120HG1030762.jpg")
+                        .addAvatar("http://img.taopic.com/uploads/allimg/120727/201995-120HG1030762.jpg")
+                        .build()
+                Glide.with(holder.itemView.context)
+                        .load(avatarRequest)
+                        .placeholder(R.drawable.news_icon_stranger)
+                        .error(R.drawable.news_icon_stranger)
+                        .into(holder.icon)
+                holder.icon.isDisableCircularTransformation = true
+                holder.icon.showHint(true)
             }
         //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             else -> {
@@ -61,7 +77,7 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
     }
 
     class FaceItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val icon: ImageViewTip = view.findViewById(R.id.img_item_face_selection) as ImageViewTip
+        val icon: CircleImageView = view.findViewById(R.id.img_item_face_selection) as CircleImageView
         val text: TextView = view.findViewById(R.id.text_item_face_selection) as TextView
 
     }

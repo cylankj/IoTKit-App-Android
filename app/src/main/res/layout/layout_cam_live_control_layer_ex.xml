@@ -343,38 +343,54 @@
         android:layout_below="@+id/layout_e"
         android:layout_gravity="bottom">
 
-        <ImageView
-            android:id="@+id/imgV_cam_switch_speaker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/x30"
-            android:layout_marginRight="@dimen/x30"
-            android:clickable="true"
-            android:padding="@dimen/x20"
-            android:src="@drawable/icon_port_speaker_off_selector" />
 
-        <ImageView
-            android:id="@+id/imgV_cam_trigger_mic"
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center">
 
-            android:clickable="true"
-            android:padding="@dimen/x10"
-            android:src="@drawable/icon_port_mic_off_selector" />
+            <ImageView
+                android:id="@+id/imgV_cam_switch_speaker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/x20"
+                android:src="@drawable/icon_port_speaker_off_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgV_cam_trigger_mic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/imgV_cam_trigger_capture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginLeft="@dimen/x30"
-            android:layout_marginRight="@dimen/x30"
-            android:clickable="true"
-            android:padding="@dimen/x20"
-            android:src="@drawable/icon_port_capture_selector" />
+            <ImageView
+                android:id="@+id/imgV_cam_trigger_mic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:padding="@dimen/x10"
+                android:src="@drawable/icon_port_mic_off_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgV_cam_trigger_capture"
+                app:layout_constraintStart_toEndOf="@+id/imgV_cam_switch_speaker"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgV_cam_trigger_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:clickable="true"
+                android:padding="@dimen/x20"
+                android:src="@drawable/icon_port_capture_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgV_cam_trigger_mic"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+
     </FrameLayout>
 
     <!--<FrameLayout-->

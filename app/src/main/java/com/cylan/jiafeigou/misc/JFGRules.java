@@ -558,6 +558,22 @@ public class JFGRules {
         return hasFaceFeature;
     }
 
+    public static boolean hasMicFeature(int pid) {
+        boolean hasMicFeature = pid != 84;
+        if (!hasMicFeature) {
+            PropertiesLoader loader = PropertiesLoader.getInstance();
+            String os = loader.property(pid, "OS");
+            try {
+                Integer intOS = Integer.valueOf(os);
+                hasMicFeature = intOS != 84;
+            } catch (Exception e) {
+            }
+        }
+        //just for test
+        hasMicFeature = false;
+        return hasMicFeature;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

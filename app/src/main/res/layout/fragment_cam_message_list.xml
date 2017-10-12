@@ -1,118 +1,129 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/srLayout_cam_list_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/apl_cam_message_appbar_layout"
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_white">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/apl_cam_message_appbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/y42"
-            android:orientation="vertical"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
+            android:background="@color/color_white">
 
-            <com.cylan.jiafeigou.widget.WrapContentViewPager
-                android:id="@+id/cam_message_face"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <RelativeLayout
-                android:id="@+id/cam_message_indicator"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:minHeight="@dimen/y42"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
-                <TextView
-                    android:id="@+id/cam_message_indicator_page_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rLayout_cam_message_list_top"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y42"
-                android:visibility="visible">
-
-                <View
+                <com.cylan.jiafeigou.widget.WrapContentViewPager
+                    android:id="@+id/cam_message_face"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"
-                    android:layout_gravity="bottom"
-                    android:background="@color/color_d2d2d2" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/y12" />
 
-                <ImageView
-                    android:id="@+id/iv_cam_message_arrow"
+                <RelativeLayout
+                    android:id="@+id/cam_message_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_toEndOf="@+id/tv_cam_message_list_date"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="@dimen/y15"
-                    android:src="@drawable/wonderful_arrow_up" />
+                    android:layout_gravity="center_horizontal">
 
-                <TextView
-                    android:id="@+id/iv_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/x15"
-                    android:paddingRight="@dimen/x15"
-                    android:text="@string/BACK"
-                    android:textColor="@color/common_btn_color_state" />
+                    <TextView
+                        android:id="@+id/cam_message_indicator_page_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_adadad"
+                        android:textSize="@dimen/sp12" />
+                </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_cam_message_list_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:drawablePadding="@dimen/x10"
-                    android:gravity="center_vertical"
-                    android:text="AAAAAA" />
-
-                <TextView
-                    android:id="@+id/tv_cam_message_list_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="end|center_vertical"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/x15"
-                    android:paddingRight="@dimen/x15"
-                    android:text="@string/EDIT_THEME"
-                    android:textColor="@color/common_btn_color_state" />
-
-                <View
+                <RelativeLayout
+                    android:id="@+id/rLayout_cam_message_list_top"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"
-                    android:layout_alignParentBottom="true"
-                    android:layout_gravity="bottom"
-                    android:background="@color/color_d2d2d2" />
-            </RelativeLayout>
+                    android:layout_height="@dimen/y42"
+                    android:layout_marginTop="@dimen/y8"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/y1"
+                        android:layout_gravity="bottom"
+                        android:background="@color/color_d2d2d2" />
+
+                    <ImageView
+                        android:id="@+id/iv_cam_message_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_toEndOf="@+id/tv_cam_message_list_date"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/y15"
+                        android:src="@drawable/btn_unfolded" />
+
+                    <TextView
+                        android:id="@+id/iv_back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/x15"
+                        android:paddingRight="@dimen/x15"
+                        android:text="@string/BACK"
+                        android:textColor="@color/common_btn_color_state" />
+
+                    <TextView
+                        android:id="@+id/tv_cam_message_list_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:drawablePadding="@dimen/x10"
+                        android:gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/tv_cam_message_list_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="end|center_vertical"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/x15"
+                        android:paddingRight="@dimen/x15"
+                        android:text="@string/EDIT_THEME"
+                        android:textColor="@color/common_btn_color_state" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/y1"
+                        android:layout_alignParentBottom="true"
+                        android:layout_gravity="bottom"
+                        android:background="@color/color_d2d2d2" />
+                </RelativeLayout>
 
 
-        </LinearLayout>
-    </android.support.design.widget.AppBarLayout>
+            </LinearLayout>
+        </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srLayout_cam_list_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!--<android.support.v4.widget.NestedScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
         <FrameLayout
-            android:layout_width="@dimen/magin_left"
-            android:layout_height="@dimen/magin_left">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
             <android.support.v7.widget.RecyclerView
@@ -143,54 +154,55 @@
                     android:textSize="@dimen/sp15" />
             </LinearLayout>
         </FrameLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
 
+        <!--</android.support.v4.widget.NestedScrollView>-->
 
-    <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
-        android:id="@+id/fLayout_cam_message_list_timeline"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y86"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/y5"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="invisible" />
-
-    <FrameLayout
-        android:id="@+id/fLayout_cam_msg_edit_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:background="@color/color_f6f9fa"
-        android:visibility="invisible">
-
-        <View
+        <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
+            android:id="@+id/fLayout_cam_message_list_timeline"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:background="@color/color_d2d2d2" />
+            android:layout_height="@dimen/y86"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/y5"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/tv_msg_full_select"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/x28"
-            android:paddingStart="@dimen/x28"
-            android:text="@string/SELECT_ALL"
-            android:textColor="@color/color_4b9fd5" />
+        <FrameLayout
+            android:id="@+id/fLayout_cam_msg_edit_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="@color/color_f6f9fa"
+            android:visibility="invisible">
 
-        <TextView
-            android:id="@+id/tv_msg_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/x28"
-            android:paddingStart="@dimen/x28"
-            android:text="@string/DELETE"
-            android:textColor="@color/common_btn_color_state" />
-    </FrameLayout>
-</android.support.design.widget.CoordinatorLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:background="@color/color_d2d2d2" />
+
+            <TextView
+                android:id="@+id/tv_msg_full_select"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/x28"
+                android:paddingStart="@dimen/x28"
+                android:text="@string/SELECT_ALL"
+                android:textColor="@color/color_4b9fd5" />
+
+            <TextView
+                android:id="@+id/tv_msg_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/x28"
+                android:paddingStart="@dimen/x28"
+                android:text="@string/DELETE"
+                android:textColor="@color/common_btn_color_state" />
+        </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
