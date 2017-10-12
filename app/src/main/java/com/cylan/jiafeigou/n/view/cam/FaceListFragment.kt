@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem
-import com.cylan.jiafeigou.support.log.AppLogger
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import kotlinx.android.synthetic.main.fragment_facelist.*
@@ -38,18 +37,19 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
         super.initViewAndListener()
         adapter = FastItemAdapter()
         adapter.withMultiSelect(false)
+        adapter.withAllowDeselection(false)
         adapter.itemAdapter.withComparator { a, b ->
             return@withComparator Pinyin.toPinyin(a.faceText, "").compareTo(Pinyin.toPinyin(b.faceText, ""))
         }
         when (arguments?.getInt("type", TYPE_ADD_TO)) {
             TYPE_ADD_TO -> {
-                custom_toolbar.setToolbarTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
+                custom_toolbar.setToolbarLeftTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
             }
             TYPE_MOVE_TO -> {
-                custom_toolbar.setToolbarTitle(R.string.MESSAGES_FACE_MOVE)
+                custom_toolbar.setToolbarLeftTitle(R.string.MESSAGES_FACE_MOVE)
             }
             else -> {
-                custom_toolbar.setToolbarTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
+                custom_toolbar.setToolbarLeftTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
             }
         }
 
@@ -63,15 +63,9 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
                 val faceItem = adapter.getItem(itemPosition)
                 val pinyin = Pinyin.toPinyin(faceItem.faceText, "")
 
-
-//                face_list_slider.setIndex()
             }
 
         })
-        face_list_slider.setOnTouchLetterChangeListenner { isTouch, letter ->
-            AppLogger.w("isTouch:$isTouch,letter:$letter")
-
-        }
 
     }
 

@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.view.cam.item.FaceItem
+import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import kotlinx.android.synthetic.main.fragment_face_manager.*
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
  */
 class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
 
-    lateinit var adapter: FastItemAdapter<FaceItem>
+    lateinit var adapter: FastItemAdapter<FaceListItem>
 
     override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)

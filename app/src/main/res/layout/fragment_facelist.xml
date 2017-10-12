@@ -12,40 +12,34 @@
         android:layout_height="wrap_content"
         app:ct_enable_theme="true"
         app:ct_icon="@drawable/nav_tab_back_selector"
-        app:ct_title="@string/MESSAGES_IDENTIFY_ADD_BTN"
+        app:ct_left_title="@string/MESSAGES_IDENTIFY_ADD_BTN"
+        app:ct_left_title_color="@color/color_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </com.cylan.jiafeigou.widget.CustomToolbar>
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y64"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/y16"
+        android:paddingStart="@dimen/y16"
+        android:text="@string/MESSAGES_ADD_FACE_TIPS"
+        android:textColor="@color/color_888888"
+        android:textSize="@dimen/sp14"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/face_list_items"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/face_list_items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="A"
-            android:textSize="33sp" />
-
-        <com.cylan.jiafeigou.widget.SlideBar
-            android:id="@+id/face_list_slider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end" />
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/description" />
 
 
 </android.support.constraint.ConstraintLayout>

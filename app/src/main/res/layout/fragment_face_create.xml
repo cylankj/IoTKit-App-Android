@@ -15,19 +15,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ct_enable_theme="true"
-        app:ct_icon="@drawable/nav_icon_back_gary"
-        app:ct_right_title="@string/FINISHED"
-        app:ct_title="@string/MESSAGES_IDENTIFY_CREATE_BTN" />
+        app:ct_icon="@drawable/nav_tab_back_selector"
+        app:ct_left_title="@string/MESSAGES_IDENTIFY_CREATE_BTN"
+        app:ct_left_title_color="@color/color_white"
+        app:ct_right_title="@string/FINISHED" />
 
     <ImageView
         android:id="@+id/picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/y120"
+        android:layout_height="@dimen/y120"
+        android:layout_marginTop="@dimen/y48"
         android:src="@mipmap/ic_launcher" />
 
     <EditText
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/LOCATION_NAME_ERROR" />
+        android:layout_marginEnd="@dimen/y20"
+        android:layout_marginStart="@dimen/y20"
+        android:layout_marginTop="@dimen/y40"
+        android:gravity="center"
+        android:hint="@string/LOCATION_NAME_ERROR"
+        android:textColor="@color/color_666666" />
 </LinearLayout>

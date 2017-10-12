@@ -25,32 +25,57 @@
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
-                <com.cylan.jiafeigou.widget.WrapContentViewPager
-                    android:id="@+id/cam_message_face"
+                <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/y12" />
+                    android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:id="@+id/cam_message_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal">
+                    <com.cylan.jiafeigou.widget.WrapContentViewPager
+                        android:id="@+id/cam_message_face"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/y12"
+                        app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_page_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_goneMarginBottom="@dimen/y21" />
 
                     <TextView
                         android:id="@+id/cam_message_indicator_page_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/cam_message_face"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="@dimen/y8"
                         android:textColor="@color/color_adadad"
-                        android:textSize="@dimen/sp12" />
-                </RelativeLayout>
+                        android:textSize="@dimen/sp12"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cam_message_face" />
+
+                    <View
+                        android:id="@+id/cover_layer"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:alpha="0.7"
+                        android:background="@color/color_white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
                 <RelativeLayout
                     android:id="@+id/rLayout_cam_message_list_top"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y42"
-                    android:layout_marginTop="@dimen/y8"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <View
                         android:layout_width="match_parent"
@@ -58,17 +83,6 @@
                         android:layout_gravity="bottom"
                         android:background="@color/color_d2d2d2" />
 
-                    <ImageView
-                        android:id="@+id/iv_cam_message_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_toEndOf="@+id/tv_cam_message_list_date"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="@dimen/y15"
-                        android:src="@drawable/btn_unfolded" />
 
                     <TextView
                         android:id="@+id/iv_back"
@@ -93,14 +107,26 @@
                         android:id="@+id/tv_cam_message_list_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="end|center_vertical"
+                        android:layout_toStartOf="@+id/iv_cam_message_arrow"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/x15"
                         android:paddingRight="@dimen/x15"
                         android:text="@string/EDIT_THEME"
                         android:textColor="@color/common_btn_color_state" />
+
+                    <ImageView
+                        android:id="@+id/iv_cam_message_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/y15"
+                        android:src="@drawable/btn_unfolded" />
 
                     <View
                         android:layout_width="match_parent"
@@ -109,7 +135,6 @@
                         android:layout_gravity="bottom"
                         android:background="@color/color_d2d2d2" />
                 </RelativeLayout>
-
 
             </LinearLayout>
         </android.support.design.widget.AppBarLayout>
@@ -120,40 +145,32 @@
         <!--android:layout_height="match_parent"-->
         <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-        <FrameLayout
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cam_message_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        <LinearLayout
+            android:id="@+id/lLayout_no_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:orientation="vertical"
+            app:layout_behavior="com.cylan.jiafeigou.widget.AlwaysCenterBehavior">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_cam_message_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <LinearLayout
-                android:id="@+id/lLayout_no_message"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y147"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/pic_no_message" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/y16"
-                    android:text="@string/NO_CONTENTS_1"
-                    android:textColor="#aaaaaa"
-                    android:textSize="@dimen/sp15" />
-            </LinearLayout>
-        </FrameLayout>
+                android:layout_gravity="center_horizontal"
+                android:drawablePadding="@dimen/y16"
+                android:drawableTop="@drawable/pic_nomessage"
+                android:gravity="center_horizontal"
+                android:text="@string/NO_CONTENTS_1"
+                android:textColor="#aaaaaa"
+                android:textSize="@dimen/sp15" />
+        </LinearLayout>
 
         <!--</android.support.v4.widget.NestedScrollView>-->
 

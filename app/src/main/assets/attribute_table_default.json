@@ -148,10 +148,7 @@
       "AI_RECOGNITION": "[0,1,2,3]",
       "AUTORECORD": "0",
       "CIDPREFIX": "2805",
-<<<<<<< HEAD
-=======
       "CLARITYVERSION": "2.4.9",
->>>>>>> hunt
       "DEVICE": "DOG-8W",
       "HANGUP": "0",
       "INTERVAL_ALARM": "60",
@@ -169,8 +166,6 @@
     {
       "AI_RECOGNITION": "[0,1,2,3]",
       "AUTORECORD": "0",
-<<<<<<< HEAD
-=======
       "CIDPREFIX": "2901",
       "CLARITYVERSION": "1.0.0",
       "DEVICE": "DOG-10W",
@@ -208,7 +203,6 @@
     {
       "AI_RECOGNITION": "[0,1,2,3]",
       "AUTORECORD": "0",
->>>>>>> hunt
       "CIDPREFIX": "2900",
       "CLARITYVERSION": "1.0.0",
       "DEVICE": "DOG-5W",
@@ -622,11 +616,8 @@
       49,
       81,
       82,
-<<<<<<< HEAD
-=======
       83,
       84,
->>>>>>> hunt
       1071,
       1088,
       1089,
@@ -644,17 +635,10 @@
       1348,
       1375,
       1385,
-<<<<<<< HEAD
-      1406
-    ]
-  },
-  "version": "20170909"
-=======
       1406,
       1494,
       1495
     ]
   },
   "version": "20170929"
->>>>>>> hunt
 }
