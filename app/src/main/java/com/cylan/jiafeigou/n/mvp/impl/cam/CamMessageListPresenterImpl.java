@@ -273,7 +273,11 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
                 } else {
                     String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timestamp);
-                    Response response = OkGo.post(OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API)
+                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API;
+                    if (!url.startsWith("http://")) {
+                        url = "http://" + url;
+                    }
+                    Response response = OkGo.post(url)
                             .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
