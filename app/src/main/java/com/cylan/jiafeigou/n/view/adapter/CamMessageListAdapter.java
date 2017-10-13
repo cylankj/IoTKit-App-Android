@@ -56,6 +56,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private boolean isSharedDevice = false;
     private DpMsgDefine.DPSdcardSummary summary;
     private boolean status;
+    private Map<String, DpMsgDefine.FaceInformation> faceMap = new HashMap<>();
 
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -321,7 +322,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-            if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
+            if (bean.alarmMsg.face_id != null && bean.alarmMsg.humanNum > 0) {
+                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, faceMap);
+                return tContent + (TextUtils.isEmpty(faceText) ? getContext().getString(R.string.MSG_WARNING) : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
+            } else if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
                 return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(bean.alarmMsg.objects);
 //                return tContent + "检测到" + JConstant.getAIText(bean.alarmMsg.objects);
             } else {//无检测数据
@@ -443,4 +447,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     public void setCurrentSDcardSummary(DpMsgDefine.DPSdcardSummary summary) {
         this.summary = summary;
     }
+
+    public void appendFaceInformation(List<DpMsgDefine.FaceInformation> data) {
+        for (DpMsgDefine.FaceInformation information : data) {
+            faceMap.put(information.face_id, information);
+        }
+        notifyDataSetChanged();
+    }
+
 }

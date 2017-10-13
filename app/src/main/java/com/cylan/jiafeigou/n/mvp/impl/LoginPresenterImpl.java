@@ -368,11 +368,17 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    AppLogger.d("已经获取到账号信息,正在保存用户名密码和登录类型");
-                    AutoSignIn.getInstance().autoSave(account, loginType, password);
-                    result.account.setLoginType(loginType);
-                    if (getView() != null) {
-                        getView().loginResult(JError.ErrorOK);
+                    if (result != null) {
+                        AppLogger.w("已经获取到账号信息,正在保存用户名密码和登录类型");
+                        AutoSignIn.getInstance().autoSave(account, loginType, password);
+                        result.account.setLoginType(loginType);
+                        if (getView() != null) {
+                            getView().loginResult(JError.ErrorOK);
+                        }
+                    } else {
+                        if (getView() != null) {
+                            getView().loginResult(JError.ErrorConnect);
+                        }
                     }
                 }, e -> {
                     AppLogger.e("获取登录结果失败:" + MiscUtils.getErr(e));

@@ -43,7 +43,9 @@ task importLanguage(type: Exec, group: "android") {
     } else if (operatingSystem.isUnix()) {
         commandLine "./importLanguage.sh", CloverDogDir
     }
+
 }
+
 
 android {
     compileOptions {

@@ -118,7 +118,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         switch (view.getId()) {
             case R.id.v_to_bind_cam_outdoor:
                 ViewUtils.deBounceClick(view);
-                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_outdoor);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.the_memory_card_is_not_present));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));

@@ -738,6 +738,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
+    public void onFaceInformationReady(List<DpMsgDefine.FaceInformation> data) {
+        camMessageListAdapter.appendFaceInformation(data);
+        camMessageListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void setPresenter(CamMessageListContract.Presenter presenter) {
         this.basePresenter = presenter;
     }

@@ -5,7 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.base.module.BaseInitializationManager;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -15,6 +15,8 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -22,16 +24,25 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -87,25 +98,25 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
 
-    private List<IDPEntity> buildEntity(long timeStart, boolean asc, boolean isMaxTime) {
+    private List<IDPEntity> buildEntity(long timeStart, boolean asc, boolean isMaxTime, boolean useMaxLimit) {
         List<IDPEntity> list = new ArrayList<>();
         list.add(new DPEntity()
                 .setMsgId(222)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(505)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(512)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
 
         //adapter for doorbell
@@ -113,7 +124,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .setMsgId(401)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
 
         return list;
@@ -130,7 +141,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         Log.d("getMessageListQuery", "getMessageListQuery:" + timeStart + ",asc: " + asc);
         try {
             boolean isMax = TimeUtils.getSpecificDayEndTime(timeStart) == timeStart;
-            return BaseApplication.getAppComponent().getTaskDispatcher().perform(buildEntity(timeStart, asc, isMax));
+            boolean useMaxLimit = !JFGRules.isFaceFragment(getDevice().pid);
+            return BaseApplication.getAppComponent().getTaskDispatcher().perform(buildEntity(timeStart, asc, isMax, useMaxLimit));
         } catch (Exception e) {
             return Observable.just(BaseDPTaskResult.ERROR);
         }
@@ -151,6 +163,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         if (timeStart == 0) {
             loadDataListFirst();
             return;
+        }
+        if (asc) {
+            // TODO: 2017/10/13 说明是刷新操作 ,则请求面孔信息
+            getFaceGroupInformation();
         }
         Subscription subscription = getMessageListQuery(timeStart, asc)
                 .subscribeOn(Schedulers.io())
@@ -220,9 +236,84 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         addSubscription(subscription, "DPCamMultiQueryTask");
     }
 
+    String mock = "[{group_id:\"1000\",face_id:\"2000\",face_name:\"小明\"}]";
+
+    //这个方法需要在子线程调用,可能涉及到有网操作
+    public String blockGetServiceKey() throws Exception {
+        String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
+        if (TextUtils.isEmpty(serviceKey)) {
+            long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
+            RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
+                    .filter(rsp -> rsp.seq == seq)
+                    .first()
+                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                    .toBlocking().first();
+
+            DpMsgDefine.DPAIService dpaiService = DpUtils.unpackData(dataRsp.data, DpMsgDefine.DPAIService.class);
+            if (dpaiService != null) {
+                serviceKey = dpaiService.service_key;
+                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_KEY, dpaiService.service_key);
+                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_SECERET, dpaiService.service_key_seceret);
+            }
+        }
+        return serviceKey;
+    }
+
     public void getFaceGroupInformation() {
-        BaseInitializationManager initializationManager = BaseApplication.getAppComponent().getInitializationManager();
-//        OkGo.post()
+        Observable.create((Observable.OnSubscribe<DpMsgDefine.FaceQueryResponse>) subscriber -> {
+            try {
+                String account = DataSourceManager.getInstance().getAccount().getAccount();
+                //just for test
+                String vid = Security.getVId();
+                String serviceKey = blockGetServiceKey();
+                String timestamp = String.valueOf(System.currentTimeMillis());
+                String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
+                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
+                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
+                } else {
+                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timestamp);
+                    Response response = OkGo.post(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API)
+                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
+                            .execute();
+
+                    ResponseBody body = response.body();
+
+                    if (body != null) {
+                        String string = body.string();
+                        AppLogger.w(string);
+                        DpMsgDefine.FaceQueryResponse queryResponse = new Gson().fromJson(string, DpMsgDefine.FaceQueryResponse.class);
+                        subscriber.onNext(queryResponse);
+                        subscriber.onCompleted();
+                    } else {
+                        subscriber.onError(null);
+                    }
+                }
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp != null && rsp.ret == 0) {
+                        mView.onFaceInformationReady(rsp.data);
+                    } else {
+                        // TODO: 2017/10/13 怎么处理呢? 最好不处理
+                    }
+                }, e ->
+
+                {
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
+
 
     }
 
@@ -293,15 +384,18 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         entity.setAccount(account == null ? "" : account.getAccount());
         entity.setUuid(uuid);
-        if (device.available()) {
-            if (JFGRules.isBell(device.pid)) {
-                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
-            } else if (JFGRules.isCamera(device.pid)) {
-                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
-            }
-        } else {
+//        if (device.available()) {
+//        if (JFGRules.isFaceFragment(device.pid)) {
+//            entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.CAMERA_FACE_ANY_DAYS);
+//        } else
+        if (JFGRules.isBell(device.pid)) {
+            entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
+        } else if (JFGRules.isCamera(device.pid)) {
             entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
         }
+//        } else {
+//            entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
+//        }
         entity.setAction(DBAction.CAM_DATE_QUERY);
         try {
             return BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);
@@ -370,5 +464,11 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     @Override
     public void stop() {
         super.stop();
+    }
+
+    public static class GFN {
+        public String group_id;
+        public String face_id;
+        public String face_name;
     }
 }

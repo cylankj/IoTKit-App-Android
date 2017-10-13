@@ -5,12 +5,14 @@ import android.util.Patterns;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -181,17 +183,34 @@ public class JConstant {
     public static final String WEIBO_PREF_LIVE_URL = "WEIBO_PREF_LIVE_URL";
     public static final String FACEBOOK_PREF_PERMISSION_KEY = "FACEBOOK_PREF_PERMISSION_KEY";
     public static final String PANORAMA_VIEW_MODE = "PANORAMA_VIEW_MODE";
+    public static final String ROBOT_SERVICES_KEY = "ROBOT_SERVICES_KEY";
+    public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
+
+    public static String getFaceText(String[] face_id, Map<String, DpMsgDefine.FaceInformation> faceMap) {
+        if (face_id == null || faceMap == null || faceMap.size() == 0) return null;
+        DpMsgDefine.FaceInformation information;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < face_id.length; i++) {
+            information = faceMap.get(face_id[i]);
+            result.append(information.face_name);
+            if (i != face_id.length - 1) {
+                result.append(", ");
+            }
+        }
+        return result.toString();
+    }
 
     public static class RobotCloudApi {
-        public static final String ROBOTSCLOUD_BASE_API = "http://api.robotscloud.com/v1/";
-        public static final String ROBOTSCLOUD_FACE_QUERY_API = ROBOTSCLOUD_BASE_API + "api.do";
-        public static final String ROBOTSCLOUD_FACE_ADD_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_FACE_UPDATE_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_FACE_DELETE_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_QUERY_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_ADD_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_UPDATE_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_DELETE_API = ROBOTSCLOUD_BASE_API + "";
+
+        public static final String ROBOTSCLOUD_BASE_API = "/aiservice/v1/";
+        public static final String ROBOTSCLOUD_FACE_QUERY_API = ROBOTSCLOUD_BASE_API + "search_face";
+        public static final String ROBOTSCLOUD_FACE_ADD_API = ROBOTSCLOUD_BASE_API + "reg_face_app";
+        public static final String ROBOTSCLOUD_FACE_UPDATE_API = ROBOTSCLOUD_BASE_API + "edit_face_app";
+        public static final String ROBOTSCLOUD_FACE_DELETE_API = ROBOTSCLOUD_BASE_API + "del_face_app";
+        public static final String ROBOTSCLOUD_GROUP_QUERY_API = ROBOTSCLOUD_BASE_API + "search_group";
+        public static final String ROBOTSCLOUD_GROUP_ADD_API = ROBOTSCLOUD_BASE_API + "add_group";
+        public static final String ROBOTSCLOUD_GROUP_UPDATE_API = ROBOTSCLOUD_BASE_API + "edit_group";
+        public static final String ROBOTSCLOUD_GROUP_DELETE_API = ROBOTSCLOUD_BASE_API + "del_group";
 
         public static final String ROBOTSCLOUD_VID = "vid";
         public static final String ROBOTSCLOUD_SERVICE_KEY = "service_key";
@@ -199,6 +218,11 @@ public class JConstant {
         public static final String ROBOTSCLOUD_SERVICETYPE = "serviceType";
         public static final String ROBOTSCLOUD_SIGN = "sign";
         public static final String ROBOTSCLOUD_TIMESTAMP = "timestamp";
+        public static final String ROBOTSCLOUD_ACCOUNT = "account";
+        public static final String ROBOTSCLOUD_FACD_ID = "face_id";
+        public static final String ROBOTSCLOUD_PAGE = "page";
+        public static final String ROBOTSCLOUD_GROUP_ID = "group_id";
+        public static final String ROBOTSCLOUD_SN = "sn";
     }
 
     public static String FACEBOOK_PREF_VIDEO_ID = "FACEBOOK_PREF_VIDEO_ID";

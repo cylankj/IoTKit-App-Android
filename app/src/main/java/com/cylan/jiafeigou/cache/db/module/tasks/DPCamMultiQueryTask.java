@@ -78,7 +78,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         AppLogger.w("let'account go for local versionMin:" + versionMin);
         AppLogger.w("let'account go for local versionMax:" + versionMax);
         return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
-                versionMin, versionMax, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
+                versionMin, option.useMaxLimit ? versionMax : Long.MAX_VALUE/*面孔页面没有天数限制了,所以要区别对待*/, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
                     @Override
                     public Observable<BaseDPTaskResult> call(List<DPEntity> items) {
@@ -204,9 +204,13 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     if (robotoGetDataRsp != null && robotoGetDataRsp.map != null) {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
                             for (JFGDPMsg msg : entry.getValue()) {
-                                if (msg.version >= versionMin && msg.version <= versionMax) {
-                                    DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
-                                    result.add(point);
+
+                                if (msg.version >= versionMin) {
+                                    if (!option.useMaxLimit || msg.version <= versionMax) {
+                                        // TODO: 2017/10/13 人脸识别不分天了,所以需要区别对待了
+                                        DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                                        result.add(point);
+                                    }
                                 }
                             }
                         }
