@@ -161,14 +161,15 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         //1.timeStart==0->服务器，本地
         //服务器：1.日历。2.偏移到最靠近有数据的一天。开始查。以后，点击开始查。
         //本地，查出日历。
-        if (timeStart == 0) {
-            loadDataListFirst();
-            return;
-        }
         if (asc) {
             // TODO: 2017/10/13 说明是刷新操作 ,则请求面孔信息
             getFaceGroupInformation();
         }
+        if (timeStart == 0) {
+            loadDataListFirst();
+            return;
+        }
+
         Subscription subscription = getMessageListQuery(timeStart, asc)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

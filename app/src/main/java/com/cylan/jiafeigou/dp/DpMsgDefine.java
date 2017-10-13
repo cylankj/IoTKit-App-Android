@@ -1588,8 +1588,10 @@ public class DpMsgDefine {
     @Message
     public static class DPAIService {
         @Index(0)
-        public String service_key;
+        public String vid;
         @Index(1)
+        public String service_key;
+        @Index(2)
         public String service_key_seceret;
     }
 
