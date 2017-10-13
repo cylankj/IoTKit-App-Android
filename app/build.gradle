@@ -41,7 +41,7 @@ task importLanguage(type: Exec, group: "android") {
     if (operatingSystem.isWindows()) {
         commandLine "cmd", "/c", "importLanuage.bat", CloverDogDir
     } else if (operatingSystem.isUnix()) {
-        commandLine "./importLanuage.sh", CloverDogDir
+        commandLine "./importLanguage.sh", CloverDogDir
     }
 }
 

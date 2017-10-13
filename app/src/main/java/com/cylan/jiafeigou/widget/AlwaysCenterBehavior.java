@@ -29,6 +29,7 @@ public class AlwaysCenterBehavior extends AppBarLayout.ScrollingViewBehavior {
     private Field verticalLayoutGapField;
     final Rect mTempRect1 = new Rect();
     final Rect mTempRect2 = new Rect();
+    private boolean hasLayout = false;
 
     public AlwaysCenterBehavior() {
         init();
@@ -49,6 +50,7 @@ public class AlwaysCenterBehavior extends AppBarLayout.ScrollingViewBehavior {
     @Override
     protected void layoutChild(final CoordinatorLayout parent, final View child,
                                final int layoutDirection) {
+        if (hasLayout) return;
         final List<View> dependencies = parent.getDependencies(child);
         try {
             final View header = (View) findFirstDependencyMethod.invoke(this, dependencies);
@@ -57,6 +59,7 @@ public class AlwaysCenterBehavior extends AppBarLayout.ScrollingViewBehavior {
                 final CoordinatorLayout.LayoutParams lp =
                         (CoordinatorLayout.LayoutParams) child.getLayoutParams();
                 final Rect available = mTempRect1;
+
                 available.set(parent.getPaddingLeft() + lp.leftMargin,
                         header.getBottom() + lp.topMargin,
                         parent.getWidth() - parent.getPaddingRight() - lp.rightMargin,
@@ -88,6 +91,7 @@ public class AlwaysCenterBehavior extends AppBarLayout.ScrollingViewBehavior {
 //                mVerticalLayoutGap = 0;
                 verticalLayoutGapField.set(this, 0);
             }
+            hasLayout = true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -138,7 +142,6 @@ public class AlwaysCenterBehavior extends AppBarLayout.ScrollingViewBehavior {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-
         }
     }
 }

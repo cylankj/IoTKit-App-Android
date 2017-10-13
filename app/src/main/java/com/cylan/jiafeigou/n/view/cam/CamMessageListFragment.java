@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -26,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -103,7 +103,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @BindView(R.id.fLayout_cam_msg_edit_bar)
     FrameLayout fLayoutCamMsgEditBar;
     @BindView(R.id.lLayout_no_message)
-    LinearLayout lLayoutNoMessage;
+    NestedScrollView lLayoutNoMessage;
     @BindView(R.id.rLayout_cam_message_list_top)
     RelativeLayout rLayoutCamMessageListTop;
     @BindView(R.id.tv_msg_full_select)
@@ -233,7 +233,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void initFaceHeader() {
         if (JFGRules.isFaceFragment(getDevice().pid)) {
-            srLayoutCamListRefresh.setNestedScrollingEnabled(true);
+//            srLayoutCamListRefresh.setNestedScrollingEnabled(true);
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
             aplCamMessageAppbar.setExpanded(true);
             tvCamMessageListDate.setClickable(false);
@@ -264,7 +264,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
         } else {
             tvCamMessageListDate.setClickable(true);
-            srLayoutCamListRefresh.setNestedScrollingEnabled(false);
+//            srLayoutCamListRefresh.setNestedScrollingEnabled(false);
             aplCamMessageAppbar.setExpanded(false);
             layoutBarMenu(BAR_TYPE_NORMAL);
         }

@@ -11,16 +11,17 @@ if [ ! -d "$CleverDog" ]; then
    git clone -b master http://120.24.247.124:10080/Sam01/CleverDog.git
 fi
 cd ${CleverDog}
-
-git branch
 git pull
+git checkout -B master
 
 if [ ! -d "./Language" ]; then
   echo "当前目录下没有 Language 文件夹 导入语言包失败"
-  exit
+  exit 0
 fi
 cd ./Language
-
+if [ ! -d "./output" ]; then
+    mkdir -p ./output
+fi
 java -jar jfglanguage_android.jar ./xls文档/3.0/language-3.0.xls output
 
 cd ./output

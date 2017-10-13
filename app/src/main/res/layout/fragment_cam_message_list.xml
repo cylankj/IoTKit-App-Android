@@ -139,20 +139,13 @@
             </LinearLayout>
         </android.support.design.widget.AppBarLayout>
 
-
-        <!--<android.support.v4.widget.NestedScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cam_message_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:id="@+id/lLayout_no_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -170,9 +163,8 @@
                 android:text="@string/NO_CONTENTS_1"
                 android:textColor="#aaaaaa"
                 android:textSize="@dimen/sp15" />
-        </LinearLayout>
 
-        <!--</android.support.v4.widget.NestedScrollView>-->
+        </android.support.v4.widget.NestedScrollView>
 
         <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
             android:id="@+id/fLayout_cam_message_list_timeline"
