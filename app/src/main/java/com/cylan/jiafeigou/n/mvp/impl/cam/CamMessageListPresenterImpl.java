@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
@@ -263,7 +264,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         Observable.create((Observable.OnSubscribe<DpMsgDefine.FaceQueryResponse>) subscriber -> {
             try {
                 String account = DataSourceManager.getInstance().getAccount().getAccount();
-                //just for test
                 String vid = Security.getVId();
                 String serviceKey = blockGetServiceKey();
                 String timestamp = String.valueOf(System.currentTimeMillis());
@@ -272,7 +272,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
                 } else {
                     String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timestamp);
-                    Response response = OkGo.post(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API)
+                    Response response = OkGo.post(OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API)
                             .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
