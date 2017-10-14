@@ -1,7 +1,8 @@
 package com.cylan.jiafeigou.utils;
 
 import android.annotation.SuppressLint;
-import android.util.Base64;
+
+import com.google.api.client.util.Base64;
 
 import java.net.URLEncoder;
 import java.security.SecureRandom;
@@ -154,9 +155,11 @@ public class AESUtil {
                 buf.append(hexDigitChars.charAt(ln));
             }
             hmac = buf.toString().getBytes();
-            String base64 = Base64.encodeToString(hmac, Base64.DEFAULT);
+            // Base64编码
+
+            String base64 =  Base64.encodeBase64String(hmac);;
+            System.out.println(base64);
             signature = URLEncoder.encode(base64, "UTF-8");
-            signature = signature.substring(0, signature.length() - 3);
         } catch (Exception e) {
             e.printStackTrace();
         }

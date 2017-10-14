@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
  */
 
 public class AvatarTransform extends BitmapTransformation {
-    public AvatarTransform(Context context) {
+    public AvatarTransform(Context context,String[]coord) {
         super(context);
     }
 

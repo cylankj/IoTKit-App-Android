@@ -241,7 +241,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     String mock = "[{group_id:\"1000\",face_id:\"2000\",face_name:\"小明\"}]";
 
     //这个方法需要在子线程调用,可能涉及到有网操作
-    public String blockGetServiceKey() throws Exception {
+    public static String blockGetServiceKey() throws Exception {
         String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
         if (TextUtils.isEmpty(serviceKey)) {
             long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
@@ -253,7 +253,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
             DpMsgDefine.DPAIService dpaiService = DpUtils.unpackData(dataRsp.data, DpMsgDefine.DPAIService.class);
             if (dpaiService != null) {
-                serviceKey = dpaiService.service_key;
+                serviceKey = dpaiService.service_key;//返回的有问题?
                 PreferencesUtils.putString(JConstant.ROBOT_SERVICES_KEY, dpaiService.service_key);
                 PreferencesUtils.putString(JConstant.ROBOT_SERVICES_SECERET, dpaiService.service_key_seceret);
             }
@@ -267,7 +267,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 String account = DataSourceManager.getInstance().getAccount().getAccount();
                 String vid = Security.getVId();
                 String serviceKey = blockGetServiceKey();
-                String timestamp = String.valueOf(System.currentTimeMillis());
+                String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//这里的时间是秒
                 String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
@@ -294,9 +294,19 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     if (body != null) {
                         String string = body.string();
                         AppLogger.w(string);
-                        DpMsgDefine.FaceQueryResponse queryResponse = new Gson().fromJson(string, DpMsgDefine.FaceQueryResponse.class);
-                        subscriber.onNext(queryResponse);
-                        subscriber.onCompleted();
+                        Gson gson = new Gson();
+                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
+                        if (header.ret == 0) {
+                            DpMsgDefine.FaceQueryResponse queryResponse = new Gson().fromJson(string, DpMsgDefine.FaceQueryResponse.class);
+                            subscriber.onNext(queryResponse);
+                            subscriber.onCompleted();
+                        } else {
+                            if (header.ret == 100) {
+                                PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY);
+                                PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET);
+                            }
+                            subscriber.onError(new IllegalArgumentException("ret:" + header.ret + ",msg:" + header.msg));
+                        }
                     } else {
                         subscriber.onError(null);
                     }
@@ -464,6 +474,71 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                 }, AppLogger::e);
         addSubscription(subscription, "DPCamDateQueryTask");
+    }
+
+    @Override
+    public void deleteFace(String face_id, String person_id, String group_id) {
+        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
+            try {
+                String account = DataSourceManager.getInstance().getAccount().getAccount();
+                String vid = Security.getVId();
+                String serviceKey = blockGetServiceKey();
+                String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//这里的时间是秒
+                String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
+                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
+                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
+                } else {
+                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API, seceret, timestamp);
+                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API;
+                    if (!url.startsWith("http://")) {
+                        url = "http://" + url;
+                    }
+                    Response response = OkGo.post(url)
+                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, face_id)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, person_id)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_GROUP_ID, group_id)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
+                            .execute();
+
+                    ResponseBody body = response.body();
+
+                    if (body != null) {
+                        String string = body.string();
+                        AppLogger.w(string);
+                        Gson gson = new Gson();
+                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
+                        subscriber.onNext(header == null ? -1 : header.ret);
+                    } else {
+                        subscriber.onError(null);
+                    }
+                }
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp == 0) {
+                        // TODO: 2017/10/14 删除成功了
+                    } else {
+                        // TODO: 2017/10/14 删除失败了
+                    }
+                }, e ->
+
+                {
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
+
+
     }
 
     @Override

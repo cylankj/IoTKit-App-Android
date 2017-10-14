@@ -1648,9 +1648,16 @@ public class DpMsgDefine {
      * }
      */
 
-    public static class FaceQueryResponse {
+    public static class ResponseHeader {
         public int ret;
         public String msg;
+    }
+
+    public static class GenericResponse extends ResponseHeader {
+        public String data;
+    }
+
+    public static class FaceQueryResponse extends ResponseHeader {
         public List<FaceInformation> data;
 
         @Override

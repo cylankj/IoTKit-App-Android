@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
@@ -99,7 +100,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 if (listener != null) {
                     AppLogger.w("点击了面孔条目:" + position);
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon());
+                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon(),item.getFaceType());
                 }
                 return true;
             });
@@ -153,72 +154,10 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         return preload != null && preload.size() > 0;
     }
 
-
-//    class FaceItemAdapter extends RecyclerView.Adapter<FaceItem.FaceItemViewHolder> {
-//
-//        private int position;
-//
-//        private List items = new ArrayList();
-//
-//        public void init(int position, List items) {
-//            this.position = position;
-//            this.items = items;
-//        }
-//
-//        @Override
-//        public FaceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = View.inflate(parent.getContext(), R.layout.item_face_selection, null);
-//            FaceViewHolder faceViewHolder = new FaceViewHolder(view);
-//
-//
-//            return faceViewHolder;
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(FaceViewHolder holder, int position) {
-//            Object o = items.get(this.position * 8 + position);
-//
-//            holder.itemView.setOnClickListener(v -> {
-//                // TODO: 2017/10/9 点击操作
-//                if (listener != null) {
-//                    AppLogger.w("点击了面孔条目:" + position);
-//                    listener.onFaceItemClicked(this.position, position, holder.itemView);
-//                }
-//            });
-//
-//            holder.itemView.setOnLongClickListener(v -> {
-//                // TODO: 2017/10/9 长按弹出菜单提示
-//                if (listener != null) {
-//                    AppLogger.w("点击了面孔条目:" + position);
-//                    listener.onFaceItemLongClicked(this.position, position, holder.itemView);
-//                }
-//                return true;
-//            });
-//
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return Math.min(8, items.size() - 8 * position);
-//        }
-//    }
-
-//    class FaceViewHolder extends RecyclerView.ViewHolder {
-//        @BindView(R.id.img_item_face_selection)
-//        public ImageViewTip icon;
-//        @BindView(R.id.text_item_face_selection)
-//        public TextView text;
-//
-//        public FaceViewHolder(View itemView) {
-//            super(itemView);
-//            ButterKnife.bind(this, itemView);
-//        }
-//    }
-
     public interface FaceItemEventListener {
 
-        void onFaceItemClicked(int page_position, int position, View parent, View icon);
+        void onFaceItemClicked(int page_position, int position, View parent, ImageView icon);
 
-        void onFaceItemLongClicked(int page_position, int position, View parent, View icon);
+        void onFaceItemLongClicked(int page_position, int position, View parent, ImageView icon, int faceType);
     }
 }

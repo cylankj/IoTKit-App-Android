@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -240,15 +242,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             camMessageFaceAdapter = new CamMessageFaceAdapter();
             camMessageFaceAdapter.setOnFaceItemClickListener(new CamMessageFaceAdapter.FaceItemEventListener() {
                 @Override
-                public void onFaceItemClicked(int page_position, int position, View parent, View icon) {
+                public void onFaceItemClicked(int page_position, int position, View parent, ImageView icon) {
                     AppLogger.w("onFaceItemClicked");
                     changeContentByHeaderClick(page_position, position, parent, icon);
                 }
 
                 @Override
-                public void onFaceItemLongClicked(int page_position, int position, View parent, View icon) {
+                public void onFaceItemLongClicked(int page_position, int position, View parent, ImageView icon, int faceType) {
                     AppLogger.w("onFaceItemLongClicked");
-                    showHeaderFacePopMenu(page_position, position, parent, icon);
+                    showHeaderFacePopMenu(page_position, position, parent, icon,faceType);
                 }
             });
             rvCamMessageHeaderFaces.setAdapter(camMessageFaceAdapter);
@@ -331,12 +333,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         } else if (faceType == FaceItem.FACE_TYPE_ALL) {
             // TODO: 2017/10/10 点击的是全部 ,需要刷新所有
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
+            camMessageListAdapter.filterByFaceItemType(null);
         }
 
     }
 
 
-    private void showHeaderFacePopMenu(int page_position, int position, View parent, View faceItem) {
+    private void showHeaderFacePopMenu(int page_position, int position, View parent, ImageView faceItem, int faceType) {
         AppLogger.w("showHeaderFacePopMenu:" + position + ",item:" + faceItem);
         View view = View.inflate(getContext(), R.layout.layout_face_page_pop_menu, null);
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -353,14 +356,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔");
             popupWindow.dismiss();
-            showDeleteFaceAlert();
+            FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
+            showDeleteFaceAlert(item);
         });
 
         contentView.findViewById(R.id.detect).setOnClickListener(v -> {
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔");
             popupWindow.dismiss();
-            showDetectFaceAlert();
+            Bitmap image = ((BitmapDrawable) faceItem.getDrawable()).getBitmap();
+            showDetectFaceAlert("", image);
 
         });
 
@@ -375,34 +380,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START);
     }
 
-    private void showDetectFaceAlert() {
+    private void showDetectFaceAlert(String faceId, Bitmap picture) {
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(R.layout.layout_face_detect_pop_alert)
                 .show();
-//        dialog.findViewById(R.id.detect_new_face).setOnClickListener(v -> {
-//            // TODO: 2017/10/10 跳转到新建面孔页面
-//            dialog.dismiss();
-//            CreateNewFaceFragment fragment = CreateNewFaceFragment.Companion.newInstance(uuid);
-//            fragment.setResultCallback((o, o2, o3) -> {
-//                // TODO: 2017/10/10 创建面孔的结果回调
-//
-//                return null;
-//            });
-//            ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
-//        });
-//
-//        dialog.findViewById(R.id.detect_add_to).setOnClickListener(v -> {
-//            // TODO: 2017/10/10 跳转到面孔管理页面
-//            dialog.dismiss();
-//            FaceListFragment fragment = FaceListFragment.Companion.newInstance(uuid, FaceListFragment.TYPE_ADD_TO);
-//            fragment.setResultCallback((o, o2, o3) -> {
-//                // TODO: 2017/10/10 移动到面孔的结果回调
-//
-//                return null;
-//            });
-//            ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
-//
-//        });
 
         dialog.findViewById(R.id.detect_cancel).setOnClickListener(v -> {
             dialog.dismiss();
@@ -420,8 +401,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 });
                 ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
             } else if (newFace.isChecked()) {
-                CreateNewFaceFragment fragment = CreateNewFaceFragment.Companion.newInstance(uuid);
-                fragment.setResultCallback((o, o2, o3) -> {
+                CreateNewFaceFragment fragment = CreateNewFaceFragment.Companion.newInstance(uuid, faceId, picture);
+                fragment.setResultCallback((ret) -> {
                     // TODO: 2017/10/10 创建面孔的结果回调
 
                     return null;
@@ -432,7 +413,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         });
     }
 
-    private void showDeleteFaceAlert() {
+    private void showDeleteFaceAlert(FaceItem item) {
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(R.layout.layout_face_delete_pop_alert)
                 .show();
@@ -447,6 +428,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             int radioButtonId = radioGroup.getCheckedRadioButtonId();
             if (radioButtonId == R.id.delete_only_face) {
                 AppLogger.w("only face");
+                DpMsgDefine.FaceInformation faceInformation = item.getFaceinformation();
+                if (faceInformation != null) {
+                    basePresenter.deleteFace(faceInformation.face_id, null, null);
+                }
             } else if (radioButtonId == R.id.delete_face_and_message) {
                 AppLogger.w("face and message");
             } else {
@@ -467,12 +452,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             List<FaceItem> list = new ArrayList<>();
             FaceItem allFace = new FaceItem();
             allFace.setFaceType(FaceItem.FACE_TYPE_ALL);
-            allFace.setFaceText(getString(R.string.MESSAGES_FILTER_ALL));
+//            allFace.setFaceText(getString(R.string.MESSAGES_FILTER_ALL));
             list.add(allFace);
 
             FaceItem strangerFace = new FaceItem();
             strangerFace.setFaceType(FaceItem.FACE_TYPE_STRANGER);
-            strangerFace.setFaceText(getString(R.string.MESSAGES_FILTER_STRANGER));
+//            strangerFace.setFaceText(getString(R.string.MESSAGES_FILTER_STRANGER));
             list.add(strangerFace);
             camMessageFaceAdapter.setPreloadFaceItems(list);
         }
@@ -741,6 +726,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onFaceInformationReady(List<DpMsgDefine.FaceInformation> data) {
         camMessageListAdapter.appendFaceInformation(data);
         camMessageListAdapter.notifyDataSetChanged();
+        assembleFaceItem(data, camMessageListAdapter.getList());
+    }
+
+    private void assembleFaceItem(List<DpMsgDefine.FaceInformation> data, List<CamMessageBean> list) {
+//       FaceItem
     }
 
     @Override

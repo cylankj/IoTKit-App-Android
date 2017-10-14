@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem
-import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import kotlinx.android.synthetic.main.fragment_facelist.*
 
@@ -39,7 +38,8 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
         adapter.itemAdapter.withComparator { a, b ->
-            return@withComparator Pinyin.toPinyin(a.faceText, "").compareTo(Pinyin.toPinyin(b.faceText, ""))
+    0
+//            return@withComparator Pinyin.toPinyin(a.faceText, "").compareTo(Pinyin.toPinyin(b.faceText, ""))
         }
         when (arguments?.getInt("type", TYPE_ADD_TO)) {
             TYPE_ADD_TO -> {
@@ -61,7 +61,7 @@ class FaceListFragment : BaseFragment<JFGPresenter<JFGView>>() {
                 //TODO 更新右边的 slider
                 val itemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                 val faceItem = adapter.getItem(itemPosition)
-                val pinyin = Pinyin.toPinyin(faceItem.faceText, "")
+//                val pinyin = Pinyin.toPinyin(faceItem.faceText, "")
 
             }
 

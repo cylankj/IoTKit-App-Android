@@ -57,6 +57,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private DpMsgDefine.DPSdcardSummary summary;
     private boolean status;
     private Map<String, DpMsgDefine.FaceInformation> faceMap = new HashMap<>();
+    private String faceItemType = null;//null 不过滤
 
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -323,7 +324,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 2.无人形提示:有新的发现
             * */
             if (bean.alarmMsg.face_id != null && bean.alarmMsg.humanNum > 0) {
-                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, faceMap);
+                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, faceMap, null);
                 return tContent + (TextUtils.isEmpty(faceText) ? getContext().getString(R.string.MSG_WARNING) : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
             } else if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
                 return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(bean.alarmMsg.objects);
@@ -455,4 +456,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         notifyDataSetChanged();
     }
 
+//    private List<CamMessageBean>
+
+    public void filterByFaceItemType(String personId) {
+        // TODO: 2017/10/14 null 全部
+        this.faceItemType = personId;
+        notifyDataSetChanged();
+    }
 }

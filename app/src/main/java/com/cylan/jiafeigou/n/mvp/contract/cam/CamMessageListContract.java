@@ -63,6 +63,8 @@ public interface CamMessageListContract {
         List<WonderIndicatorWheelView.WheelItem> getDateList();
 
         void refreshDateList(boolean needToLoadList);
+
+        void deleteFace(String face_id, String person_id, String group_id);
     }
 }
 
