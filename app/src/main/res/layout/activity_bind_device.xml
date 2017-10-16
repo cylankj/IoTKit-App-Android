@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y67"
                 android:background="@color/color_white"
-                hunt:leftDrawable="@drawable/icon_home_camera_online"
+                hunt:leftDrawable="@drawable/home_icon_outcam"
                 hunt:rightDrawable="@drawable/icon_mine_arrow_next"
                 hunt:text="@string/DOG_CAMERA_NAME"
                 hunt:textColor="@color/color_666666"
