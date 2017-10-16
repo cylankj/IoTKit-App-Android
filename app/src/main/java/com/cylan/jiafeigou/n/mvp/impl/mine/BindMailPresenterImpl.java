@@ -120,7 +120,8 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         int net = NetUtils.getJfgNetType();
-        if (mView != null)
+        if (mView != null) {
             getView().onNetStateChanged(net);
+        }
     }
 }

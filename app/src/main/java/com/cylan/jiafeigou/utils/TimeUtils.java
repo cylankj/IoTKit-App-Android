@@ -227,8 +227,9 @@ public class TimeUtils {
     }
 
     public static String getUptime(long time) {
-        if (time == 0)
+        if (time == 0) {
             return ContextUtils.getContext().getString(R.string.STANBY_TIME, 0, 0, 0);
+        }
         time = System.currentTimeMillis() / 1000 - time;
         int temp = (int) time / 60;
         int minute = temp % 60;
@@ -328,11 +329,17 @@ public class TimeUtils {
     }
 
     public static String getHomeItemTime(Context context, long time) {
-        if (time == 0) return "";
+        if (time == 0) {
+            return "";
+        }
         if (System.currentTimeMillis() - time <= 5 * 60 * 1000L)//五分钟内是刚刚
+        {
             return context.getString(R.string.JUST_NOW);
+        }
         if (startOfDay(System.currentTimeMillis()) < time)//今天的早些时候
+        {
             return getSimpleDateFormatHHMM.get().format(new Date(time));
+        }
         return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
     }
 
@@ -428,7 +435,9 @@ public class TimeUtils {
     }
 
     public static long wrapToLong(long time) {
-        if (time == 0) return 0;
+        if (time == 0) {
+            return 0;
+        }
         long ret = System.currentTimeMillis() / time;
         return ret * time;
     }

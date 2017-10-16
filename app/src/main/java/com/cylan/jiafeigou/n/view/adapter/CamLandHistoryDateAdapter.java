@@ -26,7 +26,9 @@ public class CamLandHistoryDateAdapter extends SuperAdapter<Long> {
     }
 
     public void setCurrentFocusPos(int pos) {
-        if (preIndex == pos) return;
+        if (preIndex == pos) {
+            return;
+        }
         preIndex = pos;
         notifyDataSetHasChanged();
     }

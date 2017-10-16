@@ -92,8 +92,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
             isTouchDonw = false;
             mActivePointerId = INVALID_POINTER;
             boolean isFinish = scroller.isFinished();
-            if (SuperWheelExt.DEBUG)
+            if (SuperWheelExt.DEBUG) {
                 Log.d(TAG, "onTouchEvent: up: " + "," + isFinish);
+            }
             if (isFinish) {
                 /*
                 问题 #116436
@@ -109,16 +110,18 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                 moveDirection = MoveDirection.NONE;
                 updateScrollStateIfRequired(SCROLL_STATE_IDLE);
             }
-            if (SuperWheelExt.DEBUG)
+            if (SuperWheelExt.DEBUG) {
                 Log.d(TAG, "onTouchEvent: up: " + "," + isFinish);
+            }
             return true;
         }
         switch (mask) {
             case MotionEvent.ACTION_DOWN:
                 isActionUp = false;
                 isTouchDonw = true;
-                if (!scroller.isFinished())
+                if (!scroller.isFinished()) {
                     scroller.abortAnimation();
+                }
                 moveDirection = MoveDirection.NONE;
                 dragOrFling = DragOrFling.NONE;
                        /*
@@ -126,8 +129,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                  * ACTION_DOWN always refers to pointer index 0.
                  */
                 mLastMotionX = mInitialMotionX = event.getX();
-                if (SuperWheelExt.DEBUG)
+                if (SuperWheelExt.DEBUG) {
                     Log.d(TAG, "onTouchEvent: ACTION_DOWN");
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 isTouchDonw = true;
@@ -140,8 +144,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                     // If we don't have a valid id, the touch down wasn't on content.
                     break;
                 }
-                if (SuperWheelExt.DEBUG)
+                if (SuperWheelExt.DEBUG) {
                     Log.d(TAG, "onTouchEvent: ACTION_MOVE");
+                }
                 final int pointerIndex = MotionEventCompat.findPointerIndex(event, activePointerId);
                 final float x = MotionEventCompat.getX(event, pointerIndex);
                 final float dx = x - mLastMotionX;
@@ -166,8 +171,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
             if (isActionUp && scroller.isFinished()) {
                 isActionUp = false;
                 updateScrollStateIfRequired(SCROLL_STATE_IDLE);
-                if (SuperWheelExt.DEBUG)
+                if (SuperWheelExt.DEBUG) {
                     Log.d(TAG, "computeScroll finish");
+                }
             }
         }
     }
@@ -193,7 +199,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         if (Math.abs(distanceX) >= mTouchSlop) {
             if (distanceX > 0.0f) {
                 distanceX = distanceX - mTouchSlop;
-            } else distanceX = distanceX + mTouchSlop;
+            } else {
+                distanceX = distanceX + mTouchSlop;
+            }
         }
         superWheel.scrollBy((int) distanceX, 0);
         if (SuperWheelExt.DEBUG) {
@@ -218,8 +226,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
 
 
     private void updateScrollStateIfRequired(int newState) {
-        if (SuperWheelExt.DEBUG)
+        if (SuperWheelExt.DEBUG) {
             Log.d(TAG, "updateScroll:" + dragOrFling + " state:" + newState + " moveDirection:" + moveDirection);
+        }
         superWheel.autoSettle(newState, moveDirection);
 //        superWheel.autoSettle(newState, MoveDirection.RIGHT);
     }

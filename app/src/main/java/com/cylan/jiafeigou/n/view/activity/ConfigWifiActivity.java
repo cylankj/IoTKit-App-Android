@@ -144,8 +144,9 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     private void initFragment() {
-        if (fragmentWeakReference == null || fragmentWeakReference.get() == null)
+        if (fragmentWeakReference == null || fragmentWeakReference.get() == null) {
             fragmentWeakReference = new WeakReference<>(WiFiListDialogFragment.newInstance(new Bundle()));
+        }
     }
 
     private WeakReference<WiFiListDialogFragment> fragmentWeakReference;
@@ -207,14 +208,16 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 tvWifiPwdSubmit.viewZoomSmall(null);
                 //判断当前
                 if (getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
-                    if (basePresenter != null)
+                    if (basePresenter != null) {
                         basePresenter.sendWifiInfo(getIntent().getStringExtra(JConstant.JUST_SEND_INFO),
                                 ViewUtils.getTextViewContent(tvConfigApName),
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
+                    }
                 } else {
-                    if (basePresenter != null)
+                    if (basePresenter != null) {
                         basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
+                    }
                 }
                 IMEUtils.hide(this);
                 LocalWifiInfo.Saver.getSaver().addOrUpdateInfo(new LocalWifiInfo()
@@ -309,8 +312,9 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             return;
         }
         cacheList = resultList;
-        if (fiListDialogFragment != null)
+        if (fiListDialogFragment != null) {
             fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
+        }
         Object object = tvConfigApName.getTag();
 //        etWifiPwd.getText().clear();
         if (object == null && TextUtils.isEmpty(tvConfigApName.getText())) {
@@ -329,23 +333,27 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     private void getInterestingSSid(List<ScanResult> resultList) {
-        if (!ListUtils.isEmpty(resultList))
+        if (!ListUtils.isEmpty(resultList)) {
             LocalWifiInfo.Saver.getSaver().getMap()
                     .subscribeOn(Schedulers.io())
                     .flatMap(map -> {
-                        if (map != null)
+                        if (map != null) {
                             for (ScanResult result : resultList) {
                                 final String ssid = result.SSID.replace("\"", "");
-                                if (!map.containsKey(ssid)) continue;
+                                if (!map.containsKey(ssid)) {
+                                    continue;
+                                }
                                 LocalWifiInfo info = map.get(ssid);
                                 if (info != null && !TextUtils.isEmpty(info.getPwd())) {
                                     return Observable.just(new Pair<>(info, new BeanWifiList(result)));
                                 }
                             }
-                        if (ListUtils.isEmpty(resultList))
+                        }
+                        if (ListUtils.isEmpty(resultList)) {
                             return Observable.just(null);
-                        else
+                        } else {
                             return Observable.just(new Pair<>(new LocalWifiInfo(), new BeanWifiList(resultList.get(0))));
+                        }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
@@ -362,6 +370,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                             }
                         }
                     }, AppLogger::e);
+        }
     }
 
     @Override
@@ -449,7 +458,9 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     if (info != null && !TextUtils.isEmpty(info.getPwd())) {
                         //填充密码
                         etWifiPwd.setText(info.getPwd());
-                    } else etWifiPwd.setText("");
+                    } else {
+                        etWifiPwd.setText("");
+                    }
                 }, AppLogger::e);
     }
 

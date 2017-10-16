@@ -165,19 +165,20 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             // TODO: 2017/10/13 说明是刷新操作 ,则请求面孔信息
             getFaceGroupInformation();
         }
-        if (timeStart == 0) {
+        if (timeStart == 0 && !JFGRules.isFaceFragment(getDevice().pid)) {
             loadDataListFirst();
             return;
         }
 
-        Subscription subscription = getMessageListQuery(timeStart, asc)
+        Subscription subscription = getMessageListQuery(timeStart, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(baseDPTaskResult -> {
                     List<DataPoint> result = baseDPTaskResult.getResultResponse();
                     AppLogger.d("fetchLocalList: " + ListUtils.getSize(result));
-                    if (ListUtils.getSize(result) == 0)
+                    if (ListUtils.getSize(result) == 0) {
                         return Observable.just(new ArrayList<CamMessageBean>());
+                    }
                     ArrayList<CamMessageBean> list = new ArrayList<>();
                     for (DataPoint dataPoint : result) {
                         CamMessageBean bean = new CamMessageBean();
@@ -193,7 +194,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                             bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
                         }
                         if (!list.contains(bean))//防止重复
+                        {
                             list.add(bean);
+                        }
                     }
                     return Observable.just(list);
                 })
@@ -223,7 +226,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 //                    } else
                     if (result.second) {
                         mView.onListAppend(result.first);
-                    } else mView.onListInsert(result.first, 0);
+                    } else {
+                        mView.onListInsert(result.first, 0);
+                    }
                     return result;
                 })
                 .subscribeOn(Schedulers.io())
@@ -354,7 +359,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void removeItems(ArrayList<CamMessageBean> beanList) {
-        if (ListUtils.isEmpty(beanList)) return;
+        if (ListUtils.isEmpty(beanList)) {
+            return;
+        }
         List<IDPEntity> list = buildMultiEntities(beanList);
         Subscription subscription = BaseApplication.getAppComponent().getTaskDispatcher().perform(list)
                 .subscribeOn(Schedulers.io())

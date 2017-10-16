@@ -54,11 +54,11 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
 
     companion object {
-        private const val REQUEST_PERMISSION_GET_ACCOUNTS = 5000
-        private const val REQUEST_GOOGLE_PLAY_SERVICES = 5001
-        private const val REQUEST_ACCOUNT_PICKER = 8000
-        private const val REQUEST_AUTHORIZATION = 8001
-        private const val REQUEST_AUTHORIZATION_REQ = 8002
+        private const val REQUEST_PERMISSION_GET_ACCOUNTS: Int = 5000
+        private const val REQUEST_GOOGLE_PLAY_SERVICES: Int = 5001
+        private const val REQUEST_ACCOUNT_PICKER: Int = 8000
+        private const val REQUEST_AUTHORIZATION: Int = 8001
+        private const val REQUEST_AUTHORIZATION_REQ: Int = 8002
 
 
         fun newInstance(uuid: String): YouTubeLiveSettingFragment {
@@ -224,13 +224,22 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
             }
             REQUEST_AUTHORIZATION_REQ -> {
-                val response = AuthorizationResponse.fromIntent(data!!)
-                val ex = AuthorizationException.fromIntent(data)
-                manager.updateAfterAuthorization(response, ex)
-                if (response?.authorizationCode != null) run {
-                    // authorization code exchange is required
-                    manager.updateAfterAuthorization(response, ex)
-                    exchangeAuthorizationCode(response)
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        val response = AuthorizationResponse.fromIntent(data)
+                        val ex = AuthorizationException.fromIntent(data)
+                        manager.updateAfterAuthorization(response, ex)
+                        if (response?.authorizationCode != null) run {
+                            // authorization code exchange is required
+                            manager.updateAfterAuthorization(response, ex)
+                            exchangeAuthorizationCode(response)
+                        }
+                    } else {
+                        //todo 这可能和手机有关,回调了 但是data 为空
+                        AppLogger.e("获取 Youtube 网页授权结果失败了!!!")
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    AppLogger.w("用户取消了 YouTube 网页授权")
                 }
             }
         }
@@ -389,34 +398,6 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                 })
             }
         }
-// else if (EasyPermissions.hasPermissions(context, Manifest.permission.GET_ACCOUNTS)) {
-////            if (account != null && liveBroadcastId != null) {
-////                presenter.getLiveList(mCredential, liveBroadcastId!!)
-////            }
-//            if (TextUtils.isEmpty(account)) {
-//                // Start a dialog from which the user can choose an account
-//                if (isGooglePlayServicesAvailable()) {
-//                    startActivityForResult(AccountPicker.newChooseAccountIntent(
-//                            null,
-//                            null,
-//                            arrayOf(GoogleAccountManager.ACCOUNT_TYPE),
-//                            true,
-//                            null,
-//                            null,
-//                            null,
-//                            null),
-//                            REQUEST_ACCOUNT_PICKER)
-//                } else {
-//                    acquireGooglePlayServices()
-//                }
-//            }
-//        } else {
-//            // Request the GET_ACCOUNTS permission via a user dialog
-//            EasyPermissions.requestPermissions(this,
-//                    getString(R.string.permission_auth, getString(R.string.contacts_auth)),
-//                    REQUEST_PERMISSION_GET_ACCOUNTS,
-//                    Manifest.permission.GET_ACCOUNTS)
-//        }
     }
 
 
@@ -490,6 +471,10 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     override fun onUserRecoverableAuthIOException(error: UserRecoverableAuthIOException) {
         startActivityForResult(error.intent, REQUEST_AUTHORIZATION)
+    }
+
+    fun isYoutubeAccountBinded(): Boolean {
+        return account != null
     }
 
 }

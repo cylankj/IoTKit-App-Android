@@ -123,7 +123,9 @@ public class BaseForwardHelper {
     private <R> R parserSet(int msgId, RxEvent.SetDataRsp rsp) {
         try {
             AppLogger.w("收到服务器的 dp 消息");
-            if (rsp.rets.size() == 0) return null;
+            if (rsp.rets.size() == 0) {
+                return null;
+            }
             JFGDPMsgRet msg = rsp.rets.get(0);
             if (msgId == 218) {
                 PanoramaEvent.MsgSdInfoRsp status = new PanoramaEvent.MsgSdInfoRsp();
@@ -160,8 +162,12 @@ public class BaseForwardHelper {
     private <T> T parserGet(int msgId, RobotoGetDataRsp rsp) {
         try {
             AppLogger.w("收到服务器的 dp 消息");
-            if (rsp.map.size() == 0) return null;
-            if (rsp.map.get(msgId).size() == 0) return null;
+            if (rsp.map.size() == 0) {
+                return null;
+            }
+            if (rsp.map.get(msgId).size() == 0) {
+                return null;
+            }
             JFGDPMsg msg = rsp.map.get(msgId).get(0);
             if (msgId == 204) {
                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);

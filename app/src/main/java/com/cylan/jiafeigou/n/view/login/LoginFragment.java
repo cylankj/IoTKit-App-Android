@@ -202,7 +202,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onStop() {
         super.onStop();
-        if (basePresenter != null) basePresenter.stop();
+        if (basePresenter != null) {
+            basePresenter.stop();
+        }
 //        if (lbLogin != null) lbLogin.cancelAnim();
 //        if (verificationCodeLogic != null) verificationCodeLogic.stop();
     }
@@ -210,7 +212,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onDetach() {
         super.onDetach();
-        if (lbLogin != null) lbLogin.cancelAnim();
+        if (lbLogin != null) {
+            lbLogin.cancelAnim();
+        }
     }
 
     @Override
@@ -227,9 +231,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
          * 第三方使用亲友功能跳转到绑定手机这
          */
         if (bundle != null && bundle.containsKey("show_login_fragment")) {
-            if (bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE))
+            if (bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE)) {
                 switchBoxBindPhone();
-            else {
+            } else {
                 switchBox();
             }
         }
@@ -316,8 +320,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         ViewUtils.setChineseExclude(etVerificationInput, 6);
         rLayoutLoginToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
-        if (getView() != null)
+        if (getView() != null) {
             getView().findViewById(R.id.tv_toolbar_right).setVisibility(View.VISIBLE);
+        }
 //        ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
         //大陆用户显示 第三方登陆
         rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
@@ -406,8 +411,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             case R.id.layout_login:
             case R.id.rLayout_register_box:
             case R.id.rLayout_login:
-                if (getActivity() != null)
+                if (getActivity() != null) {
                     IMEUtils.hide(getActivity());
+                }
                 break;
             case R.id.iv_login_clear_pwd:
                 etLoginPwd.getText().clear();
@@ -593,14 +599,16 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void verifyCodeResult(int code) {
-        if (!isVisible())
+        if (!isVisible()) {
             return;
+        }
         if (code == JError.ErrorOK) {
             jump2NextPage();
         } else if (code == JError.ErrorSMSCodeTimeout) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-            if (verificationCodeLogic != null)
+            if (verificationCodeLogic != null) {
                 verificationCodeLogic.initTimer();
+            }
         } else {
             ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
         }
@@ -610,9 +618,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void loginResult(int code) {
         if (code == JError.ErrorOK) {
             hideLoading();
-            if (!(getActivity() instanceof NewHomeActivity))
+            if (!(getActivity() instanceof NewHomeActivity)) {
                 getActivity().finish();
-            else {
+            } else {
                 getActivity().getSupportFragmentManager().popBackStack();
                 ((NewHomeActivity) getActivity()).showHomeListFragment();
 //                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
@@ -632,7 +640,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             } else if (code == JError.ErrorP2PSocket) {
                 ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
-            } else ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":" + code);
+            } else {
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":" + code);
+            }
             resetView();
             AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");
         }
@@ -678,8 +688,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (result == JError.ErrorAccountAlreadyExist) {
             showSimpleDialog(getString(R.string.RET_EREGISTER_PHONE_EXIST), getString(R.string.CANCEL), getString(R.string.Tap0_register_GoToLogin), false);
         } else if (result == JError.ErrorOK) {
-            if (!(getActivity() instanceof NewHomeActivity))
+            if (!(getActivity() instanceof NewHomeActivity)) {
                 getActivity().finish();
+            }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         }
     }
@@ -755,10 +766,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 校验 验证码
      */
     private void verifyCode() {
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.verifyCode(ViewUtils.getTextViewContent(etRegisterInputBox),
                     ViewUtils.getTextViewContent(etVerificationInput),
                     PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+        }
     }
 
     /**
@@ -811,10 +823,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     return;
                 }
 
-                if (verificationCodeLogic != null)
+                if (verificationCodeLogic != null) {
                     verificationCodeLogic.start();
-                if (basePresenter != null)
+                }
+                if (basePresenter != null) {
                     basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+                }
                 tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 isRegetCode = false;
             } else if (fLayoutVerificationCodeInputBox.isShown() && validCode) {
@@ -831,8 +845,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     return;
                 }
-                if (verificationCodeLogic == null)
+                if (verificationCodeLogic == null) {
                     verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
+                }
                 verificationCodeLogic.start();
                 basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
@@ -890,8 +905,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
         }
         //检测账号是否注册
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+        }
     }
 
     private void handleRegisterByMail() {
@@ -940,8 +956,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     return;
                 }
                 isRegetCode = true;
-                if (basePresenter != null)
+                if (basePresenter != null) {
                     basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+                }
                 break;
             case R.id.tv_register_submit:
                 if (NetUtils.getNetType(getContext()) == -1) {
@@ -1031,8 +1048,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
 
         public void reset() {
-            if (timer != null)
+            if (timer != null) {
                 timer.cancel();
+            }
             if (this.viewWeakReference.get() != null) {
                 this.viewWeakReference.get().setText(
                         viewWeakReference.get()
@@ -1045,8 +1063,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             timer = new CountDownTimer(JConstant.VERIFICATION_CODE_DEADLINE, 1000L) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    if (viewWeakReference.get() == null)
+                    if (viewWeakReference.get() == null) {
                         return;
+                    }
                     final String content = millisUntilFinished / 1000 + "s";
                     viewWeakReference.get().setText(content);
                     viewWeakReference.get().setEnabled(false);
@@ -1054,8 +1073,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
                 @Override
                 public void onFinish() {
-                    if (viewWeakReference.get() == null)
+                    if (viewWeakReference.get() == null) {
                         return;
+                    }
                     TextView tv = viewWeakReference.get();
                     tv.setText(tv.getContext().getString(R.string.Button_ReObtain));
                     tv.setEnabled(true);
@@ -1092,7 +1112,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void onAuthenticationResult(int code) {
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         if (code == 0) {
 
         } else if (code == -1) {

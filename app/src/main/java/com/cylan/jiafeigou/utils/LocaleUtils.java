@@ -29,19 +29,24 @@ public class LocaleUtils {
             Locale.TRADITIONAL_CHINESE};
 
     public static int getLanguageType(Context ctx) {
-        if (ctx == null) return 0;
+        if (ctx == null) {
+            return 0;
+        }
         Locale locale = ctx.getResources().getConfiguration().locale;
         final String c = locale.toString();
         if (c.contains("zh")) {
             if ((c.contains("TW") || c.contains("HK"))) {
                 return JConstant.LOCALE_T_CN;
-            } else return JConstant.LOCALE_SIMPLE_CN;//simple chinese
+            } else {
+                return JConstant.LOCALE_SIMPLE_CN;//simple chinese
+            }
         }
 
         final int count = CONST_LOCALE.length;
         for (int i = 0; i < count; i++) {
-            if (locale.equals(CONST_LOCALE[i]))
+            if (locale.equals(CONST_LOCALE[i])) {
                 return i;
+            }
         }
         return 1;
     }

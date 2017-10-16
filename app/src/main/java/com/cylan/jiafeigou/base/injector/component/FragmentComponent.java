@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.cam.CreateNewFaceFragment;
+import com.cylan.jiafeigou.n.view.cam.FaceListFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerFragment;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
@@ -59,4 +60,6 @@ public interface FragmentComponent {
     void inject(FaceManagerFragment fragment);
 
     void inject(CreateNewFaceFragment faceFragment);
+
+    void inject(FaceListFragment fragment);
 }

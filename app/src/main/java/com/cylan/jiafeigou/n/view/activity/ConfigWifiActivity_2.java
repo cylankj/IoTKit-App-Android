@@ -102,7 +102,9 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) basePresenter.refreshWifiList();
+        if (basePresenter != null) {
+            basePresenter.refreshWifiList();
+        }
     }
 
     @Override
@@ -189,8 +191,9 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));
                     return;
                 }
-                if (basePresenter != null)
+                if (basePresenter != null) {
                     basePresenter.sendWifiInfo(uuid, ssid, (String) value, security);
+                }
                 ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
                 Intent intent = new Intent(this, NewHomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -202,7 +205,9 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
 
     @Override
     public void onRefresh() {
-        if (basePresenter != null) basePresenter.refreshWifiList();
+        if (basePresenter != null) {
+            basePresenter.refreshWifiList();
+        }
         swRefreshWifi.setRefreshing(true);
     }
 

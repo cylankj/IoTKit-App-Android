@@ -78,8 +78,9 @@ public class SuperWaveView extends View {
         waveShader = new Shader[waveCount];
         waveShiftRatio = new float[waveCount];
         shaderMatrix = new Matrix[waveCount];
-        for (int i = 0; i < waveCount; i++)
+        for (int i = 0; i < waveCount; i++) {
             shaderMatrix[i] = new Matrix();
+        }
     }
 
 
@@ -141,7 +142,9 @@ public class SuperWaveView extends View {
         for (int xNext = 0; xNext <= getMeasuredWidth(); xNext++) {
             float yNext = (float) (getMeasuredHeight() - waterLevel
                     + amplitude * (float) Math.sin(xNext * phase + phase / 5) + Math.sin(xNext * phase));
-            if (yNext < 0) yNext = 0;
+            if (yNext < 0) {
+                yNext = 0;
+            }
             path.lineTo(xNext, yNext);
         }
         path.lineTo(getMeasuredWidth(), getMeasuredHeight());
@@ -152,8 +155,9 @@ public class SuperWaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (int i = 0; i < waveCount; i++)
+        for (int i = 0; i < waveCount; i++) {
             drawShader(canvas, i);
+        }
     }
 
 
@@ -201,14 +205,16 @@ public class SuperWaveView extends View {
 
 
     public void startAnimation() {
-        if (waveAnimation == null)
+        if (waveAnimation == null) {
             waveAnimation = new WaveAnimation();
+        }
         waveAnimation.start();
     }
 
     public void stopAnimation() {
-        if (waveAnimation != null)
+        if (waveAnimation != null) {
             waveAnimation.stop();
+        }
 
     }
 
@@ -219,15 +225,17 @@ public class SuperWaveView extends View {
 
         public WaveAnimation() {
             valueAnimators = new ValueAnimator[waveCount];
-            for (int i = 0; i < waveCount; i++)
+            for (int i = 0; i < waveCount; i++) {
                 initAnimation(i);
+            }
         }
 
         private void start() {
             if (valueAnimators != null) {
                 for (ValueAnimator animator : valueAnimators) {
-                    if (!animator.isRunning())
+                    if (!animator.isRunning()) {
                         animator.start();
+                    }
                 }
             }
         }
@@ -235,8 +243,9 @@ public class SuperWaveView extends View {
         private void stop() {
             if (valueAnimators != null) {
                 for (ValueAnimator animator : valueAnimators) {
-                    if (animator.isRunning())
+                    if (animator.isRunning()) {
                         animator.cancel();
+                    }
                 }
             }
         }

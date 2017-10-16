@@ -33,8 +33,9 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private DBOption.SimpleMultiDpQueryOption option;
 
     public DPSimpleMultiQueryTask() {
-        if (sourceManager == null)
+        if (sourceManager == null) {
             sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        }
     }
 
     @Override

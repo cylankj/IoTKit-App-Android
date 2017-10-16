@@ -90,6 +90,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         return R.layout.fragment_delay_record;
     }
 
+    @Override
     protected void initViewAndListener() {
         initTimeIntervalDialog();
         initTimeDurationDialog();
@@ -191,6 +192,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         refreshRecordTime(DELAY_RECORD_SETTING);
     }
 
+    @Override
     public void onMarkRecordInformation(int interval, int recordDuration, int remainTime) {
 
     }

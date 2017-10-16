@@ -48,6 +48,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         return mCaller == null ? null : mCaller.caller;
     }
 
+    @Override
     public void pickup() {
         AppLogger.d("正在接听");
         if (mHolderCaller != null) {
@@ -65,6 +66,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
 
+    @Override
     public void newCall(Caller caller) {
         //直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
@@ -144,8 +146,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         .map(notify -> {
                             if (notify.success) {
                                 AppLogger.d("正在显示门铃截图");
-                                if (mView != null)
+                                if (mView != null) {
                                     mView.onShowVideoPreviewPicture(url);
+                                }
                             }
                             return notify;
                         })
@@ -154,7 +157,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     private void preload(String url) {
-        if (mView != null && mView.getAppContext() != null && url != null)
+        if (mView != null && mView.getAppContext() != null && url != null) {
             Glide.with(mView.getActivityContext()).load(url)
                     .asBitmap()
                     .listener(new RequestListener<String, Bitmap>() {
@@ -172,6 +175,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         }
                     })
                     .preload();
+        }
     }
 
     public static class Notify {

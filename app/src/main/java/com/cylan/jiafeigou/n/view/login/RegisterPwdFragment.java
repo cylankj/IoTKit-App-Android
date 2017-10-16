@@ -58,8 +58,9 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void onStart() {
         super.onStart();
-        if (pwdPresenter != null)
+        if (pwdPresenter != null) {
             pwdPresenter.start();
+        }
     }
 
     @Override
@@ -260,6 +261,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void onStop() {
         super.onStop();
-        if (pwdPresenter != null) pwdPresenter.stop();
+        if (pwdPresenter != null) {
+            pwdPresenter.stop();
+        }
     }
 }

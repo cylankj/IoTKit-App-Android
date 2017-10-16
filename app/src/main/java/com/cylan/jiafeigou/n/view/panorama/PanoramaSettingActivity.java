@@ -164,7 +164,9 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
             DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
             if (JFGRules.isDeviceOnline(net)) {
                 svSettingDeviceWifi.setSubTitle(net.ssid);
-            } else svSettingDeviceWifi.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            } else {
+                svSettingDeviceWifi.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            }
         }
 
 

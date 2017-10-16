@@ -71,7 +71,9 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                 Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:" + new Gson().toJson(udpMsg));
             }
             JfgUdpMsg.UdpSecondaryHeard udpHeader = unpackData(udpMsg.data, JfgUdpMsg.UdpSecondaryHeard.class);
-            if (udpHeader == null) return false;
+            if (udpHeader == null) {
+                return false;
+            }
             if (!TextUtils.equals(udpHeader.cid, deviceInformation.uuid)) {//说明不是我们需要的消息
                 return false;
             }

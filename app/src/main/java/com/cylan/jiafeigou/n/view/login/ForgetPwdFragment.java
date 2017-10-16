@@ -171,8 +171,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null)
+        if (presenter != null) {
             presenter.start();
+        }
     }
 
     @Override
@@ -182,8 +183,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             countDownTimer.onFinish();
             countDownTimer = null;
         }
-        if (presenter != null)
+        if (presenter != null) {
             presenter.stop();
+        }
     }
 
     private void initTitleBar() {
@@ -238,7 +240,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.vs_set_account_pwd)
     public void dismissIME() {
-        if (getActivity() != null) IMEUtils.hide(getActivity());
+        if (getActivity() != null) {
+            IMEUtils.hide(getActivity());
+        }
     }
 
     @OnClick(R.id.tv_meter_get_code)
@@ -251,8 +255,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         }
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
-        if (presenter != null)
+        if (presenter != null) {
             presenter.getVerifyCode(ViewUtils.getTextViewContent(etForgetUsername));
+        }
     }
 
     @Override
@@ -323,8 +328,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 break;
             case JConstant.TYPE_EMAIL:
                 enableEditTextCursor(true);
-                if (presenter != null)
+                if (presenter != null) {
                     presenter.checkMailByAccount(ViewUtils.getTextViewContent(etForgetUsername));
+                }
                 break;
         }
         IMEUtils.hide(getActivity());
@@ -389,14 +395,16 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     }
 
     private void initTitle(final int ret) {
-        if (ret == -1)
+        if (ret == -1) {
             return;
-        if (ret == JConstant.TYPE_EMAIL)
+        }
+        if (ret == JConstant.TYPE_EMAIL) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.EMAIL);
-        else if (ret == JConstant.TYPE_PHONE) {
+        } else if (ret == JConstant.TYPE_PHONE) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.NEW_PWD);
-            if (vsSetAccountPwd.getCurrentView().getId() == R.id.layout_get_code)
+            if (vsSetAccountPwd.getCurrentView().getId() == R.id.layout_get_code) {
                 vsSetAccountPwd.showNext();
+            }
         } else if (ret == JConstant.TYPE_EMAIL_VERIFY) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.Tap0_register_EmailVerification);
         }
@@ -480,8 +488,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (sureBtn != null)
+                if (sureBtn != null) {
                     sureBtn.setEnabled(!TextUtils.isEmpty(s));
+                }
                 if (ivNewClearPwd != null) {
                     ivNewClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
                     ivNewClearPwd.setClickable(true);
@@ -511,7 +520,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onResult(int event, final int errId) {
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         if (getView() != null) {
             switch (event) {
                 case JConstant.AUTHORIZE_MAIL:
@@ -525,10 +536,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     }
                     break;
                 case JConstant.GET_SMS_BACK:
-                    if (errId == JError.ErrorOK)
+                    if (errId == JError.ErrorOK) {
                         start2HandleVerificationCode();
-                    else
+                    } else {
                         tvForgetPwdSubmit.setEnabled(true);
+                    }
                     break;
                 case JFG_RESULT_VERIFY_SMS:
                     if (errId == 0) {
@@ -592,14 +604,18 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @OnCheckedChanged(R.id.cb_new_pwd_show)
     public void onNewPwdCheckBoxState(CompoundButton view, boolean isChecked) {
         ViewUtils.showPwd(etNewPwdInput, isChecked);
-        if (etNewPwdInput != null) etNewPwdInput.setSelection(etNewPwdInput.length());
+        if (etNewPwdInput != null) {
+            etNewPwdInput.setSelection(etNewPwdInput.length());
+        }
     }
 
     @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit, R.id.tv_email_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_new_clear_pwd:
-                if (etNewPwdInput != null) etNewPwdInput.setText("");
+                if (etNewPwdInput != null) {
+                    etNewPwdInput.setText("");
+                }
                 break;
             case R.id.tv_new_pwd_submit:
                 //*********

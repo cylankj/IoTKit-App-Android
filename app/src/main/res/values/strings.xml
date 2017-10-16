@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Cable mode</string>
   <string name="Cable_Mode_Start_Hotspot">Before you turn on, make sure your phone and device are connected to the same router</string>
   <string name="Cable_Mode_Switch_Cancel">If off, it may cause offline of the device, confirm off?</string>
+  <string name="Camera_Outdoor">Camera (Outdoor Version)</string>
   <string name="CancelingTips">Canceling&#8230;</string>
   <string name="Cellular_Data_Method">Mobile data:</string>
   <string name="Cellular_Data_Set_Up">Enable Mobile data in the device, please use below way, Settings> Mobile data</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">YouTube account %s has not yet opened the channel, can not live, please open and try again</string>
   <string name="LIVE_OPENING">Opening live &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Sina Weibo</string>
   <string name="LIVE_PLATFORM_YOUTUBE">YouTube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Please enter the key</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot and Press and hold the wifi button for 3s</string>
   <string name="Tap1_AddDevice_FindNoResult">No device found, please try again</string>
   <string name="Tap1_AddDevice_FindingTips">Searching for nearby devices, please starup WiFi configuration mode</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">Press and hold the set button for 3s</string>
   <string name="Tap1_AddDevice_QR">Scan QR code</string>
   <string name="Tap1_AddDevice_QR_Fail">Unable to be added by scanning</string>
   <string name="Tap1_AddDevice_SetName">Set a name</string>

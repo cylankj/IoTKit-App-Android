@@ -168,8 +168,9 @@ public class ColorPhrase {
         Token next;
         while ((next = token(prev)) != null) {
             // Creates activity_cloud_live_mesg_call_out_item doubly-linked list of tokens starting with head.
-            if (head == null)
+            if (head == null) {
                 head = next;
+            }
             prev = next;
         }
     }
@@ -335,8 +336,9 @@ public class ColorPhrase {
 
         protected Token(Token prev) {
             this.prev = prev;
-            if (prev != null)
+            if (prev != null) {
                 prev.next = this;
+            }
         }
 
         /**

@@ -81,7 +81,9 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
             switch (item.type) {
                 case 601:
                     String name = item.getName();
-                    if (name == null) return;
+                    if (name == null) {
+                        return;
+                    }
                     String fName = null;
                     if (name.matches("^\\d{11}$")) {//前三后四
                         fName = name.replace(name.substring(3, name.length() - 4), "****");
@@ -115,7 +117,9 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
                             fName = name.replace(name.substring(3, name.length() - 4), "****");
                         }
                     }
-                    if (fName == null) fName = name;
+                    if (fName == null) {
+                        fName = name;
+                    }
 
                     holder.setText(R.id.mesg_item_content, String.format(ContextUtils.getContext().getString(R.string.MSG_REBIND), fName));
                     break;

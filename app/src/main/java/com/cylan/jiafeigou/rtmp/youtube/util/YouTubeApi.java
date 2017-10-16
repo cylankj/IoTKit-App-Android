@@ -473,9 +473,12 @@ public class YouTubeApi {
             return finished;
         }
 
+        @Override
         public void execute() throws Exception {
             AppLogger.w(" YOUTUBE:broadcastId is:" + broadcastId + ",boundStreamId is" + boundStreamId);
-            if (finished) return;
+            if (finished) {
+                return;
+            }
             //获取稳定的码率
             boolean hasActiveStream = false;
 
@@ -565,6 +568,7 @@ public class YouTubeApi {
             finished = true;
         }
 
+        @Override
         public void cancel() {
             finished = true;
             youtube = null;

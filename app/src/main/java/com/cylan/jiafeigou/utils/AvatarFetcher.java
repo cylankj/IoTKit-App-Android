@@ -46,8 +46,9 @@ public class AvatarFetcher implements DataFetcher<InputStream> {
 
         Canvas canvas = new Canvas(output);
 
-        if (bitmaps.size() == 0)
+        if (bitmaps.size() == 0) {
             return null;
+        }
 
         int count = Math.min(bitmaps.size(), JoinLayout.max());
         float[] size = JoinLayout.size(count);

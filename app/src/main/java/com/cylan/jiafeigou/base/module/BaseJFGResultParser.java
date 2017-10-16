@@ -129,7 +129,9 @@ BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.RessetAccountBack(jfgResult));
                 break;
         }
-        if (BaseApplication.isBackground()) return;
+        if (BaseApplication.isBackground()) {
+            return;
+        }
 //        if (login && MethodFilter.run("PushPickerIntentService", 5 * 1000)) {
 //            PushPickerIntentService.start();
 //            Observable.just(new FetchFeedbackTask(),

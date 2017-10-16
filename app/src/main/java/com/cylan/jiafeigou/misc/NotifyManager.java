@@ -31,8 +31,9 @@ public class NotifyManager implements INotify {
     private WeakReference<Context> context;
 
     public static NotifyManager getNotifyManager() {
-        if (notifyManager == null)
+        if (notifyManager == null) {
             notifyManager = new NotifyManager();
+        }
         return notifyManager;
     }
 
@@ -45,8 +46,9 @@ public class NotifyManager implements INotify {
     }
 
     private Context getContext() {
-        if (this.context == null)
+        if (this.context == null) {
             context = new WeakReference<>(ContextUtils.getContext());
+        }
         return context.get();
     }
 
@@ -68,7 +70,9 @@ public class NotifyManager implements INotify {
     @Override
     @Deprecated //无法根据用户设置开启关闭声音振动
     public void sendNotify(Notification notification) {
-        if (!enablePush()) return;//用户设置中不允许推送通知,则不发送消息了
+        if (!enablePush()) {
+            return;//用户设置中不允许推送通知,则不发送消息了
+        }
         NotificationManager mNotificationManager = (NotificationManager) ContextUtils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFY_ID, notification);
     }
@@ -107,17 +111,21 @@ public class NotifyManager implements INotify {
     @Override
     public void sendNotify(NotifyBean notifyBean) {
         AppLogger.d("bean:" + notifyBean);
-        if (!enablePush()) return;//用户设置中不允许推送通知,则不发送消息了
-        if (notifyBean == null || notifyBean.notificationId == -1)
+        if (!enablePush()) {
+            return;//用户设置中不允许推送通知,则不发送消息了
+        }
+        if (notifyBean == null || notifyBean.notificationId == -1) {
             throw new IllegalArgumentException("notifyBean.notificationId cannot be  -1");
+        }
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
         builder.setSmallIcon(getNotificationSmallIcon());
         builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(),
                 notifyBean.resId == -1 ? R.mipmap.ic_launcher : notifyBean.resId));
         builder.setContentTitle(notifyBean.content);
         builder.setContentText(notifyBean.subContent);
-        if (notifyBean.pendingIntent != null)
+        if (notifyBean.pendingIntent != null) {
             builder.setContentIntent(notifyBean.pendingIntent);
+        }
         if (notifyBean.sound && enableSound()) {
             builder.setSound(Uri.parse("android.resource://" + ContextUtils.getContext().getPackageName() + "/" + R.raw.tips));
         }

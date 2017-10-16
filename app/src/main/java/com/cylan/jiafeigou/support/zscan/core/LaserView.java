@@ -104,10 +104,12 @@ public class LaserView extends View {
      * 开始动画
      */
     public void startAnimation() {
-        if (scanAnimation == null)
+        if (scanAnimation == null) {
             scanAnimation = ValueAnimator.ofInt(0, getMeasuredHeight());
-        if (scanAnimation.isRunning())
+        }
+        if (scanAnimation.isRunning()) {
             return;
+        }
         scanAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -127,7 +129,8 @@ public class LaserView extends View {
      * 停止动画
      */
     public void stopAnimation() {
-        if (scanAnimation != null && scanAnimation.isRunning())
+        if (scanAnimation != null && scanAnimation.isRunning()) {
             scanAnimation.cancel();
+        }
     }
 }

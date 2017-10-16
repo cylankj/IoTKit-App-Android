@@ -46,10 +46,11 @@ public class BaseDialog<T> extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getDialog() != null && getDialog().getWindow() != null)
+        if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow()
                     .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(), ViewGroup.LayoutParams.WRAP_CONTENT
                     );
+        }
     }
 
     public void setAction(BaseDialogAction action) {
@@ -81,6 +82,8 @@ public class BaseDialog<T> extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (mContentView != null) ((ViewGroup) mContentView.getParent()).removeView(mContentView);
+        if (mContentView != null) {
+            ((ViewGroup) mContentView.getParent()).removeView(mContentView);
+        }
     }
 }

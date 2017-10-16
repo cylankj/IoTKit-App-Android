@@ -80,7 +80,9 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     public void onStart() {
         onRegisterSubscription();
         if (registerTimeTick()) {
-            if (timeTick == null) timeTick = new TimeTick(this);
+            if (timeTick == null) {
+                timeTick = new TimeTick(this);
+            }
             LocalBroadcastManager.getInstance(ContextUtils.getContext())
                     .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
         }
@@ -122,8 +124,9 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     public void onStop() {
         onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP);
         if (registerTimeTick()) {
-            if (timeTick != null)
+            if (timeTick != null) {
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
+            }
         }
     }
 
@@ -273,8 +276,9 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (abstractPresenter != null && abstractPresenter.get() != null)
+            if (abstractPresenter != null && abstractPresenter.get() != null) {
                 abstractPresenter.get().onTimeTick();
+            }
         }
     }
 

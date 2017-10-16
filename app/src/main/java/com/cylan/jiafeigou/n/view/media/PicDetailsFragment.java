@@ -123,6 +123,7 @@ public class PicDetailsFragment extends LazyFragment {
         AppLogger.d("onDestroyView: " + mPosition);
     }
 
+    @Override
     public void startPostponedEnterTransition() {
         if (mPosition == mStartPosition) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -134,8 +135,9 @@ public class PicDetailsFragment extends LazyFragment {
                 public boolean onPreDraw() {
                     detailsAlbumImage.getViewTreeObserver().removeOnPreDrawListener(this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (mStartPosition == mPosition)
+                        if (mStartPosition == mPosition) {
                             getActivity().startPostponedEnterTransition();
+                        }
                     }
                     return true;
                 }

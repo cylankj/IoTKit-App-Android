@@ -217,13 +217,17 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         final int count = suggestionAdapter == null ? 0 : suggestionAdapter.getCount();
         final int index = suggestionAdapter == null || suggestionAdapter.getCount() == 0 ? -1
                 : suggestionAdapter.getList().indexOf(bean);
-        if (index < 0 || index > count) return;
+        if (index < 0 || index > count) {
+            return;
+        }
         suggestionAdapter.notifyItemChanged(index);
     }
 
     @Override
     public void appendList(List<FeedBackBean> list) {
-        if (suggestionAdapter == null) return;
+        if (suggestionAdapter == null) {
+            return;
+        }
         suggestionAdapter.addAll(list);
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
     }
@@ -237,7 +241,9 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
                         final int index = suggestionAdapter.getList().indexOf(item);
-                        if (index < 0) return;
+                        if (index < 0) {
+                            return;
+                        }
                         suggestionAdapter.notifyItemChanged(index);
                     }, AppLogger::e);
             dialog.dismiss();
@@ -257,7 +263,9 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
 
     private void initKeyBoard() {
         KeyboardUtil.attach(this, panelRoot, isShowing -> {
-            if (suggestionAdapter == null) return;
+            if (suggestionAdapter == null) {
+                return;
+            }
             mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
         });
         KPSwitchConflictUtil.attach(panelRoot, mEtSuggestion,

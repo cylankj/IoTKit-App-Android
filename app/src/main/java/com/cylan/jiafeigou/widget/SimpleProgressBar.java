@@ -115,8 +115,9 @@ public class SimpleProgressBar
                 - circleRadius * (float) Math.sin((pointAngle + 180.0f) * Math.PI / 180);
         canvas.drawCircle(x, y, pointRadius, pointPaint);
         canvas.restoreToCount(count);
-        if (run)
+        if (run) {
             post(this);
+        }
     }
 
     @Override

@@ -50,7 +50,9 @@ public class AlwaysCenterBehavior extends AppBarLayout.ScrollingViewBehavior {
     @Override
     protected void layoutChild(final CoordinatorLayout parent, final View child,
                                final int layoutDirection) {
-        if (hasLayout) return;
+        if (hasLayout) {
+            return;
+        }
         final List<View> dependencies = parent.getDependencies(child);
         try {
             final View header = (View) findFirstDependencyMethod.invoke(this, dependencies);

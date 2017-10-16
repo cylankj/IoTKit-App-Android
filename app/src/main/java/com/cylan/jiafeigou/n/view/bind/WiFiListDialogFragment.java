@@ -94,8 +94,9 @@ public class WiFiListDialogFragment extends DialogFragment implements
         rvWifiList.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvWifiList.setLayoutManager(layoutManager);
-        if (resultList != null)
+        if (resultList != null) {
             adapter.addAll(resultList);
+        }
     }
 
     @Override
@@ -112,16 +113,18 @@ public class WiFiListDialogFragment extends DialogFragment implements
     }
 
     private void cancelAnimation() {
-        if (layoutHeightAnimation != null && layoutHeightAnimation.isRunning())
+        if (layoutHeightAnimation != null && layoutHeightAnimation.isRunning()) {
             layoutHeightAnimation.cancel();
+        }
     }
 
     private void prepareAnimation(final int count) {
         int targetHeight = count * itemHeight;
         targetHeight = Math.min(maxHeight, targetHeight);
         targetHeight = Math.max(targetHeight, minHeight);
-        if (Math.abs(targetHeight - currentHeight) < itemHeight / 2)
+        if (Math.abs(targetHeight - currentHeight) < itemHeight / 2) {
             return;
+        }
         cancelAnimation();
         layoutHeightAnimation = ValueAnimator.ofInt(currentHeight, targetHeight);
         layoutHeightAnimation.setDuration(400);
@@ -139,9 +142,10 @@ public class WiFiListDialogFragment extends DialogFragment implements
         layoutHeightAnimation.addListener(new AnimatorUtils.SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (getDialog() != null && getDialog().getWindow() != null)
+                if (getDialog() != null && getDialog().getWindow() != null) {
                     getDialog().getWindow()
                             .setLayout(maxWidth, currentHeight);
+                }
             }
         });
         layoutHeightAnimation.start();
@@ -194,8 +198,9 @@ public class WiFiListDialogFragment extends DialogFragment implements
         }
         ScanResult result = adapter.getItem(position).result;
         adapter.setCheckedResult(result);
-        if (clickCallBack != null)
+        if (clickCallBack != null) {
             clickCallBack.onDismiss(result);
+        }
         dismiss();
     }
 

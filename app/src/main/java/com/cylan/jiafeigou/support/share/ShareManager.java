@@ -325,7 +325,9 @@ public class ShareManager {
         @Override
         public void onShareOptionClick(int shareItemType) {
             AppLogger.w("H5分享模式,在指定的 fragment 里分享");
-            if (dialog != null) dialog.dismiss();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
             dialog = null;
             if (activity != null) {
                 if (NetUtils.getNetType(activity) != ConnectivityManager.TYPE_WIFI) {

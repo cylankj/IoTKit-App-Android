@@ -69,15 +69,17 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
             for (Subscription subscription : subscriptions) {
-                if (subscription != null && !subscription.isUnsubscribed())
+                if (subscription != null && !subscription.isUnsubscribed()) {
                     subscription.unsubscribe();
+                }
             }
         }
     }
 
     public AudioManager getAudioManager() {
-        if (audioManager == null)
+        if (audioManager == null) {
             audioManager = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
+        }
         return audioManager;
     }
 
@@ -93,15 +95,21 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     @CallSuper
     @Override
     public void start() {
-        if (compositeSubscription != null) compositeSubscription.unsubscribe();
+        if (compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
+        }
         compositeSubscription = new CompositeSubscription();
-        if (refCacheMap != null) refCacheMap.unsubscribe();
+        if (refCacheMap != null) {
+            refCacheMap.unsubscribe();
+        }
         refCacheMap = new MapSubscription();
         Subscription[] subs = register();
         if (subs != null) {
-            for (Subscription s : subs)
-                if (s != null)
+            for (Subscription s : subs) {
+                if (s != null) {
                     compositeSubscription.add(s);
+                }
+            }
         }
         AppLogger.d(TAG + ": register: " + compositeSubscription.isUnsubscribed() + ",:" + refCacheMap.isUnsubscribed());
         String[] action = registerNetworkAction();
@@ -110,7 +118,9 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
             AppLogger.d("register network true");
         }
         if (registerTimeTick()) {
-            if (timeTick == null) timeTick = new TimeTick(this);
+            if (timeTick == null) {
+                timeTick = new TimeTick(this);
+            }
             LocalBroadcastManager.getInstance(ContextUtils.getContext())
                     .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
         }
@@ -132,13 +142,15 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     }
 
     protected void addSubscription(Subscription subscription) {
-        if (subscription != null)
+        if (subscription != null) {
             compositeSubscription.add(subscription);
+        }
     }
 
     protected void addSubscription(Subscription subscription, String tag) {
-        if (subscription != null)
+        if (subscription != null) {
             refCacheMap.add(subscription, tag);
+        }
     }
 
     public boolean containsSubscription(String tag) {
@@ -146,10 +158,12 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     }
 
     protected void removeSubscription(String tag) {
-        if (tag != null)
+        if (tag != null) {
             refCacheMap.remove(tag);
+        }
     }
 
+    @Override
     public boolean unSubscribe(String tag) {
         refCacheMap.remove(tag);
         return true;
@@ -161,12 +175,17 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
         Log.d("stop", "stop: " + this.getClass().getSimpleName());
         unSubscribe(refCacheMap);
         unSubscribe(compositeSubscription);
-        if (compositeSubscription != null) compositeSubscription.clear();
-        if (refCacheMap != null) refCacheMap.clear();
+        if (compositeSubscription != null) {
+            compositeSubscription.clear();
+        }
+        if (refCacheMap != null) {
+            refCacheMap.clear();
+        }
         NetMonitor.getNetMonitor().unregister(this);
         if (registerTimeTick()) {
-            if (timeTick != null)
+            if (timeTick != null) {
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
+            }
         }
         unRegisterHeadSetObservable();
         abandonAudioFocus();
@@ -193,8 +212,9 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (abstractPresenter != null && abstractPresenter.get() != null)
+            if (abstractPresenter != null && abstractPresenter.get() != null) {
                 abstractPresenter.get().onTimeTick();
+            }
         }
     }
 
@@ -211,14 +231,18 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     }
 
     protected void registerHeadSetObservable() {
-        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        if (headsetObserver == null) {
+            headsetObserver = HeadsetObserver.getHeadsetObserver();
+        }
         headsetObserver.addObserver(this);
         AppLogger.d("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
         AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
     }
 
     public boolean isEarpiecePlug() {
-        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        if (headsetObserver == null) {
+            headsetObserver = HeadsetObserver.getHeadsetObserver();
+        }
         return headsetObserver.isHeadsetOn();
     }
 
@@ -228,7 +252,9 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     }
 
     protected void unRegisterHeadSetObservable() {
-        if (headsetObserver == null) return;
+        if (headsetObserver == null) {
+            return;
+        }
         headsetObserver.removeObserver(this);
         AppLogger.d("反注册注册监听耳机:" + TAG);
     }
@@ -247,6 +273,7 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     }
 
     private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                 audioManager.abandonAudioFocus(afChangeListener);

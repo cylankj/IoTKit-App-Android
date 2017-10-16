@@ -198,7 +198,9 @@ public class JConstant {
     public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
 
     public static String getFaceText(String[] face_id, Map<String, DpMsgDefine.FaceInformation> faceMap, String defaultText) {
-        if (face_id == null || faceMap == null || faceMap.size() == 0) return defaultText;
+        if (face_id == null || faceMap == null || faceMap.size() == 0) {
+            return defaultText;
+        }
         DpMsgDefine.FaceInformation information;
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < face_id.length; i++) {
@@ -404,40 +406,61 @@ public class JConstant {
     }
 
     public static int getMessageIcon(int pid) {
-        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid))
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
             return R.drawable.me_icon_head_camera_ruishi;
-        if (JFGRules.isCatEeyBell(pid)) return R.drawable.me_icon_intelligent_eye;
-        if (JFGRules.isBell(pid)) return R.drawable.me_icon_head_ring;
-        if (JFGRules.isPan720(pid)) return R.drawable.me_icon_head_720camera;
-        if (JFGRules.isCamera(pid)) return R.drawable.me_icon_head_camera;
+        }
+        if (JFGRules.isCatEeyBell(pid)) {
+            return R.drawable.me_icon_intelligent_eye;
+        }
+        if (JFGRules.isBell(pid)) {
+            return R.drawable.me_icon_head_ring;
+        }
+        if (JFGRules.isPan720(pid)) {
+            return R.drawable.me_icon_head_720camera;
+        }
+        if (JFGRules.isCamera(pid)) {
+            return R.drawable.me_icon_head_camera;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
 
     public static int getOnlineIcon(int pid) {
-        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) return R.drawable.home_icon_rs_online;
-        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
+            return R.drawable.home_icon_rs_online;
+        }
+        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid)) {
             return R.drawable.icon_home_doorbell_online;
-        if (JFGRules.isCatEeyBell(pid))
+        }
+        if (JFGRules.isCatEeyBell(pid)) {
             return R.drawable.home_icon_intelligent_eye;
-        if (JFGRules.isPan720(pid))
+        }
+        if (JFGRules.isPan720(pid)) {
             return R.drawable.home_icon_720camera_online;
-        if (JFGRules.isCamera(pid))
+        }
+        if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_online;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
 
     public static int getOfflineIcon(int pid) {
-        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) return R.drawable.home_icon_rs_offline;
-        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
+            return R.drawable.home_icon_rs_offline;
+        }
+        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid)) {
             return R.drawable.icon_home_doorbell_offline;
-        if (JFGRules.isCatEeyBell(pid))
+        }
+        if (JFGRules.isCatEeyBell(pid)) {
             return R.drawable.home_icon_intelligent_eye_disable;
-        if (JFGRules.isPan720(pid))
+        }
+        if (JFGRules.isPan720(pid)) {
             return R.drawable.home_icon_720camera_offline;
-        if (JFGRules.isCamera(pid))
+        }
+        if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_offline;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }

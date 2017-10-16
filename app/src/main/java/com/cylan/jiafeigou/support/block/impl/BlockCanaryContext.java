@@ -54,6 +54,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
         }
     }
 
+    @Override
     public Context getContext() {
         return sAppContext;
     }
@@ -63,6 +64,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      *
      * @return apk qualifier
      */
+    @Override
     public String getQualifier() {
         return "Unspecified";
     }
@@ -72,6 +74,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      *
      * @return user msgId
      */
+    @Override
     public String getUid() {
         return "0";
     }
@@ -81,6 +84,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      *
      * @return String like 2G, 3G, 4G, wifi, etc.
      */
+    @Override
     public String getNetworkType() {
         return NetUtils.getNetType(getContext()) + "";
     }
@@ -101,6 +105,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      *
      * @return threshold in mills
      */
+    @Override
     public int getConfigBlockThreshold() {
         return 500;
     }
@@ -110,6 +115,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      *
      * @return true if need, else if not need.
      */
+    @Override
     public boolean isNeedDisplay() {
         return BuildConfig.DEBUG;
     }

@@ -71,7 +71,9 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
      */
     @Override
     public void showSendReqResult(int code) {
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         if (!TextUtils.isEmpty(getEditText())) {
             hideLoading();
             if (code == JError.ErrorOK) {
@@ -117,7 +119,9 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     @Override
     public void onStop() {
         super.onStop();
-        if (basePresenter != null) basePresenter.stop();
+        if (basePresenter != null) {
+            basePresenter.stop();
+        }
         IMEUtils.hide(getActivity());
     }
 
@@ -152,8 +156,9 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
 
     private void initMailEdit() {
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgAccount != null)
+        if (jfgAccount != null) {
             mETMailBox.setText(jfgAccount.getEmail());
+        }
     }
 
 
@@ -222,7 +227,9 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (!isAdded() || getView() == null) return;
+        if (!isAdded() || getView() == null) {
+            return;
+        }
         getView().post(() -> {
             if (state == 0) {
                 hideLoading();

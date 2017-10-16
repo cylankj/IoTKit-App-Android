@@ -32,6 +32,7 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
     override fun initViewAndListener() {
         super.initViewAndListener()
         custom_toolbar.setRightAction { setFaceName() }
+        custom_toolbar.setBackAction { fragmentManager.popBackStack() }
         edit_face_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 

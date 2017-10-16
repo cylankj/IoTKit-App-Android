@@ -33,11 +33,13 @@ public class Rebuilder extends Thread {
     @Override
     public void run() {
         // notify to developer------------------------------------------------------------
-        if (observer.downloadManagerListener != null)
+        if (observer.downloadManagerListener != null) {
             observer.downloadManagerListener.OnDownloadRebuildStart(task.id);
+        }
         if (TextUtils.isEmpty(task.save_address) || TextUtils.isEmpty(task.name)) {
-            if (observer.downloadManagerListener != null)
+            if (observer.downloadManagerListener != null) {
                 observer.downloadManagerListener.onFailed(-1, new FailReason("the downloaded file is missing,task is reInitialized?"));
+            }
             return;
         }
         File file = FileUtils.create(task.save_address, task.name + "." + task.extension);
@@ -46,8 +48,9 @@ public class Rebuilder extends Thread {
         try {
             finalFile = new FileOutputStream(file, true);
         } catch (FileNotFoundException e) {
-            if (observer.downloadManagerListener != null)
+            if (observer.downloadManagerListener != null) {
                 observer.downloadManagerListener.onFailed(task.id, new FailReason(e.toString()));
+            }
             return;
         }
 
@@ -61,8 +64,9 @@ public class Rebuilder extends Thread {
                     finalFile.write(readBuffer, 0, read);
                 }
             } catch (IOException e) {
-                if (observer.downloadManagerListener != null)
+                if (observer.downloadManagerListener != null) {
                     observer.downloadManagerListener.onFailed(task.id, new FailReason(e.toString()));
+                }
             }
             try {
                 finalFile.flush();

@@ -145,6 +145,7 @@ public class SimpleBindFlow extends AFullBind {
      *
      * @param portrait
      */
+    @Override
     public void setServerLanguage(UdpConstant.UdpDevicePortrait portrait) {
         Observable.just(portrait)
                 .subscribeOn(Schedulers.io())
@@ -155,8 +156,9 @@ public class SimpleBindFlow extends AFullBind {
                         String serverAddress = OptionsImpl.getServer();
                         int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1));
                         serverAddress = serverAddress.split(":")[0];
-                        if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
+                        if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG) {
                             throw new IllegalArgumentException("server address is empty");
+                        }
                         //设置语言
                         JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
                                 portrait.uuid,
@@ -376,8 +378,9 @@ public class SimpleBindFlow extends AFullBind {
                         AppLogger.e(e.getMessage());
                     }
                     //是否需要升级
-                    if (needUpdate)
+                    if (needUpdate) {
                         iBindResult.needToUpgrade();
+                    }
                     AppLogger.d(BIND_TAG + "need to upgrade: " + needUpdate);
                     return !needUpdate;
                 });

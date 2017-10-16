@@ -263,8 +263,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     protected void onPause() {
-        if (bottomAnimator != null) bottomAnimator.stop();
-        if (headerAnimator != null) headerAnimator.stop();
+        if (bottomAnimator != null) {
+            bottomAnimator.stop();
+        }
+        if (headerAnimator != null) {
+            headerAnimator.stop();
+        }
         super.onPause();
         if (panoramicView720Ext != null) {
             panoramicView720Ext.onPause();
@@ -567,8 +571,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableVRMode(!panoramicView720Ext.isVREnabled());
             boolean vrEnabled = panoramicView720Ext.isVREnabled();
-            if (!vrEnabled)
+            if (!vrEnabled) {
                 panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);//默认双鱼眼
+            }
             panoramicView720Ext.enableGyro(vrEnabled || panoramicView720Ext.isGyroEnabled());
             bottomPictureMenuVR.setImageResource(vrEnabled ? R.drawable.photos_icon_vr_hl : R.drawable.photos_icon_vr_selector);
             bottomVideoMenuVR.setImageResource(vrEnabled ? R.drawable.video_icon_vr_hl : R.drawable.video_icon_vr_selector);
@@ -766,8 +771,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void processSave() {
-        if (presenter != null)
+        if (presenter != null) {
             presenter.saveImage(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex), bean.alarmMsg.time + ".png");
+        }
     }
 
     private void deleteWithAlert() {

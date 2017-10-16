@@ -200,14 +200,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD,
                 isRs ? 2 : -1);
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
-        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
+        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0) {
             return "";
+        }
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
         boolean alarmFlag = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!alarmFlag && deviceAutoVideoRecord == 0)//不开启,默认不选择
+        {
             return "";
+        }
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }
 

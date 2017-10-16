@@ -27,6 +27,7 @@ public abstract class CustomGenericAdapter<T> extends BaseAdapter {
         return arrayList.size();
     }
 
+    @Override
     public T getItem(int position) {
         return arrayList.get(position);
     }

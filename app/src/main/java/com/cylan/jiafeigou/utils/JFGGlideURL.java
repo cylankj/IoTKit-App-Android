@@ -39,7 +39,9 @@ public class JFGGlideURL extends GlideUrl {
         if (device != null) {
             this.V2 = TextUtils.isEmpty(device.vid);
             Log.d("V2", "V2? " + V2);
-        } else Log.d("V2", "V2? is empty ");
+        } else {
+            Log.d("V2", "V2? is empty ");
+        }
         this.timestamp = fileName;
         this.cid = cid;
     }

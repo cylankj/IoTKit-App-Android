@@ -97,8 +97,9 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             mVideoPosition = savedInstanceState.getLong("videoPosition");
+        }
     }
 
     public void startPlay() {
@@ -122,8 +123,9 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
         mMediaPlayer = new IjkExoMediaPlayer(getContext());
         mSubscribe = getCacheInstance().toObservable(EventFactory.HideVideoViewEvent.class).subscribe(hideVideoViewEvent -> {
-            if (mSubscribe != null && !mSubscribe.isUnsubscribed())
+            if (mSubscribe != null && !mSubscribe.isUnsubscribed()) {
                 mSubscribe.unsubscribe();
+            }
             mMediaPlayer.stop();
             mMediaPlayer.release();
             detailsAlbumImage.setVisibility(View.VISIBLE);
@@ -329,8 +331,9 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisable && isPrepared && mAnimateEnd) {
             startLoading();
-            if (mSurfaceCreated)
+            if (mSurfaceCreated) {
                 startPlay();
+            }
         } else if (!isVisble && isPrepared && mAnimateEnd) {
             mVideoPosition = mMediaPlayer.getCurrentPosition();
             mMediaPlayer.reset();

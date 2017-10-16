@@ -27,7 +27,9 @@ public class PanAlbumDataManager {
     public static PanAlbumDataManager getInstance() {
         if (instance == null) {
             synchronized (PanAlbumDataManager.class) {
-                if (instance == null) instance = new PanAlbumDataManager();
+                if (instance == null) {
+                    instance = new PanAlbumDataManager();
+                }
             }
         }
         return instance;
@@ -101,7 +103,9 @@ public class PanAlbumDataManager {
             file.offset = position;
             file.uuid = uuid;
             boolean finished = file.offset >= file.fileSize;
-            if (finished) downloadingFileMap.remove(fileName);
+            if (finished) {
+                downloadingFileMap.remove(fileName);
+            }
             file.state = finished ? DownloadState.SUC : DownloadState.DOWNLOADING;
             PanFileDownloader.getDownloader().updateOrSaveFile(file).subscribeOn(Schedulers.io()).subscribe(ret -> {
             }, AppLogger::e);

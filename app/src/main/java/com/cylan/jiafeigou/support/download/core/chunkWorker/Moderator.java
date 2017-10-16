@@ -100,8 +100,9 @@ public class Moderator {
             }
 
             // notify to developer------------------------------------------------------------
-            if (downloadManagerListener != null)
+            if (downloadManagerListener != null) {
                 downloadManagerListener.OnDownloadStarted(task.id);
+            }
         }
     }
 
@@ -135,14 +136,16 @@ public class Moderator {
             tasksDataSource.update(task);
 
             // notify to developer------------------------------------------------------------
-            if (downloadManagerListener != null)
+            if (downloadManagerListener != null) {
                 downloadManagerListener.OnDownloadPaused(task.id);
+            }
         }
     }
 
     public void onFailed(int taskId, FailReason failReason) {
-        if (downloadManagerListener != null)
+        if (downloadManagerListener != null) {
             downloadManagerListener.onFailed(taskId, failReason);
+        }
     }
 
     /*
@@ -168,8 +171,9 @@ public class Moderator {
             AppLogger.d("AsyFileTotal:" + report.getTotalSize());
             // notify to developer------------------------------------------------------------
 
-            if (downloadManagerListener != null)
+            if (downloadManagerListener != null) {
                 downloadManagerListener.onDownloadProcess(taskId, percent, downloadLength);
+            }
         }
     }
 
@@ -179,8 +183,9 @@ public class Moderator {
                 chunksDataSource.chunksRelatedTask(chunk.task_id); // delete itself from worker list
 
         for (Chunk ch : taskChunks) {
-            if (workerList.get(ch.id) != null)
+            if (workerList.get(ch.id) != null) {
                 return;
+            }
         }
 
         Task task = tasksDataSource.getTaskInfo(chunk.task_id);
@@ -190,8 +195,9 @@ public class Moderator {
         tasksDataSource.update(task);
 
         // notify to developer------------------------------------------------------------
-        if (downloadManagerListener != null)
+        if (downloadManagerListener != null) {
             downloadManagerListener.OnDownloadFinished(task.id);
+        }
 
         // assign chunk files together
         Thread t = new Rebuilder(task, taskChunks, this);
@@ -206,8 +212,9 @@ public class Moderator {
         }
 
         // notify to developer------------------------------------------------------------
-        if (downloadManagerListener != null)
+        if (downloadManagerListener != null) {
             downloadManagerListener.OnDownloadRebuildFinished(task.id);
+        }
 
         // change task row state
         task.state = TaskStates.END;
@@ -215,8 +222,9 @@ public class Moderator {
         tasksDataSource.update(task);
 
         // notify to developer------------------------------------------------------------
-        if (downloadManagerListener != null)
+        if (downloadManagerListener != null) {
             downloadManagerListener.OnDownloadCompleted(task.id);
+        }
 
         wakeUpObserver(task.id);
     }

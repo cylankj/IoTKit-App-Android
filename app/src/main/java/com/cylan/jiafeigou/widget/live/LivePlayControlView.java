@@ -58,6 +58,7 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
         textView.setOnClickListener(this);
     }
 
+    @Override
     public int getState() {
         return state;
     }
@@ -77,8 +78,9 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
                 imageView.setVisibility(GONE);
-                if (!simpleProgressBar.isShown())
+                if (!simpleProgressBar.isShown()) {
                     simpleProgressBar.setVisibility(VISIBLE);
+                }
                 simpleProgressBar.setVisibility(VISIBLE);
                 simpleProgressBar.bringToFront();
                 break;
@@ -107,10 +109,12 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                 imageView.bringToFront();
                 imageView.setImageResource(R.drawable.btn_video_retry);
                 simpleProgressBar.setVisibility(GONE);
-                if (!textView.isShown())
+                if (!textView.isShown()) {
                     textView.setVisibility(VISIBLE);
-                if (!TextUtils.isEmpty(content))
+                }
+                if (!TextUtils.isEmpty(content)) {
                     textView.setText(content);
+                }
                 if (!TextUtils.isEmpty(help)) {
                     tvHelp.setVisibility(VISIBLE);
                     tvHelp.setText(help);
@@ -152,12 +156,14 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                         break;
                     case 2:
                         //隐藏
-                        if (LivePlayControlView.this.isShown())
+                        if (LivePlayControlView.this.isShown()) {
                             LivePlayControlView.this.setVisibility(INVISIBLE);
+                        }
                         break;
                     case 3:
-                        if (!LivePlayControlView.this.isShown())
+                        if (!LivePlayControlView.this.isShown()) {
                             LivePlayControlView.this.setVisibility(VISIBLE);
+                        }
                         break;
                 }
                 return true;
@@ -175,13 +181,19 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_state:
-                if (action != null) action.clickImage(v, state);
+                if (action != null) {
+                    action.clickImage(v, state);
+                }
                 break;
             case R.id.tv_control_content:
-                if (action != null) action.clickText(v);
+                if (action != null) {
+                    action.clickText(v);
+                }
                 break;
             case R.id.tv_control_help:
-                if (action != null) action.clickHelp(v);
+                if (action != null) {
+                    action.clickHelp(v);
+                }
                 break;
         }
     }

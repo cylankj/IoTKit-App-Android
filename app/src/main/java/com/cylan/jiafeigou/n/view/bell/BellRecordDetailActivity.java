@@ -218,7 +218,9 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
-        if (!canCollect()) return;
+        if (!canCollect()) {
+            return;
+        }
         mCollect.setEnabled(false);
         check()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -401,7 +403,9 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (version != null) {
                         isCollect = true;
                         collectVersion = version.value;
-                    } else isCollect = false;
+                    } else {
+                        isCollect = false;
+                    }
                     return ret;
                 });
     }

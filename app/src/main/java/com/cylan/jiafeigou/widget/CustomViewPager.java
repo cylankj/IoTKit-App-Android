@@ -27,7 +27,9 @@ public class CustomViewPager extends ViewPager {
             case MotionEvent.ACTION_DOWN: {
                 if (isPagingEnabled && enableScrollListener != null && enableScrollListener.enable(event)) {
                     return super.onTouchEvent(event);
-                } else return false;
+                } else {
+                    return false;
+                }
             }
         }
         return super.onTouchEvent(event);
@@ -39,7 +41,9 @@ public class CustomViewPager extends ViewPager {
             case MotionEvent.ACTION_DOWN: {
                 if (isPagingEnabled && enableScrollListener != null && enableScrollListener.enable(event)) {
                     return super.onInterceptTouchEvent(event);
-                } else return false;
+                } else {
+                    return false;
+                }
             }
         }
         try {

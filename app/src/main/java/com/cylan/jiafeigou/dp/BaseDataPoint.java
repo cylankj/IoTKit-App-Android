@@ -31,6 +31,7 @@ public abstract class BaseDataPoint implements Parcelable, DataPoint {
     }
 
 
+    @Override
     public byte[] toBytes() {
         byte[] bytes;
         if (this instanceof DpMsgDefine.DPPrimary) {
@@ -66,7 +67,9 @@ public abstract class BaseDataPoint implements Parcelable, DataPoint {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         DataPoint value = (DataPoint) o;
         return version == value.getVersion() && msgId == value.getMsgId();
 

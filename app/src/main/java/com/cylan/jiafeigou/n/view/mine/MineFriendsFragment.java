@@ -129,7 +129,9 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     }
 
     private boolean onFriendItemClick(View view, IAdapter iAdapter, IItem item, int position) {
-        if (!(item instanceof FriendContextItem)) return false;
+        if (!(item instanceof FriendContextItem)) {
+            return false;
+        }
         FriendContextItem friendContextItem = (FriendContextItem) item;
         Bundle bundle = new Bundle();
         if (friendContextItem.friendRequest != null) {

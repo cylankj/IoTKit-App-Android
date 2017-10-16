@@ -824,7 +824,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 return false;
             }
             //局域网弹出
-            if (!MiscUtils.isDeviceInWLAN(uuid)) return false;
+            if (!MiscUtils.isDeviceInWLAN(uuid)) {
+                return false;
+            }
             return true;
         });
         version.startCheck();

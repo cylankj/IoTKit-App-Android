@@ -100,7 +100,9 @@ public class CapturePeriodDialogFragment extends BaseDialog {
         int n = checkedSerial;
         int c = 0; // 计数器
         for (c = 0; n > 0; n >>= 1) // 循环移位
+        {
             c += n & 1; // 如果当前位是1，则计数器加1
+        }
         return c;
     }
 

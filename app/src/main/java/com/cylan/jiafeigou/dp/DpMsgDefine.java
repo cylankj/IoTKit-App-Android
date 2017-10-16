@@ -346,13 +346,21 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
 
             DPSdcardSummary summary = (DPSdcardSummary) o;
 
-            if (hasSdcard != summary.hasSdcard) return false;
+            if (hasSdcard != summary.hasSdcard) {
+                return false;
+            }
             return errCode == summary.errCode;
 
         }
@@ -592,16 +600,30 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
 
             DPAlarm dpAlarm = (DPAlarm) o;
 
-            if (time != dpAlarm.time) return false;
-            if (isRecording != dpAlarm.isRecording) return false;
-            if (fileIndex != dpAlarm.fileIndex) return false;
-            if (ossType != dpAlarm.ossType) return false;
+            if (time != dpAlarm.time) {
+                return false;
+            }
+            if (isRecording != dpAlarm.isRecording) {
+                return false;
+            }
+            if (fileIndex != dpAlarm.fileIndex) {
+                return false;
+            }
+            if (ossType != dpAlarm.ossType) {
+                return false;
+            }
             return tly != null ? tly.equals(dpAlarm.tly) : dpAlarm.tly == null;
 
         }
@@ -668,12 +690,18 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             DPNotificationInfo that = (DPNotificationInfo) o;
 
-            if (notification != that.notification) return false;
+            if (notification != that.notification) {
+                return false;
+            }
             return duration == that.duration;
 
         }
@@ -1065,15 +1093,17 @@ public class DpMsgDefine {
         private static DPWonderItem loadBean = new DPWonderItem();
 
         public static DPWonderItem getEmptyLoadTypeBean() {
-            if (loadBean == null)
+            if (loadBean == null) {
                 loadBean = new DPWonderItem();
+            }
             loadBean.msgType = TYPE_LOAD;
             return loadBean;
         }
 
         public static DPWonderItem getNoMoreTypeBean() {
-            if (nomore == null)
+            if (nomore == null) {
                 nomore = new DPWonderItem();
+            }
             nomore.msgType = TYPE_NO_MORE;
             return nomore;
         }
@@ -1670,7 +1700,7 @@ public class DpMsgDefine {
         }
     }
 
-    public static class FaceInformation {
+    public static class FaceInformation implements Parcelable {
         public String face_id;
         public String face_name;
         public String coord;
@@ -1697,5 +1727,52 @@ public class DpMsgDefine {
                     ", service_type='" + service_type + '\'' +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.face_id);
+            dest.writeString(this.face_name);
+            dest.writeString(this.coord);
+            dest.writeString(this.account);
+            dest.writeString(this.sn);
+            dest.writeString(this.person_id);
+            dest.writeString(this.source_image_url);
+            dest.writeString(this.image_url);
+            dest.writeString(this.group_id);
+            dest.writeString(this.service_type);
+        }
+
+        public FaceInformation() {
+        }
+
+        protected FaceInformation(Parcel in) {
+            this.face_id = in.readString();
+            this.face_name = in.readString();
+            this.coord = in.readString();
+            this.account = in.readString();
+            this.sn = in.readString();
+            this.person_id = in.readString();
+            this.source_image_url = in.readString();
+            this.image_url = in.readString();
+            this.group_id = in.readString();
+            this.service_type = in.readString();
+        }
+
+        public static final Parcelable.Creator<FaceInformation> CREATOR = new Parcelable.Creator<FaceInformation>() {
+            @Override
+            public FaceInformation createFromParcel(Parcel source) {
+                return new FaceInformation(source);
+            }
+
+            @Override
+            public FaceInformation[] newArray(int size) {
+                return new FaceInformation[size];
+            }
+        };
     }
 }

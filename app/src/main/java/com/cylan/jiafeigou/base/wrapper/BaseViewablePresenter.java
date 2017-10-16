@@ -216,6 +216,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
 
+    @Override
     public void cancelViewer() {
         Subscription subscribe = stopViewer().subscribe(ret -> {
         }, AppLogger::e);
@@ -273,7 +274,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     private void removeLastPreview() {
         final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-        if (TextUtils.isEmpty(pre)) return;
+        if (TextUtils.isEmpty(pre)) {
+            return;
+        }
         try {
             if (SimpleCache.getInstance().getPreviewKeyList() != null) {
                 List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
@@ -512,7 +515,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         disconn.code = BAD_FRAME_RATE;
         RxBus.getCacheInstance().post(disconn);
         Schedulers.io().createWorker().schedule(() -> {
-            if (TextUtils.isEmpty(getViewHandler())) return;
+            if (TextUtils.isEmpty(getViewHandler())) {
+                return;
+            }
             try {
                 appCmd.stopPlay(getViewHandler());
             } catch (Exception e) {
@@ -527,7 +532,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected void registerHeadSetObservable() {
-        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        if (headsetObserver == null) {
+            headsetObserver = HeadsetObserver.getHeadsetObserver();
+        }
         headsetObserver.addObserver(this);
         AppLogger.w("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
         AppLogger.w("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
@@ -545,13 +552,16 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     public AudioManager getAudioManager() {
-        if (audioManager == null)
+        if (audioManager == null) {
             audioManager = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
+        }
         return audioManager;
     }
 
     protected void unRegisterHeadSetObservable() {
-        if (headsetObserver == null) return;
+        if (headsetObserver == null) {
+            return;
+        }
         headsetObserver.removeObserver(this);
         AppLogger.w("反注册注册监听耳机:" + TAG);
     }
@@ -564,6 +574,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                 audioManager.abandonAudioFocus(afChangeListener);

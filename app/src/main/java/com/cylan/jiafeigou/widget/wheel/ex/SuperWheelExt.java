@@ -77,12 +77,14 @@ public class SuperWheelExt extends View {
 
     public void setDataProvider(IData iDataProvider) {
         this.iDataProvider = iDataProvider;
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "setDataProvider: " + iDataProvider.getDataCount());
+        }
         setScrollX(0);
         post(() -> {
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, "getScrollX: " + getScrollX());
+            }
             invalidate();
         });
     }
@@ -164,8 +166,9 @@ public class SuperWheelExt extends View {
      */
 
     private int getFullScreenItemsCount() {
-        if (totalCountInScreenSize > 0)
+        if (totalCountInScreenSize > 0) {
             return totalCountInScreenSize;
+        }
         final int doubleScreenSize = (getMeasuredWidth() * 3) >> 1;
         return totalCountInScreenSize = (int) (doubleScreenSize / lineIntervalPx);
     }
@@ -189,12 +192,15 @@ public class SuperWheelExt extends View {
         Log.d(TAG, "getScrollX:" + -getScaleX() + "," + "scrollCount:" + offsetCount);
         final int count = getFullScreenItemsCount();
         int totalCount = iDataProvider == null ? 0 : iDataProvider.getDataCount();
-        if (Math.abs(offsetCount) > totalCount) return null;
+        if (Math.abs(offsetCount) > totalCount) {
+            return null;
+        }
         int start = offsetCount >= count / 2 ? Math.abs(count / 2 - offsetCount) : 0;
         int end = totalCount - start > count ? count + start : totalCount;
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, String.format("offsetCount:%s,count:%s,totalCount:%s,start:%s,end:%s",
                     offsetCount, count, totalCount, start, end));
+        }
         return iDataProvider == null ? new long[]{0, 0} : iDataProvider.getTimeArray(end, start);
     }
 
@@ -210,8 +216,9 @@ public class SuperWheelExt extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (iDataProvider == null || iDataProvider.getDataCount() == 0) {
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, "onDraw null");
+            }
             return;
         }
         drawDateSet(canvas);
@@ -231,8 +238,9 @@ public class SuperWheelExt extends View {
     private void drawDateSet(Canvas canvas) {
         long[] timeList = getRawTimeList();
         int size = timeList == null ? 0 : timeList.length;
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "drawNaturalDateSet: " + size);
+        }
         int c = canvas.save();
         drawDataMask(canvas, timeList);
         canvas.restoreToCount(c);
@@ -267,8 +275,9 @@ public class SuperWheelExt extends View {
                 rect.top = 0;
                 rect.bottom = getHeight();
                 canvas.drawRect(rect, dataMaskPaint);
-                if (false)
+                if (false) {
                     Log.d(TAG, "drawDataMask: " + rectStart + " " + rectEnd);
+                }
             }
         }
     }
@@ -290,8 +299,9 @@ public class SuperWheelExt extends View {
      * @param time
      */
     private void drawDateText(Canvas canvas, final float pos, final long time) {
-        if (time < 0 || iDataProvider == null || iDataProvider.getBottomType(time) == 0)
+        if (time < 0 || iDataProvider == null || iDataProvider.getBottomType(time) == 0) {
             return;
+        }
         canvas.drawText(iDataProvider.getDateInFormat(time),
                 pos - (dateTextWidth >> 1),
                 getHeight() + 2 * textRect.centerY(),
@@ -310,7 +320,9 @@ public class SuperWheelExt extends View {
     }
 
     public int getMaxScrollX() {
-        if (iDataProvider == null) return 0;
+        if (iDataProvider == null) {
+            return 0;
+        }
         return (int) ((getMeasuredWidth() >> 1) - getMinPos(iDataProvider.getFlattenMinTime()));
     }
 
@@ -338,7 +350,9 @@ public class SuperWheelExt extends View {
      * @param moveDirection
      */
     public void autoSettle(int newState, @ITouchHandler.MoveDirection int moveDirection) {
-        if (iDataProvider == null) return;
+        if (iDataProvider == null) {
+            return;
+        }
         //通过
         boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;
         long timeCurrent = getCurrentFocusTime();
@@ -346,7 +360,9 @@ public class SuperWheelExt extends View {
             //判断当前的位置是否是热区,即:mask区域.
             if (!iDataProvider.isHotRect(timeCurrent)) {
                 //dragging finish,空白区域,
-                if (touchHandler.isTouchDown()) return;
+                if (touchHandler.isTouchDown()) {
+                    return;
+                }
                 long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
                 setPositionByTime(timeTarget, false);
             }
@@ -355,45 +371,57 @@ public class SuperWheelExt extends View {
         tmpCurrentTime = timeCurrent;
         long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
         boolean next = moveDirection != ITouchHandler.MoveDirection.NONE && idle;
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, String.format("timeCurrent:%s,timeTarget:%s,idle:%s,next:%s", timeCurrent, timeTarget, idle, next));
+        }
         if (next) {
             //开始吸附过程
 //            if (wheelRollListener != null)
 //                wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, "DRAG? STATE_ADSORB");
+            }
             timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.RIGHT);
             setPositionByTime(timeTarget, true);
-            if (wheelRollListener != null)
+            if (wheelRollListener != null) {
                 wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
-            if (DEBUG)
+            }
+            if (DEBUG) {
                 Log.d(TAG, "DRAG? STATE_FINISH");
+            }
         } else {
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, String.format("idle:%s", idle));
+            }
             if (!idle) {
                 boolean finish = !touchHandler.isFinished() || touchHandler.isTouchDown();
-                if (DEBUG)
+                if (DEBUG) {
                     Log.d(TAG, String.format("finish:%s", finish));
+                }
                 if (finish) {
-                    if (wheelRollListener != null)
+                    if (wheelRollListener != null) {
                         wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
-                    if (DEBUG)
+                    }
+                    if (DEBUG) {
                         Log.d(TAG, "DRAG? STATE_DRAGGING ");
+                    }
                 } else if (!touchHandler.isTouchDown()) {
-                    if (wheelRollListener != null)
+                    if (wheelRollListener != null) {
                         wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
-                    if (DEBUG)
+                    }
+                    if (DEBUG) {
                         Log.d(TAG, "DRAG? STATE_FINISH");
+                    }
                 }
             } else {
                 if (iDataProvider.isHotRect(timeCurrent)) {
                     //拖拽停止.
-                    if (wheelRollListener != null)
+                    if (wheelRollListener != null) {
                         wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
-                    if (DEBUG)
+                    }
+                    if (DEBUG) {
                         Log.d(TAG, "DRAG? STATE_FINISH");
+                    }
                 } else {
                     //可能需要恢复到起点或者最后的点,因为这个两侧的区域,超出了数据的范围.
                     if (timeCurrent > iDataProvider.getFlattenMaxTime() || timeCurrent < iDataProvider.getFlattenMinTime()) {
@@ -403,8 +431,9 @@ public class SuperWheelExt extends View {
                 }
             }
         }
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, String.format("idle:%s,direction:%s", idle, moveDirection));
+        }
     }
 
     /**
@@ -413,11 +442,14 @@ public class SuperWheelExt extends View {
      * @param timeTarget
      */
     public void setPositionByTime(long timeTarget, boolean animate) {
-        if (timeTarget == 0) return;
+        if (timeTarget == 0) {
+            return;
+        }
         long timeCurrent = getCurrentFocusTime();
         float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx + ",animate:" + animate);
+        }
         if (animate) {
             touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
         } else {
@@ -429,8 +461,9 @@ public class SuperWheelExt extends View {
             this.nextTarget = iDataProvider.getNextTarget(timeTarget / 1000) * 1000L;
         }
         this.nextTarget = Math.max(currentTarget, nextTarget);
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "current:" + currentTarget + ":" + TimeUtils.getTimeSpecial(currentTarget) + ",next:" + nextTarget + ":" + TimeUtils.getTimeSpecial(nextTarget));
+        }
     }
 
     /**
@@ -440,7 +473,9 @@ public class SuperWheelExt extends View {
      * @return
      */
     private float getMinPos(long time) {
-        if (minPosition > 0) return minPosition;
+        if (minPosition > 0) {
+            return minPosition;
+        }
         return minPosition = getPosition(time);
     }
 
@@ -455,8 +490,9 @@ public class SuperWheelExt extends View {
     }
 
     public long getNextTimeDistance() {
-        if (DEBUG)
+        if (DEBUG) {
             Log.i(TAG, "getNextTimeDistance: " + nextTarget + ",current:" + currentTarget);
+        }
         return nextTarget - currentTarget;
     }
 

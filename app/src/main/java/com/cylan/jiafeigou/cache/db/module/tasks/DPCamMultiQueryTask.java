@@ -51,8 +51,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) throws Exception {
         this.option = cache.get(0).option(DBOption.MultiQueryOption.class);
-        if (sourceManager == null)
+        if (sourceManager == null) {
             sourceManager = getAppComponent().getSourceManager();
+        }
         return super.init(cache);
     }
 
@@ -89,8 +90,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                 parse.setVersion(item.getVersion());
                                 parse.setMsgId(item.getMsgId());
                             }
-                            if (!result.contains(parse))
+                            if (!result.contains(parse)) {
                                 result.add(parse);
+                            }
                         }
                         return Observable.just(new BaseDPTaskResult()
                                 .setResultCode(0)
@@ -142,7 +144,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             list.addAll(data.map.get(integer));
                                         }
                                     }
-                                    if (ListUtils.isEmpty(list)) return;
+                                    if (ListUtils.isEmpty(list)) {
+                                        return;
+                                    }
                                     Collections.sort(list, (JFGDPMsg lhs, JFGDPMsg rhs) ->
                                             (int) (lhs.version - rhs.version));
                                     timeMax = Math.max(list.get(0).version, list.get(list.size() - 1).version);

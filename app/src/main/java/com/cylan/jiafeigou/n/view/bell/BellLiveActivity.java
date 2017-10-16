@@ -175,11 +175,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         customToolbar.setBackAction(this::onBack);
         newCall();
 
-        //在这里初始化默认的 radio,bug:#120567
-        float videoHeight = fLayoutBellLiveHolder.getMeasuredHeight();
-        float videoWidth = fLayoutBellLiveHolder.getMeasuredWidth();
-        ratio = videoHeight / videoWidth;
+
     }
+
 
     private void initHomeListenReceiver() {
         homeListen = new HomeListen();
@@ -280,6 +278,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onStart() {
         super.onStart();
         onUserLeaveHint = false;
+        //在这里初始化默认的 radio,bug:#120567
+        float videoHeight = fLayoutBellLiveHolder.getMeasuredHeight();
+        float videoWidth = fLayoutBellLiveHolder.getMeasuredWidth();
+        ratio = videoHeight / videoWidth;
 
     }
 
@@ -357,9 +359,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (port) {
             customToolbar.setVisibility(View.VISIBLE);
             landBack.setVisibility(View.GONE);
-
-            ViewUtils.updateViewHeight(fLayoutBellLiveHolder, ratio);
-//            mBellLiveBack.setText(null);
+            if (ratio != 0) {
+                //进一步确认不会无故更新 radio
+                ViewUtils.updateViewHeight(fLayoutBellLiveHolder, ratio);
+            }
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
             mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
 
@@ -369,15 +372,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             customToolbar.setVisibility(View.GONE);
             landBack.setVisibility(View.VISIBLE);
             ViewUtils.updateViewMatchScreenHeight(fLayoutBellLiveHolder);
-//            mBellLiveBack.setText(mLiveTitle);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
         }
     }
 
     public boolean isHeadsetOn() {
         AudioManager am = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AppLogger.d("isVolumeFixed: " + am.isVolumeFixed());
+        }
         return am.isWiredHeadsetOn();
     }
 
@@ -427,6 +430,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
 
+    @Override
     @OnClick({R.id.imgv_bell_live_capture,
             R.id.imgv_bell_live_hang_up,
             R.id.imgv_bell_live_speaker,
@@ -507,8 +511,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onTakeSnapShotSuccess(Bitmap bitmap) {
         if (bitmap != null) {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
-            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 showPopupWindow(bitmap);
+            }
 
         } else {
             ToastUtil.showNegativeToast(getString(R.string.set_failed));
@@ -582,6 +587,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
     }
 
+    @Override
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     public void hasNoAudioPermission() {
         Bundle args = new Bundle();
@@ -718,6 +724,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
 
+    @Override
     public void onViewer() {
         AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
         int mode = manager.getMode();
@@ -964,8 +971,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
                 String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
 
-                if (reason == null)
+                if (reason == null) {
                     return;
+                }
                 // TODO: 2017/8/31 R11上监听不到
                 // Home键
 //                if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {

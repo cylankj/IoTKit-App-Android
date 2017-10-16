@@ -88,14 +88,18 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .delay(1, TimeUnit.SECONDS)
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
-                    if (alias != null && alias.length() == 0) return -1;//如果是空格则跳过,显示默认名称
+                    if (alias != null && alias.length() == 0) {
+                        return -1;//如果是空格则跳过,显示默认名称
+                    }
                     try {
                         count++;
                         if (count > 5) {
                             throw new RxEvent.HelperBreaker("超时了");
                         }
                         int ret = BaseApplication.getAppComponent().getCmd().setAliasByCid(uuid, alias);
-                        if (NetUtils.getJfgNetType() == 0) throw new RxEvent.HelperBreaker("无网络");
+                        if (NetUtils.getJfgNetType() == 0) {
+                            throw new RxEvent.HelperBreaker("无网络");
+                        }
                         AppLogger.i("setup alias: " + alias + ",ret:" + ret);
                         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                         device.setAlias(alias);

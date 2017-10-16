@@ -160,7 +160,9 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                         aboutFragment, android.R.id.content);
                 break;
             case R.id.sv_home_setting_clear:
-                if ("0.0M".equals(svHomeSettingClear.getSubTitle())) return;
+                if ("0.0M".equals(svHomeSettingClear.getSubTitle())) {
+                    return;
+                }
                 basePresenter.clearCache();
                 break;
             case R.id.sv_home_setting_recommend:
@@ -168,7 +170,9 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 Observable.just("loadList")
                         .subscribeOn(Schedulers.io())
                         .map(s -> {
-                            if (!ListUtils.isEmpty(finalList)) return finalList;
+                            if (!ListUtils.isEmpty(finalList)) {
+                                return finalList;
+                            }
                             final Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("text/plain");
                             intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getLinkShareByApp());
@@ -177,9 +181,11 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             for (ResolveInfo info : list) {
                                 final String name = info.activityInfo.packageName;
                                 if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
-                                    if (addFirst(name))
+                                    if (addFirst(name)) {
                                         finalList.add(0, new ResolveInfoEx().setInfo(info));
-                                    else finalList.add(new ResolveInfoEx().setInfo(info));
+                                    } else {
+                                        finalList.add(new ResolveInfoEx().setInfo(info));
+                                    }
                                 }
                             }
                             return finalList;
@@ -217,13 +223,16 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void hideClearingCacheProgress() {
-        if (LoadingDialog.isShowLoading())
+        if (LoadingDialog.isShowLoading()) {
             LoadingDialog.dismissLoading();
+        }
     }
 
     @Override
     public void clearFinish() {
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         svHomeSettingClear.setSubTitle("0.0M");
         ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }
@@ -469,21 +478,27 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         } else {
             Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
         }
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         LoadingDialog.dismissLoading();
     }
 
     @Override
     public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
         Log.d("getOpenID", "onError: " + throwable);
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         LoadingDialog.dismissLoading();
     }
 
     @Override
     public void onCancel(SHARE_MEDIA share_media, int i) {
         Log.d("getOpenID", "onCancel: ");
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         LoadingDialog.dismissLoading();
     }
 

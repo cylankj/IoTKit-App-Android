@@ -54,17 +54,22 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
     @Override
     public boolean checkCondition() {
         //当前网络不行
-        if (NetUtils.getJfgNetType() == 0) return false;
+        if (NetUtils.getJfgNetType() == 0) {
+            return false;
+        }
         int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
         if (netType != 1)//wifi
+        {
             return false;
+        }
         return true;
     }
 
     @Override
     public void startCheck() {
-        if (checkCondition())
+        if (checkCondition()) {
             checkVersion();
+        }
     }
 
     @Override
@@ -129,7 +134,9 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                     AppLogger.d("有没有?" + v + ",gV: " + gVersion);
                     //有新包
                     RxEvent.ClientCheckVersion version = new RxEvent.ClientCheckVersion(0, null, 1);
-                    if (TextUtils.isEmpty(gVersion)) gVersion = "1.0.0";
+                    if (TextUtils.isEmpty(gVersion)) {
+                        gVersion = "1.0.0";
+                    }
                     if (BindUtils.versionCompare(gVersion, v) > 0) {
                         version.ret = NEW_VERSION;
                     } else {
@@ -186,8 +193,9 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 .subscribe(ret -> {
                 }, throwable -> {//让整条订阅连结束
                     if (throwable instanceof RxEvent.HelperBreaker) {
-                        if (((RxEvent.HelperBreaker) throwable).object != null && ((RxEvent.HelperBreaker) throwable).object instanceof RxEvent.ClientCheckVersion)
+                        if (((RxEvent.HelperBreaker) throwable).object != null && ((RxEvent.HelperBreaker) throwable).object instanceof RxEvent.ClientCheckVersion) {
                             checkRsp((RxEvent.ClientCheckVersion) ((RxEvent.HelperBreaker) throwable).object);
+                        }
                     }
                 });
         try {
@@ -202,8 +210,9 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
         AppLogger.d("check_version result: " + clientCheckVersion);
 //                                    clientCheckVersion.result = "VRJz6f";
 //                                    2iYjQr
-        if (TextUtils.isEmpty(clientCheckVersion.result))
+        if (TextUtils.isEmpty(clientCheckVersion.result)) {
             return;
+        }
         final String result = clientCheckVersion.result.replace("http://yun.app8h.com/s?id=", "");
         final String finalUrl = JConstant.assembleUrl(result, ContextUtils.getContext().getPackageName());
         Request.Builder requestBuilder = new Request.Builder().url(finalUrl);
@@ -232,7 +241,9 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
             final String result = response.body().string();
             AppLogger.d("check_version result: " + result);
             JSONObject jsonObject = new JSONObject(result);
-            if (jsonObject.has("ret") && jsonObject.getInt("ret") != 0) return;
+            if (jsonObject.has("ret") && jsonObject.getInt("ret") != 0) {
+                return;
+            }
             final String url = jsonObject.getString("url");
             final String versionName = jsonObject.getString("version");
             final String shortVersion = jsonObject.getString("shortversion");
@@ -268,7 +279,9 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                         .setUpdateType(RxEvent.UpdateType._8HOUR));
                 return;
             }
-            if (subscription != null) subscription.unsubscribe();
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
             subscription = Observable.just(url)
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Task(forceUpate, cVersion), AppLogger::e);
@@ -335,7 +348,9 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 call.enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        if (downloadListener != null) downloadListener.onError(e);
+                        if (downloadListener != null) {
+                            downloadListener.onError(e);
+                        }
                     }
 
                     @Override
@@ -352,16 +367,19 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                             while ((len = is.read(buf)) != -1) {
                                 current += len;
                                 fos.write(buf, 0, len);
-                                if (downloadListener != null)
+                                if (downloadListener != null) {
                                     downloadListener.onProgress(current, total);
+                                }
                             }
                             fos.flush();
-                            if (downloadListener != null)
+                            if (downloadListener != null) {
                                 downloadListener.onFinish();
+                            }
                         } catch (IOException e) {
                             Log.e(TAG, e.toString());
-                            if (downloadListener != null)
+                            if (downloadListener != null) {
                                 downloadListener.onError(e);
+                            }
                             FileUtils.deleteAbsoluteFile(filePath);
                         } finally {
                             CloseUtils.close(is);

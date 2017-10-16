@@ -80,7 +80,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         super.onStart();
         if (Build.VERSION.SDK_INT >= 23) {
             SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-        } else showWriteStoragePermissions();
+        } else {
+            showWriteStoragePermissions();
+        }
     }
 
     /**
@@ -98,7 +100,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         if (basePresenter != null) {
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
             if (showSplash)//退出登录,不需要再去执行登录.
+            {
                 basePresenter.autoLogin();
+            }
             basePresenter.selectNext(showSplash);
         }
     }
@@ -106,9 +110,12 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @Override
     protected void onStop() {
         super.onStop();
-        if (basePresenter != null) basePresenter.stop();
+        if (basePresenter != null) {
+            basePresenter.stop();
+        }
     }
 
+    @Override
     protected int[] getOverridePendingTransition() {
         return new int[]{R.anim.alpha_in, R.anim.alpha_out};
     }
@@ -169,7 +176,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     }
 
     public void splashOver() {
-        if (welcomeSwitcher.getDisplayedChild() != 1) welcomeSwitcher.showNext();
+        if (welcomeSwitcher.getDisplayedChild() != 1) {
+            welcomeSwitcher.showNext();
+        }
         if (isFirstUseApp()) {
             showGuidePage();
         } else if (!isInLoginPage()) {
@@ -297,7 +306,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                                     })
                                     .subscribe(ret -> {
                                     }, AppLogger::e);
-                        } else if (fromLogout) goAheadAfterPermissionGranted();
+                        } else if (fromLogout) {
+                            goAheadAfterPermissionGranted();
+                        }
                         if (basePresenter != null) {
                             basePresenter.reEnableSmartcallLog();
                         }

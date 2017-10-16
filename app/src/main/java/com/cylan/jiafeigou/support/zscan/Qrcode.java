@@ -61,8 +61,9 @@ public class Qrcode {
         resMatrix.clear();
         for (int i = 0; i < resWidth; i++) {
             for (int j = 0; j < resHeight; j++) {
-                if (matrix.get(i + rec[0], j + rec[1]))
+                if (matrix.get(i + rec[0], j + rec[1])) {
                     resMatrix.set(i, j);
+                }
             }
         }
         return resMatrix;

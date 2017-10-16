@@ -21,6 +21,7 @@ public interface ScanContract {
          */
         void onStartScan();
 
+        @Override
         String getUuid();
     }
 

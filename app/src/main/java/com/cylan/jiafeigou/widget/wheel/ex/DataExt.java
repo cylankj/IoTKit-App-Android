@@ -27,11 +27,13 @@ public class DataExt implements IData {
     private static final Object lock = new Object();
 
     public static DataExt getInstance() {
-        if (instance == null)
+        if (instance == null) {
             synchronized (DataExt.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new DataExt();
+                }
             }
+        }
         return instance;
     }
 
@@ -76,8 +78,9 @@ public class DataExt implements IData {
                 for (long time = timeMax; time >= timeMin; ) {
                     flattenDataList.add(time);
                     fillMap(time);
-                    if (false)
+                    if (false) {
                         Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(time));
+                    }
                     size++;
                     time -= 10 * 60 * 1000L;
                 }
@@ -135,15 +138,19 @@ public class DataExt implements IData {
     @Override
     public long[] getTimeArray(int end, int start) {
         synchronized (lock) {
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, String.format("getData:%s,%s", end, start));
+            }
             if (start < 0 || start > end || end > flattenDataList.size()) {
 //            System.out.println("出界: " + initSubscription);
                 end = flattenDataList.size() - start;
-                if (end <= 0)
+                if (end <= 0) {
                     return null;
+                }
             }
-            if (end <= start) return null;
+            if (end <= start) {
+                return null;
+            }
             long[] data = new long[end - start];
             for (int i = start; i < end; i++) {
                 data[i - start] = flattenDataList.get(i);
@@ -191,8 +198,9 @@ public class DataExt implements IData {
     @Override
     public ArrayList<HistoryFile> getMaskList(long start, long end) {
         synchronized (lock) {
-            if (rawList == null || rawList.size() == 0)
+            if (rawList == null || rawList.size() == 0) {
                 return null;
+            }
             HistoryFile vStart = getVideo(start);
             HistoryFile vEnd = getVideo(end);
             int startIndex = Collections.binarySearch(rawList, vStart);
@@ -209,7 +217,9 @@ public class DataExt implements IData {
                     endIndex += 2;
                 }
             }
-            if (endIndex < startIndex) return null;
+            if (endIndex < startIndex) {
+                return null;
+            }
             ArrayList<HistoryFile> finalList = new ArrayList<>(endIndex - startIndex);
             for (int i = startIndex; i < endIndex; i++) {
                 finalList.add(rawList.get(i));
@@ -221,8 +231,9 @@ public class DataExt implements IData {
 
     private long getNextFocusTime(long time, boolean modifyIndex) {
         synchronized (lock) {
-            if (rawList.size() == 0)
+            if (rawList.size() == 0) {
                 return 0;
+            }
             HistoryFile v = getVideo(time);
             int tmpIndex = index;
 
@@ -237,7 +248,9 @@ public class DataExt implements IData {
                 tmpIndex = rawList.size() - 1;
                 return rawList.get(tmpIndex).time * 1000L;
             }
-            if (modifyIndex) index = tmpIndex;
+            if (modifyIndex) {
+                index = tmpIndex;
+            }
             return rawList.get(tmpIndex).time * 1000L;
         }
     }
@@ -255,7 +268,9 @@ public class DataExt implements IData {
         synchronized (lock) {
             long tmpTime = getNextFocusTime(time, modifyIndex);
             if (considerDirection == -1)//不考虑方向
+            {
                 return tmpTime;
+            }
             //0:向左滑动
             int tmpIndex = index;
             if (considerDirection == 0) {
@@ -270,7 +285,9 @@ public class DataExt implements IData {
                     tmpIndex = 0;
                 }
             }
-            if (modifyIndex) index = tmpIndex;
+            if (modifyIndex) {
+                index = tmpIndex;
+            }
             return rawList.get(tmpIndex).time * 1000L;
         }
     }
@@ -278,16 +295,18 @@ public class DataExt implements IData {
     @Override
     public boolean isHotRect(long time) {
         synchronized (lock) {
-            if (rawList == null || rawList.size() == 0)
+            if (rawList == null || rawList.size() == 0) {
                 return false;
+            }
             HistoryFile v = getVideo(time);
             int i = Collections.binarySearch(rawList, v);
             i = -(i + 1);
             if (i < 0 || i > rawList.size() - 1) {
                 return false;//超出范围
             }
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
+            }
             v = rawList.get(i);
             return v.time * 1000L <= time && (v.time + v.duration) * 1000L >= time;
         }
@@ -313,8 +332,9 @@ public class DataExt implements IData {
             startTime = startTime / 1000;
             final int count = ListUtils.getSize(rawList);
             for (int i = count - 1; i >= 0; i--) {
-                if (rawList.get(i).getTime() >= startTime)
+                if (rawList.get(i).getTime() >= startTime) {
                     return rawList.get(i);
+                }
             }
             return null;
         }
@@ -331,7 +351,9 @@ public class DataExt implements IData {
     @Override
     public long getNextTarget(long timeTarget) {
         synchronized (lock) {
-            if (rawList == null || rawList.size() == 0) return 0;
+            if (rawList == null || rawList.size() == 0) {
+                return 0;
+            }
             HistoryFile temp = null;
             for (HistoryFile file : rawList) {
                 long current = file.time + file.duration;

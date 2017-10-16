@@ -293,8 +293,9 @@ public final class BaseInitializationManager {
     }
 
     private void initLeakCanary() {
-        if (BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG) {
             LeakCanary.install((Application) appContext);
+        }
     }
 
     private void enableDebugOptions() {

@@ -77,7 +77,9 @@ public class Device extends BasePropertyHolder<Device> {
     }
 
     public Device setDevice(JFGDevice device) {
-        if (device == null) return this;
+        if (device == null) {
+            return this;
+        }
         this.uuid = device.uuid;
         this.sn = device.sn;
         this.alias = device.alias;
@@ -268,9 +270,15 @@ public class Device extends BasePropertyHolder<Device> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Device device = (Device) o;
 

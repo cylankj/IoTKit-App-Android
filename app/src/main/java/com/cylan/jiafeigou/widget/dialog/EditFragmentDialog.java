@@ -86,7 +86,9 @@ public class EditFragmentDialog extends BaseDialog {
     }
 
     private InputFilter[] getDefaultFilter() {
-        if (defaultFilter != null) return defaultFilter;
+        if (defaultFilter != null) {
+            return defaultFilter;
+        }
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter.LengthFilter(12);
         return filters;
@@ -126,12 +128,15 @@ public class EditFragmentDialog extends BaseDialog {
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
         final String hint = bundle.getString(KEY_INPUT_HINT);
         final String text = bundle.getString(KEY_DEFAULT_EDIT_TEXT);
-        if (!TextUtils.isEmpty(title))
+        if (!TextUtils.isEmpty(title)) {
             tvDialogTitle.setText(title);
-        if (!TextUtils.isEmpty(lContent))
+        }
+        if (!TextUtils.isEmpty(lContent)) {
             tvConfirm.setText(lContent);
-        if (!TextUtils.isEmpty(rContent))
+        }
+        if (!TextUtils.isEmpty(rContent)) {
             tvCancel.setText(rContent);
+        }
         if (!bundle.getBoolean(KEY_SHOW_EDIT, true)) {
             getView().findViewById(R.id.lLayout_input_box).setVisibility(View.GONE);
         }

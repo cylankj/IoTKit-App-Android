@@ -69,8 +69,9 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         super.onNetworkChanged(context, intent);
-        if (mView != null)
+        if (mView != null) {
             mView.onNetStateChanged(NetUtils.getJfgNetType());
+        }
     }
 
     @Override

@@ -48,8 +48,9 @@ public class SuperViewHolder extends RecyclerView.ViewHolder implements ChainSet
         View childView = childViews.get(id);
         if (childView == null) {
             childView = itemView.findViewById(id);
-            if (childView != null)
+            if (childView != null) {
                 childViews.put(id, childView);
+            }
         }
         return (T) childView;
     }
@@ -244,7 +245,9 @@ public class SuperViewHolder extends RecyclerView.ViewHolder implements ChainSet
     @Override
     public SuperViewHolder setSelected(int viewId, boolean selected) {
         View view = getView(viewId);
-        if (view != null) view.setSelected(selected);
+        if (view != null) {
+            view.setSelected(selected);
+        }
         return this;
     }
 

@@ -44,11 +44,13 @@ public class ClientUpdateManager {
     }
 
     public static ClientUpdateManager getInstance() {
-        if (instance == null)
+        if (instance == null) {
             synchronized (ClientUpdateManager.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new ClientUpdateManager();
+                }
             }
+        }
         return instance;
     }
 

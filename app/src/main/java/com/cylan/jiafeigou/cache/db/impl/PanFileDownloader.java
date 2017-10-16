@@ -36,11 +36,13 @@ public class PanFileDownloader implements IPanFileDbHelper {
     }
 
     public static PanFileDownloader getDownloader() {
-        if (downloader == null)
+        if (downloader == null) {
             synchronized (PanFileDownloader.class) {
-                if (downloader == null)
+                if (downloader == null) {
                     downloader = new PanFileDownloader();
+                }
             }
+        }
         return downloader;
     }
 

@@ -58,7 +58,9 @@ public class AnimatorUtils {
     public static void slideIn(View target, boolean down, boolean autoHide) {
 
         int height = target.getHeight();
-        if (height == 0) height = 300;
+        if (height == 0) {
+            height = 300;
+        }
         final float start = target.isShown() ? 0.0f : (down ? height : -height);
         final float end = target.isShown() ? (down ? height : -height) : 0.0f;
         final boolean shouldGone = target.isShown();
@@ -74,14 +76,16 @@ public class AnimatorUtils {
         o.addListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                if (!target.isShown())
+                if (!target.isShown()) {
                     target.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (shouldGone)
+                if (shouldGone) {
                     target.setVisibility(View.INVISIBLE);
+                }
             }
         });
         o.start();
@@ -90,7 +94,9 @@ public class AnimatorUtils {
     public static void slide(View target, boolean down, OnFinish listener) {
 
         int height = target.getHeight();
-        if (height == 0) height = 300;
+        if (height == 0) {
+            height = 300;
+        }
         final float start = target.isShown() ? 0.0f : (down ? height : -height);
         final float end = target.isShown() ? (down ? height : -height) : 0.0f;
         final boolean shouldGone = target.isShown();
@@ -101,15 +107,19 @@ public class AnimatorUtils {
         set.addListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                if (!target.isShown())
+                if (!target.isShown()) {
                     target.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (shouldGone)
+                if (shouldGone) {
                     target.setVisibility(View.INVISIBLE);
-                if (listener != null) listener.onFinish();
+                }
+                if (listener != null) {
+                    listener.onFinish();
+                }
             }
         });
         set.start();
@@ -117,7 +127,9 @@ public class AnimatorUtils {
 
     public static void slide(final View target, final OnEndListener listener) {
         int height = target.getHeight();
-        if (height == 0) height = 300;
+        if (height == 0) {
+            height = 300;
+        }
         final float start = target.isShown() ? 0.0f : height;
         final float end = target.isShown() ? height : 0.0f;
         final boolean shouldGone = target.isShown();
@@ -128,8 +140,9 @@ public class AnimatorUtils {
         set.addListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                if (!target.isShown())
+                if (!target.isShown()) {
                     target.setVisibility(View.VISIBLE);
+                }
                 if (listener != null) {
                     listener.onAnimationStart(target.isShown());
                 }
@@ -137,9 +150,12 @@ public class AnimatorUtils {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (shouldGone)
+                if (shouldGone) {
                     target.setVisibility(View.GONE);
-                if (listener != null) listener.onAnimationEnd(shouldGone);
+                }
+                if (listener != null) {
+                    listener.onAnimationEnd(shouldGone);
+                }
             }
         });
         set.start();
@@ -153,7 +169,9 @@ public class AnimatorUtils {
 
     public static void slide(final View target) {
         int height = target.getHeight();
-        if (height == 0) height = 300;
+        if (height == 0) {
+            height = 300;
+        }
         final float start = target.isShown() ? 0.0f : height;
         final float end = target.isShown() ? height : 0.0f;
         final boolean shouldGone = target.isShown();
@@ -164,14 +182,16 @@ public class AnimatorUtils {
         set.addListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                if (!target.isShown())
+                if (!target.isShown()) {
                     target.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (shouldGone)
+                if (shouldGone) {
                     target.setVisibility(View.GONE);
+                }
             }
         });
         set.start();
@@ -349,7 +369,9 @@ public class AnimatorUtils {
     }
 
     public static void slideInRight(View target) {
-        if (!target.isShown()) target.setVisibility(View.VISIBLE);
+        if (!target.isShown()) {
+            target.setVisibility(View.VISIBLE);
+        }
         ViewGroup parent = (ViewGroup) target.getParent();
         int distance = parent.getWidth() - target.getLeft();
         ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", (float) distance, 0.0F);
@@ -359,8 +381,12 @@ public class AnimatorUtils {
     }
 
     public static void slideOutRight(final View target) {
-        if (target.getLeft() != target.getX()) return;
-        if (!target.isShown()) target.setVisibility(View.VISIBLE);
+        if (target.getLeft() != target.getX()) {
+            return;
+        }
+        if (!target.isShown()) {
+            target.setVisibility(View.VISIBLE);
+        }
         ViewGroup parent = (ViewGroup) target.getParent();
         int distance = parent.getWidth() - target.getLeft();
         ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", 0.0F, (float) distance);
@@ -389,7 +415,9 @@ public class AnimatorUtils {
                     public void run() {
                         //可能会内存泄露
                         AnimationDrawable dAnim = onWiFiLightFlash(flash);
-                        if (dAnim != null) dAnim.start();
+                        if (dAnim != null) {
+                            dAnim.start();
+                        }
                     }
                 }, 1000);
 
@@ -429,8 +457,9 @@ public class AnimatorUtils {
                 ObjectAnimator.ofFloat(target, "scaleY", 0.9f, 1.1f, 1.0f),
                 ObjectAnimator.ofFloat(target, "alpha", 0f, 1f));
         set.setDuration(300);
-        if (animatorListener != null)
+        if (animatorListener != null) {
             set.addListener(animatorListener);
+        }
         return set;
     }
 
@@ -444,8 +473,9 @@ public class AnimatorUtils {
         setLeft.playTogether(translateX0, translateY0, alpha);
         setLeft.setInterpolator(new DecelerateInterpolator());
         setLeft.setDuration(1000);
-        if (animatorListener != null)
+        if (animatorListener != null) {
             setLeft.addListener(animatorListener);
+        }
         return setLeft;
     }
 
@@ -460,8 +490,9 @@ public class AnimatorUtils {
         setRight.playTogether(translateX1, translateY1);
         setRight.setInterpolator(new DecelerateInterpolator());
         setRight.setDuration(1000);
-        if (animatorListener != null)
+        if (animatorListener != null) {
             setRight.addListener(animatorListener);
+        }
         return setRight;
     }
 
@@ -475,8 +506,9 @@ public class AnimatorUtils {
         Object o = view.getTag();
         if (o != null && o instanceof ObjectAnimator) {
             ObjectAnimator animator = (ObjectAnimator) o;
-            if (animator.isRunning() || animator.isStarted())
+            if (animator.isRunning() || animator.isStarted()) {
                 animator.cancel();
+            }
         }
         int start = 0, end;
         if (!fromTop) {
@@ -488,7 +520,9 @@ public class AnimatorUtils {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
         view.setTag(objectAnimator);
-        if (!view.isShown()) view.setVisibility(View.VISIBLE);
+        if (!view.isShown()) {
+            view.setVisibility(View.VISIBLE);
+        }
         objectAnimator.start();
     }
 
@@ -502,8 +536,9 @@ public class AnimatorUtils {
         Object o = view.getTag();
         if (o != null && o instanceof ObjectAnimator) {
             ObjectAnimator animator = (ObjectAnimator) o;
-            if (animator.isRunning() || animator.isStarted())
+            if (animator.isRunning() || animator.isStarted()) {
                 animator.cancel();
+            }
         }
         int start, end = 0;
         if (!fromTop) {
@@ -517,7 +552,9 @@ public class AnimatorUtils {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
         view.setTag(objectAnimator);
-        if (!view.isShown()) view.setVisibility(View.VISIBLE);
+        if (!view.isShown()) {
+            view.setVisibility(View.VISIBLE);
+        }
         objectAnimator.start();
     }
 
@@ -531,18 +568,22 @@ public class AnimatorUtils {
      */
     public static void slideAuto(final View view, boolean fromTop) {
         if (fromTop) {
-            if (view.getBottom() == view.getTop() - view.getY())
+            if (view.getBottom() == view.getTop() - view.getY()) {
                 slideIn(view, true);
-            if (view.getY() == view.getTop())
+            }
+            if (view.getY() == view.getTop()) {
                 slideOut(view, true);
+            }
         }
         if (!fromTop) {
             ViewGroup parent = (ViewGroup) view.getParent();
             int end = parent.getHeight() - view.getTop();
-            if (end + view.getTop() == view.getY())
+            if (end + view.getTop() == view.getY()) {
                 slideIn(view, false);
-            if (view.getTop() == view.getY())
+            }
+            if (view.getTop() == view.getY()) {
                 slideOut(view, false);
+            }
         }
     }
 
@@ -566,7 +607,9 @@ public class AnimatorUtils {
         int endX = ((ViewGroup) view.getParent()).getWidth() / 2 - view.getLeft() - view.getWidth() / 2 + offset;
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, endX);
         animator.setInterpolator(new DecelerateInterpolator());
-        if (!view.isShown()) view.setVisibility(View.VISIBLE);
+        if (!view.isShown()) {
+            view.setVisibility(View.VISIBLE);
+        }
         return animator;
     }
 
@@ -574,7 +617,9 @@ public class AnimatorUtils {
         int endY = ((ViewGroup) view.getParent()).getHeight() / 2 - view.getTop() - view.getHeight() / 2 + offset;
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, endY);
         animator.setInterpolator(new DecelerateInterpolator());
-        if (!view.isShown()) view.setVisibility(View.VISIBLE);
+        if (!view.isShown()) {
+            view.setVisibility(View.VISIBLE);
+        }
         return animator;
     }
 }

@@ -83,8 +83,9 @@ public class Task {
     public ContentValues convertToContentValues() {
         ContentValues contentValues = new ContentValues();
 
-        if (id != 0)
+        if (id != 0) {
             contentValues.put(TASKS.COLUMN_ID, id);
+        }
 
         contentValues.put(TASKS.COLUMN_NAME, name);
         contentValues.put(TASKS.COLUMN_SIZE, size);

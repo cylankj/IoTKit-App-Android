@@ -73,12 +73,15 @@ public class WarmIntervalFragment extends BaseDialog {
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
         this.uuid = bundle.getString(JConstant.KEY_DEVICE_ITEM_UUID, "");
-        if (!TextUtils.isEmpty(title))
+        if (!TextUtils.isEmpty(title)) {
             tvDialogTitle.setText(title);
-        if (!TextUtils.isEmpty(lContent))
+        }
+        if (!TextUtils.isEmpty(lContent)) {
             tvDialogBtnLeft.setText(lContent);
-        if (!TextUtils.isEmpty(rContent))
+        }
+        if (!TextUtils.isEmpty(rContent)) {
             tvDialogBtnRight.setText(rContent);
+        }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
         device = DataSourceManager.getInstance().getDevice(uuid);
         int interval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);

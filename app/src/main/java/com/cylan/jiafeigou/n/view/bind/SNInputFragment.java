@@ -134,7 +134,9 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
 
     @Override
     public void getPidRsp(int err, int pid) {
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         LoadingDialog.dismissLoading();
         AppLogger.d("err:" + err + ",pid:" + pid);
         if (pid == -1) {

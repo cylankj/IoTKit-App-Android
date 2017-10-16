@@ -46,6 +46,7 @@ public class RxBus implements IEventBus {
     /**
      * 发送事件
      */
+    @Override
     public Object post(Object event) {
         mBus.onNext(event);
         Log.d("RxBus", "RxBus: post: " + event);
@@ -62,6 +63,7 @@ public class RxBus implements IEventBus {
     /**
      * 判断是否有订阅者
      */
+    @Override
     public boolean hasObservers() {
         return mBus.hasObservers();
     }

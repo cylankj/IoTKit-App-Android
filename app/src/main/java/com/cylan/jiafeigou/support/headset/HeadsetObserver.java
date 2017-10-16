@@ -23,11 +23,13 @@ public class HeadsetObserver {
     private static HeadsetObserver headsetObserver;
 
     public static HeadsetObserver getHeadsetObserver() {
-        if (headsetObserver == null)
+        if (headsetObserver == null) {
             synchronized (HeadsetObserver.class) {
-                if (headsetObserver == null)
+                if (headsetObserver == null) {
                     headsetObserver = new HeadsetObserver();
+                }
             }
+        }
         return headsetObserver;
     }
 
@@ -35,8 +37,9 @@ public class HeadsetObserver {
     private Map<String, HeadsetListener> map = new HashMap<>();
 
     private void init() {
-        if (headSetReceiver == null)
+        if (headSetReceiver == null) {
             headSetReceiver = new HeadSetReceiver();
+        }
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
         try {
@@ -53,14 +56,17 @@ public class HeadsetObserver {
         AppLogger.d("isBluetoothA2dpOn: " + am.isBluetoothA2dpOn());
         AppLogger.d("isSpeakerphoneOn: " + am.isSpeakerphoneOn());
         AppLogger.d("isWiredHeadsetOn: " + am.isWiredHeadsetOn());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AppLogger.d("isVolumeFixed: " + am.isVolumeFixed());
+        }
         return am.isWiredHeadsetOn();
     }
 
     private void clean() {
         try {
-            if (headSetReceiver == null) return;
+            if (headSetReceiver == null) {
+                return;
+            }
             ContextUtils.getContext().unregisterReceiver(headSetReceiver);
         } catch (Exception e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
@@ -68,13 +74,19 @@ public class HeadsetObserver {
     }
 
     public void addObserver(HeadsetListener listener) {
-        if (listener == null) return;
-        if (headSetReceiver == null) init();
+        if (listener == null) {
+            return;
+        }
+        if (headSetReceiver == null) {
+            init();
+        }
         map.put(listener.getClass().getSimpleName(), listener);
     }
 
     public HeadsetListener removeObserver(HeadsetListener listener) {
-        if (listener == null) return null;
+        if (listener == null) {
+            return null;
+        }
         if (map == null || map.size() == 0) {
             clean();
         }

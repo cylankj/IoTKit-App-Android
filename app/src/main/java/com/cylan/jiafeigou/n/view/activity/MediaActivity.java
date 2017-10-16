@@ -241,7 +241,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     }
                     mVideoView = holder.mSurfaceView;
                     mVideoView.setSurfaceTextureListener(mSurfaceTextureListener);
-                    if (mEnterAnimationFinished) startPlayVideo();
+                    if (mEnterAnimationFinished) {
+                        startPlayVideo();
+                    }
                 } else if (mCurrentViewType == DPWonderItem.TYPE_PIC && mPhotoView != object) {
                     AppLogger.e("picture");
                     mPhotoView = (View) object;
@@ -562,7 +564,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     this.getString(R.string.Tips_SureDelete));
             dialogFragment = SimpleDialogFragment.newInstance(args);
             dialogFragment.setAction((id, value) -> {
-                if (id == tv_dialog_btn_right) del();
+                if (id == tv_dialog_btn_right) {
+                    del();
+                }
             });
         }
         return dialogFragment;
@@ -727,9 +731,15 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         animateHeaderAndFooter(false, false, finish);
         if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
             mMediaPlayer.reset();
-            if (mVideoView != null) mVideoView.setVisibility(View.GONE);
-            if (mVideoLoadingBar != null) mVideoLoadingBar.setVisibility(View.GONE);
-            if (mPhotoView != null) mPhotoView.setVisibility(View.VISIBLE);
+            if (mVideoView != null) {
+                mVideoView.setVisibility(View.GONE);
+            }
+            if (mVideoLoadingBar != null) {
+                mVideoLoadingBar.setVisibility(View.GONE);
+            }
+            if (mPhotoView != null) {
+                mPhotoView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -844,7 +854,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         long position = mMediaPlayer.getCurrentPosition();
         mVideoPlayTime.setText(stringForTime((int) position));
         mVideoSeekBar.setProgress((int) position);
-        if (mMediaPlayer.isPlaying()) mContentRootView.postDelayed(this::startUpdateTime, 200);
+        if (mMediaPlayer.isPlaying()) {
+            mContentRootView.postDelayed(this::startUpdateTime, 200);
+        }
     }
 
     @Override

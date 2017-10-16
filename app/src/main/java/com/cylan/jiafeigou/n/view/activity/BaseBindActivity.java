@@ -50,16 +50,17 @@ public class BaseBindActivity<T extends BasePresenter> extends BaseFullScreenFra
 
     @NeedsPermission(ACCESS_FINE_LOCATION)
     public void onGrantedLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
                 AlertDialogManager.getInstance().showDialog(this, getString(R.string.GetWifiList_FaiTips), getString(R.string.GetWifiList_FaiTips),
                         getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }, getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
                             dialog.cancel();
                             finishExt();
                         }, false);
             }
+        }
     }
 
     @OnPermissionDenied(ACCESS_FINE_LOCATION)

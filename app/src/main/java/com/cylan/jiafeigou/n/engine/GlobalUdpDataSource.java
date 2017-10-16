@@ -94,8 +94,9 @@ public class GlobalUdpDataSource {
     }
 
     public void unregister() {
-        if (subscription != null && !subscription.isUnsubscribed())
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
+        }
     }
 
     /**

@@ -30,11 +30,13 @@ public class WonderGlideURL extends GlideUrl {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         mBean = bean;
         this.vid = Security.getVId();
-        if (BaseApplication.getAppComponent().getSourceManager().getAccount() != null)
+        if (BaseApplication.getAppComponent().getSourceManager().getAccount() != null) {
             this.account = BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount();
+        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(bean.cid);
-        if (device != null)
+        if (device != null) {
             this.regionType = device.regionType;
+        }
     }
 
     @Override

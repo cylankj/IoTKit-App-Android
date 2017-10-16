@@ -145,8 +145,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onStop();
         if (lBatteryWarnDialog != null
                 && lBatteryWarnDialog.get() != null
-                && lBatteryWarnDialog.get().isResumed())
+                && lBatteryWarnDialog.get().isResumed()) {
             lBatteryWarnDialog.get().dismiss();
+        }
         if (myReceiver != null) {
             unregisterReceiver(myReceiver);
         }
@@ -309,16 +310,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onBellBatteryDrainOut() {
-        if (JFGRules.isShareDevice(uuid)) return;
+        if (JFGRules.isShareDevice(uuid)) {
+            return;
+        }
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
-        if (!dialog.isAdded())
+        if (!dialog.isAdded()) {
             dialog.show(getSupportFragmentManager(), "lBattery");
+        }
     }
 
     private void initBatteryDialog() {
-        if (lBatteryWarnDialog == null || lBatteryWarnDialog.get() == null)
+        if (lBatteryWarnDialog == null || lBatteryWarnDialog.get() == null) {
             lBatteryWarnDialog = new WeakReference<>(LBatteryWarnDialog.newInstance(null));
+        }
     }
 
     @Override
@@ -326,7 +331,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         mHasLoadInitFinished = true;
         LoadingDialog.dismissLoading();
         LoadingDialog.dismissLoading();//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
-        if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
+        if (beanArrayList != null && beanArrayList.size() < 20) {
+            endlessLoading = true;
+        }
         bellCallRecordListAdapter.addAll(beanArrayList);
         mIsLastLoadFinish = true;
         boolean isEmpty = bellCallRecordListAdapter.getList().size() == 0;
@@ -523,7 +530,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onItemLongClick(View itemView, int viewType, int position) {
         if (mIsShardAccount)//共享账号不可操作
+        {
             return;
+        }
         if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
             AppLogger.d("position is invalid");
             return;

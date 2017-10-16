@@ -175,7 +175,9 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     @OnClick({R.id.tv_toolbar_right, R.id.tv_toolbar_icon})

@@ -46,7 +46,9 @@ public class AdsStrategy {
     private static AdsStrategy strategy;
 
     public static AdsStrategy getStrategy() {
-        if (strategy == null) strategy = new AdsStrategy();
+        if (strategy == null) {
+            strategy = new AdsStrategy();
+        }
         return strategy;
     }
 
@@ -76,8 +78,9 @@ public class AdsStrategy {
                                             AppLogger.w("开始获取广告");
                                             RxBus.getCacheInstance().removeStickyEvent(AdsStrategy.AdsDescription.class);
                                         } catch (JfgException e) {
-                                            if (BuildConfig.DEBUG)
+                                            if (BuildConfig.DEBUG) {
                                                 throw new IllegalArgumentException("出错了");
+                                            }
                                         }
                                     });
                         }
@@ -111,7 +114,9 @@ public class AdsStrategy {
 
     private void try2DownloadAds(AdsDescription description) {
         //没有可以先后台下载,必须在主线程调用
-        if (description == null || TextUtils.isEmpty(description.url)) return;
+        if (description == null || TextUtils.isEmpty(description.url)) {
+            return;
+        }
         Glide.with(ContextUtils.getContext())
                 .load(description.url)
                 //加上签名
@@ -194,7 +199,9 @@ public class AdsStrategy {
                                 return null;
                             }
                             return description;
-                        } else return null;
+                        } else {
+                            return null;
+                        }
                     } catch (Exception e) {
                         AdsStrategy.getStrategy().fetchAds();
                         return null;
@@ -274,8 +281,9 @@ public class AdsStrategy {
         int h = Resources.getSystem().getDisplayMetrics().heightPixels;
         int i;
         for (i = wArray.length - 1; i >= 0; i--) {
-            if (w >= wArray[i])
+            if (w >= wArray[i]) {
                 break;
+            }
         }
         AppLogger.d("取到分辨率?" + wArray[i] + ":" + hArray[i]);
         return wArray[i] + "x" + hArray[i];

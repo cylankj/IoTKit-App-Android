@@ -298,12 +298,14 @@ public final class Block {
     }
 
     private String getTargetContent(String s) {
-        if (s == null || s.isEmpty())
+        if (s == null || s.isEmpty()) {
             return s;
+        }
         String[] content = s.split("\r");
         for (String t : content) {
-            if (!t.contains(contentFilter))
+            if (!t.contains(contentFilter)) {
                 continue;
+            }
             return t;
         }
         return s;
@@ -337,6 +339,7 @@ public final class Block {
         return result;
     }
 
+    @Override
     public String toString() {
         return String.valueOf(basicSb) + timeSb + cpuSb + stackSb;
     }

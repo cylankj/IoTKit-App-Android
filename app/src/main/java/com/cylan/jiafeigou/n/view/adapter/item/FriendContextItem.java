@@ -50,10 +50,11 @@ public class FriendContextItem extends AbstractItem<FriendContextItem, FriendCon
     }
 
     public String getAlias() {
-        if (childType == 1)
+        if (childType == 1) {
             return TextUtils.isEmpty(friendAccount.markName) ? TextUtils.isEmpty(friendAccount.alias) ? friendAccount.account : friendAccount.alias : friendAccount.markName;
-        else
+        } else {
             return TextUtils.isEmpty(friendRequest.alias) ? friendRequest.account : friendRequest.alias;
+        }
     }
 
 

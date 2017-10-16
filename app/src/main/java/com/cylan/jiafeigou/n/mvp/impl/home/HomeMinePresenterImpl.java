@@ -205,8 +205,9 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountArrived -> {
-                    if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getPhotoUrl()))
+                    if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getPhotoUrl())) {
                         getView().setUserImageHeadByUrl(accountArrived.account.getPhotoUrl());
+                    }
                     if (getView() != null) {
                         String al = accountArrived.account.getAlias();
                         String a2 = accountArrived.account.getAccount();
@@ -253,8 +254,9 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginMeTab -> {
-                    if (loginMeTab.b)
+                    if (loginMeTab.b) {
                         start();
+                    }
                 }, AppLogger::e);
     }
 

@@ -400,9 +400,13 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     public void insert(long time) {
         long dayIndex = time / DAY_MILLISECOND;
         TimePair eles = mTimeLineMap.get(dayIndex);
-        if (eles == null) eles = new TimePair();
+        if (eles == null) {
+            eles = new TimePair();
+        }
         eles.timeCount++;
-        if (time < eles.minLongTime) eles.minLongTime = time;
+        if (time < eles.minLongTime) {
+            eles.minLongTime = time;
+        }
         mTimeLineMap.put(dayIndex, eles);
         notifyDataSetChanged();
     }
@@ -447,7 +451,9 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         int dayPos = (newX - lastX) / mMarkLineSpace;
         if (dayPos != 0 && mDayIndex - dayPos >= mMinDayIndex && mDayIndex - dayPos <= mMaxDayIndex) {
             mDayIndex -= dayPos;
-            if (mTimeLineMap.get(mDayIndex) != null) mLastDayIndex = mDayIndex;
+            if (mTimeLineMap.get(mDayIndex) != null) {
+                mLastDayIndex = mDayIndex;
+            }
             mCalendar.set(Calendar.DAY_OF_MONTH, mCalendar.get(Calendar.DAY_OF_MONTH) - dayPos);
             mDayCount = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
             lastX += dayPos * mMarkLineSpace;
@@ -471,7 +477,9 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     public void showTimeLinePopWindow() {
-        if (true) return;
+        if (true) {
+            return;
+        }
         if (!mTimeLinePopWindow.isShowing()) {
             mTimeLineChanged = true;
             mTimeLinePopWindow.showAsDropDown(this, mMiddleX - mTimeLinePopWindow.getWidth() / 2, -mTimeLinePopWindow.getHeight() - mViewHeight - mPopWindowMargin);
@@ -517,7 +525,9 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     private void hideTimeLinePopWindow(long delay) {
-        if (true) return;
+        if (true) {
+            return;
+        }
         if (mHasHideAction) {
             removeCallbacks(mHidePopWindowCallback);
         }
@@ -575,11 +585,17 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     private long findSuitableDayIndex(long refDayIndex, boolean backward) {
-        if (refDayIndex > mMaxDayIndex) return mMaxDayIndex;
-        if (refDayIndex < mMinDayIndex) return mMinDayIndex;
+        if (refDayIndex > mMaxDayIndex) {
+            return mMaxDayIndex;
+        }
+        if (refDayIndex < mMinDayIndex) {
+            return mMinDayIndex;
+        }
         TimePair timePair = mTimeLineMap.get(refDayIndex);
         boolean remove = timePair == null;
-        if (timePair == null) mTimeLineMap.put(refDayIndex, timePair);
+        if (timePair == null) {
+            mTimeLineMap.put(refDayIndex, timePair);
+        }
         int dayIndex = mTimeLineMap.indexOfKey(refDayIndex);
         if (backward) {
             dayIndex--;
@@ -592,7 +608,9 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         } else {
             result = mTimeLineMap.keyAt(dayIndex);
         }
-        if (remove) mTimeLineMap.remove(refDayIndex);
+        if (remove) {
+            mTimeLineMap.remove(refDayIndex);
+        }
         return result;
     }
 
@@ -628,9 +646,13 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         for (Long element : elements) {
             long dayIndex = element / DAY_MILLISECOND;
             eles = mTimeLineMap.get(dayIndex);
-            if (eles == null) eles = new TimePair();
+            if (eles == null) {
+                eles = new TimePair();
+            }
             eles.timeCount++;
-            if (element < eles.minLongTime) eles.minLongTime = element;
+            if (element < eles.minLongTime) {
+                eles.minLongTime = element;
+            }
             mTimeLineMap.put(dayIndex, eles);
         }
         notifyDataSetChanged();

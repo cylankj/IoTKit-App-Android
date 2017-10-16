@@ -50,8 +50,9 @@ public class PanFUUpdate extends BaseFUUpdate {
     }
 
     private void check() {
-        if (fileNameList == null)
+        if (fileNameList == null) {
             throw new IllegalArgumentException("文件名出错");
+        }
         for (int i = 0; i < fileNameList.size(); i++) {
             if (TextUtils.isEmpty(fileNameList.get(i))) {
                 throw new IllegalArgumentException("文件名出错");
@@ -75,7 +76,9 @@ public class PanFUUpdate extends BaseFUUpdate {
                             JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
                             if (TextUtils.equals(recvHeard.cid, uuid)) {
                                 throw new RxEvent.HelperBreaker().setValue(localUdpMsg);
-                            } else Log.d(TAG, "不是同一个设备:" + uuid + ",cid:" + recvHeard.cid);
+                            } else {
+                                Log.d(TAG, "不是同一个设备:" + uuid + ",cid:" + recvHeard.cid);
+                            }
                         }
                         return Observable.just(null);
                     } catch (IOException e) {
@@ -123,7 +126,9 @@ public class PanFUUpdate extends BaseFUUpdate {
         //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
         String localUrl = "http://" + localIp + ":8765/" + getWiredContent();
         AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
-        if (listener != null) listener.upgradeStart();
+        if (listener != null) {
+            listener.upgradeStart();
+        }
         resetRspRecv(true);
         makeUpdateRspRecv(5 * 60);//5分钟
         try {
@@ -148,13 +153,15 @@ public class PanFUUpdate extends BaseFUUpdate {
 
     private void resetRspRecv(boolean needInit) {
         compositeSubscription.unsubscribe();
-        if (needInit)
+        if (needInit) {
             compositeSubscription = new CompositeSubscription();
+        }
     }
 
     private void addSub(Subscription subscription) {
-        if (compositeSubscription != null)
+        if (compositeSubscription != null) {
             compositeSubscription.add(subscription);
+        }
     }
 
     /**
@@ -174,7 +181,9 @@ public class PanFUUpdate extends BaseFUUpdate {
                             JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
                             if (TextUtils.equals(recvHeard.cid, uuid)) {
                                 throw new RxEvent.HelperBreaker().setValue(localUdpMsg);
-                            } else Log.d(TAG, "不是同一个设备:" + uuid + ",cid:" + recvHeard.cid);
+                            } else {
+                                Log.d(TAG, "不是同一个设备:" + uuid + ",cid:" + recvHeard.cid);
+                            }
                         }
                         return Observable.just(null);
                     } catch (IOException e) {
@@ -199,8 +208,12 @@ public class PanFUUpdate extends BaseFUUpdate {
     }
 
     private void handleTimeout(int code) {
-        if (listener != null) listener.upgradeErr(code);
-        if (simulatePercent != null) simulatePercent.stop();
+        if (listener != null) {
+            listener.upgradeErr(code);
+        }
+        if (simulatePercent != null) {
+            simulatePercent.stop();
+        }
         AppLogger.d("fping timeout : " + uuid + ",code:" + code + " " + listener);
     }
 
@@ -209,11 +222,17 @@ public class PanFUUpdate extends BaseFUUpdate {
             UdpConstant.FAck fAck = DpUtils.unpackData(data, UdpConstant.FAck.class);
             if (fAck != null && fAck.ret != 0) {
                 this.updateState = JConstant.U.FAILED_DEVICE_FAILED;
-                if (listener != null) listener.upgradeErr(this.updateState);
-                if (simulatePercent != null) simulatePercent.stop();
+                if (listener != null) {
+                    listener.upgradeErr(this.updateState);
+                }
+                if (simulatePercent != null) {
+                    simulatePercent.stop();
+                }
             } else if (fAck != null) {//相应,成功了.
                 this.updateState = JConstant.U.SUCCESS;
-                if (simulatePercent != null) simulatePercent.boost();
+                if (simulatePercent != null) {
+                    simulatePercent.boost();
+                }
                 AppLogger.d("升级成功,清空配置:" + uuid);
                 PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
             }
@@ -227,13 +246,17 @@ public class PanFUUpdate extends BaseFUUpdate {
     @Override
     public void actionDone() {
         updateState = JConstant.U.SUCCESS;
-        if (listener != null) listener.upgradeSuccess();
+        if (listener != null) {
+            listener.upgradeSuccess();
+        }
     }
 
     @Override
     public void actionPercent(int percent) {
         updateState = JConstant.U.UPDATING;
-        if (listener != null) listener.upgradeProgress(percent);
+        if (listener != null) {
+            listener.upgradeProgress(percent);
+        }
     }
 
 }

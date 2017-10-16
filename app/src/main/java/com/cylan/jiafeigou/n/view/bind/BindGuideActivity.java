@@ -88,14 +88,18 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @OnClick(R.id.tv_bind_guide_next)
     public void onClick() {
         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-        if (autoBack == null) autoBack = new AutoBack(this, getIntent());
+        if (autoBack == null) {
+            autoBack = new AutoBack(this, getIntent());
+        }
         autoBack.run();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (autoBack != null) autoBack.cancel();
+        if (autoBack != null) {
+            autoBack.cancel();
+        }
     }
 
     private AutoBack autoBack;
@@ -144,8 +148,9 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
 
         private void run() {
             try {
-                if (br != null)
+                if (br != null) {
                     ContextUtils.getContext().unregisterReceiver(br);
+                }
                 br = new Br();
                 ContextUtils.getContext().registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
             } catch (Exception e) {
@@ -156,8 +161,9 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         private void cancel() {
             weakReference = null;
             try {
-                if (br != null)
+                if (br != null) {
                     ContextUtils.getContext().unregisterReceiver(br);
+                }
             } catch (Exception e) {
 
             }
@@ -194,7 +200,9 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
                 finish();
             }
         } finally {
-            if (autoBack != null) autoBack.cancel();
+            if (autoBack != null) {
+                autoBack.cancel();
+            }
         }
     }
 

@@ -70,7 +70,9 @@ public class TimerView extends View {
         } else {
             canvas.drawRoundRect(mRecordRect, mRecordRadius, mRecordRadius, mNormalPaint);
         }
-        if (mState == STATE.RECORD) postDelayed(this::invalidate, 200);
+        if (mState == STATE.RECORD) {
+            postDelayed(this::invalidate, 200);
+        }
     }
 
     public void setMaxTime(int time) {

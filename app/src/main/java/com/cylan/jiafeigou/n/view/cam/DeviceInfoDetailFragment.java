@@ -153,7 +153,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     private void updateDetails() {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        if (device == null) return;
+        if (device == null) {
+            return;
+        }
         //是否分享设备
         if (!TextUtils.isEmpty(device.shareAccount) && !JFGRules.isPan720(device.pid)) {//todo 720 分享者享有所有权限
             tvDeviceAlias.showDivider(false);
@@ -175,7 +177,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         boolean showTimezone = JFGRules.showTimeZone(device.pid, false);
         if (showTimezone) {
             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
-            if (zone != null)
+            if (zone != null) {
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((List<TimeZoneBean> list) -> {
@@ -188,6 +190,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                                 }
                             }
                         }, AppLogger::e);
+            }
         } else {
             tvDeviceTimeZone.setVisibility(View.GONE);
         }
@@ -228,7 +231,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {
-        if (!hasSimcard) return getString(R.string.OFF);
+        if (!hasSimcard) {
+            return getString(R.string.OFF);
+        }
         return net.ssid;
     }
 
@@ -270,7 +275,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 }
 
                 if (status.hasSdcard)//没有sd卡,不能点击
+                {
                     jump2SdcardDetailFragment();
+                }
                 break;
             case R.id.rl_hardware_update:
                 jump2HardwareUpdateFragment();
@@ -334,7 +341,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             //更新ui
             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
-            if (zone != null)
+            if (zone != null) {
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((List<TimeZoneBean> list) -> {
@@ -348,6 +355,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                                 }
                             }
                         }, AppLogger::e);
+            }
         });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 timeZoneFragment, android.R.id.content);
@@ -380,7 +388,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
                     device.alias = content;
                     tvDeviceAlias.setSubTitle((CharSequence) value);
-                    if (basePresenter != null) basePresenter.updateAlias(device);
+                    if (basePresenter != null) {
+                        basePresenter.updateAlias(device);
+                    }
                 }
             }
         });
@@ -427,9 +437,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void setAliasRsp(int code) {
-        if (code == JError.ErrorOK)
+        if (code == JError.ErrorOK) {
             ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-        else ToastUtil.showNegativeToast(getString(R.string.set_failed));
+        } else {
+            ToastUtil.showNegativeToast(getString(R.string.set_failed));
+        }
     }
 
     @Override
@@ -438,7 +450,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case 222:
                 if (msg.packValue != null) {
                     DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                    if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
+                    if (summary == null) {
+                        summary = new DpMsgDefine.DPSdcardSummary();
+                    }
                     //sd
                     String statusContent = getSdcardState(summary.hasSdcard, summary.errCode);
                     if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -456,7 +470,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                             //更新ui
                             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
-                            if (zone == null) return;
+                            if (zone == null) {
+                                return;
+                            }
                             TimeZoneBean bean = new TimeZoneBean();
                             bean.setId(zone.timezone);
                             if (list != null) {

@@ -67,8 +67,9 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
                 BellCallRecordBean bean = getItem(i);
                 if (bean.selected == selected) {
                     bean.selected = !selected;
-                    if (i <= lastVisiblePosition)
+                    if (i <= lastVisiblePosition) {
                         notifyItemChanged(i);
+                    }
                 }
             }
         }
@@ -81,11 +82,13 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
                 BellCallRecordBean bean = getItem(i);
-                if (bean.selected)
+                if (bean.selected) {
                     continue;
+                }
                 bean.selected = true;
-                if (i <= lastVisiblePosition)
+                if (i <= lastVisiblePosition) {
                     notifyItemChanged(i);
+                }
             }
         }
     }
@@ -97,11 +100,13 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
                 BellCallRecordBean bean = getItem(i);
-                if (!bean.selected)
+                if (!bean.selected) {
                     continue;
+                }
                 bean.selected = false;
-                if (i <= lastVisiblePosition)
+                if (i <= lastVisiblePosition) {
                     notifyItemChanged(i);
+                }
             }
         }
     }
@@ -111,8 +116,9 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
             mRemovedList.clear();
             for (int i = getCount() - 1; i >= 0; i--) {
                 BellCallRecordBean bean = getItem(i);
-                if (!bean.selected)
+                if (!bean.selected) {
                     continue;
+                }
                 mRemovedList.add(bean);
                 remove(i);
 
@@ -139,8 +145,9 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         holder.setText(R.id.tv_bell_list_item_time, item.timeStr);
         setAnswerState(item.answerState, holder.getView(R.id.tv_bell_list_item_answer_state));
         setSelectState(holder, item);
-        if (loadImageListener != null)
+        if (loadImageListener != null) {
             loadImageListener.loadMedia(item, holder.getView(R.id.imgv_bell_call_item_thumbnail));
+        }
     }
 
     private void setSelectState(SuperViewHolder holder, BellCallRecordBean item) {

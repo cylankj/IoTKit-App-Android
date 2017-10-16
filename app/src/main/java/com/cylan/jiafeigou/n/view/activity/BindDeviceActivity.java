@@ -46,15 +46,17 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 
     @Override
     public void onBackPressed() {
-        if (popAllFragmentStack())
+        if (popAllFragmentStack()) {
             return;
+        }
         finishExt();
     }
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right)
+        if (id == R.id.tv_dialog_btn_right) {
             return;
+        }
         popAllFragmentStack();
     }
 

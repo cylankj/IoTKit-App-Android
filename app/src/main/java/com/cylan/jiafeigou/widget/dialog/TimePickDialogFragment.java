@@ -94,7 +94,9 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
     }
 
     private void initWheel(int index, WheelVerticalView wheelHourPick, final int count) {
-        if (!isAdded()) return;
+        if (!isAdded()) {
+            return;
+        }
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
@@ -116,6 +118,7 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
 
     // Wheel changed listener
     private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
+        @Override
         public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
             switch (wheel.getId()) {
                 case R.id.wheel_hour_pick:

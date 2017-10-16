@@ -69,8 +69,9 @@ public abstract class AFullBind implements IFullBind {
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
             for (Subscription s : subscriptions) {
-                if (s != null)
+                if (s != null) {
                     s.unsubscribe();
+                }
             }
         }
     }

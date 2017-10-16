@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Проводной режим</string>
   <string name="Cable_Mode_Start_Hotspot">Перед включением убедитесь, что ваш телефон и устройство подключены к одному маршрутизатору</string>
   <string name="Cable_Mode_Switch_Cancel">Закрытие может привести к обрыву связи устройств, закрыть или нет?</string>
+  <string name="Camera_Outdoor">Камера (наружная версия)</string>
   <string name="CancelingTips">Отмена&#8230;</string>
   <string name="Cellular_Data_Method">Мобильные данные:</string>
   <string name="Cellular_Data_Set_Up">Включите мобильные данные в устройстве, используйте нижеуказанные настройки: Настройки> Мобильные данные</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">Учетная запись YouTube %s еще не открыла канал, не может жить, пожалуйста, откройте и повторите попытку</string>
   <string name="LIVE_OPENING">Открытие живого &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Сина Вейбо</string>
   <string name="LIVE_PLATFORM_YOUTUBE">YouTube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Введите ключ</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Перезагрузка и длительное нажатие на кнопку WiFi в течение 3 секунд</string>
   <string name="Tap1_AddDevice_FindNoResult">Устройсво не найдено. Попробуйте ещё раз</string>
   <string name="Tap1_AddDevice_FindingTips">Ищет близлежащие устройства. Включите WiFi , пожалуйста</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">Длительное нажатие кнопки Set в течение 3s</string>
   <string name="Tap1_AddDevice_QR">Скан QR кода</string>
   <string name="Tap1_AddDevice_QR_Fail">Невозможно добавить</string>
   <string name="Tap1_AddDevice_SetName">Имя устройства</string>

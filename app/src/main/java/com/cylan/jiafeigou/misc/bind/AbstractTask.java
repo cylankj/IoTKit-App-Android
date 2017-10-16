@@ -40,7 +40,9 @@ public abstract class AbstractTask implements ISubmit<AbstractTask.SResult>, Sim
     }
 
     private void updateResult(int state) {
-        if (submitResult != null) submitResult.state = state;
+        if (submitResult != null) {
+            submitResult.state = state;
+        }
     }
 
     private Observable<SResult> observableResult() {
@@ -49,15 +51,20 @@ public abstract class AbstractTask implements ISubmit<AbstractTask.SResult>, Sim
                 .flatMap(aLong -> {
                     if (2 * aLong * 1000 > getTimeout()) {
                         //超时了
-                        if (simulatePercent != null) simulatePercent.stop();
+                        if (simulatePercent != null) {
+                            simulatePercent.stop();
+                        }
                         updateResult(BindUtils.BIND_TIME_OUT);
-                        if (submitListener != null)
+                        if (submitListener != null) {
                             submitListener.onSubmitErr(BindUtils.BIND_TIME_OUT);
+                        }
                         throw new IllegalArgumentException("超时了");
                     }
                     boolean s = successCondition();
                     if (s) {
-                        if (simulatePercent != null) simulatePercent.boost();
+                        if (simulatePercent != null) {
+                            simulatePercent.boost();
+                        }
                         updateResult(BindUtils.BIND_SUC);
                         throw new RxEvent.HelperBreaker("成功了");
                     }
@@ -92,12 +99,16 @@ public abstract class AbstractTask implements ISubmit<AbstractTask.SResult>, Sim
 
     @Override
     public void actionDone() {
-        if (submitListener != null) submitListener.onSubmitSuccess();
+        if (submitListener != null) {
+            submitListener.onSubmitSuccess();
+        }
     }
 
     @Override
     public void actionPercent(int percent) {
-        if (submitListener != null) submitListener.onSubmitProgress(percent);
+        if (submitListener != null) {
+            submitListener.onSubmitProgress(percent);
+        }
     }
 
     public static final class SResult extends SubmitResult {

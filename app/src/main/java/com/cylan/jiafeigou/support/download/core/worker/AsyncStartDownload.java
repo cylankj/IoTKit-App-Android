@@ -60,8 +60,9 @@ public class AsyncStartDownload extends Thread {
                 //      and make file in directory
                 // -->save chunks in tables
 
-                if (!getTaskFileInfo(task))
+                if (!getTaskFileInfo(task)) {
                     break;
+                }
 
                 convertTaskToChunks(task);
 
@@ -117,10 +118,12 @@ public class AsyncStartDownload extends Thread {
 //            MyExtension.AS3_CONTEXT.dispatchStatusEventAsync(
 //					DispatchEcode.EXCEPTION, DispatchElevel.URL_INVALID);
             L.d(DispatchElevel.URL_INVALID + ": " + url);
-            if (downloadManagerListener != null)
+            if (downloadManagerListener != null) {
                 downloadManagerListener.onFailed(task.id, new FailReason(DispatchElevel.URL_INVALID));
-            if (tasksDataSource != null)
+            }
+            if (tasksDataSource != null) {
                 tasksDataSource.delete(task.id);
+            }
             return false;
 
         } catch (IOException e) {
@@ -128,10 +131,12 @@ public class AsyncStartDownload extends Thread {
 //			MyExtension.AS3_CONTEXT.dispatchStatusEventAsync(
 //					DispatchEcode.EXCEPTION, DispatchElevel.OPEN_CONNECTION);
             L.d(DispatchElevel.OPEN_CONNECTION);
-            if (downloadManagerListener != null)
+            if (downloadManagerListener != null) {
                 downloadManagerListener.onFailed(task.id, new FailReason(DispatchElevel.OPEN_CONNECTION));
-            if (tasksDataSource != null)
+            }
+            if (tasksDataSource != null) {
                 tasksDataSource.delete(task.id);
+            }
             return false;
         }
 
@@ -164,9 +169,11 @@ public class AsyncStartDownload extends Thread {
             int MaximumUserCHUNKS = task.chunks / 2;
             task.chunks = 1;
 
-            for (int f = 1; f <= MaximumUserCHUNKS; f++)
-                if (task.size > MegaByte * f)
+            for (int f = 1; f <= MaximumUserCHUNKS; f++) {
+                if (task.size > MegaByte * f) {
                     task.chunks = f * 2;
+                }
+            }
         }
 
 
@@ -179,8 +186,9 @@ public class AsyncStartDownload extends Thread {
     }
 
     private void makeFileForChunks(int firstId, Task task) {
-        for (int endId = firstId + task.chunks; firstId < endId; firstId++)
+        for (int endId = firstId + task.chunks; firstId < endId; firstId++) {
             FileUtils.create(task.save_address, String.valueOf(firstId));
+        }
 
     }
 

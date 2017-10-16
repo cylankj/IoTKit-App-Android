@@ -84,8 +84,9 @@ public class BitmapUtils {
         int tableSize = 2 * r + 1;
         int divide[] = new int[256 * tableSize];
 
-        for (int i = 0; i < 256 * tableSize; i++)
+        for (int i = 0; i < 256 * tableSize; i++) {
             divide[i] = i / tableSize;
+        }
 
         int inIndex = 0;
 
@@ -105,11 +106,13 @@ public class BitmapUtils {
                 out[outIndex] = (divide[ta] << 24) | (divide[tr] << 16) | (divide[tg] << 8) | divide[tb];
 
                 int i1 = x + r + 1;
-                if (i1 > widthMinus1)
+                if (i1 > widthMinus1) {
                     i1 = widthMinus1;
+                }
                 int i2 = x - r;
-                if (i2 < 0)
+                if (i2 < 0) {
                     i2 = 0;
+                }
                 int rgb1 = in[inIndex + i1];
                 int rgb2 = in[inIndex + i2];
 
@@ -283,11 +286,14 @@ public class BitmapUtils {
     }
 
     public static boolean equals(Drawable drawable0, Drawable drawable1) {
-        if (drawable0 == null || drawable1 == null)
+        if (drawable0 == null || drawable1 == null) {
             return false;
+        }
         Drawable.ConstantState constantState0 = drawable0.getConstantState();
         Drawable.ConstantState constantState1 = drawable1.getConstantState();
-        if (constantState0 == null || constantState1 == null) return false;
+        if (constantState0 == null || constantState1 == null) {
+            return false;
+        }
         return constantState0.equals(constantState1);
     }
 }

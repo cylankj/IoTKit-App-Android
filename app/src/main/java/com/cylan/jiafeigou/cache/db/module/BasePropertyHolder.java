@@ -35,6 +35,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      * @return
      * @deprecated
      */
+    @Override
     public <V> V $(int msgId, V defaultValue) {
 
 //        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
@@ -96,13 +97,17 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Deprecated
     public DPEntity getProperty(int msgId) {
-        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) return null;
+        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) {
+            return null;
+        }
         return properties.get(msgId);
     }
 
     @Override
     public void updateProperty(int msgId, DPEntity entity) {
-        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) return;
+        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) {
+            return;
+        }
         Log.d("updateProperty", "updateProperty:" + msgId + "," + (entity == null ? "" : entity.getUuid()));
         properties.put(msgId, entity);
     }

@@ -75,7 +75,9 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     private void initPresenter() {
@@ -175,7 +177,9 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
     @Override
     public void onCheckFriendResult(FriendContextItem friendContextItem) {
         empty.set(friendContextItem == null);
-        if (empty.get()) return;
+        if (empty.get()) {
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putParcelable("friendItem", friendContextItem);
         MineFriendInformationFragment friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);

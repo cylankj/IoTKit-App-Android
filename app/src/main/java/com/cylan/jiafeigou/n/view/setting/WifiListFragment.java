@@ -145,18 +145,21 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                             });
                     locationGrantedDialog = builder.create();
                 }
-                if (locationGrantedDialog.isShowing()) return;
+                if (locationGrantedDialog.isShowing()) {
+                    return;
+                }
                 locationGrantedDialog.show();
                 return;
             }
         }
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.startScan();
+        }
     }
 
     @OnPermissionDenied(ACCESS_FINE_LOCATION)
     public void onDeniedLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (locationDeniedDialog == null) {
                 locationDeniedDialog = new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.turn_on_gps))
@@ -171,7 +174,10 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                         })
                         .create();
             }
-        if (locationDeniedDialog.isShowing()) return;
+        }
+        if (locationDeniedDialog.isShowing()) {
+            return;
+        }
         locationDeniedDialog.show();
     }
 
@@ -211,7 +217,9 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                 new AlertDialog.Builder(getContext())
                         .setMessage(getString(R.string.GetWifiList_FaiTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                            if (basePresenter != null) basePresenter.startScan();
+                            if (basePresenter != null) {
+                                basePresenter.startScan();
+                            }
                         })
                         .setNegativeButton(getString(R.string.CALL_CAMERA_NAME), null)
                         .show();
@@ -224,7 +232,9 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
 
     @Override
     public void onRefresh() {
-        if (basePresenter != null) basePresenter.startScan();
+        if (basePresenter != null) {
+            basePresenter.startScan();
+        }
         swRefreshWifi.setRefreshing(true);
     }
 
@@ -252,8 +262,9 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));
                     return;
                 }
-                if (basePresenter != null)
+                if (basePresenter != null) {
                     basePresenter.sendWifiInfo(ssid, (String) value, security);
+                }
                 ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
                 Intent intent = new Intent(getActivity(), NewHomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

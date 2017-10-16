@@ -25,8 +25,9 @@ public class ToBindDeviceListAdapter extends SuperAdapter<ScanResult> {
         View view = holder.getView(R.id.tv_ap_list_item);
         if (view != null) {
             view.setTag(item);
-            if (onItemClickListener != null)
+            if (onItemClickListener != null) {
                 view.setOnClickListener(onItemClickListener);
+            }
         }
     }
 

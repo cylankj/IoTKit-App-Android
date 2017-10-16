@@ -121,6 +121,7 @@ public class DataSourceManager implements JFGSourceManager {
         instance = this;
     }
 
+    @Override
     public void initFromDB() {//根据需要初始化
 
         dbHelper.getActiveAccount()
@@ -257,6 +258,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
 
+    @Override
     @Deprecated
     public void setOnline(boolean online) {
         isOnline = online;
@@ -307,9 +309,9 @@ public class DataSourceManager implements JFGSourceManager {
         List<Pair<Integer, String>> copyList = new ArrayList<>(rawDeviceOrder);
         for (Pair<Integer, String> pair : copyList) {
             Device d = mCachedDeviceMap.get(pair.second);
-            if (!result.contains(d))
+            if (!result.contains(d)) {
                 result.add(d);
-            else {
+            } else {
                 AppLogger.w("yes list contains d: " + d);
             }
         }
@@ -317,8 +319,11 @@ public class DataSourceManager implements JFGSourceManager {
         return result;
     }
 
+    @Override
     public List<Device> getDevicesByPid(int... pids) {
-        if (pids == null) return null;
+        if (pids == null) {
+            return null;
+        }
 
         List<Device> result = new ArrayList<>();
         for (Map.Entry<String, Device> device : mCachedDeviceMap.entrySet()) {
@@ -332,8 +337,11 @@ public class DataSourceManager implements JFGSourceManager {
         return getValueWithAccountCheck(result);
     }
 
+    @Override
     public List<String> getDeviceUuidByPid(int... pids) {
-        if (pids == null) return null;
+        if (pids == null) {
+            return null;
+        }
         List<String> result = new ArrayList<>();
         List<Device> devices = getDevicesByPid(pids);
         for (Device device : devices) {
@@ -345,9 +353,13 @@ public class DataSourceManager implements JFGSourceManager {
     //主动发起请求,来获取设备所有的属性
     @Override
     public void syncAllProperty() {
-        if (mCachedDeviceMap.size() == 0) return;
+        if (mCachedDeviceMap.size() == 0) {
+            return;
+        }
         ArrayList<String> uuidList = new ArrayList<>();
-        if (mCachedDeviceMap.size() == 0) return;
+        if (mCachedDeviceMap.size() == 0) {
+            return;
+        }
         HashMap<String, JFGDPMsg[]> map = new HashMap<>();
         List<HashMap<String, JFGDPMsg[]>> mapList = new ArrayList<>();
         int deviceCount = 0;
@@ -358,13 +370,19 @@ public class DataSourceManager implements JFGSourceManager {
                 uuidList.add(device.uuid);
             }
             final String uuid = device.uuid;
-            if (TextUtils.isEmpty(uuid) || account == null) return;
+            if (TextUtils.isEmpty(uuid) || account == null) {
+                return;
+            }
             ArrayList<JFGDPMsg> parameters = device.getQueryParams();
-            if (parameters == null || parameters.size() == 0) continue;
+            if (parameters == null || parameters.size() == 0) {
+                continue;
+            }
             JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
             for (int i = 0; i < parameters.size(); i++) {
                 //非常丑的方式过滤掉 实时dp
-                if (parameters.get(i).id == 204) parameters.get(i).id = 201;
+                if (parameters.get(i).id == 204) {
+                    parameters.get(i).id = 201;
+                }
                 array[i] = parameters.get(i);
             }
             map.put(uuid, array);
@@ -394,24 +412,31 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public boolean syncAllProperty(String uuid, int... excludeMsgIds) {
-        if (mCachedDeviceMap.size() == 0) return false;
+        if (mCachedDeviceMap.size() == 0) {
+            return false;
+        }
         Device device = mCachedDeviceMap.get(uuid);
-        if (device == null) return false;
+        if (device == null) {
+            return false;
+        }
         ArrayList<String> uuidList = new ArrayList<>();
         HashMap<String, JFGDPMsg[]> map = new HashMap<>();
         //非分享设备需要一些属性
         if (!JFGRules.isShareDevice(device)) {
             uuidList.add(device.uuid);
         }
-        if (TextUtils.isEmpty(uuid) || account == null) return false;
+        if (TextUtils.isEmpty(uuid) || account == null) {
+            return false;
+        }
         ArrayList<JFGDPMsg> parameters = device.getQueryParams();
         JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
         for (int i = 0; i < parameters.size(); i++) {
             int msgId = (int) parameters.get(i).id;
             if (MiscUtils.arrayContains(excludeMsgIds, msgId)) {
                 array[i] = new JFGDPMsg(201, 0);//201是占位符号
-            } else
+            } else {
                 array[i] = parameters.get(i);
+            }
         }
         map.put(uuid, array);
         try {
@@ -430,7 +455,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void syncHomeProperty() {
-        if (mCachedDeviceMap.size() == 0) return;
+        if (mCachedDeviceMap.size() == 0) {
+            return;
+        }
 
 
 
@@ -447,12 +474,16 @@ public class DataSourceManager implements JFGSourceManager {
             HashMap<String, JFGDPMsg[]> map = new HashMap<>();
             Device device = mCachedDeviceMap.get(entry.getKey());
             final String uuid = device.uuid;
-            if (TextUtils.isEmpty(uuid) || account == null) return;
+            if (TextUtils.isEmpty(uuid) || account == null) {
+                return;
+            }
 
 //            queryMap.put(entry.getKey(), query);
 
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
-            if (parameters == null || parameters.size() == 0) continue;
+            if (parameters == null || parameters.size() == 0) {
+                continue;
+            }
             JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
             for (int i = 0; i < parameters.size(); i++) {
                 array[i] = parameters.get(i);
@@ -588,13 +619,22 @@ public class DataSourceManager implements JFGSourceManager {
         account = null;
         jfgAccount = null;
 //        if (unreadMap != null) unreadMap.clearLocal();
-        if (shareList != null) shareList.clear();
-        if (rawDeviceOrder != null) rawDeviceOrder.clear();
-        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
+        if (shareList != null) {
+            shareList.clear();
+        }
+        if (rawDeviceOrder != null) {
+            rawDeviceOrder.clear();
+        }
+        if (mCachedDeviceMap != null) {
+            mCachedDeviceMap.clear();
+        }
     }
 
+    @Override
     public void syncDeviceProperty(String uuid) {
-        if (TextUtils.isEmpty(uuid) || account == null) return;
+        if (TextUtils.isEmpty(uuid) || account == null) {
+            return;
+        }
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = device.getQueryParams();
@@ -608,7 +648,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void syncDeviceProperty(String uuid, int... pids) {
-        if (TextUtils.isEmpty(uuid) || account == null || pids == null) return;
+        if (TextUtils.isEmpty(uuid) || account == null || pids == null) {
+            return;
+        }
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = new ArrayList<>();
@@ -663,7 +705,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {
-        if (shareList == null) shareList = new ArrayList<>();
+        if (shareList == null) {
+            shareList = new ArrayList<>();
+        }
         shareList.clear();
         shareList.addAll(arrayList);
         getCacheInstance().post(new RxEvent.GetShareListRsp());
@@ -699,6 +743,7 @@ public class DataSourceManager implements JFGSourceManager {
         return null;
     }
 
+    @Override
     public void setLoginState(LogState loginState) {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
         if (loginState.state == LogState.STATE_NONE) {
@@ -712,9 +757,12 @@ public class DataSourceManager implements JFGSourceManager {
         AppLogger.w("logState update: " + loginState.state);
     }
 
+    @Override
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
-        if (this.account != null) this.account.setAccount(jfgAccount);
+        if (this.account != null) {
+            this.account.setAccount(jfgAccount);
+        }
         AppLogger.w("setJfgAccount:" + (jfgAccount == null));
     }
 
@@ -788,7 +836,9 @@ public class DataSourceManager implements JFGSourceManager {
         Observable.just("update")
                 .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
-                    if (msgIdList == null || msgIdList.length == 0) return;
+                    if (msgIdList == null || msgIdList.length == 0) {
+                        return;
+                    }
                     Device device = getDevice(uuid);
                     if (device != null) {
                         ArrayList<JFGDPMsg> list = new ArrayList<>();
@@ -1038,10 +1088,15 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void handleSystemNotification(ArrayList<JFGFeedbackInfo> list) {
-        if (!BaseApplication.isBackground()) return;
-        if (ListUtils.isEmpty(list)) return;
-        if (getAccount() == null || !getJFGAccount().isEnablePush())
+        if (!BaseApplication.isBackground()) {
             return;
+        }
+        if (ListUtils.isEmpty(list)) {
+            return;
+        }
+        if (getAccount() == null || !getJFGAccount().isEnablePush()) {
+            return;
+        }
         INotify.NotifyBean bean = new INotify.NotifyBean();
         bean.sound = getAccount() != null && getAccount().getEnableSound();
         bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
@@ -1080,8 +1135,9 @@ public class DataSourceManager implements JFGSourceManager {
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
-                                    if (getAccount() == null || !getJFGAccount().isEnablePush())
+                                    if (getAccount() == null || !getJFGAccount().isEnablePush()) {
                                         return;
+                                    }
                                     Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
@@ -1105,7 +1161,9 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                 } else if (msgId == 401) {
                     DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
-                    if (dataPoint.isOK == 1) return; //已接听了,不需要发送通知了
+                    if (dataPoint.isOK == 1) {
+                        return; //已接听了,不需要发送通知了
+                    }
                     AppLogger.w("may fire a notification: " + msgId);
 
                     //for bell 1004 1005
@@ -1117,8 +1175,9 @@ public class DataSourceManager implements JFGSourceManager {
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
-                                    if (getAccount() == null || !getJFGAccount().isEnablePush())
+                                    if (getAccount() == null || !getJFGAccount().isEnablePush()) {
                                         return;
+                                    }
                                     Device dd = getDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
                                     final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
@@ -1149,14 +1208,19 @@ public class DataSourceManager implements JFGSourceManager {
 
     }
 
+    @Override
     public void initAccount() {
         dbHelper.getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
     public void initSubscription() {
-        if (mapSubscription != null) mapSubscription.clear();
-        if (mapSubscription == null) mapSubscription = new MapSubscription();
+        if (mapSubscription != null) {
+            mapSubscription.clear();
+        }
+        if (mapSubscription == null) {
+            mapSubscription = new MapSubscription();
+        }
         mapSubscription.add(makeCacheGetDataSub(), "makeCacheGetDataSub");
         mapSubscription.add(makeCacheSyncDataSub(), "makeCacheSyncDataSub");
         mapSubscription.add(makeCacheAccountSub(), "makeCacheAccountSub");
@@ -1202,7 +1266,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     private void removeLastPreview(String uuid) {
         final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-        if (TextUtils.isEmpty(pre)) return;
+        if (TextUtils.isEmpty(pre)) {
+            return;
+        }
         try {
             if (SimpleCache.getInstance().getPreviewKeyList() != null) {
                 List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());

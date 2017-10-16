@@ -54,15 +54,17 @@ public class BadgeProcessor extends AbstractProcessor {
      * 检查treeNode是否孤立
      */
     private void verifyTreeNode(Map<String, String> simpleMap) {
-        if (simpleMap == null || simpleMap.size() == 0)
+        if (simpleMap == null || simpleMap.size() == 0) {
             throw new IllegalArgumentException("没有BadgeNode, 出错了?");
+        }
         //2.不能有孤立的node
         Iterator<String> iterator = simpleMap.keySet().iterator();
         //检查是否有断裂的节点.
         while (iterator.hasNext()) {
             final String self = iterator.next();
-            if (isolated(simpleMap, self))
+            if (isolated(simpleMap, self)) {
                 throw new IllegalArgumentException("出现孤立的节点? " + self);
+            }
         }
     }
 
@@ -105,8 +107,9 @@ public class BadgeProcessor extends AbstractProcessor {
                 asRefreshMap.add(name.substring(name.lastIndexOf(".") + 1));
                 System.out.println("asRefresh?" + name);
             }
-            if (simpleMap.containsKey(name))
+            if (simpleMap.containsKey(name)) {
                 throw new IllegalArgumentException("相同的key? " + name);
+            }
             System.out.println("result>>>" + name);
             System.out.println("s>>>" + s);
             simpleMap.put(name.substring(name.lastIndexOf(".") + 1), s);

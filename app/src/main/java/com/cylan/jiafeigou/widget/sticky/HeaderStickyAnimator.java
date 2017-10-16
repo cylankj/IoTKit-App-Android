@@ -31,8 +31,9 @@ public class HeaderStickyAnimator extends BaseStickyHeaderAnimator {
         if (hasAnimatorBundles) {
             mAnimatorBuilder.animateOnScroll(mBoundedTranslatedRatio, StickyCompat.getTranslationY(getHeader()));
         }
-        if (scrollRationListener != null)
+        if (scrollRationListener != null) {
             scrollRationListener.onScroll(mBoundedTranslatedRatio);
+        }
     }
 
 

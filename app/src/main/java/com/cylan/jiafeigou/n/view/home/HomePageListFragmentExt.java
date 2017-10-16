@@ -146,7 +146,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
             updateAccount.run();
             basePresenter.fetchDeviceList(false);
-        } else AppLogger.e("presenter is null");
+        } else {
+            AppLogger.e("presenter is null");
+        }
     }
 
     private void need2ShowUseCase() {
@@ -319,7 +321,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (vWaveAnimation != null) vWaveAnimation.stopAnimation();
+        if (vWaveAnimation != null) {
+            vWaveAnimation.stopAnimation();
+        }
     }
 
     @Override
@@ -344,7 +348,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 if (toRemoveList != null) {
                     for (HomeItem item : toRemoveList) {
                         int index = mItemAdapter.getAdapterItems().indexOf(item);
-                        if (index == -1) continue;
+                        if (index == -1) {
+                            continue;
+                        }
                         mItemAdapter.remove(index);
                         Log.d("xxxxx", "removexxxx:" + index);
                     }
@@ -387,38 +393,40 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void enableNestedScroll() {
-        if (getView() != null) getView().post(() -> {
+        if (getView() != null) {
+            getView().post(() -> {
 //            boolean enable = mItemAdapter.getItemCount() > 4;
-            if (appbar.getLayoutParams() != null) {
-                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
-                if (mItemAdapter != null && mItemAdapter.getItemCount() > 4) {
-                    CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
-                    if (!(behavior instanceof AppBarLayout.Behavior)) {
-                        layoutParams.setBehavior(new AppBarLayout.Behavior());
+                if (appbar.getLayoutParams() != null) {
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+                    if (mItemAdapter != null && mItemAdapter.getItemCount() > 4) {
+                        CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
+                        if (!(behavior instanceof AppBarLayout.Behavior)) {
+                            layoutParams.setBehavior(new AppBarLayout.Behavior());
+                        } else {
+                            ((AppBarLayout.Behavior) behavior).setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+                                @Override
+                                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                                    return !srLayoutMainContentHolder.isRefreshing();
+                                }
+                            });
+                        }
                     } else {
-                        ((AppBarLayout.Behavior) behavior).setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-                            @Override
-                            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                                return !srLayoutMainContentHolder.isRefreshing();
-                            }
-                        });
-                    }
-                } else {
-                    if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior)) {
-                        layoutParams.setBehavior(new DisableAppBarLayoutBehavior());
+                        if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior)) {
+                            layoutParams.setBehavior(new DisableAppBarLayoutBehavior());
+                        }
                     }
                 }
-            }
-            if (srLayoutMainContentHolder.getLayoutParams() != null) {
-                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) srLayoutMainContentHolder.getLayoutParams();
-                CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
-                if (behavior != null && behavior instanceof DisableAppBarLayoutBehavior) {
-                    ((DisableAppBarLayoutBehavior) behavior).setCanDragChecker(() ->
-                            mItemAdapter != null && mItemAdapter.getItemCount() > 4 && !srLayoutMainContentHolder.isRefreshing());
-                    Log.d("what", "what 1," + layoutParams.getBehavior() + " ,enable:" + (mItemAdapter != null && mItemAdapter.getItemCount() > 4));
+                if (srLayoutMainContentHolder.getLayoutParams() != null) {
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) srLayoutMainContentHolder.getLayoutParams();
+                    CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
+                    if (behavior != null && behavior instanceof DisableAppBarLayoutBehavior) {
+                        ((DisableAppBarLayoutBehavior) behavior).setCanDragChecker(() ->
+                                mItemAdapter != null && mItemAdapter.getItemCount() > 4 && !srLayoutMainContentHolder.isRefreshing());
+                        Log.d("what", "what 1," + layoutParams.getBehavior() + " ,enable:" + (mItemAdapter != null && mItemAdapter.getItemCount() > 4));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -479,9 +487,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * @return
      */
     private String getBeautifulAlias(JFGAccount account) {
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON)
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             return "";
-        if (account == null) return "";
+        }
+        if (account == null) {
+            return "";
+        }
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
         return "," + MiscUtils.getBeautifulString(temp, 8);
     }
@@ -534,7 +545,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onNetworkChanged(boolean connected) {
         badNetworkBanner.setVisibility(connected ? View.GONE : View.VISIBLE);
         srLayoutMainContentHolder.setEnabled(connected);
-        if (!connected) srLayoutMainContentHolder.setRefreshing(false);
+        if (!connected) {
+            srLayoutMainContentHolder.setRefreshing(false);
+        }
     }
 
     @Override
@@ -596,7 +609,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
-        if (preRatio == ratio) return;
+        if (preRatio == ratio) {
+            return;
+        }
         preRatio = ratio;
         Log.d("HomePageListFragmentExt", "HomePageListFragmentExt: " + verticalOffset);
         updateWaveViewAmplitude(ratio);
@@ -615,8 +630,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
         float alpha = 1.0f - ratio;
         if (tvHeaderLastTitle.getAlpha() != alpha) {
-            if (alpha < 0.02f)
+            if (alpha < 0.02f) {
                 alpha = 0;//设定一个阀值,以免掉帧导致回调不及时
+            }
             tvHeaderLastTitle.setAlpha(alpha);
         }
     }
@@ -640,8 +656,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 Intent in = new Intent(getActivity(), CameraLiveActivity.class);
                 View tip = itemView.findViewById(R.id.img_device_icon);
                 if (tip != null && tip instanceof ImageViewTip) {
-                    if (((ImageViewTip) tip).isShowDot())
+                    if (((ImageViewTip) tip).isShowDot()) {
                         in.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
+                    }
                 }
                 in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
                 startActivity(in);
@@ -691,8 +708,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(rsp -> {
                                 ToastUtil.showToast(getString(R.string.DELETED_SUC));
-                                if (basePresenter != null)
+                                if (basePresenter != null) {
                                     basePresenter.fetchDeviceList(true);
+                                }
                             }, e -> {
                                 ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
                                 AppLogger.e("err: " + MiscUtils.getErr(e));

@@ -121,8 +121,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             @Override
             public void onPageSelected(int position) {
                 currentIndex = position;
-                if (basePresenter != null)
+                if (basePresenter != null) {
                     basePresenter.checkCollection(MiscUtils.getVersion(camMessageBean), currentIndex, camMessageBean);
+                }
             }
         });
 
@@ -226,8 +227,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 v.setScaleY(0.8f);
             }
         }
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.checkCollection(MiscUtils.getVersion(camMessageBean), index, camMessageBean);
+        }
     }
 
     @Override
@@ -275,11 +277,13 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 }
                 Object tag = imgVBigPicCollect.getTag();
                 if (tag == null || !(boolean) tag) {
-                    if (basePresenter != null)
+                    if (basePresenter != null) {
                         basePresenter.collect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
+                    }
                 } else {
-                    if (basePresenter != null)
+                    if (basePresenter != null) {
                         basePresenter.unCollect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
+                    }
                 }
                 LoadingDialog.showLoading(this);
                 imgVBigPicCollect.setEnabled(false);
@@ -306,7 +310,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     public void savePicResult(boolean state) {
         if (state) {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
-        } else ToastUtil.showNegativeToast(getString(R.string.set_failed));
+        } else {
+            ToastUtil.showNegativeToast(getString(R.string.set_failed));
+        }
     }
 
 
@@ -380,7 +386,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         @Override
         public int getCount() {
             //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
-            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
+            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
+                return 1;
+            }
             return MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean));
         }
 
@@ -423,8 +431,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.saveImage(MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1));
+        }
     }
 
 }

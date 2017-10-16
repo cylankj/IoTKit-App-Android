@@ -51,8 +51,9 @@ public class SystemUiHider {
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-startTime and do nothing on earlier devices.
-            if (weakReference == null || weakReference.get() == null)
+            if (weakReference == null || weakReference.get() == null) {
                 return;
+            }
             weakReference.get().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -88,15 +89,17 @@ public class SystemUiHider {
     @SuppressLint("InlinedApi")
     public void show() {
         // Show the system bar
-        if (weakReference == null || weakReference.get() == null)
+        if (weakReference == null || weakReference.get() == null) {
             return;
+        }
         weakReference.get().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
         // Schedule activity_cloud_live_mesg_call_out_item runnable to display UI elements after activity_cloud_live_mesg_call_out_item delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
-        if (supportAutoHide)
+        if (supportAutoHide) {
             mHideHandler.postDelayed(mHidePart2Runnable, AUTO_HIDE_DELAY);
+        }
     }
 
     /**

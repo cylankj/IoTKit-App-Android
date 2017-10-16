@@ -80,15 +80,17 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
             for (Subscription subscription : subscriptions) {
-                if (subscription != null && !subscription.isUnsubscribed())
+                if (subscription != null && !subscription.isUnsubscribed()) {
                     subscription.unsubscribe();
+                }
             }
         }
     }
 
     public AudioManager getAudioManager() {
-        if (audioManager == null)
+        if (audioManager == null) {
             audioManager = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
+        }
         return audioManager;
     }
 
@@ -104,15 +106,21 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @CallSuper
     @Override
     public void start() {
-        if (compositeSubscription != null) compositeSubscription.unsubscribe();
+        if (compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
+        }
         compositeSubscription = new CompositeSubscription();
-        if (refCacheMap != null) refCacheMap.unsubscribe();
+        if (refCacheMap != null) {
+            refCacheMap.unsubscribe();
+        }
         refCacheMap = new MapSubscription();
         Subscription[] subs = register();
         if (subs != null) {
-            for (Subscription s : subs)
-                if (s != null)
+            for (Subscription s : subs) {
+                if (s != null) {
                     compositeSubscription.add(s);
+                }
+            }
         }
         AppLogger.w(TAG + ": register: " + compositeSubscription.isUnsubscribed() + ",:" + refCacheMap.isUnsubscribed());
         String[] action = registerNetworkAction();
@@ -121,7 +129,9 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
             AppLogger.w("register network true");
         }
         if (registerTimeTick()) {
-            if (timeTick == null) timeTick = new TimeTick(this);
+            if (timeTick == null) {
+                timeTick = new TimeTick(this);
+            }
             LocalBroadcastManager.getInstance(ContextUtils.getContext())
                     .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
         }
@@ -143,15 +153,18 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         if (refCacheMap == null) {
             refCacheMap = new MapSubscription();
         }
-        if (subscription != null)
+        if (subscription != null) {
             compositeSubscription.add(subscription);
+        }
     }
 
     protected void addSubscription(Subscription subscription, String tag) {
-        if (subscription != null)
+        if (subscription != null) {
             refCacheMap.add(subscription, tag);
+        }
     }
 
+    @Override
     public boolean unSubscribe(String tag) {
         refCacheMap.remove(tag);
         return true;
@@ -171,12 +184,17 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         Log.d("stop", "stop: " + this.getClass().getSimpleName());
         unSubscribe(refCacheMap);
         unSubscribe(compositeSubscription);
-        if (compositeSubscription != null) compositeSubscription.clear();
-        if (refCacheMap != null) refCacheMap.clear();
+        if (compositeSubscription != null) {
+            compositeSubscription.clear();
+        }
+        if (refCacheMap != null) {
+            refCacheMap.clear();
+        }
         NetMonitor.getNetMonitor().unregister(this);
         if (registerTimeTick()) {
-            if (timeTick != null)
+            if (timeTick != null) {
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
+            }
         }
         unRegisterHeadSetObservable();
         abandonAudioFocus();
@@ -203,8 +221,9 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (abstractPresenter != null && abstractPresenter.get() != null)
+            if (abstractPresenter != null && abstractPresenter.get() != null) {
                 abstractPresenter.get().onTimeTick();
+            }
         }
     }
 
@@ -221,14 +240,18 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     protected void registerHeadSetObservable() {
-        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        if (headsetObserver == null) {
+            headsetObserver = HeadsetObserver.getHeadsetObserver();
+        }
         headsetObserver.addObserver(this);
         AppLogger.d("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
         AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
     }
 
     protected boolean isEarpiecePlug() {
-        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        if (headsetObserver == null) {
+            headsetObserver = HeadsetObserver.getHeadsetObserver();
+        }
         return headsetObserver.isHeadsetOn();
     }
 
@@ -238,7 +261,9 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     protected void unRegisterHeadSetObservable() {
-        if (headsetObserver == null) return;
+        if (headsetObserver == null) {
+            return;
+        }
         headsetObserver.removeObserver(this);
         AppLogger.d("反注册注册监听耳机:" + TAG);
     }
@@ -257,6 +282,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                 audioManager.abandonAudioFocus(afChangeListener);

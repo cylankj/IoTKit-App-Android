@@ -60,8 +60,9 @@ public class DownloadManagerPro {
     public static DownloadManagerPro getInstance() {
         if (downloadManagerPro == null) {
             synchronized (DownloadManagerPro.class) {
-                if (downloadManagerPro == null)
+                if (downloadManagerPro == null) {
                     downloadManagerPro = new DownloadManagerPro();
+                }
             }
         }
         return downloadManagerPro;
@@ -76,12 +77,15 @@ public class DownloadManagerPro {
         this.taskBuilder = taskBuilder;
 //        if (config == null)
 //            throw new JfgException("config is null,you may be forget to initialize");
-        if (taskBuilder == null)
+        if (taskBuilder == null) {
             throw new JfgException("taskBuilder==null or context==null");
-        if (TextUtils.isEmpty(taskBuilder.url))
+        }
+        if (TextUtils.isEmpty(taskBuilder.url)) {
             throw new JfgException("url==null");
-        if (TextUtils.isEmpty(taskBuilder.saveName))
+        }
+        if (TextUtils.isEmpty(taskBuilder.saveName)) {
             throw new JfgException("saveName==null");
+        }
         setMaxChunk(taskBuilder.maxChunks);
         initFolder();
         return initTask();
@@ -102,8 +106,9 @@ public class DownloadManagerPro {
 
     private void initFolder() {
         File saveFolder = new File(taskBuilder.sdCardFolderAddress);
-        if (!saveFolder.exists())
+        if (!saveFolder.exists()) {
             saveFolder.mkdirs();
+        }
         SAVE_FILE_FOLDER = saveFolder.getAbsolutePath();
         downloadManagerListener = new DownloadManagerListenerModerator(taskBuilder.downloadManagerListener);
     }
@@ -111,10 +116,11 @@ public class DownloadManagerPro {
     private int initTask() {
         String saveName = taskBuilder.saveName;
         int chunk = taskBuilder.maxChunks;
-        if (!taskBuilder.overwrite)
+        if (!taskBuilder.overwrite) {
             saveName = getUniqueName(saveName);
-        else
+        } else {
             deleteSameDownloadNameTask(saveName);
+        }
         L.d("overwrite");
         chunk = setMaxChunk(chunk);
         L.d("ma chunk");
@@ -225,8 +231,9 @@ public class DownloadManagerPro {
             task = tasksDataSource.getTaskInfo(token);
             L.d("task state : " + task.toJsonObject().toString());
             if (task.state == TaskStates.END) {
-                if (downloadManagerListener != null)
+                if (downloadManagerListener != null) {
                     downloadManagerListener.OnDownloadCompleted(task.id);
+                }
                 return;
             }
             Thread asyncStartDownload
@@ -235,8 +242,9 @@ public class DownloadManagerPro {
             asyncStartDownload.start();
             L.d("define async download started");
         } catch (Exception e) {
-            if (downloadManagerListener != null)
+            if (downloadManagerListener != null) {
                 downloadManagerListener.onFailed(task == null ? -1 : task.id, new FailReason(e.toString()));
+            }
         }
     }
 
@@ -452,8 +460,9 @@ public class DownloadManagerPro {
 
     private int setMaxChunk(int chunk) {
 
-        if (chunk < MAX_CHUNKS)
+        if (chunk < MAX_CHUNKS) {
             return chunk;
+        }
 
         return MAX_CHUNKS;
     }

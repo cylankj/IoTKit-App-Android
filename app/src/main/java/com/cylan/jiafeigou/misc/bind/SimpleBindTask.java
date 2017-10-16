@@ -46,8 +46,9 @@ public class SimpleBindTask extends AbstractTask {
                 }
                 return true;
             } catch (JfgException e) {
-                if (submitListener != null)
+                if (submitListener != null) {
                     submitListener.onSubmitErr(BindUtils.BIND_FAILED);
+                }
                 throw new RxEvent.HelperBreaker("err happen:" + MiscUtils.getErr(e));
             }
         };

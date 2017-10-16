@@ -49,9 +49,13 @@ public class OptionsImpl {
      */
     public static String getServer() {
         try {
-            if (!TextUtils.isEmpty(OptionsImpl.server)) return OptionsImpl.server.replace("_", ":");
+            if (!TextUtils.isEmpty(OptionsImpl.server)) {
+                return OptionsImpl.server.replace("_", ":");
+            }
             String server = PreferencesUtils.getString(KEY_SERVER, "");
-            if (!TextUtils.isEmpty(server)) return OptionsImpl.server = server.replace("_", ":");
+            if (!TextUtils.isEmpty(server)) {
+                return OptionsImpl.server = server.replace("_", ":");
+            }
             // com.mcxiaoke.packer.helper.PackerNg
             final String domain = PackerNg.getChannel(ContextUtils.getContext());
             if (!TextUtils.isEmpty(domain)) {
@@ -80,11 +84,13 @@ public class OptionsImpl {
      */
     public static String getRobotServer() {
         try {
-            if (!TextUtils.isEmpty(OptionsImpl.robotServer))
+            if (!TextUtils.isEmpty(OptionsImpl.robotServer)) {
                 return OptionsImpl.robotServer.replace("_", ":");
+            }
             String server = PreferencesUtils.getString(KEY_ROBOT_SERVER, "");
-            if (!TextUtils.isEmpty(server))
+            if (!TextUtils.isEmpty(server)) {
                 return OptionsImpl.robotServer = server.replace("_", ":");
+            }
             // com.mcxiaoke.packer.helper.PackerNg
             final String domain = PackerNg.getChannel(ContextUtils.getContext());
             if (!TextUtils.isEmpty(domain)) {

@@ -11,7 +11,9 @@ import java.net.Socket;
 public class CloseUtils {
     public static void close(Closeable closeable) {
         try {
-            if (closeable != null) closeable.close();
+            if (closeable != null) {
+                closeable.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

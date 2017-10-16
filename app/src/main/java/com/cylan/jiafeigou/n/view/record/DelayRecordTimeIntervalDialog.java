@@ -50,6 +50,8 @@ public class DelayRecordTimeIntervalDialog extends BaseDialog<Integer> {
     @OnClick({R.id.dialog_record_rb_20s, R.id.dialog_record_rb_60s, R.id.dialog_record_time_interval_cancel})
     public void onClick(View view) {
         dismiss();
-        if (action != null) action.onDialogAction(view.getId(), view);
+        if (action != null) {
+            action.onDialogAction(view.getId(), view);
+        }
     }
 }

@@ -46,14 +46,16 @@ public class BindUtils {
     public static final String TAG_NET_FINAL_FLOW = BIND_TAG + "final";
 
     public static List<ScanResult> transformDogList(List<ScanResult> resultList, Pattern pattern) {
-        if (resultList == null || resultList.size() == 0)
+        if (resultList == null || resultList.size() == 0) {
             return new ArrayList<>();//return an empty list is better than null
+        }
         List<ScanResult> results = new ArrayList<>();
         for (ScanResult result : resultList) {
             if (pattern == null) {
                 if (TextUtils.equals(INVALID_SSID_0, result.SSID)
-                        || TextUtils.equals(INVALID_SSID_1, result.SSID))
+                        || TextUtils.equals(INVALID_SSID_1, result.SSID)) {
                     continue;
+                }
             }
             if (pattern != null
                     && pattern.matcher(removeDoubleQuotes(result.SSID)).find()) {
@@ -65,7 +67,9 @@ public class BindUtils {
 
 
     public static String removeDoubleQuotes(String string) {
-        if (TextUtils.isEmpty(string)) return "";
+        if (TextUtils.isEmpty(string)) {
+            return "";
+        }
         int length = string.length();
         if ((length > 1) && (string.charAt(0) == '"')
                 && (string.charAt(length - 1) == '"')) {
@@ -140,8 +144,9 @@ public class BindUtils {
                                                       List<WifiConfiguration> wifiConfigurations) {
         if (wifiConfigurations != null) {
             for (WifiConfiguration con : wifiConfigurations) {
-                if (BindUtils.invalidInfo(con))
+                if (BindUtils.invalidInfo(con)) {
                     continue;
+                }
                 if (NetUtils.removeDoubleQuotes(con.SSID).startsWith("DOG-")) {
                     wifiManager.removeNetwork(con.networkId);
                     continue;
@@ -175,8 +180,12 @@ public class BindUtils {
      * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
      */
     public static int versionCompare(String str1, String str2) {
-        if (TextUtils.isEmpty(str1)) str1 = "0.0";
-        if (TextUtils.isEmpty(str2)) str2 = "0.0";
+        if (TextUtils.isEmpty(str1)) {
+            str1 = "0.0";
+        }
+        if (TextUtils.isEmpty(str2)) {
+            str2 = "0.0";
+        }
         Version a = new Version(str1);
         Version b = new Version(str2);
         return a.compareTo(b);
@@ -205,8 +214,9 @@ public class BindUtils {
     //setDevice by hunt 2016-08-05
     public static boolean isUcos(String cid) {
         //
-        if (!TextUtils.isEmpty(cid) && cid.length() == 12 && cid.startsWith("6001"))
+        if (!TextUtils.isEmpty(cid) && cid.length() == 12 && cid.startsWith("6001")) {
             return false;
+        }
 
         return !TextUtils.isEmpty(cid) && cid.length() == 12
                 && (cid.startsWith("20")
@@ -290,17 +300,20 @@ public class BindUtils {
         }
 
         public Version(String version) {
-            if (version == null)
+            if (version == null) {
                 throw new IllegalArgumentException("Version can not be null");
-            if (!version.matches("[0-9]+(\\.[0-9]+)*"))
+            }
+            if (!version.matches("[0-9]+(\\.[0-9]+)*")) {
                 throw new IllegalArgumentException("Invalid version format:" + version);
+            }
             this.version = version;
         }
 
         @Override
         public int compareTo(Version that) {
-            if (that == null)
+            if (that == null) {
                 return 1;
+            }
             String[] thisParts = this.get().split("\\.");
             String[] thatParts = that.get().split("\\.");
             int length = Math.max(thisParts.length, thatParts.length);
@@ -309,22 +322,27 @@ public class BindUtils {
                         Integer.parseInt(thisParts[i]) : 0;
                 int thatPart = i < thatParts.length ?
                         Integer.parseInt(thatParts[i]) : 0;
-                if (thisPart < thatPart)
+                if (thisPart < thatPart) {
                     return -1;
-                if (thisPart > thatPart)
+                }
+                if (thisPart > thatPart) {
                     return 1;
+                }
             }
             return 0;
         }
 
         @Override
         public boolean equals(Object that) {
-            if (this == that)
+            if (this == that) {
                 return true;
-            if (that == null)
+            }
+            if (that == null) {
                 return false;
-            if (this.getClass() != that.getClass())
+            }
+            if (this.getClass() != that.getClass()) {
                 return false;
+            }
             return this.compareTo((Version) that) == 0;
         }
 

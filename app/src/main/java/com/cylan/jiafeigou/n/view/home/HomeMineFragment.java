@@ -308,7 +308,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
 //        if (account != null) {
         url = isDefaultPhoto(url) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : url;
-        if (TextUtils.isEmpty(url)) return;//空 不需要加载
+        if (TextUtils.isEmpty(url)) {
+            return;//空 不需要加载
+        }
         Glide.with(getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
@@ -379,39 +381,46 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_friend));
+                }
                 friendItem(view);
                 break;
             case R.id.home_mine_item_share:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_share));
+                }
                 shareItem(view);
                 break;
             case R.id.home_mine_item_help:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
+                }
                 helpItem(view);
                 break;
             case R.id.home_mine_item_settings:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_settings));
+                }
                 settingsItem(view);
                 break;
             case R.id.shadow_layout:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
+                }
                 portrait();
                 break;
             case R.id.tv_home_mine_nick:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_nick));
+                }
                 jump2UserInfo();
                 break;
 
             case R.id.tv_home_mine_msg_count:
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_msg_count));
+                }
                 jump2MesgFragment();
                 break;
         }
@@ -514,9 +523,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             }
         }
 //        int count = node == null ? 0 : node.getNodeCount();
-        if (count == 0) homeMineItemFriend.showHint(false);
-        else
+        if (count == 0) {
+            homeMineItemFriend.showHint(false);
+        } else {
             homeMineItemFriend.showNumber(count);//count ==0 dismiss
+        }
         //系统消息未读数
         node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
         count = node == null ? 0 : node.getNodeCount();
@@ -537,7 +548,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.onActivityResult(requestCode, resultCode, data);
 //        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
 //        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK)
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 10000:
                     Intent intent = new Intent(getContext(), SmartcallActivity.class);
@@ -546,6 +557,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     getActivity().finish();
                     break;
             }
+        }
     }
 
 

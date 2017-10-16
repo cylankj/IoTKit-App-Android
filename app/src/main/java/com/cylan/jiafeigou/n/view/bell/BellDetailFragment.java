@@ -172,8 +172,9 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
             rlHardwareUpdate.setVisibility(View.GONE);
         } else {
             svSettingHardwareUpdate.setSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
-            if (presenter != null)
+            if (presenter != null) {
                 presenter.checkNewVersion(uuid);
+            }
         }
     }
 

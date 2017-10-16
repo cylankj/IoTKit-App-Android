@@ -382,6 +382,7 @@ public class ViewServer implements Runnable {
     /**
      * Main server loop.
      */
+    @Override
     public void run() {
         try {
             mServer = new ServerSocket(mPort, VIEW_SERVER_MAX_CONNECTIONS, InetAddress.getLocalHost());
@@ -467,35 +468,43 @@ public class ViewServer implements Runnable {
             mStream = stream;
         }
 
+        @Override
         public void close() throws IOException {
             // Don't close the stream
         }
 
+        @Override
         public boolean equals(Object o) {
             return mStream.equals(o);
         }
 
+        @Override
         public void flush() throws IOException {
             mStream.flush();
         }
 
+        @Override
         public int hashCode() {
             return mStream.hashCode();
         }
 
+        @Override
         public String toString() {
             return mStream.toString();
         }
 
+        @Override
         public void write(byte[] buffer, int offset, int count)
                 throws IOException {
             mStream.write(buffer, offset, count);
         }
 
+        @Override
         public void write(byte[] buffer) throws IOException {
             mStream.write(buffer);
         }
 
+        @Override
         public void write(int oneByte) throws IOException {
             mStream.write(oneByte);
         }
@@ -562,6 +571,7 @@ public class ViewServer implements Runnable {
             mNeedFocusedWindowUpdate = false;
         }
 
+        @Override
         public void run() {
             BufferedReader in = null;
             try {
@@ -785,6 +795,7 @@ public class ViewServer implements Runnable {
             return result;
         }
 
+        @Override
         public void windowsChanged() {
             synchronized (mLock) {
                 mNeedWindowListUpdate = true;
@@ -792,6 +803,7 @@ public class ViewServer implements Runnable {
             }
         }
 
+        @Override
         public void focusChanged() {
             synchronized (mLock) {
                 mNeedFocusedWindowUpdate = true;

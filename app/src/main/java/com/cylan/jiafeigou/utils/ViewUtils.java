@@ -49,7 +49,9 @@ public class ViewUtils {
             height = getStatusBarHeight(context);
             return height;
 //            return getStatusBarHeight(context);
-        } else return height;
+        } else {
+            return height;
+        }
     }
 
     /**
@@ -164,27 +166,31 @@ public class ViewUtils {
     }
 
     public static void deBounceClick(final View view) {
-        if (view == null)
+        if (view == null) {
             return;
+        }
         view.setEnabled(false);
         view.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (view != null)
+                if (view != null) {
                     view.setEnabled(true);
+                }
             }
         }, 1000);
     }
 
     public static void deBounceClick(final View view, long delay) {
-        if (view == null)
+        if (view == null) {
             return;
+        }
         view.setEnabled(false);
         view.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (view != null)
+                if (view != null) {
                     view.setEnabled(true);
+                }
             }
         }, delay);
     }
@@ -218,12 +224,14 @@ public class ViewUtils {
      * @param dimension left(0) top(1) right(2) bottom(3)
      */
     public static void setDrawablePadding(TextView tv, int resId, int dimension) {
-        if (dimension < 0 || dimension > 3)
+        if (dimension < 0 || dimension > 3) {
             throw new IllegalArgumentException("wow ,not so good");
+        }
         Drawable[] dimen = {null, null, null, null};
         Drawable d = resId == -1 ? null : tv.getContext().getResources().getDrawable(resId);
-        if (d != null)
+        if (d != null) {
             d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
+        }
         //right
         dimen[dimension] = d;
         tv.setCompoundDrawables(dimen[0], dimen[1], dimen[2], dimen[3]);
@@ -235,11 +243,13 @@ public class ViewUtils {
      * @param dimension left(0) top(1) right(2) bottom(3)
      */
     public static void setDrawablePadding(TextView tv, Drawable drawable, int dimension) {
-        if (dimension < 0 || dimension > 3)
+        if (dimension < 0 || dimension > 3) {
             throw new IllegalArgumentException("wow ,not so good");
+        }
         Drawable[] dimen = {null, null, null, null};
-        if (drawable != null)
+        if (drawable != null) {
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        }
         dimen[dimension] = drawable;
         tv.setCompoundDrawables(dimen[0], dimen[1], dimen[2], dimen[3]);
     }
@@ -256,8 +266,9 @@ public class ViewUtils {
      * @return
      */
     public static int getParentAdapterPosition(RecyclerView recyclerView, View view, int parentId) {
-        if (view.getId() == parentId)
+        if (view.getId() == parentId) {
             return recyclerView.getChildAdapterPosition(view);
+        }
         View viewGroup = (View) view.getParent();
         if (viewGroup != null && viewGroup.getId() == parentId) {
             return recyclerView.getChildAdapterPosition(viewGroup);
@@ -303,7 +314,9 @@ public class ViewUtils {
     public static void setChineseExclude(TextView textView, final int maxLength) {
         InputFilter filter = (CharSequence source, int start, int end,
                               Spanned dest, int dstart, int dend) -> {
-            if (source.equals(" ")) return "";
+            if (source.equals(" ")) {
+                return "";
+            }
             for (int i = start; i < end; i++) {
                 if (isChineseChar(source.charAt(i))) {
                     return "";
@@ -340,7 +353,9 @@ public class ViewUtils {
     public static InputFilter excludeChineseAndBlankFilter() {
         return (CharSequence source, int start, int end,
                 Spanned dest, int dstart, int dend) -> {
-            if (source.equals(" ")) return "";
+            if (source.equals(" ")) {
+                return "";
+            }
             for (int i = start; i < end; i++) {
                 if (isChineseChar(source.charAt(i))) {
                     return "";

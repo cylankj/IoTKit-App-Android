@@ -115,6 +115,7 @@ public class ClipViewLayout extends RelativeLayout {
         //需要等到imageView绘制完毕再初始化原图
         ViewTreeObserver observer = imageView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
             public void onGlobalLayout() {
                 initSrcPic(uri);
                 imageView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -441,14 +442,15 @@ public class ClipViewLayout extends RelativeLayout {
             // requested height and width.
             int ratio = heightRatio < widthRatio ? heightRatio : widthRatio;
             // inSampleSize只能是2的次幂  将ratio就近取2的次幂的值
-            if (ratio < 3)
+            if (ratio < 3) {
                 inSampleSize = ratio;
-            else if (ratio < 6.5)
+            } else if (ratio < 6.5) {
                 inSampleSize = 4;
-            else if (ratio < 8)
+            } else if (ratio < 8) {
                 inSampleSize = 8;
-            else
+            } else {
                 inSampleSize = ratio;
+            }
         }
 
         return inSampleSize;
@@ -477,12 +479,14 @@ public class ClipViewLayout extends RelativeLayout {
 
 
     public static String getRealFilePathFromUri(final Context context, final Uri uri) {
-        if (null == uri) return null;
+        if (null == uri) {
+            return null;
+        }
         final String scheme = uri.getScheme();
         String data = null;
-        if (scheme == null)
+        if (scheme == null) {
             data = uri.getPath();
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
             data = uri.getPath();
         } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);

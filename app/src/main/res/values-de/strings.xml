@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Kabelmodus</string>
   <string name="Cable_Mode_Start_Hotspot">Bevor Sie sich einschalten, stellen Sie sicher, dass Ihr Telefon und Ihr Gerät mit demselben Router verbunden sind</string>
   <string name="Cable_Mode_Switch_Cancel">Deaktivieren kann zum Offline des Gerätes führen, möchten Sie deaktivieren?</string>
+  <string name="Camera_Outdoor">Kamera (Außenversion)</string>
   <string name="CancelingTips">Abbrechen&#8230;</string>
   <string name="Cellular_Data_Method">Mobile Daten:</string>
   <string name="Cellular_Data_Set_Up">Aktivieren Sie mobile Daten im Gerät, verwenden Sie bitte unten, Einstellungen> Mobile Daten</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">YouTube-Konto %s hat den Kanal noch nicht geöffnet, kann nicht leben, bitte öffnen und nochmal versuchen</string>
   <string name="LIVE_OPENING">Leben eröffnen &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Sina Weibo</string>
   <string name="LIVE_PLATFORM_YOUTUBE">Youtube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Bitte geben Sie den Schlüssel ein</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot und lange drücken Sie die WiFi-Taste für 3s</string>
   <string name="Tap1_AddDevice_FindNoResult">Kein Gerät entdeckt, bitte erneut versuchen</string>
   <string name="Tap1_AddDevice_FindingTips">Geräte in der Nähe suchen, bitte WLAN-Verbindung des Gerätes einschalten</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">Drücken Sie lange die Set-Taste für 3s</string>
   <string name="Tap1_AddDevice_QR">Scannen</string>
   <string name="Tap1_AddDevice_QR_Fail">Das Gerät unterstützt das Hinzufügen durch Codescannen nicht</string>
   <string name="Tap1_AddDevice_SetName">Geben Sie dem Gerät einen Name</string>

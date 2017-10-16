@@ -37,11 +37,13 @@ public class AutoSignIn {
     private String loginPwd = null;
 
     public static AutoSignIn getInstance() {
-        if (instance == null)
+        if (instance == null) {
             synchronized (AutoSignIn.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new AutoSignIn();
+                }
             }
+        }
         return instance;
     }
 
@@ -101,7 +103,9 @@ public class AutoSignIn {
                             if (signType != null) {
                                 finalAccount = signType.account;
                                 if (signType.type == 0)//=0 可能是上一步,从2.x读配置文件.
+                                {
                                     signType.type = 1;
+                                }
                                 finalPwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + signTypeAes + ".dat", "UTF-8").toString();
                                 Log.d(TAG, "read account from file: " + finalAccount);
                                 Log.d(TAG, "read pwd md5 from file: " + finalPwd);

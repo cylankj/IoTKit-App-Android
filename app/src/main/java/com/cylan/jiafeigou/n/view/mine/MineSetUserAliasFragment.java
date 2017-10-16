@@ -67,7 +67,9 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) basePresenter.start();
+        if (basePresenter != null) {
+            basePresenter.start();
+        }
     }
 
 
@@ -90,8 +92,9 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
 
     private void initEditText() {
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgAccount != null)
+        if (jfgAccount != null) {
             etMinePersonalInformationNewName.setText(TextUtils.isEmpty(jfgAccount.getAlias()) ? "" : jfgAccount.getAlias());
+        }
     }
 
     private void initPresenter() {
@@ -120,7 +123,9 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (!isAdded() || getView() == null) return;
+        if (!isAdded() || getView() == null) {
+            return;
+        }
         getView().post(() -> {
             if (state == 0) {
                 hideSendHint();
@@ -163,7 +168,9 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
                 if (basePresenter.isEditEmpty(getEditName())) {
                     return;
                 } else {
-                    if (basePresenter != null) basePresenter.saveName(getEditName());
+                    if (basePresenter != null) {
+                        basePresenter.saveName(getEditName());
+                    }
                 }
                 break;
             case R.id.iv_mine_personal_information_new_name_clear:

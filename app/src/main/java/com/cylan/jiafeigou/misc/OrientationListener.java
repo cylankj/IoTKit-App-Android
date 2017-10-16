@@ -68,7 +68,9 @@ public abstract class OrientationListener {
             return;
         }
         if (mEnabled == false) {
-            if (localLOGV) Log.d(JConstant.CYLAN_TAG, "OrientationEventListener enabled");
+            if (localLOGV) {
+                Log.d(JConstant.CYLAN_TAG, "OrientationEventListener enabled");
+            }
             mSensorManager.registerListener(mSensorEventListener, mSensor, mRate);
             mEnabled = true;
         }
@@ -83,7 +85,9 @@ public abstract class OrientationListener {
             return;
         }
         if (mEnabled == true) {
-            if (localLOGV) Log.d(JConstant.CYLAN_TAG, "OrientationEventListener disabled");
+            if (localLOGV) {
+                Log.d(JConstant.CYLAN_TAG, "OrientationEventListener disabled");
+            }
             mSensorManager.unregisterListener(mSensorEventListener);
             mEnabled = false;
         }
@@ -94,6 +98,7 @@ public abstract class OrientationListener {
         private static final int _DATA_Y = 1;
         private static final int _DATA_Z = 2;
 
+        @Override
         public void onSensorChanged(SensorEvent event) {
             float[] values = event.values;
             int orientation = ORIENTATION_UNKNOWN;
@@ -121,6 +126,7 @@ public abstract class OrientationListener {
             }
         }
 
+        @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
         }

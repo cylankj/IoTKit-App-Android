@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,6 +77,10 @@ public class CamMessageFaceAdapter extends PagerAdapter {
             recyclerView = (RecyclerView) contentView.findViewById(R.id.message_face_page_item);
             recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 3));
             FastItemAdapter<FaceItem> adapter = new FastItemAdapter<>();
+            adapter.withSelectable(true);
+            adapter.withMultiSelect(false);
+            adapter.withSelectWithItemUpdate(true);
+            adapter.withAllowDeselection(false);
             recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -98,9 +103,9 @@ public class CamMessageFaceAdapter extends PagerAdapter {
             adapter.withOnLongClickListener((v, adapter1, item, position1) -> {
                 // TODO: 2017/10/9 长按弹出菜单提示
                 if (listener != null) {
-                    AppLogger.w("点击了面孔条目:" + position);
+                    AppLogger.w("点击了面孔条目:" + position1);
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon(),item.getFaceType());
+                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon(), item.getFaceType());
                 }
                 return true;
             });
@@ -152,6 +157,13 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     public boolean hasPreloadFaceItems() {
         return preload != null && preload.size() > 0;
+    }
+
+    public void sortByNewMessageVersion() {
+        // TODO: 2017/10/16 先判断
+
+        Collections.sort(faceItems, (item1, item2) -> (int) (item1.getVersion() - item2.getVersion()));
+        notifyDataSetChanged();
     }
 
     public interface FaceItemEventListener {

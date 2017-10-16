@@ -314,8 +314,9 @@ public class NetUtils {
             String result = "";
             String res;
             while ((res = stdInput.readLine()) != null) {
-                if (res.contains(ip))
+                if (res.contains(ip)) {
                     continue;
+                }
                 result += res;
             }
             p.destroy();
@@ -357,7 +358,9 @@ public class NetUtils {
     }
 
     public static String removeDoubleQuotes(String string) {
-        if (TextUtils.isEmpty(string)) return "";
+        if (TextUtils.isEmpty(string)) {
+            return "";
+        }
         int length = string.length();
         if ((length > 1) && (string.charAt(0) == '"')
                 && (string.charAt(length - 1) == '"')) {
@@ -367,8 +370,9 @@ public class NetUtils {
     }
 
     public static int getSecurity(ScanResult result) {
-        if (result == null)
+        if (result == null) {
             return SECURITY_UNKNOWN;
+        }
         if (result.capabilities.contains("WEP")) {
             return SECURITY_WEP;
         } else if (result.capabilities.contains("PSK")) {
@@ -565,8 +569,9 @@ public class NetUtils {
         List<String> networkList = new ArrayList<>();
         try {
             for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-                if (networkInterface.isUp())
+                if (networkInterface.isUp()) {
                     networkList.add(networkInterface.getName());
+                }
             }
         } catch (Exception ex) {
             Log.e("", "isVpnUsing Network List didn't received");

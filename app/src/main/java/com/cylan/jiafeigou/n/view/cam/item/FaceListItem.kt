@@ -29,7 +29,6 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
     override fun bindView(holder: FaceListViewHolder, payloads: MutableList<Any>?) {
         super.bindView(holder, payloads)
         holder.radio.isChecked = isSelected
-
     }
 
 

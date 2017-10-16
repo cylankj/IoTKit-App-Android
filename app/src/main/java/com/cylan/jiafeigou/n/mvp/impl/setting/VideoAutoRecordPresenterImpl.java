@@ -63,7 +63,9 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deviceSyncRsp -> {
-                    if (deviceSyncRsp == null || deviceSyncRsp.dpList == null) return;
+                    if (deviceSyncRsp == null || deviceSyncRsp.dpList == null) {
+                        return;
+                    }
                     try {
                         for (JFGDPMsg msg : deviceSyncRsp.dpList) {
                             if (msg.id == DpMsgMap.ID_204_SDCARD_STORAGE) {

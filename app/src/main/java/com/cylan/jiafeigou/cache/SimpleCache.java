@@ -22,8 +22,9 @@ public class SimpleCache {
     }
 
     public static SimpleCache getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new SimpleCache();
+        }
         return instance;
     }
 
@@ -33,8 +34,9 @@ public class SimpleCache {
 
 
     public void setWeakScanResult(List<ScanResult> weakScanResult) {
-        if (weakScanResult == null)
+        if (weakScanResult == null) {
             return;
+        }
         this.weakScanResult = new WeakReference<>(weakScanResult);
     }
 
@@ -42,8 +44,9 @@ public class SimpleCache {
     private WeakReference<HashMap<String, Bitmap>> previewThumbnailCache;
 
     public List<String> getPreviewKeyList() {
-        if (previewThumbnailCache == null || previewThumbnailCache.get() == null)
+        if (previewThumbnailCache == null || previewThumbnailCache.get() == null) {
             return null;
+        }
         return new ArrayList<>(previewThumbnailCache.get().keySet());
     }
 
@@ -60,13 +63,16 @@ public class SimpleCache {
     }
 
     public Bitmap removeCache(String key) {
-        if (previewThumbnailCache == null || previewThumbnailCache.get() == null) return null;
+        if (previewThumbnailCache == null || previewThumbnailCache.get() == null) {
+            return null;
+        }
         return previewThumbnailCache.get().remove(key);
     }
 
     public Bitmap getSimpleBitmapCache(String key) {
-        if (previewThumbnailCache == null || previewThumbnailCache.get() == null)
+        if (previewThumbnailCache == null || previewThumbnailCache.get() == null) {
             return null;
+        }
         return previewThumbnailCache.get().get(MD5Util.lowerCaseMD5(key));
     }
 }

@@ -51,6 +51,7 @@ public class SimpleDialogFragment extends BaseDialog {
         // Required empty public constructor
     }
 
+    @Override
     public void setValue(Object cache) {
         this.cache = cache;
     }
@@ -76,14 +77,19 @@ public class SimpleDialogFragment extends BaseDialog {
             tvDialogTitle.setVisibility(View.VISIBLE);
             tvDialogTitle.setText(title);
         }
-        if (!TextUtils.isEmpty(lContent))
+        if (!TextUtils.isEmpty(lContent)) {
             tvDialogBtnLeft.setText(lContent);
+        }
         if (TextUtils.isEmpty(rContent)) {
             tvDialogBtnRight.setVisibility(View.GONE);
-        } else tvDialogBtnRight.setText(rContent);
+        } else {
+            tvDialogBtnRight.setText(rContent);
+        }
         if (TextUtils.isEmpty(content)) {
             tvDialogContent.setVisibility(View.GONE);
-        } else tvDialogContent.setText(content);
+        } else {
+            tvDialogContent.setText(content);
+        }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
     }
 
@@ -92,10 +98,14 @@ public class SimpleDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_dialog_btn_left:
-                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_left, cache);
+                if (action != null) {
+                    action.onDialogAction(R.id.tv_dialog_btn_left, cache);
+                }
                 break;
             case R.id.tv_dialog_btn_right:
-                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_right, cache);
+                if (action != null) {
+                    action.onDialogAction(R.id.tv_dialog_btn_right, cache);
+                }
                 break;
         }
     }

@@ -70,6 +70,7 @@ public class QueueModerator
         }
     }
 
+    @Override
     public void wakeUp(int taskID) {
         downloaderList.remove(taskID);
         startQueue();

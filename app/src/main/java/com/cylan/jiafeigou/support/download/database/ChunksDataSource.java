@@ -76,8 +76,9 @@ public class ChunksDataSource {
     public boolean delete(int chunkID) {
         int affectedRow = database.delete(TABLES.CHUNKS, CHUNKS.COLUMN_ID + "=" + SqlString.Int(chunkID), null);
 
-        if (affectedRow != 0)
+        if (affectedRow != 0) {
             return true;
+        }
 
         return false;
     }

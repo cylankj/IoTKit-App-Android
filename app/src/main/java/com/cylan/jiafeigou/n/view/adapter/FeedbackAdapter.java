@@ -90,7 +90,9 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
     }
 
     private boolean showTime(int position, long currentBeanTime) {
-        if (position == 0) return true;
+        if (position == 0) {
+            return true;
+        }
         FeedBackBean preBean = getItem(position - 1);
         return currentBeanTime - preBean.getMsgTime() > 5 * 60 * 1000L;
     }
@@ -128,8 +130,9 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
 
             ImageView clientImage = holder.getView(R.id.iv_mine_suggestion_client);
             MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage, getContext().getResources());
-            if (TextUtils.isEmpty(portraitUrl))
+            if (TextUtils.isEmpty(portraitUrl)) {
                 refreshUrl();
+            }
             Glide.with(getContext()).load(portraitUrl)
                     .asBitmap()
                     .error(R.drawable.icon_mine_head_normal)

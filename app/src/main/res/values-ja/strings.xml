@@ -81,6 +81,7 @@
   <string name="Cable_Mode">ワイヤアクセスモード</string>
   <string name="Cable_Mode_Start_Hotspot">オンにする前に、携帯電話と端末が同じルータに接続されていることを確認してください</string>
   <string name="Cable_Mode_Switch_Cancel">オフにするとデバイスがオフライン状態になりますが、オフにしますか。</string>
+  <string name="Camera_Outdoor">カメラ（屋外版）</string>
   <string name="CancelingTips">キャンセル中&#8230;</string>
   <string name="Cellular_Data_Method">モバイルデータネットワーク：</string>
   <string name="Cellular_Data_Set_Up">端末でモバイルデータを有効にするには、以下の方法で[設定]> [モバイルデータ]を使用してください</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">YouTubeアカウント %s はまだチャンネルを開いていません。ライブできません。開いてからもう一度お試しください</string>
   <string name="LIVE_OPENING">あなたの人生を開く&#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebookの</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">シーナ・ワイボ</string>
   <string name="LIVE_PLATFORM_YOUTUBE">ユーチューブ</string>
   <string name="LIVE_RTMP_ENTER_KEY">キーを入力してください</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">3Sのため再起動して、長押しのWiFiボタン</string>
   <string name="Tap1_AddDevice_FindNoResult">設備が見つかりませんでした、もう一度お試しください</string>
   <string name="Tap1_AddDevice_FindingTips">ただいまお近くのデバイスを検索しています。デバイスのWiFi設定をオンにしてください</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">長押し3秒のためのセットボタン</string>
   <string name="Tap1_AddDevice_QR">QRコードのスキャン</string>
   <string name="Tap1_AddDevice_QR_Fail">このデバイスはスキャン機能で追加されることができません</string>
   <string name="Tap1_AddDevice_SetName">デバイスに名前を付けましょう</string>

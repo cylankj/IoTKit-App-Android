@@ -88,8 +88,9 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null) {
-                        if (getView() != null)
+                        if (getView() != null) {
                             getView().initEditText(getUserInfo.jfgAccount.getAlias());
+                        }
                         userAlids = getUserInfo.jfgAccount.getAlias();
                     }
                 }, AppLogger::e);

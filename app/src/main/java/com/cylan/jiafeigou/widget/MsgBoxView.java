@@ -58,12 +58,14 @@ public class MsgBoxView extends AppCompatImageView {
     private float calculateTextWidth() {
         // 转载请注明出处：http://blog.csdn.net/hursing
         // 下面这行是实现水平居中，drawText对应改为传入targetRect.centerX()
-        if (text == null || text.length() == 0)
+        if (text == null || text.length() == 0) {
             return 0;
+        }
         if (text.length() == 1) {
             textPaint.getTextBounds(PLACE_HOLDER[1], 0, PLACE_HOLDER[1].length(), textRect);
-        } else
+        } else {
             textPaint.getTextBounds(text, 0, text.length(), textRect);
+        }
         return textRect.width() + 5;
     }
 
@@ -71,8 +73,9 @@ public class MsgBoxView extends AppCompatImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         final float radius = calculateTextWidth() / 2.0f;
-        if (radius == 0 || TextUtils.isEmpty(text) || textRect == null)
+        if (radius == 0 || TextUtils.isEmpty(text) || textRect == null) {
             return;
+        }
         final int p = getPaddingBottom();
         float x = 0, y = 0;
         if (p >= radius) {

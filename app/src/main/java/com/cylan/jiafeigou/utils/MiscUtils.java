@@ -77,13 +77,15 @@ public class MiscUtils {
     }
 
     public static boolean isBad(List<Integer> list, int level, int count) {
-        if (list == null || list.size() < count)
+        if (list == null || list.size() < count) {
             return false;
+        }
         final int size = list.size();
         int result = 0;
         for (int i = 0; i < size; i++) {
-            if (list.get(i) < level)
+            if (list.get(i) < level) {
                 result++;
+            }
         }
         return result >= count;
     }
@@ -107,8 +109,9 @@ public class MiscUtils {
     }
 
     public static String getFlowResult(long byteData) {
-        if (byteData < BYTE)
+        if (byteData < BYTE) {
             return byteData + "K/s";
+        }
         if (byteData >= BYTE && byteData < MEGA_BYTE) {
             return (byteData >>> 10) + "M/s";
         }
@@ -137,7 +140,9 @@ public class MiscUtils {
     public static int getCount(int sum) {
         int count = 0;
         for (int i = 0; i < 3; i++) {
-            if ((sum >> i & 0x01) == 1) count++;
+            if ((sum >> i & 0x01) == 1) {
+                count++;
+            }
         }
         return count == 0 ? 1 : count;
     }
@@ -242,7 +247,9 @@ public class MiscUtils {
     }
 
     public static <T> T getValue(Object o, T t) {
-        if (o == null) return t;
+        if (o == null) {
+            return t;
+        }
         try {
             return (T) o;
         } catch (Exception e) {
@@ -259,8 +266,9 @@ public class MiscUtils {
     }
 
     public static ArrayList<String> getSharedList(List<Device> devices) {
-        if (devices == null)
+        if (devices == null) {
             return new ArrayList<>();
+        }
         ArrayList<String> arrayList = new ArrayList<>();
         for (Device device : devices) {
             if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
@@ -271,8 +279,9 @@ public class MiscUtils {
     }
 
     public static ArrayList<String> getNoneSharedList(List<Device> devices) {
-        if (devices == null)
+        if (devices == null) {
             return new ArrayList<>();
+        }
         ArrayList<String> arrayList = new ArrayList<>();
         for (Device device : devices) {
             if (device != null && TextUtils.isEmpty(device.shareAccount)) {
@@ -337,9 +346,9 @@ public class MiscUtils {
     public static <T extends DataPoint> long getVersion(List<T> set, boolean min) {
         if (set != null && set.size() > 0) {
             Collections.sort(set);
-            if (min)
+            if (min) {
                 return set.get(set.size() - 1).getVersion();
-            else {
+            } else {
                 return set.get(0).getVersion();
             }
         }
@@ -362,7 +371,9 @@ public class MiscUtils {
     public static <T> T getObjectFromSP(String key, Class<T> tClass) {
         try {
             String content = PreferencesUtils.getString(key);
-            if (TextUtils.isEmpty(content)) return tClass.newInstance();
+            if (TextUtils.isEmpty(content)) {
+                return tClass.newInstance();
+            }
             return new Gson().fromJson(content, tClass);
         } catch (Exception e) {
             return null;
@@ -392,14 +403,17 @@ public class MiscUtils {
     public static String FormatSdCardSizeSpec(long fileS, String unit) {
         switch (unit) {
             case "B":
-                if (fileS < 1024)
+                if (fileS < 1024) {
                     return new DecimalFormat("#######0").format((int) fileS) + "B";//取整
+                }
             case "K":
-                if (fileS < 1048576)
+                if (fileS < 1048576) {
                     return new DecimalFormat("#######0").format((int) fileS / 1024) + "K";//取整
+                }
             case "M":
-                if (fileS < 1073741824)
+                if (fileS < 1073741824) {
                     return new DecimalFormat("#######0").format((int) fileS / 1048576) + "M";//取整
+                }
             case "G":
                 return new DecimalFormat("#######0.00").format((double) fileS / 1073741824) + "G";//有两位小数点,所以用 double
             default:
@@ -414,20 +428,23 @@ public class MiscUtils {
         }
         //每一天
         if (info.day == 127) {
-            if (info.timeStart == 0 && info.timeEnd == 5947)
+            if (info.timeStart == 0 && info.timeEnd == 5947) {
                 return context.getString(R.string.EVERY_DAY) + " " + context.getString(R.string.HOURS);
+            }
             return context.getString(R.string.EVERY_DAY) + " " + getTime(context, info.timeStart, info.timeEnd);
         }
         //工作日
         if (info.day == 124) {
-            if (info.timeStart == 0 && info.timeEnd == 5947)
+            if (info.timeStart == 0 && info.timeEnd == 5947) {
                 return context.getString(R.string.WEEKDAYS) + " " + context.getString(R.string.HOURS);
+            }
             return context.getString(R.string.WEEKDAYS) + " " + getTime(context, info.timeStart, info.timeEnd);
         }
         //周末
         if (info.day == 3) {
-            if (info.timeStart == 0 && info.timeEnd == 5947)
+            if (info.timeStart == 0 && info.timeEnd == 5947) {
                 return context.getString(R.string.WEEKEND) + " " + context.getString(R.string.HOURS);
+            }
             return context.getString(R.string.WEEKEND) + " " + getTime(context, info.timeStart, info.timeEnd);
         }
         //零散
@@ -439,8 +456,9 @@ public class MiscUtils {
                 builder.append(",");
             }
         }
-        if (builder.length() > 1)
+        if (builder.length() > 1) {
             builder.replace(builder.length() - 1, builder.length(), "");
+        }
         if (info.timeStart == 0 && info.timeEnd == 5947) {
             builder.append(" ");
             return builder.append(context.getString(R.string.HOURS)).toString();
@@ -472,8 +490,9 @@ public class MiscUtils {
      * @return
      */
     public static int getValueFrom(String content) {
-        if (TextUtils.isEmpty(content) || content.length() < 10)
+        if (TextUtils.isEmpty(content) || content.length() < 10) {
             return 0;
+        }
         try {
             return Integer.valueOf(content.substring(0, 10));
         } catch (Exception e) {
@@ -509,13 +528,18 @@ public class MiscUtils {
 
 
     public static DPEntity getMaxVersionEntity(DPEntity... entities) {
-        if (entities == null) return null;
+        if (entities == null) {
+            return null;
+        }
         List<DPEntity> list = new ArrayList<>();
         for (DPEntity entity : entities) {
-            if (entity != null)
+            if (entity != null) {
                 list.add(entity);
+            }
         }
-        if (list.size() == 0) return null;
+        if (list.size() == 0) {
+            return null;
+        }
         Collections.sort(list);
         return list.get(0);//降序的
     }
@@ -554,7 +578,9 @@ public class MiscUtils {
         } else if (camMessageBean.bellCallRecord != null && camMessageBean.bellCallRecord.fileIndex != 0) {
             index = camMessageBean.bellCallRecord.fileIndex;
         }
-        if (index < 0) index = 1;
+        if (index < 0) {
+            index = 1;
+        }
         return index;
     }
 
@@ -603,7 +629,9 @@ public class MiscUtils {
     }
 
     public static String getErr(Throwable throwable) {
-        if (throwable == null) return "";
+        if (throwable == null) {
+            return "";
+        }
         return "err:" + throwable.getLocalizedMessage();
     }
 
@@ -612,7 +640,9 @@ public class MiscUtils {
     }
 
     public static List<String> getUUidListFromItem(List<HomeItem> list) {
-        if (list == null || list.size() == 0) return new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return new ArrayList<>();
+        }
         List<String> list1 = new ArrayList<>(list.size());
         for (HomeItem item : list) {
             list1.add(item.getUUid());
@@ -621,7 +651,9 @@ public class MiscUtils {
     }
 
     public static List<HomeItem> getHomeItemListFromDevice(List<Device> list) {
-        if (list == null || list.size() == 0) return new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return new ArrayList<>();
+        }
         List<HomeItem> list1 = new ArrayList<>(list.size());
         for (Device item : list) {
             Log.d("FromDevice", "item:" + item.pid);
@@ -658,8 +690,9 @@ public class MiscUtils {
     }
 
     public static boolean isDeviceInWLAN(String uuid) {
-        if (TextUtils.isEmpty(uuid) && BuildConfig.DEBUG)
+        if (TextUtils.isEmpty(uuid) && BuildConfig.DEBUG) {
             throw new IllegalArgumentException("uuid is  null");
+        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean isApDirect = JFGRules.isAPDirect(uuid, device.$(202, ""));
         if (isApDirect) {//Ap
@@ -764,7 +797,9 @@ public class MiscUtils {
     }
 
     public static String verticalString(String str) {
-        if (TextUtils.isEmpty(str)) return "\n";
+        if (TextUtils.isEmpty(str)) {
+            return "\n";
+        }
         StringBuilder builder = new StringBuilder(str.length() * 2);
         for (char c : str.toCharArray()) {
             builder.append(c).append("\n");
@@ -817,10 +852,13 @@ public class MiscUtils {
     }
 
     public static boolean arrayContains(int[] array, int target) {
-        if (array == null || array.length == 0) return false;
+        if (array == null || array.length == 0) {
+            return false;
+        }
         for (int t : array) {
-            if (t == target)
+            if (t == target) {
                 return true;
+            }
         }
         return false;
     }

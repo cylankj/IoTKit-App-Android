@@ -46,6 +46,7 @@ public class BindAnimationActivity extends BaseBindActivity {
         tvNextStep.setText(getIntent().getStringExtra(JConstant.KEY_NEXT_STEP));
     }
 
+    @Override
     protected int[] getOverridePendingTransition() {
         return new int[]{R.anim.slide_in_right, R.anim.slide_out_left};
     }

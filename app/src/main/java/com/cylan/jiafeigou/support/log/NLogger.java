@@ -31,8 +31,9 @@ public class NLogger implements IWriter {
     private ExecutorService executorService;
 
     private void checkLoggerConfigurator() {
-        if (this.configurator == null)
+        if (this.configurator == null) {
             throw new NullPointerException("NLoggerConfigurator is null");
+        }
     }
 
     NLogger(NLoggerConfigurator configurator) throws IOException {

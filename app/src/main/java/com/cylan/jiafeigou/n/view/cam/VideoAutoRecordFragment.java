@@ -68,6 +68,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     SettingItemView0 sivWatchVideoSwitcher;
     private boolean isBell = false;
 
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
@@ -143,7 +144,9 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
 
         oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
-        if (!status.hasSdcard || !alarm) oldOption = -1;
+        if (!status.hasSdcard || !alarm) {
+            oldOption = -1;
+        }
 
 
         //#117813 Android（1.1.0.523）设备有SD卡且处于相册界面 此时拔出设备的SD卡后，弹窗提示：SD卡已被拔出 选项：确定 .实际结果：没有这个提示

@@ -203,7 +203,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
-        if (mView == null || !mView.isAdded()) return;
+        if (mView == null || !mView.isAdded()) {
+            return;
+        }
         Observable.just(NetUtils.getJfgNetType())
                 .filter(integer -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())

@@ -126,7 +126,9 @@ public class FriendBean implements Parcelable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof FriendBean)) return false;
+        if (!(obj instanceof FriendBean)) {
+            return false;
+        }
         FriendBean bean = (FriendBean) obj;
         return TextUtils.equals(bean.account, account);
     }

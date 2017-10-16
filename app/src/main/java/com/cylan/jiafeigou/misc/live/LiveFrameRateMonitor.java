@@ -38,7 +38,9 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     public void feed(JFGMsgVideoRtcp rtcp) {
         Log.d("rtcp", "此消息在smartcall已有打印,无需再打印.rtcp:" + rtcp.frameRate);
         badFrameCount = rtcp.frameRate == 0 ? ++badFrameCount : 0;
-        if (monitorListener == null) return;
+        if (monitorListener == null) {
+            return;
+        }
         boolean isFrameFailed = badFrameCount >= FAILED_TARGET;
         boolean isFrameLoading = badFrameCount >= LOADING_TARGET;
         Log.d("LiveFrameRateMonitor", "视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badFrameCount);
@@ -66,7 +68,9 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
      * 非常粗糙的设计
      */
     private void startAnalyze() {
-        if (monitorListener == null) return;
+        if (monitorListener == null) {
+            return;
+        }
         boolean isFrameLoading = false;
         boolean isFrameFailed;
         int badCount = 0;
@@ -119,19 +123,23 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
      * @return
      */
     private boolean isBad(List<JFGMsgVideoRtcp> list, int level, int total, int count) {
-        if (list == null || list.size() < count || list.size() < total)
+        if (list == null || list.size() < count || list.size() < total) {
             return false;
+        }
         final int size = list.size();
         int result = 0;
         for (int i = size - 1; i >= size - total; i--) {
             if (list.get(i).frameRate < level)//这组数,小于level的总个数>=count.
+            {
                 result++;
+            }
         }
         return result >= count;
     }
 
     private MonitorListener monitorListener;
 
+    @Override
     public void setMonitorListener(MonitorListener monitorListener) {
         this.monitorListener = monitorListener;
     }

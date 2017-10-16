@@ -43,10 +43,12 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
         findViewById(R.id.btn_update_cancel)
                 .setOnClickListener(v -> {
                     finish();
-                    if (presenter != null)
+                    if (presenter != null) {
                         presenter.stopDownload();
-                    if (presenter != null)
+                    }
+                    if (presenter != null) {
                         presenter.stop();
+                    }
                 });
         updateDialog();
         presenter = new DownloadContractPresenterImpl(this);

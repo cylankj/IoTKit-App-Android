@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Chế độ cáp</string>
   <string name="Cable_Mode_Start_Hotspot">Trước khi bật, đảm bảo điện thoại và thiết bị của bạn được kết nối với cùng một bộ định tuyến</string>
   <string name="Cable_Mode_Switch_Cancel">Nếu tắt, nó có thể gây ra ngoại tuyến của thiết bị, hãy xác nhận tắt?</string>
+  <string name="Camera_Outdoor">Máy ảnh (Phiên bản ngoài trời)</string>
   <string name="CancelingTips">Hủy&#8230;</string>
   <string name="Cellular_Data_Method">Dữ liệu di động:</string>
   <string name="Cellular_Data_Set_Up">Bật dữ liệu di động trong thiết bị, vui lòng sử dụng dưới đây, Cài đặt> Dữ liệu di động</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">Tài khoản YouTube %s chưa mở kênh, không thể sống, vui lòng mở và thử lại</string>
   <string name="LIVE_OPENING">Mở cuộc sống của bạn &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Sina Weibo</string>
   <string name="LIVE_PLATFORM_YOUTUBE">Youtube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Vui lòng nhập khóa</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Khởi động lại và dài bấm nút WiFi cho 3s</string>
   <string name="Tap1_AddDevice_FindNoResult">Không thấy thiết bị, hãy thử lại</string>
   <string name="Tap1_AddDevice_FindingTips">Tìm thêm thiết bị gần đó, khởi động chế độ cấu hình WiFi</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">Long nhấn nút thiết lập cho 3s</string>
   <string name="Tap1_AddDevice_QR">Quét mã QR</string>
   <string name="Tap1_AddDevice_QR_Fail">Không thể thêm</string>
   <string name="Tap1_AddDevice_SetName">Chọn tên</string>

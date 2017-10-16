@@ -26,7 +26,9 @@ public class DPProperty {
 
     @Deprecated
     public boolean accept(DPDevice device) {
-        if (devices == null) return false;
+        if (devices == null) {
+            return false;
+        }
         return devices.contains(device);//以后有时间在搞
     }
 

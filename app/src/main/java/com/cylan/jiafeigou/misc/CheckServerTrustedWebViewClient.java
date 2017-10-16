@@ -74,6 +74,7 @@ public class CheckServerTrustedWebViewClient extends WebViewClient {
 
     }
 
+    @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler,
                                    SslError error) {
         AppLogger.d("onReceivedSslError");
@@ -105,7 +106,10 @@ public class CheckServerTrustedWebViewClient extends WebViewClient {
                 Log.e(TAG, "verify cert fail", e);
             }
         }
-        if (passVerify) handler.proceed();
-        else handler.cancel();
+        if (passVerify) {
+            handler.proceed();
+        } else {
+            handler.cancel();
+        }
     }
 }

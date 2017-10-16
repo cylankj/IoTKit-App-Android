@@ -213,7 +213,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio = (double) w / h;
-        if (sizes == null) return null;
+        if (sizes == null) {
+            return null;
+        }
 
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
@@ -223,7 +225,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // Try to find an size match aspect ratio and size
         for (Camera.Size size : sizes) {
             double ratio = (double) size.width / size.height;
-            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
+                continue;
+            }
             if (Math.abs(size.height - targetHeight) < minDiff) {
                 optimalSize = size;
                 minDiff = Math.abs(size.height - targetHeight);
@@ -264,6 +268,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     private Runnable doAutoFocus = new Runnable() {
+        @Override
         public void run() {
             if (mCamera != null && mPreviewing && mAutoFocus && mSurfaceCreated) {
                 safeAutoFocus();
@@ -273,6 +278,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     // Mimic continuous auto-focusing
     Camera.AutoFocusCallback autoFocusCB = new Camera.AutoFocusCallback() {
+        @Override
         public void onAutoFocus(boolean success, Camera camera) {
             scheduleAutoFocus();
         }

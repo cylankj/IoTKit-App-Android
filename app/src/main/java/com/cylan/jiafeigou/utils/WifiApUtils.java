@@ -56,8 +56,9 @@ public class WifiApUtils {
     }
 
     public static WifiApUtils getApControl() {
-        if (!isApSupported())
+        if (!isApSupported()) {
             return null;
+        }
         return new WifiApUtils();
     }
 

@@ -83,8 +83,9 @@ public class DragLayout extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (getChildCount() != 3)
+        if (getChildCount() != 3) {
             throw new IllegalArgumentException("only three views");
+        }
         View v = getChildAt(2);
         if (v instanceof ImageView) {
             draggedView = v;
@@ -116,8 +117,9 @@ public class DragLayout extends RelativeLayout {
         final int pivotX = getMeasuredWidth() / 2 - child.getMeasuredWidth() / 2;
         final int c = Math.abs(left - pivotX);
         float currentRatio = c * 1.0f / pivotX;
-        if (currentRatio > 1.0f)
+        if (currentRatio > 1.0f) {
             return;
+        }
         if (isLeftSide) {
             leftView.setbORadiusRatio(currentRatio);
         } else {
@@ -166,8 +168,9 @@ public class DragLayout extends RelativeLayout {
                 if (result == -1) {
                     smoothScrollTo();
                 } else {
-                    if (onDragReleaseListener != null)
+                    if (onDragReleaseListener != null) {
                         onDragReleaseListener.onRelease(result);
+                    }
                 }
                 break;
         }
@@ -183,12 +186,14 @@ public class DragLayout extends RelativeLayout {
     private int needScroll() {
         if (draggedView.getLeft() <= getMeasuredWidth() / 2 - draggedView.getMeasuredWidth()
                 && draggedView.getTop() <= getMeasuredHeight() / 2 + draggedView.getMeasuredHeight() * 3 / 2
-                && draggedView.getTop() >= getMeasuredHeight() / 2 - draggedView.getMeasuredHeight() * 3 / 2)
+                && draggedView.getTop() >= getMeasuredHeight() / 2 - draggedView.getMeasuredHeight() * 3 / 2) {
             return 0;
+        }
         if (draggedView.getRight() >= getMeasuredWidth() / 2 + draggedView.getMeasuredWidth()
                 && draggedView.getTop() <= getMeasuredHeight() / 2 + draggedView.getMeasuredHeight() * 3 / 2
-                && draggedView.getTop() >= getMeasuredHeight() / 2 - draggedView.getMeasuredHeight() * 3 / 2)
+                && draggedView.getTop() >= getMeasuredHeight() / 2 - draggedView.getMeasuredHeight() * 3 / 2) {
             return 1;
+        }
         return -1;
     }
 

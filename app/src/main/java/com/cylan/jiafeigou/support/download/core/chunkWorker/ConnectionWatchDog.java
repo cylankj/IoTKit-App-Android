@@ -49,6 +49,7 @@ public class ConnectionWatchDog extends Thread {
     /**
      * Performs timer specific code
      */
+    @Override
     public void run() {
         // Keep looping
         while (!Thread.currentThread().isInterrupted()) {

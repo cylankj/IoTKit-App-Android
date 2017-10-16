@@ -63,7 +63,9 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
         Subscription subscription = Observable.just("scan")
                 .subscribeOn(Schedulers.io())
                 .map(s -> {
-                    if (wifiManager != null) wifiManager.startScan();
+                    if (wifiManager != null) {
+                        wifiManager.startScan();
+                    }
                     return null;
                 })
                 .timeout(1, TimeUnit.SECONDS)

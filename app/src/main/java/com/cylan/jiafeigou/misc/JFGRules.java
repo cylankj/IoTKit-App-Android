@@ -71,16 +71,20 @@ public class JFGRules {
     }
 
     public static String getDigitsFromString(String string) {
-        if (TextUtils.isEmpty(string))
+        if (TextUtils.isEmpty(string)) {
             return "";
+        }
         return string.replaceAll("\\D+", "");
     }
 
     public static String getDeviceAlias(Device device) {
-        if (device == null) return "";
+        if (device == null) {
+            return "";
+        }
         String alias = device.alias;
-        if (!TextUtils.isEmpty(alias))
+        if (!TextUtils.isEmpty(alias)) {
             return alias;
+        }
         return device.uuid;
     }
 
@@ -122,18 +126,21 @@ public class JFGRules {
 
     public static int getLanguageType(Context ctx) {
         Locale locale = ctx.getResources().getConfiguration().locale;
-        if (locale.equals(LOCALE_HK))
+        if (locale.equals(LOCALE_HK)) {
             return LANGUAGE_TYPE_TRA_CHINESE;
+        }
         final int count = CONST_LOCALE.length;
 
         if (locale.getLanguage().equals("zh")) {
-            if (locale.getCountry().equals("CN"))
+            if (locale.getCountry().equals("CN")) {
                 return LANGUAGE_TYPE_SIMPLE_CHINESE;
+            }
             return LANGUAGE_TYPE_TRA_CHINESE;
         }
         for (int i = 0; i < count; i++) {
-            if (locale.equals(CONST_LOCALE[i]))
+            if (locale.equals(CONST_LOCALE[i])) {
                 return i;
+            }
         }
         return LANGUAGE_TYPE_ENGLISH;
     }
@@ -317,11 +324,16 @@ public class JFGRules {
      */
     public static boolean showSdHd(int pid, String version, boolean share) {
         String sdContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
-        if (TextUtils.isEmpty(sdContent) || TextUtils.equals(sdContent, "0"))
+        if (TextUtils.isEmpty(sdContent) || TextUtils.equals(sdContent, "0")) {
             return false;
-        if (TextUtils.equals("1", sdContent)) return true;
+        }
+        if (TextUtils.equals("1", sdContent)) {
+            return true;
+        }
         String[] ret = sdContent.split(",");
-        if (ret.length < 2 || !sdContent.contains(".")) return false;
+        if (ret.length < 2 || !sdContent.contains(".")) {
+            return false;
+        }
         try {
             // TODO: 2017/8/18 可能会有问题
             return BindUtils.versionCompare(version, ret[1]) >= 0;
@@ -347,9 +359,13 @@ public class JFGRules {
      */
     public static boolean popPowerDrainOut(int pid) {
         String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
-        if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) return false;
+        if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) {
+            return false;
+        }
         String[] ret = pContent.split(",");
-        if (ret.length < 2) return false;
+        if (ret.length < 2) {
+            return false;
+        }
         return TextUtils.equals(ret[0], "1");
     }
 
@@ -362,9 +378,13 @@ public class JFGRules {
 
     public static int popPowerDrainOutLevel(int pid) {
         String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
-        if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) return -1;
+        if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) {
+            return -1;
+        }
         String[] ret = pContent.split(",");
-        if (ret.length < 2) return -1;
+        if (ret.length < 2) {
+            return -1;
+        }
         try {
             return Integer.parseInt(ret[1].replace(" ", ""));
         } catch (Exception e) {
@@ -628,19 +648,25 @@ public class JFGRules {
     }
 
     public static boolean isDeviceStandBy(Device device) {
-        if (device == null) return false;
+        if (device == null) {
+            return false;
+        }
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         return standby != null && standby.standby;
     }
 
     public static boolean isShareDevice(String uuid) {
-        if (TextUtils.isEmpty(uuid)) return false;
+        if (TextUtils.isEmpty(uuid)) {
+            return false;
+        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         return device != null && device.available() && !TextUtils.isEmpty(device.shareAccount);
     }
 
     public static boolean isShareDevice(Device device) {
-        if (device == null) return false;
+        if (device == null) {
+            return false;
+        }
         return !TextUtils.isEmpty(device.shareAccount);
     }
 
@@ -657,7 +683,9 @@ public class JFGRules {
 
 
     public static TimeZone getDeviceTimezone(Device device) {
-        if (device == null) return TimeZone.getDefault();
+        if (device == null) {
+            return TimeZone.getDefault();
+        }
         DpMsgDefine.DPTimeZone timeZone = device.$(214, new DpMsgDefine.DPTimeZone());
         return TimeZone.getTimeZone(getGMTFormat(timeZone.offset * 1000));
     }
@@ -674,8 +702,9 @@ public class JFGRules {
             //做一个缓存,这个putString是内存操作,可以再UI现在直接调用
             PreferencesUtils.putString(JConstant.KEY_DEVICE_MAC + uuid, mac);
         }
-        if (TextUtils.isEmpty(mac))
+        if (TextUtils.isEmpty(mac)) {
             mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+        }
         return MiscUtils.isAPDirect(mac);
     }
 

@@ -120,9 +120,13 @@ public class Function {
         boolean isExist = false;
         String ssid = b2hex(config.SSID.getBytes());
         List<WifiConfiguration> list = wm.getConfiguredNetworks();
-        if (list == null) return false;
+        if (list == null) {
+            return false;
+        }
         for (WifiConfiguration exist : list) {
-            if (exist == null || exist.SSID == null) continue;
+            if (exist == null || exist.SSID == null) {
+                continue;
+            }
             String tmp;
             tmp = b2hex(exist.SSID.getBytes());
             if (ssid.equals(tmp)) {
@@ -137,7 +141,9 @@ public class Function {
     public static void cleanWifi(final WifiManager wm) {
         List<WifiConfiguration> list = wm.getConfiguredNetworks();
         for (WifiConfiguration exist : list) {
-            if (exist == null) continue;
+            if (exist == null) {
+                continue;
+            }
             wm.removeNetwork(exist.networkId);
         }
         wm.saveConfiguration();
