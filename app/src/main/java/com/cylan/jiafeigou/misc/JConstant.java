@@ -365,6 +365,7 @@ public class JConstant {
         if (JFGRules.isCatEeyBell(pid)) return R.drawable.me_icon_intelligent_eye;
         if (JFGRules.isBell(pid)) return R.drawable.me_icon_head_ring;
         if (JFGRules.isPan720(pid)) return R.drawable.me_icon_head_720camera;
+        if (pid == 84) return R.drawable.image_cam_outdoor;
         if (JFGRules.isCamera(pid)) return R.drawable.me_icon_head_camera;
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
@@ -378,6 +379,9 @@ public class JConstant {
             return R.drawable.home_icon_intelligent_eye;
         if (JFGRules.isPan720(pid))
             return R.drawable.home_icon_720camera_online;
+        if (pid == 84) {
+            return R.drawable.home_icon_outcam;
+        }
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_online;
         AppLogger.e("bad pid: " + pid);
@@ -392,6 +396,9 @@ public class JConstant {
             return R.drawable.home_icon_intelligent_eye_disable;
         if (JFGRules.isPan720(pid))
             return R.drawable.home_icon_720camera_offline;
+        if (pid == 84) {
+            return R.drawable.home_icon_outcam;
+        }
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_offline;
         AppLogger.e("bad pid: " + pid);
