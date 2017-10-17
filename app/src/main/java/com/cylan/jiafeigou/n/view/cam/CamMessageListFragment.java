@@ -234,7 +234,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         }
                     }
                 }
+            }
 
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    //TODO: 2017/10/17  更新refresh可用性
+
+                }
             }
         });
         camMessageListAdapter.setOnclickListener(this);
@@ -482,12 +490,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             List<FaceItem> list = new ArrayList<>();
             FaceItem allFace = new FaceItem();
             allFace.setFaceType(FaceItem.FACE_TYPE_ALL);
-//            allFace.setFaceText(getString(R.string.MESSAGES_FILTER_ALL));
             list.add(allFace);
 
             FaceItem strangerFace = new FaceItem();
             strangerFace.setFaceType(FaceItem.FACE_TYPE_STRANGER);
-//            strangerFace.setFaceText(getString(R.string.MESSAGES_FILTER_STRANGER));
             list.add(strangerFace);
             camMessageFaceAdapter.setPreloadFaceItems(list);
         }
@@ -501,14 +507,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
         Log.i("onMessageAppbarScrolled", "offset is:" + offset + ",total is:" + appBarLayout.getTotalScrollRange());
-        srLayoutCamListRefresh.setEnabled(offset == 0);
+        srLayoutCamListRefresh.setEnabled(offset == 0 && !rvCamMessageList.canScrollVertically(-1));
         if (Math.abs(offset) == appBarLayout.getTotalScrollRange()) {
             // TODO: 2017/9/29 更新箭头
-//            arrow.setText("down");
             arrow.setImageResource(R.drawable.wonderful_arrow_down);
         } else {
             arrow.setImageResource(R.drawable.wonderful_arrow_up);
-//            arrow.setText("up");
         }
     }
 
@@ -1038,7 +1042,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 getResources().getDrawable(R.drawable.wonderful_arrow_up).getConstantState()) {
             arrow.setImageResource(R.drawable.wonderful_arrow_down);
             if (JFGRules.isFaceFragment(getDevice().pid)) {
-                aplCamMessageAppbar.requestLayout();
                 aplCamMessageAppbar.setExpanded(false, true);
             } else {
                 onBindClick(tvCamMessageListDate);

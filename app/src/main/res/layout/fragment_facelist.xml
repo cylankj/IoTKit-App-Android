@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:ct_enable_theme="true"
-        app:ct_icon="@drawable/nav_tab_back_selector"
+        app:ct_icon="@drawable/nav_icon_close_selector"
         app:ct_left_title="@string/MESSAGES_IDENTIFY_ADD_BTN"
         app:ct_left_title_color="@color/color_white"
         app:layout_constraintEnd_toEndOf="parent"

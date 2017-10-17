@@ -241,6 +241,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homeMineFragment);
             }
             break;
+            default:
         }
     }
 
@@ -249,22 +250,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             switch (checkedId) {
                 case R.id.btn_home_list:
                     showHomeFragment(0);
-//                    if (vpHomeContent.getCurrentItem() != 0) {
-//                        vpHomeContent.setCurrentItem(0);
-//                    }
                     break;
                 case R.id.btn_home_wonderful:
                     showHomeFragment(1);
-//                    if (vpHomeContent.getCurrentItem() != 1) {
-//                        vpHomeContent.setCurrentItem(1);
-//                    }
                     break;
                 case R.id.btn_home_mine:
                     showHomeFragment(2);
-//                    if (vpHomeContent.getCurrentItem() != 2) {
-//                        vpHomeContent.setCurrentItem(2);
-//                    }
                     break;
+                default:
             }
         });
         //自定义的RadioButton,放在RadioGroup中不能被选中

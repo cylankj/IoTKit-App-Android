@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
+import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
@@ -114,7 +115,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
         view.findViewById(R.id.move_to).setOnClickListener {
             AppLogger.w("面孔管理:移动到")
-            FaceListFragment.newInstance(uuid)
+            FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid)
         }
         PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)
     }
