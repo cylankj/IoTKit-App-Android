@@ -29,48 +29,66 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.cylan.jiafeigou.widget.WrapContentViewPager
+                    <android.support.v4.view.ViewPager
                         android:id="@+id/cam_message_face"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/y12"
-                        app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_page_text"
+                        android:layout_height="100dp"
+                        app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_holder"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_goneMarginBottom="@dimen/y21" />
 
-                    <TextView
-                        android:id="@+id/cam_message_indicator_page_text"
-                        android:layout_width="wrap_content"
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cam_message_indicator_holder"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/cam_message_face"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/y8"
-                        android:text="1/6"
-                        android:textColor="@color/color_adadad"
-                        android:textSize="@dimen/sp12"
-                        android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/cam_message_indicator_watcher_text"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <TextView
-                        android:id="@+id/cam_message_indicator_watcher_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_gravity="end"
-                        android:layout_marginBottom="@dimen/y8"
-                        android:text="最近30天来访15次"
-                        android:textColor="@color/color_999999"
-                        android:textSize="@dimen/sp12"
-                        android:visibility="visible"
+                        android:layout_marginBottom="@dimen/y13"
+                        android:paddingEnd="@dimen/y15"
+                        android:paddingStart="@dimen/y15"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/cam_message_indicator_page_text" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cam_message_face">
+
+
+                        <TextView
+                            android:id="@+id/cam_message_indicator_page_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginEnd="@dimen/y53"
+                            android:text="1/6"
+                            android:textColor="@color/color_adadad"
+                            android:textSize="@dimen/sp12"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cam_message_indicator_watcher_text"
+                            app:layout_constraintHorizontal_chainStyle="spread_inside"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_goneMarginEnd="@dimen/y15" />
+
+                        <TextView
+                            android:id="@+id/cam_message_indicator_watcher_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_gravity="end"
+                            android:ellipsize="end"
+                            android:gravity="end"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="最近30天来访15次"
+                            android:textColor="@color/color_999999"
+                            android:textSize="@dimen/sp12"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/cam_message_indicator_page_text"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </android.support.constraint.ConstraintLayout>
 
                     <View
                         android:id="@+id/cover_layer"

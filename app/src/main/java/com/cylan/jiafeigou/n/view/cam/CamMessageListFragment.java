@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -131,6 +132,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     CoordinatorLayout parent;
     @BindView(R.id.cam_message_indicator_watcher_text)
     TextView tvCamMessageIndicatorWatcherText;
+    @BindView(R.id.cam_message_indicator_holder)
+    ConstraintLayout camMessageIndicatorHolder;
 //    @BindView(R.id.header_container)
 //    LinearLayout headerContainer;
 
@@ -282,7 +285,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             rvCamMessageHeaderFaces.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
-                    refreshFaceHeaderIndicator();
+                    setFaceHeaderPageIndicator();
                 }
             });
 
@@ -501,10 +504,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
     }
 
-    private void refreshFaceHeaderIndicator() {
+    private void setFaceHeaderPageIndicator() {
         int currentItem = rvCamMessageHeaderFaces.getCurrentItem();
         tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, camMessageFaceAdapter.getCount()));
         tvCamMessageIndicatorPageText.setVisibility(camMessageFaceAdapter.getTotalCount() > 8 ? View.VISIBLE : View.GONE);
+        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
+    }
+
+    private void setFaceHeaderWatcherIndicator(int count) {
+        tvCamMessageIndicatorWatcherText.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count));
+        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE
+                && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
+
     }
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
@@ -619,7 +630,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         // TODO: 2017/10/11 获取脸谱数据后先去人预制条目
         layoutBarMenu(BAR_TYPE_FACE_COMMON);
         ensurePreloadHeaderItem();
-        refreshFaceHeaderIndicator();
+        setFaceHeaderPageIndicator();
     }
 
 

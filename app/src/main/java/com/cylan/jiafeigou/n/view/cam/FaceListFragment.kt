@@ -11,9 +11,11 @@ import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.n.view.cam.item.FaceListHeaderItem
 import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.HeaderAdapter
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import kotlinx.android.synthetic.main.fragment_facelist.*
@@ -50,7 +52,10 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             }
         }
 
+        val headerAdapter = HeaderAdapter<FaceListHeaderItem>()
+        headerAdapter.add(FaceListHeaderItem())
         adapter = FastItemAdapter()
+
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
         adapter.itemAdapter.withComparator { item1, item2 ->
@@ -58,10 +63,10 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             val pinyin2 = Pinyin.toPinyin(item2.faceInformation?.face_name, "") ?: ""
             return@withComparator pinyin1.compareTo(pinyin2, true)
         }
-        adapter.withOnPreClickListener { v, adapter, item, position ->
-            // consume otherwise radio/checkbox will be deselected
-            return@withOnPreClickListener true
-        }
+//        adapter.withOnPreClickListener { v, adapter, item, position ->
+//            // consume otherwise radio/checkbox will be deselected
+//            return@withOnPreClickListener true
+//        }
         adapter.withEventHook(object : ClickEventHook<FaceListItem>() {
 
             override fun onBindMany(viewHolder: RecyclerView.ViewHolder): MutableList<View>? {
@@ -88,7 +93,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
 
         layoutManager = LinearLayoutManager(context)
-        face_list_items.adapter = adapter
+        face_list_items.adapter = headerAdapter.wrap(adapter)
         face_list_items.layoutManager = layoutManager
 
         //todo just for test

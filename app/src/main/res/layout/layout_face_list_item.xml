@@ -4,7 +4,6 @@
     style="@style/ripple_background"
     android:layout_width="match_parent"
     android:layout_height="@dimen/y72"
-    android:background="@color/color_white"
     android:clickable="true"
     android:focusable="true">
 
