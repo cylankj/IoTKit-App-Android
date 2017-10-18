@@ -62,6 +62,14 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/watcher_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="@dimen/y15"
+                    android:text="文化宫额回购二维化工文化" />
+
+                <TextView
                     android:id="@+id/tv_cam_message_item_date"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/y26"

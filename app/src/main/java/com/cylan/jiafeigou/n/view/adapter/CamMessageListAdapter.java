@@ -176,6 +176,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case CamMessageBean.ViewType.TWO_PIC:
             case CamMessageBean.ViewType.THREE_PIC:
                 handlePicsLayout(holder, item);
+            default:
         }
         if (viewType == CamMessageBean.ViewType.FOOT) {
             return;
