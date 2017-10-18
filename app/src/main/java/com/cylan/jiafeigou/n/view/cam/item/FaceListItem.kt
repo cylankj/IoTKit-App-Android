@@ -49,8 +49,9 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
                 .into(holder.icon)
 
         holder.name.text = faceInformation?.face_name ?: "小明"
-        var adapter: FastAdapter<FaceListItem> = holder.itemView.getTag(R.id.fastadapter_item_adapter) as FastAdapter<FaceListItem>
-        val position = holder.adapterPosition
+        var adapter: FastAdapter<*> = holder.itemView.getTag(R.id.fastadapter_item_adapter) as FastAdapter<*>
+        val adapter1 = adapter.getAdapter(holder.adapterPosition)
+        val position = adapter1!!.getAdapterPosition(identifier)
         val pinyin = Pinyin.toPinyin(faceInformation?.face_name?.get(0) ?: ' ')
 
         when {
@@ -58,7 +59,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
                 holder.header.text = pinyin
             }
             position > 0 -> {
-                val item1 = adapter.getItem(position - 1)
+                val item1 = adapter1.getAdapterItem(position - 1) as FaceListItem
                 val pinyin1 = Pinyin.toPinyin(item1.faceInformation?.face_name?.get(0) ?: ' ')
                 if (!TextUtils.equals(pinyin1, pinyin)) {
                     holder.header.text = pinyin

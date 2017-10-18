@@ -15,8 +15,9 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceListHeaderItem
 import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.IItem
 import com.mikepenz.fastadapter.adapters.HeaderAdapter
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import kotlinx.android.synthetic.main.fragment_facelist.*
 
@@ -25,7 +26,8 @@ import kotlinx.android.synthetic.main.fragment_facelist.*
  */
 class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListContact.View {
 
-    lateinit var adapter: FastItemAdapter<FaceListItem>
+    lateinit var adapter: FastAdapter<*>
+    private lateinit var itemAdapter: ItemAdapter<FaceListItem>
     override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)
     }
@@ -36,6 +38,8 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     }
 
     lateinit var layoutManager: LinearLayoutManager
+
+
     override fun initViewAndListener() {
         super.initViewAndListener()
         account = arguments.getString("account")
@@ -52,13 +56,18 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             }
         }
 
-        val headerAdapter = HeaderAdapter<FaceListHeaderItem>()
-        headerAdapter.add(FaceListHeaderItem())
-        adapter = FastItemAdapter()
+        adapter = FastAdapter<IItem<*, *>>()
 
+        val headerAdapter = HeaderAdapter<FaceListHeaderItem>()
+        headerAdapter.withUseIdDistributor(true)
+        itemAdapter = ItemAdapter()
+
+        itemAdapter.wrap(headerAdapter.wrap(adapter))
+        headerAdapter.add(FaceListHeaderItem())
+        itemAdapter.withUseIdDistributor(true)
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
-        adapter.itemAdapter.withComparator { item1, item2 ->
+        itemAdapter.withComparator { item1, item2 ->
             val pinyin1 = Pinyin.toPinyin(item1.faceInformation?.face_name, "") ?: ""
             val pinyin2 = Pinyin.toPinyin(item2.faceInformation?.face_name, "") ?: ""
             return@withComparator pinyin1.compareTo(pinyin2, true)
@@ -67,7 +76,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 //            // consume otherwise radio/checkbox will be deselected
 //            return@withOnPreClickListener true
 //        }
-        adapter.withEventHook(object : ClickEventHook<FaceListItem>() {
+        itemAdapter.fastAdapter.withEventHook(object : ClickEventHook<FaceListItem>() {
 
             override fun onBindMany(viewHolder: RecyclerView.ViewHolder): MutableList<View>? {
                 if (viewHolder is FaceListItem.FaceListViewHolder) {
@@ -93,7 +102,9 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
 
         layoutManager = LinearLayoutManager(context)
-        face_list_items.adapter = headerAdapter.wrap(adapter)
+        face_list_items.adapter = adapter
+
+
         face_list_items.layoutManager = layoutManager
 
         //todo just for test
@@ -105,8 +116,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             item.withFaceInformation(information)
             items.add(item)
         }
-        adapter.add(items)
-
+        itemAdapter.add(items)
     }
 
     override fun onStart() {

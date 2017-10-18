@@ -29,10 +29,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <android.support.v4.view.ViewPager
+                    <com.cylan.jiafeigou.widget.WrapContentViewPager
                         android:id="@+id/cam_message_face"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_holder"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +44,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/y13"
+                        android:layout_marginTop="@dimen/y18"
                         android:paddingEnd="@dimen/y15"
                         android:paddingStart="@dimen/y15"
                         app:layout_constraintBottom_toBottomOf="parent"

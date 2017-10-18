@@ -20,12 +20,11 @@
     <com.cylan.jiafeigou.widget.ClearableEditText
         android:id="@+id/edit_face_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/y54"
         android:layout_marginEnd="@dimen/y20"
         android:layout_marginStart="@dimen/y20"
         android:layout_marginTop="@dimen/y8"
         android:text="@string/Tap1_AddDevice_CameraTips"
-
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp16"
         android:theme="@style/EditTextTheme" />

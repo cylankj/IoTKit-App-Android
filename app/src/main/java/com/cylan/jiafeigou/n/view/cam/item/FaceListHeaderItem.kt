@@ -20,7 +20,11 @@ class FaceListHeaderItem : AbstractItem<FaceListHeaderItem, FaceListHeaderItem.F
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.layout_list_header
+        return R.layout.layout_face_list_header
+    }
+
+    override fun bindView(holder: FaceListHeaderViewHolder?, payloads: MutableList<Any>?) {
+        super.bindView(holder, payloads)
     }
 
 
