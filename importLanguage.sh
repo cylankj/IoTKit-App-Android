@@ -11,8 +11,8 @@ if [ ! -d "$CleverDog" ]; then
    git clone -b master http://120.24.247.124:10080/Sam01/CleverDog.git
 fi
 cd ${CleverDog}
-git pull
 git checkout -B master
+git pull
 
 if [ ! -d "./Language" ]; then
   echo "当前目录下没有 Language 文件夹 导入语言包失败"

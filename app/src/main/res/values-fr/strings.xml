@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Passer à un visage existant</string>
   <string name="MESSAGES_FACE_MOVE_BTN">déménager à</string>
   <string name="MESSAGES_FACE_NONE">Pas de visage</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Visite %s fois dans les 30 jours</string>
   <string name="MESSAGES_FILTER_ALL">Tout</string>
   <string name="MESSAGES_FILTER_STRANGER">Étranger</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Ajouter au visage existant</string>

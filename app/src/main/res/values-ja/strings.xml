@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">既存の顔に移動する</string>
   <string name="MESSAGES_FACE_MOVE_BTN">へ引っ越す</string>
   <string name="MESSAGES_FACE_NONE">顔なし</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">30日以内に%s回訪問</string>
   <string name="MESSAGES_FILTER_ALL">すべて</string>
   <string name="MESSAGES_FILTER_STRANGER">見知らぬ人</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">既存の顔に追加する</string>

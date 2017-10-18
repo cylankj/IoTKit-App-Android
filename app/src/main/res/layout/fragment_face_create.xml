@@ -36,5 +36,6 @@
         android:layout_marginTop="@dimen/y40"
         android:gravity="center"
         android:hint="@string/LOCATION_NAME_ERROR"
-        android:textColor="@color/color_666666" />
+        android:textColor="@color/color_666666"
+        android:theme="@style/EditTextTheme" />
 </LinearLayout>

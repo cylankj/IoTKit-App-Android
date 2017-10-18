@@ -46,7 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginEnd="-24dp"
-        android:layout_marginTop="@dimen/y11">
+        android:layout_marginTop="@dimen/y11"
+        android:paddingBottom="@dimen/y8">
 
 
         <TextView

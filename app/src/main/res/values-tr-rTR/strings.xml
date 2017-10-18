@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Mevcut bir yüze taşı</string>
   <string name="MESSAGES_FACE_MOVE_BTN">taşınmak</string>
   <string name="MESSAGES_FACE_NONE">Yüzsüz</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">30 gün içinde %s defa ziyaret</string>
   <string name="MESSAGES_FILTER_ALL">Herşey</string>
   <string name="MESSAGES_FILTER_STRANGER">Yabancı</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Mevcut yüz ekle</string>

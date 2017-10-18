@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Move to an existing face</string>
   <string name="MESSAGES_FACE_MOVE_BTN">move to</string>
   <string name="MESSAGES_FACE_NONE">No face</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Visit %s times within 30 days</string>
   <string name="MESSAGES_FILTER_ALL">All</string>
   <string name="MESSAGES_FILTER_STRANGER">Stranger</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Add to existing face</string>

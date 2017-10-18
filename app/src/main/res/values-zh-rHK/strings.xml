@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">移動到現有面孔</string>
   <string name="MESSAGES_FACE_MOVE_BTN">移動到</string>
   <string name="MESSAGES_FACE_NONE">暫無面孔</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">最近30天來訪 %s 次</string>
   <string name="MESSAGES_FILTER_ALL">全部</string>
   <string name="MESSAGES_FILTER_STRANGER">陌生人</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">添加到現有面孔</string>

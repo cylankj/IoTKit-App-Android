@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Sposta su un volto esistente</string>
   <string name="MESSAGES_FACE_MOVE_BTN">passare a</string>
   <string name="MESSAGES_FACE_NONE">Senza faccia</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Visita %s volte entro 30 giorni</string>
   <string name="MESSAGES_FILTER_ALL">Tutti</string>
   <string name="MESSAGES_FILTER_STRANGER">Sconosciuto</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Aggiungi al volto esistente</string>

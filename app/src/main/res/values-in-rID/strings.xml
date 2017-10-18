@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Pindah ke wajah yang ada</string>
   <string name="MESSAGES_FACE_MOVE_BTN">pindah ke</string>
   <string name="MESSAGES_FACE_NONE">Tanpa muka</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Kunjungi %s kali dalam 30 hari</string>
   <string name="MESSAGES_FILTER_ALL">Semua</string>
   <string name="MESSAGES_FILTER_STRANGER">Orang asing</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Tambahkan ke wajah yang ada</string>

@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Di chuyển đến khuôn mặt hiện tại</string>
   <string name="MESSAGES_FACE_MOVE_BTN">chuyển tới</string>
   <string name="MESSAGES_FACE_NONE">Không có mặt</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Truy cập %s lần trong vòng 30 ngày</string>
   <string name="MESSAGES_FILTER_ALL">Tất cả các</string>
   <string name="MESSAGES_FILTER_STRANGER">Lạ</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Thêm vào khuôn mặt hiện tại</string>
