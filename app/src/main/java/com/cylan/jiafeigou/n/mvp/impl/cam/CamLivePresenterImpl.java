@@ -412,7 +412,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
                 getLiveStream().playStartTime = System.currentTimeMillis() / 1000;
 //                getLiveStream().playStartTime = System.currentTimeMillis();
-                ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+                if (getDevice().getPid() == 42) {
+                    String json = " {\n" +
+                            "    \"audio\": {\n" +
+                            "      \"codec\": \"g729\"\n" +
+                            "    }\n" +
+                            "  }";
+                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid, json);
+                } else {
+                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+                }
 
                 AppLogger.d("play video ret :" + ret + "," + switchInterface);
 
