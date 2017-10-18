@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -130,6 +129,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     TextView barBack;
     @BindView(R.id.parent)
     CoordinatorLayout parent;
+    @BindView(R.id.cam_message_indicator_watcher_text)
+    TextView tvCamMessageIndicatorWatcherText;
 //    @BindView(R.id.header_container)
 //    LinearLayout headerContainer;
 
@@ -385,21 +386,22 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         View contentView = popupWindow.getContentView();
 
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
+        if (faceType == FaceItem.FACE_TYPE_STRANGER)
 
-
-        contentView.findViewById(R.id.delete).setOnClickListener(v -> {
-            // TODO: 2017/10/9 删除操作
-            AppLogger.w("将删除面孔");
-            popupWindow.dismiss();
-            FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
-            showDeleteFaceAlert(item);
-        });
+            contentView.findViewById(R.id.delete).setOnClickListener(v -> {
+                // TODO: 2017/10/9 删除操作
+                AppLogger.w("将删除面孔");
+                popupWindow.dismiss();
+                FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
+                showDeleteFaceAlert(item);
+            });
 
         contentView.findViewById(R.id.detect).setOnClickListener(v -> {
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔");
             popupWindow.dismiss();
-            Bitmap image = ((BitmapDrawable) faceItem.getDrawable()).getBitmap();
+            faceItem.setDrawingCacheEnabled(true);
+            Bitmap image = faceItem.getDrawingCache();
             showDetectFaceAlert("", image);
 
         });
@@ -738,6 +740,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //        }
 //                , 200);
                 break;
+            default:
         }
 
     }
@@ -887,6 +890,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         .setCancelable(false)
                         .show();
                 break;
+            default:
         }
     }
 
@@ -996,6 +1000,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 }
                 break;
             }
+            default:
         }
     }
 

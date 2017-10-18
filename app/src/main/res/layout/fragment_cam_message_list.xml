@@ -48,13 +48,29 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="@dimen/y8"
+                        android:text="1/6"
                         android:textColor="@color/color_adadad"
                         android:textSize="@dimen/sp12"
-                        android:visibility="gone"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/cam_message_indicator_watcher_text"
+                        app:layout_constraintHorizontal_chainStyle="spread_inside"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/cam_message_indicator_watcher_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end"
+                        android:layout_marginBottom="@dimen/y8"
+                        android:text="最近30天来访15次"
+                        android:textColor="@color/color_999999"
+                        android:textSize="@dimen/sp12"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cam_message_face" />
+                        app:layout_constraintStart_toEndOf="@+id/cam_message_indicator_page_text" />
 
                     <View
                         android:id="@+id/cover_layer"

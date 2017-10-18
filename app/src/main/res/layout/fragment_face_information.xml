@@ -27,7 +27,7 @@
         android:layout_width="@dimen/y80"
         android:layout_height="@dimen/y80"
         android:layout_marginTop="@dimen/y42"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/home_icon_outcam" />
 
     <TextView
         android:id="@+id/face_name"
@@ -42,6 +42,7 @@
         android:id="@+id/setting_item_face_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y41"
         app:sv_sub_title="韩梅梅"
         app:sv_title="@string/NAME"
         app:sv_v_divider="true" />
