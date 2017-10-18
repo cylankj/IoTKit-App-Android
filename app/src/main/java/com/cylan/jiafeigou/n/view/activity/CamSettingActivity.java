@@ -174,7 +174,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean http = JFGRules.isPan720(device.pid);
-        if (http) BaseDeviceInformationFetcher.getInstance().init(uuid);
+        if (http) {
+            BaseDeviceInformationFetcher.getInstance().init(uuid);
+        }
 
 
 //        observer = BaseApplication.getPropertyItemBox().query()
@@ -223,15 +225,21 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void updateHotSpotConnection() {
         //720设备
         final Device device = basePresenter.getDevice();
-        if (!JFGRules.isPan720(device.pid)) return;
+        if (!JFGRules.isPan720(device.pid)) {
+            return;
+        }
         //1.系统热点开启，2.读取硬件设备描述文件，过滤。
         boolean isWifiApEnabled = NetUtils.isWifiApEnabled();
-        if (!isWifiApEnabled) return;
+        if (!isWifiApEnabled) {
+            return;
+        }
         Subscription ssu = Observable.just("")
                 .subscribeOn(Schedulers.io())
                 .map(s -> {
                     ArrayList<NetUtils.ClientScanResult> list = NetUtils.getClientList(true, 1000);
-                    if (ListUtils.isEmpty(list)) return null;
+                    if (ListUtils.isEmpty(list)) {
+                        return null;
+                    }
                     //设备的mac
                     final String mac = device.$(202, "");
                     for (NetUtils.ClientScanResult ret : list) {
@@ -245,7 +253,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     WifiConfiguration netConfig = NetUtils.getWifiApConfiguration();
-                    if (netConfig == null) return;
+                    if (netConfig == null) {
+                        return;
+                    }
                     AppLogger.d("netConfig:" + new Gson().toJson(netConfig));
                     svSettingDeviceAp.setSubTitle(netConfig.SSID);
                 }, AppLogger::e);
@@ -270,8 +280,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void onBackPressed() {
         if (checkExtraChildFragment()) {
             return;
-        } else if (checkExtraFragment())
+        } else if (checkExtraFragment()) {
             return;
+        }
         finishExt();
     }
 
@@ -384,7 +395,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 }
 
                 if (status.hasSdcard)//没有sd卡,不能点击
+                {
                     jump2SdcardDetailFragment();
+                }
                 break;
             case R.id.sv_setting_device_clear_record:
                 ViewUtils.deBounceClick(view);
@@ -660,8 +673,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private void initFirmwareHint(Device device) {
         try {
-            if (JFGRules.isPanoramaCamera(device.pid)) return;
-            if (JFGRules.isShareDevice(device)) return;
+            if (JFGRules.isPanoramaCamera(device.pid)) {
+                return;
+            }
+            if (JFGRules.isShareDevice(device)) {
+                return;
+            }
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
             svSettingDeviceDetail.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
@@ -678,8 +695,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             final int count = lLayoutSettingItemContainer.getChildCount();
             for (int i = 2; i < count - 1; i++) {
                 View v = lLayoutSettingItemContainer.getChildAt(i);
-                if (v != null)
+                if (v != null) {
                     v.setVisibility(View.GONE);
+                }
             }
             return;
         }
@@ -687,7 +705,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         boolean is720 = JFGRules.isPan720(device.pid);
         ////////////////////////////////////////////////////////////////////////
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
-        if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
+        if (sdStatus == null) {
+            sdStatus = new DpMsgDefine.DPSdStatus();
+        }
         String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
 //        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
 //            svSettingDeviceDetail.setSubTitle(detailInfo, android.R.color.holo_red_dark);
@@ -737,10 +757,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (!dpStandby.standby) {
                 boolean ledTrigger = device.$(209, false);
                 svSettingDeviceLedIndicator.setChecked(ledTrigger);
-            } else svSettingDeviceLedIndicator.setChecked(false);
+            } else {
+                svSettingDeviceLedIndicator.setChecked(false);
+            }
             svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
-                if (standby != null && standby.standby) return;//开启待机模式引起的
+                if (standby != null && standby.standby) {
+                    return;//开启待机模式引起的
+                }
                 DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked;
                 basePresenter.updateInfoReq(check, ID_209_LED_INDICATOR);
@@ -782,7 +806,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 basePresenter.updateInfoReq(check, DpMsgMap.ID_216_DEVICE_VOLTAGE);
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
-        } else sbtnSetting110v.setVisibility(View.GONE);
+        } else {
+            sbtnSetting110v.setVisibility(View.GONE);
+        }
 
         /////////////////////////旋转/////////////////////////////////////////
         if (!JFGRules.showRotate(device.pid, false)) {
@@ -821,7 +847,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 sbtnSettingSight.setSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
             } catch (Exception e) {
             }
-        } else sbtnSettingSight.setVisibility(View.GONE);
+        } else {
+            sbtnSettingSight.setVisibility(View.GONE);
+        }
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
@@ -861,12 +889,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //总的条件:相同的ssid名字
         if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             //待机不可用
-            if (dpStandby.standby) svSettingDeviceSoftAp.setEnabled(false);
+            if (dpStandby.standby) {
+                svSettingDeviceSoftAp.setEnabled(false);
+            }
             //在线,判断客户端和设备端的ssid
             //没有连接公网.//必须是连接状态
 //            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
 //            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
-        } else svSettingDeviceSoftAp.setEnabled(false);
+        } else {
+            svSettingDeviceSoftAp.setEnabled(false);
+        }
         svSettingDeviceSoftAp.setOnClickListener(v -> {
             if (NetUtils.getJfgNetType() == 0) {
                 ToastUtil.showToast(getString(R.string.NoNetworkTips));
@@ -1011,7 +1043,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case 222:
                 if (msg.packValue != null) {
                     DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                    if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
+                    if (summary == null) {
+                        summary = new DpMsgDefine.DPSdcardSummary();
+                    }
                     //sd
                     String statusContent = basePresenter.getDetailsSubTitle(getContext(), summary.hasSdcard, summary.errCode);
 //                    if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -1058,7 +1092,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
                             .$(204, new DpMsgDefine.DPSdStatus());
                 }
-                if (status == null) status = new DpMsgDefine.DPSdStatus();
+                if (status == null) {
+                    status = new DpMsgDefine.DPSdStatus();
+                }
                 String detailInfo = basePresenter.getDetailsSubTitle(getContext(), status.hasSdcard, status.err);
 //                if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
 //                    svSettingDeviceDetail.setSubTitle(detailInfo, android.R.color.holo_red_dark);
@@ -1241,7 +1277,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     .subscribeOn(Schedulers.io())
                     .map(s -> {
                         ArrayList<NetUtils.ClientScanResult> list = NetUtils.getClientList(true, 1000);
-                        if (ListUtils.isEmpty(list)) return null;
+                        if (ListUtils.isEmpty(list)) {
+                            return null;
+                        }
                         //设备的mac
                         final String mac = device.$(202, "");
                         NetUtils.ClientScanResult result = null;

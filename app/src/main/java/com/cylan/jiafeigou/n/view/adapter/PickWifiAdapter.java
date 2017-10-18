@@ -47,8 +47,9 @@ public class PickWifiAdapter extends SuperAdapter<BeanWifiList> {
         holder.setText(R.id.tv_item_ssid, item.result.SSID);
         View view = holder.getView(R.id.lLayout_device_item);
         if (view != null) {
-            if (onItemClickListener != null)
+            if (onItemClickListener != null) {
                 view.setOnClickListener(onItemClickListener);
+            }
         }
         ((RadioButton) holder.getView(R.id.rbtn_item_check)).setChecked(item.checked);
     }

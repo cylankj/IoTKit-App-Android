@@ -62,7 +62,9 @@ public class HintTextView extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!show) return;
+        if (!show) {
+            return;
+        }
         Layout layout = getLayout();
         //得到TextView显示有多少行
         int count = getLineCount();
@@ -75,7 +77,9 @@ public class HintTextView extends TextView {
             //getLineBounds得到这一行的外包矩形,
             // 这个字符的顶部Y坐标就是rect的top 底部Y坐标就是rect的bottom
             getLineBounds(i, rect);
-            if (firstLineTop == -1) firstLineTop = rect.top;
+            if (firstLineTop == -1) {
+                firstLineTop = rect.top;
+            }
             firstCharInLine = layout.getLineStart(i);
             lastCharInLine = layout.getLineEnd(i);
 
@@ -85,8 +89,12 @@ public class HintTextView extends TextView {
             x_diff = layout.getPrimaryHorizontal(firstCharInLine + 1) - x_start;
             x_stop = layout.getPrimaryHorizontal(lastCharInLine - 1) + x_diff;
 //            canvas.drawLine(x_start, baseline + 5, x_stop, baseline + 5, mPaint);
-            if (x_max <= x_stop) x_max = x_stop;
-            if (y_max >= rect.top) y_max = rect.top;
+            if (x_max <= x_stop) {
+                x_max = x_stop;
+            }
+            if (y_max >= rect.top) {
+                y_max = rect.top;
+            }
         }
         canvas.drawCircle(position == 0 ? x_max + defaultRadius + getPaddingLeft() :
                         x_max + defaultRadius * 2 + getPaddingLeft(),

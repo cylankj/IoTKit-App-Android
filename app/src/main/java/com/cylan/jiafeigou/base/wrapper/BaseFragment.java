@@ -127,7 +127,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (!enter || nextAnim == 0) return null;
+        if (!enter || nextAnim == 0) {
+            return null;
+        }
 
         final Animation animator = AnimationUtils.loadAnimation(getActivityContext(), nextAnim);
         animator.setAnimationListener(new Animation.AnimationListener() {
@@ -246,6 +248,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     /**
      * 一个回调接口,可以向view中传递数据
      */
+    @Override
     public void onViewAction(int action, String handler, Object extra) {
         if (presenter != null) {
             presenter.onViewAction(action, handler, extra);

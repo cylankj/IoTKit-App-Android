@@ -68,7 +68,9 @@ public class BaseBellCallEventListener {
 
     public void makeNewCall(RxEvent.BellCallEvent callEvent) {
         //2、在直播界面查看直播时不拉起呼叫页面，在查看历史录像时拉起呼叫页面。
-        if (TextUtils.equals(callEvent.caller.cid, caller)) return;
+        if (TextUtils.equals(callEvent.caller.cid, caller)) {
+            return;
+        }
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)

@@ -114,13 +114,16 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
     }
 
     protected void setSystemBarTintEnable(boolean enable) {
-        if (tintManager != null)
+        if (tintManager != null) {
             tintManager.setStatusBarTintEnabled(enable);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (!checkExtraFragment() && !checkExtraChildFragment()) super.onBackPressed();
+        if (!checkExtraFragment() && !checkExtraChildFragment()) {
+            super.onBackPressed();
+        }
     }
 
     protected boolean theLastActivity() {
@@ -135,8 +138,9 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
     protected boolean checkExtraChildFragment() {
         FragmentManager fm = getSupportFragmentManager();
         List<Fragment> list = fm.getFragments();
-        if (ListUtils.isEmpty(list))
+        if (ListUtils.isEmpty(list)) {
             return false;
+        }
         for (Fragment frag : list) {
             if (frag != null && frag.isVisible()) {
                 FragmentManager childFm = frag.getChildFragmentManager();
@@ -158,7 +162,9 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
         if (count > 0) {
             getSupportFragmentManager().popBackStack();
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     /**

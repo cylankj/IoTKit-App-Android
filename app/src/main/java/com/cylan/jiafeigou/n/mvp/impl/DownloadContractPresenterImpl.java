@@ -74,8 +74,9 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
     public void stop() {
         super.stop();
         try {
-            if (mService != null)
+            if (mService != null) {
                 mService.unregisterCallback(mCallback);
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -86,8 +87,9 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
         @Override
         public void onDownloadStarted(long taskId) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadStarted:" + taskId);
-            if (getView() != null)
+            if (getView() != null) {
                 getView().onDownloadStart();
+            }
         }
 
         @Override
@@ -98,15 +100,17 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
         @Override
         public void onDownloadProcess(long taskId, double percent, long downloadedLength) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadProcess:" + taskId + " percent:" + percent);
-            if (getView() != null)
+            if (getView() != null) {
                 getView().onDownloading(percent, downloadedLength);
+            }
         }
 
         @Override
         public void onDownloadFinished(long taskId) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadFinished:" + taskId);
-            if (getView() != null)
+            if (getView() != null) {
                 getView().onDownloadFinish();
+            }
         }
 
         @Override
@@ -129,8 +133,9 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
         @Override
         public void onFailedReason(long taskId, int reason) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onFailedReason:" + taskId);
-            if (getView() != null)
+            if (getView() != null) {
                 getView().onDownloadErr(reason);
+            }
         }
     };
 }

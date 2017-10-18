@@ -88,7 +88,9 @@ public class SetSensitivityDialogFragment extends BaseDialog {
             box.setChecked(defaultLevel == 2 - i);
             box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 if (isChecked) {
-                    if (action != null) action.onDialogAction(0, 2 - index);
+                    if (action != null) {
+                        action.onDialogAction(0, 2 - index);
+                    }
                     dismiss();
                 }
             });

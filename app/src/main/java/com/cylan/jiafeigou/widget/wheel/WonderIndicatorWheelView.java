@@ -82,8 +82,9 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                 holder.setSelected(R.id.wonder_indicator_item, item.selected);
                 holder.setText(R.id.wonder_indicator_item, TimeUtils.getDayInMonth(item.time));
                 holder.setTag(R.id.wonder_indicator_item, item);
-                if (item.selected)
+                if (item.selected) {
                     mTitle.setText(TimeUtils.getMonthInYear(item.time));
+                }
                 Log.d("onBind", "onBind: " + layoutPosition);
             }
         };
@@ -100,7 +101,9 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
         WheelItem c = mAdapter.getItem(position);
-        if (!c.wonderful) return;
+        if (!c.wonderful) {
+            return;
+        }
         if (mLastPosition != position || mLastPosition == -1) {
             c.selected = true;
             itemView.findViewById(R.id.wonder_indicator_item).setSelected(true);
@@ -114,7 +117,9 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                 mIndicatorList.smoothScrollToPosition(position);
             });
             mIndicatorList.post(() -> {
-                if (mListener != null) mListener.onChanged(c.time);
+                if (mListener != null) {
+                    mListener.onChanged(c.time);
+                }
             });
 
         }
@@ -152,7 +157,9 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     }
 
     public void init(List<WheelItem> items) {
-        if (ListUtils.getSize(items) == 0) return;
+        if (ListUtils.getSize(items) == 0) {
+            return;
+        }
         Collections.sort(items);
 //        Collections.reverse(items);//反向一下。//不需要,从小到大即可
         //需要auto append data,左边右边都需要填充数据
@@ -215,7 +222,9 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                     mAdapter.getItem(mLastPosition).selected = !selected;
                     mAdapter.notifyItemChanged(mLastPosition);
                 }
-                if (selected) mLastPosition = i;
+                if (selected) {
+                    mLastPosition = i;
+                }
                 mAdapter.notifyItemChanged(i);
                 return;
             }

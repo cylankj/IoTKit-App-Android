@@ -172,8 +172,9 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             return;
         }
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgAccount != null)
+        if (jfgAccount != null) {
             basePresenter.sendChangePassReq(jfgAccount.getAccount(), getOldPassword(), getNewPassword());
+        }
 
     }
 

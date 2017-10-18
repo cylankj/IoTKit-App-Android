@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Modo cableado</string>
   <string name="Cable_Mode_Start_Hotspot">Antes de encender, asegúrese de que su teléfono y dispositivo estén conectados al mismo enrutador</string>
   <string name="Cable_Mode_Switch_Cancel">Al cerrar podría hacer el dispositivo desconectarse,¿confirmas de cerrar?</string>
+  <string name="Camera_Outdoor">Cámara (versión exterior)</string>
   <string name="CancelingTips">Cancelado&#8230;</string>
   <string name="Cellular_Data_Method">Datos móviles:</string>
   <string name="Cellular_Data_Set_Up">Habilitar datos móviles en el dispositivo, utilice a continuación, Configuración> Datos móviles</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">La cuenta de YouTube %s aún no ha abierto el canal, no puede vivir, abre y vuelve a intentarlo</string>
   <string name="LIVE_OPENING">Apertura en vivo &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Sina Weibo</string>
   <string name="LIVE_PLATFORM_YOUTUBE">Youtube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Introduzca la clave</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Reiniciar y mantenga pulsado el botón WiFi para 3s</string>
   <string name="Tap1_AddDevice_FindNoResult">No ha encontrado el dispositivo, inténtelo de nuevo.</string>
   <string name="Tap1_AddDevice_FindingTips">Buscando los dispositivos , active el modo de configuración de WiFi.</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">pulsado el botón de ajuste para 3s</string>
   <string name="Tap1_AddDevice_QR">Escanear código QR</string>
   <string name="Tap1_AddDevice_QR_Fail">Imposible de agregar dispositivo</string>
   <string name="Tap1_AddDevice_SetName">Nombre del dispositivo</string>

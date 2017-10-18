@@ -150,6 +150,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         return true;
     }
 
+    @Override
     public void clearSDCard() {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().sdFormat(uuid)
                 .timeout(120, TimeUnit.SECONDS)

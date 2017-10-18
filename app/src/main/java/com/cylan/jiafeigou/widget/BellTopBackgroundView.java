@@ -43,8 +43,9 @@ public class BellTopBackgroundView extends FrameLayout {
         fLayoutBellTopNext = (FrameLayout) v.findViewById(R.id.fLayout_bell_top_next);
         vsBellHomeTop = (ViewSwitcher) v.findViewById(R.id.vs_bell_home_top);
         tvStartCalling.setOnClickListener(v1 -> {
-            if (actionInterface != null)
+            if (actionInterface != null) {
                 actionInterface.onMakeCall();
+            }
         });
         tvStartCalling_ = (TextView) v.findViewById(R.id.tv_start_calling_no_net);
         tvStartCalling_.setOnClickListener(v1 -> {

@@ -204,7 +204,9 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
 //        svSettingDeviceWifi.setSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
 
         DpMsgDefine.DPNet net = sourceManager.getDevice(uuid).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-        if (net != null) svSettingDeviceWifi.setSubTitle(DpMsgDefine.DPNet.getNormalString(net));
+        if (net != null) {
+            svSettingDeviceWifi.setSubTitle(DpMsgDefine.DPNet.getNormalString(net));
+        }
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }

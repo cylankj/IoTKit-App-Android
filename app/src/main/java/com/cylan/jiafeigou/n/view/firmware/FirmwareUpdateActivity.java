@@ -122,7 +122,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     private AbstractVersion.BinVersion getVersion() {
         final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-        if (TextUtils.isEmpty(content)) return AbstractVersion.BinVersion.NULL;
+        if (TextUtils.isEmpty(content)) {
+            return AbstractVersion.BinVersion.NULL;
+        }
         try {
             return new Gson().fromJson(content, AbstractVersion.BinVersion.class);
         } catch (Exception e) {
@@ -136,8 +138,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         Device device = basePresenter.getDevice();
         currentVersion = device.$(207, "");
         boolean result = isDownloading();
-        if (!result)
+        if (!result) {
             dealUpdate();
+        }
     }
 
     private boolean isDownloading() {
@@ -223,7 +226,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                     DownloadManager.getInstance().removeTask(key);
                     return false;
                 }
-            } else return false;
+            } else {
+                return false;
+            }
         }
         return true;
     }
@@ -306,7 +311,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         String deviceMac = device.$(202, "");
         String routMac = NetUtils.getRouterMacAddress();
         //1.直连AP
-        if (TextUtils.equals(deviceMac, routMac)) return true;
+        if (TextUtils.equals(deviceMac, routMac)) {
+            return true;
+        }
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         //2.不在线
@@ -342,7 +349,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级
             //1.网络环境{是否同一局域网}
-            if (!checkEnv()) return;
+            if (!checkEnv()) {
+                return;
+            }
             //2.电量
             int battery = basePresenter.getDevice().$(206, 0);
             if (battery <= 30) {
@@ -440,25 +449,33 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
         @Override
         public void upgradeStart() {
-            if (listenerRef == null || listenerRef.get() == null) return;
+            if (listenerRef == null || listenerRef.get() == null) {
+                return;
+            }
             listenerRef.get().upgradeStart();
         }
 
         @Override
         public void upgradeProgress(int percent) {
-            if (listenerRef == null || listenerRef.get() == null) return;
+            if (listenerRef == null || listenerRef.get() == null) {
+                return;
+            }
             listenerRef.get().upgradeProgress(percent);
         }
 
         @Override
         public void upgradeErr(int errCode) {
-            if (listenerRef == null || listenerRef.get() == null) return;
+            if (listenerRef == null || listenerRef.get() == null) {
+                return;
+            }
             listenerRef.get().upgradeErr(errCode);
         }
 
         @Override
         public void upgradeSuccess() {
-            if (listenerRef == null || listenerRef.get() == null) return;
+            if (listenerRef == null || listenerRef.get() == null) {
+                return;
+            }
             listenerRef.get().upgradeSuccess();
         }
 
@@ -508,7 +525,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
         @Override
         public void onProgress(DownloadInfo downloadInfo) {
-            if (activityWeakReference.get() == null) return;
+            if (activityWeakReference.get() == null) {
+                return;
+            }
             AbstractVersion.BinVersion version = activityWeakReference.get().binVersion;
             if (version == null) {
                 throw new IllegalArgumentException("错了");
@@ -528,8 +547,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             Log.d("downloading", "downloading: " + downloadInfo.getProgress());
             Log.d("downloading", "downloading: " + downloadInfo.getFileName());
             Log.d("downloading", "downloading: " + percent);
-            if (totalByte == 0) return;
-            if (activityWeakReference.get() == null) return;
+            if (totalByte == 0) {
+                return;
+            }
+            if (activityWeakReference.get() == null) {
+                return;
+            }
             activityWeakReference.get().tvDownloadSoftFile.setEnabled(false);
             activityWeakReference.get().tvDownloadSoftFile.setText(activityWeakReference.get().getString(R.string.Tap1_FirmwareDownloading, MiscUtils.FormatSdCardSize((long) (percent * totalByte)) + "/" + MiscUtils.FormatSdCardSize(totalByte)));
             activityWeakReference.get().tvLoadingShow.setText(MiscUtils.FormatSdCardSize((long) (percent * totalByte)) + "/" + MiscUtils.FormatSdCardSize(totalByte));
@@ -539,7 +562,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
         @Override
         public void onFinish(DownloadInfo downloadInfo) {
-            if (activityWeakReference.get() == null) return;
+            if (activityWeakReference.get() == null) {
+                return;
+            }
             Log.d("downloading", "downloading onFinish");
             activityWeakReference.get().tvDownloadSoftFile.setEnabled(true);
             activityWeakReference.get().tvDownloadSoftFile.setText(activityWeakReference.get().getString(R.string.Tap1_Update));
@@ -548,13 +573,16 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
         @Override
         public void onError(DownloadInfo downloadInfo, String s, Exception e) {
-            if (activityWeakReference.get() == null) return;
+            if (activityWeakReference.get() == null) {
+                return;
+            }
             Log.d("downloading", "downloading onError");
             activityWeakReference.get().tvDownloadSoftFile.setEnabled(true);
             activityWeakReference.get().tvDownloadSoftFile.setText(activityWeakReference.get().getString(R.string.Tap1_Album_DownloadFailed));
             AppLogger.d("下载失败啊?" + MiscUtils.getErr(e) + "," + s);
-            if (downloadInfo != null)
+            if (downloadInfo != null) {
                 handleErr(downloadInfo.getUrl(), downloadInfo.getTargetPath());
+            }
         }
     }
 

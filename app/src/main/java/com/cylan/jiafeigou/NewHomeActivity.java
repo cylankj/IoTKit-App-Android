@@ -178,6 +178,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         homeMineFragment = null;
     }
 
+    @Override
     protected int[] getOverridePendingTransition() {
         Bundle bundle = getIntent().getExtras();
         final int enterAnimId = bundle == null ? -1 : bundle.getInt(KEY_ENTER_ANIM_ID, -1);
@@ -213,7 +214,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void showHomeFragment(int index) {
-        if (this.index == index) return;
+        if (this.index == index) {
+            return;
+        }
         switch (this.index = index) {
             case 0: {
                 if (homePageListFragmentExt == null) {
@@ -238,6 +241,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homeMineFragment);
             }
             break;
+            default:
         }
     }
 
@@ -246,22 +250,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             switch (checkedId) {
                 case R.id.btn_home_list:
                     showHomeFragment(0);
-//                    if (vpHomeContent.getCurrentItem() != 0) {
-//                        vpHomeContent.setCurrentItem(0);
-//                    }
                     break;
                 case R.id.btn_home_wonderful:
                     showHomeFragment(1);
-//                    if (vpHomeContent.getCurrentItem() != 1) {
-//                        vpHomeContent.setCurrentItem(1);
-//                    }
                     break;
                 case R.id.btn_home_mine:
                     showHomeFragment(2);
-//                    if (vpHomeContent.getCurrentItem() != 2) {
-//                        vpHomeContent.setCurrentItem(2);
-//                    }
                     break;
+                default:
             }
         });
         //自定义的RadioButton,放在RadioGroup中不能被选中
@@ -317,8 +313,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     public void onActivityReenter(int requestCode, Intent data) {
         super.onActivityReenter(requestCode, data);
-        if (onActivityReenterListener != null)
+        if (onActivityReenterListener != null) {
             onActivityReenterListener.onActivityReenter(requestCode, data);
+        }
     }
 
     @Override
@@ -332,15 +329,17 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
                 super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-                if (sharedElementCallBackListener != null)
+                if (sharedElementCallBackListener != null) {
                     sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                }
             }
 
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
-                if (sharedElementCallBackListener != null)
+                if (sharedElementCallBackListener != null) {
                     sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
+                }
             }
 
         });
@@ -372,8 +371,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 case INDEX_0: {
                     HomePageListFragmentExt fragment = HomePageListFragmentExt.newInstance(new Bundle());
 
-                    if (fragment != null && fragment.getContext() != null)
+                    if (fragment != null && fragment.getContext() != null) {
                         Toast.makeText(fragment.getContext(), "重新new了。。。1", Toast.LENGTH_SHORT).show();
+                    }
                     return fragment;
                 }
                 case INDEX_1: {
@@ -385,14 +385,16 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     sharedElementCallBackListener = fragment;
                     onActivityReenterListener = fragment;
 
-                    if (fragment != null && fragment.getContext() != null)
+                    if (fragment != null && fragment.getContext() != null) {
                         Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();
+                    }
                     return fragment;
                 }
                 case INDEX_2:
                     HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
-                    if (fragment != null && fragment.getContext() != null)
+                    if (fragment != null && fragment.getContext() != null) {
                         Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
+                    }
                     return fragment;
             }
             return HomePageListFragmentExt.newInstance(new Bundle());

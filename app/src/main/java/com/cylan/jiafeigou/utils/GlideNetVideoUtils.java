@@ -59,13 +59,17 @@ public class GlideNetVideoUtils {
                                 .listener(new RequestListener<File, GlideDrawable>() {
                                     @Override
                                     public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                        if (listener != null) listener.onRead();
+                                        if (listener != null) {
+                                            listener.onRead();
+                                        }
                                         return false;
                                     }
 
                                     @Override
                                     public boolean onResourceReady(GlideDrawable resource, File model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        if (listener != null) listener.onRead();
+                                        if (listener != null) {
+                                            listener.onRead();
+                                        }
                                         return false;
                                     }
                                 })
@@ -91,7 +95,9 @@ public class GlideNetVideoUtils {
             }
         }
 
-        if (bitmap == null) return null;
+        if (bitmap == null) {
+            return null;
+        }
 
         // Scale down the bitmap if it'account too large.
         int width = bitmap.getWidth();

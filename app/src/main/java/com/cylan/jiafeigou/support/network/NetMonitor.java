@@ -34,8 +34,9 @@ public class NetMonitor implements NetworkCallback {
     public static NetMonitor getNetMonitor() {
         if (netMonitor == null) {
             synchronized (NetMonitor.class) {
-                if (netMonitor == null)
+                if (netMonitor == null) {
                     netMonitor = new NetMonitor();
+                }
             }
         }
         return netMonitor;
@@ -62,8 +63,9 @@ public class NetMonitor implements NetworkCallback {
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         ArrayList<String> filterList = filterMap.get(key);
-                        if (filterList.contains(action) && networkCallbackList.containsKey(key))
+                        if (filterList.contains(action) && networkCallbackList.containsKey(key)) {
                             networkCallbackList.get(key).onNetworkChanged(context, intent);
+                        }
                     }
                 }
             }
@@ -77,8 +79,9 @@ public class NetMonitor implements NetworkCallback {
     public void registerNet(NetworkCallback callbacks, String[] actions) {
         synchronized (lock) {
             if (actions != null && actions.length > 0) {
-                if (network == null)
+                if (network == null) {
                     network = new Network();
+                }
                 try {
                     IntentFilter intentFilter = new IntentFilter();
                     Iterator<String> keySet = filterMap.keySet().iterator();
@@ -108,7 +111,9 @@ public class NetMonitor implements NetworkCallback {
     }
 
     private ArrayList<String> toList(String[] actions) {
-        if (actions == null) return new ArrayList<>();
+        if (actions == null) {
+            return new ArrayList<>();
+        }
         ArrayList<String> l = new ArrayList<>();
         for (String s : actions) {
             l.add(s);
@@ -120,8 +125,9 @@ public class NetMonitor implements NetworkCallback {
         synchronized (lock) {
             try {
 //            if (network != null) ContextUtils.getContext().unregisterReceiver(network);
-                if (networkCallbackList != null)
+                if (networkCallbackList != null) {
                     networkCallbackList.remove(callback.getClass().getSimpleName());
+                }
                 if (filterMap != null) {
                     filterMap.remove(callback.getClass().getSimpleName());
                 }

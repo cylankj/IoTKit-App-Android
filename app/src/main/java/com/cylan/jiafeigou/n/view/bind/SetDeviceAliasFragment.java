@@ -96,7 +96,9 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (btnBindDone != null) btnBindDone.cancelAnim();
+        if (btnBindDone != null) {
+            btnBindDone.cancelAnim();
+        }
     }
 
     @OnClick({R.id.iv_clear_alias, R.id.btn_bind_done})

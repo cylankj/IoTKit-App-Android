@@ -37,8 +37,9 @@ public class RoundCardPopup extends RelativePopupWindow {
             setAnimationStyle(0);
         }
         this.showFinishListener = showFinishListener;
-        if (clickListener != null)
+        if (clickListener != null) {
             view.setOnClickListener(clickListener);
+        }
     }
 
     @Override
@@ -47,10 +48,12 @@ public class RoundCardPopup extends RelativePopupWindow {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            circularReveal(anchor);
         }
-        if (dismissTime != -1)
+        if (dismissTime != -1) {
             getContentView().postDelayed(this::dismiss, dismissTime);
-        if (showFinishListener != null)
+        }
+        if (showFinishListener != null) {
             showFinishListener.showFinish((ImageView) getContentView().findViewById(R.id.imv_capture_popup));
+        }
     }
 
     public void setAutoDismissTime(long time) {

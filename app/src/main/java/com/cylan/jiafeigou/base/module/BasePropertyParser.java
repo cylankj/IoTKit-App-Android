@@ -171,7 +171,9 @@ public class BasePropertyParser implements IPropertyParser {
         T result = null;
         try {
             DPProperty property = properties.get(msgId);
-            if (property == null || bytes == null || bytes.length == 0) return null;
+            if (property == null || bytes == null || bytes.length == 0) {
+                return null;
+            }
             Object value = DpUtils.unpackData(bytes, property.type());
             if (!(value instanceof DataPoint)) {
                 result = (T) new DpMsgDefine.DPPrimary(value);

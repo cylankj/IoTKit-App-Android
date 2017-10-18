@@ -38,8 +38,12 @@ public class FeedBackBean implements Comparable<FeedBackBean> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         FeedBackBean that = (FeedBackBean) o;
 

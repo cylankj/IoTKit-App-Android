@@ -88,11 +88,14 @@ public class CustomToolbar extends LinearLayout implements ITheme {
             tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
             tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
             tvToolbarRight = (HintTextView) view.findViewById(R.id.tv_toolbar_right);
-            if (rightTitleColor != null) tvToolbarRight.setTextColor(rightTitleColor);
+            if (rightTitleColor != null) {
+                tvToolbarRight.setTextColor(rightTitleColor);
+            }
             tvToolbarTitle.setVisibility(VISIBLE);
             tvToolbarTitle.setText(title);
-            if (titleColor != 0)
+            if (titleColor != 0) {
                 tvToolbarTitle.setTextColor(titleColor);
+            }
             if (iconResIdLeft != -1) {
                 ViewUtils.setDrawablePadding(tvToolbarIcon, iconResIdLeft, 0);
             }
@@ -108,8 +111,9 @@ public class CustomToolbar extends LinearLayout implements ITheme {
                 ViewUtils.setDrawablePadding(tvToolbarRight, iconResIdRight, 0);
             }
             tvToolbarIcon.setText(leftTitle);
-            if (leftTitleColor != 0)
+            if (leftTitleColor != 0) {
                 tvToolbarIcon.setTextColor(leftTitleColor);
+            }
         }
     }
 
@@ -197,53 +201,67 @@ public class CustomToolbar extends LinearLayout implements ITheme {
     }
 
     public void setTvToolbarIcon(int resId) {
-        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar)
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             ViewUtils.setDrawablePadding(tvToolbarIcon, resId, 2);
+        }
     }
 
     public void setTvToolbarRightIcon(int resId) {
-        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar)
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             ViewUtils.setDrawablePadding(tvToolbarRight, resId, 2);
+        }
     }
 
     public void setToolbarTitle(int resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
+            if (!tvToolbarTitle.isShown()) {
+                tvToolbarTitle.setVisibility(View.VISIBLE);
+            }
             tvToolbarTitle.setText(resId);
         }
     }
 
     public void setToolbarTitle(String resContent) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
+            if (!tvToolbarTitle.isShown()) {
+                tvToolbarTitle.setVisibility(View.VISIBLE);
+            }
             tvToolbarTitle.setText(resContent);
         }
     }
 
     public void setToolbarLeftTitle(int resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
+            if (!tvToolbarIcon.isShown()) {
+                tvToolbarIcon.setVisibility(View.VISIBLE);
+            }
             tvToolbarIcon.setText(resId);
         }
     }
 
     public void setToolbarLeftTitle(String resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
+            if (!tvToolbarIcon.isShown()) {
+                tvToolbarIcon.setVisibility(View.VISIBLE);
+            }
             tvToolbarIcon.setText(resId);
         }
     }
 
     public void setToolbarRightTitle(int resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            if (!tvToolbarRight.isShown()) {
+                tvToolbarRight.setVisibility(View.VISIBLE);
+            }
             tvToolbarRight.setText(resId);
         }
     }
 
     public void setToolbarRightTitle(String resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            if (!tvToolbarRight.isShown()) {
+                tvToolbarRight.setVisibility(View.VISIBLE);
+            }
             tvToolbarRight.setText(resId);
         }
     }
@@ -256,14 +274,18 @@ public class CustomToolbar extends LinearLayout implements ITheme {
 
     public void setTvToolbarRightColor(String color) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            if (!tvToolbarRight.isShown()) {
+                tvToolbarRight.setVisibility(View.VISIBLE);
+            }
             tvToolbarRight.setTextColor(Color.parseColor(color));
         }
     }
 
     public void setToolbarRightColor(int resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            if (!tvToolbarRight.isShown()) {
+                tvToolbarRight.setVisibility(View.VISIBLE);
+            }
             tvToolbarRight.setTextColor(getResources().getColorStateList(resId));
         }
     }

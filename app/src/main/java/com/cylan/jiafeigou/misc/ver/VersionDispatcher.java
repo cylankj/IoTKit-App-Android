@@ -8,7 +8,9 @@ public class VersionDispatcher {
     public static VersionDispatcher instance;
 
     public static VersionDispatcher getInstance() {
-        if (instance == null) instance = new VersionDispatcher();
+        if (instance == null) {
+            instance = new VersionDispatcher();
+        }
         return instance;
     }
 

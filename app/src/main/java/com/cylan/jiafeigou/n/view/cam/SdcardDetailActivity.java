@@ -68,7 +68,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         initDetailData();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean http = JFGRules.isPan720(device.pid);
-        if (http) BaseDeviceInformationFetcher.getInstance().init(uuid);
+        if (http) {
+            BaseDeviceInformationFetcher.getInstance().init(uuid);
+        }
         subscription = BasePanoramaApiHelper.getInstance().getSdInfo(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -92,7 +94,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     @Override
     protected void onPause() {
         super.onPause();
-        if (subscription != null) subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     @OnClick({R.id.tv_clear_sdcard})
@@ -204,7 +208,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 
     @Override
     public void onNetworkChanged(boolean connected) {
-        if (isFinishing()) return;
+        if (isFinishing()) {
+            return;
+        }
         tvClecrSdcard.post(() -> tvClecrSdcard.setEnabled(connected));
     }
 

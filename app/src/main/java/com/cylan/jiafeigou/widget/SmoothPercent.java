@@ -53,8 +53,9 @@ public class SmoothPercent extends View {
     }
 
     public void smoothSetPercent(boolean smooth, float percent) {
-        if (percent < 0 || percent > 1.0f)
+        if (percent < 0 || percent > 1.0f) {
             return;
+        }
         if (getWidth() == 0) {
             post(() -> {
                 if (smooth) {
@@ -80,8 +81,9 @@ public class SmoothPercent extends View {
         valueAnimator.addUpdateListener((ValueAnimator animation) -> {
             mCurrentX = (float) animation.getAnimatedValue();
             invalidate();
-            if (percentUpdateRef != null && percentUpdateRef.get() != null && getWidth() > 0)
+            if (percentUpdateRef != null && percentUpdateRef.get() != null && getWidth() > 0) {
                 percentUpdateRef.get().percentUpdate(mCurrentX / getWidth());
+            }
         });
         valueAnimator.setDuration(800);
         valueAnimator.start();

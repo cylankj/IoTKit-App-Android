@@ -93,8 +93,9 @@ public class DurationDialogFragment extends BaseDialog<Integer> {
                 break;
             case R.id.tv_dialog_btn_left:
                 dismiss();
-                if (action != null && value != newValue)
+                if (action != null && value != newValue) {
                     action.onDialogAction(1, newValue);
+                }
                 break;
         }
     }

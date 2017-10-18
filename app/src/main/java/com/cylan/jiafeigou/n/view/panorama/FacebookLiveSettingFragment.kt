@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.google.gson.Gson
+import com.umeng.facebook.AccessToken
 import com.umeng.socialize.UMAuthListener
 import com.umeng.socialize.UMShareAPI
 import com.umeng.socialize.bean.SHARE_MEDIA
@@ -148,6 +149,16 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
         }
     }
 
+    fun isFacebookAccountBinded(): Boolean {
+        if (account == null) {
+            return false
+        }
+        val accessToken = AccessToken.getCurrentAccessToken()
+        if (accessToken == null || accessToken.isExpired) {
+            return false
+        }
+        return true
+    }
 
     companion object {
         fun newInstance(uuid: String): FacebookLiveSettingFragment {
@@ -157,5 +168,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
             fragment.arguments = argument
             return fragment
         }
+
+
     }
 }

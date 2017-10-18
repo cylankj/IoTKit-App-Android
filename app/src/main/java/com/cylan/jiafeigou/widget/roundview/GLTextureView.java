@@ -475,6 +475,7 @@ public class GLTextureView extends TextureView
         super.onDetachedFromWindow();
     }
 
+    @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
                                int oldTop, int oldRight, int oldBottom) {
         surfaceChanged(getSurfaceTexture(), 0, right - left, bottom - top);
@@ -484,6 +485,7 @@ public class GLTextureView extends TextureView
         surfaceTextureListeners.add(listener);
     }
 
+    @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         surfaceCreated(surface);
         surfaceChanged(surface, 0, width, height);
@@ -493,6 +495,7 @@ public class GLTextureView extends TextureView
         }
     }
 
+    @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         surfaceChanged(surface, 0, width, height);
 
@@ -501,6 +504,7 @@ public class GLTextureView extends TextureView
         }
     }
 
+    @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         surfaceDestroyed(surface);
 
@@ -511,6 +515,7 @@ public class GLTextureView extends TextureView
         return true;
     }
 
+    @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         requestRender();
 
@@ -675,6 +680,7 @@ public class GLTextureView extends TextureView
     private class DefaultContextFactory implements EGLContextFactory {
         private int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
+        @Override
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig config) {
             int[] attrib_list = {
                     EGL_CONTEXT_CLIENT_VERSION, eglContextClientVersion, EGL10.EGL_NONE
@@ -684,6 +690,7 @@ public class GLTextureView extends TextureView
                     eglContextClientVersion != 0 ? attrib_list : null);
         }
 
+        @Override
         public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
             if (!egl.eglDestroyContext(display, context)) {
                 Log.e("DefaultContextFactory", "display:" + display + " context: " + context);
@@ -713,6 +720,7 @@ public class GLTextureView extends TextureView
 
     private static class DefaultWindowSurfaceFactory implements EGLWindowSurfaceFactory {
 
+        @Override
         public EGLSurface createWindowSurface(EGL10 egl, EGLDisplay display, EGLConfig config,
                                               Object nativeWindow) {
             EGLSurface result = null;
@@ -730,6 +738,7 @@ public class GLTextureView extends TextureView
             return result;
         }
 
+        @Override
         public void destroySurface(EGL10 egl, EGLDisplay display, EGLSurface surface) {
             egl.eglDestroySurface(display, surface);
         }
@@ -761,6 +770,7 @@ public class GLTextureView extends TextureView
             mConfigSpec = filterConfigSpec(configSpec);
         }
 
+        @Override
         public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
             int[] num_config = new int[1];
             if (!egl.eglChooseConfig(display, mConfigSpec, null, 0, num_config)) {

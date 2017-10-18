@@ -231,8 +231,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         AppLogger.e(e.getMessage());
                     });
         }
-        if (fetchLocation != -1)
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaAlbumPresenter#fetch", fetchSubscription);
+        if (fetchLocation != -1) {
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#fetch", fetchSubscription);
+        }
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromServer(int time) {
@@ -245,7 +246,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                         PanoramaAlbumContact.PanoramaItem item;
                         for (String file : files.files) {
-                            if (TextUtils.isEmpty(file)) continue;
+                            if (TextUtils.isEmpty(file)) {
+                                continue;
+                            }
                             try {
                                 item = new PanoramaAlbumContact.PanoramaItem(file);
                                 item.location = 1;
@@ -275,7 +278,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         PanoramaAlbumContact.PanoramaItem panoramaItem;
                         for (DownloadInfo item : items) {
                             int itemTime = parseTime(item.getFileName());
-                            if (itemTime >= finalTime) continue;
+                            if (itemTime >= finalTime) {
+                                continue;
+                            }
                             boolean endsWith = item.getTargetPath() != null && item.getTaskKey().startsWith(uuid + "/images");
                             ;
                             if (item.getState() == 4 && FileUtils.isFileExist(item.getTargetPath()) && result.size() < 20 && endsWith) {
@@ -295,7 +300,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private int parseTime(String fileName) {
-        if (fileName == null) return 0;
+        if (fileName == null) {
+            return 0;
+        }
         try {
             return Integer.parseInt(fileName.split("\\.")[0].split("_")[0]);
         } catch (Exception e) {

@@ -95,7 +95,9 @@ public class PanoramicView720_Ext extends Panoramic720View implements VideoViewF
         buildDrawingCache(true);
         Bitmap source = getDrawingCache();
         Log.d("getCacheBitmap", "getCacheBitmap result?" + (source == null));
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         Bitmap b = Bitmap.createBitmap(source);
         setDrawingCacheEnabled(false); // clear drawing cache
         return b;

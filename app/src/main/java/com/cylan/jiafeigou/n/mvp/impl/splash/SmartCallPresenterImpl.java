@@ -38,6 +38,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         super.start();
     }
 
+    @Override
     public void autoLogin() {
         AppLogger.d("before autoLogin");
         PerformanceUtils.startTrace("autoLogin");
@@ -49,6 +50,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         BaseApplication.getAppComponent().getInitializationManager().observeInitFinish();
     }
 
+    @Override
     public void selectNext(boolean showSplash) {
         PerformanceUtils.startTrace("selectNext");
         Subscription subscribe = Observable.just(showSplash)

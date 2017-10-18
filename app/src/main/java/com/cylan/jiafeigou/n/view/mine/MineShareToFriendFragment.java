@@ -162,7 +162,9 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             // TODO: 2017/6/28 未注明怎么处理
         } else if (result.ret == 0) {//分享成功了
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-            if (callback != null) callback.run();
+            if (callback != null) {
+                callback.run();
+            }
             getActivity().getSupportFragmentManager().popBackStack();
         } else {//分享失败了
             showShareResultDialog(getString(R.string.Tap3_ShareDevice_FailTips));

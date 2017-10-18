@@ -55,13 +55,17 @@ public class HintRadioButton extends AppCompatRadioButton {
         super.onSizeChanged(w, h, oldw, oldh);
         Drawable[] drawables = getCompoundDrawables();
         for (Drawable d : drawables) {
-            if (d == null) continue;
+            if (d == null) {
+                continue;
+            }
             Log.d("onDraw", "onSizeChanged: " + (rect = d.getBounds()));
         }
         Log.d("onDraw", "bg: " + getBackground());
         drawables = getCompoundDrawablesRelative();
         for (Drawable d : drawables) {
-            if (d == null) continue;
+            if (d == null) {
+                continue;
+            }
             Log.d("onDraw", "re: " + (rect = d.getBounds()));
         }
     }
@@ -75,7 +79,9 @@ public class HintRadioButton extends AppCompatRadioButton {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!show) return;
+        if (!show) {
+            return;
+        }
         canvas.drawCircle(getMeasuredWidth() / 2 + rect.width() / 2,
                 defaultRadius + paddingTop,
                 defaultRadius,

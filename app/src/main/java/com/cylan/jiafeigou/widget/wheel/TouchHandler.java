@@ -88,8 +88,9 @@ public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
                     mLastMotionX = dx > 0 ? mInitialMotionX + mTouchSlop :
                             mInitialMotionX - mTouchSlop;
                     moveDirection = dx > 0 ? 1 : 0;
-                    if (DEBUG)
+                    if (DEBUG) {
                         Log.d(WheelView.TAG, "moveeeeeee:   " + (dx > 0));
+                    }
                 }
                 break;
         }
@@ -102,10 +103,13 @@ public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
         if (Math.abs(distanceX) >= mTouchSlop) {
             if (distanceX > 0.0f) {
                 distanceX = distanceX - mTouchSlop;
-            } else distanceX = distanceX + mTouchSlop;
+            } else {
+                distanceX = distanceX + mTouchSlop;
+            }
         }
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(WheelView.TAG, "onScroll...: " + distanceX);
+        }
         wheelView.scrollBy((int) distanceX, 0);
         updateScrollStateIfRequired(WheelView.SCROLL_STATE_DRAGGING);
         return true;

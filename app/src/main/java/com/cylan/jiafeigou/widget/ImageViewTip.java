@@ -142,8 +142,9 @@ public class ImageViewTip extends AppCompatImageView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        if (!isShowDot())
+        if (!isShowDot()) {
             return;
+        }
         computeRedPointRectF();
         if (enableBorder) {
             canvas.drawCircle(redPointRectF.centerX(), redPointRectF.centerY(), getDotRadius() + borderWidth, borderPaint);

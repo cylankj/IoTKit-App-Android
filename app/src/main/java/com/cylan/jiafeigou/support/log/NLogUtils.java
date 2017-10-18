@@ -28,8 +28,9 @@ public class NLogUtils {
     public static synchronized boolean copyFile(String sourceFilePath, String destFilePath) {
         InputStream inputStream = null;
         try {
-            if (isFileExist(sourceFilePath))
+            if (isFileExist(sourceFilePath)) {
                 inputStream = new FileInputStream(sourceFilePath);
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException("FileNotFoundException occurred. ", e);
         }
@@ -123,8 +124,12 @@ public class NLogUtils {
             throw new RuntimeException("IOException occurred. ", e);
         } finally {
             try {
-                if (o != null) o.close();
-                if (stream != null) stream.close();
+                if (o != null) {
+                    o.close();
+                }
+                if (stream != null) {
+                    stream.close();
+                }
             } catch (IOException e) {
                 throw new RuntimeException("IOException occurred. ", e);
             }
@@ -220,7 +225,7 @@ public class NLogUtils {
             return false;
         }
         File[] files = file.listFiles();
-        if (files != null)
+        if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 File f = files[i];
                 if (f.isFile()) {
@@ -229,6 +234,7 @@ public class NLogUtils {
                     deleteFile(f.getAbsolutePath());
                 }
             }
+        }
         return deleteFileSafely(file);
     }
 

@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Kablo modu</string>
   <string name="Cable_Mode_Start_Hotspot">Açmadan önce, telefonunuzun ve cihazınızın aynı yönlendiriciye bağlı olduğundan emin olun</string>
   <string name="Cable_Mode_Switch_Cancel">Kapalıysa, cihazın çevrimdışı olmasına neden olabilir, kapalı onaylayın?</string>
+  <string name="Camera_Outdoor">Kamera (Açık Sürüm)</string>
   <string name="CancelingTips">İptal&#8230;</string>
   <string name="Cellular_Data_Method">Mobil veri:</string>
   <string name="Cellular_Data_Set_Up">Cihazdaki Mobil verileri etkinleştirin, lütfen aşağıdaki şekilde kullanın; Ayarlar> Mobil veri</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">YouTube hesabı %s henüz kanalı açmadı, yaşayamıyor, lütfen açıp tekrar deneyin.</string>
   <string name="LIVE_OPENING">Hayatınızı açın &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Sina Weibo</string>
   <string name="LIVE_PLATFORM_YOUTUBE">Youtube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Lütfen anahtarı girin</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">3s için yeniden başlatma ve uzun basın WiFi düğmesine</string>
   <string name="Tap1_AddDevice_FindNoResult">Hiçbir cihaz bulunamadı, lütfen tekrar deneyin</string>
   <string name="Tap1_AddDevice_FindingTips">Komşu cihazlar aranıyor, lütfen WiFi yapılandırma modunu başlatın</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">Uzun süreli basma 3s ayar düğmesi</string>
   <string name="Tap1_AddDevice_QR">QR kodu tara</string>
   <string name="Tap1_AddDevice_QR_Fail">Eklenemiyor</string>
   <string name="Tap1_AddDevice_SetName">Bir ad girin</string>

@@ -138,8 +138,9 @@ public class WheelView extends View {
         if (halfWidth > dataWidth) {
         } else {
         }
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "offsetX: " + offsetLeft);
+        }
     }
 
     @Override
@@ -154,8 +155,9 @@ public class WheelView extends View {
      * @return
      */
     private int getItemType(final int position) {
-        if (position < 0 || position > dataCount - 1)
+        if (position < 0 || position > dataCount - 1) {
             return 0;
+        }
 //        for (int i = 0; i < dataCount; i++) {
 //            if (position == i)
         return wheelViewDataSet.dataTypeSet[position];
@@ -200,8 +202,9 @@ public class WheelView extends View {
     }
 
     public void setCurrentItemTime(long currentItemTime) {
-        if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null)
+        if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null) {
             return;
+        }
         final int currentPosition = Arrays.binarySearch(wheelViewDataSet.dataSet, currentItemTime);
         if (currentPosition < 0 || currentPosition > wheelViewDataSet.dataSet.length - 1) {
             return;
@@ -224,8 +227,9 @@ public class WheelView extends View {
             wheelViewDataSet.dataStartXSet[i] = startX;
             final int itemType = getItemType(i);
             if (itemType == WheelViewDataSet.TYPE_LONG_INVALID
-                    || itemType == WheelViewDataSet.TYPE_LONG_VALID)
+                    || itemType == WheelViewDataSet.TYPE_LONG_VALID) {
                 drawText(canvas, i);
+            }
             final float height = getItemHeightByType(itemType);
             final int color = getItemColorByType(itemType);
             dataPaint.setColor(color);
@@ -254,13 +258,16 @@ public class WheelView extends View {
      * @param position
      */
     private void drawText(final Canvas canvas, final int position) {
-        if (position < 0 || position > dataCount - 1)
+        if (position < 0 || position > dataCount - 1) {
             return;
+        }
         final String date = wheelViewDataSet.dateInStr.get(position);
-        if (TextUtils.isEmpty(date))
+        if (TextUtils.isEmpty(date)) {
             return;
-        if (textHeightRect.height() == 0)
+        }
+        if (textHeightRect.height() == 0) {
             textPaint.getTextBounds(date, 0, date.length(), textHeightRect);
+        }
         final int itemCenter = (int) wheelViewDataSet.dataStartXSet[position] + ((int) itemWidth >> 1);
         canvas.drawText(date,
                 itemCenter - (textHeightRect.width() >> 1) - 10,
@@ -302,8 +309,9 @@ public class WheelView extends View {
      */
     private float[] computeAutoScrollDistanceX(final int direction) {
         final int scrollX = getScrollX();
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "scrollXXXX: " + scrollX);
+        }
         final float delta = getMeasuredWidth() / 2 - itemWidth / 2;
         final float markLabelStartX = delta + scrollX;
         float[] returnValue = new float[2];
@@ -394,16 +402,18 @@ public class WheelView extends View {
      * 自动修正位置
      */
     public void autoSettle(final String tag, final int direction) {
-        if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null)
+        if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null) {
             return;
+        }
         float[] data =
                 computeAutoScrollDistanceX(direction);
         shouldScrollX = data[1];
         int position = (int) data[0];
         final int scrollX = getScrollX();
         scroller.startScroll(getScrollX(), 0, (int) shouldScrollX - scrollX, 0);
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "autoSettle....." + scrollX + "  .. " + position);
+        }
         postInvalidate();
 
         if (onItemChangedListener != null) {
@@ -411,6 +421,7 @@ public class WheelView extends View {
         }
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return touchHandler.onTouchEvent(event);
     }
@@ -420,8 +431,9 @@ public class WheelView extends View {
         if (scroller.computeScrollOffset()) {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
             invalidate();
-            if (DEBUG)
+            if (DEBUG) {
                 Log.d(TAG, "computeScroll");
+            }
         }
         super.computeScroll();
     }

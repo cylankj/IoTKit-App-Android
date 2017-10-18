@@ -190,7 +190,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
 
         @Override
         public void onProgress(DownloadInfo downloadInfo) {
-            if (getUserTag() == null) return;
+            if (getUserTag() == null) {
+                return;
+            }
             SuperViewHolder holder = (SuperViewHolder) getUserTag();
             TextView textView = holder.getView(R.id.tv_album_download_progress);
             textView.setText((int) (downloadInfo.getProgress() * 100) + "%");
@@ -198,7 +200,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
 
         @Override
         public void onFinish(DownloadInfo downloadInfo) {
-            if (getUserTag() == null) return;
+            if (getUserTag() == null) {
+                return;
+            }
             SuperViewHolder holder = (SuperViewHolder) getUserTag();
             holder.setVisibility(R.id.iv_album_icon_720_iphone, View.VISIBLE);
             TextView textView = holder.getView(R.id.tv_album_download_progress);
@@ -230,8 +234,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                 PanoramaAlbumContact.PanoramaItem bean = getItem(i);
                 if (bean.selected == selected) {
                     bean.selected = !selected;
-                    if (i <= lastVisiblePosition)
+                    if (i <= lastVisiblePosition) {
                         notifyItemChanged(i);
+                    }
                 }
             }
         }
@@ -244,11 +249,13 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
                 PanoramaAlbumContact.PanoramaItem bean = getItem(i);
-                if (bean.selected)
+                if (bean.selected) {
                     continue;
+                }
                 bean.selected = true;
-                if (i <= lastVisiblePosition)
+                if (i <= lastVisiblePosition) {
                     notifyItemChanged(i);
+                }
             }
         }
     }
@@ -260,11 +267,13 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
                 PanoramaAlbumContact.PanoramaItem bean = getItem(i);
-                if (!bean.selected)
+                if (!bean.selected) {
                     continue;
+                }
                 bean.selected = false;
-                if (i <= lastVisiblePosition)
+                if (i <= lastVisiblePosition) {
                     notifyItemChanged(i);
+                }
             }
         }
     }
@@ -274,8 +283,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             mRemovedList.clear();
             for (int i = getCount() - 1; i >= 0; i--) {
                 PanoramaAlbumContact.PanoramaItem bean = getItem(i);
-                if (!bean.selected)
+                if (!bean.selected) {
                     continue;
+                }
                 mRemovedList.add(bean);
 
             }
@@ -288,8 +298,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             mRemovedList.clear();
             for (int i = getCount() - 1; i >= 0; i--) {
                 PanoramaAlbumContact.PanoramaItem bean = getItem(i);
-                if (!bean.selected)
+                if (!bean.selected) {
                     continue;
+                }
                 mRemovedList.add(bean);
                 remove(i);
 

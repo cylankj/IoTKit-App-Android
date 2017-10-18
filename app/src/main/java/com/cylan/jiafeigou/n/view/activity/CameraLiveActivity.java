@@ -120,7 +120,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void makeNewMsgSub() {
-        if (newMsgSub != null) newMsgSub.unsubscribe();
+        if (newMsgSub != null) {
+            newMsgSub.unsubscribe();
+        }
         newMsgSub = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> TextUtils.equals(ret.uuid, device.uuid) && vpCameraLive.getCurrentItem() == 0)
@@ -136,10 +138,12 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private boolean filterNewMsgId(long id) {
-        if (JFGRules.isCamera(device.pid))
+        if (JFGRules.isCamera(device.pid)) {
             return id == 505 || id == 222 || id == 512;
-        if (JFGRules.isBell(device.pid))
+        }
+        if (JFGRules.isBell(device.pid)) {
             return id == 401;
+        }
         return true;
     }
 
@@ -158,8 +162,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         });
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(visibility -> {
             Log.d("show", "show: " + visibility);
-            if (visibility == 0 && MiscUtils.isLand())
+            if (visibility == 0 && MiscUtils.isLand()) {
                 handleSystemBar(false, 100);
+            }
         });
     }
 
@@ -243,7 +248,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (newMsgSub != null) newMsgSub.unsubscribe();
+        if (newMsgSub != null) {
+            newMsgSub.unsubscribe();
+        }
     }
 
     /**
@@ -268,7 +275,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
             //消息页面,不需要拦截
-            if (vpCameraLive.getCurrentItem() == 1) return true;
+            if (vpCameraLive.getCurrentItem() == 1) {
+                return true;
+            }
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
             if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
                 Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
@@ -276,8 +285,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
                 Log.d("contains", "contains:" + contains);
                 return contains;
-            } else
+            } else {
                 return true;
+            }
         });
     }
 
@@ -295,7 +305,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private void removeHint() {
         try {
             BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
-            if (vIndicator == null) return;
+            if (vIndicator == null) {
+                return;
+            }
             View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
             if (vHint != null && vHint instanceof HintTextView) {
                 ((HintTextView) vHint).showHint(false);
@@ -310,8 +322,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         Log.d("onBackPressed", this.getClass().getSimpleName());
         if (checkExtraChildFragment()) {
             return;
-        } else if (checkExtraFragment())
+        } else if (checkExtraFragment()) {
             return;
+        }
 
         // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 onStop 延迟调用 bug #118078
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);

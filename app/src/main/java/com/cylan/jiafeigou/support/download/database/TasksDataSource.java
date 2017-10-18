@@ -39,8 +39,9 @@ public class TasksDataSource {
         int affectedRow = database
                 .update(TABLES.TASKS, task.convertToContentValues(), TASKS.COLUMN_ID + "=" + task.id, null);
 
-        if (affectedRow != 0)
+        if (affectedRow != 0) {
             return true;
+        }
 
         return false;
     }
@@ -49,10 +50,11 @@ public class TasksDataSource {
         List<Task> tasks = new ArrayList<Task>();
 
         String query;
-        if (state < 6)
+        if (state < 6) {
             query = "SELECT * FROM " + TABLES.TASKS + " WHERE " + TASKS.COLUMN_STATE + "=" + SqlString.Int(state);
-        else
+        } else {
             query = "SELECT * FROM " + TABLES.TASKS;
+        }
 
         Cursor cr = database.rawQuery(query, null);
 
@@ -66,8 +68,9 @@ public class TasksDataSource {
                 cr.moveToNext();
             }
         }
-        if (cr != null)
+        if (cr != null) {
             cr.close();
+        }
 
         return tasks;
     }
@@ -89,8 +92,9 @@ public class TasksDataSource {
                 cr.moveToNext();
             }
         }
-        if (cr != null)
+        if (cr != null) {
             cr.close();
+        }
 
         return completedTasks;
     }
@@ -157,8 +161,9 @@ public class TasksDataSource {
         if (cr != null && cr.moveToFirst()) {
             task.cursorToTask(cr);
         }
-        if (cr != null)
+        if (cr != null) {
             cr.close();
+        }
 
         return task;
     }
@@ -167,8 +172,9 @@ public class TasksDataSource {
         int affectedRow = database
                 .delete(TABLES.TASKS, TASKS.COLUMN_ID + "=" + SqlString.Int(taskID), null);
 
-        if (affectedRow != 0)
+        if (affectedRow != 0) {
             return true;
+        }
 
         return false;
     }
@@ -179,8 +185,9 @@ public class TasksDataSource {
         String query = "SELECT * FROM " + TABLES.TASKS + " WHERE " + TASKS.COLUMN_NAME + "=" + SqlString.String(name);
         Cursor cr = database.rawQuery(query, null);
 
-        if (cr.getCount() != 0)
+        if (cr.getCount() != 0) {
             result = true;
+        }
 
         cr.close();
         return result;

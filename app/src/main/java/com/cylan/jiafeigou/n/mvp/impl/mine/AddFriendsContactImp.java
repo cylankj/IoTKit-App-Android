@@ -97,7 +97,9 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
             sort = "phonebook_label";
         }
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sort);
-        if (cursor == null) return list;
+        if (cursor == null) {
+            return list;
+        }
         //向下移动光标
         while (cursor.moveToNext()) {
             //取得联系人名字
@@ -326,7 +328,9 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
 
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
-        if (mView == null || !mView.isAdded()) return;
+        if (mView == null || !mView.isAdded()) {
+            return;
+        }
         Observable.just(NetUtils.getJfgNetType())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> getView().onNetStateChanged(integer),

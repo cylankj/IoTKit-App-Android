@@ -51,7 +51,9 @@ public class Switcher extends LinearLayout {
             int index = content2Index(viewFirst.getText().toString());
             viewFirst.setText(viewThird.getText());
             viewThird.setText(index2Content(index));
-            if (switcherListener != null) switcherListener.switcher(v, index);
+            if (switcherListener != null) {
+                switcherListener.switcher(v, index);
+            }
         });
         viewSecond.setOnClickListener(v -> {
             slideOut();
@@ -59,7 +61,9 @@ public class Switcher extends LinearLayout {
             int index = content2Index(viewSecond.getText().toString());
             viewSecond.setText(viewThird.getText());
             viewThird.setText(index2Content(index));
-            if (switcherListener != null) switcherListener.switcher(v, index);
+            if (switcherListener != null) {
+                switcherListener.switcher(v, index);
+            }
         });
         viewThird.setOnClickListener(v -> {
             if (!viewFirst.isShown()) {
@@ -103,8 +107,9 @@ public class Switcher extends LinearLayout {
                         .playOn(viewFirst);
                 postDelayed(autoSlideOut, 3000);
             }
-            if (switcherListener != null)
+            if (switcherListener != null) {
                 switcherListener.switcher(v, content2Index(viewThird.getText()));
+            }
         });
     }
 
@@ -140,10 +145,12 @@ public class Switcher extends LinearLayout {
             R.string.Tap1_Camera_Video_HD};
 
     private int content2Index(CharSequence content) {
-        if (TextUtils.equals(getResources().getString(R.string.Tap1_Camera_Video_Auto), content))
+        if (TextUtils.equals(getResources().getString(R.string.Tap1_Camera_Video_Auto), content)) {
             return 0;
-        if (TextUtils.equals(getResources().getString(R.string.Tap1_Camera_Video_SD), content))
+        }
+        if (TextUtils.equals(getResources().getString(R.string.Tap1_Camera_Video_SD), content)) {
             return 1;
+        }
         return 2;
     }
 

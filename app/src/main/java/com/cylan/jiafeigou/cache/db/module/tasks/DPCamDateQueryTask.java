@@ -36,8 +36,9 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private static final int DAYS = 7;
 
     public DPCamDateQueryTask() {
-        if (sourceManager == null)
+        if (sourceManager == null) {
             sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        }
     }
 
     @Override

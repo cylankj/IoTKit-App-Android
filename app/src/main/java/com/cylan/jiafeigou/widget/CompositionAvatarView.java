@@ -91,7 +91,9 @@ public class CompositionAvatarView extends View {
     }
 
     private void initForEditMode() {
-        if (!isInEditMode()) return;
+        if (!isInEditMode()) {
+            return;
+        }
 
         mPaint.setXfermode(null);
         mPaint.setColor(0xff0577fc);

@@ -90,12 +90,15 @@ public class DatePickerDialogFragment extends BaseDialog {
         final String title = bundle.getString(KEY_TITLE);
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
-        if (!TextUtils.isEmpty(title))
+        if (!TextUtils.isEmpty(title)) {
             tvDialogTitle.setText(title);
-        if (!TextUtils.isEmpty(lContent))
+        }
+        if (!TextUtils.isEmpty(lContent)) {
             tvDialogBtnLeft.setText(lContent);
-        if (!TextUtils.isEmpty(rContent))
+        }
+        if (!TextUtils.isEmpty(rContent)) {
             tvDialogBtnRight.setText(rContent);
+        }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
         initWheelDate(getIndexByTime());
         initWheelHour();
@@ -178,7 +181,9 @@ public class DatePickerDialogFragment extends BaseDialog {
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public void setDateList(ArrayList<Long> dateList) {
-        if (dateList == null || dateList.size() == 0) return;
+        if (dateList == null || dateList.size() == 0) {
+            return;
+        }
         AppLogger.i("count:" + (dateList.size()));
         long time = System.currentTimeMillis();
         //去重
@@ -189,13 +194,16 @@ public class DatePickerDialogFragment extends BaseDialog {
             final String date = simpleDateFormat.format(new Date(TimeUtils.wrapToLong(ll)));
             if (!map.containsKey(date)) {
                 map.put(date, date);
-            } else removeList.add(ll);
+            } else {
+                removeList.add(ll);
+            }
         }
         tmpList.removeAll(removeList);
         dateStartList = new ArrayList<>(new TreeSet<>(tmpList));
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
-        for (int i = 0; i < dateStartList.size(); i++)
+        for (int i = 0; i < dateStartList.size(); i++) {
             Log.d("setDateList", "setDateList " + simpleDateFormat.format(new Date(TimeUtils.wrapToLong(dateStartList.get(i)))));
+        }
     }
 
     private static final int[] weekRes = {
@@ -233,6 +241,7 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     // Wheel changed listener
     private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
+        @Override
         public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
             int id = wheel.getId();
             switch (id) {

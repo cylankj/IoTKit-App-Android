@@ -1,17 +1,30 @@
 package com.cylan.jiafeigou.misc;
 
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Patterns;
 
+import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import rx.Observable;
 
 /**
  * Created by cylan-hunt on 16-6-30.
@@ -181,17 +194,41 @@ public class JConstant {
     public static final String WEIBO_PREF_LIVE_URL = "WEIBO_PREF_LIVE_URL";
     public static final String FACEBOOK_PREF_PERMISSION_KEY = "FACEBOOK_PREF_PERMISSION_KEY";
     public static final String PANORAMA_VIEW_MODE = "PANORAMA_VIEW_MODE";
+    public static final String ROBOT_SERVICES_KEY = "ROBOT_SERVICES_KEY";
+    public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
+
+    public static String getFaceText(String[] face_id, Map<String, DpMsgDefine.FaceInformation> faceMap, String defaultText) {
+        if (face_id == null || faceMap == null || faceMap.size() == 0) {
+            return defaultText;
+        }
+        DpMsgDefine.FaceInformation information;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < face_id.length; i++) {
+            information = faceMap.get(face_id[i]);
+            if (information != null) {
+                result.append(information.face_name);
+                if (i != face_id.length - 1) {
+                    result.append(", ");
+                }
+            }
+        }
+        return result.toString();
+        // TODO: 2017/10/14  看原型是怎么样的了
+//        String temp = result.toString();
+//        return TextUtils.isEmpty(temp) ? defaultText : temp;
+    }
 
     public static class RobotCloudApi {
-        public static final String ROBOTSCLOUD_BASE_API = "http://api.robotscloud.com/v1/";
-        public static final String ROBOTSCLOUD_FACE_QUERY_API = ROBOTSCLOUD_BASE_API + "api.do";
-        public static final String ROBOTSCLOUD_FACE_ADD_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_FACE_UPDATE_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_FACE_DELETE_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_QUERY_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_ADD_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_UPDATE_API = ROBOTSCLOUD_BASE_API + "";
-        public static final String ROBOTSCLOUD_GROUP_DELETE_API = ROBOTSCLOUD_BASE_API + "";
+
+        public static final String ROBOTSCLOUD_BASE_API = "/aiservice/v1/";
+        public static final String ROBOTSCLOUD_FACE_QUERY_API = ROBOTSCLOUD_BASE_API + "search_face";
+        public static final String ROBOTSCLOUD_FACE_ADD_API = ROBOTSCLOUD_BASE_API + "reg_face_app";
+        public static final String ROBOTSCLOUD_FACE_UPDATE_API = ROBOTSCLOUD_BASE_API + "edit_face_app";
+        public static final String ROBOTSCLOUD_FACE_DELETE_API = ROBOTSCLOUD_BASE_API + "del_face_app";
+        public static final String ROBOTSCLOUD_GROUP_QUERY_API = ROBOTSCLOUD_BASE_API + "search_group";
+        public static final String ROBOTSCLOUD_GROUP_ADD_API = ROBOTSCLOUD_BASE_API + "add_group";
+        public static final String ROBOTSCLOUD_GROUP_UPDATE_API = ROBOTSCLOUD_BASE_API + "edit_group";
+        public static final String ROBOTSCLOUD_GROUP_DELETE_API = ROBOTSCLOUD_BASE_API + "del_group";
 
         public static final String ROBOTSCLOUD_VID = "vid";
         public static final String ROBOTSCLOUD_SERVICE_KEY = "service_key";
@@ -199,6 +236,15 @@ public class JConstant {
         public static final String ROBOTSCLOUD_SERVICETYPE = "serviceType";
         public static final String ROBOTSCLOUD_SIGN = "sign";
         public static final String ROBOTSCLOUD_TIMESTAMP = "timestamp";
+        public static final String ROBOTSCLOUD_ACCOUNT = "account";
+        public static final String ROBOTSCLOUD_FACE_ID = "face_id";
+        public static final String ROBOTSCLOUD_PAGE = "page";
+        public static final String ROBOTSCLOUD_GROUP_ID = "group_id";
+        public static final String ROBOTSCLOUD_SN = "sn";
+        public static final String ROBOTSCLOUD_PERSON_ID = "person_id";
+        public static final String ROBOTSCLOUD_IMAGE_URL = "image_url";
+        public static final String ROBOTSCLOUD_FACE_NAME = "face_name";
+        public static final String ROBOTSCLOUD_PERSON_NAME = "person_name";
     }
 
     public static String FACEBOOK_PREF_VIDEO_ID = "FACEBOOK_PREF_VIDEO_ID";
@@ -360,47 +406,70 @@ public class JConstant {
     }
 
     public static int getMessageIcon(int pid) {
-        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid))
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
             return R.drawable.me_icon_head_camera_ruishi;
-        if (JFGRules.isCatEeyBell(pid)) return R.drawable.me_icon_intelligent_eye;
-        if (JFGRules.isBell(pid)) return R.drawable.me_icon_head_ring;
-        if (JFGRules.isPan720(pid)) return R.drawable.me_icon_head_720camera;
-        if (pid == 84) return R.drawable.image_cam_outdoor;
-        if (JFGRules.isCamera(pid)) return R.drawable.me_icon_head_camera;
+        }
+        if (pid == 84) {
+            return R.drawable.image_cam_outdoor;
+        }
+        if (JFGRules.isCatEeyBell(pid)) {
+            return R.drawable.me_icon_intelligent_eye;
+        }
+        if (JFGRules.isBell(pid)) {
+            return R.drawable.me_icon_head_ring;
+        }
+        if (JFGRules.isPan720(pid)) {
+            return R.drawable.me_icon_head_720camera;
+        }
+        if (JFGRules.isCamera(pid)) {
+            return R.drawable.me_icon_head_camera;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
 
     public static int getOnlineIcon(int pid) {
-        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) return R.drawable.home_icon_rs_online;
-        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
+            return R.drawable.home_icon_rs_online;
+        }
+        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid)) {
             return R.drawable.icon_home_doorbell_online;
-        if (JFGRules.isCatEeyBell(pid))
+        }
+        if (JFGRules.isCatEeyBell(pid)) {
             return R.drawable.home_icon_intelligent_eye;
-        if (JFGRules.isPan720(pid))
+        }
+        if (JFGRules.isPan720(pid)) {
             return R.drawable.home_icon_720camera_online;
+        }
         if (pid == 84) {
             return R.drawable.home_icon_outcam;
         }
-        if (JFGRules.isCamera(pid))
+        if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_online;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
 
     public static int getOfflineIcon(int pid) {
-        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) return R.drawable.home_icon_rs_offline;
-        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
+            return R.drawable.home_icon_rs_offline;
+        }
+        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid)) {
             return R.drawable.icon_home_doorbell_offline;
-        if (JFGRules.isCatEeyBell(pid))
+        }
+        if (JFGRules.isCatEeyBell(pid)) {
             return R.drawable.home_icon_intelligent_eye_disable;
-        if (JFGRules.isPan720(pid))
+        }
+        if (JFGRules.isPan720(pid)) {
             return R.drawable.home_icon_720camera_offline;
+        }
         if (pid == 84) {
             return R.drawable.home_icon_outcam;
         }
-        if (JFGRules.isCamera(pid))
+        if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_offline;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
@@ -513,4 +582,34 @@ public class JConstant {
 
 
     public static final String KEY_720_CONFIG_HOT_SPOT = "720_config_ap";
+
+
+    public static String blockGetServiceKey() throws Exception {
+        String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
+        if (TextUtils.isEmpty(serviceKey)) {
+            long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
+            RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
+                    .filter(rsp -> rsp.seq == seq)
+                    .first()
+                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                    .toBlocking().first();
+
+            DpMsgDefine.DPAIService dpaiService = DpUtils.unpackData(dataRsp.data, DpMsgDefine.DPAIService.class);
+            if (dpaiService != null) {
+                serviceKey = dpaiService.service_key;//返回的有问题?
+                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_KEY, dpaiService.service_key);
+                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_SECERET, dpaiService.service_key_seceret);
+            }
+        }
+        return serviceKey;
+    }
+
+    public static String blockPutFileToCloud(String localPath, String remotePath, int regionType) throws Exception {
+        int seq = BaseApplication.getAppComponent().getCmd().putFileToCloud(remotePath, localPath);
+        JFGMsgHttpResult result = RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).first(rsp -> rsp.requestId == seq).timeout(15, TimeUnit.SECONDS).toBlocking().first();
+        if (result.ret == 200) {
+            return BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(regionType, remotePath);
+        }
+        return null;
+    }
 }

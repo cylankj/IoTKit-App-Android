@@ -47,7 +47,9 @@ public class BaseUdpMsgParser {
         JfgUdpMsg.UdpRecvHeard header = null;
         try {
             header = unpackData(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
-            if (header == null) return;
+            if (header == null) {
+                return;
+            }
             MessagePack pack = new MessagePack();
             Value read = pack.read(localUdpMsg.data);
             Log.i(TAG, read.toString());
@@ -76,7 +78,9 @@ public class BaseUdpMsgParser {
                 }
                 case UdpConstant.REPORT_MSG: {
                     PanoramaEvent.ReportMsg reportMsg = unpackData(localUdpMsg.data, PanoramaEvent.ReportMsg.class);
-                    if (reportMsg == null) return;
+                    if (reportMsg == null) {
+                        return;
+                    }
                     PanoramaEvent.MsgForward msgForward = unpackData(reportMsg.bytes, PanoramaEvent.MsgForward.class);
                     if (msgForward != null) {
                         BaseForwardHelper.getInstance().dispatcherForward(msgForward);

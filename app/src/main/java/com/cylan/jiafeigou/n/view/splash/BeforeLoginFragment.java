@@ -132,8 +132,9 @@ public class BeforeLoginFragment extends Fragment {
     public void toLookAround(View view) {
         BaseApplication.getAppComponent().getSourceManager().setLoginState(new LogState(STATE_GUEST));
         BaseApplication.getAppComponent().getSourceManager().clear();
-        if (getView() != null)
+        if (getView() != null) {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_look_around));
+        }
 //        clearChildren();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class),
@@ -146,8 +147,9 @@ public class BeforeLoginFragment extends Fragment {
 
     @OnClick(R.id.btn_to_login)
     public void toLogin(View view) {
-        if (getView() != null)
+        if (getView() != null) {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
+        }
         Bundle bundle = new Bundle();
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         ((NeedLoginActivity) getActivity()).signInFirst(bundle);
@@ -155,8 +157,9 @@ public class BeforeLoginFragment extends Fragment {
 
     @OnClick(R.id.btn_to_register)
     public void toRegister(View view) {
-        if (getView() != null)
+        if (getView() != null) {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_register));
+        }
         Bundle bundle = new Bundle();
         bundle.putString("show_login_fragment", "show_login_fragment");
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
@@ -171,8 +174,12 @@ public class BeforeLoginFragment extends Fragment {
 
     @OnClick(R.id.rLayout_before_login)
     public void onClick(View v) {
-        if (clickEvent == null) clickEvent = new Event();
-        if (!BuildConfig.DEBUG && OptionsImpl.getServer().contains("yun.")) return;
+        if (clickEvent == null) {
+            clickEvent = new Event();
+        }
+        if (!BuildConfig.DEBUG && OptionsImpl.getServer().contains("yun.")) {
+            return;
+        }
         if (clickEvent.click(getContext())) {
             clickEvent = null;
             final EditText input = new EditText(getActivity());
@@ -216,16 +223,24 @@ public class BeforeLoginFragment extends Fragment {
         private Toast toast;
 
         private boolean click(Context context) {
-            if (time == 0) time = System.currentTimeMillis();
+            if (time == 0) {
+                time = System.currentTimeMillis();
+            }
             if (System.currentTimeMillis() - time > 1000) {
                 count = 0;
                 time = 0;
-                if (toast != null) toast.cancel();
+                if (toast != null) {
+                    toast.cancel();
+                }
             } else {
                 time = System.currentTimeMillis();
                 count++;
-                if (toast != null) toast.cancel();
-                if (count < 6) return false;
+                if (toast != null) {
+                    toast.cancel();
+                }
+                if (count < 6) {
+                    return false;
+                }
                 toast = Toast.makeText(context, String.format("现在只需再执行%s步操作即可", 10 - count), Toast.LENGTH_SHORT);
 //                toast.show();
             }

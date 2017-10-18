@@ -180,6 +180,7 @@ public interface CamLiveContract {
          */
         Observable<Boolean> stopPlayVideo(boolean detach);
 
+        @Override
         String getUuid();
 
         /**

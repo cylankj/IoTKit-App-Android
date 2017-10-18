@@ -106,12 +106,14 @@ public abstract class WheelScroller {
      */
     public WheelScroller(Context context, ScrollingListener listener) {
         gestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
+            @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 // Do scrolling in onTouchEvent() since onScroll() are not call immediately
                 //  when user touch and move the spinnerwheel
                 return true;
             }
 
+            @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 lastScrollPosition = 0;
                 scrollerFling(lastScrollPosition, (int) velocityX, (int) velocityY);
@@ -189,8 +191,9 @@ public abstract class WheelScroller {
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (scroller.isFinished())
+                if (scroller.isFinished()) {
                     listener.onTouchUp();
+                }
                 break;
 
 
@@ -237,6 +240,7 @@ public abstract class WheelScroller {
 
     // animation handler
     private Handler animationHandler = new Handler() {
+        @Override
         public void handleMessage(Message msg) {
             scroller.computeScrollOffset();
             int currPosition = getCurrentScrollerPosition();

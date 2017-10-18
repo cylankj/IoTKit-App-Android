@@ -56,8 +56,9 @@ public class SimplePopupWindow extends RelativePopupWindow {
         }
         tvContent.setBackgroundResource(bgResId);
         tvContent.setText(tvContent.getContext().getString(contentResId));
-        if (dismissTime != -1)
+        if (dismissTime != -1) {
             getContentView().postDelayed(this::dismiss, dismissTime);
+        }
     }
 
     public void setAutoDismissTime(long time) {

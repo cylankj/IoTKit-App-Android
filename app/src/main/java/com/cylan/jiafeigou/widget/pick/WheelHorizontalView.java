@@ -118,8 +118,9 @@ public class WheelHorizontalView extends AbstractWheelView {
 
     @Override
     public void setSelectorPaintCoeff(float coeff) {
-        if (mItemsDimmedAlpha >= 100)
+        if (mItemsDimmedAlpha >= 100) {
             return;
+        }
 
         LinearGradient shader;
 

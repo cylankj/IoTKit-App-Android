@@ -73,6 +73,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
      *
      * @param newPassword
      */
+    @Override
     public void submitNewPass(String newPassword) {
         Subscription subscribe = Observable.just("submitNewPass")
                 .subscribeOn(AndroidSchedulers.mainThread())

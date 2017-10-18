@@ -73,10 +73,14 @@ public class PickImageFragment extends BaseDialog {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_pick_photo:
-                if (pickListener != null) pickListener.onClick(view);
+                if (pickListener != null) {
+                    pickListener.onClick(view);
+                }
                 break;
             case R.id.tv_take_photo:
-                if (takeListener != null) takeListener.onClick(view);
+                if (takeListener != null) {
+                    takeListener.onClick(view);
+                }
                 break;
         }
         dismiss();

@@ -86,7 +86,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         }
                         AppLogger.d("添加电话联系人:" + new Gson().toJson(shareContactItem));
                     }
-                    if (phoneQuery != null) phoneQuery.close();
+                    if (phoneQuery != null) {
+                        phoneQuery.close();
+                    }
                     Cursor emailQuery = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Email.SORT_KEY_PRIMARY);
                     while (emailQuery != null && emailQuery.moveToNext()) {
                         String displayName = emailQuery.getString(emailQuery.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
@@ -105,7 +107,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         }
                         AppLogger.d("添加邮箱联系人:" + new Gson().toJson(shareContactItem));
                     }
-                    if (emailQuery != null) emailQuery.close();
+                    if (emailQuery != null) {
+                        emailQuery.close();
+                    }
 
                     JFGShareListInfo jfgShareListInfo = DataSourceManager.getInstance().getShareListByCid(getUuid());
                     if (jfgShareListInfo != null && jfgShareListInfo.friends != null) {

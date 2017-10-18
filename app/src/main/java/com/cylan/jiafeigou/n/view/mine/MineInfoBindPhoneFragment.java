@@ -119,14 +119,18 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     }
 
     private void initCountDownTime(long countDown) {
-        if (countDown <= 0) countDown = 1;
+        if (countDown <= 0) {
+            countDown = 1;
+        }
         countDownTimer = new CountDownTimer(countDown, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 final String content = millisUntilFinished / 1000 + "s";
                 tvMeterGetCode.setText(content);
                 tvMeterGetCode.setEnabled(false);
-                if (vCode != null) vCode.millisUntilFinished = millisUntilFinished;
+                if (vCode != null) {
+                    vCode.millisUntilFinished = millisUntilFinished;
+                }
             }
 
             @Override
@@ -141,7 +145,9 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
             countDownTimer.cancel();
             countDownTimer.start();
             tvMeterGetCode.setEnabled(false);
-        } else tvMeterGetCode.setEnabled(true);
+        } else {
+            tvMeterGetCode.setEnabled(true);
+        }
     }
 
     private void initCountDownTime() {
@@ -192,8 +198,9 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     public void onStart() {
         super.onStart();
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgAccount != null)
+        if (jfgAccount != null) {
             basePresenter.isBindOrChange(jfgAccount);
+        }
     }
 
     public static MineInfoBindPhoneFragment newInstance(Bundle bundle) {

@@ -97,8 +97,9 @@ public class PropertiesLoader implements IProperty {
     private Map<String, String> accessCacheMap(final ArrayMap<Integer, Map<String, String>> cacheMap, PropertyFile file, int pidOrOs) {
         Map<String, String> tmpMap = cacheMap.get(pidOrOs);
         final String sPid = String.valueOf(pidOrOs);
-        if (TextUtils.isEmpty(sPid))
+        if (TextUtils.isEmpty(sPid)) {
             throw new IllegalArgumentException("pidOrOs cannot be empty!!!");
+        }
         if (tmpMap == null) {
             final int count = ListUtils.getSize(file.getpList());
             //每次遍历,效率比较低,有待优化
@@ -123,12 +124,16 @@ public class PropertiesLoader implements IProperty {
     public boolean hasProperty(int pidOrOs, String tag, boolean share) {
         tag = tag.toUpperCase();
         if (share) {
-            if (sharePropertyFile == null) return false;
+            if (sharePropertyFile == null) {
+                return false;
+            }
             final Map<String, String> map = accessCacheMap(sharePropertyFile, pidOrOs);
             final String p = map.get(tag);
             return !TextUtils.isEmpty(p) && !TextUtils.equals("0", p);
         } else {
-            if (propertyFile == null) return false;
+            if (propertyFile == null) {
+                return false;
+            }
             final Map<String, String> map = accessCacheMap(propertyFile, pidOrOs);
             final String p = map.get(tag);
             return !TextUtils.isEmpty(p) && !TextUtils.equals("0", p);
@@ -144,11 +149,15 @@ public class PropertiesLoader implements IProperty {
     public String property(int pidOrOs, String tag, boolean share) {
         tag = tag.toUpperCase();
         if (share) {
-            if (sharePropertyFile == null) return "";
+            if (sharePropertyFile == null) {
+                return "";
+            }
             Map<String, String> map = accessCacheMap(sharePropertyFile, pidOrOs);
             return map.get(tag);
         } else {
-            if (propertyFile == null) return "";
+            if (propertyFile == null) {
+                return "";
+            }
             Map<String, String> map = accessCacheMap(propertyFile, pidOrOs);
             return map.get(tag);
         }
@@ -157,21 +166,28 @@ public class PropertiesLoader implements IProperty {
     @Override
     public String defaultProperty(int pidOrOs, String tag) {
         final Map<String, String> tmpMap = accessCacheMap(defaultPropertyCacheMap, defaultPropertyFile, pidOrOs);
-        if (tmpMap == null) return null;
+        if (tmpMap == null) {
+            return null;
+        }
         return tmpMap.get(tag.toUpperCase());
     }
 
     @Override
     public boolean isSerial(String serial, int pidOrOs) {
-        if (propertyFile == null) return false;
+        if (propertyFile == null) {
+            return false;
+        }
         serial = serial.toUpperCase();
         Map<String, List<Integer>> map = propertyFile.getSerialMap();
         List<Integer> list = map == null ? null : map.get(serial);
         return list != null && list.contains(pidOrOs);
     }
 
+    @Override
     public int getOSType(String cid) {
-        if (propertyFile == null) return 0;
+        if (propertyFile == null) {
+            return 0;
+        }
         //效率比较低,有待优化
         final int count = ListUtils.getSize(propertyFile.getpList());
         for (int i = 0; i < count; i++) {

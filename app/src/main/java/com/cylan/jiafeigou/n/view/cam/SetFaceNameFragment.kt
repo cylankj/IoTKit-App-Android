@@ -26,8 +26,13 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_set_face_name, container, false)
+        return view
+    }
+
+    override fun initViewAndListener() {
+        super.initViewAndListener()
         custom_toolbar.setRightAction { setFaceName() }
-        edit_face_name
+        custom_toolbar.setBackAction { fragmentManager.popBackStack() }
         edit_face_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
@@ -42,11 +47,6 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
                 custom_toolbar.setRightEnable(!empty)
             }
         })
-        return view
-    }
-
-    override fun initViewAndListener() {
-        super.initViewAndListener()
     }
 
 

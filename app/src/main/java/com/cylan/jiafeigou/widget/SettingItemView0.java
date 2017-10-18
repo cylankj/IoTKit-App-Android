@@ -75,7 +75,9 @@ public class SettingItemView0 extends RelativeLayout {
         tvSubTitle.setGravity(subTitleGravity);
         boolean switchVisibility = ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, false);
         switchButton.setVisibility(switchVisibility ? VISIBLE : GONE);
-        if (switchVisibility) rbRadioButton.setVisibility(GONE);
+        if (switchVisibility) {
+            rbRadioButton.setVisibility(GONE);
+        }
         v_divider = findViewById(R.id.v_divider);
         v_divider.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
                 ? VISIBLE : GONE);
@@ -83,7 +85,9 @@ public class SettingItemView0 extends RelativeLayout {
         ViewUtils.setMargins(tvSubTitle, 0, 0, (int) d, 0);
         boolean radioButtonVisibility = ta.getBoolean(R.styleable.SettingItemViewStyle_sv_show_radio_button, false);
         rbRadioButton.setVisibility(radioButtonVisibility ? VISIBLE : GONE);
-        if (radioButtonVisibility) switchButton.setVisibility(GONE);
+        if (radioButtonVisibility) {
+            switchButton.setVisibility(GONE);
+        }
         int radioButtonId = ta.getResourceId(R.styleable.SettingItemViewStyle_sv_radio_button_id, -1);
         if (radioButtonId != -1) {
             rbRadioButton.setId(radioButtonId);

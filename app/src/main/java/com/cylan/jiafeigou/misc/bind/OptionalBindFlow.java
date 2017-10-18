@@ -103,8 +103,9 @@ public class OptionalBindFlow extends AFullBind {
                         String serverAddress = OptionsImpl.getServer();
                         int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1));
                         serverAddress = serverAddress.split(":")[0];
-                        if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
+                        if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG) {
                             throw new IllegalArgumentException("server address is empty");
+                        }
                         //设置语言
                         JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
                                 ret.uuid,

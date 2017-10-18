@@ -5,10 +5,12 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -23,6 +25,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeReque
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
 
 import org.junit.Test;
 import org.msgpack.MessagePack;
@@ -43,6 +47,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -398,5 +403,25 @@ public class DP {
                     ", bytes=" + bytes +
                     '}';
         }
+    }
+
+    @Test
+    public void testAIService()throws Exception{
+        String timeMillis =  String.valueOf(System.currentTimeMillis()/1000);
+        System.out.println(timeMillis);
+        String seceret="6ZVBcFK6NLMg0zwjY0uuwdBiXUs7D1d9";
+        String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timeMillis);
+        Response response = OkGo.post("http://yf.robotscloud.com/aiservice/v1/search_face")
+                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, "0001")
+                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, "v0UAlWduk09lvo4qUWZOaNcZeiACHEwm")
+                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timeMillis)
+                .execute();
+        System.out.println(response.body().string());
+
+        Thread.sleep(1000000);
     }
 }

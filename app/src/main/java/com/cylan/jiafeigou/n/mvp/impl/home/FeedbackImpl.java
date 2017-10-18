@@ -45,7 +45,9 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
     public void start() {
         super.start();
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineHelpActivity.class.getSimpleName());
-        if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
+        if (node != null) {
+            node.setCacheData(new CacheObject().setCount(0).setObject(null));
+        }
         pushManager.getNewList()
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null)

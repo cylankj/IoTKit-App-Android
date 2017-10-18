@@ -7,5 +7,6 @@ public interface BaseFragmentView<T> extends BaseView<T> {
 
     boolean isAdded();
 
+    @Override
     String getUuid();
 }

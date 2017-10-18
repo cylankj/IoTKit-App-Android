@@ -44,6 +44,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         subscription = new CompositeSubscription();
     }
 
+    @Override
     public void initShareList() {
         Subscription subscription = Observable.just("initShareList")
                 .subscribeOn(AndroidSchedulers.mainThread())

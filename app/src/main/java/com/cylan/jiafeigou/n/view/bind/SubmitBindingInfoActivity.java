@@ -99,7 +99,9 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     @Override
     public void bindState(int state) {
         runOnUiThread(() -> {
-            if (isFinishing()) return;
+            if (isFinishing()) {
+                return;
+            }
             if (state == BindUtils.BIND_FAILED) {//失败
                 vsLayoutSwitch.showNext();
                 if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
@@ -116,8 +118,9 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                         }, false);
             } else if (state == BindUtils.BIND_SUC) {//成功
                 progressLoading.setVisibility(View.INVISIBLE);
-                if (basePresenter != null)
+                if (basePresenter != null) {
                     basePresenter.stop();
+                }
                 String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
                 AppLogger.d("panoramaConfigure:" + panoramaConfigure);
                 if (TextUtils.isEmpty(panoramaConfigure)) {
@@ -143,8 +146,9 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                         getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         }, false);
-                if (basePresenter != null)
+                if (basePresenter != null) {
                     basePresenter.stop();
+                }
             } else {
                 AppLogger.d("绑定失败了!!!!!!!!!!!!!");
                 progressLoading.setVisibility(View.INVISIBLE);

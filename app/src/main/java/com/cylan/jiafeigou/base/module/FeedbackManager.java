@@ -54,8 +54,9 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
     private HashMap<Long, SubmitFeedbackTask> submitTaskMap = new HashMap<>();
 
     public static FeedbackManager getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new FeedbackManager();
+        }
         return instance;
     }
 
@@ -65,9 +66,13 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
     }
 
     private void saveCache(ArrayList<JFGFeedbackInfo> arrayList) {
-        if (arrayList == null) return;
+        if (arrayList == null) {
+            return;
+        }
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) return;
+        if (account == null || TextUtils.isEmpty(account.getAccount())) {
+            return;
+        }
         ArrayList<FeedBackBean> feedBackBeans = new ArrayList<>();
         for (JFGFeedbackInfo info : arrayList) {
             FeedBackBean bean = new FeedBackBean();
@@ -111,8 +116,9 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
     private Observable<List<FeedBackBean>> loadFromLocal() {
         BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount()))
+        if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return Observable.just(new ArrayList<>());
+        }
         return helper.getDaoSession().getFeedBackBeanDao()
                 .queryBuilder()
                 .where(FeedBackBeanDao.Properties.Account.eq(account.getAccount()))
@@ -195,7 +201,9 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
         public void runTask() {
             boolean hasLog = false;
             //失败重传
-            if (taskState == TASK_STATE_FAILED) lastSubmitLogTime = 0;
+            if (taskState == TASK_STATE_FAILED) {
+                lastSubmitLogTime = 0;
+            }
             if (lastSubmitLogTime == 0 || System.currentTimeMillis() - lastSubmitLogTime > 5 * 60 * 1000) {
                 lastSubmitLogTime = System.currentTimeMillis();
                 hasLog = true;
@@ -233,7 +241,9 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                             taskState = TASK_STATE_FAILED;
                             if (jfgMsgHttpResult.ret == 500)//重试
                             {
-                                if (subscription != null) subscription.unsubscribe();
+                                if (subscription != null) {
+                                    subscription.unsubscribe();
+                                }
                                 lastSubmitLogTime = 0;
                                 runTask();
                             }
@@ -299,8 +309,9 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                 Observable.just("clean")
                         .subscribeOn(Schedulers.io())
                         .subscribe(ret -> {
-                            if (finalClean.zipFile != null)
+                            if (finalClean.zipFile != null) {
                                 FileUtils.deleteAbsoluteFile(finalClean.zipFile.getAbsolutePath());
+                            }
                             if (finalClean.localOldFiles != null) {
                                 AppLogger.d("清理 日志");
                                 AppLogger.permissionGranted = false;

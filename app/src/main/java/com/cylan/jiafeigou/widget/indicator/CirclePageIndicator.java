@@ -76,7 +76,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
     public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
 
         //Load defaults from resources
         final Resources res = getResources();
@@ -281,6 +283,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
         canvas.drawCircle(dX, dY, mRadius, mPaintFill);
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (super.onTouchEvent(ev)) {
             return true;
@@ -340,7 +343,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
                 mIsDragging = false;
                 mActivePointerId = INVALID_POINTER;
-                if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                if (mViewPager.isFakeDragging()) {
+                    mViewPager.endFakeDrag();
+                }
                 break;
 
             case MotionEventCompat.ACTION_POINTER_DOWN: {

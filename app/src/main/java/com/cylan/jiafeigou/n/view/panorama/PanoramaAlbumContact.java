@@ -73,7 +73,9 @@ public interface PanoramaAlbumContact {
         public boolean message = false;
 
         public PanoramaItem(String name) {
-            if (TextUtils.isEmpty(name)) return;
+            if (TextUtils.isEmpty(name)) {
+                return;
+            }
             String[] split = name.split("\\.");
             type = TextUtils.equals("mp4", split[1]) ? PANORAMA_ITEM_TYPE.TYPE_VIDEO : PANORAMA_ITEM_TYPE.TYPE_PICTURE;
             if (type == PANORAMA_ITEM_TYPE.TYPE_PICTURE) {

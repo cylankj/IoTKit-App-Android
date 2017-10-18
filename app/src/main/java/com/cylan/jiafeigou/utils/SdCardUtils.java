@@ -23,11 +23,13 @@ public class SdCardUtils {
      */
     public static String getExternalSdcardPath() {
         File[] files = userEnvironment.getExternalDirsForApp();
-        if (files.length == 1)
+        if (files.length == 1) {
             return files[0].getAbsolutePath();
+        }
 
-        if (files[1].length() == 0)
+        if (files[1].length() == 0) {
             return files[0].getAbsolutePath();
+        }
         return files[1].getAbsolutePath();
     }
 

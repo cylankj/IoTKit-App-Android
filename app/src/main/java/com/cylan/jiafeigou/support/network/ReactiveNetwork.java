@@ -62,8 +62,9 @@ public class ReactiveNetwork {
      * @return RxJava Observable with ConnectivityStatus
      */
     public Observable<ConnectivityStatus> observeNetworkConnectivity(final Context context) {
-        if (context instanceof Activity)
+        if (context instanceof Activity) {
             throw new IllegalArgumentException("woo,this context should be application context");
+        }
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
@@ -103,8 +104,9 @@ public class ReactiveNetwork {
      * @return ConnectivityStatus, which can be WIFI_CONNECTED, MOBILE_CONNECTED or OFFLINE
      */
     public static ConnectivityStatus getConnectivityStatus(final Context context) {
-        if (context instanceof Activity)
+        if (context instanceof Activity) {
             throw new IllegalArgumentException("woo,this context should be application context");
+        }
         final String service = Context.CONNECTIVITY_SERVICE;
         final ConnectivityManager manager = (ConnectivityManager) context.getSystemService(service);
         final NetworkInfo networkInfo = manager.getActiveNetworkInfo();
@@ -175,8 +177,9 @@ public class ReactiveNetwork {
      * @return RxJava Observable with list of WiFi scan results
      */
     public Observable<List<ScanResult>> observeWifiAccessPoints(final Context context, final boolean nullAgain) {
-        if (context instanceof Activity)
+        if (context instanceof Activity) {
             throw new IllegalArgumentException("woo,this context should be application context");
+        }
         final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wifiManager.startScan(); // without starting scan, we may never receive any scan results
 
@@ -192,7 +195,9 @@ public class ReactiveNetwork {
                     public void onReceive(Context context, Intent intent) {
                         if (wifiManager.getScanResults() == null && nullAgain)
                             // we need to initSubscription scan again to get fetch results ASAP
+                        {
                             wifiManager.startScan();
+                        }
                         subscriber.onNext(wifiManager.getScanResults());
                     }
                 };
@@ -217,8 +222,9 @@ public class ReactiveNetwork {
      * @return WifiSignalLevel as an enum
      */
     public Observable<WifiSignalLevel> observeWifiSignalLevel(final Context context) {
-        if (context instanceof Activity)
+        if (context instanceof Activity) {
             throw new IllegalArgumentException("woo,this context should be application context");
+        }
         return observeWifiSignalLevel(context, WifiSignalLevel.getMaxLevel()).map(
                 new Func1<Integer, WifiSignalLevel>() {
                     @Override
@@ -237,8 +243,9 @@ public class ReactiveNetwork {
      * @return RxJava Observable with WiFi signal level
      */
     public Observable<Integer> observeWifiSignalLevel(final Context context, final int numLevels) {
-        if (context instanceof Activity)
+        if (context instanceof Activity) {
             throw new IllegalArgumentException("woo,this context should be application context");
+        }
         final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         final IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.RSSI_CHANGED_ACTION);

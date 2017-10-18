@@ -12,6 +12,7 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
 
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -345,13 +346,21 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
 
             DPSdcardSummary summary = (DPSdcardSummary) o;
 
-            if (hasSdcard != summary.hasSdcard) return false;
+            if (hasSdcard != summary.hasSdcard) {
+                return false;
+            }
             return errCode == summary.errCode;
 
         }
@@ -565,6 +574,13 @@ public class DpMsgDefine {
         @Index(5)
         @Optional
         public int[] objects;
+        @Optional
+        @Index(6)
+        public int humanNum = -1;
+        @Optional
+        @Index(7)
+        public String[] face_id;
+
         @Ignore
         public static DPAlarm empty = new DPAlarm();
 
@@ -584,16 +600,30 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
 
             DPAlarm dpAlarm = (DPAlarm) o;
 
-            if (time != dpAlarm.time) return false;
-            if (isRecording != dpAlarm.isRecording) return false;
-            if (fileIndex != dpAlarm.fileIndex) return false;
-            if (ossType != dpAlarm.ossType) return false;
+            if (time != dpAlarm.time) {
+                return false;
+            }
+            if (isRecording != dpAlarm.isRecording) {
+                return false;
+            }
+            if (fileIndex != dpAlarm.fileIndex) {
+                return false;
+            }
+            if (ossType != dpAlarm.ossType) {
+                return false;
+            }
             return tly != null ? tly.equals(dpAlarm.tly) : dpAlarm.tly == null;
 
         }
@@ -660,12 +690,18 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             DPNotificationInfo that = (DPNotificationInfo) o;
 
-            if (notification != that.notification) return false;
+            if (notification != that.notification) {
+                return false;
+            }
             return duration == that.duration;
 
         }
@@ -1057,15 +1093,17 @@ public class DpMsgDefine {
         private static DPWonderItem loadBean = new DPWonderItem();
 
         public static DPWonderItem getEmptyLoadTypeBean() {
-            if (loadBean == null)
+            if (loadBean == null) {
                 loadBean = new DPWonderItem();
+            }
             loadBean.msgType = TYPE_LOAD;
             return loadBean;
         }
 
         public static DPWonderItem getNoMoreTypeBean() {
-            if (nomore == null)
+            if (nomore == null) {
                 nomore = new DPWonderItem();
+            }
             nomore.msgType = TYPE_NO_MORE;
             return nomore;
         }
@@ -1461,6 +1499,8 @@ public class DpMsgDefine {
         public String url;
         @Index(1)
         public int enable;
+        @Index(2)
+        public int liveType;
 
         @Override
         public int describeContents() {
@@ -1472,6 +1512,7 @@ public class DpMsgDefine {
             return "DPCameraLiveRtmpCtrl{" +
                     "url='" + url + '\'' +
                     ", enable=" + enable +
+                    ", liveType=" + liveType +
                     '}';
         }
 
@@ -1485,9 +1526,10 @@ public class DpMsgDefine {
         public DPCameraLiveRtmpCtrl() {
         }
 
-        public DPCameraLiveRtmpCtrl(String url, int enable) {
+        public DPCameraLiveRtmpCtrl(String url, int enable, int liveType) {
             this.url = url;
             this.enable = enable;
+            this.liveType = liveType;
         }
 
         protected DPCameraLiveRtmpCtrl(Parcel in) {
@@ -1573,86 +1615,164 @@ public class DpMsgDefine {
         };
     }
 
-//    @Message
-//    public static class DPWarnInterval extends BaseDataPoint {
-//
-//        @Index(0)
-//        public int sec;
-//
-//        @Override
-//        public int describeContents() {
-//            return 0;
-//        }
-//
-//        @Override
-//        public void writeToParcel(Parcel dest, int flags) {
-//            super.writeToParcel(dest, flags);
-//            dest.writeInt(this.sec);
-//        }
-//
-//        public DPWarnInterval() {
-//        }
-//
-//        protected DPWarnInterval(Parcel in) {
-//            super(in);
-//            this.sec = in.readInt();
-//        }
-//
-//        public static final Creator<DPWarnInterval> CREATOR = new Creator<DPWarnInterval>() {
-//            @Override
-//            public DPWarnInterval createFromParcel(Parcel source) {
-//                return new DPWarnInterval(source);
-//            }
-//
-//            @Override
-//            public DPWarnInterval[] newArray(int size) {
-//                return new DPWarnInterval[size];
-//            }
-//        };
-//    }
-//
-//
-//    @Message
-//    @Deprecated
-//    public static class DPCameraObjectDetect extends BaseDataPoint {
-//
-//        @Index(0)
-//        public int[] objects = new int[]{};
-//
-//        @Override
-//        public int describeContents() {
-//            return 0;
-//        }
-//
-//        @Override
-//        public void writeToParcel(Parcel dest, int flags) {
-//            super.writeToParcel(dest, flags);
-//            dest.writeIntArray(this.objects);
-//        }
-//
-//        public DPCameraObjectDetect() {
-//        }
-//
-//        @Override
-//        public byte[] toBytes() {
-//            return DpUtils.pack(objects);
-//        }
-//
-//        protected DPCameraObjectDetect(Parcel in) {
-//            super(in);
-//            this.objects = in.createIntArray();
-//        }
-//
-//        public static final Creator<DPCameraObjectDetect> CREATOR = new Creator<DPCameraObjectDetect>() {
-//            @Override
-//            public DPCameraObjectDetect createFromParcel(Parcel source) {
-//                return new DPCameraObjectDetect(source);
-//            }
-//
-//            @Override
-//            public DPCameraObjectDetect[] newArray(int size) {
-//                return new DPCameraObjectDetect[size];
-//            }
-//        };
-//    }
+    @Message
+    public static class DPAIService {
+        @Index(0)
+        public String vid;
+        @Index(1)
+        public String service_key;
+        @Index(2)
+        public String service_key_seceret;
+    }
+
+    @Message
+    public static class DPOssRegion {
+
+        @Index(0)
+        public String cid;
+
+        @Index(1)
+        public int regionType;
+    }
+
+    @Message
+    public static class DPOssService {
+        @Index(0)
+        public String vid;
+        @Index(1)
+        public String service_key;
+        @Index(2)
+        public String service_key_seceret;
+    }
+
+    /**
+     * {
+     * "ret": 0,
+     * "msg": "ok",
+     * "data": [
+     * {
+     * "face_id": "LeNvlvZcATymiN5soT8HA959sxRko0Oh2ljdGeST8TrjuUgj0VDgh3uHtzf4MQRkt9ZKMJsyVrr1Jy6scUBqbJJ0LbXDzGpzh3yVzk7dOM5ofG6tm6cyjYmqolHiNRJd",
+     * "face_name": "face_1",
+     * "coord": "[123, 321],[11, 22]",
+     * "account": "test001",
+     * "sn": "test1000001",
+     * "person_id": 0,
+     * "source_image_url": "http://xx.xx.xx/ss/aa/d.jpg",
+     * "image_url": "",
+     * "group_id": 4,
+     * "service_type": 1
+     * },
+     * {
+     * "face_id": "OCTFHIUgzfCOykiIaFOnFSew9083XTJu6yBTHhjSdGtwAELw9tASi9RXlPiF7qQd9mANFr64tS2MPAfaRrzs5GF5SQMacUBcYkYBjBdTIYXCHhu2jO3BFoHnRVDh03K9",
+     * "face_name": "face_2",
+     * "coord": "[113, 331],[121, 121]",
+     * "account": "test001",
+     * "sn": "test1000001",
+     * "person_id": 0,
+     * "source_image_url": "http://xx.xx.xx/ss/aa/d.jpg",
+     * "image_url": "",
+     * "group_id": 4,
+     * "service_type": 1
+     * }
+     * ]
+     * }
+     */
+
+    public static class ResponseHeader {
+        public int ret;
+        public String msg;
+    }
+
+    public static class GenericResponse extends ResponseHeader {
+        public String data;
+    }
+
+    public static class FaceQueryResponse extends ResponseHeader {
+        public List<FaceInformation> data;
+
+        @Override
+        public String toString() {
+            return "FaceQueryResponse{" +
+                    "ret=" + ret +
+                    ", msg='" + msg + '\'' +
+                    ", data=" + data +
+                    '}';
+        }
+    }
+
+    public static class FaceInformation implements Parcelable {
+        public String face_id;
+        public String face_name;
+        public String coord;
+        public String account;
+        public String sn;
+        public String person_id;
+        public String source_image_url;
+        public String image_url;
+        public String group_id;
+        public String service_type;
+
+        @Override
+        public String toString() {
+            return "FaceInformation{" +
+                    "face_id='" + face_id + '\'' +
+                    ", face_name='" + face_name + '\'' +
+                    ", coord='" + coord + '\'' +
+                    ", account='" + account + '\'' +
+                    ", sn='" + sn + '\'' +
+                    ", person_id='" + person_id + '\'' +
+                    ", source_image_url='" + source_image_url + '\'' +
+                    ", image_url='" + image_url + '\'' +
+                    ", group_id='" + group_id + '\'' +
+                    ", service_type='" + service_type + '\'' +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.face_id);
+            dest.writeString(this.face_name);
+            dest.writeString(this.coord);
+            dest.writeString(this.account);
+            dest.writeString(this.sn);
+            dest.writeString(this.person_id);
+            dest.writeString(this.source_image_url);
+            dest.writeString(this.image_url);
+            dest.writeString(this.group_id);
+            dest.writeString(this.service_type);
+        }
+
+        public FaceInformation() {
+        }
+
+        protected FaceInformation(Parcel in) {
+            this.face_id = in.readString();
+            this.face_name = in.readString();
+            this.coord = in.readString();
+            this.account = in.readString();
+            this.sn = in.readString();
+            this.person_id = in.readString();
+            this.source_image_url = in.readString();
+            this.image_url = in.readString();
+            this.group_id = in.readString();
+            this.service_type = in.readString();
+        }
+
+        public static final Parcelable.Creator<FaceInformation> CREATOR = new Parcelable.Creator<FaceInformation>() {
+            @Override
+            public FaceInformation createFromParcel(Parcel source) {
+                return new FaceInformation(source);
+            }
+
+            @Override
+            public FaceInformation[] newArray(int size) {
+                return new FaceInformation[size];
+            }
+        };
+    }
 }

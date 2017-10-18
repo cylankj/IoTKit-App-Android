@@ -83,6 +83,7 @@ public class CircleImageView extends AppCompatImageView {
     private boolean mSetupPending;
     private boolean mBorderOverlay;
     private boolean mDisableCircularTransformation;
+    private boolean showBorder = true;
 
     public CircleImageView(Context context) {
         super(context);
@@ -161,7 +162,7 @@ public class CircleImageView extends AppCompatImageView {
             canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mFillPaint);
         }
         canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint);
-        if (mBorderWidth > 0) {
+        if (mBorderWidth > 0 && showBorder) {
             canvas.drawCircle(mBorderRect.centerX(), mBorderRect.centerY(), mBorderRadius, mBorderPaint);
         }
         //画红点.
@@ -452,6 +453,11 @@ public class CircleImageView extends AppCompatImageView {
         mShaderMatrix.postTranslate((int) (dx + 0.5f) + mDrawableRect.left, (int) (dy + 0.5f) + mDrawableRect.top);
 
         mBitmapShader.setLocalMatrix(mShaderMatrix);
+    }
+
+    public void showBorder(boolean showBorder) {
+        this.showBorder = showBorder;
+        invalidate();
     }
 
 }

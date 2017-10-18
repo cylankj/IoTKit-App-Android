@@ -107,7 +107,9 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
     }
 
     private String getRemoteFilePath(String fileName, boolean hasPrefix) {
-        if (sourceManager.getAccount().getAccount() == null) return "";
+        if (sourceManager.getAccount().getAccount() == null) {
+            return "";
+        }
         return (hasPrefix ? "/" : "") + "long/" + Security.getVId() + "/" + sourceManager.getAccount().getAccount() + "/wonder/" + uuid + "/" + fileName;
     }
 
@@ -159,7 +161,9 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     long result = -1;
                     try {
                         int code = rsp.first.rets.get(0).ret;
-                        if (code != 0) throw new BaseDPTaskException(code, "分享失败");
+                        if (code != 0) {
+                            throw new BaseDPTaskException(code, "分享失败");
+                        }
                         JFGDPMsg msg = new JFGDPMsg(511, item.time);
                         msg.packValue = DpUtils.pack(rsp.first.rets.get(0).version);
                         ArrayList<JFGDPMsg> params = new ArrayList<>();
@@ -177,7 +181,9 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 .map(rsp -> {
                     long result = -1;
                     int code = rsp.first.rets.get(0).ret;
-                    if (code != 0) throw new BaseDPTaskException(code, "分享步骤一失败");
+                    if (code != 0) {
+                        throw new BaseDPTaskException(code, "分享步骤一失败");
+                    }
                     AppLogger.d("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
                     try {
                         String remotePath = getRemoteFilePath(item.fileName, true);
@@ -188,7 +194,9 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                         throw new BaseDPTaskException(-3, "分享步骤二失败");
                     }
                     AppLogger.d("分享操作步骤二操作seq 为" + result);
-                    if (result == -1) throw new BaseDPTaskException(-3, "分享步骤二失败");
+                    if (result == -1) {
+                        throw new BaseDPTaskException(-3, "分享步骤二失败");
+                    }
                     return new Pair<>(result, rsp.second);
                 })
                 .flatMap(pair -> RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)

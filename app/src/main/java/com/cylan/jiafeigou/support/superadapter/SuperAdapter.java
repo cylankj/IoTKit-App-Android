@@ -56,8 +56,9 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
     public final void add(T item) {
         mList.add(item);
         int location = mList.size() - 1;
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             location++;
+        }
         notifyItemInserted(location);
         notifyDataSetHasChanged();
     }
@@ -65,8 +66,9 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
     @Override
     public void add(int location, T item) {
         mList.add(location, item);
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             location++;
+        }
         notifyItemInserted(location);
         notifyDataSetHasChanged();
     }
@@ -84,8 +86,9 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
         }
         int start = mList.size();
         mList.addAll(items);
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             start++;
+        }
         notifyItemRangeInserted(start, items.size());
         notifyDataSetHasChanged();
     }
@@ -97,8 +100,9 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
             return;
         }
         mList.addAll(location, items);
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             location++;
+        }
         notifyItemRangeInserted(location, items.size());
         notifyDataSetHasChanged();
     }
@@ -113,8 +117,9 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
     @Override
     public final void remove(int location) {
         mList.remove(location);
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             location++;
+        }
         notifyItemRemoved(location);
         notifyDataSetHasChanged();
     }
@@ -141,8 +146,9 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
     @Override
     public final void set(int location, T item) {
         mList.set(location, item);
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             location++;
+        }
         notifyItemChanged(location);
         notifyDataSetHasChanged();
     }

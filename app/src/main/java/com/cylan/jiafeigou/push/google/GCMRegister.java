@@ -47,7 +47,9 @@ public class GCMRegister extends IntentService implements IPushRegister {
             InstanceID instanceID = InstanceID.getInstance(this);
             String id = PackageUtils.getMetaString(getApplicationContext(), "GCM_APP_ID");
             AppLogger.d("gcm appId: " + id);
-            if (TextUtils.isEmpty(id)) throw new IllegalArgumentException("gcm appId is null");
+            if (TextUtils.isEmpty(id)) {
+                throw new IllegalArgumentException("gcm appId is null");
+            }
             String token = instanceID.getToken(id, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             // [END get_token]
             AppLogger.d(PUSH_TAG + "GCM Registration Token: " + token);

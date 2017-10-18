@@ -28,8 +28,9 @@ public class ScanResultListFilter {
         for (ScanResult result : list) {
             if (TextUtils.isEmpty(result.SSID)
                     || TextUtils.equals(result.SSID, "<unknown ssid>")
-                    || TextUtils.equals(result.SSID, "0x"))
+                    || TextUtils.equals(result.SSID, "0x")) {
                 continue;
+            }
             results.add(result);
         }
         return results;
@@ -45,14 +46,17 @@ public class ScanResultListFilter {
         }
         for (ScanResult result : list) {
             final String ssid = result.SSID.replace("\"", "");//不能过滤 blank
-            if (JFGRules.isCylanDevice(ssid))
+            if (JFGRules.isCylanDevice(ssid)) {
                 continue;
+            }
             if (TextUtils.isEmpty(result.SSID)
                     || TextUtils.equals(result.SSID, "<unknown ssid>")
-                    || TextUtils.equals(result.SSID, "0x"))
+                    || TextUtils.equals(result.SSID, "0x")) {
                 continue;
-            if (result.frequency > 4900 && result.frequency < 5900)
+            }
+            if (result.frequency > 4900 && result.frequency < 5900) {
                 continue;
+            }
             results.add(result);
             int level = WifiManager.calculateSignalLevel(result.level, 5);
             Log.d("TABLES", "TABLES:" + ssid + " " + level);
@@ -62,11 +66,13 @@ public class ScanResultListFilter {
     }
 
     public static List<ScanResult> extractJFG(List<ScanResult> resultList, String... filters) {
-        if (filters == null)
+        if (filters == null) {
             return resultList;
+        }
         List<ScanResult> scanResultList = new ArrayList<>();
-        if (resultList == null)
+        if (resultList == null) {
             return scanResultList;
+        }
         List<String> filterList = Arrays.asList(filters);
         for (ScanResult result : resultList) {
             if (filterList.contains(result.SSID)) {

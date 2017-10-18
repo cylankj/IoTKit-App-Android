@@ -67,13 +67,14 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
         super.onViewCreated(view, savedInstanceState);
         List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
         boolean showShareContent = false;
-        if (!ListUtils.isEmpty(list))
+        if (!ListUtils.isEmpty(list)) {
             for (Device d : list) {
                 if (JFGRules.isPan720(d.pid)) {
                     showShareContent = true;
                     break;
                 }
             }
+        }
         sharedContent.setVisibility(showShareContent ? View.VISIBLE : View.GONE);
     }
 

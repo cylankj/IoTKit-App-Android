@@ -40,8 +40,9 @@ public class BellPuller {
     public static BellPuller getInstance() {
         if (instance == null) {
             synchronized (BellPuller.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new BellPuller();
+                }
             }
         }
         return instance;
@@ -65,7 +66,9 @@ public class BellPuller {
         System.out.println(PUSH_TAG + "fireBellCalling end" + sourceManager.getAccount());
         final boolean isBellCall = isBellCall(response);
         System.out.println(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response + "," + isBellCall);
-        if (!isBellCall) return;
+        if (!isBellCall) {
+            return;
+        }
         if (sourceManager.getAccount() == null || TextUtils.isEmpty(sourceManager.getAccount().getAccount())) {
             //表明没有登录,这种情况比较多{1.登出,2.App正常离线,3.反正就是处于后台,系统管控着}
             Observable.just(response)

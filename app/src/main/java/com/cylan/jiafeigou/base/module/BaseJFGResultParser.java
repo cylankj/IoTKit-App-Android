@@ -69,17 +69,20 @@ BaseJFGResultParser {
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
                 AppLogger.w("登录成功了");
                 //最短3s种一次。
-                if (login && MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
-                    BaseApplication.getAppComponent().getCmd().getAccount();
-                    PushPickerIntentService.start();
-                    Schedulers.io().createWorker().schedule(() -> {
-                        new FetchFriendsTask().call("");
-                        new FetchFeedbackTask().call("");
-                        new SysUnreadCountTask().call("");
-                    });
+                if (MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
+                    if (login) {
+                        BaseApplication.getAppComponent().getCmd().getAccount();
+                        PushPickerIntentService.start();
+                        Schedulers.io().createWorker().schedule(() -> {
+                            new FetchFriendsTask().call("");
+                            new FetchFeedbackTask().call("");
+                            new SysUnreadCountTask().call("");
+                        });
+
+                        PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
+                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                    }
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
-                    PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
-                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                 }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
@@ -126,7 +129,9 @@ BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.RessetAccountBack(jfgResult));
                 break;
         }
-        if (BaseApplication.isBackground()) return;
+        if (BaseApplication.isBackground()) {
+            return;
+        }
 //        if (login && MethodFilter.run("PushPickerIntentService", 5 * 1000)) {
 //            PushPickerIntentService.start();
 //            Observable.just(new FetchFeedbackTask(),

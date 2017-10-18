@@ -24,15 +24,19 @@
 
     <ImageView
         android:id="@+id/face_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/y80"
+        android:layout_height="@dimen/y80"
+        android:layout_marginTop="@dimen/y42"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/face_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="韩梅梅" />
+        android:layout_marginTop="@dimen/y8"
+        android:text="韩梅梅"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp16" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/setting_item_face_name"
@@ -48,5 +52,6 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        app:sv_title="@string/MESSAGES_FACE_MABAGE" />
+        app:sv_title="@string/MESSAGES_FACE_MABAGE"
+        app:sv_v_divider="true" />
 </LinearLayout>

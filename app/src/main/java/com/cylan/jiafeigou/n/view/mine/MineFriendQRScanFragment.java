@@ -192,7 +192,9 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     @Override
@@ -210,7 +212,9 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 
 }

@@ -8,7 +8,8 @@ import com.cylan.jiafeigou.BuildConfig;
 public class NullCheckerUtils {
 
     public static void checkObject(Object o) {
-        if (o == null && BuildConfig.DEBUG)
+        if (o == null && BuildConfig.DEBUG) {
             throw new NullPointerException("this object is null");
+        }
     }
 }

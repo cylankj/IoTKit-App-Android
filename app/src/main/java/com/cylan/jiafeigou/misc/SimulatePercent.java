@@ -92,8 +92,9 @@ public class SimulatePercent implements Handler.Callback {
                 if (index > percent) {
                     return true;
                 }
-                if (onAction != null)
+                if (onAction != null) {
                     onAction.actionPercent(index);
+                }
                 handler.sendEmptyMessageDelayed(MSG_STEP_0, getRandomDelay());
                 break;
             case MSG_STEP_1:
@@ -107,10 +108,12 @@ public class SimulatePercent implements Handler.Callback {
                     handler.removeMessages(MSG_STEP_1);
                     return true;
                 }
-                if (onAction != null)
+                if (onAction != null) {
                     onAction.actionPercent(index);
-                if (delay == 0)
+                }
+                if (delay == 0) {
                     delay = 50;
+                }
                 handler.sendEmptyMessageDelayed(MSG_STEP_1, delay);
                 break;
         }

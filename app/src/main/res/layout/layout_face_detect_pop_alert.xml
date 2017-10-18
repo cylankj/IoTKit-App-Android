@@ -1,32 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/y24"
+    android:paddingStart="@dimen/y24"
+    android:paddingTop="@dimen/y20">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/MESSAGES_IDENTIFY_POP" />
+        android:text="@string/MESSAGES_IDENTIFY_POP"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp16" />
 
-    <TextView
-        android:id="@+id/detect_new_face"
+    <RadioGroup
+        android:id="@+id/detect_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/y4">
+
+        <RadioButton
+            android:id="@+id/detect_new_face"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingBottom="@dimen/y12"
+            android:paddingTop="@dimen/y12"
+            android:text="@string/MESSAGES_IDENTIFY_CREATE_BTN" />
+
+        <RadioButton
+            android:id="@+id/detect_add_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/y12"
+            android:paddingTop="@dimen/y12"
+            android:text="@string/MESSAGES_IDENTIFY_ADD_BTN" />
+    </RadioGroup>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/MESSAGES_IDENTIFY_CREATE_BTN" />
+        android:layout_gravity="end"
+        android:layout_marginEnd="-24dp"
+        android:layout_marginTop="@dimen/y11">
 
-    <TextView
-        android:id="@+id/detect_add_to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/MESSAGES_IDENTIFY_ADD_BTN" />
 
-    <TextView
-        android:id="@+id/detect_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/CANCEL" />
+        <TextView
+            android:id="@+id/detect_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y36"
+            android:gravity="center"
+            android:paddingEnd="@dimen/y22"
+            android:paddingStart="@dimen/y22"
+            android:text="@string/OK"
+            android:textColor="@color/color_4b9fd5" />
+
+        <TextView
+            android:id="@+id/detect_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y36"
+            android:gravity="center"
+            android:paddingEnd="@dimen/y22"
+            android:paddingStart="@dimen/y22"
+            android:text="@string/CANCEL"
+            android:textColor="@color/color_4b9fd5" />
+    </LinearLayout>
 
 </LinearLayout>

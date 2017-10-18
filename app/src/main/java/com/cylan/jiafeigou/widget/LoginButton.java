@@ -79,7 +79,9 @@ public class LoginButton extends AppCompatTextView {
                 strokeColor = array.getColor(R.styleable.LoginButton_lb_stroke_color, Color.BLACK);
                 strokeWidth = convertToPx(strokeWidth, getResources());
             } finally {
-                if (array != null) array.recycle();
+                if (array != null) {
+                    array.recycle();
+                }
             }
         }
 

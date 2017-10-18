@@ -200,6 +200,7 @@ public class KPSwitchPanelLayoutHandler implements IPanelConflictLayout {
      * @attr ref cn.dreamtobe.kpswitch.R.styleable#KPSwitchPanelLayout_ignore_recommend_height
      * @see #resetToRecommendPanelHeight(int)
      */
+    @Override
     @SuppressWarnings("JavaDoc")
     public void setIgnoreRecommendHeight(boolean ignoreRecommendHeight) {
         this.mIgnoreRecommendHeight = ignoreRecommendHeight;

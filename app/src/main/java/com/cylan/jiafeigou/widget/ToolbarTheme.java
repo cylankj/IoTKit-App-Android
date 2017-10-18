@@ -17,8 +17,9 @@ public class ToolbarTheme {
     public static ToolbarTheme getInstance() {
         if (instance == null) {
             synchronized (ToolbarTheme.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new ToolbarTheme();
+                }
             }
         }
         return instance;

@@ -30,8 +30,9 @@ public class HomeMenuDialog extends Dialog {
                     @Override
                     public void onClick(View v) {
                         dismiss();
-                        if (cancelListener != null)
+                        if (cancelListener != null) {
                             cancelListener.onClick(v);
+                        }
                     }
                 });
         view.findViewById(R.id.tv_dialog_home_menu_delete)
@@ -39,8 +40,9 @@ public class HomeMenuDialog extends Dialog {
                     @Override
                     public void onClick(View v) {
                         dismiss();
-                        if (confirmListener != null)
+                        if (confirmListener != null) {
                             confirmListener.onClick(v);
+                        }
                     }
                 });
         setContentView(view);

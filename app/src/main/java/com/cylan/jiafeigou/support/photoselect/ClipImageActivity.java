@@ -54,7 +54,9 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     /**
@@ -202,6 +204,8 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     protected void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 }

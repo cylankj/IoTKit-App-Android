@@ -21,7 +21,9 @@ public class LiveShowCase {
     private static SimplePopupWindow right;
 
     public static void show(Activity activity, View anchor0, View anchor1) {
-        if (!anchor0.isShown()) return;
+        if (!anchor0.isShown()) {
+            return;
+        }
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_HISTORY_CASE, true);
         PreferencesUtils.putBoolean(KEY_SHOW_HISTORY_CASE, false);
         if (result) {
@@ -39,7 +41,9 @@ public class LiveShowCase {
     }
 
     public static void showHistoryCase(Activity activity, View anchor) {
-        if (!anchor.isShown()) return;
+        if (!anchor.isShown()) {
+            return;
+        }
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_HISTORY_CASE, true);
         PreferencesUtils.putBoolean(KEY_SHOW_HISTORY_CASE, false);
         if (result) {
@@ -53,8 +57,12 @@ public class LiveShowCase {
     }
 
     public static void showSafeCase(Activity activity, View anchor) {
-        if (true) return;//不再显示 安全防护 tips
-        if (!anchor.isShown()) return;
+        if (true) {
+            return;//不再显示 安全防护 tips
+        }
+        if (!anchor.isShown()) {
+            return;
+        }
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_SAFE_CASE, true);
         PreferencesUtils.putBoolean(KEY_SHOW_SAFE_CASE, false);
         if (result) {
@@ -93,7 +101,9 @@ public class LiveShowCase {
     }
 
     public static void hideHistoryCase(Activity context) {
-        if (right != null) right.dismiss();
+        if (right != null) {
+            right.dismiss();
+        }
 
     }
 }

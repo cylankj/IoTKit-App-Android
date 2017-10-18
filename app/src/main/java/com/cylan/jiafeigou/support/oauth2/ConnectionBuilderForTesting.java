@@ -59,18 +59,22 @@ public final class ConnectionBuilderForTesting implements ConnectionBuilder {
     @SuppressLint("TrustAllX509TrustManager")
     private static final TrustManager[] ANY_CERT_MANAGER = new TrustManager[] {
             new X509TrustManager() {
+                @Override
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
 
+                @Override
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {}
 
+                @Override
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {}
             }
     };
 
     @SuppressLint("BadHostnameVerifier")
     private static final HostnameVerifier ANY_HOSTNAME_VERIFIER = new HostnameVerifier() {
+        @Override
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }

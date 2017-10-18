@@ -172,21 +172,26 @@ public abstract class AbstractWheel extends View {
         // creating new scroller
         mScroller = createScroller(new WheelScroller.ScrollingListener() {
 
+            @Override
             public void onStarted() {
                 mIsScrollingPerformed = true;
                 notifyScrollingListenersAboutStart();
                 onScrollStarted();
             }
 
+            @Override
             public void onTouch() {
                 onScrollTouched();
             }
 
+            @Override
             public void onTouchUp() {
-                if (!mIsScrollingPerformed)
+                if (!mIsScrollingPerformed) {
                     onScrollTouchedUp(); // if scrolling IS performed, whe should use onFinished instead
+                }
             }
 
+            @Override
             public void onScroll(int distance) {
                 doScroll(distance);
 
@@ -200,6 +205,7 @@ public abstract class AbstractWheel extends View {
                 }
             }
 
+            @Override
             public void onFinished() {
                 if (mIsScrollingPerformed) {
                     notifyScrollingListenersAboutEnd();
@@ -211,6 +217,7 @@ public abstract class AbstractWheel extends View {
                 invalidate();
             }
 
+            @Override
             public void onJustify() {
                 if (Math.abs(mScrollingOffset) > WheelScroller.MIN_DELTA_FOR_SCROLLING) {
                     mScroller.scroll(mScrollingOffset, 0);
@@ -274,10 +281,12 @@ public abstract class AbstractWheel extends View {
 
         //required field that makes Parcelables from a Parcel
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+            @Override
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            @Override
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
@@ -801,7 +810,9 @@ public abstract class AbstractWheel extends View {
         if (mIsAllVisible) {
             int baseDimension = getBaseDimension();
             int itemDimension = getItemDimension();
-            if (itemDimension != 0) mVisibleItems = baseDimension / itemDimension + 1;
+            if (itemDimension != 0) {
+                mVisibleItems = baseDimension / itemDimension + 1;
+            }
         }
 
         int start = mCurrentItemIdx - mVisibleItems / 2;
@@ -814,9 +825,14 @@ public abstract class AbstractWheel extends View {
             }
         }
         if (!isCyclic()) {
-            if (start < 0) start = 0;
-            if (mViewAdapter == null) end = 0;
-            else if (end > mViewAdapter.getItemsCount()) end = mViewAdapter.getItemsCount();
+            if (start < 0) {
+                start = 0;
+            }
+            if (mViewAdapter == null) {
+                end = 0;
+            } else if (end > mViewAdapter.getItemsCount()) {
+                end = mViewAdapter.getItemsCount();
+            }
         }
         return new ItemsRange(start, end - start + 1);
     }

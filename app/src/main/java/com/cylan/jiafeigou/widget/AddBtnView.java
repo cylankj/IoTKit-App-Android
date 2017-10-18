@@ -106,7 +106,9 @@ public class AddBtnView extends FrameLayout {
     public void dismissAnim() {
         if (list != null) {
             for (AnimatorSet set : list) {
-                if (set != null) set.cancel();
+                if (set != null) {
+                    set.cancel();
+                }
             }
         }
         View v = findViewById("0".hashCode());

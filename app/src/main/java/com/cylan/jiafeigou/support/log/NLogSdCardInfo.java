@@ -40,8 +40,9 @@ public class NLogSdCardInfo {
     private StatFs sf;
 
     private synchronized StatFs getStatFs() {
-        if (sf == null)
+        if (sf == null) {
             sf = new StatFs(new File(path).getAbsolutePath());
+        }
         return sf;
     }
 

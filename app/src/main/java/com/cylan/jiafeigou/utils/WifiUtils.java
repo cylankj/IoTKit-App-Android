@@ -300,9 +300,13 @@ public class WifiUtils {
     public static void cleanWifi(Context ctx) {
         WifiManager wm = getWifiManager(ctx);
         List<WifiConfiguration> list = wm.getConfiguredNetworks();
-        if (list == null || list.size() == 0) return;
+        if (list == null || list.size() == 0) {
+            return;
+        }
         for (WifiConfiguration exist : list) {
-            if (exist == null) continue;
+            if (exist == null) {
+                continue;
+            }
             wm.removeNetwork(exist.networkId);
         }
         wm.saveConfiguration();

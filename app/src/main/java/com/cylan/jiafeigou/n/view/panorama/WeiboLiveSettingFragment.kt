@@ -132,4 +132,8 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
             return fragment
         }
     }
+
+    fun isWeiboAccountBinded(): Boolean {
+        return account != null
+    }
 }

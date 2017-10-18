@@ -82,7 +82,9 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     /**
@@ -180,7 +182,9 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
      * 删除亲友对话框
      */
     public void showDeleteFriendAlert() {
-        if (alertDialog != null && alertDialog.isShowing()) return;
+        if (alertDialog != null && alertDialog.isShowing()) {
+            return;
+        }
         alertDialog = new AlertDialog.Builder(getContext())
                 .setMessage(R.string.Tap3_Friends_DeleteFriends)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {

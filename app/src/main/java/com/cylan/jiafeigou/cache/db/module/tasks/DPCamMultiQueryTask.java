@@ -51,8 +51,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) throws Exception {
         this.option = cache.get(0).option(DBOption.MultiQueryOption.class);
-        if (sourceManager == null)
+        if (sourceManager == null) {
             sourceManager = getAppComponent().getSourceManager();
+        }
         return super.init(cache);
     }
 
@@ -78,7 +79,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         AppLogger.w("let'account go for local versionMin:" + versionMin);
         AppLogger.w("let'account go for local versionMax:" + versionMax);
         return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
-                versionMin, versionMax, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
+                versionMin, option.useMaxLimit ? versionMax : Long.MAX_VALUE/*面孔页面没有天数限制了,所以要区别对待*/, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
                     @Override
                     public Observable<BaseDPTaskResult> call(List<DPEntity> items) {
@@ -89,8 +90,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                 parse.setVersion(item.getVersion());
                                 parse.setMsgId(item.getMsgId());
                             }
-                            if (!result.contains(parse))
+                            if (!result.contains(parse)) {
                                 result.add(parse);
+                            }
                         }
                         return Observable.just(new BaseDPTaskResult()
                                 .setResultCode(0)
@@ -142,7 +144,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             list.addAll(data.map.get(integer));
                                         }
                                     }
-                                    if (ListUtils.isEmpty(list)) return;
+                                    if (ListUtils.isEmpty(list)) {
+                                        return;
+                                    }
                                     Collections.sort(list, (JFGDPMsg lhs, JFGDPMsg rhs) ->
                                             (int) (lhs.version - rhs.version));
                                     timeMax = Math.max(list.get(0).version, list.get(list.size() - 1).version);
@@ -204,9 +208,13 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     if (robotoGetDataRsp != null && robotoGetDataRsp.map != null) {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
                             for (JFGDPMsg msg : entry.getValue()) {
-                                if (msg.version >= versionMin && msg.version <= versionMax) {
-                                    DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
-                                    result.add(point);
+
+                                if (msg.version >= versionMin) {
+                                    if (!option.useMaxLimit || msg.version <= versionMax) {
+                                        // TODO: 2017/10/13 人脸识别不分天了,所以需要区别对待了
+                                        DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                                        result.add(point);
+                                    }
                                 }
                             }
                         }

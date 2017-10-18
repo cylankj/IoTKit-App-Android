@@ -23,10 +23,11 @@ public class TreeNode {
     public List<TreeNode> traversal() {
         List<TreeNode> nodeList = new ArrayList<>();
         nodeList.add(this);
-        if (childNodeList != null)
+        if (childNodeList != null) {
             for (TreeNode node : childNodeList) {
                 nodeList.addAll(node.traversal());
             }
+        }
         return nodeList;
     }
 
@@ -41,12 +42,15 @@ public class TreeNode {
      */
     public int getTraversalCount() {
         List<TreeNode> nodeList = traversal();
-        if (nodeList == null) return 0;
+        if (nodeList == null) {
+            return 0;
+        }
         int count = 0;
         for (TreeNode node : nodeList) {
             CacheObject object = node == null ? null : node.getCacheData();
-            if (object != null)
+            if (object != null) {
                 count += object.getCount();
+            }
         }
         return count;
     }
@@ -56,7 +60,9 @@ public class TreeNode {
     }
 
     public boolean addNodeToChild(TreeNode node) {
-        if (childNodeList == null) childNodeList = new ArrayList<>();
+        if (childNodeList == null) {
+            childNodeList = new ArrayList<>();
+        }
         return childNodeList.add(node);
     }
 
@@ -89,13 +95,18 @@ public class TreeNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TreeNode node = (TreeNode) o;
 
-        if (nodeName != null ? !nodeName.equals(node.nodeName) : node.nodeName != null)
+        if (nodeName != null ? !nodeName.equals(node.nodeName) : node.nodeName != null) {
             return false;
+        }
         return parentName != null ? parentName.equals(node.parentName) : node.parentName == null;
 
     }

@@ -48,14 +48,22 @@ public class ApSettingsPresenter extends AbstractPresenter<ApSettingContract.Vie
         //还有另外一种方式，直接ping此设备
         final String mac = getDevice().$(202, "");
         Log.d(TAG, "monitorHotSpot ,mac:" + mac);
-        if (TextUtils.isEmpty(mac)) return;
-        if (hasSubscroption("monitorHotSpot")) return;
+        if (TextUtils.isEmpty(mac)) {
+            return;
+        }
+        if (hasSubscroption("monitorHotSpot")) {
+            return;
+        }
         Subscription subscription = Observable.interval(2, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .flatMap(aLong -> {
-                    if (aLong * 2 >= 90) throw new RxEvent.HelperBreaker("timeout");
+                    if (aLong * 2 >= 90) {
+                        throw new RxEvent.HelperBreaker("timeout");
+                    }
                     ArrayList<NetUtils.ClientScanResult> list = NetUtils.getClientList(true, 1000);
-                    if (ListUtils.isEmpty(list)) return Observable.just(false);
+                    if (ListUtils.isEmpty(list)) {
+                        return Observable.just(false);
+                    }
                     for (NetUtils.ClientScanResult ret : list) {
                         if (TextUtils.equals(mac.toLowerCase(), ret.getHWAddr().toLowerCase())) {
                             return Observable.just(true);

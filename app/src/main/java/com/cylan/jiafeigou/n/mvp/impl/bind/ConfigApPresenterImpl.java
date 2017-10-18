@@ -220,8 +220,9 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     @Override
     public void finish() {
         stop();
-        if (aFullBind != null)
+        if (aFullBind != null) {
             aFullBind.clean();
+        }
     }
 
     /**
@@ -362,8 +363,9 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         String action = intent.getAction();
         if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
                 || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-            if (!onLocalFlowFinish)
+            if (!onLocalFlowFinish) {
                 updateWifiResults();
+            }
         } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
             if (!onLocalFlowFinish) {
                 ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
@@ -371,8 +373,9 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             }
         } else if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            if (!onLocalFlowFinish)
+            if (!onLocalFlowFinish) {
                 updateConnectInfo(info);
+            }
         }
     }
 

@@ -15,8 +15,9 @@ public class Converter {
 
     public static ArrayList<CamMessageBean> convert(ArrayList<DataPoint> baseValueList) {
         ArrayList<CamMessageBean> beanArrayList = new ArrayList<>();
-        if (baseValueList == null)
+        if (baseValueList == null) {
             return beanArrayList;
+        }
         for (DataPoint base : baseValueList) {
             CamMessageBean bean = new CamMessageBean();
             bean.id = base.getMsgId();

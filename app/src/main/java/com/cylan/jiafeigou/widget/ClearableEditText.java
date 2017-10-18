@@ -52,6 +52,8 @@ public class ClearableEditText extends AppCompatEditText {
         setClearIconVisible(focused && length() > 0);
     }
 
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {

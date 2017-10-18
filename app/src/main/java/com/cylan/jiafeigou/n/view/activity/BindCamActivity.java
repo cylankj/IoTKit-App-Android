@@ -47,6 +47,7 @@ public class BindCamActivity extends BaseBindActivity {
         Glide.with(this).load(R.raw.add_cam).into(imageViewTarget);
     }
 
+    @Override
     protected int[] getOverridePendingTransition() {
         return new int[]{R.anim.slide_in_right, R.anim.slide_out_left};
     }

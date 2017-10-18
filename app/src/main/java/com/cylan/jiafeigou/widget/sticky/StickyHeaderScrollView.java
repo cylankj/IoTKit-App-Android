@@ -23,6 +23,7 @@ public class StickyHeaderScrollView extends StickyHeader {
         return mScrollView;
     }
 
+    @Override
     protected void init() {
         super.init();
         setupOnScrollListener();

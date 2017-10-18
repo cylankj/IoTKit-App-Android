@@ -38,7 +38,9 @@ public class ToastUtil {
             if (toasterNormalView == null) {
                 toasterNormalView = new SoftReference<>(tv);
             }
-            if (toastUtil != null) toastUtil.cancel();
+            if (toastUtil != null) {
+                toastUtil.cancel();
+            }
             toastUtil = new Toast(cxt.getApplicationContext());
             toastUtil.setGravity(gravity, 0, 0);
             toastUtil.setDuration(duration);

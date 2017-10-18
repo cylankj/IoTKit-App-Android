@@ -182,12 +182,18 @@ public final class DownloadFile implements Comparable<DownloadFile>, Parcelable 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DownloadFile file = (DownloadFile) o;
 
-        if (time != file.time) return false;
+        if (time != file.time) {
+            return false;
+        }
         return fileName != null ? fileName.equals(file.fileName) : file.fileName == null;
 
     }

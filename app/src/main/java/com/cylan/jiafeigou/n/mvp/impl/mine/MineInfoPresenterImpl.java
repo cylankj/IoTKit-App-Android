@@ -26,6 +26,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         view.setPresenter(this);
     }
 
+    @Override
     public void monitorPersonInformation() {
         Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())

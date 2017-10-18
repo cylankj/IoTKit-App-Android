@@ -59,8 +59,11 @@ public class NumberBadge extends AppCompatTextView {
      */
     public void showNumber(int number) {
         drawFlag = 2;
-        if (number > 99) setText(" 99+ ");
-        else setText(number + "");
+        if (number > 99) {
+            setText(" 99+ ");
+        } else {
+            setText(number + "");
+        }
     }
 
     public void showHint(boolean show) {
@@ -74,10 +77,11 @@ public class NumberBadge extends AppCompatTextView {
         int w = this.getWidth();
         int diameter = Math.max(h, w);
         int radius = diameter / 2;
-        if (drawFlag == 2)
+        if (drawFlag == 2) {
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, bgPaint);
-        else if (drawFlag == 1)
+        } else if (drawFlag == 1) {
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, pointRadius, bgPaint);
+        }
         super.onDraw(canvas);
     }
 }

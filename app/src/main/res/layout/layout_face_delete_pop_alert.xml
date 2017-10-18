@@ -1,32 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/MESSAGES_DELETE_POP" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/delete_only_face"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/MESSAGES_DELETE_FACE_BTN" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/y24"
+            android:paddingStart="@dimen/y24"
+            android:paddingTop="@dimen/y20">
 
-    <TextView
-        android:id="@+id/delete_face_and_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/MESSAGES_DELETE_FACE_MES" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/MESSAGES_DELETE_POP"
+                android:textColor="@color/color_666666"
+                android:textSize="@dimen/sp16" />
 
-    <TextView
-        android:id="@+id/delete_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/CANCEL" />
+            <RadioGroup
+                android:id="@+id/delete_radio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y4">
 
-</LinearLayout>
+                <RadioButton
+                    android:id="@+id/delete_only_face"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:paddingBottom="@dimen/y12"
+                    android:paddingTop="@dimen/y12"
+                    android:text="@string/MESSAGES_DELETE_FACE_BTN"
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/sp16" />
+
+                <RadioButton
+                    android:id="@+id/delete_face_and_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/y12"
+                    android:paddingTop="@dimen/y12"
+                    android:text="@string/MESSAGES_DELETE_FACE_MES"
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/sp16" />
+            </RadioGroup>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingBottom="@dimen/y8">
+
+            <TextView
+                android:id="@+id/delete_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y36"
+                android:gravity="center"
+                android:paddingEnd="@dimen/y22"
+                android:paddingStart="@dimen/y22"
+                android:text="@string/OK"
+                android:textColor="@color/color_4b9fd5" />
+
+            <TextView
+                android:id="@+id/delete_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y36"
+                android:gravity="center"
+                android:paddingEnd="@dimen/y22"
+                android:paddingStart="@dimen/y22"
+                android:text="@string/CANCEL"
+                android:textColor="@color/color_4b9fd5" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

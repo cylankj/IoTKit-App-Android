@@ -57,7 +57,8 @@ public class PresenterImpl extends AbstractPresenter<RstPwdContract.View> implem
 
     @Override
     public void stop() {
-        if (subscription != null)
+        if (subscription != null) {
             subscription.unsubscribe();
+        }
     }
 }

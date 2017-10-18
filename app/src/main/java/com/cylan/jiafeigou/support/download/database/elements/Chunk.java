@@ -31,8 +31,9 @@ public class Chunk {
     public ContentValues converterToContentValues() {
         ContentValues contentValues = new ContentValues();
 
-        if (id != 0)
+        if (id != 0) {
             contentValues.put(CHUNKS.COLUMN_ID, id);
+        }
         contentValues.put(CHUNKS.COLUMN_TASK_ID, task_id);
         contentValues.put(CHUNKS.COLUMN_BEGIN, begin);
         contentValues.put(CHUNKS.COLUMN_END, end);

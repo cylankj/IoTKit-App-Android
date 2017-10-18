@@ -141,8 +141,9 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //平视
         String dpPrimary = device.$(509, "1");
-        if (!TextUtils.equals(dpPrimary, initValue))
+        if (!TextUtils.equals(dpPrimary, initValue)) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+        }
 
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();

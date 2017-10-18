@@ -153,8 +153,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.addViewMargins(customToolbar, 0, (int) getResources().getDimension(R.dimen.y9), 0, 0);
         customToolbar.setBackAction(v -> {
-            if (getActivity() != null)
+            if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
+            }
         });
     }
 
@@ -177,12 +178,14 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         } else if (info.isNotSupport()) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_QR_Fail));
             zxVScan.stopCamera();
-            if (getActivity() instanceof BindDeviceActivity)
+            if (getActivity() instanceof BindDeviceActivity) {
                 ((BindDeviceActivity) getActivity()).finishExt();
+            }
         } else {
             ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
-            if (getActivity() instanceof BindDeviceActivity)
+            if (getActivity() instanceof BindDeviceActivity) {
                 ((BindDeviceActivity) getActivity()).finishExt();
+            }
         }
     }
 
@@ -204,9 +207,12 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
             if (device != null && device.available()) {
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_AddedDeviceTips));
                 HandlerThreadUtils.postDelay(() -> {
-                    if (zxVScan != null) zxVScan.stop();
-                    if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
+                    if (zxVScan != null) {
+                        zxVScan.stop();
+                    }
+                    if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
                         getActivity().getSupportFragmentManager().popBackStack();
+                    }
                     zxVScan.stop();
                 }, 2000);
             } else {

@@ -47,8 +47,9 @@ public class History {
      */
 
     public static History getHistory() {
-        if (history == null)
+        if (history == null) {
             history = new History();
+        }
         return history;
     }
 
@@ -96,7 +97,9 @@ public class History {
 
     public ArrayList<Long> getDateList(String uuid) {
         synchronized (lock) {
-            if (TextUtils.isEmpty(uuid)) return null;
+            if (TextUtils.isEmpty(uuid)) {
+                return null;
+            }
             ArrayList<Long> longs = new ArrayList<>();
             Iterator<String> key = dateMap.keySet().iterator();
             while (key.hasNext()) {

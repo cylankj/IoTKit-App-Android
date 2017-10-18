@@ -35,8 +35,9 @@ public class GuideIndicatorLayout extends LinearLayout {
     }
 
     public void setFocusedIndex(int index) {
-        if (index < 0 || index > getChildCount())
+        if (index < 0 || index > getChildCount()) {
             return;
+        }
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setEnabled(true);
         }

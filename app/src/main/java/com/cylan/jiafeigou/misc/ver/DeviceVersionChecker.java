@@ -29,13 +29,21 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
 
     @Override
     public boolean checkCondition() {
-        if (portrait == null) throw new IllegalArgumentException("portrait == null 报错");
+        if (portrait == null) {
+            throw new IllegalArgumentException("portrait == null 报错");
+        }
         //不支持固件升级
-        if (!JFGRules.showFirmware(portrait.getPid(), false)) return false;
+        if (!JFGRules.showFirmware(portrait.getPid(), false)) {
+            return false;
+        }
         //分享设备
-        if (JFGRules.isShareDevice(portrait.getCid())) return false;
+        if (JFGRules.isShareDevice(portrait.getCid())) {
+            return false;
+        }
         //当前网络不行
-        if (NetUtils.getJfgNetType() == 0) return false;
+        if (NetUtils.getJfgNetType() == 0) {
+            return false;
+        }
         return true;
     }
 
@@ -43,7 +51,9 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
     public void startCheck() {
         if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60 * 1000) {
             lastCheckTime = System.currentTimeMillis();
-        } else return;
+        } else {
+            return;
+        }
         final String uuid = portrait.getCid();
         Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)

@@ -57,7 +57,9 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
 
             @Override
             public void onSnapshot(Bitmap bitmap, boolean b) {
-                if (interActListener != null) interActListener.onSnapshot(bitmap, b);
+                if (interActListener != null) {
+                    interActListener.onSnapshot(bitmap, b);
+                }
             }
         });
     }
@@ -124,7 +126,9 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
         buildDrawingCache(true);
         Bitmap source = getDrawingCache();
         Log.d("getCacheBitmap", "getCacheBitmap result?" + (source == null));
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         Bitmap b = Bitmap.createBitmap(source);
         setDrawingCacheEnabled(false); // clear drawing cache
         return b;

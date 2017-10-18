@@ -255,7 +255,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
         isLoading = false;
-        if (!getUserVisibleHint()) return;
+        if (!getUserVisibleHint()) {
+            return;
+        }
         srLayoutMainContentHolder.setRefreshing(false);
         mHasMore = resultList.size() == 15;
         int lastPosition = homeWonderAdapter.getCount() - 1;
@@ -302,8 +304,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onDeleteWonderSuccess(int position) {
         homeWonderAdapter.remove(position);
-        if (position < homeWonderAdapter.getCount())
+        if (position < homeWonderAdapter.getCount()) {
             homeWonderAdapter.notifyItemChanged(position);
+        }
         int pastVisibleItems = mLinearLayoutManager.findFirstVisibleItemPosition();
         int visibleItemCount = mLinearLayoutManager.getChildCount();
         int totalItemCount = mLinearLayoutManager.getItemCount();
@@ -321,8 +324,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
         homeWonderAdapter.clear();
-        if (items.size() > 0)
+        if (items.size() > 0) {
             onQueryTimeLineSuccess(items, true);
+        }
     }
 
     @Override
@@ -343,8 +347,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onPageScrolled() {
-        if (srLayoutMainContentHolder != null)
+        if (srLayoutMainContentHolder != null) {
             srLayoutMainContentHolder.setRefreshing(false);
+        }
     }
 
     @Override
@@ -489,8 +494,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right)
+        if (id == R.id.tv_dialog_btn_right) {
             return;
+        }
         if (value == null || !(value instanceof Integer)) {
             AppLogger.i("value is null :" + value);
             return;
@@ -509,7 +515,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
-        if (preRatio == ratio) return;
+        if (preRatio == ratio) {
+            return;
+        }
         preRatio = ratio;
         Log.d("WonderfulFragmentExt", "WonderfulFragmentExt: " + verticalOffset);
         final float alpha = 1.0f - ratio;
@@ -538,7 +546,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             } else {
 //                newSharedElement = mWonderfulGuideContainer.findViewById(R.msgId.iv_wonderful_item_content);
             }
-            if (newSharedElement == null) return;
+            if (newSharedElement == null) {
+                return;
+            }
             ((ShadowFrameLayout) newSharedElement.getParent()).adjustSize(true);
             SuperViewHolder holders = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
             View oldView = null;
@@ -560,8 +570,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-        if (sharedElements.size() > 0)
+        if (sharedElements.size() > 0) {
             mWonderfulEmptyViewContainer.post(() -> ((ShadowFrameLayout) sharedElements.get(0).getParent()).adjustSize(false));
+        }
     }
 
     @Override

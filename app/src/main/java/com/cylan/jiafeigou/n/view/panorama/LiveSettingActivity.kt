@@ -50,22 +50,33 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
         PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
 
         when (rtmp_type_tabs.selectedTabPosition) {
-
             0 -> {
                 //facebook
-                PreferencesUtils.putString(JConstant.FACEBOOK_PREF_DESCRIPTION + ":" + uuid, facebookFragment.getFacebookDescription())
+                if (facebookFragment.isFacebookAccountBinded()) {
+                    PreferencesUtils.putString(JConstant.FACEBOOK_PREF_DESCRIPTION + ":" + uuid, facebookFragment.getFacebookDescription())
+                    finish()
+                } else {
+                    ToastUtil.showToast(getString(R.string.LIVE_ACCOUNT_BIND_TIPS))
+                }
                 //todo
-                finish()
             }
             1 -> {
                 //youtube
 //                PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
-                finish()
+                if (youtubeFragment.isYoutubeAccountBinded()) {
+                    finish()
+                } else {
+                    ToastUtil.showToast(getString(R.string.LIVE_ACCOUNT_BIND_TIPS))
+                }
             }
             2 -> {
                 //weibo
-                PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, weiboFragment.getWeiboLiveDescription())
-                finish()
+                if (weiboFragment.isWeiboAccountBinded()) {
+                    PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, weiboFragment.getWeiboLiveDescription())
+                    finish()
+                } else {
+                    ToastUtil.showToast(getString(R.string.LIVE_ACCOUNT_BIND_TIPS))
+                }
             }
             3 -> {
                 //rtmp

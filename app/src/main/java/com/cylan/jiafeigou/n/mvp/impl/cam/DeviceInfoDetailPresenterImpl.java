@@ -53,8 +53,9 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
 
     private void loadParameters() {
         try {
-            if (BaseApplication.getAppComponent().getSourceManager().isOnline())
+            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
                 BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid);
+            }
         } catch (Exception e) {
         }
     }
@@ -173,6 +174,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 }, AppLogger::e);
     }
 
+    @Override
     public void updateAlias(Device device) {
         addSubscription(Observable.just(device)
                 .map(device1 -> {

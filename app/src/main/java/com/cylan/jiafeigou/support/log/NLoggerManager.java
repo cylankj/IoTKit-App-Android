@@ -11,8 +11,9 @@ public class NLoggerManager {
     private static HashMap<String, NLogger> loggerMap = new HashMap<>();
 
     public static NLogger getLogger(final String filePath) throws IOException {
-        if (filePath == null || filePath.length() == 0)
+        if (filePath == null || filePath.length() == 0) {
             return null;
+        }
         NLoggerConfigurator configurator = new NLoggerConfigurator.Builder()
                 .setFilePath(filePath)
                 .build();

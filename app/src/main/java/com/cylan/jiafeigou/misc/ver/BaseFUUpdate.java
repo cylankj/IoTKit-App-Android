@@ -53,10 +53,12 @@ public abstract class BaseFUUpdate implements IFUUpdate {
     }
 
     public BaseFUUpdate() {
-        if (netMonitor == null)
+        if (netMonitor == null) {
             netMonitor = NetMonitor.getNetMonitor();
-        if (netMonitor == null)
+        }
+        if (netMonitor == null) {
             netMonitor = NetMonitor.getNetMonitor();
+        }
         netMonitor.registerNet(this::onNetworkChanged,
                 new String[]{ConnectivityManager.CONNECTIVITY_ACTION,
                         NETWORK_STATE_CHANGED_ACTION});
@@ -80,7 +82,9 @@ public abstract class BaseFUUpdate implements IFUUpdate {
     }
 
     public int getSimulatePercent() {
-        if (simulatePercent == null) return 0;
+        if (simulatePercent == null) {
+            return 0;
+        }
         return simulatePercent.getProgress();
     }
 

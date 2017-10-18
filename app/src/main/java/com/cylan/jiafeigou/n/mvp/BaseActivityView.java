@@ -5,5 +5,6 @@ package com.cylan.jiafeigou.n.mvp;
  */
 public interface BaseActivityView<T> extends BaseView<T> {
 
+    @Override
     String getUuid();
 }

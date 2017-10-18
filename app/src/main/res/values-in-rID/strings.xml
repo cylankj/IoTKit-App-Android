@@ -81,6 +81,7 @@
   <string name="Cable_Mode">Mode kabel</string>
   <string name="Cable_Mode_Start_Hotspot">Sebelum menghidupkan, pastikan ponsel dan perangkat Anda terhubung ke router yang sama</string>
   <string name="Cable_Mode_Switch_Cancel">Jika dinonaktifkan, ini mungkin menyebabkan offline perangkat, konfirmasikan?</string>
+  <string name="Camera_Outdoor">Kamera (versi luar)</string>
   <string name="CancelingTips">Membatalkan&#8230;</string>
   <string name="Cellular_Data_Method">Data seluler:</string>
   <string name="Cellular_Data_Set_Up">Aktifkan data Mobile di perangkat, gunakan cara di bawah ini, Settings> Mobile data</string>
@@ -358,6 +359,7 @@
   <string name="LIVE_NOT_OPENED_POP">Account YouTube %s belum membuka saluran, tidak bisa hidup, silahkan buka dan coba lagi</string>
   <string name="LIVE_OPENING">Membuka hidup &#8230;</string>
   <string name="LIVE_PLATFORM_FACEBOOK">Facebook</string>
+  <string name="LIVE_PLATFORM_RTMP">RTMP</string>
   <string name="LIVE_PLATFORM_WEIBO">Sina Weibo</string>
   <string name="LIVE_PLATFORM_YOUTUBE">Youtube</string>
   <string name="LIVE_RTMP_ENTER_KEY">Masukkan kunci</string>
@@ -780,6 +782,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot dan tekan lama tombol WiFi untuk 3s</string>
   <string name="Tap1_AddDevice_FindNoResult">Tidak ada perangkat ditemukan, silahkan coba lagi</string>
   <string name="Tap1_AddDevice_FindingTips">Sedang mencari perangkat sekitar, silahkan mulai dengan mode konfigurasi WiFi</string>
+  <string name="Tap1_AddDevice_Outdoor_CameraTipsTitle">tekan lama tombol Set untuk 3s</string>
   <string name="Tap1_AddDevice_QR">Pindai Kode QR</string>
   <string name="Tap1_AddDevice_QR_Fail">Tidak memungkinkan untuk menambahkan</string>
   <string name="Tap1_AddDevice_SetName">Pilih nama</string>

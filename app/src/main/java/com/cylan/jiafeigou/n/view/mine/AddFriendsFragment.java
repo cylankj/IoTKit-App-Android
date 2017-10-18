@@ -130,12 +130,13 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
         contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
-        if (getView() != null)
+        if (getView() != null) {
             getView().post(() -> {
                 if (getView() != null && isAdded()) {
                     LoadingDialog.dismissLoading();
                 }
             });
+        }
     }
 
     /**

@@ -38,12 +38,16 @@ public class PanoramicView360_Ext extends Panoramic360View implements VideoViewF
         setEventListener(new PanoramaEventListener() {
             @Override
             public void onSingleTap(float v, float v1) {
-                if (interActListener != null) interActListener.onSingleTap(v, v1);
+                if (interActListener != null) {
+                    interActListener.onSingleTap(v, v1);
+                }
             }
 
             @Override
             public void onSnapshot(Bitmap bitmap, boolean b) {
-                if (interActListener != null) interActListener.onSnapshot(bitmap, b);
+                if (interActListener != null) {
+                    interActListener.onSnapshot(bitmap, b);
+                }
             }
         });
     }
@@ -105,7 +109,9 @@ public class PanoramicView360_Ext extends Panoramic360View implements VideoViewF
         buildDrawingCache(true);
         Bitmap source = getDrawingCache();
         Log.d("getCacheBitmap", "getCacheBitmap result?" + (source == null));
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         Bitmap b = Bitmap.createBitmap(source);
         setDrawingCacheEnabled(false); // clear drawing cache
         return b;

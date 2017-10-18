@@ -62,10 +62,12 @@ public class LandLiveBarAnimDelegate {
     });
 
     private void initAnimation() {
-        if (weakReferenceTop == null || weakReferenceTop.get() == null)
+        if (weakReferenceTop == null || weakReferenceTop.get() == null) {
             return;
-        if (weakReferenceBottom == null || weakReferenceBottom.get() == null)
+        }
+        if (weakReferenceBottom == null || weakReferenceBottom.get() == null) {
             return;
+        }
         animatorHideBottom = hideBottom();
         animatorHideTop = hideTop();
         animatorHideTop.addListener(new AnimatorUtils.SimpleAnimationListener() {
@@ -152,24 +154,36 @@ public class LandLiveBarAnimDelegate {
     }
 
     private void cancelAnimation() {
-        if (animatorShowTop != null && animatorShowTop.isRunning())
+        if (animatorShowTop != null && animatorShowTop.isRunning()) {
             animatorShowTop.cancel();
-        if (animatorShowBottom != null && animatorShowBottom.isRunning())
+        }
+        if (animatorShowBottom != null && animatorShowBottom.isRunning()) {
             animatorShowBottom.cancel();
-        if (animatorHideTop != null && animatorHideTop.isRunning())
+        }
+        if (animatorHideTop != null && animatorHideTop.isRunning()) {
             animatorHideTop.cancel();
-        if (animatorHideBottom != null && animatorHideBottom.isRunning())
+        }
+        if (animatorHideBottom != null && animatorHideBottom.isRunning()) {
             animatorHideBottom.cancel();
+        }
     }
 
     private void show() {
-        if (animatorShowTop != null) animatorShowTop.start();
-        if (animatorShowBottom != null) animatorShowBottom.start();
+        if (animatorShowTop != null) {
+            animatorShowTop.start();
+        }
+        if (animatorShowBottom != null) {
+            animatorShowBottom.start();
+        }
     }
 
     private void hide() {
-        if (animatorHideTop != null) animatorHideTop.start();
-        if (animatorHideBottom != null) animatorHideBottom.start();
+        if (animatorHideTop != null) {
+            animatorHideTop.start();
+        }
+        if (animatorHideBottom != null) {
+            animatorHideBottom.start();
+        }
     }
 
     public void startAnimation(boolean auto) {
@@ -183,10 +197,11 @@ public class LandLiveBarAnimDelegate {
             case STATE_SHOWING:
                 break;
             case STATE_SHOWN:
-                if (auto)
+                if (auto) {
                     handler.sendEmptyMessageDelayed(MSG_AUTO_HIDE, 3000);
-                else
+                } else {
                     hide();
+                }
                 break;
         }
     }

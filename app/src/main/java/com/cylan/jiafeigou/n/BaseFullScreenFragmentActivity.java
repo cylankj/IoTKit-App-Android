@@ -66,8 +66,9 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     @Override
     protected void onStart() {
         super.onStart();
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.start();
+        }
     }
 
     @Override
@@ -81,14 +82,17 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     @Override
     protected void onPause() {
         super.onPause();
-        if (basePresenter != null) basePresenter.pause();
+        if (basePresenter != null) {
+            basePresenter.pause();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.stop();
+        }
         IMEUtils.hide(this);
     }
 
@@ -195,8 +199,9 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     }
 
     protected void setSystemBarTintEnable(boolean enable) {
-        if (tintManager != null)
+        if (tintManager != null) {
             tintManager.setStatusBarTintEnabled(enable);
+        }
     }
 
     private static long time = 0;
@@ -205,8 +210,9 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     public void onBackPressed() {
         if (checkExtraChildFragment()) {
             return;
-        } else if (checkExtraFragment())
+        } else if (checkExtraFragment()) {
             return;
+        }
         if (theLastActivity()) {
             if (System.currentTimeMillis() - time < 1500) {
                 super.onBackPressed();
@@ -232,8 +238,9 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     protected boolean checkExtraChildFragment() {
         FragmentManager fm = getSupportFragmentManager();
         List<Fragment> list = fm.getFragments();
-        if (ListUtils.isEmpty(list))
+        if (ListUtils.isEmpty(list)) {
             return false;
+        }
         for (Fragment frag : list) {
             if (frag != null && frag.isVisible()) {
                 FragmentManager childFm = frag.getChildFragmentManager();
@@ -255,7 +262,9 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         if (count > 0) {
             getSupportFragmentManager().popBackStack();
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
 

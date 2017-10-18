@@ -89,13 +89,17 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 
     private void initPresenter() {
@@ -119,7 +123,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:
-                if (chooseList.size() == 0) return;
+                if (chooseList.size() == 0) {
+                    return;
+                }
                 presenter.sendShareToReq(chooseList, friendItem);
                 break;
         }

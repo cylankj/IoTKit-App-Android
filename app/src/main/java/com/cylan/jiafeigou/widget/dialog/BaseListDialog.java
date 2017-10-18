@@ -86,7 +86,9 @@ public abstract class BaseListDialog<T> extends DialogFragment {
         rvWifiList.setAdapter(baseAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvWifiList.setLayoutManager(layoutManager);
-        if (!ListUtils.isEmpty(finalList)) baseAdapter.addAll(finalList);
+        if (!ListUtils.isEmpty(finalList)) {
+            baseAdapter.addAll(finalList);
+        }
     }
 
     protected abstract ViewGroup getParentContainer(ViewGroup container);
@@ -120,16 +122,18 @@ public abstract class BaseListDialog<T> extends DialogFragment {
     }
 
     private void cancelAnimation() {
-        if (layoutHeightAnimation != null && layoutHeightAnimation.isRunning())
+        if (layoutHeightAnimation != null && layoutHeightAnimation.isRunning()) {
             layoutHeightAnimation.cancel();
+        }
     }
 
     private void prepareAnimation(final int count) {
         int targetHeight = count * itemHeight;
         targetHeight = Math.min(maxHeight, targetHeight);
         targetHeight = Math.max(targetHeight, minHeight);
-        if (Math.abs(targetHeight - currentHeight) < itemHeight / 2)
+        if (Math.abs(targetHeight - currentHeight) < itemHeight / 2) {
             return;
+        }
         cancelAnimation();
         layoutHeightAnimation = ValueAnimator.ofInt(currentHeight, targetHeight);
         layoutHeightAnimation.setDuration(400);
@@ -147,9 +151,10 @@ public abstract class BaseListDialog<T> extends DialogFragment {
         layoutHeightAnimation.addListener(new AnimatorUtils.SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (getDialog() != null && getDialog().getWindow() != null)
+                if (getDialog() != null && getDialog().getWindow() != null) {
                     getDialog().getWindow()
                             .setLayout(maxWidth, currentHeight);
+                }
             }
         });
         layoutHeightAnimation.start();

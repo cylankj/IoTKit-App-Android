@@ -20,7 +20,9 @@ public class LinkManager {
 
     public static String getQrCodeLink() {
         JFGAccount jfgaccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return "";
+        if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) {
+            return "";
+        }
         final String pkgName = ContextUtils.getContext().getPackageName();
         if (TextUtils.equals(pkgName, "com.cylan.jiafeigou")) {
             return ContextUtils.getContext().getString(R.string.qrcode_prefix, pkgName,

@@ -72,7 +72,9 @@ public class AdsTimerView extends AppCompatTextView {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         //根据字体大小
         CharSequence content = getText();
-        if (content == null || content.length() == 0) throw new IllegalArgumentException("清填充文字");
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("清填充文字");
+        }
         TextPaint paint = getPaint();
         if (paint != null) {
             float w = paint.measureText(content, 0, content.length());
@@ -88,10 +90,12 @@ public class AdsTimerView extends AppCompatTextView {
         canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, bgPaint);
         super.onDraw(canvas);
         canvas.drawArc(circleRect, -90, currentProgress, false, progressPaint);
-        if (currentProgress < 360)
+        if (currentProgress < 360) {
             postDelayed(runnable, 20);
-        else {
-            if (boomer != null) boomer.onTimerFinish();
+        } else {
+            if (boomer != null) {
+                boomer.onTimerFinish();
+            }
         }
     }
 

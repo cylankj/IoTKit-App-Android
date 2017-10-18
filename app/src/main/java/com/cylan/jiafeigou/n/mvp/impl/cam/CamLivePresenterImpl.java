@@ -106,7 +106,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         super(view);
         view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
-        if (historyDataProvider != null) historyDataProvider.clean();
+        if (historyDataProvider != null) {
+            historyDataProvider.clean();
+        }
         //清了吧.不需要缓存.
         History.getHistory().clearHistoryFile(uuid);
     }
@@ -191,7 +193,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 return false;
             }
             //局域网弹出
-            if (!MiscUtils.isDeviceInWLAN(uuid)) return false;
+            if (!MiscUtils.isDeviceInWLAN(uuid)) {
+                return false;
+            }
             return true;
         });
         version.startCheck();
@@ -254,13 +258,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
                     if (!ListUtils.isEmpty(historyFiles)) {
-                        if (historyDataProvider == null)
+                        if (historyDataProvider == null) {
                             historyDataProvider = DataExt.getInstance();
+                        }
                         historyDataProvider.flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
                     }
                     //本地没有啊,需要从服务器获取.
-                    if (ListUtils.isEmpty(historyFiles))
+                    if (ListUtils.isEmpty(historyFiles)) {
                         fetchHistoryDataList();
+                    }
                     return Observable.just(historyDataProvider);
                 });
     }
@@ -283,7 +289,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public float getVideoPortHeightRatio() {
         AppLogger.d("获取分辨率?");
         float cache = PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, 0.0f);
-        if (cache == 0.0f) cache = JFGRules.getDefaultPortHeightRatio(getDevice().pid);
+        if (cache == 0.0f) {
+            cache = JFGRules.getDefaultPortHeightRatio(getDevice().pid);
+        }
         return PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, cache);
     }
 
@@ -327,7 +335,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.d("获取历史录像,先断开直播,或者历史录像");
         }
         if (ListUtils.isEmpty(History.getHistory().getDateList(uuid))) {
-            if (historyDataProvider != null) historyDataProvider.clean();
+            if (historyDataProvider != null) {
+                historyDataProvider.clean();
+            }
         }
         if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
             AppLogger.d("有历史录像了.");
@@ -386,7 +396,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void startPlay() {
-        if (mView == null || !mView.isUserVisible()) return;
+        if (mView == null || !mView.isUserVisible()) {
+            return;
+        }
         if (getLiveStream().playState == PLAY_STATE_PREPARE) {
             AppLogger.d("已经loading");
             mView.onLivePrepare(getLiveStream().type);
@@ -583,7 +595,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(o -> {
                     DpMsgDefine.DPStandby dpStandby = getDevice().$(508, new DpMsgDefine.DPStandby());
-                    if (dpStandby.standby) return false;//待机模式
+                    if (dpStandby.standby) {
+                        return false;//待机模式
+                    }
                     if (NetUtils.getJfgNetType() == 0) {
                         //客户端断网了
                         stopPlayVideo(ERR_NETWORK)
@@ -617,11 +631,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     private void updateLiveStream(int type, long time, int state) {
-        if (liveStream == null) liveStream = new CamLiveContract.LiveStream();
-        if (type != -1)
+        if (liveStream == null) {
+            liveStream = new CamLiveContract.LiveStream();
+        }
+        if (type != -1) {
             liveStream.type = type;
-        if (time != -1 && time != 0)
+        }
+        if (time != -1 && time != 0) {
             liveStream.time = time;
+        }
         liveStream.playState = state;
         Log.d("updateLiveStream", "updateLiveStream:" + liveStream);
     }
@@ -666,7 +684,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         //保证得到s System.currentTimeMillis() / t == 0 的条件范围可能有点小
         if (t == 0) {
             t = 1;
-            if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
+            if (BuildConfig.DEBUG) {
+                throw new IllegalArgumentException("怎么会有这种情况发生");
+            }
         }
         if (t == getLiveStream().playStartTime) {
             return;//多次调用了,过滤掉即可
@@ -711,8 +731,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public Observable<Boolean> stopPlayVideo(int reasonOrState) {
         AppLogger.d("pre play state: " + liveStream);
         if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
-                || liveStream.playState == PLAY_STATE_STOP)
+                || liveStream.playState == PLAY_STATE_STOP) {
             return Observable.just(false);
+        }
         if (getLiveStream().playState == PLAY_STATE_PLAYING) {
             //暂停播放了，还需要截图
             takeSnapShot(false);
@@ -731,8 +752,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());
                     }
                     AppLogger.d("live stop: " + reasonOrState);
-                    if (getView() != null)
+                    if (getView() != null) {
                         getView().onLiveStop(getLiveStream().type, reasonOrState);
+                    }
                     return Observable.just(true);
                 })
                 .doOnError(throwable -> AppLogger.e("stop play err" + throwable.getLocalizedMessage()));
@@ -761,8 +783,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     public HotSeatStateMaintainer getHotSeatStateMaintainer() {
-        if (hotSeatStateMaintainer == null)
+        if (hotSeatStateMaintainer == null) {
             hotSeatStateMaintainer = new HotSeatStateMaintainer(mView, this);
+        }
         return hotSeatStateMaintainer;
     }
 
@@ -892,7 +915,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(msg -> msg.id == 218)
                 .map(msg -> {
                     if (msg.ret == 0) {
-                        if (historyDataProvider != null) historyDataProvider.clean();
+                        if (historyDataProvider != null) {
+                            historyDataProvider.clean();
+                        }
                         History.getHistory().clearHistoryFile(uuid);
                         AppLogger.d("清空历史录像");
                     }
@@ -927,9 +952,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     try {
                         if (msg.id == 222) {
                             DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                            if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
-                            if (!sdStatus.hasSdcard || sdStatus.errCode != 0)
+                            if (sdStatus == null) {
+                                sdStatus = new DpMsgDefine.DPSdcardSummary();
+                            }
+                            if (!sdStatus.hasSdcard || sdStatus.errCode != 0) {
                                 updateLiveStream(TYPE_LIVE, 0, -1);
+                            }
                         } else if (msg.id == DpMsgMap.ID_206_BATTERY) {
                             if (JFGRules.popPowerDrainOut(getDevice().pid)) {
                                 Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
@@ -964,7 +992,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         AppLogger.e("is bad net work show loading?" + slow);
         if (slow) {
             saveHotSeatState();
-        } else restoreHotSeatState();
+        } else {
+            restoreHotSeatState();
+        }
         Observable.just(slow)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(slowFrameRate -> {
@@ -983,8 +1013,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         String action = intent.getAction();
-        if (mView == null) return;
-        if (networkAction == null) networkAction = new NetworkAction(this);
+        if (mView == null) {
+            return;
+        }
+        if (networkAction == null) {
+            networkAction = new NetworkAction(this);
+        }
         if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)
                 || TextUtils.equals(action, NETWORK_STATE_CHANGED_ACTION)) {
             networkAction.run();
@@ -1009,7 +1043,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> presenterWeakReference.get().mView != null)
                         .subscribe(ret -> {
                             int net = NetUtils.getJfgNetType();
-                            if (preNetType == net) return;
+                            if (preNetType == net) {
+                                return;
+                            }
                             preNetType = net;
                             if (net == 0) {
                                 AppLogger.i("网络中断");
@@ -1034,8 +1070,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             PerformanceUtils.startTrace("takeCapture");
             Bitmap bitmap = (Bitmap) o;
-            if (weakReference.get() != null)
+            if (weakReference.get() != null) {
                 weakReference.get().onTakeSnapShot(bitmap);//弹窗
+            }
             final String fileName = "." + uuid + System.currentTimeMillis();
             final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
             removeLastPreview();
@@ -1074,8 +1111,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             PerformanceUtils.startTrace("takeCapture");
             byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
             if (data == null) {
-                if (forPopWindow && weakReference.get() != null)
+                if (forPopWindow && weakReference.get() != null) {
                     weakReference.get().onTakeSnapShot(null);//弹窗
+                }
                 AppLogger.e("截图失败,data为空");
 
                 // TODO: 2017/8/29 做一次尝试用 VideoView 截图
@@ -1085,8 +1123,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
             int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
             Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
-            if (forPopWindow && weakReference.get() != null)
+            if (forPopWindow && weakReference.get() != null) {
                 weakReference.get().onTakeSnapShot(bitmap);//弹窗
+            }
             PerformanceUtils.stopTrace("takeCapture");
             String filePath;
             String fileName = "";
@@ -1105,8 +1144,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
             }
 //            MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
-            if (weakReference.get() != null && !forPopWindow)
+            if (weakReference.get() != null && !forPopWindow) {
                 weakReference.get().onPreviewResourceReady(bitmap);
+            }
             shareSnapshot(forPopWindow, filePath);//最后一步处理分享
             return new Pair<>(bitmap, filePath);
         }
@@ -1125,12 +1165,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             } catch (Exception e) {
             }
             String[] file = new File(JConstant.MEDIA_PATH).list((dir, name) -> !TextUtils.isEmpty(name) && name.contains(uuid));
-            if (file.length == 0) return;
+            if (file.length == 0) {
+                return;
+            }
             Observable.just(file)
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
-                        for (String fileName : ret)
+                        for (String fileName : ret) {
                             FileUtils.deleteFile(JConstant.MEDIA_PATH + File.separator + fileName);
+                        }
                     }, AppLogger::e);
         }
 
@@ -1199,10 +1242,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          */
         public void reset() {
             micOn = speakerOn = captureOn = false;
-            if (viewWeakReference.get() != null)
+            if (viewWeakReference.get() != null) {
                 viewWeakReference.get().switchHotSeat(false, false,
                         false, false,
                         false, false);
+            }
             disableAudio();
         }
 
@@ -1235,8 +1279,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 Observable.just("restoreAudio")
                         .subscribeOn(Schedulers.io())
                         .subscribe(ret -> {
-                                    if (playType == TYPE_HISTORY)
+                                    if (playType == TYPE_HISTORY) {
                                         micOn = false;
+                                    }
                                     //设置客户端声音
                                     boolean result = setupLocalAudio(micOn, micOn || speakerOn);
                                     if (result) {
@@ -1361,9 +1406,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         mRecorder.release();
                     }
                     AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                        if (viewWeakReference == null || viewWeakReference.get() == null) return;
-                        if (viewWeakReference.get().isUserVisible())
+                        if (viewWeakReference == null || viewWeakReference.get() == null) {
+                            return;
+                        }
+                        if (viewWeakReference.get().isUserVisible()) {
                             viewWeakReference.get().audioRecordPermissionDenied();
+                        }
                     });
                     return false;
                 }

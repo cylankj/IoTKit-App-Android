@@ -82,7 +82,9 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (presenter != null) presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     private void initPresenter() {
@@ -98,7 +100,9 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 
     /**
@@ -147,8 +151,12 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:       //删除
-                if (messageAdapter == null) return;
-                if (messageAdapter.getItemCount() == 0) return;
+                if (messageAdapter == null) {
+                    return;
+                }
+                if (messageAdapter.getItemCount() == 0) {
+                    return;
+                }
                 if (customToolbar.getTvToolbarRight().getText().equals(getString(R.string.CANCEL))) {
                     handleCancle();
                     return;

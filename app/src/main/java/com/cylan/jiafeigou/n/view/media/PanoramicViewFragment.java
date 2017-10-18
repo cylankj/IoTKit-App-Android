@@ -110,7 +110,9 @@ public class PanoramicViewFragment extends IBaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (subscription != null) subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
         try {
             if (panoramicView != null) {
                 panoramicView.onDestroy();
@@ -166,8 +168,9 @@ public class PanoramicViewFragment extends IBaseFragment {
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
         try {
-            if (target != null)
+            if (target != null) {
                 Glide.clear(target);
+            }
         } catch (Exception e) {
 
         }
@@ -188,9 +191,9 @@ public class PanoramicViewFragment extends IBaseFragment {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         try {
-                            if (resource != null && !resource.isRecycled())
+                            if (resource != null && !resource.isRecycled()) {
                                 panoramicView.loadImage(resource);
-                            else {
+                            } else {
                                 AppLogger.e("bitmap is recycled");
                             }
                         } catch (Exception e) {
@@ -222,7 +225,9 @@ public class PanoramicViewFragment extends IBaseFragment {
 
 
         Log.d("loadBitmap", "loadBitmap: " + mode);
-        if (subscription != null) subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
         subscription = Observable.just(mode)
                 .subscribeOn(Schedulers.io())
                 .delay(200, TimeUnit.MILLISECONDS)

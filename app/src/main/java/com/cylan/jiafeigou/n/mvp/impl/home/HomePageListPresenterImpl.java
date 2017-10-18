@@ -68,7 +68,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         recordSub = new CompositeSubscription();
         if (device != null) {
             for (Device device1 : device) {
-                if (device1 == null) continue;//可能
+                if (device1 == null) {
+                    continue;//可能
+                }
                 if (JFGRules.isPan720(device1.pid) && JFGRules.isDeviceOnline(device1.uuid)) {//只有在线才发消息,否则没有意义
                     Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
                         if (recordSub != null && !recordSub.isUnsubscribed()) {
@@ -306,8 +308,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map(aLong -> {
                     ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-                    if (info != null && info.isAvailable() && info.isConnected())
+                    if (info != null && info.isAvailable() && info.isConnected()) {
                         return true;
+                    }
                     return NetUtils.isPublicNetwork();
                 })
                 .observeOn(AndroidSchedulers.mainThread())

@@ -265,8 +265,9 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     public String FormatFileSize(long byteData) {
         DecimalFormat df = new DecimalFormat("0.0");
         String fileSizeString = "";
-        if (byteData < BYTE)
+        if (byteData < BYTE) {
             return byteData + "KB";
+        }
         if (byteData >= BYTE && byteData < MEGA_BYTE) {
             return df.format((double) (byteData >>> 10)) + "M";
         }

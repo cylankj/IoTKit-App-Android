@@ -60,9 +60,15 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         HomeItem item = (HomeItem) o;
 
@@ -220,9 +226,11 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         int iconRes = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || (JFGRules.isPan720(device.pid) && apMode) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
-        if (!isPrimaryAccount(shareAccount))
+        if (!isPrimaryAccount(shareAccount)) {
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
-        else holder.setVisibility(R.id.tv_device_share_tag, GONE);
+        } else {
+            holder.setVisibility(R.id.tv_device_share_tag, GONE);
+        }
         //图标
         holder.setImageResource(R.id.img_device_icon, iconRes);
         handleMsgCountAndTime(holder, uuid, device);
@@ -290,8 +298,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         if (JFGRules.isCamera(mDevice.pid)) {
             return isPrimaryDevice;//摄像头,分享设备不显示.
         }
-        if (JFGRules.isBell(mDevice.pid))
+        if (JFGRules.isBell(mDevice.pid)) {
             return true;//门铃要显示
+        }
         return false;
     }
 
@@ -312,12 +321,15 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 
     private String getLastWarnContent(Pair<DPEntity, Integer> pair, int pid, String uuid) {
         try {
-            if (pair == null) return "";
+            if (pair == null) {
+                return "";
+            }
             DPEntity entity = pair.first;
             final int msgCount = pair.second;
             long msgTime = msgCount == 0 ? 0 : (entity != null ? entity.getVersion() : 0);
-            if (msgCount == 0)
+            if (msgCount == 0) {
                 return mContext.getString(R.string.Tap1_NoMessages);
+            }
             if (JFGRules.isCamera(pid)) {
                 return String.format(Locale.getDefault(), "[%s]" + mContext.getString(R.string.MSG_WARNING), msgCount > 99 ? "99+" : msgCount);
             }

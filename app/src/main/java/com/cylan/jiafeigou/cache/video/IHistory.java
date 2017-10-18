@@ -13,6 +13,7 @@ public interface IHistory extends IParser {
     /**
      * 清空历史数据
      */
+    @Override
     void clear();
 
 }

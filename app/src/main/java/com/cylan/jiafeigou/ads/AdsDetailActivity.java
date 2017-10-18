@@ -72,8 +72,12 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 vProgress.setProgress(newProgress);
-                if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
-                if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
+                if (newProgress == 0) {
+                    vProgress.setVisibility(View.VISIBLE);
+                }
+                if (newProgress == 100) {
+                    vProgress.setVisibility(View.INVISIBLE);
+                }
             }
         });
         wAdsContent.loadUrl(description.tagUrl);
@@ -81,7 +85,9 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
             BaseApplication.getAppComponent().getCmd().countADClick(description.showCount,
                     PackageUtils.getAppVersionName(ContextUtils.getContext()), description.tagUrl);
         } catch (JfgException e) {
-            if (BuildConfig.DEBUG) throw new IllegalArgumentException("错了");
+            if (BuildConfig.DEBUG) {
+                throw new IllegalArgumentException("错了");
+            }
         }
         customToolbar.setBackAction(v -> onClick());
         customToolbar.getTvToolbarRight().setOnClickListener(v -> {

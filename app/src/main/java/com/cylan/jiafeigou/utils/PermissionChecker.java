@@ -39,9 +39,11 @@ public class PermissionChecker {
         int recordState = -1;
         try {
             audioRecord.startRecording();
-            if (audioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING)
+            if (audioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
                 recordState = -1;
-            else recordState = 0;
+            } else {
+                recordState = 0;
+            }
         } catch (Exception e) {
             recordState = -1;
             AppLogger.e("recordState: " + e.toString());
@@ -60,7 +62,9 @@ public class PermissionChecker {
         } catch (Exception e) {
             enable = false;
         } finally {
-            if (camera != null) camera.release();
+            if (camera != null) {
+                camera.release();
+            }
             return enable;
         }
     }
@@ -119,7 +123,9 @@ public class PermissionChecker {
             }
             //建立一个Log，使得可以在LogCat视图查看结果
         }
-        if (cursor != null) cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         return findResults;
     }
 

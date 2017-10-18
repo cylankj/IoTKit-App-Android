@@ -11,12 +11,18 @@ public class BaseValue implements Comparable<BaseValue> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BaseValue value = (BaseValue) o;
 
-        if (id != value.id) return false;
+        if (id != value.id) {
+            return false;
+        }
         return version == value.version;
 
     }

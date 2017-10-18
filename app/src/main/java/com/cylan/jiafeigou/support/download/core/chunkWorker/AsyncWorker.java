@@ -55,7 +55,9 @@ public class AsyncWorker extends Thread {
             connection.setReadTimeout(60 * 1000);
             System.setProperty("http.keepAlive", "false");
             if (chunk.end != 0) // support unresumable links
+            {
                 connection.setRequestProperty("Range", "bytes=" + chunk.begin + "-" + chunk.end);
+            }
             connection.connect();
             File cf = new File(FileUtils.address(task.save_address, String.valueOf(chunk.id)));
             InputStream remoteFileIn = connection.getInputStream();

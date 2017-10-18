@@ -126,8 +126,9 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 }
 
                 AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
-                if (datePickerListener != null)
+                if (datePickerListener != null) {
                     datePickerListener.onPickDate((Long) value, STATE_FINISH);
+                }
                 playPreciseByTime((Long) value);
             }
         });
@@ -203,8 +204,9 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 //                superWheelExt.removeCallbacks(dragRunnable);
 //                superWheelExt.postDelayed(dragRunnable, 700);
                 presenter.startPlayHistory(time);
-                if (datePickerListener != null)
+                if (datePickerListener != null) {
                     datePickerListener.onPickDate(time / 1000, STATE_FINISH);
+                }
                 AppLogger.d("拖动停止了:" + time + "," + TimeUtils.getTimeSpecial(time));
                 break;
         }

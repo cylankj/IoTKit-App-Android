@@ -233,7 +233,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onDetach() {
         super.onDetach();
-        if (subscription != null) subscription.unsubscribe();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     private Subscription subscription;
@@ -328,8 +330,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
-                if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentStart") != null)
+                if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentStart") != null) {
                     return;
+                }
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
             }
             break;
@@ -347,8 +350,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
-                if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentEnd") != null)
+                if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentEnd") != null) {
                     return;
+                }
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
             }
             break;
@@ -433,8 +437,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     private void showFragment(DialogFragment fragment) {
         if (fragment != null
                 && !fragment.isResumed()
-                && getActivity() != null)
+                && getActivity() != null) {
             fragment.show(getActivity().getSupportFragmentManager(), fragment.getClass().getSimpleName());
+        }
     }
 
     /**

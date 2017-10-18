@@ -113,8 +113,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             return;
         }
         //非分享设备显示：已进入待机状态，前往开启，和设置点击事件。跳转到设置页面
-        if (onClickListener != null)
+        if (onClickListener != null) {
             tv.setOnClickListener(onClickListener);
+        }
     }
 
     public boolean isShowStandby() {
@@ -149,9 +150,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (bitmap == null) {
             AppLogger.e("preview bitmap is null");
             return;
-        } else Log.d(TAG, "setThumbnail: good");
-        if (subscription != null && !subscription.isUnsubscribed())
+        } else {
+            Log.d(TAG, "setThumbnail: good");
+        }
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
+        }
         subscription = Observable.just(bitmap)
                 .subscribeOn(Schedulers.io())
                 .map(bMap -> {
@@ -218,10 +222,16 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void onLiveStart() {
-        if (imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
+        if (imgThumbnail.isShown()) {
+            imgThumbnail.setVisibility(GONE);
+        }
         Log.d(TAG, "onLiveStart");
-        if (subscription != null) subscription.unsubscribe();
-        if (imgThumbnail != null && imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+        if (imgThumbnail != null && imgThumbnail.isShown()) {
+            imgThumbnail.setVisibility(GONE);
+        }
     }
 
     @Override
@@ -280,7 +290,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             findViewById(R.id.btn_go_ahead)
                     .setOnClickListener(v1 -> {
                         v.setVisibility(GONE);//
-                        if (clickListener != null) clickListener.onClick(v1);
+                        if (clickListener != null) {
+                            clickListener.onClick(v1);
+                        }
                     });
             AppLogger.d("显示手机数据,层");
         }

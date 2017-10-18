@@ -41,7 +41,9 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     }
 
     public String getUuid() {
-        if (getArguments() == null) return "";
+        if (getArguments() == null) {
+            return "";
+        }
         return getArguments().getString(KEY_DEVICE_ITEM_UUID);
     }
 
@@ -59,29 +61,39 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     public void onStart() {
         Log.d(TAG, TAG + ",onStart");
         super.onStart();
-        if (basePresenter != null) basePresenter.start();
+        if (basePresenter != null) {
+            basePresenter.start();
+        }
     }
 
     @Override
     public void onPause() {
         Log.d(TAG, TAG + ",onPause");
         super.onPause();
-        if (basePresenter != null) basePresenter.pause();
+        if (basePresenter != null) {
+            basePresenter.pause();
+        }
     }
 
     @Override
     public void onStop() {
         Log.d(TAG, TAG + ",onStop");
         super.onStop();
-        if (basePresenter != null) basePresenter.stop();
-        if (getActivity() != null) IMEUtils.hide(getActivity());
+        if (basePresenter != null) {
+            basePresenter.stop();
+        }
+        if (getActivity() != null) {
+            IMEUtils.hide(getActivity());
+        }
     }
 
     @Override
     public void onDetach() {
         Log.d(TAG, TAG + ",onDetach");
         super.onDetach();
-        if (callBack != null) callBack.callBack(cache);
+        if (callBack != null) {
+            callBack.callBack(cache);
+        }
     }
 
     public void setPresenter(P presenter) {

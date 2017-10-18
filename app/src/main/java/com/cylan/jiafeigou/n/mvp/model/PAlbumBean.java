@@ -25,12 +25,18 @@ public class PAlbumBean implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PAlbumBean bean = (PAlbumBean) o;
 
-        if (isDate != bean.isDate) return false;
+        if (isDate != bean.isDate) {
+            return false;
+        }
         return downloadFile != null ? downloadFile.equals(bean.downloadFile) : bean.downloadFile == null;
 
     }

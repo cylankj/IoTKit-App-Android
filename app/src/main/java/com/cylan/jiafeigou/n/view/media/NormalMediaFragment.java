@@ -77,8 +77,9 @@ public class NormalMediaFragment extends IBaseFragment {
         View view = inflater.inflate(R.layout.fragment_normal_big_pic, container, false);
         ButterKnife.bind(this, view);
         // Postpone the shared element enter transition in onCreate()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().postponeEnterTransition();
+        }
         return view;
     }
 
@@ -86,7 +87,9 @@ public class NormalMediaFragment extends IBaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         if (TextUtils.isEmpty(uuid)) {
-            if (BuildConfig.DEBUG) throw new IllegalArgumentException("uuid is null");
+            if (BuildConfig.DEBUG) {
+                throw new IllegalArgumentException("uuid is null");
+            }
             getActivity().finish();
             return;
         }

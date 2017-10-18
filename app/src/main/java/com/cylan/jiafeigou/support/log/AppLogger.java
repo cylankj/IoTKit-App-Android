@@ -41,8 +41,9 @@ public class AppLogger {
 
     private static void logFile(String filePath, String content) {
         NLogger logger = getLogger(filePath);
-        if (logger != null)
+        if (logger != null) {
             logger.write(content);
+        }
     }
 
     private AppLogger() {
@@ -59,10 +60,12 @@ public class AppLogger {
      */
     public static void v(String msg) {
         final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.v(TAG, content);
-        if (permissionGranted)
+        if (DEBUG) {
+            Log.v(TAG, content);
+        }
+        if (permissionGranted) {
             logFile(null, content);
+        }
     }
 
 //    /**
@@ -98,10 +101,12 @@ public class AppLogger {
      */
     public static void d(String msg) {
         final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.d(TAG, buildMessage(msg));
-        if (permissionGranted)
+        if (DEBUG) {
+            Log.d(TAG, buildMessage(msg));
+        }
+        if (permissionGranted) {
             logFile(null, content);
+        }
     }
 
 //    /**
@@ -136,10 +141,12 @@ public class AppLogger {
      */
     public static void i(String msg) {
         final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.i(TAG, buildMessage(msg));
-        if (permissionGranted)
+        if (DEBUG) {
+            Log.i(TAG, buildMessage(msg));
+        }
+        if (permissionGranted) {
             logFile(null, content);
+        }
     }
 
 //    /**
@@ -173,10 +180,12 @@ public class AppLogger {
      */
     public static void e(String msg) {
         final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.e(TAG, content);
-        if (permissionGranted)
+        if (DEBUG) {
+            Log.e(TAG, content);
+        }
+        if (permissionGranted) {
             logFile(null, content);
+        }
     }
 
     /**
@@ -186,10 +195,12 @@ public class AppLogger {
      */
     public static void e(Throwable throwable) {
         final String content = buildMessage(throwable == null ? null : throwable.getMessage());
-        if (DEBUG)
-            android.util.Log.e(TAG, content);
-        if (permissionGranted)
+        if (DEBUG) {
+            Log.e(TAG, content);
+        }
+        if (permissionGranted) {
             logFile(null, content);
+        }
     }
 
 //    /**
@@ -211,8 +222,9 @@ public class AppLogger {
      */
     public static void w(String msg) {
 //        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.w(TAG, buildMessage(msg));
+        if (DEBUG) {
+            Log.w(TAG, buildMessage(msg));
+        }
     }
 
 //    /**
@@ -245,8 +257,9 @@ public class AppLogger {
      * @param thr An exception to log
      */
     public static void w(Throwable thr) {
-        if (DEBUG)
-            android.util.Log.w(TAG, buildMessage(""), thr);
+        if (DEBUG) {
+            Log.w(TAG, buildMessage(""), thr);
+        }
     }
 
     //    /**

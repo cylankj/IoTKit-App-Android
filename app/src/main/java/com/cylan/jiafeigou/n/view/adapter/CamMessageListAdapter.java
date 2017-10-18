@@ -56,6 +56,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private boolean isSharedDevice = false;
     private DpMsgDefine.DPSdcardSummary summary;
     private boolean status;
+    private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
+    //null 不过滤
+    private String faceItemType = null;
 
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -96,7 +99,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     public void reverseMode(boolean reverse, final int lastVisiblePosition) {
         this.editMode = reverse;
-        if (!editMode) selectedMap.clear();
+        if (!editMode) {
+            selectedMap.clear();
+        }
         updateItemFrom(lastVisiblePosition);
     }
 
@@ -138,14 +143,17 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         synchronized (CamMessageListAdapter.class) {
             for (int i = 0; i < getCount(); i++) {
                 if (i <= position)//没必要全部
+                {
                     notifyItemChanged(i);
+                }
             }
         }
     }
 
     public boolean markItemSelected(int position) {
-        if (!editMode)
+        if (!editMode) {
             return false;
+        }
         if (selectedMap.containsKey(position)) {
             selectedMap.remove(position);
             notifyItemChanged(position);
@@ -168,8 +176,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case CamMessageBean.ViewType.TWO_PIC:
             case CamMessageBean.ViewType.THREE_PIC:
                 handlePicsLayout(holder, item);
+            default:
         }
-        if (viewType == CamMessageBean.ViewType.FOOT) return;
+        if (viewType == CamMessageBean.ViewType.FOOT) {
+            return;
+        }
         if (onClickListener != null) {
             holder.setOnClickListener(R.id.lLayout_cam_msg_container, onClickListener);
             holder.setOnClickListener(R.id.tv_cam_message_item_delete, onClickListener);
@@ -208,7 +219,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean showHistoryButton(CamMessageBean bean) {
-        if (isSharedDevice || !hasSdcard()) return false;
+        if (isSharedDevice || !hasSdcard()) {
+            return false;
+        }
         if (bean != null && bean.bellCallRecord != null) {
             return bean.bellCallRecord.isRecording == 1;
         } else if (bean != null && bean.alarmMsg != null) {
@@ -321,7 +334,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-            if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
+            if (bean.alarmMsg.face_id != null && bean.alarmMsg.humanNum > 0) {
+                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, faceInformationMap, null);
+                return tContent + (TextUtils.isEmpty(faceText) ? getContext().getString(R.string.MSG_WARNING) : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
+            } else if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
                 return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(bean.alarmMsg.objects);
 //                return tContent + "检测到" + JConstant.getAIText(bean.alarmMsg.objects);
             } else {//无检测数据
@@ -359,8 +375,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private String getFinalSdcardContent(CamMessageBean bean) {
-        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.sdcardSummary == null)
+        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.sdcardSummary == null) {
             return "";
+        }
         DpMsgDefine.DPSdcardSummary sdStatus = bean.sdcardSummary;
         if (!sdStatus.hasSdcard) {
             return getContext().getString(R.string.MSG_SD_OFF);
@@ -386,15 +403,27 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
                 if (camMessageBean.bellCallRecord != null) {
                     final int count = camMessageBean.bellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(camMessageBean.bellCallRecord.fileIndex);
-                    if (count == 1) return CamMessageBean.ViewType.ONE_PIC;
-                    if (count == 2) return CamMessageBean.ViewType.TWO_PIC;
-                    if (count == 3) return CamMessageBean.ViewType.THREE_PIC;
+                    if (count == 1) {
+                        return CamMessageBean.ViewType.ONE_PIC;
+                    }
+                    if (count == 2) {
+                        return CamMessageBean.ViewType.TWO_PIC;
+                    }
+                    if (count == 3) {
+                        return CamMessageBean.ViewType.THREE_PIC;
+                    }
                 }
                 if (camMessageBean.alarmMsg != null) {
                     final int count = camMessageBean.alarmMsg.fileIndex < 1 ? 1 : MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex);
-                    if (count == 1) return CamMessageBean.ViewType.ONE_PIC;
-                    if (count == 2) return CamMessageBean.ViewType.TWO_PIC;
-                    if (count == 3) return CamMessageBean.ViewType.THREE_PIC;
+                    if (count == 1) {
+                        return CamMessageBean.ViewType.ONE_PIC;
+                    }
+                    if (count == 2) {
+                        return CamMessageBean.ViewType.TWO_PIC;
+                    }
+                    if (count == 3) {
+                        return CamMessageBean.ViewType.THREE_PIC;
+                    }
                 }
                 if (camMessageBean.sdcardSummary != null) {
                     return CamMessageBean.ViewType.TEXT;
@@ -442,5 +471,18 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     public void setCurrentSDcardSummary(DpMsgDefine.DPSdcardSummary summary) {
         this.summary = summary;
+    }
+
+    public void appendFaceInformation(Map<String, DpMsgDefine.FaceInformation> informationMap) {
+        faceInformationMap.putAll(informationMap);
+        notifyDataSetChanged();
+    }
+
+//    private List<CamMessageBean>
+
+    public void filterByFaceItemType(String personId) {
+        // TODO: 2017/10/14 null 全部
+        this.faceItemType = personId;
+        notifyDataSetChanged();
     }
 }

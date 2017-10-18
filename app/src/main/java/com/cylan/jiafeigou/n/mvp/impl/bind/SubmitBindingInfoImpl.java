@@ -80,7 +80,9 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
     @Override
     public void clean() {
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
-        if (task != null) task.clean();
+        if (task != null) {
+            task.clean();
+        }
     }
 
     @Override
@@ -115,8 +117,12 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         private static final int INTERVAL = 3;
 
         public void clean() {
-            if (subscriptionBindResult != null) subscriptionBindResult.unsubscribe();
-            if (subscription != null) subscription.unsubscribe();
+            if (subscriptionBindResult != null) {
+                subscriptionBindResult.unsubscribe();
+            }
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
         }
 
         public int getBindState() {
@@ -157,7 +163,9 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         if (ret.bindResult != 0) {//0表示正常绑定
                             RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
                             viewWeakReference.get().bindState(ret.bindResult);
-                            if (subscription != null) subscription.unsubscribe();
+                            if (subscription != null) {
+                                subscription.unsubscribe();
+                            }
                         }
                     }, AppLogger::e);
         }
@@ -225,8 +233,9 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                 //timeout失败
                                 bindState = BIND_TIME_OUT;
                                 simulatePercent.stop();
-                                if (viewWeakReference.get() != null)
+                                if (viewWeakReference.get() != null) {
                                     viewWeakReference.get().bindState(bindState);
+                                }
                                 AppLogger.e("绑定设备超时");
                             }
                         }
@@ -274,12 +283,16 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
 
         @Override
         public void actionDone() {
-            if (viewWeakReference.get() != null) viewWeakReference.get().bindState(bindState);
+            if (viewWeakReference.get() != null) {
+                viewWeakReference.get().bindState(bindState);
+            }
         }
 
         @Override
         public void actionPercent(int percent) {
-            if (viewWeakReference.get() != null) viewWeakReference.get().onCounting(percent);
+            if (viewWeakReference.get() != null) {
+                viewWeakReference.get().onCounting(percent);
+            }
         }
     }
 

@@ -110,16 +110,22 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                                     bean.type = (int) msg.id;
                                     if (bean.type == 701) {
                                         DpMsgDefine.DPSystemMesg sysMesg = convert(701, msg.packValue, DpMsgDefine.DPSystemMesg.class);
-                                        if (sysMesg == null) continue;
+                                        if (sysMesg == null) {
+                                            continue;
+                                        }
                                         bean.name = sysMesg.content.trim();
                                         bean.content = sysMesg.title.trim();
                                         bean.time = msg.version;
                                         bean.isDone = 0;
                                     } else if (bean.type == 601) {
-                                        if (msg.packValue == null) continue;
+                                        if (msg.packValue == null) {
+                                            continue;
+                                        }
                                         Log.d(TAG, "byte/" + Arrays.toString(msg.packValue));
                                         DpMsgDefine.DPMineMesg mesg = convert(601, msg.packValue, DpMsgDefine.DPMineMesg.class);
-                                        if (mesg == null) continue;
+                                        if (mesg == null) {
+                                            continue;
+                                        }
                                         bean.name = mesg.account.trim();
                                         bean.isDone = mesg.isDone ? 1 : 0;
                                         bean.content = mesg.cid.trim();
@@ -158,7 +164,9 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
 
     private void clearALLFromDB() {
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) return;
+        if (account == null || TextUtils.isEmpty(account.getAccount())) {
+            return;
+        }
         QueryBuilder<DPEntity> builder = BaseApplication.getAppComponent().getDBHelper().getDpEntityQueryBuilder();
         builder.whereOr(DPEntityDao.Properties.MsgId.eq(601), DPEntityDao.Properties.MsgId.eq(701))
                 .where(DPEntityDao.Properties.Account.eq(account.getAccount()));
@@ -208,7 +216,9 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
      */
     public Observable<ArrayList<SysMsgBean>> findAllFromDb() {
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) return null;
+        if (account == null || TextUtils.isEmpty(account.getAccount())) {
+            return null;
+        }
         QueryBuilder<DPEntity> builder = BaseApplication.getAppComponent().getDBHelper().getDpEntityQueryBuilder();
         builder.whereOr(DPEntityDao.Properties.MsgId.eq(601), DPEntityDao.Properties.MsgId.eq(701))
                 .where(DPEntityDao.Properties.Account.eq(account.getAccount()));
@@ -224,16 +234,22 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 try {
                     if (bean.type == 701) {
                         DpMsgDefine.DPSystemMesg sysMesg = convert(701, dp.getBytes(), DpMsgDefine.DPSystemMesg.class);
-                        if (sysMesg == null) continue;
+                        if (sysMesg == null) {
+                            continue;
+                        }
                         bean.name = sysMesg.content.trim();
                         bean.content = sysMesg.title.trim();
                         bean.time = dp.getVersion();
                         bean.isDone = 0;
                     } else if (bean.type == 601) {
-                        if (dp.getBytes() == null) continue;
+                        if (dp.getBytes() == null) {
+                            continue;
+                        }
                         Log.d(TAG, "byte/" + Arrays.toString(dp.getBytes()));
                         DpMsgDefine.DPMineMesg mesg = convert(601, dp.getBytes(), DpMsgDefine.DPMineMesg.class);
-                        if (mesg == null) continue;
+                        if (mesg == null) {
+                            continue;
+                        }
                         bean.name = mesg.account.trim();
                         bean.isDone = mesg.isDone ? 1 : 0;
                         bean.content = mesg.cid.trim();
@@ -336,7 +352,9 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
         return getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteDataRspClass -> {
-                    if (getView() != null) getView().deleteMesgReuslt(deleteDataRspClass);
+                    if (getView() != null) {
+                        getView().deleteMesgReuslt(deleteDataRspClass);
+                    }
                 }, AppLogger::e);
     }
 
@@ -354,7 +372,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 .subscribe(o -> {
                     removeFromServer(o);
                     JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                    if (!TextUtils.isEmpty(account.getAccount()))
+                    if (!TextUtils.isEmpty(account.getAccount())) {
                         for (SysMsgBean bean : o) {
                             BaseApplication.getAppComponent().getDBHelper().deleteDPMsgForce(
                                     account.getAccount(), null, null, bean.getTime(), bean.getType())
@@ -362,6 +380,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                                     .subscribe(ret -> AppLogger.d("本地删除"),
                                             AppLogger::e);
                         }
+                    }
                 }, AppLogger::e);
     }
 
@@ -383,7 +402,9 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
     }
 
     private ArrayList<JFGDPMsg> parse(ArrayList<SysMsgBean> list) {
-        if (ListUtils.isEmpty(list)) return new ArrayList<>();
+        if (ListUtils.isEmpty(list)) {
+            return new ArrayList<>();
+        }
         ArrayList<JFGDPMsg> finalList = new ArrayList<>(list.size());
         for (SysMsgBean bean : list) {
             JFGDPMsg msg = new JFGDPMsg();

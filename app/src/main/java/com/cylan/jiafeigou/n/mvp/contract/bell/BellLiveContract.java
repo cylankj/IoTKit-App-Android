@@ -21,6 +21,7 @@ public interface BellLiveContract {
 
         void onTakeSnapShotFailed();
 
+        @Override
         void onDeviceUnBind();
     }
 

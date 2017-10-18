@@ -79,7 +79,9 @@ public class IOUtil {
     }
 
     public static String readStr(InputStream in, String charset) throws IOException {
-        if (TextUtils.isEmpty(charset)) charset = "UTF-8";
+        if (TextUtils.isEmpty(charset)) {
+            charset = "UTF-8";
+        }
 
         if (!(in instanceof BufferedInputStream)) {
             in = new BufferedInputStream(in);
@@ -99,7 +101,9 @@ public class IOUtil {
     }
 
     public static void writeStr(OutputStream out, String str, String charset) throws IOException {
-        if (TextUtils.isEmpty(charset)) charset = "UTF-8";
+        if (TextUtils.isEmpty(charset)) {
+            charset = "UTF-8";
+        }
 
         Writer writer = new OutputStreamWriter(out, charset);
         writer.write(str);

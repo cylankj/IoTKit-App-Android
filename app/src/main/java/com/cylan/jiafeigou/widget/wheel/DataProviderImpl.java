@@ -43,8 +43,9 @@ public class DataProviderImpl {
             dataStack.naturalDateSet.add(timeInLong);
             final int type = getType(timeInLong);
             dataStack.naturalDateType[i] = type;
-            if (type == 0)
+            if (type == 0) {
                 dataStack.dateStringMap.put(i + "", getDateString(timeInLong));
+            }
         }
         return dataStack;
     }

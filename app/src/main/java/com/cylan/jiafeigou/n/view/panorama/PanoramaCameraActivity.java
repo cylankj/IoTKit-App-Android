@@ -488,8 +488,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private void updateHint() {
         try {
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-            if (JFGRules.isPanoramaCamera(device.pid)) return;
-            if (JFGRules.isShareDevice(device)) return;
+            if (JFGRules.isPanoramaCamera(device.pid)) {
+                return;
+            }
+            if (JFGRules.isShareDevice(device)) {
+                return;
+            }
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
             RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
             String currentV = device.$(207, "");
@@ -616,6 +620,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 AppLogger.w("将进行拍照");
                 presenter.makePhotograph();
                 bottomPanelLoading.setVisibility(View.VISIBLE);
+                bottomPanelPhotoGraphItem.setEnabled(false);
             }
             break;
             case PANORAMA_VIEW_MODE.MODE_VIDEO: {
@@ -627,6 +632,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     presenter.stopVideoRecord(panoramaRecordMode);
                 }
                 bottomPanelLoading.setVisibility(View.VISIBLE);
+                bottomPanelPhotoGraphItem.setEnabled(false);
             }
             break;
             case PANORAMA_VIEW_MODE.MODE_LIVE: {
@@ -646,18 +652,24 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     } else {
                         AppLogger.w("将进行 live 直播");
                         bottomPanelAlbumItem.setVisibility(View.GONE);
-
                         presenter.cameraLiveRtmpCtrl(livePlatform, 1);
                     }
                 } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
-                    AppLogger.w("将结束 live 直播");
-                    presenter.cameraLiveRtmpCtrl(livePlatform, 0);
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.LIVE_STOP_POP)
+                            .setPositiveButton(R.string.OK, (dialog, which) -> {
+                                AppLogger.w("将结束 live 直播");
+                                presenter.cameraLiveRtmpCtrl(livePlatform, 0);
+                            })
+                            .setNegativeButton(R.string.CANCEL, null)
+                            .setCancelable(false)
+                            .show();
                 }
                 bottomPanelLoading.setVisibility(View.GONE);
             }
             break;
         }
-        bottomPanelPhotoGraphItem.setEnabled(false);
+
 
     }
 
@@ -777,6 +789,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     //    @Override
+    @Override
     protected void onPrepareToExit(Action action) {
         presenter.dismiss();
         if (surfaceView != null) {
@@ -909,7 +922,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onDeviceBatteryChanged(Integer battery) {
-        if (battery == -2) return;
+        if (battery == -2) {
+            return;
+        }
         bannerChargeText.setVisibility(View.VISIBLE);
         bannerChargeIcon.setVisibility(View.VISIBLE);
         bannerChargeText.setText(battery == -1 ? getString(R.string.CHARGING) : battery + "%");
@@ -1008,8 +1023,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onShowLiveCreateView() {
         bottomPanelAlbumItem.setVisibility(View.INVISIBLE);
         bottomPanelLivePlatform.setVisibility(View.INVISIBLE);
-        bottomPanelMoreItem.setEnabled(true);
-        bottomPanelMoreItem.setVisibility(View.VISIBLE);
+        bottomPanelMoreItem.setVisibility(View.INVISIBLE);
+        bottomPanelPhotoGraphItem.setEnabled(true);
+        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
     }
 
     @Override
@@ -1038,6 +1054,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
     }
 
+    @Override
     public void onSwitchSpeedMode(@SPEED_MODE int mode) {
         switch (this.speedMode = mode) {
             case SPEED_MODE.AUTO:
@@ -1056,7 +1073,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onRefreshViewModeUI(int viewMode, boolean enable, boolean record) {
         AppLogger.w("onRefreshViewModeUI");
-        if (upgrading) return;
+        if (upgrading) {
+            return;
+        }
 
         // TODO: 2017/9/5 先初始化
         panoramaViewMode = viewMode;
@@ -1072,7 +1091,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (bottomPanelSwitcher.getDisplayedChild() == 1) {
             bottomPanelSwitcher.showPrevious();
         }
-        if (enable) hideLoading();
+        if (enable) {
+            hideLoading();
+        }
 
         setting.setEnabled(true);
         ivt_newMessageTips.setEnabled(true);
@@ -1122,6 +1143,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     }
 
+    @Override
     public void onRefreshControllerViewVisible(boolean visible) {
         bottomPanelSwitcher.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         bottomPanelPictureMode.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
@@ -1130,6 +1152,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelAlbumItem.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
+    @Override
     public void onRefreshControllerView(boolean enable, boolean all) {
         boolean finalEnable = (presenter.getLiveAction().hasResolution && enable) || justForTest;
         bottomPanelSwitcher.setEnabled(finalEnable);
@@ -1164,7 +1187,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         boolean isOnline = net.net > 0;
         int netType = NetUtils.getNetType(this);
 
-        if (upgrading) return;
+        if (upgrading) {
+            return;
+        }
 
         bannerSwitcher.setVisibility(View.VISIBLE);
         cameraUpgrading.setVisibility(View.GONE);
@@ -1441,7 +1466,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_LessThan3sTips));
                 break;
             case ERROR_CODE_HTTP_NOT_AVAILABLE: {
-                if (!alertHttpNotAvailable) return;
+                if (!alertHttpNotAvailable) {
+                    return;
+                }
                 //松开弹
                 if (sync) {
                     AlertDialog dialog1 = new AlertDialog.Builder(this)

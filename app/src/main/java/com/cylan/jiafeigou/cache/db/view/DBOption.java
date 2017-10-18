@@ -65,11 +65,19 @@ public interface DBOption {
         public long timeStart;
         public boolean asc;//请求服务器数据的时候使用，向前查，向后查。
         public boolean isMaxTime;
+        public boolean useMaxLimit = true;
 
         public MultiQueryOption(long timeStart, boolean asc, boolean isMaxTime) {
             this.timeStart = timeStart;
             this.asc = asc;
             this.isMaxTime = isMaxTime;
+        }
+
+        public MultiQueryOption(long timeStart, boolean asc, boolean isMaxTime, boolean useMaxLimit) {
+            this.timeStart = timeStart;
+            this.asc = asc;
+            this.isMaxTime = isMaxTime;
+            this.useMaxLimit = useMaxLimit;
         }
 
         @Override
@@ -113,5 +121,7 @@ public interface DBOption {
         public static final CamMultiDateOption CAMERA_15_DAYS = new CamMultiDateOption(15);
 
         public static final CamMultiDateOption BELL_7_DAYS = new CamMultiDateOption(7);
+
+        public static final CamMultiDateOption CAMERA_FACE_ANY_DAYS = new CamMultiDateOption(-1);
     }
 }

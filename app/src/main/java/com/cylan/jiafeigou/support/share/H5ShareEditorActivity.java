@@ -278,7 +278,9 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
             if (!LoadingDialog.isShowLoading()) {
                 LoadingDialog.showLoading(this, getString(R.string.LOADING), false, dialog -> finish());
             }
-            if (presenter != null) presenter.share(shareItem, getDescription(), thumbPath);
+            if (presenter != null) {
+                presenter.share(shareItem, getDescription(), thumbPath);
+            }
         }
     }
 

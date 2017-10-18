@@ -37,22 +37,25 @@ public abstract class NewBaseActivity extends FragmentActivity implements Contex
 
     protected void setBackVisibility(int visibility, View.OnClickListener listener) {
         tvBaseTitleBack.setVisibility(visibility);
-        if (listener == null || visibility == View.GONE)
+        if (listener == null || visibility == View.GONE) {
             return;
+        }
         tvBaseTitleBack.setOnClickListener(listener);
     }
 
     protected void setTitleVisibility(int visibility, View.OnClickListener listener) {
         tvBaseTitleTitle.setVisibility(visibility);
-        if (listener == null || visibility == View.GONE)
+        if (listener == null || visibility == View.GONE) {
             return;
+        }
         tvBaseTitleTitle.setOnClickListener(listener);
     }
 
     protected void setDoneVisibility(int visibility, View.OnClickListener listener) {
         tvBaseTitleDone.setVisibility(visibility);
-        if (listener == null || visibility == View.GONE)
+        if (listener == null || visibility == View.GONE) {
             return;
+        }
         tvBaseTitleDone.setOnClickListener(listener);
     }
 }

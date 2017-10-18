@@ -31,7 +31,9 @@ public class WifiSsid {
 
     public static WifiSsid createFromHex(String hexStr) {
         WifiSsid a = new WifiSsid();
-        if (hexStr == null) return a;
+        if (hexStr == null) {
+            return a;
+        }
 
         if (hexStr.startsWith("0x") || hexStr.startsWith("0X")) {
             hexStr = hexStr.substring(2);
@@ -96,7 +98,9 @@ public class WifiSsid {
                             }
                             if (val < 0) {
                                 val = Character.digit(asciiEncoded.charAt(i), HEX_RADIX);
-                                if (val < 0) break;
+                                if (val < 0) {
+                                    break;
+                                }
                                 octets.write(val);
                                 i++;
                             } else {
@@ -142,7 +146,9 @@ public class WifiSsid {
         // Supplicant returns \x00\x00\x00\x00\x00\x00\x00\x00 hex string
         // for a hidden access point. Make sure we maintain the previous
         // behavior of returning empty string for this case.
-        if (octets.size() <= 0 || isArrayAllZeroes(ssidBytes)) return "";
+        if (octets.size() <= 0 || isArrayAllZeroes(ssidBytes)) {
+            return "";
+        }
         // TODO: Handle conversion to other charsets upon failure
         Charset charset = Charset.forName("UTF-8");
         CharsetDecoder decoder = charset.newDecoder()
@@ -160,7 +166,9 @@ public class WifiSsid {
 
     private boolean isArrayAllZeroes(byte[] ssidBytes) {
         for (int i = 0; i < ssidBytes.length; i++) {
-            if (ssidBytes[i] != 0) return false;
+            if (ssidBytes[i] != 0) {
+                return false;
+            }
         }
         return true;
     }

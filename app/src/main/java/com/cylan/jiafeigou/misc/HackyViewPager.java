@@ -55,7 +55,9 @@ public class HackyViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isLocked && mTouchListener != null) mTouchListener.onTouch(this, event);
+        if (isLocked && mTouchListener != null) {
+            mTouchListener.onTouch(this, event);
+        }
         return !isLocked && super.onTouchEvent(event);
     }
 

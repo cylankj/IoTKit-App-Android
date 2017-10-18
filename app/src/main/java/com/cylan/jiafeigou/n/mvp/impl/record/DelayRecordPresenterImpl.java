@@ -66,7 +66,9 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
      */
     private boolean isFirstEnter(boolean save) {
         boolean showGuide = PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true);
-        if (save) PreferencesUtils.putBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, false);
+        if (save) {
+            PreferencesUtils.putBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, false);
+        }
         return showGuide;
     }
 

@@ -89,16 +89,21 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         customToolbar.setBackAction((View v) -> {
-            if (getActivity() != null)
+            if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
+            }
         });
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
-        if (notificationInfo == null) notificationInfo = new DpMsgDefine.DPNotificationInfo();
+        if (notificationInfo == null) {
+            notificationInfo = new DpMsgDefine.DPNotificationInfo();
+        }
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {
-            if (effect == i) ((RadioButton) rgWarnEffect.getChildAt(i)).setChecked(true);
+            if (effect == i) {
+                ((RadioButton) rgWarnEffect.getChildAt(i)).setChecked(true);
+            }
         }
         svWarnRepeatMode.setSubTitle(String.format(Locale.getDefault(), getString(R.string.EFAMILY_CALL_DURATION_S),
                 notificationInfo.duration));

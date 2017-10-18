@@ -110,11 +110,13 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
         return _id;
     }
 
+    @Override
     public IDPEntity setAccount(String account) {
         this.account = account;
         return this;
     }
 
+    @Override
     public String getAccount() {
         return account;
     }
@@ -128,11 +130,13 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
         return server;
     }
 
+    @Override
     public IDPEntity setBytes(byte[] bytes) {
         this.bytes = bytes;
         return this;
     }
 
+    @Override
     public byte[] getBytes() {
         return bytes;
     }
@@ -236,7 +240,9 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         DPEntity value = (DPEntity) o;
         return (long) version == value.version && (int) msgId == value.msgId;
 

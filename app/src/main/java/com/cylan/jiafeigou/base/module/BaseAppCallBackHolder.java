@@ -335,7 +335,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
 //            arrayList.add(info);
 //        }
-        if (ListUtils.isEmpty(arrayList)) return;
+        if (ListUtils.isEmpty(arrayList)) {
+            return;
+        }
         FeedbackManager.getInstance().cachePush(arrayList);
         BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
     }
@@ -499,9 +501,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        tagVersion = "1.0.0.009";
 //        content = "test";
         if (!TextUtils.isEmpty(cid)) {
-            if (ret != 0 || ListUtils.isEmpty(arrayList))
+            if (ret != 0 || ListUtils.isEmpty(arrayList)) {
                 PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + cid);
-        } else return;
+            }
+        } else {
+            return;
+        }
         PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
         version.setCid(cid);
         version.setContent(content);

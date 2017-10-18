@@ -73,7 +73,9 @@ public class BellCallRecordBean implements Comparable<BellCallRecordBean>, Parce
     };
 
     public static BellCallRecordBean parse(DpMsgDefine.DPBellCallRecord record) {
-        if (record == null) return null;
+        if (record == null) {
+            return null;
+        }
         BellCallRecordBean result = new BellCallRecordBean();
         result.answerState = record.isOK;
         result.timeInLong = record.time * 1000L;

@@ -60,19 +60,23 @@ public class GreatDragView extends FrameLayout {
             public int clampViewPositionHorizontal(View child, int left, int dx) {
                 //根据原型，第一张不能向右滑动。
                 try {
-                    if (dx > 0 && getChildCount() == 3) return left;
+                    if (dx > 0 && getChildCount() == 3) {
+                        return left;
+                    }
                     float rotationX = (float) dx / (getWidth() - child.getWidth() / 2);
                     if (preDx != dx) {
                         if (dx >= 0 && preDx < dx) {
                             preDx = dx;
 //                        Log.d(TAG, "rationX right: " + dx + "  " + rotationX);
-                            if (draggedView.getRotation() != rotationX)
+                            if (draggedView.getRotation() != rotationX) {
                                 draggedView.setRotation(-rotationX * 360);
+                            }
                         } else if (dx < 0 && preDx > dx) {
                             Log.d(TAG, "rationX left: " + dx + "  " + rotationX);
                             preDx = dx;
-                            if (draggedView.getRotation() != rotationX)
+                            if (draggedView.getRotation() != rotationX) {
                                 draggedView.setRotation(-rotationX * 360);
+                            }
                         }
                     }
                     final int leftBound = -draggedView.getWidth();
@@ -143,21 +147,24 @@ public class GreatDragView extends FrameLayout {
      * @return
      */
     private int getScrollDirection() {
-        if (draggedView == null)
+        if (draggedView == null) {
             return -1;
+        }
         boolean top = draggedView.getTop() >= -draggedView.getHeight()
                 && draggedView.getTop() <= getMeasuredHeight();
         if (draggedView.getLeft() < 0) {
             //left
-            if (draggedView.getLeft() >= -draggedView.getMeasuredWidth() / 3 && top)
+            if (draggedView.getLeft() >= -draggedView.getMeasuredWidth() / 3 && top) {
                 return 0;
-            else {
+            } else {
                 return 1;//left to disappear
             }
         } else if (draggedView.getRight() > getMeasuredWidth()) {
             if (draggedView.getRight() >= (getMeasuredWidth() + 1 / 3 * (float) getMeasuredWidth())) {
                 return 2;//right to disappear
-            } else return 0;
+            } else {
+                return 0;
+            }
         }
         return 0;
     }

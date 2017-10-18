@@ -72,6 +72,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
     }
 
+    @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         try {
             if (!this.handleException(ex) && this.mDefaultHandler != null) {
@@ -167,6 +168,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 File[] file = dir.listFiles();
                 if (file.length > 20) {
                     Arrays.sort(file, new Comparator<File>() {
+                        @Override
                         public int compare(File file, File t1) {
                             return file.lastModified() < t1.lastModified() ? -1 : (file.lastModified() > t1.lastModified() ? 1 : 0);
                         }

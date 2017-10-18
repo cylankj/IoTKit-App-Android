@@ -30,8 +30,9 @@ public class NeedLoginActivity<T extends BasePresenter> extends BaseFullScreenFr
     }
 
     public void signInFirst(Bundle extra) {
-        if (extra == null)
+        if (extra == null) {
             extra = new Bundle();
+        }
         extra.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
         extra.putInt(JConstant.KEY_SHOW_LOGIN_FRAGMENT, 1);
         loginFragment = LoginFragment.newInstance(extra);

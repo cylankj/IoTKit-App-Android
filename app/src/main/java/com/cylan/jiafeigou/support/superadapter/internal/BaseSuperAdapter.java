@@ -134,14 +134,16 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
 
     // BaseAdapter
     public void notifyDataSetHasChanged() {
-        if (mDataSetObservable != null)
+        if (mDataSetObservable != null) {
             mDataSetObservable.notifyChanged();
+        }
     }
 
     // BaseAdapter
     public void notifyDataSetInvalidated() {
-        if (mDataSetObservable != null)
+        if (mDataSetObservable != null) {
             mDataSetObservable.notifyInvalidated();
+        }
     }
 
     /**
@@ -163,8 +165,9 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
      */
     @Override
     public T getItem(int position) {
-        if (position >= mList.size() || position < 0)
+        if (position >= mList.size() || position < 0) {
             return null;
+        }
         return mList.get(position);
     }
 
@@ -187,10 +190,12 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
     @Override
     public int getItemCount() {
         int size = mList == null ? 0 : mList.size();
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             size++;
-        if (hasFooterView())
+        }
+        if (hasFooterView()) {
             size++;
+        }
         return size;
     }
 
@@ -266,8 +271,9 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
      */
     @Override
     public int getViewTypeCount() {
-        if (mMulItemViewType != null)
+        if (mMulItemViewType != null) {
             return mMulItemViewType.getViewTypeCount();
+        }
         return 1;
     }
 
@@ -293,7 +299,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
             holder = onCreate(null, parent, viewType);
         }
         if (!(holder.itemView instanceof AdapterView)) {
-            if (mOnItemClickListener != null)
+            if (mOnItemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -302,7 +308,8 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
                         }
                     }
                 });
-            if (mOnItemLongClickListener != null)
+            }
+            if (mOnItemLongClickListener != null) {
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -313,6 +320,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
                         return false;
                     }
                 });
+            }
         }
         return holder;
     }
@@ -327,8 +335,9 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        if (mRecyclerView != null && mRecyclerView != recyclerView)
+        if (mRecyclerView != null && mRecyclerView != recyclerView) {
             Log.i("BaseSuperAdapter", "Does not support multiple RecyclerViews now.");
+        }
         mRecyclerView = recyclerView;
         // Ensure a situation that add header or footer before setAdapter().
         ifGridLayoutManager();
@@ -372,8 +381,9 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
 
     @Override
     public void addHeaderView(View header) {
-        if (hasHeaderView())
+        if (hasHeaderView()) {
             throw new IllegalStateException("You have already added a header view.");
+        }
         mHeader = header;
         ifGridLayoutManager();
         notifyItemInserted(0);
@@ -381,8 +391,9 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
 
     @Override
     public void addFooterView(View footer) {
-        if (hasFooterView())
+        if (hasFooterView()) {
             throw new IllegalStateException("You have already added a footer view.");
+        }
         mFooter = footer;
         ifGridLayoutManager();
         notifyItemInserted(getItemCount() - 1);

@@ -59,8 +59,9 @@ public abstract class EmptyView implements IEmptyView {
         if (show) {
             reInit().setVisibility(View.VISIBLE);
         } else {
-            if (emptyViewRef == null || emptyViewRef.get() == null)
+            if (emptyViewRef == null || emptyViewRef.get() == null) {
                 return;
+            }
             emptyViewRef.get().setVisibility(View.GONE);
         }
 //

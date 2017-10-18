@@ -55,16 +55,27 @@ public abstract class AbstractVersion<T extends IVersion.BaseVersion> implements
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             BinVersion that = (BinVersion) o;
 
-            if (totalSize != that.totalSize) return false;
-            if (list != null ? !list.equals(that.list) : that.list != null) return false;
-            if (cid != null ? !cid.equals(that.cid) : that.cid != null) return false;
-            if (tagVersion != null ? !tagVersion.equals(that.tagVersion) : that.tagVersion != null)
+            if (totalSize != that.totalSize) {
                 return false;
+            }
+            if (list != null ? !list.equals(that.list) : that.list != null) {
+                return false;
+            }
+            if (cid != null ? !cid.equals(that.cid) : that.cid != null) {
+                return false;
+            }
+            if (tagVersion != null ? !tagVersion.equals(that.tagVersion) : that.tagVersion != null) {
+                return false;
+            }
             return content != null ? content.equals(that.content) : that.content == null;
 
         }
@@ -160,7 +171,9 @@ public abstract class AbstractVersion<T extends IVersion.BaseVersion> implements
     }
 
     protected long totalSize(BinVersion version) {
-        if (version == null || version.getList() == null) return 0;
+        if (version == null || version.getList() == null) {
+            return 0;
+        }
         int count = version.getList().size();
         long size = 0;
         for (int i = 0; i < count; i++) {
@@ -173,7 +186,9 @@ public abstract class AbstractVersion<T extends IVersion.BaseVersion> implements
 
     protected BinVersion getVersionFrom(String uuid) {
         final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-        if (TextUtils.isEmpty(content)) return BinVersion.NULL;
+        if (TextUtils.isEmpty(content)) {
+            return BinVersion.NULL;
+        }
         try {
             return new Gson().fromJson(content, BinVersion.class);
         } catch (Exception e) {

@@ -188,7 +188,9 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp) {
         return getActiveAccount().map(account -> {
-            if (dataRsp.map == null) return null;
+            if (dataRsp.map == null) {
+                return null;
+            }
             Set<DPEntity> result = new HashSet<>();
 //            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
 //            List<PropertyItem> propertyItems = new ArrayList<>();
@@ -264,7 +266,9 @@ public class BaseDBHelper implements IDBHelper {
 
     private Observable<DPEntity> applyUnique(RxQuery<DPEntity> query) {
         return query.list().map(dpEntities -> {
-            if (dpEntities == null) return null;
+            if (dpEntities == null) {
+                return null;
+            }
             DPEntity result = null;
             for (DPEntity entity : dpEntities) {
                 if (result == null) {
@@ -341,14 +345,18 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public void clearMsg(String uuid, Integer msgId) {
-        if (dpAccount == null || dpAccount.getAccount() == null) return;
+        if (dpAccount == null || dpAccount.getAccount() == null) {
+            return;
+        }
         List<DPEntity> list = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null).list();
         mEntityDao.deleteInTx(list);
     }
 
     @Override
     public void clearDevice() {
-        if (dpAccount == null || dpAccount.getAccount() == null) return;
+        if (dpAccount == null || dpAccount.getAccount() == null) {
+            return;
+        }
         String execSQL = "DELETE FROM DEVICE WHERE PROPERTY = ? AND SERVER = ? ";
         Database database = daoSession.getDatabase();
         database.beginTransaction();
@@ -500,7 +508,9 @@ public class BaseDBHelper implements IDBHelper {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
                 .map(items -> {
-                    if (items == null || items.size() == 0) return items;
+                    if (items == null || items.size() == 0) {
+                        return items;
+                    }
                     for (DPEntity item : items) {
                         item.setAction(action);
                         item.setState(state);
@@ -621,7 +631,9 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Device> unBindDeviceNotConfirm(String uuid) {
         return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.NOT_CONFIRM, null).map(items -> {
-            if (items == null || items.size() == 0) return null;
+            if (items == null || items.size() == 0) {
+                return null;
+            }
             Device device = items.get(0);
             device.setPropertyParser(propertyParser);
             return device;
@@ -631,7 +643,9 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Device> unBindDeviceWithConfirm(String uuid) {
         return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
-            if (items == null || items.size() == 0) return null;
+            if (items == null || items.size() == 0) {
+                return null;
+            }
             clearMsg(uuid, null);
             Device device = items.get(0);
             device.setPropertyParser(propertyParser);
@@ -689,7 +703,9 @@ public class BaseDBHelper implements IDBHelper {
         return deviceDao.queryBuilder()
                 .where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Account.eq(account), DeviceDao.Properties.Action.notEq(DBAction.UNBIND.action()))
                 .rx().list().map(devices -> {
-                            if (devices == null) return null;
+                            if (devices == null) {
+                                return null;
+                            }
                             for (Device device : devices) {
                                 device.setPropertyParser(propertyParser);
                             }

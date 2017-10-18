@@ -131,11 +131,13 @@ public class ViewFinderView extends View implements IViewFinder {
         mBorderLineLength = borderLineLength;
     }
 
+    @Override
     public void setupViewFinder() {
         updateFramingRect();
         invalidate();
     }
 
+    @Override
     public Rect getFramingRect() {
         return mFramingRect;
     }
@@ -143,8 +145,9 @@ public class ViewFinderView extends View implements IViewFinder {
     @Override
     public void setupHint(String content) {
         this.mHint = content;
-        if (mHint == null || mHint.length() == 0)
+        if (mHint == null || mHint.length() == 0) {
             return;
+        }
         invalidate();
     }
 
@@ -171,8 +174,9 @@ public class ViewFinderView extends View implements IViewFinder {
     private void drawLaser(Canvas canvas) {
 //        if (linePositionY < mFramingRect.top || linePositionY > mFramingRect.bottom)
 //            return;
-        if (linePositionY == 0)
+        if (linePositionY == 0) {
             return;
+        }
         int maxHeight = mFramingRect.height() / 2;
         int top = 0;
         if (linePositionY >= maxHeight) {
@@ -332,11 +336,13 @@ public class ViewFinderView extends View implements IViewFinder {
      * 开始动画
      */
     public void startAnimation() {
-        if (laserAnimation == null)
+        if (laserAnimation == null) {
             laserAnimation = ValueAnimator.ofInt(0,
                     mFramingRect.height());
-        if (laserAnimation.isRunning())
+        }
+        if (laserAnimation.isRunning()) {
             return;
+        }
         laserAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -356,7 +362,8 @@ public class ViewFinderView extends View implements IViewFinder {
      * 停止动画
      */
     public void stopAnimation() {
-        if (laserAnimation != null && laserAnimation.isRunning())
+        if (laserAnimation != null && laserAnimation.isRunning()) {
             laserAnimation.cancel();
+        }
     }
 }

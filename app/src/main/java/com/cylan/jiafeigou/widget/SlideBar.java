@@ -108,8 +108,9 @@ public class SlideBar extends View {
         private static STYLE getFromInt(int value) {
 
             for (STYLE direction : STYLE.values()) {
-                if (direction.mValue == value)
+                if (direction.mValue == value) {
                     return direction;
+                }
             }
 
             return DEFAULT;

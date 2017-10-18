@@ -175,6 +175,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     /**
      * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
      */
+    @Override
     public void onViewAction(int action, String handler, Object extra) {
         if (presenter != null) {
             presenter.onViewAction(action, handler, extra);
@@ -224,7 +225,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (presenter != null) {
             boolean exit = ((BasePresenter) presenter).hasReadyForExit();
             if (exit) {
-                if (shouldExit()) onPrepareToExit(super::onBackPressed);
+                if (shouldExit()) {
+                    onPrepareToExit(super::onBackPressed);
+                }
             } else {
                 showToast(getString(R.string.click_back_again_exit));
             }

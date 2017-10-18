@@ -173,8 +173,9 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.iv_detail_user_head:                      //查看大头像
-                if (getView() != null)
+                if (getView() != null) {
                     ViewUtils.deBounceClick(getView().findViewById(R.id.iv_detail_user_head));
+                }
                 AppLogger.e("iv_detail_user_head");
                 jump2LookBigImage();
                 break;
@@ -291,6 +292,8 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 }

@@ -152,7 +152,9 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                         Device aDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                         DpMsgDefine.DPTimeZone timeZone = aDevice.$(214, new DpMsgDefine.DPTimeZone());
                         TimeZoneBean bean = adapter.getItem(position);
-                        if (bean == null) return;
+                        if (bean == null) {
+                            return;
+                        }
                         timeZone.timezone = bean.getId();
                         timeZone.offset = bean.getOffset();
                         try {
@@ -199,7 +201,9 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
      * 点击确认按钮之后，把软键盘进行隐藏
      */
     private void hideKeyboard(View view) {
-        if (view == null) return;
+        if (view == null) {
+            return;
+        }
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

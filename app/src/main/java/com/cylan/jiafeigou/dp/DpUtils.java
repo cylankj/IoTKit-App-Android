@@ -63,8 +63,9 @@ public class DpUtils {
                 if (jfgdpMsg.id == id) {
                     try {
                         Object o = unpackData(jfgdpMsg.packValue, tClass);
-                        if (tClass.isInstance(o))
+                        if (tClass.isInstance(o)) {
                             return (T) o;
+                        }
                     } catch (IOException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }

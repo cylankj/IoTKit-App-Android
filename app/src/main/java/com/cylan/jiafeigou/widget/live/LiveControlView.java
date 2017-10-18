@@ -54,6 +54,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         textView.setOnClickListener(this);
     }
 
+    @Override
     public int getState() {
         return state;
     }
@@ -65,7 +66,9 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
 
     @Override
     public void setState(int state, CharSequence content, String help) {
-        if (this.state == state) return;
+        if (this.state == state) {
+            return;
+        }
         this.state = state;
         switch (state) {
             case PLAY_STATE_PREPARE:
@@ -74,7 +77,9 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 if (!TextUtils.isEmpty(content)) {
                     textView.setVisibility(VISIBLE);
                     textView.setText(content);
-                } else textView.setVisibility(GONE);
+                } else {
+                    textView.setVisibility(GONE);
+                }
 
                 simpleProgressBar.setVisibility(VISIBLE);
                 simpleProgressBar.bringToFront();
@@ -101,8 +106,9 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 imageView.setImageResource(R.drawable.btn_video_retry);
                 simpleProgressBar.setVisibility(GONE);
                 textView.setVisibility(VISIBLE);
-                if (!TextUtils.isEmpty(content))
+                if (!TextUtils.isEmpty(content)) {
                     textView.setText(content);
+                }
                 if (!TextUtils.isEmpty(help)) {
                     tvHelp.setVisibility(VISIBLE);
                     tvHelp.setText(help);
@@ -121,13 +127,19 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_state:
-                if (action != null) action.clickImage(v, state);
+                if (action != null) {
+                    action.clickImage(v, state);
+                }
                 break;
             case R.id.tv_control_content:
-                if (action != null) action.clickText(v);
+                if (action != null) {
+                    action.clickText(v);
+                }
                 break;
             case R.id.tv_control_help:
-                if (action != null) action.clickHelp(v);
+                if (action != null) {
+                    action.clickHelp(v);
+                }
                 break;
         }
     }

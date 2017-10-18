@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
+import com.cylan.jiafeigou.n.mvp.impl.CreateNewFacePresenter;
+import com.cylan.jiafeigou.n.mvp.impl.FaceListPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.FaceManagerPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.SetFaceNamePresenter;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
@@ -15,6 +17,8 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AIRecognitionPresenter;
+import com.cylan.jiafeigou.n.view.cam.CreateFaceContact;
+import com.cylan.jiafeigou.n.view.cam.FaceListContact;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerContact;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullContract;
@@ -108,6 +112,20 @@ public class FragmentModule {
     @PerFragment
     public static FaceManagerContact.Presenter provideFaceManagerPresenter(BasePresenterInjector injector) {
         FaceManagerContact.Presenter presenter = injector.inject(new FaceManagerPresenter());
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public static CreateFaceContact.Presenter provideNewFacePresenter(BasePresenterInjector injector) {
+        CreateFaceContact.Presenter presenter = injector.inject(new CreateNewFacePresenter());
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public static FaceListContact.Presenter provideFaceListPresenter(BasePresenterInjector injector) {
+        FaceListContact.Presenter presenter = injector.inject(new FaceListPresenter());
         return presenter;
     }
 

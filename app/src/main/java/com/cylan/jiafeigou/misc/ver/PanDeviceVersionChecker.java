@@ -31,13 +31,21 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
 
     @Override
     public boolean checkCondition() {
-        if (portrait == null) throw new IllegalArgumentException("portrait == null 报错");
+        if (portrait == null) {
+            throw new IllegalArgumentException("portrait == null 报错");
+        }
         //不支持固件升级
-        if (!JFGRules.showFirmware(portrait.getPid(), false)) return false;
+        if (!JFGRules.showFirmware(portrait.getPid(), false)) {
+            return false;
+        }
         //分享设备
-        if (JFGRules.isShareDevice(portrait.getCid())) return false;
+        if (JFGRules.isShareDevice(portrait.getCid())) {
+            return false;
+        }
         //当前网络不行
-        if (NetUtils.getJfgNetType() == 0) return false;
+        if (NetUtils.getJfgNetType() == 0) {
+            return false;
+        }
         return true;
     }
 
@@ -45,8 +53,12 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
     public void startCheck() {
         if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > (BuildConfig.DEBUG ? 30 * 1000 : 5 * 60 * 1000)) {
             lastCheckTime = System.currentTimeMillis();
-        } else return;
-        if (!checkCondition()) return;
+        } else {
+            return;
+        }
+        if (!checkCondition()) {
+            return;
+        }
         AppLogger.d("记得这个弹窗,需要在网络状态好的情况下.");
         final String uuid = portrait.getCid();
         Observable.just("go").subscribeOn(Schedulers.io())

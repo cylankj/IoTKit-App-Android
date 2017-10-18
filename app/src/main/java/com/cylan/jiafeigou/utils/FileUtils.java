@@ -272,8 +272,9 @@ public class FileUtils {
     public static boolean copyFile(String sourceFilePath, String destFilePath) {
         InputStream inputStream = null;
         try {
-            if (FileUtils.isFileExist(sourceFilePath))
+            if (FileUtils.isFileExist(sourceFilePath)) {
                 inputStream = new FileInputStream(sourceFilePath);
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException("FileNotFoundException occurred. ", e);
         }
@@ -549,7 +550,7 @@ public class FileUtils {
             return false;
         }
         File[] files = file.listFiles();
-        if (files != null)
+        if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 File f = files[i];
                 if (f.isFile()) {
@@ -558,6 +559,7 @@ public class FileUtils {
                     deleteFile(f.getAbsolutePath());
                 }
             }
+        }
         return file.delete();
     }
 
@@ -618,8 +620,9 @@ public class FileUtils {
                 fileNameList.add(tempList[i].getAbsolutePath());
             } else if (tempList[i].isDirectory()) {
                 List<String> names = getFileListAbsolute(tempList[i].getAbsolutePath());
-                if (names != null)
+                if (names != null) {
                     fileNameList.addAll(names);
+                }
             }
         }
         return fileNameList;
@@ -646,8 +649,9 @@ public class FileUtils {
                 fileNameList.add(ff.getName());
             } else if (ff.isDirectory()) {
                 List<String> names = getFileNameList(ff.getAbsolutePath());
-                if (names != null)
+                if (names != null) {
                     fileNameList.addAll(names);
+                }
             }
         }
         return fileNameList;
@@ -694,8 +698,9 @@ public class FileUtils {
 
     public static boolean saveBitmap(Bitmap bitmap, String filePath) throws IOException {
         boolean result = false;
-        if (TextUtils.isEmpty(filePath))
+        if (TextUtils.isEmpty(filePath)) {
             return result;
+        }
         FileOutputStream out = null;
         try {
             if (!isFileExist(filePath)) {
@@ -778,8 +783,9 @@ public class FileUtils {
 
 
     public static boolean deleteAbsoluteFile(String path) {
-        if (TextUtils.isEmpty(path))
+        if (TextUtils.isEmpty(path)) {
             return true;
+        }
 
         File file = new File(path);
         if (!file.exists()) {
@@ -793,8 +799,9 @@ public class FileUtils {
      * @param str:     eg: apk
      */
     public static void deleteFileByChar(String path, final String str) {
-        if (TextUtils.isEmpty(path))
+        if (TextUtils.isEmpty(path)) {
             return;
+        }
         File[] files = new File(path).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String filename) {
@@ -802,8 +809,9 @@ public class FileUtils {
             }
         });
         for (File f : files) {
-            if (f.isFile())
+            if (f.isFile()) {
                 deleteAbsoluteFile(f.getAbsolutePath());
+            }
 //            if (f.isDirectory()) {
 //                deleteFileByChar(path + File.separator + f.getName(), str);
 //            }
@@ -811,8 +819,9 @@ public class FileUtils {
     }
 
     public static List<String> getEmptyFolders(String path) {
-        if (path == null)
+        if (path == null) {
             return null;
+        }
         List<String> folders = new ArrayList<>();
         File file = new File(path);
         if (file.isDirectory()) {
@@ -820,8 +829,9 @@ public class FileUtils {
             for (int i = 0; i < files.length; i++) {
                 folders.addAll(getEmptyFolders(files[i].getAbsolutePath()));
             }
-            if (files.length == 0)
+            if (files.length == 0) {
                 folders.add(file.getAbsolutePath());
+            }
         }
         return folders;
     }
@@ -878,7 +888,9 @@ public class FileUtils {
             return;
         }
 
-        if (!out.getParentFile().exists()) out.getParentFile().mkdirs();
+        if (!out.getParentFile().exists()) {
+            out.getParentFile().mkdirs();
+        }
 
         FileInputStream fin = null;
         FileOutputStream fos = null;

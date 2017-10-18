@@ -93,11 +93,15 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         return;
                     }
                     //局域网弹出
-                    if (!MiscUtils.isDeviceInWLAN(uuid)) return;
+                    if (!MiscUtils.isDeviceInWLAN(uuid)) {
+                        return;
+                    }
                     long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
                     if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         //弹框的时间,从弹出算起
-                        if (!MiscUtils.isDeviceInWLAN(uuid)) return;
+                        if (!MiscUtils.isDeviceInWLAN(uuid)) {
+                            return;
+                        }
                         PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid, System.currentTimeMillis());
                         mView.showFirmwareDialog();
                     }
@@ -156,7 +160,9 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
-        if (response == null) return null;
+        if (response == null) {
+            return null;
+        }
         List<BellCallRecordBean> result = new ArrayList<>();
         BellCallRecordBean record;
         for (DpMsgDefine.DPBellCallRecord callRecord : response) {

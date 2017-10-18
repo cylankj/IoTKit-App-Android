@@ -41,8 +41,9 @@ public class AppModule {
                 .cacheDirectory(new File(JConstant.MEDIA_PATH))
                 .maxCacheFilesCount(Integer.MAX_VALUE)
                 .fileNameGenerator(url -> {
-                    if (url != null && !url.startsWith("http://"))
+                    if (url != null && !url.startsWith("http://")) {
                         url = "http://www.baidu.com" + url;
+                    }
                     List<String> strings = HttpUrl.parse(url).pathSegments();
                     String filePath = BasePanoramaApiHelper.getInstance().getFilePath("",strings.get(strings.size() - 1));
                     AppLogger.d("HttpProxyCacheServer" + filePath);

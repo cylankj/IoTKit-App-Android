@@ -287,7 +287,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             vFlag.setVisibility(GONE);
         }
         View vLandPlay = imgVCamLiveLandPlay;
-        if (vLandPlay != null) vLandPlay.setOnClickListener(this);
+        if (vLandPlay != null) {
+            vLandPlay.setOnClickListener(this);
+        }
         tvLive.setBackgroundColor(isLand() ? Color.TRANSPARENT : Color.WHITE);
         tvLive.setOnClickListener(this);
         //f
@@ -520,8 +522,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         setLoadingState(PLAY_STATE_STOP, null);
                         if (presenter != null
                                 && presenter.getHistoryDataProvider() != null
-                                && presenter.getHistoryDataProvider().getDataCount() == 0)
+                                && presenter.getHistoryDataProvider().getDataCount() == 0) {
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
+                        }
                     }
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
@@ -657,11 +660,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      */
     private void initSightSetting(CamLiveContract.Presenter basePresenter) {
 
-        if (!needShowSight || basePresenter.isShareDevice()) return;
+        if (!needShowSight || basePresenter.isShareDevice()) {
+            return;
+        }
         String uuid = basePresenter.getUuid();
         isSightShown = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
         Log.d("initSightSetting", "judge? " + isSightShown);
-        if (!isSightShown) return;//不是第一次
+        if (!isSightShown) {
+            return;//不是第一次
+        }
         layoutE.setVisibility(GONE);//需要隐藏历史录像时间轴
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
@@ -672,7 +679,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .setText(getContext().getString(R.string.Tap1_Camera_Overlook) + ": "
                             + getContext().getString(R.string.Tap1_Camera_OverlookTips));
             view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
-                if (layout != null) liveViewWithThumbnail.removeView(layout);
+                if (layout != null) {
+                    liveViewWithThumbnail.removeView(layout);
+                }
 //                basePresenter.startPlay();
                 if (!isStandBy()) {
                     livePlayState = PLAY_STATE_STOP;
@@ -764,8 +773,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         setLoadingState(null, null);
         imgVCamZoomToFullScreen.setEnabled(false);//测试用
         int net = NetUtils.getJfgNetType();
-        if (net == 2)
+        if (net == 2) {
             ToastUtil.showToast(getResources().getString(R.string.LIVE_DATA));
+        }
     }
 
     private boolean isLand() {
@@ -778,7 +788,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void prepareLayoutDAnimation(boolean touchUp) {
         if (MiscUtils.isLand()) {
             removeCallbacks(landHideRunnable);
-            if (touchUp) postDelayed(landHideRunnable, 3000);
+            if (touchUp) {
+                postDelayed(landHideRunnable, 3000);
+            }
         } else {
             post(portShowRunnable);
         }
@@ -806,10 +818,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate);
-            if (layoutD.getAlpha() == 0.0f)
+            if (layoutD.getAlpha() == 0.0f) {
                 YoYo.with(Techniques.FadeIn)
                         .duration(200)
                         .playOn(layoutD);
+            }
             showHistoryWheel(true);
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
@@ -850,11 +863,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(VISIBLE);//loading 必须显示
             }
             svSwitchStream.setVisibility(GONE);
-            if (landAnimationLayoutA != null) landAnimationLayoutA.stop();
+            if (landAnimationLayoutA != null) {
+                landAnimationLayoutA.stop();
+            }
             landAnimationLayoutA = YoYo.with(Techniques.FadeOutUp)
                     .duration(250)
                     .playOn(layoutA);
-            if (landAnimationLayoutD != null) landAnimationLayoutD.stop();
+            if (landAnimationLayoutD != null) {
+                landAnimationLayoutD.stop();
+            }
             landAnimationLayoutD = YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
@@ -866,7 +883,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             })
                     .duration(250)
                     .playOn(layoutD);
-            if (landAnimationLayoutE != null) landAnimationLayoutE.stop();
+            if (landAnimationLayoutE != null) {
+                landAnimationLayoutE.stop();
+            }
             landAnimationLayoutE = YoYo.with(Techniques.FadeOutDown)
                     .duration(250)
                     .withListener(new AnimatorListenerAdapter() {
@@ -879,12 +898,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         }
                     })
                     .playOn(layoutE);
-            if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
+            if (landAnimationLayoutG != null) {
+                landAnimationLayoutG.stop();
+            }
             rbViewModeSwitchParent.setVisibility(GONE);
             landAnimationLayoutG = YoYo.with(Techniques.FadeOutDown)
                     .duration(250)
                     .playOn(layoutG);
-            if (flowTextAnimation != null) flowTextAnimation.stop();
+            if (flowTextAnimation != null) {
+                flowTextAnimation.stop();
+            }
             flowTextAnimation = YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
@@ -916,9 +939,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             YoYo.with(Techniques.FadeInDown)
                     .duration(250)
                     .playOn(layoutA);
-            if (!layoutD.isShown())
+            if (!layoutD.isShown()) {
                 layoutD.setVisibility(VISIBLE);//
-            if (landAnimationLayoutD != null) landAnimationLayoutD.stop();
+            }
+            if (landAnimationLayoutD != null) {
+                landAnimationLayoutD.stop();
+            }
             landAnimationLayoutD = YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
@@ -929,20 +955,28 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             })
                     .duration(250)
                     .playOn(layoutD);
-            if (!layoutE.isShown()) layoutE.setVisibility(VISIBLE);//
+            if (!layoutE.isShown()) {
+                layoutE.setVisibility(VISIBLE);//
+            }
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
-            if (landAnimationLayoutE != null) landAnimationLayoutE.stop();
+            if (landAnimationLayoutE != null) {
+                landAnimationLayoutE.stop();
+            }
             landAnimationLayoutE = YoYo.with(Techniques.FadeInUp)
                     .duration(250)
                     .playOn(layoutE);
-            if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
+            if (landAnimationLayoutG != null) {
+                landAnimationLayoutG.stop();
+            }
             landAnimationLayoutG = YoYo.with(Techniques.FadeInUp)
                     .duration(200)
                     .playOn(layoutG);
-            if (flowTextAnimation != null) flowTextAnimation.stop();
+            if (flowTextAnimation != null) {
+                flowTextAnimation.stop();
+            }
             flowTextAnimation = YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
@@ -991,7 +1025,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //现在显示的条件就是手动点击其他情况都不显示
         setLoadingState(null, null);
         post(() -> layoutC.setVisibility(INVISIBLE));
-        if (tvLive != null) tvLive.setEnabled(isPlayHistory);
+        if (tvLive != null) {
+            tvLive.setEnabled(isPlayHistory);
+        }
         imgVCamTriggerCapture.setEnabled(true);
         imgVLandCamTriggerCapture.setEnabled(true);
         //直播
@@ -1013,8 +1049,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void setLoadingState(String content, String subContent) {
         layoutC.setState(livePlayState, content, subContent);
-        if (!TextUtils.isEmpty(content) || !TextUtils.isEmpty(subContent))
+        if (!TextUtils.isEmpty(content) || !TextUtils.isEmpty(subContent)) {
             layoutC.setVisibility(VISIBLE);
+        }
         switch (livePlayState) {
             case PLAY_STATE_LOADING_FAILED:
             case PLAY_STATE_STOP:
@@ -1062,7 +1099,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * @param errCode
      */
     private void handlePlayErr(CamLiveContract.Presenter presenter, int errCode) {
-        if (presenter.isDeviceStandby()) return;
+        if (presenter.isDeviceStandby()) {
+            return;
+        }
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -1114,7 +1153,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case JError.ErrorSDHistoryAll:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.Historical_Read), null);
-                if (getContext() instanceof Activity)
+                if (getContext() instanceof Activity) {
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_Read),
                             getContext().getString(R.string.Historical_Read),
@@ -1124,11 +1163,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 presenter.updateLiveStream(prePlayType);
                                 presenter.startPlay();
                             });
+                }
                 break;
             case JError.ErrorSDFileIO:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.Historical_Failed), null);
-                if (getContext() instanceof Activity)
+                if (getContext() instanceof Activity) {
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_Failed),
                             getContext().getString(R.string.Historical_Failed),
@@ -1138,11 +1178,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 presenter.updateLiveStream(prePlayType);
                                 presenter.startPlay();
                             });
+                }
                 break;
             case JError.ErrorSDIO:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.Historical_No), null);
-                if (getContext() instanceof Activity)
+                if (getContext() instanceof Activity) {
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_No),
                             getContext().getString(R.string.Historical_No),
@@ -1152,6 +1193,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 presenter.updateLiveStream(prePlayType);
                                 presenter.startPlay();
                             });
+                }
                 break;
             default:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -1377,7 +1419,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void setLiveRectTime(int type, long timestamp) {
         //历史视频的时候，使用rtcp自带时间戳。
-        if (livePlayType == TYPE_HISTORY && timestamp == 0) return;
+        if (livePlayType == TYPE_HISTORY && timestamp == 0) {
+            return;
+        }
         //直播时候，使用本地时间戳。
 //        if (livePlayType == TYPE_LIVE && timestamp != 0) return;
         //全景的时间戳是0,使用设备的时区
@@ -1418,7 +1462,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         float ratio = JFGRules.isNeedNormalRadio(device.pid) ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
                 isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
                         Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
-        if (portRatio == -1 && !isLand()) portRatio = ratio;
+        if (portRatio == -1 && !isLand()) {
+            portRatio = ratio;
+        }
         updateLiveViewRectHeight(ratio);
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate);
     }
@@ -1506,7 +1552,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onCaptureRsp(FragmentActivity activity, Bitmap bitmap) {
-        if (MiscUtils.isLand() || activity == null || activity.isFinishing()) return;
+        if (MiscUtils.isLand() || activity == null || activity.isFinishing()) {
+            return;
+        }
         try {
             PerformanceUtils.startTrace("showPopupWindow");
             roundCardPopup = new RoundCardPopup(getContext(), view -> view.setImageDrawable(new BitmapDrawable(getResources(), bitmap)), v -> {
@@ -1543,8 +1591,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
         post(() -> {
             changeViewState();
-            if (layoutE != null)
+            if (layoutE != null) {
                 btnLoadHistory.setEnabled(connected);
+            }
             if (!connected) {
 //                showHistoryWheel(false);
                 removeCallbacks(landHideRunnable);  // 取消播放后延时显示的任务
@@ -1607,14 +1656,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             boolean showSdcard = JFGRules.showSdcard(device);
             layoutE.setVisibility(judge && showSdcard ? VISIBLE : GONE);
             vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
-            if (!isUserVisible) return;
+            if (!isUserVisible) {
+                return;
+            }
         }, 100);
     }
 
     @Override
     public void updateLiveViewMode(String mode) {
-        if (device.pid == 39 || device.pid == 49)
+        if (device.pid == 39 || device.pid == 49) {
             mode = "0";
+        }
         if (!needShowSight) {
             updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
         } else {
@@ -1692,11 +1744,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 case R.drawable.icon_land_mic_on_selector:
                     if (imgVLandCamTriggerMic.isEnabled()) {
                         return 3;
-                    } else return 1;
+                    } else {
+                        return 1;
+                    }
                 case R.drawable.icon_land_mic_off_selector:
                     if (imgVLandCamTriggerMic.isEnabled()) {
                         return 2;
-                    } else return 0;
+                    } else {
+                        return 0;
+                    }
             }
         }
         return 0;
@@ -1711,11 +1767,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 case R.drawable.icon_land_speaker_on_selector:
                     if (imgVCamSwitchSpeaker.isEnabled()) {
                         return 3;
-                    } else return 1;
+                    } else {
+                        return 1;
+                    }
                 case R.drawable.icon_land_speaker_off_selector:
                     if (imgVCamSwitchSpeaker.isEnabled()) {
                         return 2;
-                    } else return 0;
+                    } else {
+                        return 0;
+                    }
             }
         }
         return 0;
@@ -1795,8 +1855,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);
                         if (presenter.getHistoryDataProvider() != null
-                                && presenter.getHistoryDataProvider().getDataCount() == 0)
+                                && presenter.getHistoryDataProvider().getDataCount() == 0) {
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
+                        }
                     }
                 });
         presenter.addSubscription("fetchHistoryBy", subscription);
@@ -1804,11 +1865,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void updateLiveRect(Rect rect) {
-        if (liveViewWithThumbnail != null)
+        if (liveViewWithThumbnail != null) {
             liveViewWithThumbnail.post(() -> {
                 liveViewWithThumbnail.getLocalVisibleRect(rect);
                 AppLogger.d("rect: " + rect);
             });
+        }
     }
 
     @Override
@@ -1833,7 +1895,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         int id = v.getId();
         switch (id) {
             case R.id.imgV_cam_live_land_nav_back:
-                if (MiscUtils.isLand() && isActionBarHide()) return;
+                if (MiscUtils.isLand() && isActionBarHide()) {
+                    return;
+                }
 //                post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
 //                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
                 if (orientationHandle != null) {
@@ -1856,12 +1920,20 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放
-                if (MiscUtils.isLand() && isActionBarHide()) return;
-                if (playClickListener != null) playClickListener.onClick(v);
+                if (MiscUtils.isLand() && isActionBarHide()) {
+                    return;
+                }
+                if (playClickListener != null) {
+                    playClickListener.onClick(v);
+                }
                 break;
             case R.id.tv_live://直播中,按钮disable.历史录像:enable
-                if (MiscUtils.isLand() && isActionBarHide()) return;
-                if (liveTextClick != null) liveTextClick.onClick(v);
+                if (MiscUtils.isLand() && isActionBarHide()) {
+                    return;
+                }
+                if (liveTextClick != null) {
+                    liveTextClick.onClick(v);
+                }
                 break;
             case R.id.imgV_cam_switch_speaker:
             case R.id.imgV_land_cam_switch_speaker:

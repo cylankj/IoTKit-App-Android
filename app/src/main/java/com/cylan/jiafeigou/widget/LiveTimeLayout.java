@@ -40,15 +40,20 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
     }
 
     private String getTime(long time) {
-        if (liveTimeDateFormat == null)
+        if (liveTimeDateFormat == null) {
             liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+        }
         return liveTimeDateFormat.format(new Date(time));
     }
 
     @Override
     public void setContent(int liveType, long liveTime) {
-        if (!isShown()) setVisibility(VISIBLE);
-        if (!textView.isShown()) textView.setVisibility(View.VISIBLE);
+        if (!isShown()) {
+            setVisibility(VISIBLE);
+        }
+        if (!textView.isShown()) {
+            textView.setVisibility(View.VISIBLE);
+        }
         this.liveType = liveType;
         if (liveType == CamLiveContract.TYPE_HISTORY) {
             this.liveTime = liveTime;

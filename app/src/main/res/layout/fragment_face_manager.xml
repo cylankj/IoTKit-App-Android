@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,44 +14,59 @@
         app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_tab_back_selector"
+        app:ct_left_title="@string/MESSAGES_FACE_MABAGE"
+        app:ct_left_title_color="@color/color_white"
         app:ct_right_title="@string/EDIT_THEME"
-        app:ct_title="@string/MESSAGES_FACE_MABAGE">
+        app:ct_right_title_color="@color/normal_btn_color_selector">
 
     </com.cylan.jiafeigou.widget.CustomToolbar>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/face_manager_items"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/custom_toolbar">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@+id/custom_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-        <RelativeLayout
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+    <RelativeLayout
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar">
 
-            <ImageView
-                android:id="@+id/empty_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/empty_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pic_no_share" />
 
-            <TextView
-                android:id="@+id/empty_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="暂无面孔" />
+        <TextView
+            android:id="@+id/empty_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/empty_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/y12"
+            android:text="@string/MESSAGES_FACE_NONE"
+            android:textSize="@dimen/sp15" />
 
-        </RelativeLayout>
-
-    </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_f6f9fa">
+        android:background="@color/color_f6f9fa"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <View
             android:layout_width="match_parent"
@@ -81,4 +96,4 @@
             android:text="@string/DELETE"
             android:textColor="@color/common_btn_color_state" />
     </RelativeLayout>
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

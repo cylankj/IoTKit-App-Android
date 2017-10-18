@@ -277,8 +277,9 @@ public class ListUtils {
     }
 
     public static <V> void clear(List<V> list) {
-        if (isEmpty(list))
+        if (isEmpty(list)) {
             return;
+        }
         list.clear();
     }
 
@@ -287,8 +288,9 @@ public class ListUtils {
      * @return
      */
     public static byte[] convert2ByteArray(List<String> list) {
-        if (isEmpty(list))
+        if (isEmpty(list)) {
             return null;
+        }
         // write to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);
@@ -307,8 +309,9 @@ public class ListUtils {
 
     public static List<String> byteArray2List(byte[] bytes) {
         // read from byte array
-        if (bytes == null || bytes.length == 0)
+        if (bytes == null || bytes.length == 0) {
             return null;
+        }
         List<String> list = new ArrayList<>();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         DataInputStream in = new DataInputStream(bais);
@@ -341,8 +344,9 @@ public class ListUtils {
      * @return
      */
     public static List<Integer> byteArray2ListInt(byte[] bytes) {
-        if (bytes == null)
+        if (bytes == null) {
             return null;
+        }
         // read from byte array
         final int len = bytes.length;
         Integer[] result = new Integer[len];
@@ -363,7 +367,9 @@ public class ListUtils {
      */
     public static <V> List<V> cutTop(List<V> sourceList, int maxSize) {
         int size = getSize(sourceList);
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         size = size - maxSize;
         for (int i = 0; i < size; i++) {
             sourceList.remove(0);
@@ -373,8 +379,9 @@ public class ListUtils {
 
     public static <V> V getLast(List<V> sourList) {
         int size = getSize(sourList);
-        if (size == 0)
+        if (size == 0) {
             return null;
+        }
         return sourList.get(size - 1);
     }
 

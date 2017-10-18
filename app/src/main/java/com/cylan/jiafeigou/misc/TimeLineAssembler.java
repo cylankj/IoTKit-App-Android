@@ -89,14 +89,18 @@ public class TimeLineAssembler {
         switch (type) {
             case WheelViewDataSet.TYPE_LONG_VALID:
             case WheelViewDataSet.TYPE_LONG_INVALID:
-                if (timeInStr.endsWith("01"))
+                if (timeInStr.endsWith("01")) {
                     return simpleDateCNShort.format(new Date(timeInLong));
-                else return simpleDateCNNormal.format(new Date(timeInLong));
+                } else {
+                    return simpleDateCNNormal.format(new Date(timeInLong));
+                }
             case WheelViewDataSet.TYPE_SHORT_VALID:
             case WheelViewDataSet.TYPE_SHORT_INVALID:
-                if (timeInStr.endsWith("01"))
+                if (timeInStr.endsWith("01")) {
                     return simpleDateCNShort.format(new Date(timeInLong));
-                else return simpleDateCNNormal.format(new Date(timeInLong));
+                } else {
+                    return simpleDateCNNormal.format(new Date(timeInLong));
+                }
         }
         return "";
     }
@@ -126,16 +130,19 @@ public class TimeLineAssembler {
             }
 
             final int factor = leftLong - rightLong > 0 ? -1 : 1;
-            if (leftStr.equals(rightStr))
+            if (leftStr.equals(rightStr)) {
                 continue;
+            }
 
             for (int jj = 0; jj < Integer.MAX_VALUE; jj++) {
                 final long today = factor * jj * oneDay + leftLong;
                 final String todayStr = getDate(today);
-                if (todayStr.equals(leftStr))
+                if (todayStr.equals(leftStr)) {
                     continue;
-                if (todayStr.equals(rightStr))
+                }
+                if (todayStr.equals(rightStr)) {
                     break;
+                }
                 middle.timeInLongList.add(today);
                 type = getDataType(1, todayStr);
                 middle.typeList.add(type);

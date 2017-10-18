@@ -50,7 +50,9 @@ public class LocalWifiInfo {
         private static Saver saver;
 
         public static Saver getSaver() {
-            if (saver == null) saver = new Saver();
+            if (saver == null) {
+                saver = new Saver();
+            }
             return saver;
         }
 
@@ -64,7 +66,9 @@ public class LocalWifiInfo {
         }
 
         public void addOrUpdateInfo(LocalWifiInfo localWifiInfo) {
-            if (wifiInfoMap == null) wifiInfoMap = new HashMap<>();
+            if (wifiInfoMap == null) {
+                wifiInfoMap = new HashMap<>();
+            }
             wifiInfoMap.put(localWifiInfo.getSsid(), localWifiInfo);
             Observable.just("save")
                     .subscribeOn(Schedulers.io())
@@ -81,8 +85,9 @@ public class LocalWifiInfo {
             return Observable.just(ssid)
                     .subscribeOn(Schedulers.io())
                     .flatMap(s -> {
-                        if (wifiInfoMap != null)
+                        if (wifiInfoMap != null) {
                             return Observable.just(wifiInfoMap.get(s));
+                        }
                         final String content = PreferencesUtils.getString(secretKey);
                         try {
                             final String de = AESUtil.decrypt(content);
@@ -100,8 +105,9 @@ public class LocalWifiInfo {
             return Observable.just(null)
                     .subscribeOn(Schedulers.io())
                     .flatMap(s -> {
-                        if (wifiInfoMap != null)
+                        if (wifiInfoMap != null) {
                             return Observable.just(wifiInfoMap);
+                        }
                         final String content = PreferencesUtils.getString(secretKey);
                         try {
                             final String de = AESUtil.decrypt(content);

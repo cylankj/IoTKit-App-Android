@@ -19,7 +19,9 @@ public class BindTask implements Action1<Object> {
     public void call(Object o) {
         try {
             final String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-            if (TextUtils.isEmpty(content)) return;
+            if (TextUtils.isEmpty(content)) {
+                return;
+            }
             UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
             if (portrait != null) {
                 BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);

@@ -172,7 +172,9 @@ public class LLView extends View {
         for (int i = 0; i < maxCount; i++) {
             if (i == currentLightIndex) {
                 paint.setColor(bIColor);
-            } else paint.setColor(sColor);
+            } else {
+                paint.setColor(sColor);
+            }
             canvas.drawCircle(getSmallCircleX(i), mH / 2, sRadius, paint);
         }
     }
@@ -202,14 +204,17 @@ public class LLView extends View {
 
     private void startAnimation(boolean start) {
         if (start) {
-            if (valueAnimator == null)
+            if (valueAnimator == null) {
                 initAnimator();
-            if (valueAnimator != null && valueAnimator.isRunning())
+            }
+            if (valueAnimator != null && valueAnimator.isRunning()) {
                 return;
+            }
             valueAnimator.start();
         } else {
-            if (valueAnimator == null || !valueAnimator.isRunning())
+            if (valueAnimator == null || !valueAnimator.isRunning()) {
                 return;
+            }
             valueAnimator.cancel();
         }
     }

@@ -127,7 +127,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 ViewUtils.deBounceClick(view);
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_outdoor);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
-                intent.putExtra(JConstant.KEY_ANIM_TITLE, "占位坑");
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipsTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));

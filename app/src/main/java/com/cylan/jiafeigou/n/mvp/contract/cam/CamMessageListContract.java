@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -43,6 +44,8 @@ public interface CamMessageListContract {
         void loadingDismiss();
 
         boolean isUserVisible();
+
+        void onFaceInformationReady(List<DpMsgDefine.FaceInformation> data);
     }
 
     interface Presenter extends BasePresenter {
@@ -60,6 +63,8 @@ public interface CamMessageListContract {
         List<WonderIndicatorWheelView.WheelItem> getDateList();
 
         void refreshDateList(boolean needToLoadList);
+
+        void deleteFace(String face_id, String person_id, String group_id);
     }
 }
 

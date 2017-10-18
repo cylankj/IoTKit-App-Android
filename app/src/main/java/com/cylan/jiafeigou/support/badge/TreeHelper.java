@@ -29,12 +29,16 @@ public class TreeHelper {
     public void markNodeRead(String key) {
         if (!TextUtils.isEmpty(key) && RawTree.asRefreshTreeSet.contains(key)) {
             TreeNode node = findTreeNodeByName(key);
-            if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
+            if (node != null) {
+                node.setCacheData(new CacheObject().setCount(0).setObject(null));
+            }
             PreferencesUtils.putString(key, key);
             return;
         }
         TreeNode node = findTreeNodeByName(key);
-        if (node != null) node.setCacheData(new CacheObject().setObject(null).setCount(0));
+        if (node != null) {
+            node.setCacheData(new CacheObject().setObject(null).setCount(0));
+        }
     }
 
 
@@ -90,7 +94,9 @@ public class TreeHelper {
                 nodeParent.addNodeToChild(self);
             } else if (self.equals(nodeParent)) {
                 //自己啊
-            } else System.out.println("node is null? " + key);
+            } else {
+                System.out.println("node is null? " + key);
+            }
         }
     }
 
@@ -103,7 +109,9 @@ public class TreeHelper {
     public TreeNode findParentNodeByName(String nodeName) {
         Map<String, TreeNode> nodeMap = new HashMap<>(treeNodeMap);
         final TreeNode node = treeNodeMap.get(nodeName);
-        if (node == null) return null;
+        if (node == null) {
+            return null;
+        }
         nodeMap.remove(nodeName);
         return treeNodeMap.get(node.getParentName());
     }

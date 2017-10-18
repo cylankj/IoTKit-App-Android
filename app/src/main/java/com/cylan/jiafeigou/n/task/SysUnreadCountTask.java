@@ -43,7 +43,9 @@ public class SysUnreadCountTask implements Action1<Object> {
                                             if (value.size() != 0) {
                                                 JFGDPMsg jfgdpMsg = value.get(0);
                                                 Integer unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, Integer.class);
-                                                if (unReadCount == null) unReadCount = 0;
+                                                if (unReadCount == null) {
+                                                    unReadCount = 0;
+                                                }
                                                 AppLogger.d("unReadCount:" + unReadCount);
                                                 count += unReadCount;
                                             }

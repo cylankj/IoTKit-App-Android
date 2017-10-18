@@ -67,8 +67,9 @@ public class FlipAnimation extends Animation {
             toView.setVisibility(View.VISIBLE);
         }
 
-        if (forward)
+        if (forward) {
             degrees = -degrees; //determines direction of rotation when flip begins
+        }
 
         final Matrix matrix = t.getMatrix();
         camera.save();

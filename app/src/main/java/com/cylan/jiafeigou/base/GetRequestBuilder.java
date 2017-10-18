@@ -97,9 +97,15 @@ public class GetRequestBuilder extends AbstractRequestBuilder<RobotoGetDataRsp> 
 
     @Override
     protected boolean checkParameter() {
-        if (msgId == 0) return false;
-        if (uuid == null) uuid = "";
-        if (limit == 0) limit = 20;
+        if (msgId == 0) {
+            return false;
+        }
+        if (uuid == null) {
+            uuid = "";
+        }
+        if (limit == 0) {
+            limit = 20;
+        }
         return true;
     }
 

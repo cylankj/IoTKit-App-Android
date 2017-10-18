@@ -165,8 +165,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onActivityStopped(Activity activity) {
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
         viewCount--;
-        if (viewCount == 0)
+        if (viewCount == 0) {
             prepareReportTask();
+        }
     }
 
     private Subscription reportTask;
@@ -176,7 +177,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
      */
     private void prepareReportTask() {
         if (getAppComponent().getCmd() != null) {
-            if (reportTask != null) reportTask.unsubscribe();
+            if (reportTask != null) {
+                reportTask.unsubscribe();
+            }
             reportTask = Observable.just("report")
                     .subscribeOn(Schedulers.io())
                     .delay(3, TimeUnit.MINUTES)
@@ -191,7 +194,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     private void cancelReportTask() {
-        if (reportTask != null) reportTask.unsubscribe();
+        if (reportTask != null) {
+            reportTask.unsubscribe();
+        }
 //        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 

@@ -71,7 +71,9 @@ public class RoundRectPopup extends RelativePopupWindow {
                 ((SafeRadioButton) menuAlbumPopContainer.getChildAt(i)).setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                     dismiss();
                     if (dismissListener != null && isChecked)//神坑,false过滤掉
+                    {
                         dismissListener.onDismiss(buttonView.getId());
+                    }
                 });
             }
         });

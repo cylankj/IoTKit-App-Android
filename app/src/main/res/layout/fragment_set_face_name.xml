@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_white"
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -11,12 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ct_enable_theme="true"
-        app:ct_right_title="@string/FINISHED"
-        app:ct_title="@string/NAME" />
+        app:ct_icon="@drawable/nav_tab_back_selector"
+        app:ct_icon_right="@drawable/icon_finish_selector"
+        app:ct_left_title="@string/NAME"
+        app:ct_left_title_color="@color/color_white" />
 
     <com.cylan.jiafeigou.widget.ClearableEditText
         android:id="@+id/edit_face_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/y20"
+        android:layout_marginStart="@dimen/y20"
+        android:layout_marginTop="@dimen/y8"
+
+        android:text="@string/Tap1_AddDevice_CameraTips"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp16" />
 
 </LinearLayout>
