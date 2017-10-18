@@ -384,24 +384,33 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void setBFS() {
-        EditText editText = new EditText(this);
-        editText.setId(R.id.et_input_box);
-        editText.setHint("mic(0,31),speaker(0,10),用逗号隔开");
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        EditText etMic = new EditText(this);
+        etMic.setInputType(InputType.TYPE_CLASS_NUMBER);
+        etMic.setId("mic".hashCode());
+        etMic.setHint("mic(0,31)");
+        etMic.setHintTextColor(getResources().getColor(R.color.color_9e9e9e));
+
+        EditText etSpeaker = new EditText(this);
+        etSpeaker.setId("speaker".hashCode());
+        etSpeaker.setInputType(InputType.TYPE_CLASS_NUMBER);
+        etSpeaker.setHint("speaker(0,10)");
+        etSpeaker.setHintTextColor(getResources().getColor(R.color.color_9e9e9e));
+        layout.addView(etMic);
+        layout.addView(etSpeaker);
+//        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         new AlertDialog.Builder(this)
                 .setTitle("康凯斯门铃 BFS 设置")
-                .setView(editText)
+                .setView(layout)
                 .setPositiveButton("确认", (dialog, which) -> Schedulers.io().createWorker().schedule(() -> {
-                    EditText viewById = (EditText) ((AlertDialog) dialog).findViewById(R.id.et_input_box);
+                    EditText etM = (EditText) ((AlertDialog) dialog).findViewById("mic".hashCode());
                     int mic = 8;
-                    int speaker = 8;
-                    if (viewById != null) {
-                        String string = viewById.getText().toString();
-                        if (!TextUtils.isEmpty(string)) {
+                    if (etM != null) {
+                        final String micStr = etM.getText().toString();
+                        if (!TextUtils.isEmpty(micStr) && TextUtils.isDigitsOnly(micStr)) {
                             try {
-                                String[] t = string.replace(" ", "").split(",");
-                                mic = Integer.parseInt(t[0]);
-                                speaker = Integer.parseInt(t[1]);
+                                mic = Integer.parseInt(micStr);
                             } catch (Exception e) {
                                 runOnUiThread(() -> ToastUtil.showToast("设置失败"));
                             }
@@ -410,6 +419,18 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     mic = Math.max(mic, 0);
                     mic = Math.min(mic, 31);
 
+                    EditText etS = (EditText) ((AlertDialog) dialog).findViewById("speaker".hashCode());
+                    int speaker = 8;
+                    if (etS != null) {
+                        final String sStr = etS.getText().toString();
+                        if (!TextUtils.isEmpty(sStr) && TextUtils.isDigitsOnly(sStr)) {
+                            try {
+                                speaker = Integer.parseInt(sStr);
+                            } catch (Exception e) {
+                                runOnUiThread(() -> ToastUtil.showToast("设置失败"));
+                            }
+                        }
+                    }
                     speaker = Math.max(speaker, 0);
                     speaker = Math.min(speaker, 10);
                     try {
@@ -425,9 +446,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         e.printStackTrace();
                     }
                 }))
-                .setNegativeButton("取消", (dialog, which) -> {
-
-                })
+                .setNegativeButton("取消", null)
                 .show();
     }
 
