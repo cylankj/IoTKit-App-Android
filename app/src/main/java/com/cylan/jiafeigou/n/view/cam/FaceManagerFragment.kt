@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.view.cam.item.FaceManagerItem
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.ActivityUtils
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
@@ -69,6 +70,17 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter.withSelectable(false)
         adapter.withMultiSelect(true)
         adapter.withSelectWithItemUpdate(true)
+        adapter.itemAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                custom_toolbar.setRightEnable(adapter.itemCount > 0)
+                empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                custom_toolbar.setRightEnable(true)
+                empty_view.visibility = View.GONE
+            }
+        })
         adapter.withOnClickListener { v, adapter, iItem, position ->
             AppLogger.w("FaceManagerOnItemClicked:$v,$position,$iItem,$adapter")
             if (isEditMode()) {
@@ -123,6 +135,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
                 custom_toolbar.setToolbarRightTitle(R.string.EDIT_THEME)
                 bottom_menu.visibility = View.GONE
             }
+            adapter.notifyDataSetChanged()
         }
 
         /// 默认是不可点击的,等有数据后才能点击
@@ -159,7 +172,12 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
         view.findViewById(R.id.move_to).setOnClickListener {
             AppLogger.w("面孔管理:移动到")
-            FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid)
+            val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid, FaceListFragment.TYPE_MOVE_TO)
+            //TODO 监听 移动面孔的结果回调
+//            fragment.resultCallback={
+//
+//            }
+            ActivityUtils.addFragmentToActivity(fragmentManager, fragment, android.R.id.content)
         }
         PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)
     }
