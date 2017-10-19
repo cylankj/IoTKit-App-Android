@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n.view.cam
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +18,9 @@ import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.view.cam.item.FaceManagerItem
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.listeners.ClickEventHook
 import kotlinx.android.synthetic.main.fragment_face_manager.*
 
 /**
@@ -64,15 +68,41 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter = FastItemAdapter()
         adapter.withSelectable(false)
         adapter.withMultiSelect(true)
+        adapter.withSelectWithItemUpdate(true)
         adapter.withOnClickListener { v, adapter, iItem, position ->
             AppLogger.w("FaceManagerOnItemClicked:$v,$position,$iItem,$adapter")
             if (isEditMode()) {
                 //TODO 选中条目
+                AppLogger.w("")
+                return@withOnClickListener true
             } else {
                 //TODO 什么也不做了
+                return@withOnClickListener false
             }
-            return@withOnClickListener true
         }
+        adapter.withEventHook(object : ClickEventHook<FaceManagerItem>() {
+
+            override fun onBindMany(viewHolder: RecyclerView.ViewHolder): MutableList<View>? {
+                if (viewHolder is FaceManagerItem.FaceManagerViewHolder) {
+                    return mutableListOf(viewHolder.itemView, viewHolder.faceCheckBox)
+                }
+                return null
+            }
+
+            override fun onClick(v: View?, position: Int, fastAdapter: FastAdapter<FaceManagerItem>, item: FaceManagerItem) {
+                if (!item.isSelected) {
+                    val selections = fastAdapter.selections
+                    if (!selections.isEmpty()) {
+                        val selectedPosition = selections.iterator().next()
+                        fastAdapter.deselect()
+                        fastAdapter.notifyItemChanged(selectedPosition)
+                    }
+                    fastAdapter.select(position)
+                }
+            }
+
+        })
+
         adapter.withOnLongClickListener { v, adapter, iItem, position ->
             AppLogger.w("FaceManagerOnItemLongClicked:$v,$adapter,$iItem,$position")
             //todo 需要弹出菜单
@@ -81,6 +111,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         }
 
         face_manager_items.adapter = adapter
+//        face_manager_items.addItemDecoration(GridItemDivider(resources.getDimensionPixelOffset(R.dimen.y5), 4))
 
         custom_toolbar.setRightAction {
             if (getString(R.string.EDIT_THEME) == custom_toolbar.tvToolbarRight.text) {
@@ -95,18 +126,31 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         }
 
         /// 默认是不可点击的,等有数据后才能点击
-        custom_toolbar.setRightEnable(false)
-
+//        custom_toolbar.setRightEnable(false)
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
 
+        //todo just for test
+
+        val items: MutableList<FaceManagerItem> = mutableListOf()
+        words.forEach {
+            val item = FaceManagerItem()
+            val information = DpMsgDefine.FaceInformation()
+            information.face_name = it
+            item.withFaceInformation(information)
+            items.add(item)
+        }
+        adapter.add(items)
 
     }
 
+    val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷")
 
     private fun showFaceManagerPopMenu(position: Int, v: View?) {
         val view = View.inflate(context, R.layout.layout_face_manager_pop_alert, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
+        popupWindow.setBackgroundDrawable(ColorDrawable(0))
+        popupWindow.isOutsideTouchable = true
 
         view.findViewById(R.id.delete).setOnClickListener {
             AppLogger.w("面孔管理:删除")
@@ -121,7 +165,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
     }
 
     private fun isEditMode(): Boolean {
-        return true
+        return custom_toolbar.tvToolbarRight.isEnabled
     }
 
     companion object {

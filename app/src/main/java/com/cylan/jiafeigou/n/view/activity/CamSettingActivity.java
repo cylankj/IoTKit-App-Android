@@ -464,7 +464,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     level = Math.max(level, 0);
                     level = Math.min(level, 31);
                     try {
-                        int i = BaseApplication.getAppComponent().getCmd().setTargetLeveledBFS(level);
+                        // TODO: 2017/10/19 需要知道第二个参数是什么意思
+                        int i = BaseApplication.getAppComponent().getCmd().setTargetLeveledBFS(level,0);
                         AppLogger.d("正在设置 TargetLevel:" + level + ",result:" + i);
                         if (i == 0) {
                             runOnUiThread(() -> ToastUtil.showToast("设置成功"));

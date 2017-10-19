@@ -414,7 +414,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             popupWindow.dismiss();
             FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
             if (item != null) {
-                FaceInformationFragment fragment = FaceInformationFragment.Companion.newInstance(uuid, item.getFaceinformation());
+                FaceInformationFragment fragment = FaceInformationFragment.Companion.newInstance(uuid, "", "", "");
                 ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
             } else {
                 // TODO: 2017/10/16 为什么会出现这种情况?

@@ -13,11 +13,12 @@ import com.cylan.jiafeigou.dp.DpMsgDefine
 interface SetFaceNameContact {
 
     interface View : JFGView {
-
+        fun onSetFaceNameError(ret: Int?)
+        fun onSetFaceNameSuccess()
     }
 
     interface Presenter : JFGPresenter<View> {
-        fun setFaceName(trim: CharSequence)
+        fun setFaceName(faceId: String, personId: String, faceName: String)
     }
 }
 

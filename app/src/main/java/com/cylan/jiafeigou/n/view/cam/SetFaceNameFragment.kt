@@ -20,6 +20,10 @@ import kotlinx.android.synthetic.main.fragment_set_face_name.*
  * Created by yanzhendong on 2017/10/9.
  */
 class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
+
+    private var faceId: String? = null
+    private var personId: String? = null
+
     override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)
     }
@@ -31,6 +35,8 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
 
     override fun initViewAndListener() {
         super.initViewAndListener()
+        faceId = arguments.getString("face_id")
+        personId = arguments.getString("person_id")
         custom_toolbar.setRightAction { setFaceName() }
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
         edit_face_name.addTextChangedListener(object : TextWatcher {
@@ -57,16 +63,17 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1))
         } else {
             //TODO 修改或者新建面孔名称
-            presenter.setFaceName(edit_face_name.text.trim())
+            presenter.setFaceName(faceId ?: "", personId ?: "", edit_face_name.text.toString().trim())
         }
     }
 
     companion object {
-
-        fun newInstance(uuid: String): SetFaceNameFragment {
+        fun newInstance(uuid: String, faceId: String, personId: String): SetFaceNameFragment {
             val fragment = SetFaceNameFragment()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+            argument.putString("face_id", faceId)
+            argument.putString("person_id", personId)
             fragment.arguments = argument
             return fragment
         }

@@ -1136,6 +1136,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 bottomPanelMoreItem.setLayoutParams(layoutParams);
             }
             break;
+            default:
         }
         onRefreshControllerView(enable && presenter.getLiveAction().hasResolution, false);
 //        bottomPanelPhotoGraphItem.setImageResource(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.drawable.camera720_icon_photograph_selector : record ? R.drawable.camera720_icon_video_recording_selector : R.drawable.camera720_icon_short_video_selector);

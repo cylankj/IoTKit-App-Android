@@ -412,6 +412,8 @@ dependencies {
     kapt "com.android.databinding:compiler:2.3.3"
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.1'
 
+
+
     //youtube-live-api
     compile 'com.google.api-client:google-api-client:1.23.0'
     //youtube rtmp 配置 配置
@@ -431,6 +433,7 @@ dependencies {
     compile 'com.github.worker8:RadioGroupPlus:v1.0.1'
     compile 'net.openid:appauth:0.7.0'
     compile 'com.github.promeg:tinypinyin:2.0.1'
+//    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20171019.084208-15', ext: 'pom')
 }
 
 /////////////////编译过滤器/////////////////////////////////

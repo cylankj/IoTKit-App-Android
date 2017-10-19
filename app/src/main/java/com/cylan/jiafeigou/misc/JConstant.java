@@ -245,6 +245,7 @@ public class JConstant {
         public static final String ROBOTSCLOUD_IMAGE_URL = "image_url";
         public static final String ROBOTSCLOUD_FACE_NAME = "face_name";
         public static final String ROBOTSCLOUD_PERSON_NAME = "person_name";
+        public static final String ACCESS_TOKEN = "access_token";
     }
 
     public static String FACEBOOK_PREF_VIDEO_ID = "FACEBOOK_PREF_VIDEO_ID";

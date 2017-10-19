@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.IMEUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.fragment_face_create.*
 
@@ -74,6 +75,11 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         })
 
 
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        IMEUtils.hide(activity)
     }
 
     private fun sendResultIfNeed() {

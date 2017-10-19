@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.item.FaceListHeaderItem
 import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.github.promeg.pinyinhelper.Pinyin
@@ -67,6 +68,11 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         itemAdapter.withUseIdDistributor(true)
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
+        adapter.withSelectionListener { _, _ ->
+            custom_toolbar.setRightEnable(adapter.selections.size > 0)
+        }
+        BaseApplication.getAppComponent().cmd.sessionId
+        custom_toolbar.setRightEnable(false)
         itemAdapter.withComparator { item1, item2 ->
             val pinyin1 = Pinyin.toPinyin(item1.faceInformation?.face_name, "") ?: ""
             val pinyin2 = Pinyin.toPinyin(item2.faceInformation?.face_name, "") ?: ""
@@ -103,21 +109,29 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
         layoutManager = LinearLayoutManager(context)
         face_list_items.adapter = adapter
-
-
         face_list_items.layoutManager = layoutManager
+
+        custom_toolbar.setBackAction { fragmentManager.popBackStack() }
+        custom_toolbar.setRightAction { moveFaceTo() }
 
         //todo just for test
         val items: MutableList<FaceListItem> = mutableListOf()
-        for (i in 0..100) {
+        words.forEach {
             val item = FaceListItem()
             val information = DpMsgDefine.FaceInformation()
-            information.face_name = "ABC$i"
+            information.face_name = it
             item.withFaceInformation(information)
             items.add(item)
         }
         itemAdapter.add(items)
     }
+
+    private fun moveFaceTo() {
+
+    }
+
+    val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷")
+
 
     override fun onStart() {
         super.onStart()

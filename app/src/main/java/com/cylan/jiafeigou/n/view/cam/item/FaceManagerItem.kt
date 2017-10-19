@@ -10,6 +10,7 @@ import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 
 /**
@@ -41,9 +42,12 @@ class FaceManagerItem : AbstractItem<FaceManagerItem, FaceManagerItem.FaceManage
         super.bindView(holder, payloads)
         Glide.with(holder.itemView.context)
                 .load(faceInformation?.source_image_url)
+                .error(R.drawable.pic_welcome_page_1)
+                .placeholder(R.drawable.pic_welcome_page_1)
                 .into(holder.faceIcon)
         holder.faceCheckBox.isChecked = isSelected
-
+        val fastAdapter = holder.itemView.getTag(R.id.fastadapter_item_adapter) as FastAdapter<*>
+        holder.faceCheckBox.visibility = if (fastAdapter.isSelectable) View.VISIBLE else View.GONE
     }
 
 

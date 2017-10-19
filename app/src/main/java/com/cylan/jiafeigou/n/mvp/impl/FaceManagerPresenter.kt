@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers
  */
 class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManagerContact.Presenter {
     override fun loadFacesByPersonId(personId: String) {
-        val subscribe = Observable.create<DpMsgDefine.FaceQueryResponse>({ subscriber ->
+        val subscribe = Observable.create<DpMsgDefine.FaceQueryResponse> { subscriber ->
             try {
                 val account = DataSourceManager.getInstance().account.account
                 val vid = Security.getVId()
@@ -78,7 +78,7 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
             } catch (e: Exception) {
                 subscriber.onError(e)
             }
-        })
+        }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ rsp ->
