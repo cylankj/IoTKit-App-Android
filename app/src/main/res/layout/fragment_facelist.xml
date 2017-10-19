@@ -20,17 +20,6 @@
 
     </com.cylan.jiafeigou.widget.CustomToolbar>
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y64"
-        android:gravity="center_vertical"
-        android:paddingEnd="@dimen/y16"
-        android:paddingStart="@dimen/y16"
-        android:text="@string/MESSAGES_ADD_FACE_TIPS"
-        android:textColor="@color/color_888888"
-        android:textSize="@dimen/sp14"
-        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/face_list_items"
@@ -39,7 +28,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
-
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
 </android.support.constraint.ConstraintLayout>

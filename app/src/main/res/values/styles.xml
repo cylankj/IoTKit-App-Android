@@ -531,4 +531,9 @@
         <item name="android:textSize">@dimen/sp14</item>
     </style>
 
+    <style name="EditTextTheme" parent="AppTheme">
+        <item name="colorControlNormal">@color/color_f2f2f2</item>
+        <item name="colorControlActivated">@color/color_f2f2f2</item>
+    </style>
+
 </resources>

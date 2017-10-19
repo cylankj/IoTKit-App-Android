@@ -191,15 +191,21 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             CamMessageBean bean = getItem(layoutPosition - 1);
             sameDay = TimeUtils.isSameDay(bean.version, item.version);
         }
-        holder.setVisibility(R.id.message_time_divider, (sameDay || !faceFragment) ? View.GONE : View.VISIBLE);
-        if (!sameDay && faceFragment) {
-            boolean isToday = TimeUtils.isToday(item.version);
+        boolean showDivider = !sameDay && faceFragment;
+        holder.setVisibility(R.id.message_time_divider, showDivider ? View.VISIBLE : View.GONE);
+        holder.setVisibility(R.id.watcher_text, showDivider ? View.VISIBLE : View.GONE);
+        if (showDivider) {
             String content = TimeUtils.getTimeSpecial(item.version);
             holder.setText(R.id.time_divider, content);
+            // TODO: 2017/10/18 显示右边的人数统计,现在不知道从哪获取数据
+
+            holder.setText(R.id.watcher_text, "最近30天来访15次");
         }
+
         //设置删除可见性,共享设备不可删除消息
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        holder.setVisibility(R.id.tv_cam_message_item_delete, !isSharedDevice || JFGRules.isPan720(device.pid) ? View.VISIBLE : View.INVISIBLE);//720 设备享有所有权限
+        //720 设备享有所有权限
+        holder.setVisibility(R.id.tv_cam_message_item_delete, !isSharedDevice || JFGRules.isPan720(device.pid) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);

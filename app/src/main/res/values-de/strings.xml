@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Gehen Sie zu einem bestehenden Gesicht</string>
   <string name="MESSAGES_FACE_MOVE_BTN">ziehen nach</string>
   <string name="MESSAGES_FACE_NONE">Kein Gesicht</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Besuche %s mal innerhalb von 30 Tagen</string>
   <string name="MESSAGES_FILTER_ALL">Alle</string>
   <string name="MESSAGES_FILTER_STRANGER">Fremder</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">In dem bestehenden Gesicht</string>

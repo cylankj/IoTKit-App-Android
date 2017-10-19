@@ -412,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Переход к существующему лицу</string>
   <string name="MESSAGES_FACE_MOVE_BTN">переехать в</string>
   <string name="MESSAGES_FACE_NONE">Без лица</string>
+  <string name="MESSAGES_FACE_VISIT_TIMES">Посетите %s раз в течение 30 дней</string>
   <string name="MESSAGES_FILTER_ALL">Все</string>
   <string name="MESSAGES_FILTER_STRANGER">Незнакомец</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Добавить к существующему лицу</string>

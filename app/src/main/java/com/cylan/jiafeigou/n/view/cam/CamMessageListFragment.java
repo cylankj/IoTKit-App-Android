@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -130,6 +130,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     TextView barBack;
     @BindView(R.id.parent)
     CoordinatorLayout parent;
+    @BindView(R.id.cam_message_indicator_watcher_text)
+    TextView tvCamMessageIndicatorWatcherText;
+    @BindView(R.id.cam_message_indicator_holder)
+    ConstraintLayout camMessageIndicatorHolder;
 //    @BindView(R.id.header_container)
 //    LinearLayout headerContainer;
 
@@ -281,7 +285,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             rvCamMessageHeaderFaces.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
-                    refreshFaceHeaderIndicator();
+                    setFaceHeaderPageIndicator();
                 }
             });
 
@@ -385,21 +389,22 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         View contentView = popupWindow.getContentView();
 
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
+        if (faceType == FaceItem.FACE_TYPE_STRANGER)
 
-
-        contentView.findViewById(R.id.delete).setOnClickListener(v -> {
-            // TODO: 2017/10/9 删除操作
-            AppLogger.w("将删除面孔");
-            popupWindow.dismiss();
-            FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
-            showDeleteFaceAlert(item);
-        });
+            contentView.findViewById(R.id.delete).setOnClickListener(v -> {
+                // TODO: 2017/10/9 删除操作
+                AppLogger.w("将删除面孔");
+                popupWindow.dismiss();
+                FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
+                showDeleteFaceAlert(item);
+            });
 
         contentView.findViewById(R.id.detect).setOnClickListener(v -> {
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔");
             popupWindow.dismiss();
-            Bitmap image = ((BitmapDrawable) faceItem.getDrawable()).getBitmap();
+            faceItem.setDrawingCacheEnabled(true);
+            Bitmap image = faceItem.getDrawingCache();
             showDetectFaceAlert("", image);
 
         });
@@ -499,10 +504,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
     }
 
-    private void refreshFaceHeaderIndicator() {
+    private void setFaceHeaderPageIndicator() {
         int currentItem = rvCamMessageHeaderFaces.getCurrentItem();
         tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, camMessageFaceAdapter.getCount()));
         tvCamMessageIndicatorPageText.setVisibility(camMessageFaceAdapter.getTotalCount() > 8 ? View.VISIBLE : View.GONE);
+        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
+    }
+
+    private void setFaceHeaderWatcherIndicator(int count) {
+        tvCamMessageIndicatorWatcherText.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count));
+        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE
+                && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
+
     }
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
@@ -617,7 +630,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         // TODO: 2017/10/11 获取脸谱数据后先去人预制条目
         layoutBarMenu(BAR_TYPE_FACE_COMMON);
         ensurePreloadHeaderItem();
-        refreshFaceHeaderIndicator();
+        setFaceHeaderPageIndicator();
     }
 
 
@@ -738,6 +751,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //        }
 //                , 200);
                 break;
+            default:
         }
 
     }
@@ -887,6 +901,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         .setCancelable(false)
                         .show();
                 break;
+            default:
         }
     }
 
@@ -996,6 +1011,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 }
                 break;
             }
+            default:
         }
     }
 
