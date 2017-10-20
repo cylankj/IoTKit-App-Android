@@ -46,12 +46,6 @@ public interface CamMessageListContract {
         boolean isUserVisible();
 
         void onFaceInformationReady(List<DpMsgDefine.FaceInformation> data);
-
-        void onVisitorListReady(DpMsgDefine.VisitorList visitorList);
-
-        void onStrangerVisitorListReady(DpMsgDefine.StrangerVisitorList visitorList);
-
-        List<FaceItem> getFaceItems();
     }
 
     interface Presenter extends BasePresenter {
@@ -69,10 +63,6 @@ public interface CamMessageListContract {
         List<WonderIndicatorWheelView.WheelItem> getDateList();
 
         void refreshDateList(boolean needToLoadList);
-
-        void deleteFace(String face_id, String person_id, String group_id);
-
-        void fetchStrangerVisitorList();
     }
 }
 
