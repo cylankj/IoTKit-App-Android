@@ -62,7 +62,7 @@ class FaceInformationFragment : BaseFragment<JFGPresenter<*>>() {
     @OnClick(R.id.setting_item_face_name)
     fun enterSetFaceName() {
         AppLogger.w("enterSetFaceName")
-        val fragment = SetFaceNameFragment.newInstance(uuid, faceId ?: "", personId ?: "")
+        val fragment = SetFaceNameFragment.newInstance(uuid, setting_item_face_name.subTitle.toString(), faceId ?: "", personId ?: "")
 
         ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
     }

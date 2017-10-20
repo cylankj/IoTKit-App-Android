@@ -23,6 +23,7 @@
         android:layout_marginTop="@dimen/y4"
         android:button="@drawable/custom_rtbn_style1"
         android:checked="true"
+        android:enabled="false"
         app:layout_constraintEnd_toEndOf="@+id/face"
         app:layout_constraintTop_toTopOf="@+id/face" />
 

@@ -47,7 +47,7 @@ public class JFGFaceGlideURL extends GlideUrl {
                 urlV2 = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
                 urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
             } else {
-                urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s", vid, account, cid, faceId);
+                urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
                 urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
             }
             return new URL(urlV2);

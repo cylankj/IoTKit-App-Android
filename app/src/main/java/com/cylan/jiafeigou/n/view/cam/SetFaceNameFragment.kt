@@ -23,7 +23,7 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
 
     private var faceId: String? = null
     private var personId: String? = null
-
+    private var oldName: String? = null
     override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)
     }
@@ -33,10 +33,13 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
         return view
     }
 
+
     override fun initViewAndListener() {
         super.initViewAndListener()
         faceId = arguments.getString("face_id")
         personId = arguments.getString("person_id")
+        oldName = arguments.getString("old_name")
+        edit_face_name.setText(oldName)
         custom_toolbar.setRightAction { setFaceName() }
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
         edit_face_name.addTextChangedListener(object : TextWatcher {
@@ -68,12 +71,13 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>() {
     }
 
     companion object {
-        fun newInstance(uuid: String, faceId: String, personId: String): SetFaceNameFragment {
+        fun newInstance(uuid: String, oldName: String, faceId: String, personId: String): SetFaceNameFragment {
             val fragment = SetFaceNameFragment()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
             argument.putString("face_id", faceId)
             argument.putString("person_id", personId)
+            argument.putString("old_name", oldName)
             fragment.arguments = argument
             return fragment
         }

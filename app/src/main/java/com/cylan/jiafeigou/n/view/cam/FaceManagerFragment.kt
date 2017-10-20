@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import butterknife.ButterKnife
+import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.module.DataSourceManager
@@ -19,9 +22,8 @@ import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.view.cam.item.FaceManagerItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
-import com.mikepenz.fastadapter.FastAdapter
+import com.cylan.jiafeigou.utils.AnimatorUtils
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 import kotlinx.android.synthetic.main.fragment_face_manager.*
 
 /**
@@ -47,7 +49,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_face_manager, container, false)
-
+        ButterKnife.bind(this, view)
         return view
     }
 
@@ -55,9 +57,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onStart() {
         super.onStart()
-        if (personId != null) {
-            presenter.loadFacesByPersonId(personId!!)
-        }
+        presenter.loadFacesByPersonId(personId ?: "")
     }
 
     override fun initViewAndListener() {
@@ -69,6 +69,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter = FastItemAdapter()
         adapter.withSelectable(false)
         adapter.withMultiSelect(true)
+        adapter.withAllowDeselection(true)
         adapter.withSelectWithItemUpdate(true)
         adapter.itemAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
@@ -81,45 +82,25 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
                 empty_view.visibility = View.GONE
             }
         })
-        adapter.withOnClickListener { v, adapter, iItem, position ->
-            AppLogger.w("FaceManagerOnItemClicked:$v,$position,$iItem,$adapter")
-            if (isEditMode()) {
-                //TODO 选中条目
-                AppLogger.w("")
-                return@withOnClickListener true
-            } else {
-                //TODO 什么也不做了
-                return@withOnClickListener false
-            }
-        }
-        adapter.withEventHook(object : ClickEventHook<FaceManagerItem>() {
-
-            override fun onBindMany(viewHolder: RecyclerView.ViewHolder): MutableList<View>? {
-                if (viewHolder is FaceManagerItem.FaceManagerViewHolder) {
-                    return mutableListOf(viewHolder.itemView, viewHolder.faceCheckBox)
-                }
-                return null
-            }
-
-            override fun onClick(v: View?, position: Int, fastAdapter: FastAdapter<FaceManagerItem>, item: FaceManagerItem) {
-                if (!item.isSelected) {
-                    val selections = fastAdapter.selections
-                    if (!selections.isEmpty()) {
-                        val selectedPosition = selections.iterator().next()
-                        fastAdapter.deselect()
-                        fastAdapter.notifyItemChanged(selectedPosition)
-                    }
-                    fastAdapter.select(position)
-                }
-            }
-
-        })
 
         adapter.withOnLongClickListener { v, adapter, iItem, position ->
+            if (isEditMode()) {
+                //编辑模式下
+                return@withOnLongClickListener false
+            }
             AppLogger.w("FaceManagerOnItemLongClicked:$v,$adapter,$iItem,$position")
             //todo 需要弹出菜单
-            showFaceManagerPopMenu(position, v)
+            showFaceManagerPopMenu(position, v, iItem)
             return@withOnLongClickListener true
+        }
+
+        adapter.withSelectionListener { _, _ ->
+            tv_msg_delete.isEnabled = adapter.selections.size > 0
+            if (adapter.selections.size == adapter.itemCount) {
+                tv_msg_full_select.setText(R.string.CANCEL)
+            } else {
+                tv_msg_full_select.setText(R.string.SELECT_ALL)
+            }
         }
 
         face_manager_items.adapter = adapter
@@ -129,11 +110,13 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
             if (getString(R.string.EDIT_THEME) == custom_toolbar.tvToolbarRight.text) {
                 adapter.withSelectable(true)
                 custom_toolbar.setToolbarRightTitle(R.string.CANCEL)
-                bottom_menu.visibility = View.VISIBLE
+                AnimatorUtils.slideIn(bottom_menu, false)
+//                bottom_menu.visibility = View.VISIBLE
             } else {
                 adapter.withSelectable(false)
+                adapter.deselect()
                 custom_toolbar.setToolbarRightTitle(R.string.EDIT_THEME)
-                bottom_menu.visibility = View.GONE
+                AnimatorUtils.slideOut(bottom_menu, false)
             }
             adapter.notifyDataSetChanged()
         }
@@ -156,34 +139,48 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     }
 
+    @OnClick(R.id.tv_msg_full_select)
+    fun clickSelectAll() {
+        AppLogger.w("clickSelectAll")
+
+        if (TextUtils.equals(getString(R.string.SELECT_ALL), tv_msg_full_select.text)) {
+            tv_msg_full_select.setText(R.string.CANCEL)
+            adapter.select()
+        } else {
+            tv_msg_full_select.setText(R.string.SELECT_ALL)
+            adapter.deselect()
+        }
+    }
+
     val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷")
 
-    private fun showFaceManagerPopMenu(position: Int, v: View?) {
+    private fun showFaceManagerPopMenu(position: Int, v: View?, faceManagerItem: FaceManagerItem) {
         val view = View.inflate(context, R.layout.layout_face_manager_pop_alert, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
-
         view.findViewById(R.id.delete).setOnClickListener {
             AppLogger.w("面孔管理:删除")
-
+            popupWindow.dismiss()
         }
 
         view.findViewById(R.id.move_to).setOnClickListener {
             AppLogger.w("面孔管理:移动到")
-            val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid, FaceListFragment.TYPE_MOVE_TO)
+            popupWindow.dismiss()
+            val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid,
+                    faceManagerItem.faceInformation?.face_id ?: "", FaceListFragment.TYPE_MOVE_TO)
             //TODO 监听 移动面孔的结果回调
 //            fragment.resultCallback={
 //
 //            }
-            ActivityUtils.addFragmentToActivity(fragmentManager, fragment, android.R.id.content)
+            ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
         }
         PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)
     }
 
     private fun isEditMode(): Boolean {
-        return custom_toolbar.tvToolbarRight.isEnabled
+        return TextUtils.equals(getString(R.string.CANCEL), custom_toolbar.tvToolbarRight.text)
     }
 
     companion object {

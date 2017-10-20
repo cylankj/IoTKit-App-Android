@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.cam
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -21,20 +20,21 @@ import kotlinx.android.synthetic.main.fragment_face_create.*
  * Created by yanzhendong on 2017/10/9.
  */
 class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), CreateFaceContact.View {
-    override fun onCreateNewFaceResponse(ret: Int) {
-        AppLogger.w("创建面孔返回值为:" + ret)
-        if (ret == 0) {
-            resultCallback?.invoke(ret)
-            fragmentManager.popBackStack()
-        } else {
-            AppLogger.w("创建面孔失败了")
-            ToastUtil.showToast("创建失败了")
-        }
+    override fun onCreateNewFaceSuccess(personId: String) {
+        AppLogger.w("创建面孔返回值为:$personId")
+        resultCallback?.invoke(personId)
+        fragmentManager.popBackStack()
+
     }
 
+    override fun onCreateNewFaceError(ret: Int) {
+        AppLogger.w("创建面孔失败了")
+        ToastUtil.showToast("创建失败了")
+    }
+
+
     var faceId: String? = null
-    var picture: Bitmap? = null
-    var resultCallback: ((ret: Int) -> Unit)? = null
+    var resultCallback: ((personId: String) -> Unit)? = null
 
 
     override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
@@ -49,12 +49,11 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
     override fun initViewAndListener() {
         super.initViewAndListener()
         faceId = arguments.getString("face_id")
-        picture = arguments.getParcelable("picture")
         custom_toolbar.setRightAction {
             if (faceId == null || picture == null) {
                 AppLogger.w("FaceId :$faceId ,picture:$picture")
             } else {
-                presenter.createNewFace(faceId!!, name.text.toString().trim(), picture!!)
+                presenter.createNewFace(faceId!!, name.text.toString().trim())
             }
         }
         custom_toolbar.setBackAction {
@@ -88,13 +87,12 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     companion object {
 
-        fun newInstance(uuid: String, faceId: String, picture: Bitmap): CreateNewFaceFragment {
+        fun newInstance(uuid: String, faceId: String): CreateNewFaceFragment {
             val fragment = CreateNewFaceFragment()
 
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
             argument.putString("face_id", faceId)
-            argument.putParcelable("picture", picture)
             fragment.arguments = argument
             return fragment
         }

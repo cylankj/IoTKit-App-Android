@@ -1,13 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
-import android.graphics.Bitmap
 import android.text.TextUtils
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.misc.JConstant.blockGetServiceKey
-import com.cylan.jiafeigou.misc.JConstant.blockPutFileToCloud
+import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.CreateFaceContact
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
@@ -21,7 +19,7 @@ import com.lzy.okgo.cache.CacheMode
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.io.File
+import java.util.*
 
 /**
  * Created by yanzhendong on 2017/10/14.
@@ -29,17 +27,16 @@ import java.io.File
 class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFaceContact.Presenter {
 
 
-    override fun createNewFace(faceId: String, faceName: String, picture: Bitmap) {
-        val subscribe = Observable.create<Int> { subscriber ->
-            val fileName = JConstant.UPDATE_FILE_PATH + File.separator + "temp.jpg"
-            val imageUrl = blockPutFileToCloud(fileName, "", DataSourceManager.getInstance().storageType)
+    override fun createNewFace(faceId: String, faceName: String) {
+        val subscribe = Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
             val account = DataSourceManager.getInstance().account.account
             val vid = Security.getVId()
-            val serviceKey = blockGetServiceKey()
+            val serviceKey = OptionsImpl.getServiceKey(vid)
             val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
-            val seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null)
-
-            if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret) || TextUtils.isEmpty(imageUrl)) {
+            val seceret = OptionsImpl.getServiceSeceret(vid)
+            var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
+            imageUrl = BaseApplication.getAppComponent().cmd.getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
+            if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                 throw IllegalArgumentException("ServiceKey或Seceret为空")
             }
 
@@ -70,26 +67,28 @@ class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFa
             AppLogger.w(string)
             val gson = Gson()
             val header = gson.fromJson<DpMsgDefine.GenericResponse>(string, DpMsgDefine.GenericResponse::class.java)
-            if (header.ret == 0) {
-                subscriber.onNext(header.data.toInt())
-                subscriber.onCompleted()
-            } else {
-                if (header.ret == 100) {
-                    PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
-                    PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
-                }
-                subscriber.onError(IllegalArgumentException("ret:" + header.ret + ",msg:" + header.msg))
-            }
+            subscriber.onNext(header)
+            subscriber.onCompleted()
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ rsp ->
-                    if (rsp == 0) {
+                .subscribe({ response ->
+                    if (!TextUtils.isEmpty(response.data)) {
+                        //成功了
+                        mView.onCreateNewFaceSuccess(response.data)
 
                     } else {
-
+                        if (response.ret == 100) {
+                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
+                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
+                        }
+                        mView.onCreateNewFaceError(response.ret)
                     }
-                }) { e -> AppLogger.e(MiscUtils.getErr(e)) }
+
+                }) { e ->
+                    mView.onCreateNewFaceError(-1)
+                    AppLogger.e(MiscUtils.getErr(e))
+                }
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "CreateNewFacePresenter#createNewFace", subscribe)
     }
 

@@ -5,7 +5,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.misc.JConstant.blockGetServiceKey
+import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.FaceManagerContact
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
@@ -29,9 +29,10 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
             try {
                 val account = DataSourceManager.getInstance().account.account
                 val vid = Security.getVId()
-                val serviceKey = blockGetServiceKey()
+                val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
-                val seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null)
+                val seceret = OptionsImpl.getServiceSeceret(vid)
+                val sessionId = BaseApplication.getAppComponent().cmd.sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
@@ -48,9 +49,11 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
+                            .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
                             .execute()
 
                     val body = response.body()

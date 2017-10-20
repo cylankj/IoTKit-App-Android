@@ -5,7 +5,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.misc.JConstant.blockGetServiceKey
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact
 import com.cylan.jiafeigou.support.OptionsImpl
@@ -13,7 +12,6 @@ import com.cylan.jiafeigou.support.Security
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.AESUtil
 import com.cylan.jiafeigou.utils.MiscUtils
-import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheMode
@@ -44,9 +42,9 @@ class SetFaceNamePresenter : BasePresenter<SetFaceNameContact.View>(), SetFaceNa
             try {
                 val account = DataSourceManager.getInstance().account.account
                 val vid = Security.getVId()
-                val serviceKey = blockGetServiceKey()
+                val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
-                val seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null)
+                val seceret = OptionsImpl.getServiceSeceret(vid)
                 val accessToken = BaseApplication.getAppComponent().cmd.sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))

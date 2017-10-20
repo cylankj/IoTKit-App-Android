@@ -577,8 +577,10 @@ public class JConstant {
 
 
     public static String blockGetServiceKey() throws Exception {
+
         String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
         if (TextUtils.isEmpty(serviceKey)) {
+
             long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
             RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)

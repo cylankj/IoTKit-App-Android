@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -403,9 +402,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔");
             popupWindow.dismiss();
-            faceItem.setDrawingCacheEnabled(true);
-            Bitmap image = faceItem.getDrawingCache();
-            showDetectFaceAlert("", image);
+            FaceItem item = camMessageFaceAdapter.getGlobalItem(page_position, position);
+            showDetectFaceAlert("");
 
         });
 
@@ -423,7 +421,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START);
     }
 
-    private void showDetectFaceAlert(String faceId, Bitmap picture) {
+    private void showDetectFaceAlert(String faceId) {
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(R.layout.layout_face_detect_pop_alert)
                 .show();
@@ -436,7 +434,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             RadioButton addTo = (RadioButton) dialog.findViewById(R.id.detect_add_to);
             RadioButton newFace = (RadioButton) dialog.findViewById(R.id.detect_new_face);
             if (addTo.isChecked()) {
-                FaceListFragment fragment = FaceListFragment.Companion.newInstance(DataSourceManager.getInstance().getAccount().getAccount(), uuid, FaceListFragment.TYPE_ADD_TO);
+                String account = DataSourceManager.getInstance().getAccount().getAccount();
+                FaceListFragment fragment = FaceListFragment.Companion.newInstance(account, uuid, faceId, FaceListFragment.TYPE_ADD_TO);
                 fragment.setResultCallback((o, o2, o3) -> {
                     // TODO: 2017/10/10 移动到面孔的结果回调
 
@@ -444,8 +443,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 });
                 ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
             } else if (newFace.isChecked()) {
-                CreateNewFaceFragment fragment = CreateNewFaceFragment.Companion.newInstance(uuid, faceId, picture);
-                fragment.setResultCallback((ret) -> {
+                CreateNewFaceFragment fragment = CreateNewFaceFragment.Companion.newInstance(uuid, faceId);
+                fragment.setResultCallback((personId) -> {
                     // TODO: 2017/10/10 创建面孔的结果回调
 
                     return null;
@@ -512,7 +511,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void setFaceHeaderWatcherIndicator(int count) {
-        tvCamMessageIndicatorWatcherText.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count));
+        tvCamMessageIndicatorWatcherText.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, String.valueOf(count)));
         camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE
                 && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
 

@@ -128,4 +128,22 @@ public class OptionsImpl {
         }
         return vid;
     }
+
+    public static String getServiceKey(String vid) {
+        if (TextUtils.equals("0001", vid)) {
+            return "qg9vRfvofK9b4xsWh1kHnEb998lQZYwA";
+        } else if (TextUtils.equals("0002", vid)) {
+            return "PB14hf9peVw6CBoVS7Gs4LcMfcOzWNKR";
+        }
+        return "PB14hf9peVw6CBoVS7Gs4LcMfcOzWNKR";
+    }
+
+    public static String getServiceSeceret(String vid) {
+        if (TextUtils.equals("0001", vid)) {
+            return "VQ9jvWXe4YhJbhrPepqH7zaRppuUGNSf";
+        } else if (TextUtils.equals("0002", vid)) {
+            return "B8nxU7u3GUDukGlBbjeidOVmYhtPApn0";
+        }
+        return "B8nxU7u3GUDukGlBbjeidOVmYhtPApn0";
+    }
 }

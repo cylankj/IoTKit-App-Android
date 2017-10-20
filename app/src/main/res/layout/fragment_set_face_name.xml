@@ -17,16 +17,32 @@
         app:ct_left_title="@string/NAME"
         app:ct_left_title_color="@color/color_white" />
 
-    <com.cylan.jiafeigou.widget.ClearableEditText
-        android:id="@+id/edit_face_name"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        android:layout_marginEnd="@dimen/y20"
-        android:layout_marginStart="@dimen/y20"
-        android:layout_marginTop="@dimen/y8"
-        android:text="@string/Tap1_AddDevice_CameraTips"
-        android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp16"
-        android:theme="@style/EditTextTheme" />
+        android:layout_height="@dimen/y54">
 
+        <com.cylan.jiafeigou.widget.ClearableEditText
+            android:id="@+id/edit_face_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:layout_marginTop="@dimen/y8"
+            android:background="@null"
+            android:hint="@string/LOCATION_NAME_ERROR"
+            android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_cecece"
+            android:textCursorDrawable="@drawable/bg_common_cursor"
+            android:textSize="@dimen/sp16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y1"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/y7"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:background="@color/color_f2f2f2" />
+
+    </FrameLayout>
 </LinearLayout>
