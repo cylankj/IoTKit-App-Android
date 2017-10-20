@@ -121,7 +121,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @BindView(R.id.iv_cam_message_arrow)
     ImageView arrow;
     @BindView(R.id.cam_message_face)
-    ViewPager rvCamMessageHeaderFaces;
+    ViewPager vpCamMessageHeaderFaces;
     @BindView(R.id.cam_message_indicator_page_text)
     TextView tvCamMessageIndicatorPageText;
     //    @BindView(R.id.cam_message_indicator)
@@ -281,8 +281,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //                    }
                 }
             });
-            rvCamMessageHeaderFaces.setAdapter(camMessageFaceAdapter);
-            rvCamMessageHeaderFaces.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            vpCamMessageHeaderFaces.setAdapter(camMessageFaceAdapter);
+            vpCamMessageHeaderFaces.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
                     setFaceHeaderPageIndicator();
@@ -373,6 +373,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void changeAdapterAndEnterStranger() {
         AppLogger.w("Clicked changeAdapterAndEnterStranger");
+        //需要刷数据
 
 
     }
@@ -489,6 +490,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     }
 
+    private void assembleFaceList(List<DpMsgDefine.Visitor> dataList, int guessTotal) {
+        List<FaceItem> list = new ArrayList<>();
+        for (DpMsgDefine.Visitor visitor : dataList) {
+            FaceItem allFace = new FaceItem();
+            allFace.setFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE);
+            allFace.setVisitor(visitor);
+            list.add(allFace);
+        }
+        if (ListUtils.isEmpty(list)) {
+            return;
+        }
+        camMessageFaceAdapter.appendFaceItems(list);
+    }
 
     private void ensurePreloadHeaderItem() {
         if (!camMessageFaceAdapter.hasPreloadFaceItems()) {
@@ -505,7 +519,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void setFaceHeaderPageIndicator() {
-        int currentItem = rvCamMessageHeaderFaces.getCurrentItem();
+        int currentItem = vpCamMessageHeaderFaces.getCurrentItem();
         tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, camMessageFaceAdapter.getCount()));
         tvCamMessageIndicatorPageText.setVisibility(camMessageFaceAdapter.getTotalCount() > 8 ? View.VISIBLE : View.GONE);
         camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
@@ -624,15 +638,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             });
         }
     }
-
-    @Override
-    public void onFaceItemQueryRsp() {
-        // TODO: 2017/10/11 获取脸谱数据后先去人预制条目
-        layoutBarMenu(BAR_TYPE_FACE_COMMON);
-        ensurePreloadHeaderItem();
-        setFaceHeaderPageIndicator();
-    }
-
 
     @Override
     public void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap) {
@@ -796,9 +801,38 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             faceInformationMap.put(information.face_id, information);
         }
         camMessageListAdapter.appendFaceInformation(faceInformationMap);
-        camMessageListAdapter.notifyDataSetChanged();
         camMessageFaceAdapter.sortByNewMessageVersion();
         assembleFaceItem(data, camMessageListAdapter.getList());
+    }
+
+    @Override
+    public void onVisitorListReady(DpMsgDefine.VisitorList visitorList) {
+        // TODO: 2017/10/11 获取脸谱数据后先去人预制条目
+        layoutBarMenu(BAR_TYPE_FACE_COMMON);
+        ensurePreloadHeaderItem();
+        //append list
+        assembleFaceList(visitorList.dataList, visitorList.total);
+        setFaceHeaderPageIndicator();
+    }
+
+    @Override
+    public void onStrangerVisitorListReady(DpMsgDefine.StrangerVisitorList visitorList) {
+        List<FaceItem> list = new ArrayList<>();
+        for (DpMsgDefine.StrangerVisitor visitor : visitorList.strangerVisitors) {
+            FaceItem allFace = new FaceItem();
+            allFace.setFaceType(FaceItem.FACE_TYPE_STRANGER);
+            allFace.setStrangerVisitor(visitor);
+            list.add(allFace);
+        }
+        if (ListUtils.isEmpty(list)) {
+            return;
+        }
+        camMessageFaceAdapter.appendFaceItems(list);
+    }
+
+    @Override
+    public List<FaceItem> getFaceItems() {
+        return camMessageFaceAdapter == null ? null : camMessageFaceAdapter.getFaceItems();
     }
 
     private void assembleFaceItem(List<DpMsgDefine.FaceInformation> data, List<CamMessageBean> list) {

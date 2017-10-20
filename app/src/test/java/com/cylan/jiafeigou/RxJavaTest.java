@@ -1,14 +1,9 @@
 package com.cylan.jiafeigou;
 
 import com.cylan.jiafeigou.rx.RxBus;
-//import com.cylan.jiafeigou.server.DPIDCameraObjectDetect;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
 import org.junit.Test;
-import org.msgpack.core.MessageBufferPacker;
-import org.msgpack.core.MessagePack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +14,10 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+
+//import com.cylan.jiafeigou.server.DPIDCameraObjectDetect;
 
 /**
  * Created by cylan-hunt on 17-2-17.
@@ -228,7 +226,7 @@ public class RxJavaTest {
                         return null;
                     }
                 })
-                .timeout(1,TimeUnit.SECONDS)
+                .timeout(1, TimeUnit.SECONDS)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
@@ -236,5 +234,26 @@ public class RxJavaTest {
                     }
                 });
         Thread.sleep(100000);
+    }
+
+
+    @Test
+    public void testRetry() throws InterruptedException {
+        final ArrayList<String> list = new ArrayList<>();
+        Observable.just("0")
+                .map(s -> {
+                    System.out.println("map: " + s);
+                    list.add(s);
+                    if (list.size() < 10) throw new IllegalArgumentException("go");
+                    return s;
+                })
+                .retry((integer, throwable) -> {
+                    System.out.println("retry?:" + throwable+" "+integer);
+                    if (throwable.getLocalizedMessage().contains("go"))
+                        return true;
+                    return null;
+                })
+                .subscribe();
+        Thread.sleep(500);
     }
 }
