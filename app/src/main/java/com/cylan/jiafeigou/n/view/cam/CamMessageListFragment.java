@@ -71,7 +71,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType;
 
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
@@ -133,6 +132,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     //头部不可用时显示的遮罩
     @BindView(R.id.cover_layer)
     View headerCoverLayer;
+
+    @BindView(R.id.cl_header_container)
+    ConstraintLayout clHeaderContainer;
     /**
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
@@ -248,14 +250,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
                 getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
 
-        initFaceHeader();
 
     }
 
     private void initFaceHeader() {
         if (JFGRules.isFaceFragment(getDevice().pid)) {
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
-            aplCamMessageAppbar.setExpanded(true);
+            aplCamMessageAppbar.setExpanded(true, false);
             tvCamMessageListDate.setClickable(false);
             faceDefaultFragment = VisitorListFragment.Companion.newInstance(getUuid());
             faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragment.OnVisitorListCallback() {
@@ -267,6 +268,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 @Override
                 public void onItemClick(@NotNull FaceItem type, @NotNull ArrayList<String> dataList) {
                     changeContentByHeaderClick(type.getFaceType());
+                    View v = getView().findViewById(R.id.fLayout_message_face);
+                    Log.d("TAg", "click tag: " + v.getHeight() + "," + v.getMeasuredHeight());
                 }
 
                 @Override
@@ -276,9 +279,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     setFaceHeaderPageIndicator(0, ListUtils.getSize(visitorList.dataList));
                 }
             });
-            //显示
-            ActivityUtils.addFragmentToActivity(getChildFragmentManager(), faceDefaultFragment, R.id.fLayout_message_face);
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
+            //显示 所有面孔列表
+            ActivityUtils.replaceFragment(getChildFragmentManager(),
+                    faceDefaultFragment, R.id.fLayout_message_face, "faceDefaultFragment", false);
         } else {
             tvCamMessageListDate.setClickable(true);
             aplCamMessageAppbar.setExpanded(false);
@@ -532,6 +536,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean reset = tvCamMessageListDate.getTag() == null ||
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
+            initFaceHeader();
         });
     }
 

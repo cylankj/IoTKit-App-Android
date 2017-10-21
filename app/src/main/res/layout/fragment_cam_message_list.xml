@@ -26,6 +26,7 @@
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
                 <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_header_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 

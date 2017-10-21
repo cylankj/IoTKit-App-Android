@@ -45,6 +45,31 @@ public class ActivityUtils {
         transaction.commit();
     }
 
+    public static void addFragment(@NonNull FragmentManager fragmentManager,
+                                   @NonNull Fragment fragment, int frameId, String tag, boolean addToStack) {
+        Fragment f = fragmentManager.findFragmentByTag(tag);
+        if (f != null) return;
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(frameId, fragment);
+        if (addToStack) {
+            transaction.addToBackStack(fragment.getClass().getSimpleName());
+        }
+        transaction.commit();
+    }
+
+    public static void replaceFragment(@NonNull FragmentManager fragmentManager,
+                                       @NonNull Fragment fragment, int frameId,
+                                       String tag, boolean addToStack) {
+        Fragment f = fragmentManager.findFragmentByTag(tag);
+        if (f != null) return;
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(frameId, fragment);
+        if (addToStack) {
+            transaction.addToBackStack(fragment.getClass().getSimpleName());
+        }
+        transaction.commit();
+    }
+
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
                                              @NonNull Fragment fragment, int containerId, int id) {
         fragmentManager

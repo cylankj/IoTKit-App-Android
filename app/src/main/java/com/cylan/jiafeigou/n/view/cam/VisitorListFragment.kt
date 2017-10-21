@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -49,14 +50,18 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
         basePresenter = BaseVisitorPresenter(this)
     }
 
+    lateinit var container: ViewGroup
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        this.container = container!!
         return inflater!!.inflate(R.layout.fragment_visitor_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.post { Log.d("TAg", "tag: " + container?.height + "," + container?.measuredHeight) }
         var vpCamMessageHeaderFaces = view.findViewById(R.id.vp_default) as WrapContentViewPager
         visitorAdapter = CamMessageFaceAdapter()
         visitorAdapter.setOnFaceItemClickListener(object : CamMessageFaceAdapter.FaceItemEventListener {
@@ -84,6 +89,8 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
 
         // TODO: 2017/10/11 just for test
         ensurePreloadHeaderItem()
+        //加载数据
+        basePresenter.fetchVisitorList()
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList) {
@@ -143,7 +150,7 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
             val item = visitorAdapter?.getGlobalItem(page_position, position)
             if (item != null) {
                 val fragment = FaceInformationFragment.newInstance(uuid, item.faceinformation)
-                ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {
                 // TODO: 2017/10/16 为什么会出现这种情况?
             }
@@ -167,11 +174,11 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
 
                     null
                 }// TODO: 2017/10/10 移动到面孔的结果回调
-                ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else if (newFace!!.isChecked) {
                 val fragment = CreateNewFaceFragment.newInstance(uuid, faceId, picture)
                 fragment.resultCallback = { ret -> null }
-                ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             }
             dialog.dismiss()
         }
