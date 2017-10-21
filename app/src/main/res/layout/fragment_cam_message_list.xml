@@ -28,12 +28,14 @@
                 <RelativeLayout
                     android:id="@+id/cl_header_container"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/y13">
 
                     <FrameLayout
                         android:id="@+id/fLayout_message_face"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/y18"
                         app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_holder"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -45,8 +47,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/fLayout_message_face"
-                        android:layout_marginBottom="@dimen/y13"
-                        android:layout_marginTop="@dimen/y18"
                         android:paddingEnd="@dimen/y15"
                         android:paddingStart="@dimen/y15"
                         app:layout_constraintBottom_toBottomOf="parent"

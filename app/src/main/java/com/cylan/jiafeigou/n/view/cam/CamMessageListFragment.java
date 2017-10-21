@@ -384,7 +384,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void setFaceHeaderPageIndicator(int currentItem, int total) {
         tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, total));
         tvCamMessageIndicatorPageText.setVisibility(total > 8 ? View.VISIBLE : View.GONE);
-        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
+//        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
     }
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
