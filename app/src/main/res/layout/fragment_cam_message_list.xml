@@ -25,14 +25,14 @@
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
-                <android.support.constraint.ConstraintLayout
+                <RelativeLayout
                     android:id="@+id/cl_header_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <FrameLayout
                         android:id="@+id/fLayout_message_face"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_holder"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -42,8 +42,9 @@
 
                     <android.support.constraint.ConstraintLayout
                         android:id="@+id/cam_message_indicator_holder"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/fLayout_message_face"
                         android:layout_marginBottom="@dimen/y13"
                         android:layout_marginTop="@dimen/y18"
                         android:paddingEnd="@dimen/y15"
@@ -105,7 +106,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/rLayout_cam_message_list_top"

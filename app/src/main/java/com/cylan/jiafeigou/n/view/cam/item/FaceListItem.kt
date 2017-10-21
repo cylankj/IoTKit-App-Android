@@ -73,8 +73,8 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
     }
 
     private fun getPinYinLatter(text: String?): String {
-        return Pinyin.toPinyin(text?.get(0) ?: ' ')?.get(0).toString()
-
+        val char = text?.get(0) ?: '#'
+        return Pinyin.toPinyin(if (Pinyin.isChinese(char)) char else '#')?.get(0).toString()
     }
 
 

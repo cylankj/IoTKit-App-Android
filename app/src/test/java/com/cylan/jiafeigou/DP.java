@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.github.promeg.pinyinhelper.Pinyin;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -90,6 +91,12 @@ public class DP {
                     System.out.println(ret);
                 });
 //        DpUtils.pack()
+    }
+
+    @Test
+    public void testPinYin() {
+        String pinyin = Pinyin.toPinyin("2324242", "");
+        System.out.println(pinyin);
     }
 
     @Test
@@ -374,7 +381,7 @@ public class DP {
     public void testGraphPath() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
 
-        List<Object> temp=new ArrayList<>();
+        List<Object> temp = new ArrayList<>();
         temp.add(3);
         temp.add(5);
         temp.add("DDDDDDDDDDD");
@@ -389,11 +396,11 @@ public class DP {
     }
 
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
-    @JsonPropertyOrder({"a","b"})
-    public static class SSS{
-      public int a;
-      public int b;
-      public Object bytes;
+    @JsonPropertyOrder({"a", "b"})
+    public static class SSS {
+        public int a;
+        public int b;
+        public Object bytes;
 
         @Override
         public String toString() {
@@ -406,10 +413,10 @@ public class DP {
     }
 
     @Test
-    public void testAIService()throws Exception{
-        String timeMillis =  String.valueOf(System.currentTimeMillis()/1000);
+    public void testAIService() throws Exception {
+        String timeMillis = String.valueOf(System.currentTimeMillis() / 1000);
         System.out.println(timeMillis);
-        String seceret="6ZVBcFK6NLMg0zwjY0uuwdBiXUs7D1d9";
+        String seceret = "6ZVBcFK6NLMg0zwjY0uuwdBiXUs7D1d9";
         String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timeMillis);
         Response response = OkGo.post("http://yf.robotscloud.com/aiservice/v1/search_face")
                 .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)

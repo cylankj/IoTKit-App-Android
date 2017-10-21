@@ -134,7 +134,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     View headerCoverLayer;
 
     @BindView(R.id.cl_header_container)
-    ConstraintLayout clHeaderContainer;
+    ViewGroup clHeaderContainer;
     /**
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
@@ -256,7 +256,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void initFaceHeader() {
         if (JFGRules.isFaceFragment(getDevice().pid)) {
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
-            aplCamMessageAppbar.setExpanded(true, false);
+
             tvCamMessageListDate.setClickable(false);
             faceDefaultFragment = VisitorListFragment.Companion.newInstance(getUuid());
             faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragment.OnVisitorListCallback() {
@@ -283,6 +283,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             //显示 所有面孔列表
             ActivityUtils.replaceFragment(getChildFragmentManager(),
                     faceDefaultFragment, R.id.fLayout_message_face, "faceDefaultFragment", false);
+            aplCamMessageAppbar.setExpanded(true, false);
         } else {
             tvCamMessageListDate.setClickable(true);
             aplCamMessageAppbar.setExpanded(false);

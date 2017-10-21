@@ -37,6 +37,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
             face = FaceManagerItem().withFaceInformation(information)
             items.add(face)
         }
+
         adapter.add(items)
         custom_toolbar.setRightEnable(adapter.itemCount > 0)
     }
@@ -108,17 +109,11 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
         custom_toolbar.setRightAction {
             if (getString(R.string.EDIT_THEME) == custom_toolbar.tvToolbarRight.text) {
-                adapter.withSelectable(true)
-                custom_toolbar.setToolbarRightTitle(R.string.CANCEL)
-                AnimatorUtils.slideIn(bottom_menu, false)
+                setEditMode(true)
 //                bottom_menu.visibility = View.VISIBLE
             } else {
-                adapter.withSelectable(false)
-                adapter.deselect()
-                custom_toolbar.setToolbarRightTitle(R.string.EDIT_THEME)
-                AnimatorUtils.slideOut(bottom_menu, false)
+                setEditMode(false)
             }
-            adapter.notifyDataSetChanged()
         }
 
         /// 默认是不可点击的,等有数据后才能点击
@@ -181,6 +176,29 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     private fun isEditMode(): Boolean {
         return TextUtils.equals(getString(R.string.CANCEL), custom_toolbar.tvToolbarRight.text)
+    }
+
+    private fun setEditMode(editMode: Boolean) {
+        if (editMode) {
+            adapter.withSelectable(true)
+            custom_toolbar.setToolbarRightTitle(R.string.CANCEL)
+            AnimatorUtils.slideIn(bottom_menu, false)
+//                bottom_menu.visibility = View.VISIBLE
+        } else {
+            adapter.withSelectable(false)
+            adapter.deselect()
+            custom_toolbar.setToolbarRightTitle(R.string.EDIT_THEME)
+            AnimatorUtils.slideOut(bottom_menu, false)
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (isEditMode()) {
+            setEditMode(false)
+            return true
+        }
+        return super.onBackPressed()
     }
 
     companion object {
