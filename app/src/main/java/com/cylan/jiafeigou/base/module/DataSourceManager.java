@@ -458,18 +458,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (mCachedDeviceMap.size() == 0) {
             return;
         }
-
-
-
-          /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
-//        List<Integer> msgs = PAGE_MESSAGE.PAGE_HOME.filter(null);
-//        JFGDPMsg[] query = new JFGDPMsg[msgs.size()];
-//        for (int i = 0; i < msgs.size(); i++) {
-//            query[i] = new JFGDPMsg(msgs.get(i), 0);
-//        }
-//        HashMap<String, JFGDPMsg[]> queryMap = new HashMap<>();
-
-
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             HashMap<String, JFGDPMsg[]> map = new HashMap<>();
             Device device = mCachedDeviceMap.get(entry.getKey());
@@ -477,8 +465,6 @@ public class DataSourceManager implements JFGSourceManager {
             if (TextUtils.isEmpty(uuid) || account == null) {
                 return;
             }
-
-//            queryMap.put(entry.getKey(), query);
 
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
             if (parameters == null || parameters.size() == 0) {
@@ -496,14 +482,6 @@ public class DataSourceManager implements JFGSourceManager {
                 e.printStackTrace();
             }
         }
-//        try {
-//
-//            /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
-////            appCmd.robotGetMultiData(queryMap, 1, false, 0);
-//            AppLogger.d("刷主页dp");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 
@@ -1058,7 +1036,7 @@ public class DataSourceManager implements JFGSourceManager {
                             if (!BaseApplication.isBackground()) {
                                 RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
                             }
-                            AppLogger.w("收到设备同步消息:" + event.arrayList);
+//                            AppLogger.w("收到设备同步消息:" + event.arrayList);
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))

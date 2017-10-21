@@ -193,7 +193,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             boolean wiredModeOnline = device.$(226, 0) == 1;
             AppLogger.e("缺图标");
             holder.setVisibility(R.id.img_device_wired, wiredModeEnable && wiredModeOnline ? VISIBLE : GONE);
-            holder.setImageResource(R.id.img_device_wired, R.drawable.home_icon_net_standby);
+            holder.setImageResource(R.id.img_device_wired, R.drawable.home_icon_wired);
         } else {
             holder.setVisibility(R.id.img_device_wired, GONE);
         }

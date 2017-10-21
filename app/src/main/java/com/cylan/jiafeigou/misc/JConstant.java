@@ -410,6 +410,9 @@ public class JConstant {
         if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) {
             return R.drawable.me_icon_head_camera_ruishi;
         }
+        if (pid == 84) {
+            return R.drawable.image_cam_outdoor;
+        }
         if (JFGRules.isCatEeyBell(pid)) {
             return R.drawable.me_icon_intelligent_eye;
         }
@@ -439,6 +442,9 @@ public class JConstant {
         if (JFGRules.isPan720(pid)) {
             return R.drawable.home_icon_720camera_online;
         }
+        if (pid == 84) {
+            return R.drawable.home_icon_outcam;
+        }
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_online;
         }
@@ -458,6 +464,9 @@ public class JConstant {
         }
         if (JFGRules.isPan720(pid)) {
             return R.drawable.home_icon_720camera_offline;
+        }
+        if (pid == 84) {
+            return R.drawable.home_icon_outcam;
         }
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_offline;

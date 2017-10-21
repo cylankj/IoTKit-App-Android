@@ -12,6 +12,7 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -1772,6 +1773,260 @@ public class DpMsgDefine {
             @Override
             public FaceInformation[] newArray(int size) {
                 return new FaceInformation[size];
+            }
+        };
+    }
+
+    //rsp=msgpack(total, [[object_type, person_id, person_name, last_time, [face_id1, face_id2, ...]], [object_type, person_id, person_name, last_time, [face_id1, face_id2, ...]], ...])
+    @Message
+    public static class VisitorList implements Parcelable {
+
+        @Index(0)
+        public int total;
+        @Index(1)
+        public List<Visitor> dataList;
+
+        @Override
+        public String toString() {
+            return "VisitorList{" +
+                    "total=" + total +
+                    ", dataList=" + dataList +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.total);
+            dest.writeTypedList(this.dataList);
+        }
+
+        public VisitorList() {
+        }
+
+        protected VisitorList(Parcel in) {
+            this.total = in.readInt();
+            this.dataList = in.createTypedArrayList(Visitor.CREATOR);
+        }
+
+        public static final Parcelable.Creator<VisitorList> CREATOR = new Parcelable.Creator<VisitorList>() {
+            @Override
+            public VisitorList createFromParcel(Parcel source) {
+                return new VisitorList(source);
+            }
+
+            @Override
+            public VisitorList[] newArray(int size) {
+                return new VisitorList[size];
+            }
+        };
+    }
+
+    @Message
+    public static class Visitor implements Parcelable {
+
+        @Index(0)
+        public int objectType;
+        @Index(1)
+        public String personId;
+        @Index(2)
+        public String personName;
+        @Index(3)
+        public long lastTime;
+        @Index(4)
+        public List<String> faceIdList;
+
+        @Override
+        public String toString() {
+            return "Visitor{" +
+                    "objectType=" + objectType +
+                    ", personId='" + personId + '\'' +
+                    ", personName='" + personName + '\'' +
+                    ", lastTime=" + lastTime +
+                    ", faceIdList=" + faceIdList +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.objectType);
+            dest.writeString(this.personId);
+            dest.writeString(this.personName);
+            dest.writeLong(this.lastTime);
+            dest.writeStringList(this.faceIdList);
+        }
+
+        public Visitor() {
+        }
+
+        protected Visitor(Parcel in) {
+            this.objectType = in.readInt();
+            this.personId = in.readString();
+            this.personName = in.readString();
+            this.lastTime = in.readInt();
+            this.faceIdList = in.createStringArrayList();
+        }
+
+        public static final Parcelable.Creator<Visitor> CREATOR = new Parcelable.Creator<Visitor>() {
+            @Override
+            public Visitor createFromParcel(Parcel source) {
+                return new Visitor(source);
+            }
+
+            @Override
+            public Visitor[] newArray(int size) {
+                return new Visitor[size];
+            }
+        };
+    }
+
+    @Message
+    public static class ReqContent implements Parcelable {
+        @Index(0)
+        public String uuid;
+        @Index(1)
+        public long timeSec;
+
+        @Override
+        public String toString() {
+            return "ReqContent{" +
+                    "uuid='" + uuid + '\'' +
+                    ", timeSec=" + timeSec +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.uuid);
+            dest.writeLong(this.timeSec);
+        }
+
+        public ReqContent() {
+        }
+
+        protected ReqContent(Parcel in) {
+            this.uuid = in.readString();
+            this.timeSec = in.readLong();
+        }
+
+        public static final Parcelable.Creator<ReqContent> CREATOR = new Parcelable.Creator<ReqContent>() {
+            @Override
+            public ReqContent createFromParcel(Parcel source) {
+                return new ReqContent(source);
+            }
+
+            @Override
+            public ReqContent[] newArray(int size) {
+                return new ReqContent[size];
+            }
+        };
+    }
+
+    @Message
+    public static class StrangerVisitor implements Parcelable {
+        @Index(0)
+        public String faceId;
+        @Index(1)
+        public long lastTime;
+
+        @Override
+        public String toString() {
+            return "StrangerVisitor{" +
+                    "faceId='" + faceId + '\'' +
+                    ", lastTime=" + lastTime +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.faceId);
+            dest.writeLong(this.lastTime);
+        }
+
+        public StrangerVisitor() {
+        }
+
+        protected StrangerVisitor(Parcel in) {
+            this.faceId = in.readString();
+            this.lastTime = in.readLong();
+        }
+
+        public static final Parcelable.Creator<StrangerVisitor> CREATOR = new Parcelable.Creator<StrangerVisitor>() {
+            @Override
+            public StrangerVisitor createFromParcel(Parcel source) {
+                return new StrangerVisitor(source);
+            }
+
+            @Override
+            public StrangerVisitor[] newArray(int size) {
+                return new StrangerVisitor[size];
+            }
+        };
+    }
+
+    @Message
+    public static class StrangerVisitorList implements Parcelable {
+        @Index(0)
+        public int total;
+        @Index(1)
+        public List<StrangerVisitor> strangerVisitors;
+
+        @Override
+        public String toString() {
+            return "StrangerVisitorList{" +
+                    "total=" + total +
+                    ", strangerVisitors=" + strangerVisitors +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.total);
+            dest.writeList(this.strangerVisitors);
+        }
+
+        public StrangerVisitorList() {
+        }
+
+        protected StrangerVisitorList(Parcel in) {
+            this.total = in.readInt();
+            this.strangerVisitors = new ArrayList<StrangerVisitor>();
+            in.readList(this.strangerVisitors, StrangerVisitor.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<StrangerVisitorList> CREATOR = new Parcelable.Creator<StrangerVisitorList>() {
+            @Override
+            public StrangerVisitorList createFromParcel(Parcel source) {
+                return new StrangerVisitorList(source);
+            }
+
+            @Override
+            public StrangerVisitorList[] newArray(int size) {
+                return new StrangerVisitorList[size];
             }
         };
     }

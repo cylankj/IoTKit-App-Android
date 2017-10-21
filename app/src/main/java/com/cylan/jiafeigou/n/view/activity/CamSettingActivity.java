@@ -445,28 +445,59 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void setBFS() {
-        EditText editText = new EditText(this);
-        editText.setId(R.id.et_input_box);
-        editText.setHint("请输入0到31之间的整数");
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        EditText etMic = new EditText(this);
+        etMic.setInputType(InputType.TYPE_CLASS_NUMBER);
+        etMic.setId("mic".hashCode());
+        etMic.setHint("mic(0,31)");
+        etMic.setHintTextColor(getResources().getColor(R.color.color_9e9e9e));
+
+        EditText etSpeaker = new EditText(this);
+        etSpeaker.setId("speaker".hashCode());
+        etSpeaker.setInputType(InputType.TYPE_CLASS_NUMBER);
+        etSpeaker.setHint("speaker(0,10)");
+        etSpeaker.setHintTextColor(getResources().getColor(R.color.color_9e9e9e));
+        layout.addView(etMic);
+        layout.addView(etSpeaker);
+//        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         new AlertDialog.Builder(this)
                 .setTitle("康凯斯门铃 BFS 设置")
-                .setView(editText)
+                .setView(layout)
                 .setPositiveButton("确认", (dialog, which) -> Schedulers.io().createWorker().schedule(() -> {
-                    EditText viewById = (EditText) ((AlertDialog) dialog).findViewById(R.id.et_input_box);
-                    int level = 8;
-                    if (viewById != null) {
-                        String string = viewById.getText().toString();
-                        if (!TextUtils.isEmpty(string)) {
-                            level = Integer.parseInt(string);
+                    EditText etM = (EditText) ((AlertDialog) dialog).findViewById("mic".hashCode());
+                    int mic = 8;
+                    if (etM != null) {
+                        final String micStr = etM.getText().toString();
+                        if (!TextUtils.isEmpty(micStr) && TextUtils.isDigitsOnly(micStr)) {
+                            try {
+                                mic = Integer.parseInt(micStr);
+                            } catch (Exception e) {
+                                runOnUiThread(() -> ToastUtil.showToast("设置失败"));
+                            }
                         }
                     }
-                    level = Math.max(level, 0);
-                    level = Math.min(level, 31);
+                    mic = Math.max(mic, 0);
+                    mic = Math.min(mic, 31);
+
+                    EditText etS = (EditText) ((AlertDialog) dialog).findViewById("speaker".hashCode());
+                    int speaker = 8;
+                    if (etS != null) {
+                        final String sStr = etS.getText().toString();
+                        if (!TextUtils.isEmpty(sStr) && TextUtils.isDigitsOnly(sStr)) {
+                            try {
+                                speaker = Integer.parseInt(sStr);
+                            } catch (Exception e) {
+                                runOnUiThread(() -> ToastUtil.showToast("设置失败"));
+                            }
+                        }
+                    }
+                    speaker = Math.max(speaker, 0);
+                    speaker = Math.min(speaker, 10);
                     try {
-                        // TODO: 2017/10/19 需要知道第二个参数是什么意思
-                        int i = BaseApplication.getAppComponent().getCmd().setTargetLeveledBFS(level,0);
-                        AppLogger.d("正在设置 TargetLevel:" + level + ",result:" + i);
+                        int i = BaseApplication.getAppComponent()
+                                .getCmd().setTargetLeveledBFS(mic, speaker);
+                        AppLogger.d("正在设置 TargetLevel:" + mic + ",result:" + i);
                         if (i == 0) {
                             runOnUiThread(() -> ToastUtil.showToast("设置成功"));
                         } else {
@@ -476,9 +507,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         e.printStackTrace();
                     }
                 }))
-                .setNegativeButton("取消", (dialog, which) -> {
-
-                })
+                .setNegativeButton("取消", null)
                 .show();
     }
 

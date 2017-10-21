@@ -20,6 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
+/**
+ * @author hds
+ */
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
@@ -95,6 +98,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             default:
+                break;
         }
     }
 
@@ -140,7 +144,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.DOOR_BLUE_BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 break;
-            case R.id.v_to_bind_consumer_cam://原来睿视
+            case R.id.v_to_bind_consumer_cam:
+                //原来睿视
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.bind_reset_rs);
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
@@ -182,6 +187,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 break;
             default:
+                break;
         }
         startActivity(intent);
     }

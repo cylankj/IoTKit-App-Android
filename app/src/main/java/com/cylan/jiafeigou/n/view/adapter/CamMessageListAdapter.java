@@ -203,9 +203,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
 
         //设置删除可见性,共享设备不可删除消息
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
+//        Device device = DataSourceManager.getInstance().getDevice(uuid);
         //720 设备享有所有权限
-        holder.setVisibility(R.id.tv_cam_message_item_delete, !isSharedDevice || JFGRules.isPan720(device.pid) ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.tv_cam_message_item_delete,View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);

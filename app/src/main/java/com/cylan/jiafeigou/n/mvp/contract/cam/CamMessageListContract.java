@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
@@ -19,7 +20,6 @@ public interface CamMessageListContract {
 
     interface View extends BaseView<Presenter> {
 
-        void onFaceItemQueryRsp();
 
         void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap);
 
@@ -63,8 +63,6 @@ public interface CamMessageListContract {
         List<WonderIndicatorWheelView.WheelItem> getDateList();
 
         void refreshDateList(boolean needToLoadList);
-
-        void deleteFace(String face_id, String person_id, String group_id);
     }
 }
 

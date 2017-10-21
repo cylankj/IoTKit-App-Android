@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.VisitorLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -161,9 +163,19 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         //1.timeStart==0->服务器，本地
         //服务器：1.日历。2.偏移到最靠近有数据的一天。开始查。以后，点击开始查。
         //本地，查出日历。
-        if (asc) {
+        if (asc && JFGRules.isFaceFragment(getDevice().pid)) {
             // TODO: 2017/10/13 说明是刷新操作 ,则请求面孔信息
-            getFaceGroupInformation();
+//            Subscription subscription = loadAllVisitorList()
+//                    .filter(r -> mView != null)
+//                    .subscribe(bytes -> {
+//                        AppLogger.d("getDataByte:" + bytes);
+//                        if (bytes == null || bytes.total == 0) {
+//                            //空列表
+//                        } else {
+////                            mView.onVisitorListReady(bytes);
+//                        }
+//                    }, throwable -> AppLogger.d("data:" + throwable));
+//            addSubscription(subscription, "loadAllVisitorList");
         }
         if (timeStart == 0 && !JFGRules.isFaceFragment(getDevice().pid)) {
             loadDataListFirst();
@@ -266,75 +278,26 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         return serviceKey;
     }
 
-    public void getFaceGroupInformation() {
-        Observable.create((Observable.OnSubscribe<DpMsgDefine.FaceQueryResponse>) subscriber -> {
-            try {
-                String account = DataSourceManager.getInstance().getAccount().getAccount();
-                String vid = Security.getVId();
-                String serviceKey = blockGetServiceKey();
-                String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//这里的时间是秒
-                String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
-                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
-                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
-                } else {
-                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timestamp);
-                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API;
-                    if (!url.startsWith("http://")) {
-                        url = "http://" + url;
-                    }
-                    Response response = OkGo.post(url)
-                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
-                            .execute();
 
-                    ResponseBody body = response.body();
-
-                    if (body != null) {
-                        String string = body.string();
-                        AppLogger.w(string);
-                        Gson gson = new Gson();
-                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
-                        if (header.ret == 0) {
-                            DpMsgDefine.FaceQueryResponse queryResponse = new Gson().fromJson(string, DpMsgDefine.FaceQueryResponse.class);
-                            subscriber.onNext(queryResponse);
-                            subscriber.onCompleted();
-                        } else {
-                            if (header.ret == 100) {
-                                PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY);
-                                PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET);
-                            }
-                            subscriber.onError(new IllegalArgumentException("ret:" + header.ret + ",msg:" + header.msg));
-                        }
-                    } else {
-                        subscriber.onError(null);
-                    }
-                }
-            } catch (Exception e) {
-                subscriber.onError(e);
-            }
-        })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    if (rsp != null && rsp.ret == 0) {
-                        mView.onFaceInformationReady(rsp.data);
-                    } else {
-                        // TODO: 2017/10/13 怎么处理呢? 最好不处理
-                    }
-                }, e ->
-
-                {
-                    AppLogger.e(MiscUtils.getErr(e));
-                });
-
-
+    public Observable<byte[]> getDataByte(int msgType, long timeSec) {
+        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+        AppLogger.d("sessionId:" + sessionId);
+        try {
+            DpMsgDefine.ReqContent reqContent = new DpMsgDefine.ReqContent();
+            reqContent.uuid = getUuid();
+            reqContent.timeSec = timeSec;
+            final long seq = BaseApplication.getAppComponent()
+                    .getCmd().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
+            return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
+                    .filter(rsp -> rsp.seq == seq)
+                    .subscribeOn(Schedulers.io())
+                    .first()
+                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                    .flatMap(universalDataRsp -> Observable.just(universalDataRsp.data));
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
+        return Observable.just(new byte[]{});
     }
 
     private List<IDPEntity> buildMultiEntities(ArrayList<CamMessageBean> beanList) {
@@ -483,70 +446,90 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         addSubscription(subscription, "DPCamDateQueryTask");
     }
 
-    @Override
-    public void deleteFace(String face_id, String person_id, String group_id) {
-        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
-            try {
-                String account = DataSourceManager.getInstance().getAccount().getAccount();
-                String vid = Security.getVId();
-                String serviceKey = blockGetServiceKey();
-                String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//这里的时间是秒
-                String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
-                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
-                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
-                } else {
-                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API, seceret, timestamp);
-                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API;
-                    if (!url.startsWith("http://")) {
-                        url = "http://" + url;
-                    }
-                    Response response = OkGo.post(url)
-                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, face_id)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, person_id)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_GROUP_ID, group_id)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
-                            .execute();
+//    @Override
+//    public void deleteFace(String face_id, String person_id, String group_id) {
+//        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
+//            try {
+//                String account = DataSourceManager.getInstance().getAccount().getAccount();
+//                String vid = Security.getVId();
+//                String serviceKey = blockGetServiceKey();
+//                String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//这里的时间是秒
+//                String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
+//                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
+//                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
+//                } else {
+//                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API, seceret, timestamp);
+//                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API;
+//                    if (!url.startsWith("http://")) {
+//                        url = "http://" + url;
+//                    }
+//                    Response response = OkGo.post(url)
+//                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, face_id)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, person_id)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_GROUP_ID, group_id)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
+//                            .execute();
+//
+//                    ResponseBody body = response.body();
+//
+//                    if (body != null) {
+//                        String string = body.string();
+//                        AppLogger.w(string);
+//                        Gson gson = new Gson();
+//                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
+//                        subscriber.onNext(header == null ? -1 : header.ret);
+//                    } else {
+//                        subscriber.onError(null);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                subscriber.onError(e);
+//            }
+//        })
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(rsp -> {
+//                    if (rsp == 0) {
+//                        // TODO: 2017/10/14 删除成功了
+//                    } else {
+//                        // TODO: 2017/10/14 删除失败了
+//                    }
+//                }, e ->
+//
+//                {
+//                    AppLogger.e(MiscUtils.getErr(e));
+//                });
+//
+//
+//    }
 
-                    ResponseBody body = response.body();
-
-                    if (body != null) {
-                        String string = body.string();
-                        AppLogger.w(string);
-                        Gson gson = new Gson();
-                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
-                        subscriber.onNext(header == null ? -1 : header.ret);
-                    } else {
-                        subscriber.onError(null);
-                    }
-                }
-            } catch (Exception e) {
-                subscriber.onError(e);
-            }
-        })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    if (rsp == 0) {
-                        // TODO: 2017/10/14 删除成功了
-                    } else {
-                        // TODO: 2017/10/14 删除失败了
-                    }
-                }, e ->
-
-                {
-                    AppLogger.e(MiscUtils.getErr(e));
-                });
-
-
-    }
+//    @Override
+//    public void fetchStrangerVisitorList() {
+//        if (hasSubscroption("fetchStrangerVisitorList")) {
+//            AppLogger.d("is fetching strangers");
+//            return;
+//        }
+//        Subscription subscription = loadAllStrangerList()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(r -> mView != null)
+//                .subscribe(sList -> {
+//                    if (sList == null || sList.total == 0) {
+//                        AppLogger.d("a ha no strangers");
+//                    } else {
+////                        mView.onStrangerVisitorListReady(sList);
+//                    }
+//                }, AppLogger::e);
+//        addSubscription(subscription, "fetchStrangerVisitorList");
+//    }
 
     @Override
     public void stop() {
@@ -557,5 +540,31 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         public String group_id;
         public String face_id;
         public String face_name;
+    }
+
+    private ListCache visitorCache;
+
+    private static class ListCache {
+        private List<DpMsgDefine.VisitorList> visitorLists;
+        private List<DpMsgDefine.StrangerVisitorList> strangerVisitorLists;
+    }
+
+    /**
+     * 所有陌生人 访客列表
+     *
+     * @return
+     */
+    private Observable<DpMsgDefine.StrangerVisitorList> loadAllStrangerList() {
+        return VisitorLoader.loadAllStrangerList(getUuid());
+    }
+
+
+    /**
+     * 加载所有访客列表
+     *
+     * @return
+     */
+    private Observable<DpMsgDefine.VisitorList> loadAllVisitorList() {
+        return VisitorLoader.loadAllVisitorList(getUuid());
     }
 }

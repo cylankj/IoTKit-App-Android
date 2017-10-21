@@ -21,11 +21,14 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
     var message: CamMessageBean? = null
     var uuid: String? = null
     var version: Long = 0
+    //对应 msgType =5返回的列表 item
+    var visitor: DpMsgDefine.Visitor? = null
+    var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
 
     companion object {
         const val FACE_TYPE_ALL: Int = -1
-        const val FACE_TYPE_STRANGER: Int = 0
-        const val FACE_TYPE_ACQUAINTANCE: Int = 1
+        const val FACE_TYPE_STRANGER: Int = 0//陌生人
+        const val FACE_TYPE_ACQUAINTANCE: Int = 1//熟人
         const val FACE_TYPE_STRANGER_SUB: Int = 2
     }
 

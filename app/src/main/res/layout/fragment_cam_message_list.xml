@@ -26,11 +26,12 @@
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
                 <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_header_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.cylan.jiafeigou.widget.WrapContentViewPager
-                        android:id="@+id/cam_message_face"
+                    <FrameLayout
+                        android:id="@+id/fLayout_message_face"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_holder"
@@ -50,7 +51,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cam_message_face">
+                        app:layout_constraintTop_toBottomOf="@+id/fLayout_message_face">
 
 
                         <TextView
@@ -60,7 +61,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginEnd="@dimen/y53"
-                            android:text="1/6"
+                            android:text="-/-"
                             android:textColor="@color/color_adadad"
                             android:textSize="@dimen/sp12"
                             android:visibility="visible"
@@ -81,7 +82,7 @@
                             android:gravity="end"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:text="最近30天来访15次"
+                            android:text="最近-天来访-次"
                             android:textColor="@color/color_999999"
                             android:textSize="@dimen/sp12"
                             android:visibility="visible"

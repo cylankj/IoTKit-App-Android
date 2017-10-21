@@ -60,6 +60,10 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         return faceItems.size();
     }
 
+    public List<FaceItem> getFaceItems() {
+        return faceItems;
+    }
+
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;

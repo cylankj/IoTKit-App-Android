@@ -355,13 +355,11 @@ dependencies {
     compile files('libs/open_sdk_r5781.jar')
     compile files('libs/mid-sdk-2.3.jar')
 //    testCompile files('libs/javassist.jar')
-    fileTree(dir: 'libs', include: '**/*.aar')
-            .each { File file ->
+    fileTree(dir: 'libs', include: '**/*.aar').each { File file ->
         dependencies.add("compile", [
-                name: file.name.lastIndexOf('.').with {
+                name  : file.name.lastIndexOf('.').with {
                     it != -1 ? file.name[0..<it] : file.name
-                },
-                ext : 'aar'
+                }, ext: 'aar'
         ])
     }
 
