@@ -255,50 +255,50 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         addSubscription(subscription, "DPCamMultiQueryTask");
     }
 
-    String mock = "[{group_id:\"1000\",face_id:\"2000\",face_name:\"小明\"}]";
+//    String mock = "[{group_id:\"1000\",face_id:\"2000\",face_name:\"小明\"}]";
+//
+//    //这个方法需要在子线程调用,可能涉及到有网操作
+//    public static String blockGetServiceKey() throws Exception {
+//        String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
+//        if (TextUtils.isEmpty(serviceKey)) {
+//            long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
+//            RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
+//                    .filter(rsp -> rsp.seq == seq)
+//                    .first()
+//                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+//                    .toBlocking().first();
+//
+//            DpMsgDefine.DPAIService dpaiService = DpUtils.unpackData(dataRsp.data, DpMsgDefine.DPAIService.class);
+//            if (dpaiService != null) {
+//                serviceKey = dpaiService.service_key;//返回的有问题?
+//                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_KEY, dpaiService.service_key);
+//                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_SECERET, dpaiService.service_key_seceret);
+//            }
+//        }
+//        return serviceKey;
+//    }
 
-    //这个方法需要在子线程调用,可能涉及到有网操作
-    public static String blockGetServiceKey() throws Exception {
-        String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
-        if (TextUtils.isEmpty(serviceKey)) {
-            long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
-            RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
-                    .filter(rsp -> rsp.seq == seq)
-                    .first()
-                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
-                    .toBlocking().first();
 
-            DpMsgDefine.DPAIService dpaiService = DpUtils.unpackData(dataRsp.data, DpMsgDefine.DPAIService.class);
-            if (dpaiService != null) {
-                serviceKey = dpaiService.service_key;//返回的有问题?
-                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_KEY, dpaiService.service_key);
-                PreferencesUtils.putString(JConstant.ROBOT_SERVICES_SECERET, dpaiService.service_key_seceret);
-            }
-        }
-        return serviceKey;
-    }
-
-
-    public Observable<byte[]> getDataByte(int msgType, long timeSec) {
-        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
-        AppLogger.d("sessionId:" + sessionId);
-        try {
-            DpMsgDefine.ReqContent reqContent = new DpMsgDefine.ReqContent();
-            reqContent.uuid = getUuid();
-            reqContent.timeSec = timeSec;
-            final long seq = BaseApplication.getAppComponent()
-                    .getCmd().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
-            return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
-                    .filter(rsp -> rsp.seq == seq)
-                    .subscribeOn(Schedulers.io())
-                    .first()
-                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
-                    .flatMap(universalDataRsp -> Observable.just(universalDataRsp.data));
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
-        return Observable.just(new byte[]{});
-    }
+//    public Observable<byte[]> getDataByte(int msgType, long timeSec) {
+//        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+//        AppLogger.d("sessionId:" + sessionId);
+//        try {
+//            DpMsgDefine.ReqContent reqContent = new DpMsgDefine.ReqContent();
+//            reqContent.uuid = getUuid();
+//            reqContent.timeSec = timeSec;
+//            final long seq = BaseApplication.getAppComponent()
+//                    .getCmd().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
+//            return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
+//                    .filter(rsp -> rsp.seq == seq)
+//                    .subscribeOn(Schedulers.io())
+//                    .first()
+//                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+//                    .flatMap(universalDataRsp -> Observable.just(universalDataRsp.data));
+//        } catch (JfgException e) {
+//            e.printStackTrace();
+//        }
+//        return Observable.just(new byte[]{});
+//    }
 
     private List<IDPEntity> buildMultiEntities(ArrayList<CamMessageBean> beanList) {
         List<IDPEntity> entities = new ArrayList<>();
@@ -547,24 +547,5 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private static class ListCache {
         private List<DpMsgDefine.VisitorList> visitorLists;
         private List<DpMsgDefine.StrangerVisitorList> strangerVisitorLists;
-    }
-
-    /**
-     * 所有陌生人 访客列表
-     *
-     * @return
-     */
-    private Observable<DpMsgDefine.StrangerVisitorList> loadAllStrangerList() {
-        return VisitorLoader.loadAllStrangerList(getUuid());
-    }
-
-
-    /**
-     * 加载所有访客列表
-     *
-     * @return
-     */
-    private Observable<DpMsgDefine.VisitorList> loadAllVisitorList() {
-        return VisitorLoader.loadAllVisitorList(getUuid());
     }
 }

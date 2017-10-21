@@ -1,11 +1,16 @@
 package com.cylan.jiafeigou.n.view.cam.item
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean
@@ -104,6 +109,8 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
                 holder.icon.showBorder(isSelected)
                 Glide.with(holder.itemView.context)
                         .load(faceinformation?.source_image_url)
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {

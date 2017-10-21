@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     public void appendFaceItems(List<FaceItem> faceItems) {
         if (this.faceItems != null && this.faceItems.size() > 0) {
             this.faceItems.addAll(faceItems);
+            notifyDataSetChanged();
         } else {
             setFaceItems(faceItems);
         }
@@ -57,11 +59,36 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     }
 
     public int getTotalCount() {
-        return faceItems.size();
+        return ListUtils.getSize(faceItems);
     }
 
     public List<FaceItem> getFaceItems() {
         return faceItems;
+    }
+
+    /**
+     * @param index to setHasSelected =true, only one item is selected
+     */
+    public void updateSelectedItem(int index) {
+        final int cnt = ListUtils.getSize(faceItems);
+        if (index < 0 || index > cnt - 1)
+            return;
+        for (int i = 0; i < cnt; i++) {
+            faceItems.get(i).withSetSelected(index == i);
+        }
+        notifyDataSetChanged();
+    }
+
+    /**
+     * {@link #updateSelectedItem(FaceItem)}
+     */
+    public void updateSelectedItem(FaceItem index) {
+        if (index == null)
+            return;
+        for (FaceItem item : faceItems) {
+            index.withSetSelected(item.equals(index));
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -99,8 +126,9 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 // TODO: 2017/10/9 点击操作
                 if (listener != null) {
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    AppLogger.w("点击了面孔条目:" + position);
+                    AppLogger.e("此处 有问题 点击了面孔条目:" + position);
                     listener.onFaceItemClicked(position, position1, viewHolder.itemView, viewHolder.getIcon());
+                    updateSelectedItem(position1);
                 }
                 return true;
             });
@@ -118,7 +146,8 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         container.addView(contentView);
         FastItemAdapter<FaceItem> adapter = (FastItemAdapter<FaceItem>) recyclerView.getAdapter();
 //        adapter.init(position, faceItems);
-        List<FaceItem> faceItems = this.faceItems.subList(6 * position, Math.min(6, this.faceItems.size() - 6 * position));
+        List<FaceItem> faceItems = this.faceItems.subList(6 * position,
+                6 * position + Math.min(6, this.faceItems.size() - 6 * position));
         adapter.set(faceItems);
         adapter.notifyDataSetChanged();
         return contentView;

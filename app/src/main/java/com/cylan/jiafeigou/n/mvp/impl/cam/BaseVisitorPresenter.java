@@ -30,4 +30,10 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
         addSubscription(subscription, "fetchVisitorList");
     }
+
+    @Override
+    public void start() {
+        super.start();
+        fetchVisitorList();
+    }
 }

@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTargetFactory;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;

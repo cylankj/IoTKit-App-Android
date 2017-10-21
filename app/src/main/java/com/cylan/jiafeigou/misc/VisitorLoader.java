@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.misc;
 
+import android.text.TextUtils;
+
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -28,6 +31,7 @@ public class VisitorLoader {
         if (count < 1) return 0;
         return visitorList.dataList.get(count - 1).lastTime;
     }
+
     private static long getMaxTimeFromList(DpMsgDefine.StrangerVisitorList visitorList) {
         if (visitorList.total == -1) return 0;
         final int count = ListUtils.getSize(visitorList.strangerVisitors);
@@ -46,9 +50,12 @@ public class VisitorLoader {
                     .getCmd().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
             return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
+                    .map(ret -> {
+                        AppLogger.d("收到恢复了");
+                        return ret;
+                    })
                     .subscribeOn(Schedulers.io())
-                    .first()
-                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                    .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
                     .flatMap(universalDataRsp -> Observable.just(universalDataRsp.data));
         } catch (JfgException e) {
             e.printStackTrace();
@@ -70,6 +77,7 @@ public class VisitorLoader {
                     return getDataByte(uuid, 5, timeSec)
                             .flatMap(bytes -> {
                                 DpMsgDefine.VisitorList list = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.VisitorList.class, null);
+                                AppLogger.d("收到数据？");
                                 if (list != null && list.total > 0) {
                                     visitorList.total = list.total;
                                     final int cnt = ListUtils.getSize(list.dataList);
@@ -90,8 +98,8 @@ public class VisitorLoader {
                             });
                 })
                 .retry((integer, throwable) -> {
-                    AppLogger.d("继续获取剩余的数据");
-                    return throwable.getLocalizedMessage().contains("go_n_get");
+                    AppLogger.d("可能继续获取剩余的数据?" + throwable.getLocalizedMessage());
+                    return !TextUtils.isEmpty(throwable.getLocalizedMessage()) && throwable.getLocalizedMessage().contains("go_n_get");
                 });
     }
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
@@ -44,6 +45,7 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
 
     lateinit var onVisitorListCallback: OnVisitorListCallback
     lateinit var visitorAdapter: CamMessageFaceAdapter
+    lateinit var vpCamMessageHeaderFaces: WrapContentViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,21 +64,23 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.post { Log.d("TAg", "tag: " + container?.height + "," + container?.measuredHeight) }
-        var vpCamMessageHeaderFaces = view.findViewById(R.id.vp_default) as WrapContentViewPager
+        vpCamMessageHeaderFaces = view.findViewById(R.id.vp_default) as WrapContentViewPager
         visitorAdapter = CamMessageFaceAdapter()
         visitorAdapter.setOnFaceItemClickListener(object : CamMessageFaceAdapter.FaceItemEventListener {
-            override fun onFaceItemClicked(page_position: Int, position: Int, parent: View, icon: ImageView) {
-                AppLogger.w("onFaceItemClicked")
-                val item = visitorAdapter.getGlobalItem(page_position, position) as FaceItem
-                onVisitorListCallback.onItemClick(item, null)
+            override fun onFaceItemClicked(whichPage: Int, positionInPage: Int, parent: View, icon: ImageView) {
+                val globalPosition = vpCamMessageHeaderFaces.currentItem * 6 + positionInPage
+                AppLogger.w("onFaceItemClicked:$whichPage,$positionInPage,$globalPosition")
+                val item = visitorAdapter.getGlobalItem(whichPage, positionInPage) as FaceItem
+                onVisitorListCallback.onItemClick(item, globalPosition, null)
             }
 
-            override fun onFaceItemLongClicked(page_position: Int, position: Int, parent: View, icon: ImageView, faceType: Int) {
-                AppLogger.w("onFaceItemLongClicked")
+            override fun onFaceItemLongClicked(whichPage: Int, positionInPage: Int, parent: View, icon: ImageView, faceType: Int) {
+                val globalPosition = vpCamMessageHeaderFaces.currentItem * 6 + positionInPage
+                AppLogger.w("onFaceItemClicked:$whichPage,$positionInPage,$globalPosition")
                 // TODO: 2017/10/16 测试条件下注释
                 //                    if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
                 ///陌生人和全部条目不可长按弹出菜单
-                showHeaderFacePopMenu(page_position, position, parent, icon, faceType)
+                showHeaderFacePopMenu(whichPage, positionInPage, parent, icon, faceType)
                 //                    }
             }
         })
@@ -84,36 +88,51 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
         vpCamMessageHeaderFaces.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
 //                setFaceHeaderPageIndicator()
+                onVisitorListCallback?.onPageScroll(position, visitorAdapter.totalCount)
             }
         })
 
         // TODO: 2017/10/11 just for test
         ensurePreloadHeaderItem()
         //加载数据
-        basePresenter.fetchVisitorList()
     }
 
-    override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList) {
+    override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
         onVisitorListCallback.onVisitorListReady(visitorList)
         AppLogger.d("数据回来了")
-        assembleFaceList(visitorList.dataList, 0)
+        assembleFaceList(visitorList!!.dataList, 0)
     }
 
     private fun ensurePreloadHeaderItem() {
         if (!(visitorAdapter.hasPreloadFaceItems())) {
             val list = ArrayList<FaceItem>()
             val allFace = FaceItem()
+            allFace.withSetSelected(true)
             allFace.faceType = FaceItem.FACE_TYPE_ALL
             list.add(allFace)
-
             val strangerFace = FaceItem()
             strangerFace.faceType = FaceItem.FACE_TYPE_STRANGER
             list.add(strangerFace)
             visitorAdapter.setPreloadFaceItems(list)
         }
+        if (onVisitorListCallback != null) {
+            onVisitorListCallback.onPageScroll(0, 2)
+        }
     }
 
-    private fun showHeaderFacePopMenu(page_position: Int, position: Int, parent: View, faceItem: ImageView, faceType: Int) {
+    fun itemFocused(itemIndex: Int) {
+        when (itemIndex) {
+            0 -> {
+
+            }
+
+            1 -> {
+
+            }
+        }
+    }
+
+    private fun showHeaderFacePopMenu(whichPage: Int, position: Int, parent: View, faceItem: ImageView, faceType: Int) {
         AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
         val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -130,7 +149,7 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
                 // TODO: 2017/10/9 删除操作
                 AppLogger.w("将删除面孔")
                 popupWindow.dismiss()
-                val item = visitorAdapter?.getGlobalItem(page_position, position)
+                val item = visitorAdapter?.getGlobalItem(whichPage, position)
                         as FaceItem
                 showDeleteFaceAlert(item)
             }
@@ -147,7 +166,7 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
         contentView.findViewById(R.id.viewer).setOnClickListener { v ->
             AppLogger.w("将查看面孔详细信息")
             popupWindow.dismiss()
-            val item = visitorAdapter?.getGlobalItem(page_position, position)
+            val item = visitorAdapter?.getGlobalItem(whichPage, position)
             if (item != null) {
                 val fragment = FaceInformationFragment.newInstance(uuid, item.faceinformation!!.face_id,
                         item.faceinformation!!.face_name, item.faceinformation!!.person_id)
@@ -225,22 +244,39 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
         }
     }
 
-    private fun assembleFaceList(dataList: List<DpMsgDefine.Visitor>, guessTotal: Int) {
+    private fun assembleFaceList(dataList: List<DpMsgDefine.Visitor>?, guessTotal: Int) {
         val list = ArrayList<FaceItem>()
-        for (visitor in dataList) {
-            val allFace = FaceItem()
-            allFace.faceType = FaceItem.FACE_TYPE_ACQUAINTANCE
-            allFace.visitor = visitor
-            list.add(allFace)
+        if (dataList != null) {
+            for (visitor in dataList) {
+                val allFace = FaceItem()
+                allFace.faceType = FaceItem.FACE_TYPE_ACQUAINTANCE
+                allFace.visitor = visitor
+                list.add(allFace)
+            }
         }
+        for (i in 1..5) {
+            val strangerFace = FaceItem()
+            strangerFace.faceType = FaceItem.FACE_TYPE_ACQUAINTANCE
+            strangerFace.withSetSelected(true)
+            list.add(strangerFace)
+        }
+        //need remove duplicated items
+        visitorAdapter!!.appendFaceItems(list)
         if (ListUtils.isEmpty(list)) {
             return
         }
         visitorAdapter?.appendFaceItems(list)
+        if (onVisitorListCallback != null) {
+            onVisitorListCallback.onPageScroll(vpCamMessageHeaderFaces.currentItem, visitorAdapter.totalCount)
+        }
     }
 
     interface OnVisitorListCallback {
-        fun onItemClick(type: FaceItem?, dataList: ArrayList<String>?)
+        /**
+         * gPosition: global position
+         */
+        fun onItemClick(type: FaceItem?, gPosition: Int, dataList: ArrayList<String>?)
+
         fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
         fun onPageScroll(currentItem: Int, total: Int)
     }

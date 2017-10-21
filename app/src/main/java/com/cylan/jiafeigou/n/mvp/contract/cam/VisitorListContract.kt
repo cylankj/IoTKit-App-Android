@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter
 interface VisitorListContract {
 
     interface View : BaseFragmentView<Presenter> {
-        fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList)
+        fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
     }
 
     interface Presenter : BasePresenter {

@@ -31,4 +31,10 @@ public class VisitorStrangerPresenter extends AbstractFragmentPresenter<FaceStra
                 .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList), AppLogger::e);
         addSubscription(subscription, "fetchVisitorList");
     }
+
+    @Override
+    public void start() {
+        super.start();
+        fetchVisitorList();
+    }
 }
