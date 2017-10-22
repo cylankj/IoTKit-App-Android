@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
@@ -67,34 +66,32 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
         vpCamMessageHeaderFaces = view.findViewById(R.id.vp_default) as WrapContentViewPager
         visitorAdapter = CamMessageFaceAdapter()
         visitorAdapter.setOnFaceItemClickListener(object : CamMessageFaceAdapter.FaceItemEventListener {
-            override fun onFaceItemClicked(whichPage: Int, positionInPage: Int, parent: View, icon: ImageView) {
-                val globalPosition = vpCamMessageHeaderFaces.currentItem * 6 + positionInPage
-                AppLogger.w("onFaceItemClicked:$whichPage,$positionInPage,$globalPosition")
-                val item = visitorAdapter.getGlobalItem(whichPage, positionInPage) as FaceItem
+            override fun onFaceItemClicked(positionInPage: Int, parent: View, icon: ImageView) {
+                val wPage = vpCamMessageHeaderFaces.currentItem
+                val globalPosition = wPage * 6 + positionInPage
+                AppLogger.w("onFaceItemClicked:$wPage,$positionInPage,$globalPosition")
+                val item = visitorAdapter.getGlobalItem(wPage, positionInPage) as FaceItem
                 onVisitorListCallback.onItemClick(item, globalPosition, null)
             }
 
-            override fun onFaceItemLongClicked(whichPage: Int, positionInPage: Int, parent: View, icon: ImageView, faceType: Int) {
+            override fun onFaceItemLongClicked(positionInPage: Int, parent: View, icon: ImageView, faceType: Int) {
+                val wPage = vpCamMessageHeaderFaces.currentItem
                 val globalPosition = vpCamMessageHeaderFaces.currentItem * 6 + positionInPage
-                AppLogger.w("onFaceItemClicked:$whichPage,$positionInPage,$globalPosition")
-                // TODO: 2017/10/16 测试条件下注释
-                //                    if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
-                ///陌生人和全部条目不可长按弹出菜单
-                showHeaderFacePopMenu(whichPage, positionInPage, parent, icon, faceType)
-                //                    }
+                AppLogger.w("onFaceItemClicked:$wPage,$positionInPage,$globalPosition")
+                showHeaderFacePopMenu(wPage, positionInPage, parent, icon, faceType)
+            }
+
+            override fun getCurrentItem(): Int {
+                return vpCamMessageHeaderFaces.currentItem
             }
         })
         vpCamMessageHeaderFaces.adapter = visitorAdapter
         vpCamMessageHeaderFaces.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-//                setFaceHeaderPageIndicator()
                 onVisitorListCallback?.onPageScroll(position, visitorAdapter.totalCount)
             }
         })
-
-        // TODO: 2017/10/11 just for test
         ensurePreloadHeaderItem()
-        //加载数据
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
@@ -257,7 +254,6 @@ class VisitorListFragment : IBaseFragment<VisitorListContract.Presenter>(),
         for (i in 1..5) {
             val strangerFace = FaceItem()
             strangerFace.faceType = FaceItem.FACE_TYPE_ACQUAINTANCE
-            strangerFace.withSetSelected(true)
             list.add(strangerFace)
         }
         //need remove duplicated items

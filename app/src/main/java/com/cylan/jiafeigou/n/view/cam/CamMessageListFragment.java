@@ -150,7 +150,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private LinearLayoutManager layoutManager;
     private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
 
-    private VisitorListFragment faceDefaultFragment;
+    private VisitorListFragmentV2 faceDefaultFragment;
     private VisitorStrangerSubFragment visitorStrangerSubFragment;
 
     public CamMessageListFragment() {
@@ -256,17 +256,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
 
             tvCamMessageListDate.setClickable(false);
-            faceDefaultFragment = VisitorListFragment.Companion.newInstance(getUuid());
-            faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragment.OnVisitorListCallback() {
+            faceDefaultFragment = VisitorListFragmentV2.Companion.newInstance(getUuid());
+            faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
+                @Override
+                public void onItemClick(int gPosition) {
+                    FaceItem faceItem = FaceItemsProvider.Companion.getGet().getItems().get(gPosition);
+                    changeContentByHeaderClick(faceItem.getFaceType());
+                }
+
                 @Override
                 public void onPageScroll(int currentPage, int total) {
                     setFaceHeaderPageIndicator(currentPage, total);
                 }
 
-                @Override
-                public void onItemClick(@NotNull FaceItem type, int position, @NotNull ArrayList<String> dataList) {
-                    changeContentByHeaderClick(type.getFaceType());
-                }
 
                 @Override
                 public void onVisitorListReady(@NotNull DpMsgDefine.VisitorList visitorList) {
@@ -339,8 +341,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void changeAdapterAndExitStranger() {
         getChildFragmentManager().popBackStack();
-        if (faceDefaultFragment != null)
-            faceDefaultFragment.itemFocused(0);
     }
 
     private void changeContentByHeaderClick(int faceType) {

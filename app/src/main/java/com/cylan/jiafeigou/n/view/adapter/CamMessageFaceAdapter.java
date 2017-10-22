@@ -1,6 +1,11 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -69,7 +74,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     /**
      * @param index to setHasSelected =true, only one item is selected
      */
-    public void updateSelectedItem(int index) {
+    public void updateSelectedItem(final int index) {
         final int cnt = ListUtils.getSize(faceItems);
         if (index < 0 || index > cnt - 1)
             return;
@@ -126,9 +131,9 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 // TODO: 2017/10/9 点击操作
                 if (listener != null) {
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    AppLogger.e("此处 有问题 点击了面孔条目:" + position);
-                    listener.onFaceItemClicked(position, position1, viewHolder.itemView, viewHolder.getIcon());
-                    updateSelectedItem(position1);
+                    AppLogger.d("点击了面孔条目 gPosition:" + (listener.getCurrentItem() * 6 + position1) + "," + listener.getCurrentItem());
+                    listener.onFaceItemClicked(position1, viewHolder.itemView, viewHolder.getIcon());
+                    updateSelectedItem(listener.getCurrentItem() * 6 + position1);
                 }
                 return true;
             });
@@ -137,7 +142,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 if (listener != null) {
                     AppLogger.w("点击了面孔条目:" + position1);
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon(), item.getFaceType());
+                    listener.onFaceItemLongClicked(position1, viewHolder.itemView, viewHolder.getIcon(), item.getFaceType());
                 }
                 return true;
             });
@@ -201,8 +206,10 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     public interface FaceItemEventListener {
 
-        void onFaceItemClicked(int page_position, int position, View parent, ImageView icon);
+        void onFaceItemClicked(int position, View parent, ImageView icon);
 
-        void onFaceItemLongClicked(int page_position, int position, View parent, ImageView icon, int faceType);
+        void onFaceItemLongClicked(int position, View parent, ImageView icon, int faceType);
+
+        int getCurrentItem();
     }
 }

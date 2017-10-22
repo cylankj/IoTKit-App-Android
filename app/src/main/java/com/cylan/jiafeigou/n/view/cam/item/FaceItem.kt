@@ -103,7 +103,7 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
             }
-        //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
+            //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
                 holder.text.text = faceinformation?.face_name
                 holder.icon.showBorder(isSelected)
