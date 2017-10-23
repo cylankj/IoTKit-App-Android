@@ -36,6 +36,7 @@ class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFa
             val seceret = OptionsImpl.getServiceSeceret(vid)
             var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
             imageUrl = BaseApplication.getAppComponent().cmd.getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
+            val sessionId = BaseApplication.getAppComponent().cmd.sessionId
             if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                 throw IllegalArgumentException("ServiceKey或Seceret为空")
             }
@@ -53,12 +54,14 @@ class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFa
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, faceId)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_IMAGE_URL, imageUrl)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_NAME, faceName)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+                    .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
                     .execute()
 
             val body = response.body()
@@ -73,16 +76,30 @@ class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFa
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
-                    if (!TextUtils.isEmpty(response.data)) {
-                        //成功了
-                        mView.onCreateNewFaceSuccess(response.data)
-
-                    } else {
-                        if (response.ret == 100) {
+                    when {
+                        response == null -> {
+                            //返回的结果为空,可能是超时了或者出错了
+                            mView.onCreateNewFaceTimeout()
+                        }
+                        response.ret == 0 -> {
+                            //操作成功了
+                            if (!TextUtils.isEmpty(response.data)) {
+                                mView.onCreateNewFaceSuccess(response.data)
+                            } else {
+                                //这是什么情况呢? 操作成功了数据没有?
+                            }
+                        }
+                        response.ret == 100 -> {
+                            //auth failed 可能会有多种情况,1:accessToken error;2:service_key,service_secret error;这里无法判断
                             PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
                             PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
+                            mView.onCreateNewFaceError(response.ret)
                         }
-                        mView.onCreateNewFaceError(response.ret)
+                        response.ret == -1 -> {
+                            //face_id not found
+                            mView.onFaceNotExistError()
+                        }
+
                     }
 
                 }) { e ->

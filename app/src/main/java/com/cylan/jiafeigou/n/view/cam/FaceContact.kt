@@ -38,8 +38,12 @@ interface CreateFaceContact {
     interface View : JFGView {
 
         fun onCreateNewFaceSuccess(personId: String)
+
         fun onCreateNewFaceError(ret: Int)
 
+        fun onCreateNewFaceTimeout()
+
+        fun onFaceNotExistError()
     }
 
     interface Presenter : JFGPresenter<View> {
@@ -52,7 +56,14 @@ interface CreateFaceContact {
 interface FaceListContact {
 
     interface View : JFGView {
+
         fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>)
+
+        fun onMoveFaceToPersonSuccess(personId: String)
+
+        fun onFaceNotExistError()
+
+        fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?)
 
     }
 
@@ -62,6 +73,7 @@ interface FaceListContact {
 
         fun moveFaceToPerson(personId: String, faceId: String)
 
+        fun loadPersonItem2()
     }
 }
 

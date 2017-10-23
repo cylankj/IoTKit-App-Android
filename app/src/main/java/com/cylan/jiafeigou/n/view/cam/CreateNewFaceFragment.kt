@@ -7,12 +7,15 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.IMEUtils
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.fragment_face_create.*
 
@@ -20,6 +23,16 @@ import kotlinx.android.synthetic.main.fragment_face_create.*
  * Created by yanzhendong on 2017/10/9.
  */
 class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), CreateFaceContact.View {
+    override fun onFaceNotExistError() {
+        AppLogger.w("face_id 不存在 ,创建失败了")
+        ToastUtil.showToast("语言包: face_id 不存在,创建失败了!")
+    }
+
+    override fun onCreateNewFaceTimeout() {
+        AppLogger.w("创建面孔超时了")
+        ToastUtil.showToast("创建面孔超时了")
+    }
+
     override fun onCreateNewFaceSuccess(personId: String) {
         AppLogger.w("创建面孔返回值为:$personId")
         resultCallback?.invoke(personId)
@@ -56,6 +69,8 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
                 presenter.createNewFace(faceId!!, name.text.toString().trim())
             }
         }
+        //默认不可点击,需要输入名称后才能点击
+        custom_toolbar.setRightEnable(false)
         custom_toolbar.setBackAction {
             sendResultIfNeed()
             fragmentManager.popBackStack()
@@ -73,7 +88,12 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
             }
         })
 
-
+        Glide.with(this)
+                .load(JFGFaceGlideURL(uuid, faceId, true))
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(picture)
     }
 
     override fun onDetach() {

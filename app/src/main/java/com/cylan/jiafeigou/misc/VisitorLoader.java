@@ -33,9 +33,9 @@ public class VisitorLoader {
     }
 
     private static long getMaxTimeFromList(DpMsgDefine.StrangerVisitorList visitorList) {
-        if (visitorList.total == -1) return 0;
+        if (visitorList.total == -1) return System.currentTimeMillis();
         final int count = ListUtils.getSize(visitorList.strangerVisitors);
-        if (count < 1) return 0;
+        if (count < 1) return System.currentTimeMillis();
         return visitorList.strangerVisitors.get(count - 1).lastTime;
     }
 

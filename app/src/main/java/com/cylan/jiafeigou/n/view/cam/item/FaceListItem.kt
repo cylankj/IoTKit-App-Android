@@ -19,8 +19,14 @@ import com.mikepenz.fastadapter.items.AbstractItem
  */
 class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>() {
     var faceInformation: DpMsgDefine.FaceInformation? = null
+    var visitor: DpMsgDefine.Visitor? = null
     fun withFaceInformation(faceInformation: DpMsgDefine.FaceInformation): FaceListItem {
         this.faceInformation = faceInformation
+        return this
+    }
+
+    fun withVisitorInformation(visitor: DpMsgDefine.Visitor): FaceListItem {
+        this.visitor = visitor
         return this
     }
 
@@ -41,18 +47,22 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
         super.bindView(holder, payloads)
         holder.radio.isChecked = isSelected
 
+        //todo 基于 FaceInformation
+        //imageUrl 怎么定义的一个 visitor 下有多个人脸
+        var imageUrl: String = ""
+        var personName: String = visitor?.personName ?: "小明啊"
         Glide
                 .with(holder.itemView.context)
-                .load(faceInformation?.image_url)
+                .load(imageUrl)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .into(holder.icon)
 
-        holder.name.text = faceInformation?.face_name ?: "小明"
+        holder.name.text = personName
         var adapter: FastAdapter<*> = holder.itemView.getTag(R.id.fastadapter_item_adapter) as FastAdapter<*>
         val adapter1 = adapter.getAdapter(holder.adapterPosition)
         val position = adapter1!!.getAdapterPosition(identifier)
-        val pinyin = getPinYinLatter(faceInformation?.face_name)// Pinyin.toPinyin(faceInformation?.face_name?.get(0) ?: ' ')
+        val pinyin = getPinYinLatter(personName)// Pinyin.toPinyin(faceInformation?.face_name?.get(0) ?: ' ')
 
         when {
             position == 0 -> {
@@ -60,7 +70,8 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
             }
             position > 0 -> {
                 val item1 = adapter1.getAdapterItem(position - 1) as FaceListItem
-                val pinyin1 = getPinYinLatter(item1.faceInformation?.face_name)// Pinyin.toPinyin(item1.faceInformation?.face_name?.get(0) ?: ' ')
+                var lastPersonName = item1.visitor?.personName
+                val pinyin1 = getPinYinLatter(lastPersonName)// Pinyin.toPinyin(item1.faceInformation?.face_name?.get(0) ?: ' ')
                 if (!TextUtils.equals(pinyin1, pinyin)) {
                     holder.header.text = pinyin
                 } else {
@@ -68,8 +79,6 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
                 }
             }
         }
-
-
     }
 
     private fun getPinYinLatter(text: String?): String {

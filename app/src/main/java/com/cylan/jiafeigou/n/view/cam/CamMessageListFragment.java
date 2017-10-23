@@ -262,11 +262,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             faceDefaultFragment = VisitorListFragment.Companion.newInstance(getUuid());
             faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragment.OnVisitorListCallback() {
                 @Override
+                public void onItemClick( FaceItem type, int gPosition, ArrayList<String> dataList) {
+                    changeContentByHeaderClick(type.getFaceType());
+                    View v = getView().findViewById(R.id.fLayout_message_face);
+                    Log.d("TAg", "click tag: " + v.getHeight() + "," + v.getMeasuredHeight());
+                }
+
+                @Override
                 public void onPageScroll(int currentItem, int total) {
                     setFaceHeaderPageIndicator(currentItem, total);
                 }
 
-                @Override
                 public void onItemClick(@NotNull FaceItem type, @NotNull ArrayList<String> dataList) {
                     changeContentByHeaderClick(type.getFaceType());
                     View v = getView().findViewById(R.id.fLayout_message_face);

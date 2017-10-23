@@ -1896,6 +1896,11 @@ public class DpMsgDefine {
         @Index(1)
         public long timeSec;
 
+        public ReqContent(String uuid, long timeSec) {
+            this.uuid = uuid;
+            this.timeSec = timeSec;
+        }
+
         @Override
         public String toString() {
             return "ReqContent{" +

@@ -4,9 +4,12 @@ import android.text.TextUtils
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.FaceListContact
+import com.cylan.jiafeigou.rx.RxBus
+import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -19,6 +22,8 @@ import com.lzy.okgo.cache.CacheMode
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by yanzhendong on 2017/10/16.
@@ -37,7 +42,7 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
      * */
 
     override fun moveFaceToPerson(personId: String, faceId: String) {
-        val subscribe = Observable.create<DpMsgDefine.FaceQueryResponse> { subscriber ->
+        val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
             try {
                 val vid = Security.getVId()
                 val serviceKey = OptionsImpl.getServiceKey(vid)
@@ -76,17 +81,12 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
                         AppLogger.w(string)
                         val gson = Gson()
                         val header = gson.fromJson<DpMsgDefine.ResponseHeader>(string, DpMsgDefine.ResponseHeader::class.java)
-                        if (header.ret == 0) {
-                            val queryResponse = Gson().fromJson<DpMsgDefine.FaceQueryResponse>(string, DpMsgDefine.FaceQueryResponse::class.java)
-                            subscriber.onNext(queryResponse)
-                            subscriber.onCompleted()
-                        } else {
-                            if (header.ret == 100) {
-                                PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
-                                PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
-                            }
-                            subscriber.onError(IllegalArgumentException("ret:" + header.ret + ",msg:" + header.msg))
+                        if (header.ret == 100) {
+                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
+                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
                         }
+                        subscriber.onNext(header)
+                        subscriber.onCompleted()
                     } else {
                         subscriber.onError(null)
                     }
@@ -98,15 +98,24 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ rsp ->
-                    if (rsp != null && rsp.ret == 0) {
-                        //TODO 修改 personId 成功了
-                    } else {
-                        // TODO: 2017/10/13 怎么处理呢? 最好不处理
+                    when {
+                        rsp == null -> {
+                            //返回结果为空?
+                            AppLogger.w("修改面孔信息返回了 null, 可能是超时或者服务器错误!")
+                        }
+                        rsp.ret == 0 -> {
+                            //移动 face 成功了
+                            mView.onMoveFaceToPersonSuccess("todo:person_id")
+                        }
+                        rsp.ret == -1 -> {
+                            //face_id 不存在
+                            mView.onFaceNotExistError()
+                        }
                     }
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#moveFaceToPerson", subscribe)
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceListPresenter#moveFaceToPerson", subscribe)
     }
 
     override fun loadPersonItems(account: String, uuid: String) {
@@ -126,7 +135,7 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
                         url = "http://" + url
                     }
                     val response = OkGo.post(url)
-                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            .cacheMode(CacheMode.NO_CACHE)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
@@ -177,5 +186,36 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#loadPersonItems", subscribe)
+    }
+
+   override fun loadPersonItem2() {
+        val subscribe = Observable.just("loadPersonItem2")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .flatMap {
+                    val seq = BaseApplication.getAppComponent().cmd
+                            .sendUniservalDataSeq(5, DpUtils.pack(DpMsgDefine.ReqContent(uuid, System.currentTimeMillis())))
+                    RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java)
+                            .first { it.seq == seq }.timeout(30, TimeUnit.SECONDS)
+                            .map {
+                                val visitorList = DpUtils.unpackData(it.data, DpMsgDefine.VisitorList::class.java)
+                                visitorList.dataList
+                            }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mView.onVisitorInformationReady(it)
+                }, {
+                    when (it) {
+                        is TimeoutException -> {
+                            //超时了
+                        }
+
+                    }
+
+                    AppLogger.e(MiscUtils.getErr(it))
+                })
+
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceListPresenter#loadPersonItem2", subscribe)
     }
 }

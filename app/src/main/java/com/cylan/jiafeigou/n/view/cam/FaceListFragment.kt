@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,6 +17,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.item.FaceListHeaderItem
 import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.ToastUtil
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IItem
@@ -27,12 +30,56 @@ import kotlinx.android.synthetic.main.fragment_facelist.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListContact.View {
+
+    private var faceId: String? = null
+
+    override fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?) {
+        visitors?.map {
+            FaceListItem().withVisitorInformation(it)
+        }?.apply {
+            itemAdapter.add(this)
+            when {
+                itemAdapter.adapterItemCount == 0 -> {
+                    empty_view.visibility = View.VISIBLE
+                    headerAdapter.clear()
+                }
+                itemAdapter.adapterItemCount > 0 -> {
+                    empty_view.visibility = View.GONE
+                    if (headerAdapter.adapterItemCount == 0) {
+                        headerAdapter.add(FaceListHeaderItem())
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onMoveFaceToPersonSuccess(personId: String) {
+        AppLogger.w("移动面孔成功了")
+        fragmentManager.popBackStack()
+
+        if (targetFragment != null) {
+            val intent = Intent()
+            intent.putExtra("person_id", personId)
+            targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+        }
+
+        if (resultCallback != null) {
+            resultCallback!!.invoke(personId, "todo:还不知道要传多少个参数", "todo:还不知道要传多少个参数")
+        }
+    }
+
+    override fun onFaceNotExistError() {
+        AppLogger.w("面孔不存在,无法移动")
+        ToastUtil.showToast("语言包:面孔不存在,移动失败")
+    }
+
     override fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>) {
         AppLogger.w("onFaceInformationReady")
     }
 
     lateinit var adapter: FastAdapter<*>
     private lateinit var itemAdapter: ItemAdapter<FaceListItem>
+
     override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)
     }
@@ -44,6 +91,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     lateinit var layoutManager: LinearLayoutManager
 
+    private lateinit var headerAdapter: HeaderAdapter<FaceListHeaderItem>
 
     override fun initViewAndListener() {
         super.initViewAndListener()
@@ -63,13 +111,15 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
         adapter = FastAdapter<IItem<*, *>>()
 
-        val headerAdapter = HeaderAdapter<FaceListHeaderItem>()
+        headerAdapter = HeaderAdapter()
         headerAdapter.withUseIdDistributor(true)
+
         itemAdapter = ItemAdapter()
 
         itemAdapter.wrap(headerAdapter.wrap(adapter))
-        headerAdapter.add(FaceListHeaderItem())
+
         itemAdapter.withUseIdDistributor(true)
+
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
         (adapter as FastAdapter<IItem<*, *>>).withSelectionListener { _, _ ->
@@ -79,8 +129,8 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         BaseApplication.getAppComponent().cmd.sessionId
         custom_toolbar.setRightEnable(false)
         itemAdapter.withComparator { item1, item2 ->
-            val char1 = item1.faceInformation?.face_name?.get(0) ?: '#'
-            val char2 = item2.faceInformation?.face_name?.get(0) ?: '#'
+            val char1 = item1.visitor?.personName?.get(0) ?: '#'
+            val char2 = item2.visitor?.personName?.get(0) ?: '#'
             val pinyin1 = Pinyin.toPinyin(if (Pinyin.isChinese(char1)) char1 else '#')
             val pinyin2 = Pinyin.toPinyin(if (Pinyin.isChinese(char2)) char2 else '#')
             val i = pinyin1.compareTo(pinyin2, true)
@@ -125,22 +175,33 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         custom_toolbar.setRightAction { moveFaceTo() }
 
         //todo just for test
-        val items: MutableList<FaceListItem> = mutableListOf()
-        words.forEach {
-            val item = FaceListItem()
-            val information = DpMsgDefine.FaceInformation()
-            information.face_name = it
-            item.withFaceInformation(information)
-            items.add(item)
-        }
-        itemAdapter.add(items)
+//        val items: MutableList<FaceListItem> = mutableListOf()
+//        words.forEach {
+//            val item = FaceListItem()
+//            val information = DpMsgDefine.FaceInformation()
+//            information.face_name = it
+//            item.withFaceInformation(information)
+//            items.add(item)
+//        }
+//        itemAdapter.add(items)
     }
 
     private fun moveFaceTo() {
-        val selections = itemAdapter.fastAdapter.selections
+        val selections = itemAdapter.fastAdapter.selectedItems
         if (selections != null && selections.size > 0) {
-
-            presenter.moveFaceToPerson("", "")
+            val item = selections.elementAt(0)
+            when {
+                item.visitor?.personId == null -> {
+                    AppLogger.w("PersonId is null")
+                }
+                faceId == null -> {
+                    AppLogger.w("faceId is null")
+                }
+                else -> {
+                    AppLogger.w("moveFaceToPerson with person id:${item.visitor?.personId},face id:$faceId")
+                    presenter.moveFaceToPerson(item.visitor!!.personId!!, faceId!!)
+                }
+            }
         } else {
             AppLogger.w("Empty To Do")
         }
@@ -153,7 +214,8 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     override fun onStart() {
         super.onStart()
-        presenter.loadPersonItems(account!!, uuid)
+//        presenter.loadPersonItems(account!!, uuid)
+        presenter.loadPersonItem2()
     }
 
     var resultCallback: ((a: Any, b: Any, c: Any) -> Unit)? = null
