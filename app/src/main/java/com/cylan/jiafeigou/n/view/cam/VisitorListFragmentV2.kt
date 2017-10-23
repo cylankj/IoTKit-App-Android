@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
@@ -47,7 +48,7 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
     lateinit var onVisitorListCallback: OnVisitorListCallback
 
     lateinit var faceAdapter: FaceAdapter
-
+    lateinit var cViewPager: WrapContentViewPager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         basePresenter = BaseVisitorPresenter(this)
@@ -62,22 +63,30 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val vp = view.findViewById(R.id.vp_default) as WrapContentViewPager
+        cViewPager = view.findViewById(R.id.vp_default) as WrapContentViewPager
         faceAdapter = FaceAdapter(childFragmentManager)
         faceAdapter.uuid = uuid
-        vp.adapter = faceAdapter
+        cViewPager.adapter = faceAdapter
         faceAdapter.ensurePreloadHeaderItem()
 
         faceAdapter.itemClickListener = object : ItemClickListener {
-            override fun itemClick(globalPosition: Int, pageIndex: Int) {
-                ToastUtil.showToast("点击了？" + globalPosition)
+            override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
+//                ToastUtil.showToast("点击了？" + globalPosition)
                 onVisitorListCallback?.onItemClick(globalPosition)
             }
         }
+        cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                onVisitorListCallback?.onPageScroll(position,
+                        ListUtils.getSize(FaceItemsProvider.get.items))
+            }
+        })
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
         assembleFaceList(visitorList!!.dataList)
+        onVisitorListCallback?.onPageScroll(cViewPager.currentItem,
+                ListUtils.getSize(FaceItemsProvider.get.items))
     }
 
     override fun onDetach() {
@@ -131,7 +140,7 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
 
     interface ItemClickListener {
 
-        fun itemClick(globalPosition: Int, pageIndex: Int)
+        fun itemClick(globalPosition: Int, position: Int, pageIndex: Int)
     }
 
 }// Required empty public constructor
@@ -142,6 +151,10 @@ class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
 
     lateinit var uuid: String
     lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
+
+    var preClickPage: Int = 0
+    var preClickPosition: Int = 0
+
     override fun getCount(): Int {
         val totalCount = ListUtils.getSize(FaceItemsProvider.get.items)
         val cnt = totalCount / 6 + if (totalCount % 6 == 0) 0 else 1
@@ -155,31 +168,27 @@ class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
     }
 
     private fun updateClickItem(position: Int, pageIndex: Int) {
-//        val itemCnt = ListUtils.getSize(FaceItemsProvider.get.items)
-//        for (i in 0..itemCnt - 1) {
-//            FaceItemsProvider.get.items[i].withSetSelected(position == i)
-//        }
+        if (preClickPage == pageIndex) return
         val list = fm?.fragments
         if (list != null) {
             val cnt = ListUtils.getSize(list)
-            (0..cnt - 1).filter { it != pageIndex }
-                    .forEach {
-                        (list[it] as FaceFragment)
-                                .populateItems()
-                    }
+            Log.d("cnt", "cnt prePageIndex:$preClickPage,$preClickPosition")
+            (0..cnt - 1).filter { it == preClickPage }.forEach {
+                (list[it] as FaceFragment).adapter?.deselect(preClickPosition)
+            }
         }
-//        notifyDataSetChanged()
+        preClickPage = pageIndex
+        preClickPosition = position
     }
 
     override fun getItem(position: Int): Fragment {
         val f = FaceFragment.newInstance(position, uuid)
-        f.itemClickListener =
-                object : VisitorListFragmentV2.ItemClickListener {
-                    override fun itemClick(globalPosition: Int, pageIndex: Int) {
-                        itemClickListener?.itemClick(globalPosition, pageIndex)
-                        updateClickItem(globalPosition, pageIndex)
-                    }
-                }
+        f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
+            override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
+                updateClickItem(position, pageIndex)
+                itemClickListener?.itemClick(globalPosition, position, pageIndex)
+            }
+        }
         return f
     }
 
@@ -207,6 +216,7 @@ class FaceFragment : Fragment() {
     lateinit var uuid: String
     var pageIndex: Int = 0
     lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
+    public lateinit var adapter: FastAdapter<FaceItem>
 
     companion object {
         fun newInstance(pageIndex: Int, uuid: String): FaceFragment {
@@ -233,7 +243,7 @@ class FaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rvList = view.findViewById(R.id.message_face_page_item) as RecyclerView
-        var adapter = FastAdapter<FaceItem>()
+        adapter = FastAdapter<FaceItem>()
         visitorAdapter = FaceFastItemAdapter()
         rvList.layoutManager = GridLayoutManager(context, 3)
         rvList.adapter = visitorAdapter.wrap(adapter)
@@ -252,7 +262,7 @@ class FaceFragment : Fragment() {
         })
         adapter.withOnClickListener { _, _, item, position ->
             val globalPosition = pageIndex * 6 + position
-            itemClickListener?.itemClick(globalPosition, pageIndex)
+            itemClickListener?.itemClick(globalPosition, position, pageIndex)
             true
         }
         adapter.withOnLongClickListener { _v, _, _, _p ->
@@ -270,6 +280,9 @@ class FaceFragment : Fragment() {
         Log.d("cnt", "cnt,,," + ListUtils.getSize(list) + ",pageIndex:" + pageIndex)
         visitorAdapter.clear()
         visitorAdapter.add(list)
+        for (i in list) {
+            Log.d("cnt", "index:" + pageIndex + "," + i.isSelected)
+        }
     }
 
     private fun showHeaderFacePopMenu(position: Int, faceItem: ImageView, faceType: Int) {
