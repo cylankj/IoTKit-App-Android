@@ -88,6 +88,20 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
                 ListUtils.getSize(FaceItemsProvider.get.visitorItems))
     }
 
+    override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {
+        AppLogger.d("陌生人列表")
+        val listCnt = ListUtils.getSize(visitorList?.strangerVisitors)
+        var list = ArrayList<FaceItem>()
+        for (i in 0..listCnt - 1) {
+            val strangerFace = FaceItem()
+            strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
+            strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
+            list.add(strangerFace)
+        }
+        FaceItemsProvider.get.populateStrangerItems(list)
+    }
+
+
     override fun onDetach() {
         super.onDetach()
         FaceItemsProvider.get.visitorItems?.clear()
@@ -353,7 +367,8 @@ class FaceFragment : Fragment() {
         popupWindow.isOutsideTouchable = true
 
         val contentView = popupWindow.contentView
-
+        contentView.findViewById(R.id.detect).visibility =
+                if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) View.GONE else View.VISIBLE
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
         if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE)
 

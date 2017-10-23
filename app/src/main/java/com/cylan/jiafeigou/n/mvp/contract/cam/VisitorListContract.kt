@@ -11,10 +11,12 @@ interface VisitorListContract {
 
     interface View : BaseFragmentView<Presenter> {
         fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
+        fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?)
     }
 
     interface Presenter : BasePresenter {
         fun fetchVisitorList()
+        fun fetchStrangerVisitorList()
     }
 
 }
