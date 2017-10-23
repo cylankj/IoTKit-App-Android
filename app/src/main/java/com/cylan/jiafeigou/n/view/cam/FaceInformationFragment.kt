@@ -68,13 +68,11 @@ class FaceInformationFragment : BaseFragment<JFGPresenter<*>>() {
     }
 
     companion object {
-        fun newInstance(uuid: String, faceId: String, faceName: String, personId: String): FaceInformationFragment {
+        fun newInstance(uuid: String, faceItemIndex: Int): FaceInformationFragment {
             val fragment = FaceInformationFragment()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
-            argument.putString("face_id", faceId)
-            argument.putString("face_name", faceName)
-            argument.putString("person_id", personId)
+            argument.putInt("faceItemIndex", faceItemIndex)
             fragment.arguments = argument
             return fragment
         }

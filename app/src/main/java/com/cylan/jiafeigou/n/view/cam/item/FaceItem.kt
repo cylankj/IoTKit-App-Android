@@ -1,19 +1,13 @@
 package com.cylan.jiafeigou.n.view.cam.item
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
-import com.cylan.jiafeigou.n.mvp.model.CamMessageBean
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
 import com.mikepenz.fastadapter.items.AbstractItem
 
@@ -23,12 +17,15 @@ import com.mikepenz.fastadapter.items.AbstractItem
 class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
     var faceinformation: DpMsgDefine.FaceInformation? = null
         private set
-    var message: CamMessageBean? = null
     var uuid: String? = null
     var version: Long = 0
     //对应 msgType =5返回的列表 item
-    var visitor: DpMsgDefine.Visitor? = null
-    var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
+    private var visitor: DpMsgDefine.Visitor? = null
+    private var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
+
+    private var faceType: Int = 0 //熟人或者陌生人
+
+    var markHint: Boolean = false
 
     companion object {
         const val FACE_TYPE_ALL: Int = -1
@@ -41,25 +38,45 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
         return FaceItemViewHolder(v)
     }
 
-    var faceType: Int = 0 //熟人或者陌生人
-
 
     @SuppressLint("ResourceType")
     override fun getType(): Int {
         return R.layout.item_face_selection
     }
 
-    fun withMessage(message: CamMessageBean): FaceItem {
-        this.message = message
-        return this
-    }
-
     fun withVersion(version: Long) {
         this.version = version
     }
 
+    fun withFaceType(faceType: Int): FaceItem {
+        this.faceType = faceType
+        return this
+    }
+
+    fun getFaceType(): Int {
+        return faceType
+    }
+
     fun withUuid(uuid: String): FaceItem {
         this.uuid = uuid
+        return this
+    }
+
+    fun withVisitor(visitor: DpMsgDefine.Visitor): FaceItem {
+        if (faceinformation == null)
+            faceinformation = DpMsgDefine.FaceInformation()
+        faceinformation!!.face_name = visitor.personName
+        faceinformation!!.face_id = visitor.personId
+        version = visitor.lastTime
+        return this
+    }
+
+    fun withStrangerVisitor(visitor: DpMsgDefine.StrangerVisitor): FaceItem {
+        if (faceinformation == null)
+            faceinformation = DpMsgDefine.FaceInformation()
+//        faceinformation!!.face_name = ""
+//        faceinformation!!.face_id = ""
+        version = visitor.lastTime
         return this
     }
 
@@ -86,6 +103,7 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
                 holder.icon.setImageResource(R.drawable.news_icon_all_selector)
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
+                holder.icon.showHint(markHint)
             }
             FACE_TYPE_STRANGER -> {
                 //todo 多图片合成
@@ -101,12 +119,14 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
                 holder.icon.showHint(true)
                 holder.icon.setImageResource(R.drawable.news_icon_stranger)
                 holder.icon.showBorder(isSelected)
-                holder.strangerIcon.visibility = View.GONE
+                holder.icon.showHint(markHint)
             }
-            //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
+        //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
                 holder.text.text = faceinformation?.face_name
                 holder.icon.showBorder(isSelected)
+                holder.strangerIcon.visibility = View.GONE
+                holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
                         .load(faceinformation?.source_image_url)
                         .placeholder(R.drawable.icon_mine_head_normal)
@@ -130,4 +150,5 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
         val strangerIcon: ImageView = view.findViewById(R.id.stranger_icon) as ImageView
 
     }
+
 }

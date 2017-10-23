@@ -17,7 +17,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -32,7 +31,7 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
-import com.cylan.jiafeigou.utils.ToastUtil
+import com.cylan.jiafeigou.utils.RandomUtils
 import com.cylan.jiafeigou.widget.WrapContentViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -78,7 +77,7 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 onVisitorListCallback?.onPageScroll(position,
-                        ListUtils.getSize(FaceItemsProvider.get.items))
+                        ListUtils.getSize(FaceItemsProvider.get.visitorItems) as Int)
             }
         })
     }
@@ -86,12 +85,12 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
         assembleFaceList(visitorList!!.dataList)
         onVisitorListCallback?.onPageScroll(cViewPager.currentItem,
-                ListUtils.getSize(FaceItemsProvider.get.items))
+                ListUtils.getSize(FaceItemsProvider.get.visitorItems))
     }
 
     override fun onDetach() {
         super.onDetach()
-        FaceItemsProvider.get.items?.clear()
+        FaceItemsProvider.get.visitorItems?.clear()
     }
 
     companion object {
@@ -109,17 +108,20 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         if (dataList != null) {
             for (visitor in dataList) {
                 val allFace = FaceItem()
-                allFace.faceType = FaceItem.FACE_TYPE_ACQUAINTANCE
-                allFace.visitor = visitor
+                allFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
+                allFace.withVisitor(visitor)
                 list.add(allFace)
             }
         }
-        for (i in 1..5) {
+
+        val mList = mockVisitors()
+        for (i in 0..9) {
             val strangerFace = FaceItem()
-            strangerFace.faceType = FaceItem.FACE_TYPE_ACQUAINTANCE
+            strangerFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
+            strangerFace.withVisitor(mList[i])
             list.add(strangerFace)
         }
-        //need remove duplicated items
+        //need remove duplicated visitorItems
         faceAdapter.populateItems(list)
         if (ListUtils.isEmpty(list)) {
             return
@@ -143,6 +145,53 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         fun itemClick(globalPosition: Int, position: Int, pageIndex: Int)
     }
 
+    fun mockVisitors(): ArrayList<DpMsgDefine.Visitor> {
+        val mockList = ArrayList<DpMsgDefine.Visitor>()
+        for (i in 0..9) {
+            val visitor = DpMsgDefine.Visitor()
+            visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600
+            visitor.personId = i.toString() + ""
+            visitor.personName = i.toString() + "," + i
+            visitor.faceIdList = getProvinces()
+            mockList.add(visitor)
+        }
+        return mockList
+    }
+
+    fun mockStrangers(): ArrayList<DpMsgDefine.StrangerVisitor> {
+        val strangerVisitors = ArrayList<DpMsgDefine.StrangerVisitor>()
+        for (i in 0..9) {
+            val visitor = DpMsgDefine.StrangerVisitor()
+            visitor.faceId = 20.toString() + "" + i
+            visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600
+            strangerVisitors.add(visitor)
+        }
+        return strangerVisitors
+    }
+
+    private fun getProvinces(): java.util.ArrayList<String>? {
+        try {
+            val array = arrays.split(",")
+            var tCnt = RandomUtils.getRandom(array.size)
+            tCnt = Math.max(1, tCnt)
+            val list = java.util.ArrayList<String>(tCnt)
+            for (i in array.indices) {
+                if (list.size < tCnt) {
+                    list.add(array[i])
+                }
+            }
+            return list
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private val arrays = "北京市,天津市,河北省,山西省,内蒙古自治区,辽宁省,吉林省,黑龙江省,上海市,江苏省," +
+            "浙江省,安徽省,福建省,江西省,山东省,河南省,湖北省,湖南省" +
+            ",广东省,广西壮族自治区,海南省,重庆市,四川省,贵州省,云南省" +
+            ",西藏自治区,陕西省,甘肃省,青海省,宁夏回族自治区,新疆维吾尔自治区,台湾省,香港特别行政区,澳门特别行政区"
+
 }// Required empty public constructor
 
 class FaceFastItemAdapter : ItemAdapter<FaceItem>()
@@ -156,19 +205,22 @@ class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
     var preClickPosition: Int = 0
 
     override fun getCount(): Int {
-        val totalCount = ListUtils.getSize(FaceItemsProvider.get.items)
-        val cnt = totalCount / 6 + if (totalCount % 6 == 0) 0 else 1
+        val totalCount = ListUtils.getSize(FaceItemsProvider.get.visitorItems)
+        val cnt = totalCount / JConstant.FACE_CNT_IN_PAGE + if (totalCount % JConstant.FACE_CNT_IN_PAGE == 0) 0 else 1
         Log.d("cnt", "cnt:$cnt,$totalCount")
         return cnt
     }
 
-    fun populateItems(items: ArrayList<FaceItem>) {
-        FaceItemsProvider.get.populateItems(items)
+    fun populateItems(visitorItems: ArrayList<FaceItem>) {
+        FaceItemsProvider.get.populateItems(visitorItems)
         notifyDataSetChanged()
     }
 
     private fun updateClickItem(position: Int, pageIndex: Int) {
-        if (preClickPage == pageIndex) return
+        if (preClickPage == pageIndex) {
+            preClickPosition = position//同一个page,自动刷新。
+            return
+        }
         val list = fm?.fragments
         if (list != null) {
             val cnt = ListUtils.getSize(list)
@@ -216,7 +268,7 @@ class FaceFragment : Fragment() {
     lateinit var uuid: String
     var pageIndex: Int = 0
     lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
-    public lateinit var adapter: FastAdapter<FaceItem>
+    lateinit var adapter: FastAdapter<FaceItem>
 
     companion object {
         fun newInstance(pageIndex: Int, uuid: String): FaceFragment {
@@ -232,6 +284,13 @@ class FaceFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.uuid = arguments.getString("uuid")
+    }
+
+    fun deselect(position: Int) {
+        //需要遍历
+        val cnt = adapter.itemCount
+        (0..cnt - 1).filter { adapter.getItem(it).isSelected }
+                .forEach { adapter?.deselect(it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -254,19 +313,22 @@ class FaceFragment : Fragment() {
         rvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, v: View, parent: RecyclerView, state: RecyclerView.State?) {
                 if (parent.getChildLayoutPosition(v) % 3 == 1) {
-                    val pixelOffset = getContext().resources.getDimensionPixelOffset(R.dimen.y18)
+                    val pixelOffset = context.resources.getDimensionPixelOffset(R.dimen.y18)
                     outRect.left = pixelOffset
                     outRect.right = pixelOffset
                 }
             }
         })
         adapter.withOnClickListener { _, _, item, position ->
-            val globalPosition = pageIndex * 6 + position
+            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
             itemClickListener?.itemClick(globalPosition, position, pageIndex)
             true
         }
         adapter.withOnLongClickListener { _v, _, _, _p ->
-            showHeaderFacePopMenu(_p, _v as ImageView, adapter.getItem(_p).faceType)
+            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + _p
+            if (globalPosition > 1) {
+                showHeaderFacePopMenu(globalPosition, _p, _v, adapter.getItem(_p).getFaceType())
+            }
             true
         }
         populateItems()
@@ -274,18 +336,15 @@ class FaceFragment : Fragment() {
 
     fun populateItems() {
         pageIndex = arguments.getInt("pageIndex")
-        val totalCnt = ListUtils.getSize(FaceItemsProvider.get.items)
-        val list = FaceItemsProvider.get.items.subList(6 * pageIndex,
-                6 * pageIndex + Math.min(6, totalCnt - 6 * pageIndex))
+        val totalCnt = ListUtils.getSize(FaceItemsProvider.get.visitorItems)
+        val list = FaceItemsProvider.get.visitorItems.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
+                JConstant.FACE_CNT_IN_PAGE * pageIndex + Math.min(JConstant.FACE_CNT_IN_PAGE, totalCnt - JConstant.FACE_CNT_IN_PAGE * pageIndex))
         Log.d("cnt", "cnt,,," + ListUtils.getSize(list) + ",pageIndex:" + pageIndex)
         visitorAdapter.clear()
         visitorAdapter.add(list)
-        for (i in list) {
-            Log.d("cnt", "index:" + pageIndex + "," + i.isSelected)
-        }
     }
 
-    private fun showHeaderFacePopMenu(position: Int, faceItem: ImageView, faceType: Int) {
+    private fun showHeaderFacePopMenu(gPosition: Int, position: Int, faceItem: View, faceType: Int) {
 //        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
         val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -296,7 +355,7 @@ class FaceFragment : Fragment() {
         val contentView = popupWindow.contentView
 
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
-        if (faceType == FaceItem.FACE_TYPE_STRANGER)
+        if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE)
 
             contentView.findViewById(R.id.delete).setOnClickListener { v ->
                 // TODO: 2017/10/9 删除操作
@@ -311,18 +370,17 @@ class FaceFragment : Fragment() {
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔")
             popupWindow.dismiss()
-            faceItem.isDrawingCacheEnabled = true
-            val image = faceItem.drawingCache
+//            faceItem.isDrawingCacheEnabled = true
+//            val image = faceItem.drawingCache
             showDetectFaceAlert("")
         }
 
-        contentView.findViewById(R.id.viewer).setOnClickListener { v ->
+        contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
             AppLogger.w("将查看面孔详细信息")
             popupWindow.dismiss()
             val item = visitorAdapter?.getItem(position)
             if (item != null) {
-                val fragment = FaceInformationFragment.newInstance(uuid, item.faceinformation!!.face_id,
-                        item.faceinformation!!.face_name, item.faceinformation!!.person_id)
+                val fragment = FaceInformationFragment.newInstance(uuid, gPosition)
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {
                 // TODO: 2017/10/16 为什么会出现这种情况?
@@ -350,7 +408,7 @@ class FaceFragment : Fragment() {
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else if (newFace!!.isChecked) {
                 val fragment = CreateNewFaceFragment.newInstance(uuid, faceId)
-                fragment.resultCallback = { ret -> null }
+                fragment.resultCallback = { null }
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             }
             dialog.dismiss()
@@ -388,8 +446,10 @@ class FaceFragment : Fragment() {
 }
 
 class FaceItemsProvider private constructor() {
-
-    var items = ArrayList<FaceItem>()
+    //熟人
+    var visitorItems = ArrayList<FaceItem>()
+    //陌生人
+    var strangerItems = ArrayList<FaceItem>()
 
     private object Holder {
         val INSTANCE = FaceItemsProvider()
@@ -399,15 +459,21 @@ class FaceItemsProvider private constructor() {
         val get: FaceItemsProvider by lazy { Holder.INSTANCE }
     }
 
-    fun populateItems(items: ArrayList<FaceItem>) {
+    fun populateItems(visitorItems: ArrayList<FaceItem>) {
         checkEmpty()
         ensurePreloadHeaderItem()
-        this.items.addAll(items)
+        this.visitorItems.addAll(visitorItems)
+    }
+
+    fun populateStrangerItems(strangerItems: ArrayList<FaceItem>) {
+        if (this.strangerItems == null)
+            this.strangerItems = ArrayList()
+        this.strangerItems.addAll(strangerItems)
     }
 
     fun checkEmpty() {
-        if (items == null)
-            items = ArrayList()
+        if (visitorItems == null)
+            visitorItems = ArrayList()
     }
 
     fun ensurePreloadHeaderItem() {
@@ -415,20 +481,20 @@ class FaceItemsProvider private constructor() {
             val list = ArrayList<FaceItem>()
             val allFace = FaceItem()
             allFace.withSetSelected(true)
-            allFace.faceType = FaceItem.FACE_TYPE_ALL
+            allFace.withFaceType(FaceItem.FACE_TYPE_ALL)
             list.add(allFace)
             val strangerFace = FaceItem()
-            strangerFace.faceType = FaceItem.FACE_TYPE_STRANGER
+            strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER)
             list.add(strangerFace)
             checkEmpty()
-            items.addAll(list)
+            visitorItems.addAll(list)
         }
     }
 
     fun hasPreloadFaceItems(): Boolean {
-        if (ListUtils.getSize(items) < 2) return false
-        return items[0].faceType == FaceItem.FACE_TYPE_ALL
-                && items[1].faceType == FaceItem.FACE_TYPE_STRANGER
+        if (ListUtils.getSize(visitorItems) < 2) return false
+        return visitorItems[0].getFaceType() == FaceItem.FACE_TYPE_ALL
+                && visitorItems[1].getFaceType() == FaceItem.FACE_TYPE_STRANGER
     }
 
 }

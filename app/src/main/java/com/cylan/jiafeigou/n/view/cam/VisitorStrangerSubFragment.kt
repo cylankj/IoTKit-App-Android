@@ -53,8 +53,8 @@ class VisitorStrangerSubFragment : IBaseFragment<FaceStrangerContract.Presenter>
         val list = ArrayList<FaceItem>()
         for (visitor in visitorList.strangerVisitors) {
             val allFace = FaceItem()
-            allFace.faceType = FaceItem.FACE_TYPE_STRANGER
-            allFace.strangerVisitor = visitor
+            allFace.withFaceType(FaceItem.FACE_TYPE_STRANGER)
+            allFace.withStrangerVisitor(visitor)
             list.add(allFace)
         }
         if (ListUtils.isEmpty(list)) {

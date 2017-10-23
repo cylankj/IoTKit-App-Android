@@ -260,7 +260,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
                 @Override
                 public void onItemClick(int gPosition) {
-                    FaceItem faceItem = FaceItemsProvider.Companion.getGet().getItems().get(gPosition);
+                    FaceItem faceItem = FaceItemsProvider.Companion.getGet().getVisitorItems().get(gPosition);
                     changeContentByHeaderClick(faceItem.getFaceType());
                 }
 
@@ -363,8 +363,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         //需要刷数据
         if (visitorStrangerSubFragment == null)
             visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(getUuid());
-        ActivityUtils.addFragmentToActivity(getChildFragmentManager(),
-                visitorStrangerSubFragment, R.id.fLayout_message_face);
+        ActivityUtils.replaceFragment(getChildFragmentManager(),
+                visitorStrangerSubFragment,
+                R.id.fLayout_message_face, "visitorStrangerSubFragment", true);
         visitorStrangerSubFragment.setOnListCallback(new VisitorStrangerSubFragment.OnListCallback() {
             @Override
             public void onItemClick(@org.jetbrains.annotations.Nullable FaceItem type, @org.jetbrains.annotations.Nullable ArrayList<String> dataList) {
