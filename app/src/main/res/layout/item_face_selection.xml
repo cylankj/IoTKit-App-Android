@@ -21,7 +21,7 @@
             app:civ_border_width="@dimen/y2"
             app:civ_hint_color="@color/color_red"
             app:civ_hint_radius="@dimen/y4"
-            app:civ_show_hint="true" />
+            app:civ_show_hint="false" />
 
         <ImageView
             android:id="@+id/stranger_icon"

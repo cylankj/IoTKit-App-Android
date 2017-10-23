@@ -1,0 +1,500 @@
+package com.cylan.jiafeigou.n.view.cam
+
+
+import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
+import android.support.v4.widget.PopupWindowCompat
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupWindow
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import com.cylan.jiafeigou.R
+import com.cylan.jiafeigou.base.module.DataSourceManager
+import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.n.base.IBaseFragment
+import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract
+import com.cylan.jiafeigou.n.mvp.impl.cam.BaseVisitorPresenter
+import com.cylan.jiafeigou.n.view.cam.item.FaceItem
+import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.ActivityUtils
+import com.cylan.jiafeigou.utils.ListUtils
+import com.cylan.jiafeigou.utils.RandomUtils
+import com.cylan.jiafeigou.widget.WrapContentViewPager
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+
+
+/**
+ * A simple [Fragment] subclass.
+ * Use the [VisitorListFragmentV2.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
+        VisitorListContract.View {
+    lateinit var onVisitorListCallback: OnVisitorListCallback
+
+    lateinit var faceAdapter: FaceAdapter
+    lateinit var cViewPager: WrapContentViewPager
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        basePresenter = BaseVisitorPresenter(this)
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater!!.inflate(R.layout.fragment_visitor_list, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        cViewPager = view.findViewById(R.id.vp_default) as WrapContentViewPager
+        faceAdapter = FaceAdapter(childFragmentManager)
+        faceAdapter.uuid = uuid
+        cViewPager.adapter = faceAdapter
+        faceAdapter.ensurePreloadHeaderItem()
+
+        faceAdapter.itemClickListener = object : ItemClickListener {
+            override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
+//                ToastUtil.showToast("点击了？" + globalPosition)
+                onVisitorListCallback?.onItemClick(globalPosition)
+            }
+        }
+        cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                onVisitorListCallback?.onPageScroll(position,
+                        ListUtils.getSize(FaceItemsProvider.get.visitorItems) as Int)
+            }
+        })
+    }
+
+    override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
+        assembleFaceList(visitorList!!.dataList)
+        onVisitorListCallback?.onPageScroll(cViewPager.currentItem,
+                ListUtils.getSize(FaceItemsProvider.get.visitorItems))
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        FaceItemsProvider.get.visitorItems?.clear()
+    }
+
+    companion object {
+        fun newInstance(uuid: String): VisitorListFragmentV2 {
+            val fragment = VisitorListFragmentV2()
+            val args = Bundle()
+            args.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    private fun assembleFaceList(dataList: List<DpMsgDefine.Visitor>?) {
+        val list = ArrayList<FaceItem>()
+        if (dataList != null) {
+            for (visitor in dataList) {
+                val allFace = FaceItem()
+                allFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
+                allFace.withVisitor(visitor)
+                list.add(allFace)
+            }
+        }
+
+        val mList = mockVisitors()
+        for (i in 0..9) {
+            val strangerFace = FaceItem()
+            strangerFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
+            strangerFace.withVisitor(mList[i])
+            list.add(strangerFace)
+        }
+        //need remove duplicated visitorItems
+        faceAdapter.populateItems(list)
+        if (ListUtils.isEmpty(list)) {
+            return
+        }
+        faceAdapter.populateItems(list)
+    }
+
+    interface OnVisitorListCallback {
+        /**
+         * gPosition: global position
+         */
+        fun onItemClick(gPosition: Int)
+
+        fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
+        fun onPageScroll(currentItem: Int, total: Int)
+    }
+
+
+    interface ItemClickListener {
+
+        fun itemClick(globalPosition: Int, position: Int, pageIndex: Int)
+    }
+
+    fun mockVisitors(): ArrayList<DpMsgDefine.Visitor> {
+        val mockList = ArrayList<DpMsgDefine.Visitor>()
+        for (i in 0..9) {
+            val visitor = DpMsgDefine.Visitor()
+            visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600
+            visitor.personId = i.toString() + ""
+            visitor.personName = i.toString() + "," + i
+            visitor.faceIdList = getProvinces()
+            mockList.add(visitor)
+        }
+        return mockList
+    }
+
+    fun mockStrangers(): ArrayList<DpMsgDefine.StrangerVisitor> {
+        val strangerVisitors = ArrayList<DpMsgDefine.StrangerVisitor>()
+        for (i in 0..9) {
+            val visitor = DpMsgDefine.StrangerVisitor()
+            visitor.faceId = 20.toString() + "" + i
+            visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600
+            strangerVisitors.add(visitor)
+        }
+        return strangerVisitors
+    }
+
+    private fun getProvinces(): java.util.ArrayList<String>? {
+        try {
+            val array = arrays.split(",")
+            var tCnt = RandomUtils.getRandom(array.size)
+            tCnt = Math.max(1, tCnt)
+            val list = java.util.ArrayList<String>(tCnt)
+            for (i in array.indices) {
+                if (list.size < tCnt) {
+                    list.add(array[i])
+                }
+            }
+            return list
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private val arrays = "北京市,天津市,河北省,山西省,内蒙古自治区,辽宁省,吉林省,黑龙江省,上海市,江苏省," +
+            "浙江省,安徽省,福建省,江西省,山东省,河南省,湖北省,湖南省" +
+            ",广东省,广西壮族自治区,海南省,重庆市,四川省,贵州省,云南省" +
+            ",西藏自治区,陕西省,甘肃省,青海省,宁夏回族自治区,新疆维吾尔自治区,台湾省,香港特别行政区,澳门特别行政区"
+
+}// Required empty public constructor
+
+class FaceFastItemAdapter : ItemAdapter<FaceItem>()
+
+class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+
+    lateinit var uuid: String
+    lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
+
+    var preClickPage: Int = 0
+    var preClickPosition: Int = 0
+
+    override fun getCount(): Int {
+        val totalCount = ListUtils.getSize(FaceItemsProvider.get.visitorItems)
+        val cnt = totalCount / JConstant.FACE_CNT_IN_PAGE + if (totalCount % JConstant.FACE_CNT_IN_PAGE == 0) 0 else 1
+        Log.d("cnt", "cnt:$cnt,$totalCount")
+        return cnt
+    }
+
+    fun populateItems(visitorItems: ArrayList<FaceItem>) {
+        FaceItemsProvider.get.populateItems(visitorItems)
+        notifyDataSetChanged()
+    }
+
+    private fun updateClickItem(position: Int, pageIndex: Int) {
+        if (preClickPage == pageIndex) {
+            preClickPosition = position//同一个page,自动刷新。
+            return
+        }
+        val list = fm?.fragments
+        if (list != null) {
+            val cnt = ListUtils.getSize(list)
+            Log.d("cnt", "cnt prePageIndex:$preClickPage,$preClickPosition")
+            (0..cnt - 1).filter { it == preClickPage }.forEach {
+                (list[it] as FaceFragment).adapter?.deselect(preClickPosition)
+            }
+        }
+        preClickPage = pageIndex
+        preClickPosition = position
+    }
+
+    override fun getItem(position: Int): Fragment {
+        val f = FaceFragment.newInstance(position, uuid)
+        f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
+            override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
+                updateClickItem(position, pageIndex)
+                itemClickListener?.itemClick(globalPosition, position, pageIndex)
+            }
+        }
+        return f
+    }
+
+    fun ensurePreloadHeaderItem() {
+        FaceItemsProvider.get.ensurePreloadHeaderItem()
+        notifyDataSetChanged()
+    }
+
+    override fun notifyDataSetChanged() {
+        super.notifyDataSetChanged()
+        val list = fm?.fragments
+        list?.map { it as FaceFragment }?.forEach { it.populateItems() }
+    }
+
+    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+//        super.destroyItem(container, position, `object`)
+    }
+}
+
+
+class FaceFragment : Fragment() {
+
+    lateinit var visitorAdapter: FaceFastItemAdapter
+    lateinit var rvList: RecyclerView
+    lateinit var uuid: String
+    var pageIndex: Int = 0
+    lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
+    lateinit var adapter: FastAdapter<FaceItem>
+
+    companion object {
+        fun newInstance(pageIndex: Int, uuid: String): FaceFragment {
+            val f = FaceFragment()
+            val b = Bundle()
+            b.putInt("pageIndex", pageIndex)
+            b.putString("uuid", uuid)
+            f.arguments = b
+            return f
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        this.uuid = arguments.getString("uuid")
+    }
+
+    fun deselect(position: Int) {
+        //需要遍历
+        val cnt = adapter.itemCount
+        (0..cnt - 1).filter { adapter.getItem(it).isSelected }
+                .forEach { adapter?.deselect(it) }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater!!.inflate(R.layout.message_face_page, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        rvList = view.findViewById(R.id.message_face_page_item) as RecyclerView
+        adapter = FastAdapter<FaceItem>()
+        visitorAdapter = FaceFastItemAdapter()
+        rvList.layoutManager = GridLayoutManager(context, 3)
+        rvList.adapter = visitorAdapter.wrap(adapter)
+        adapter.withSelectable(true)
+        adapter.withMultiSelect(false)
+        adapter.withSelectWithItemUpdate(true)
+        adapter.withAllowDeselection(false)
+        rvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(outRect: Rect, v: View, parent: RecyclerView, state: RecyclerView.State?) {
+                if (parent.getChildLayoutPosition(v) % 3 == 1) {
+                    val pixelOffset = context.resources.getDimensionPixelOffset(R.dimen.y18)
+                    outRect.left = pixelOffset
+                    outRect.right = pixelOffset
+                }
+            }
+        })
+        adapter.withOnClickListener { _, _, item, position ->
+            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
+            itemClickListener?.itemClick(globalPosition, position, pageIndex)
+            true
+        }
+        adapter.withOnLongClickListener { _v, _, _, _p ->
+            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + _p
+            if (globalPosition > 1) {
+                showHeaderFacePopMenu(globalPosition, _p, _v, adapter.getItem(_p).getFaceType())
+            }
+            true
+        }
+        populateItems()
+    }
+
+    fun populateItems() {
+        pageIndex = arguments.getInt("pageIndex")
+        val totalCnt = ListUtils.getSize(FaceItemsProvider.get.visitorItems)
+        val list = FaceItemsProvider.get.visitorItems.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
+                JConstant.FACE_CNT_IN_PAGE * pageIndex + Math.min(JConstant.FACE_CNT_IN_PAGE, totalCnt - JConstant.FACE_CNT_IN_PAGE * pageIndex))
+        Log.d("cnt", "cnt,,," + ListUtils.getSize(list) + ",pageIndex:" + pageIndex)
+        visitorAdapter.clear()
+        visitorAdapter.add(list)
+    }
+
+    private fun showHeaderFacePopMenu(gPosition: Int, position: Int, faceItem: View, faceType: Int) {
+//        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
+        val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
+        popupWindow.setBackgroundDrawable(ColorDrawable(0))
+        popupWindow.isOutsideTouchable = true
+
+        val contentView = popupWindow.contentView
+
+        // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
+        if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE)
+
+            contentView.findViewById(R.id.delete).setOnClickListener { v ->
+                // TODO: 2017/10/9 删除操作
+                AppLogger.w("将删除面孔")
+                popupWindow.dismiss()
+                val item = visitorAdapter.getItem(position)
+                        as FaceItem
+                showDeleteFaceAlert(item)
+            }
+
+        contentView.findViewById(R.id.detect).setOnClickListener { v ->
+            // TODO: 2017/10/9 识别操作
+            AppLogger.w("将识别面孔")
+            popupWindow.dismiss()
+//            faceItem.isDrawingCacheEnabled = true
+//            val image = faceItem.drawingCache
+            showDetectFaceAlert("")
+        }
+
+        contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
+            AppLogger.w("将查看面孔详细信息")
+            popupWindow.dismiss()
+            val item = visitorAdapter?.getItem(position)
+            if (item != null) {
+                val fragment = FaceInformationFragment.newInstance(uuid, gPosition)
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
+            } else {
+                // TODO: 2017/10/16 为什么会出现这种情况?
+            }
+        }
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START)
+    }
+
+    private fun showDetectFaceAlert(faceId: String) {
+        val dialog = AlertDialog.Builder(context)
+                .setView(R.layout.layout_face_detect_pop_alert)
+                .show()
+
+        dialog.findViewById(R.id.detect_cancel)!!.setOnClickListener { v -> dialog.dismiss() }
+
+        dialog.findViewById(R.id.detect_ok)!!.setOnClickListener { v ->
+            val addTo = dialog.findViewById(R.id.detect_add_to) as RadioButton?
+            val newFace = dialog.findViewById(R.id.detect_new_face) as RadioButton?
+            if (addTo!!.isChecked) {
+                val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account,
+                        uuid, "", FaceListFragment.TYPE_ADD_TO)
+                fragment.resultCallback = { o, o2, o3 ->
+
+                }// TODO: 2017/10/10 移动到面孔的结果回调
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
+            } else if (newFace!!.isChecked) {
+                val fragment = CreateNewFaceFragment.newInstance(uuid, faceId)
+                fragment.resultCallback = { null }
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
+            }
+            dialog.dismiss()
+        }
+    }
+
+    private fun showDeleteFaceAlert(item: FaceItem) {
+        val dialog = AlertDialog.Builder(context)
+                .setView(R.layout.layout_face_delete_pop_alert)
+                .show()
+        dialog.findViewById(R.id.delete_cancel)!!.setOnClickListener { v1 ->
+            // TODO: 2017/10/9 取消了 什么也不做
+            dialog.dismiss()
+
+        }
+
+        dialog.findViewById(R.id.delete_ok)!!.setOnClickListener { v ->
+            val radioGroup = dialog.findViewById(R.id.delete_radio) as RadioGroup?
+            val radioButtonId = radioGroup!!.checkedRadioButtonId
+            if (radioButtonId == R.id.delete_only_face) {
+                AppLogger.w("only face")
+                val faceInformation = item.faceinformation
+                if (faceInformation != null) {
+//                    basePresenter.deleteFace(faceInformation.face_id, null, null)
+                }
+            } else if (radioButtonId == R.id.delete_face_and_message) {
+                AppLogger.w("face and message")
+            } else {
+                // 什么也没选
+            }
+            dialog.dismiss()
+        }
+
+    }
+}
+
+class FaceItemsProvider private constructor() {
+    //熟人
+    var visitorItems = ArrayList<FaceItem>()
+    //陌生人
+    var strangerItems = ArrayList<FaceItem>()
+
+    private object Holder {
+        val INSTANCE = FaceItemsProvider()
+    }
+
+    companion object {
+        val get: FaceItemsProvider by lazy { Holder.INSTANCE }
+    }
+
+    fun populateItems(visitorItems: ArrayList<FaceItem>) {
+        checkEmpty()
+        ensurePreloadHeaderItem()
+        this.visitorItems.addAll(visitorItems)
+    }
+
+    fun populateStrangerItems(strangerItems: ArrayList<FaceItem>) {
+        if (this.strangerItems == null)
+            this.strangerItems = ArrayList()
+        this.strangerItems.addAll(strangerItems)
+    }
+
+    fun checkEmpty() {
+        if (visitorItems == null)
+            visitorItems = ArrayList()
+    }
+
+    fun ensurePreloadHeaderItem() {
+        if (!(hasPreloadFaceItems())) {
+            val list = ArrayList<FaceItem>()
+            val allFace = FaceItem()
+            allFace.withSetSelected(true)
+            allFace.withFaceType(FaceItem.FACE_TYPE_ALL)
+            list.add(allFace)
+            val strangerFace = FaceItem()
+            strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER)
+            list.add(strangerFace)
+            checkEmpty()
+            visitorItems.addAll(list)
+        }
+    }
+
+    fun hasPreloadFaceItems(): Boolean {
+        if (ListUtils.getSize(visitorItems) < 2) return false
+        return visitorItems[0].getFaceType() == FaceItem.FACE_TYPE_ALL
+                && visitorItems[1].getFaceType() == FaceItem.FACE_TYPE_STRANGER
+    }
+
+}

@@ -75,6 +75,7 @@ android {
     }
     lintOptions {
         abortOnError false
+        disable 'RestrictedApi'
     }
 
     dexOptions {
@@ -409,8 +410,6 @@ dependencies {
     kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
     kapt "com.android.databinding:compiler:2.3.3"
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.1'
-
-
 
     //youtube-live-api
     compile 'com.google.api-client:google-api-client:1.23.0'

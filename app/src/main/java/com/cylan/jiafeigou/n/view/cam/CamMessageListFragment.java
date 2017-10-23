@@ -150,7 +150,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private LinearLayoutManager layoutManager;
     private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
 
-    private VisitorListFragment faceDefaultFragment;
+    private VisitorListFragmentV2 faceDefaultFragment;
     private VisitorStrangerSubFragment visitorStrangerSubFragment;
 
     public CamMessageListFragment() {
@@ -249,9 +249,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(
 
                 getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
-
-        //TODO just for test
-        initFaceHeader();
     }
 
     private void initFaceHeader() {
@@ -259,25 +256,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
 
             tvCamMessageListDate.setClickable(false);
-            faceDefaultFragment = VisitorListFragment.Companion.newInstance(getUuid());
-            faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragment.OnVisitorListCallback() {
+            faceDefaultFragment = VisitorListFragmentV2.Companion.newInstance(getUuid());
+            faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
                 @Override
-                public void onItemClick( FaceItem type, int gPosition, ArrayList<String> dataList) {
-                    changeContentByHeaderClick(type.getFaceType());
-                    View v = getView().findViewById(R.id.fLayout_message_face);
-                    Log.d("TAg", "click tag: " + v.getHeight() + "," + v.getMeasuredHeight());
+                public void onItemClick(int gPosition) {
+                    FaceItem faceItem = FaceItemsProvider.Companion.getGet().getVisitorItems().get(gPosition);
+                    changeContentByHeaderClick(faceItem.getFaceType());
                 }
 
                 @Override
-                public void onPageScroll(int currentItem, int total) {
-                    setFaceHeaderPageIndicator(currentItem, total);
+                public void onPageScroll(int currentPage, int total) {
+                    setFaceHeaderPageIndicator(currentPage, total);
                 }
 
-                public void onItemClick(@NotNull FaceItem type, @NotNull ArrayList<String> dataList) {
-                    changeContentByHeaderClick(type.getFaceType());
-                    View v = getView().findViewById(R.id.fLayout_message_face);
-                    Log.d("TAg", "click tag: " + v.getHeight() + "," + v.getMeasuredHeight());
-                }
 
                 @Override
                 public void onVisitorListReady(@NotNull DpMsgDefine.VisitorList visitorList) {
@@ -372,8 +363,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         //需要刷数据
         if (visitorStrangerSubFragment == null)
             visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(getUuid());
-        ActivityUtils.addFragmentToActivity(getChildFragmentManager(),
-                visitorStrangerSubFragment, R.id.fLayout_message_face);
+        ActivityUtils.replaceFragment(getChildFragmentManager(),
+                visitorStrangerSubFragment,
+                R.id.fLayout_message_face, "visitorStrangerSubFragment", true);
         visitorStrangerSubFragment.setOnListCallback(new VisitorStrangerSubFragment.OnListCallback() {
             @Override
             public void onItemClick(@org.jetbrains.annotations.Nullable FaceItem type, @org.jetbrains.annotations.Nullable ArrayList<String> dataList) {
@@ -389,8 +381,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void setFaceHeaderPageIndicator(int currentItem, int total) {
-        tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, total));
-        tvCamMessageIndicatorPageText.setVisibility(total > 8 ? View.VISIBLE : View.GONE);
+        tvCamMessageIndicatorPageText.setText(String.format("%s/%s", currentItem + 1, total / 6 + (total % 6 == 0 ? 0 : 1)));
+        tvCamMessageIndicatorPageText.setVisibility(total > 6 ? View.VISIBLE : View.GONE);
 //        camMessageIndicatorHolder.setVisibility(tvCamMessageIndicatorPageText.getVisibility() == View.GONE && tvCamMessageIndicatorWatcherText.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
     }
 
@@ -444,6 +436,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         if (needRefresh) {
             startRequest(true);
+            initFaceHeader();
         }
     }
 
@@ -456,6 +449,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //            if (camMessageListAdapter.getCount() == 0)
             startRequest(true);//需要每次刷新,而不是第一次刷新
             ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            initFaceHeader();
         }
     }
 
@@ -544,7 +538,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean reset = tvCamMessageListDate.getTag() == null ||
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
-            initFaceHeader();
         });
     }
 

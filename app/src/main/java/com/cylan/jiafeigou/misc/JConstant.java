@@ -615,4 +615,6 @@ public class JConstant {
         }
         return null;
     }
+
+    public static final int FACE_CNT_IN_PAGE = 6;
 }

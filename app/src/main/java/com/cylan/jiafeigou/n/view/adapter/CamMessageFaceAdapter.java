@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -55,7 +56,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return faceItems.size() / 6 + (faceItems.size() % 6 == 0 ? 0 : 1);
+        return faceItems.size() / JConstant.FACE_CNT_IN_PAGE + (faceItems.size() % JConstant.FACE_CNT_IN_PAGE == 0 ? 0 : 1);
     }
 
     public int getTotalCount() {
@@ -69,7 +70,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     /**
      * @param index to setHasSelected =true, only one item is selected
      */
-    public void updateSelectedItem(int index) {
+    public void updateSelectedItem(final int index) {
         final int cnt = ListUtils.getSize(faceItems);
         if (index < 0 || index > cnt - 1)
             return;
@@ -126,9 +127,9 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 // TODO: 2017/10/9 点击操作
                 if (listener != null) {
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    AppLogger.e("此处 有问题 点击了面孔条目:" + position);
-                    listener.onFaceItemClicked(position, position1, viewHolder.itemView, viewHolder.getIcon());
-                    updateSelectedItem(position1);
+                    AppLogger.d("点击了面孔条目 gPosition:" + (listener.getCurrentItem() * JConstant.FACE_CNT_IN_PAGE + position1) + "," + listener.getCurrentItem());
+                    listener.onFaceItemClicked(position1, viewHolder.itemView, viewHolder.getIcon());
+                    updateSelectedItem(listener.getCurrentItem() * JConstant.FACE_CNT_IN_PAGE + position1);
                 }
                 return true;
             });
@@ -137,7 +138,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
                 if (listener != null) {
                     AppLogger.w("点击了面孔条目:" + position1);
                     FaceItem.FaceItemViewHolder viewHolder = (FaceItem.FaceItemViewHolder) recyclerView.getChildViewHolder(v);
-                    listener.onFaceItemLongClicked(position, position1, viewHolder.itemView, viewHolder.getIcon(), item.getFaceType());
+                    listener.onFaceItemLongClicked(position1, viewHolder.itemView, viewHolder.getIcon(), item.getFaceType());
                 }
                 return true;
             });
@@ -146,8 +147,8 @@ public class CamMessageFaceAdapter extends PagerAdapter {
         container.addView(contentView);
         FastItemAdapter<FaceItem> adapter = (FastItemAdapter<FaceItem>) recyclerView.getAdapter();
 //        adapter.init(position, faceItems);
-        List<FaceItem> faceItems = this.faceItems.subList(6 * position,
-                6 * position + Math.min(6, this.faceItems.size() - 6 * position));
+        List<FaceItem> faceItems = this.faceItems.subList(JConstant.FACE_CNT_IN_PAGE * position,
+                JConstant.FACE_CNT_IN_PAGE * position + Math.min(JConstant.FACE_CNT_IN_PAGE, this.faceItems.size() - JConstant.FACE_CNT_IN_PAGE * position));
         adapter.set(faceItems);
         adapter.notifyDataSetChanged();
         return contentView;
@@ -169,7 +170,7 @@ public class CamMessageFaceAdapter extends PagerAdapter {
     }
 
     public FaceItem getGlobalItem(int page_position, int position) {
-        int globalPosition = page_position * 6 + position;
+        int globalPosition = page_position * JConstant.FACE_CNT_IN_PAGE + position;
 
         if (globalPosition > faceItems.size()) {
             return null;
@@ -201,8 +202,10 @@ public class CamMessageFaceAdapter extends PagerAdapter {
 
     public interface FaceItemEventListener {
 
-        void onFaceItemClicked(int page_position, int position, View parent, ImageView icon);
+        void onFaceItemClicked(int position, View parent, ImageView icon);
 
-        void onFaceItemLongClicked(int page_position, int position, View parent, ImageView icon, int faceType);
+        void onFaceItemLongClicked(int position, View parent, ImageView icon, int faceType);
+
+        int getCurrentItem();
     }
 }
