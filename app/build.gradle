@@ -220,8 +220,8 @@ android {
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES"  : "com.cylan.doby.hms.update.provider",
                                     "HW_APP_ID"            : "\\ 100043669",
-                                    "VID"                  : "\\ 0002",
-                                    "VKEY"                 : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "VID"                  : "\\ 0001",
+                                    "VKEY"                 : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppId"              : "\\ 1106279832",
                                     "qqAppKey"             : "vqSXNT11dsbu24io",
                                     "mtaAppKey"            : "ATQ1JV694AKT",
@@ -229,7 +229,7 @@ android {
                                     "weChatAppSecret"      : "b867a2e433701bc00dffda2099655d7e",
                                     "sinaAppKey"           : "\\ 2444488421",
                                     "sinaAppSecret"        : "dfba216fe44f0d6613cdda1557790a31",
-                                    "SERVER"               : "yun.jfgou.com:443",
+                                    "SERVER"               : "yf.jfgou.com:450",
                                     "GCM_APP_ID"           : "\\ 985304692675",
                                     "ApplicationId"        : applicationId,
                                     "XiaoMiAppId"          : "\\ 5981759669387",
@@ -287,7 +287,7 @@ repositories {
         dirs 'libs'
     }
     mavenCentral()
-    maven { url "http://objectbox.net/beta-repo/" }
+
 }
 
 greendao {

@@ -19,23 +19,33 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by hds on 17-10-20.
+ *
+ * @author hds
+ * @date 17-10-20
  */
 
 public class VisitorLoader {
 
 
     private static long getMaxTimeFromList(DpMsgDefine.VisitorList visitorList) {
-        if (visitorList.total == -1) return 0;
+        if (visitorList.total == -1) {
+            return 0;
+        }
         final int count = ListUtils.getSize(visitorList.dataList);
-        if (count < 1) return 0;
+        if (count < 1) {
+            return 0;
+        }
         return visitorList.dataList.get(count - 1).lastTime;
     }
 
     private static long getMaxTimeFromList(DpMsgDefine.StrangerVisitorList visitorList) {
-        if (visitorList.total == -1) return 0;
+        if (visitorList.total == -1) {
+            return 0;
+        }
         final int count = ListUtils.getSize(visitorList.strangerVisitors);
-        if (count < 1) return 0;
+        if (count < 1) {
+            return 0;
+        }
         return visitorList.strangerVisitors.get(count - 1).lastTime;
     }
 
@@ -51,7 +61,7 @@ public class VisitorLoader {
             return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .map(ret -> {
-                        AppLogger.d("收到恢复了");
+                        AppLogger.d("收到了?" + ret.data);
                         return ret;
                     })
                     .subscribeOn(Schedulers.io())

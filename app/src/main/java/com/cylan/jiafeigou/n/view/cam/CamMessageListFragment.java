@@ -271,10 +271,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
 
                 @Override
-                public void onVisitorListReady(@NotNull DpMsgDefine.VisitorList visitorList) {
+                public void onVisitorListReady() {
                     // TODO: 2017/10/11 获取脸谱数据后先去人预制条目
                     layoutBarMenu(BAR_TYPE_FACE_COMMON);
-                    setFaceHeaderPageIndicator(0, ListUtils.getSize(visitorList.dataList));
+                    setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
                 }
             });
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
@@ -361,14 +361,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void enterStranger() {
         AppLogger.w("Clicked enterStranger");
         //需要刷数据
-        if (visitorStrangerSubFragment == null)
+        if (visitorStrangerSubFragment == null) {
             visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(getUuid());
+        }
         ActivityUtils.replaceFragment(getChildFragmentManager(),
                 visitorStrangerSubFragment,
                 R.id.fLayout_message_face, "visitorStrangerSubFragment", true);
-        visitorStrangerSubFragment.setOnListCallback(new VisitorStrangerSubFragment.OnListCallback() {
+        visitorStrangerSubFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
             @Override
-            public void onItemClick(@org.jetbrains.annotations.Nullable FaceItem type, @org.jetbrains.annotations.Nullable ArrayList<String> dataList) {
+            public void onItemClick(int gPosition) {
+
+            }
+
+            @Override
+            public void onVisitorListReady() {
 
             }
 
@@ -377,7 +383,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
             }
         });
-
     }
 
     private void setFaceHeaderPageIndicator(int currentItem, int total) {
