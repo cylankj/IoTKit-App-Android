@@ -75,7 +75,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 onVisitorListCallback?.onPageScroll(position,
-                        ListUtils.getSize(FaceItemsProvider.get.visitorItems) as Int)
+                        ListUtils.getSize(provideData()) as Int)
             }
         })
         FaceItemsProvider.get.ensurePreloadHeaderItem()
@@ -314,7 +314,7 @@ class FaceFragment : Fragment() {
         if (totalCnt == 0) {
             return
         }
-        val subList = FaceItemsProvider.get.visitorItems.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
+        val subList = list.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
                 JConstant.FACE_CNT_IN_PAGE * pageIndex + Math.min(JConstant.FACE_CNT_IN_PAGE, totalCnt - JConstant.FACE_CNT_IN_PAGE * pageIndex))
         Log.d("cnt", "cnt,,," + ListUtils.getSize(subList) + ",pageIndex:" + pageIndex)
         visitorAdapter.clear()
