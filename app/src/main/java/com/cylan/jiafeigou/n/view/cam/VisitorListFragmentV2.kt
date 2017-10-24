@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
-import com.cylan.jiafeigou.utils.RandomUtils
 import com.cylan.jiafeigou.widget.WrapContentViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -42,7 +41,7 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
  * Use the [VisitorListFragmentV2.newInstance] factory method to
  * create an instance of this fragment.
  */
-class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
+open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         VisitorListContract.View {
     lateinit var onVisitorListCallback: OnVisitorListCallback
 
@@ -63,10 +62,9 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cViewPager = view.findViewById(R.id.vp_default) as WrapContentViewPager
-        faceAdapter = FaceAdapter(childFragmentManager)
+        faceAdapter = FaceAdapter(childFragmentManager, isV2())
         faceAdapter.uuid = uuid
         cViewPager.adapter = faceAdapter
-        faceAdapter.ensurePreloadHeaderItem()
 
         faceAdapter.itemClickListener = object : ItemClickListener {
             override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
@@ -77,9 +75,15 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 onVisitorListCallback?.onPageScroll(position,
-                        ListUtils.getSize(FaceItemsProvider.get.visitorItems) as Int)
+                        ListUtils.getSize(provideData()) as Int)
             }
         })
+        FaceItemsProvider.get.ensurePreloadHeaderItem()
+        faceAdapter.populateItems(provideData())
+    }
+
+    open fun isV2(): Boolean {
+        return true
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
@@ -88,9 +92,29 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
                 ListUtils.getSize(FaceItemsProvider.get.visitorItems))
     }
 
+    override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {
+        AppLogger.d("陌生人列表")
+        val listCnt = ListUtils.getSize(visitorList?.strangerVisitors)
+        var list = ArrayList<FaceItem>()
+        for (i in 0..listCnt - 1) {
+            val strangerFace = FaceItem()
+            strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
+            strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
+            list.add(strangerFace)
+        }
+        FaceItemsProvider.get.populateStrangerItems(list)
+    }
+
+
     override fun onDetach() {
         super.onDetach()
-        FaceItemsProvider.get.visitorItems?.clear()
+        if (cleanData()) {
+            FaceItemsProvider.get.visitorItems?.clear()
+        }
+    }
+
+    open fun cleanData(): Boolean {
+        return true
     }
 
     companion object {
@@ -113,20 +137,16 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
                 list.add(allFace)
             }
         }
-
-        val mList = mockVisitors()
-        for (i in 0..9) {
-            val strangerFace = FaceItem()
-            strangerFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
-            strangerFace.withVisitor(mList[i])
-            list.add(strangerFace)
-        }
         //need remove duplicated visitorItems
-        faceAdapter.populateItems(list)
         if (ListUtils.isEmpty(list)) {
             return
         }
-        faceAdapter.populateItems(list)
+        FaceItemsProvider.get.populateItems(list)
+        faceAdapter.populateItems(provideData())
+    }
+
+    open fun provideData(): ArrayList<FaceItem> {
+        return FaceItemsProvider.get.visitorItems
     }
 
     interface OnVisitorListCallback {
@@ -135,7 +155,7 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
          */
         fun onItemClick(gPosition: Int)
 
-        fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
+        fun onVisitorListReady()
         fun onPageScroll(currentItem: Int, total: Int)
     }
 
@@ -145,58 +165,11 @@ class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         fun itemClick(globalPosition: Int, position: Int, pageIndex: Int)
     }
 
-    fun mockVisitors(): ArrayList<DpMsgDefine.Visitor> {
-        val mockList = ArrayList<DpMsgDefine.Visitor>()
-        for (i in 0..9) {
-            val visitor = DpMsgDefine.Visitor()
-            visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600
-            visitor.personId = i.toString() + ""
-            visitor.personName = i.toString() + "," + i
-            visitor.faceIdList = getProvinces()
-            mockList.add(visitor)
-        }
-        return mockList
-    }
-
-    fun mockStrangers(): ArrayList<DpMsgDefine.StrangerVisitor> {
-        val strangerVisitors = ArrayList<DpMsgDefine.StrangerVisitor>()
-        for (i in 0..9) {
-            val visitor = DpMsgDefine.StrangerVisitor()
-            visitor.faceId = 20.toString() + "" + i
-            visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600
-            strangerVisitors.add(visitor)
-        }
-        return strangerVisitors
-    }
-
-    private fun getProvinces(): java.util.ArrayList<String>? {
-        try {
-            val array = arrays.split(",")
-            var tCnt = RandomUtils.getRandom(array.size)
-            tCnt = Math.max(1, tCnt)
-            val list = java.util.ArrayList<String>(tCnt)
-            for (i in array.indices) {
-                if (list.size < tCnt) {
-                    list.add(array[i])
-                }
-            }
-            return list
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
-    private val arrays = "北京市,天津市,河北省,山西省,内蒙古自治区,辽宁省,吉林省,黑龙江省,上海市,江苏省," +
-            "浙江省,安徽省,福建省,江西省,山东省,河南省,湖北省,湖南省" +
-            ",广东省,广西壮族自治区,海南省,重庆市,四川省,贵州省,云南省" +
-            ",西藏自治区,陕西省,甘肃省,青海省,宁夏回族自治区,新疆维吾尔自治区,台湾省,香港特别行政区,澳门特别行政区"
-
 }// Required empty public constructor
 
 class FaceFastItemAdapter : ItemAdapter<FaceItem>()
 
-class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+class FaceAdapter(private var fm: FragmentManager?, private var isV2: Boolean) : FragmentPagerAdapter(fm) {
 
     lateinit var uuid: String
     lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
@@ -204,15 +177,17 @@ class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
     var preClickPage: Int = 0
     var preClickPosition: Int = 0
 
+    var dataItems = ArrayList<FaceItem>()
+
     override fun getCount(): Int {
-        val totalCount = ListUtils.getSize(FaceItemsProvider.get.visitorItems)
+        val totalCount = ListUtils.getSize(dataItems)
         val cnt = totalCount / JConstant.FACE_CNT_IN_PAGE + if (totalCount % JConstant.FACE_CNT_IN_PAGE == 0) 0 else 1
         Log.d("cnt", "cnt:$cnt,$totalCount")
         return cnt
     }
 
-    fun populateItems(visitorItems: ArrayList<FaceItem>) {
-        FaceItemsProvider.get.populateItems(visitorItems)
+    fun populateItems(dataItems: ArrayList<FaceItem>) {
+        this.dataItems = dataItems
         notifyDataSetChanged()
     }
 
@@ -234,7 +209,7 @@ class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
     }
 
     override fun getItem(position: Int): Fragment {
-        val f = FaceFragment.newInstance(position, uuid)
+        val f = FaceFragment.newInstance(position, uuid, isV2)
         f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
             override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
                 updateClickItem(position, pageIndex)
@@ -244,10 +219,6 @@ class FaceAdapter(private var fm: FragmentManager?) : FragmentPagerAdapter(fm) {
         return f
     }
 
-    fun ensurePreloadHeaderItem() {
-        FaceItemsProvider.get.ensurePreloadHeaderItem()
-        notifyDataSetChanged()
-    }
 
     override fun notifyDataSetChanged() {
         super.notifyDataSetChanged()
@@ -271,11 +242,12 @@ class FaceFragment : Fragment() {
     lateinit var adapter: FastAdapter<FaceItem>
 
     companion object {
-        fun newInstance(pageIndex: Int, uuid: String): FaceFragment {
+        fun newInstance(pageIndex: Int, uuid: String, isV2: Boolean): FaceFragment {
             val f = FaceFragment()
             val b = Bundle()
             b.putInt("pageIndex", pageIndex)
             b.putString("uuid", uuid)
+            b.putBoolean("isV2", isV2)
             f.arguments = b
             return f
         }
@@ -336,12 +308,17 @@ class FaceFragment : Fragment() {
 
     fun populateItems() {
         pageIndex = arguments.getInt("pageIndex")
-        val totalCnt = ListUtils.getSize(FaceItemsProvider.get.visitorItems)
-        val list = FaceItemsProvider.get.visitorItems.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
+        val list = if (arguments.getBoolean("isV2"))
+            FaceItemsProvider.get.visitorItems else FaceItemsProvider.get.strangerItems
+        val totalCnt = ListUtils.getSize(list)
+        if (totalCnt == 0) {
+            return
+        }
+        val subList = list.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
                 JConstant.FACE_CNT_IN_PAGE * pageIndex + Math.min(JConstant.FACE_CNT_IN_PAGE, totalCnt - JConstant.FACE_CNT_IN_PAGE * pageIndex))
-        Log.d("cnt", "cnt,,," + ListUtils.getSize(list) + ",pageIndex:" + pageIndex)
+        Log.d("cnt", "cnt,,," + ListUtils.getSize(subList) + ",pageIndex:" + pageIndex)
         visitorAdapter.clear()
-        visitorAdapter.add(list)
+        visitorAdapter.add(subList)
     }
 
     private fun showHeaderFacePopMenu(gPosition: Int, position: Int, faceItem: View, faceType: Int) {
@@ -353,7 +330,8 @@ class FaceFragment : Fragment() {
         popupWindow.isOutsideTouchable = true
 
         val contentView = popupWindow.contentView
-
+        contentView.findViewById(R.id.detect).visibility =
+                if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) View.GONE else View.VISIBLE
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
         if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE)
 
@@ -462,12 +440,14 @@ class FaceItemsProvider private constructor() {
     fun populateItems(visitorItems: ArrayList<FaceItem>) {
         checkEmpty()
         ensurePreloadHeaderItem()
+        if (ListUtils.isEmpty(visitorItems)) return
         this.visitorItems.addAll(visitorItems)
     }
 
     fun populateStrangerItems(strangerItems: ArrayList<FaceItem>) {
         if (this.strangerItems == null)
             this.strangerItems = ArrayList()
+        if (ListUtils.isEmpty(strangerItems)) return
         this.strangerItems.addAll(strangerItems)
     }
 

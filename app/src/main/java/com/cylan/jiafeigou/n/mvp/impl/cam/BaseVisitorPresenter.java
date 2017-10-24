@@ -35,5 +35,16 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     public void start() {
         super.start();
         fetchVisitorList();
+        fetchStrangerVisitorList();
+    }
+
+    @Override
+    public void fetchStrangerVisitorList() {
+        Subscription subscription = VisitorLoader.loadAllStrangerList(getUuid())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(r -> mView != null)
+                .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
+        addSubscription(subscription, "fetchStrangerVisitorList");
     }
 }
