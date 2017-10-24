@@ -30,6 +30,14 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
+    override fun onDeleteFaceError() {
+
+    }
+
+    override fun onDeleteFaceSuccess() {
+        adapter.deleteAllSelectedItems()
+    }
+
     override fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>) {
         var face: FaceManagerItem
         val items: MutableList<FaceManagerItem> = mutableListOf()
@@ -147,6 +155,12 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         }
     }
 
+    @OnClick(R.id.tv_msg_delete)
+    fun clickDeleteSelect() {
+        AppLogger.w("clickDeleteSelect")
+        presenter.deleteFace(personId, adapter.selectedItems.map { it.faceInformation?.face_id ?: "" }.filter { !TextUtils.isEmpty(it) })
+    }
+
     val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷")
 
     private fun showFaceManagerPopMenu(position: Int, v: View?, faceManagerItem: FaceManagerItem) {
@@ -158,6 +172,8 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         view.findViewById(R.id.delete).setOnClickListener {
             AppLogger.w("面孔管理:删除")
             popupWindow.dismiss()
+            faceManagerItem.withSetSelected(true)
+            presenter.deleteFace(personId, listOf(faceManagerItem.faceInformation?.face_id ?: ""))
         }
 
         view.findViewById(R.id.move_to).setOnClickListener {

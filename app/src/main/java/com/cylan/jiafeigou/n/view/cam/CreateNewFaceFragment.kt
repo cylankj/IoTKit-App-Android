@@ -1,9 +1,8 @@
 package com.cylan.jiafeigou.n.view.cam
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
+import android.text.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +55,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_face_create, container, false)
+
         return view
     }
 
@@ -66,6 +66,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
             if (faceId == null || picture == null) {
                 AppLogger.w("FaceId :$faceId ,picture:$picture")
             } else {
+                IMEUtils.hide(activity)
                 presenter.createNewFace(faceId!!, name.text.toString().trim())
             }
         }
@@ -86,6 +87,21 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
                 var empty = TextUtils.isEmpty(s) || TextUtils.isEmpty(s?.trim())
                 custom_toolbar.setRightEnable(!empty)
             }
+        })
+
+        name.filters = arrayOf( InputFilter { source, _, _, dest, _, _ ->
+            val originWidth = BoringLayout.getDesiredWidth("$dest", name.paint)
+            val measuredWidth = name.measuredWidth
+            var result = "$source"
+            var width = BoringLayout.getDesiredWidth(result, name.paint)
+
+            Log.i(JConstant.CYLAN_TAG, "source:$source,dest:$dest,usedWidth:$originWidth inputWidth:$width,acceptWidth:${name.measuredWidth}")
+
+            while (originWidth + width > measuredWidth) {
+                result = result.dropLast(1)
+                width = BoringLayout.getDesiredWidth(result, name.paint)
+            }
+            result
         })
 
         Glide.with(this)

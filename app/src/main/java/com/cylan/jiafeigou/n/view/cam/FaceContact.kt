@@ -24,13 +24,21 @@ interface SetFaceNameContact {
 interface FaceManagerContact {
 
     interface View : JFGView {
+
         fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>)
+
+        fun onDeleteFaceError()
+
+        fun onDeleteFaceSuccess()
 
     }
 
     interface Presenter : JFGPresenter<View> {
 
         fun loadFacesByPersonId(personId: String)
+
+        fun deleteFace(personId: String?, listOf: List<String>)
+
     }
 }
 
