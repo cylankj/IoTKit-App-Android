@@ -46,6 +46,8 @@ public interface CamMessageListContract {
         boolean isUserVisible();
 
         void onFaceInformationReady(List<DpMsgDefine.FaceInformation> data);
+
+        void onListAppend(ArrayList<CamMessageBean> beanArrayList, String faceId);
     }
 
     interface Presenter extends BasePresenter {
@@ -63,6 +65,8 @@ public interface CamMessageListContract {
         List<WonderIndicatorWheelView.WheelItem> getDateList();
 
         void refreshDateList(boolean needToLoadList);
+
+        void fetchMessageList(final String faceId);
     }
 }
 

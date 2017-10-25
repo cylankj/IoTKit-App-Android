@@ -44,6 +44,11 @@ import java.util.*
  */
 open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         VisitorListContract.View {
+
+    override fun onVisitsTimeRsp(faceId: String, cnt: Int) {
+        onVisitorListCallback?.onVisitorTimes(cnt)
+    }
+
     lateinit var onVisitorListCallback: OnVisitorListCallback
 
     lateinit var faceAdapter: FaceAdapter
@@ -69,8 +74,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
         faceAdapter.itemClickListener = object : ItemClickListener {
             override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
-//                ToastUtil.showToast("点击了？" + globalPosition)
                 onVisitorListCallback?.onItemClick(globalPosition)
+                val faceId = ((faceAdapter.getItem(pageIndex)) as FaceFragment)
+                        .adapter.getItem(position).faceinformation!!.face_id
+                basePresenter.fetchVisitsTimes(faceId)
             }
         }
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
@@ -159,6 +166,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
         fun onVisitorListReady()
         fun onPageScroll(currentItem: Int, total: Int)
+
+        fun onVisitorTimes(times: Int)
     }
 
 
@@ -260,12 +269,6 @@ class FaceFragment : Fragment() {
         this.uuid = arguments.getString("uuid")
     }
 
-    fun deselect(position: Int) {
-        //需要遍历
-        val cnt = adapter.itemCount
-        (0..cnt - 1).filter { adapter.getItem(it).isSelected }
-                .forEach { adapter?.deselect(it) }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

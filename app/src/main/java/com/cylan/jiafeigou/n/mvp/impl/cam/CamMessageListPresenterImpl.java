@@ -6,7 +6,7 @@ import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -17,35 +17,23 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.VisitorLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.OptionsImpl;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ListUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -444,6 +432,64 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                 }, AppLogger::e);
         addSubscription(subscription, "DPCamDateQueryTask");
+    }
+
+    @Override
+    public void fetchMessageList(String faceId) {
+
+        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+        AppLogger.d("sessionId:" + sessionId);
+        try {
+            DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
+            reqContent.cid = getUuid();
+            reqContent.faceId = faceId;
+            reqContent.msgType = 8;
+            final long seq = BaseApplication.getAppComponent()
+                    .getCmd().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
+            Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
+                    .filter(rsp -> rsp.seq == seq)
+                    .subscribeOn(Schedulers.io())
+                    .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
+                    .flatMap(rsp -> {
+                        DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
+                        AppLogger.d("fetchMessageList by faceId：");
+                        if (rrsp == null || !TextUtils.equals(rrsp.cid, getUuid())) {
+                            return Observable.just(new ArrayList<CamMessageBean>());
+                        }
+                        //转化出。
+                        ArrayList<CamMessageBean> list = new ArrayList<>();
+//                        for (DataPoint dataPoint : result) {
+//                            CamMessageBean bean = new CamMessageBean();
+//                            bean.id = dataPoint.getMsgId();
+//                            bean.version = dataPoint.getVersion();
+//                            if (bean.id == 222) {
+//                                bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
+//                            }
+//                            if (bean.id == 512 || bean.id == 505) {
+//                                bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
+//                            }
+//                            if (bean.id == 401) {
+//                                bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
+//                            }
+//                            if (!list.contains(bean))//防止重复
+//                            {
+//                                list.add(bean);
+//                            }
+//                        }
+                        return Observable.just(list);
+                    })
+                    .filter(ret -> mView != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(rsp -> {
+
+                    }, throwable -> {
+
+                    });
+            addSubscription(su, "fetchMessageList_faceId");
+
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
 //    @Override

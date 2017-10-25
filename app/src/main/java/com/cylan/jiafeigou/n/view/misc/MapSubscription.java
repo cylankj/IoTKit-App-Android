@@ -80,6 +80,7 @@ public class MapSubscription implements Subscription {
             if (unsubscribe != null) {
                 // if we removed successfully we then need to call unsubscribe on it (outside of the lock)
                 unsubscribe.unsubscribe();
+                AppLogger.d("unsubscribe:" + tag);
             }
         }
     }
