@@ -352,7 +352,7 @@ class FaceFragment : Fragment() {
             popupWindow.dismiss()
 //            faceItem.isDrawingCacheEnabled = true
 //            val image = faceItem.drawingCache
-            showDetectFaceAlert("")
+            showDetectFaceAlert(adapter.getItem(position).faceinformation!!.face_id)
         }
 
         contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
@@ -360,7 +360,9 @@ class FaceFragment : Fragment() {
             popupWindow.dismiss()
             val item = visitorAdapter?.getItem(position)
             if (item != null) {
-                val fragment = FaceInformationFragment.newInstance(uuid, gPosition)
+                val fragment = FaceInformationFragment.newInstance(uuid,
+                        item.faceinformation!!.face_id, item.faceinformation!!.face_name,
+                        item.faceinformation!!.person_id)
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {
                 // TODO: 2017/10/16 为什么会出现这种情况?
@@ -381,7 +383,7 @@ class FaceFragment : Fragment() {
             val newFace = dialog.findViewById(R.id.detect_new_face) as RadioButton?
             if (addTo!!.isChecked) {
                 val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account,
-                        uuid, "", FaceListFragment.TYPE_ADD_TO)
+                        uuid, faceId, FaceListFragment.TYPE_ADD_TO)
                 fragment.resultCallback = { o, o2, o3 ->
 
                 }// TODO: 2017/10/10 移动到面孔的结果回调
