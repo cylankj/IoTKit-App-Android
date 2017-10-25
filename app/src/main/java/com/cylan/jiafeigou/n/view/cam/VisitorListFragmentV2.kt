@@ -300,7 +300,7 @@ class FaceFragment : Fragment() {
         }
         adapter.withOnLongClickListener { _v, _, _, _p ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + _p
-            if (globalPosition > 1) {
+            if (globalPosition > 1 || !arguments.getBoolean("isV2")) {
                 showHeaderFacePopMenu(globalPosition, _p, _v, adapter.getItem(_p).getFaceType())
             }
             true
