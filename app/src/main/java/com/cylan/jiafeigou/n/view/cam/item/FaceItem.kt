@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.cam.item
 
 import android.annotation.SuppressLint
+import android.os.Parcel
+import android.os.Parcelable
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
@@ -14,30 +16,30 @@ import com.mikepenz.fastadapter.items.AbstractItem
 /**
  * Created by yanzhendong on 2017/10/9.
  */
-class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
+class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcelable, Comparable<FaceItem> {
+
+    override fun compareTo(other: FaceItem): Int {
+        return (this.version - other.version).toInt()
+    }
+
     var faceinformation: DpMsgDefine.FaceInformation? = null
-        private set
+
     var uuid: String? = null
+
     var version: Long = 0
+
     //对应 msgType =5返回的列表 item
     private var visitor: DpMsgDefine.Visitor? = null
+
     private var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
 
     private var faceType: Int = 0 //熟人或者陌生人
 
     var markHint: Boolean = false
 
-    companion object {
-        const val FACE_TYPE_ALL: Int = -1
-        const val FACE_TYPE_STRANGER: Int = 0//陌生人
-        const val FACE_TYPE_ACQUAINTANCE: Int = 1//熟人
-        const val FACE_TYPE_STRANGER_SUB: Int = 2
-    }
-
     override fun getViewHolder(v: View): FaceItemViewHolder {
         return FaceItemViewHolder(v)
     }
-
 
     @SuppressLint("ResourceType")
     override fun getType(): Int {
@@ -68,14 +70,15 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
         faceinformation!!.face_name = visitor.personName
         faceinformation!!.face_id = visitor.personId
         version = visitor.lastTime
+        this.visitor = visitor
         return this
     }
 
     fun withStrangerVisitor(visitor: DpMsgDefine.StrangerVisitor): FaceItem {
         if (faceinformation == null)
             faceinformation = DpMsgDefine.FaceInformation()
-//        faceinformation!!.face_name = ""
-//        faceinformation!!.face_id = ""
+        faceinformation!!.face_id = visitor.faceId
+        this.strangerVisitor = visitor
         version = visitor.lastTime
         return this
     }
@@ -87,7 +90,6 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
         return super.withSetSelected(selected)
 
     }
-
 
     override fun getLayoutRes(): Int {
         return R.layout.item_face_selection
@@ -121,7 +123,7 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
             }
-        //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
+            //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
                 holder.text.text = faceinformation?.face_name
                 holder.icon.showBorder(isSelected)
@@ -134,7 +136,14 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
-
+                holder.text.text = faceinformation?.face_name
+                holder.icon.showBorder(isSelected)
+                holder.icon.showHint(markHint)
+                Glide.with(holder.itemView.context)
+                        .load(faceinformation?.source_image_url)
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .error(R.drawable.icon_mine_head_normal)
+                        .into(holder.icon)
             }
             else -> {
                 //todo 陌生人详情页的处理逻辑
@@ -143,7 +152,6 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
 
     }
 
-
     class FaceItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: CircleImageView = view.findViewById(R.id.img_item_face_selection) as CircleImageView
         val text: TextView = view.findViewById(R.id.text_item_face_selection) as TextView
@@ -151,4 +159,52 @@ class FaceItem : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>() {
 
     }
 
+    constructor(source: Parcel) : this(
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {}
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+        if (!super.equals(other)) return false
+
+        other as FaceItem
+
+        if (faceinformation != other.faceinformation) return false
+        if (uuid != other.uuid) return false
+        if (version != other.version) return false
+        if (visitor != other.visitor) return false
+        if (strangerVisitor != other.strangerVisitor) return false
+        if (faceType != other.faceType) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + (faceinformation?.hashCode() ?: 0)
+        result = 31 * result + (uuid?.hashCode() ?: 0)
+        result = 31 * result + version.hashCode()
+        result = 31 * result + (visitor?.hashCode() ?: 0)
+        result = 31 * result + (strangerVisitor?.hashCode() ?: 0)
+        result = 31 * result + faceType
+        return result
+    }
+
+    companion object {
+        const val FACE_TYPE_ALL: Int = -1
+
+        const val FACE_TYPE_STRANGER: Int = 0//陌生人
+
+        const val FACE_TYPE_ACQUAINTANCE: Int = 1//熟人
+
+        const val FACE_TYPE_STRANGER_SUB: Int = 2
+
+        @JvmField val CREATOR: Parcelable.Creator<FaceItem> = object : Parcelable.Creator<FaceItem> {
+            override fun createFromParcel(source: Parcel): FaceItem = FaceItem(source)
+            override fun newArray(size: Int): Array<FaceItem?> = arrayOfNulls(size)
+        }
+    }
 }

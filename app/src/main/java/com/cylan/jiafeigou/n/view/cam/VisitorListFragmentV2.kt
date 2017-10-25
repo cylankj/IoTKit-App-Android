@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.utils.ListUtils
 import com.cylan.jiafeigou.widget.WrapContentViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import java.util.*
 
 
 /**
@@ -100,6 +101,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             val strangerFace = FaceItem()
             strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
             strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
+            strangerFace.withSetSelected(false)
             list.add(strangerFace)
         }
         FaceItemsProvider.get.populateStrangerItems(list)
@@ -442,6 +444,8 @@ class FaceItemsProvider private constructor() {
         ensurePreloadHeaderItem()
         if (ListUtils.isEmpty(visitorItems)) return
         this.visitorItems.addAll(visitorItems)
+        this.visitorItems = ArrayList(TreeSet(this.visitorItems))
+        Collections.sort(this.visitorItems)
     }
 
     fun populateStrangerItems(strangerItems: ArrayList<FaceItem>) {
@@ -449,6 +453,8 @@ class FaceItemsProvider private constructor() {
             this.strangerItems = ArrayList()
         if (ListUtils.isEmpty(strangerItems)) return
         this.strangerItems.addAll(strangerItems)
+        this.strangerItems = ArrayList(TreeSet(this.strangerItems))
+        Collections.sort(this.strangerItems)
     }
 
     fun checkEmpty() {

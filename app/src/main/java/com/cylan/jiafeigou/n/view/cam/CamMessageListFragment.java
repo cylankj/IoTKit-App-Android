@@ -60,8 +60,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -370,7 +368,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         visitorStrangerSubFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
             @Override
             public void onItemClick(int gPosition) {
-
+                Log.d("click", "click:" + gPosition);
             }
 
             @Override
@@ -380,7 +378,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
             @Override
             public void onPageScroll(int currentItem, int total) {
-
+                Log.d("click", "currentItem:" + currentItem + "," + total);
             }
         });
     }
