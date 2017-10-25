@@ -73,10 +73,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cViewPager.adapter = faceAdapter
 
         faceAdapter.itemClickListener = object : ItemClickListener {
-            override fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int) {
+            override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 onVisitorListCallback?.onItemClick(globalPosition)
                 if (globalPosition > 1 || !isV2()) {//前面两个
-                    val faceId = fragment.adapter.getItem(position).faceinformation?.face_id
+                    val faceId = if (isV2()) item.visitor?.personId else item.strangerVisitor?.faceId
+                    AppLogger.d("主列表的 faceId?personId")
                     basePresenter.fetchVisitsCount(faceId!!)
                 }
             }
@@ -104,6 +105,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {
         AppLogger.d("陌生人列表")
         val listCnt = ListUtils.getSize(visitorList?.strangerVisitors)
+        if (listCnt == 0) {
+            return
+        }
         var list = ArrayList<FaceItem>()
         for (i in 0..listCnt - 1) {
             val strangerFace = FaceItem()
@@ -174,7 +178,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     interface ItemClickListener {
 
-        fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int)
+        fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int)
     }
 
 }// Required empty public constructor
@@ -223,9 +227,9 @@ class FaceAdapter(private var fm: FragmentManager?, private var isV2: Boolean) :
     override fun getItem(position: Int): Fragment {
         val f = FaceFragment.newInstance(position, uuid, isV2)
         f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
-            override fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int) {
+            override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 updateClickItem(position, pageIndex)
-                itemClickListener?.itemClick(fragment, globalPosition, position, pageIndex)
+                itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
             }
         }
         return f
@@ -297,7 +301,8 @@ class FaceFragment : Fragment() {
         })
         adapter.withOnClickListener { _, _, item, position ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
-            itemClickListener?.itemClick(this, globalPosition, position, pageIndex)
+            itemClickListener?.itemClick(visitorAdapter.getItem(position),
+                    globalPosition, position, pageIndex)
             true
         }
         adapter.withOnLongClickListener { _v, _, _, _p ->
