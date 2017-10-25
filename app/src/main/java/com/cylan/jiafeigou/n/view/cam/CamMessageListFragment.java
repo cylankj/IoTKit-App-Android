@@ -339,6 +339,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void changeAdapterAndExitStranger() {
         getChildFragmentManager().popBackStack();
+        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
     }
 
     private void changeContentByHeaderClick(int faceType) {
@@ -379,6 +380,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             @Override
             public void onPageScroll(int currentItem, int total) {
                 Log.d("click", "currentItem:" + currentItem + "," + total);
+                setFaceHeaderPageIndicator(currentItem, total);
             }
         });
     }
