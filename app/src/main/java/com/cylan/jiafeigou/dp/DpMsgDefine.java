@@ -2035,4 +2035,196 @@ public class DpMsgDefine {
             }
         };
     }
+
+    @Message
+    public static class FetchMsgListRsp implements Parcelable {
+        //rsp=msgpack(cid, type, id, timeMsec, [505?, 505?, ...])
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int msgType;
+        @Index(2)
+        public String faceId;
+        @Index(3)
+        public List<DPAlarm> dataList;
+
+
+        @Override
+        public String toString() {
+            return "FetchMsgListRsp{" +
+                    "cid='" + cid + '\'' +
+                    ", msgType=" + msgType +
+                    ", faceId='" + faceId + '\'' +
+                    ", dataList=" + dataList +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.cid);
+            dest.writeInt(this.msgType);
+            dest.writeString(this.faceId);
+            dest.writeTypedList(this.dataList);
+        }
+
+        public FetchMsgListRsp() {
+        }
+
+        protected FetchMsgListRsp(Parcel in) {
+            this.cid = in.readString();
+            this.msgType = in.readInt();
+            this.faceId = in.readString();
+            this.dataList = in.createTypedArrayList(DPAlarm.CREATOR);
+        }
+
+        public static final Parcelable.Creator<FetchMsgListRsp> CREATOR = new Parcelable.Creator<FetchMsgListRsp>() {
+            @Override
+            public FetchMsgListRsp createFromParcel(Parcel source) {
+                return new FetchMsgListRsp(source);
+            }
+
+            @Override
+            public FetchMsgListRsp[] newArray(int size) {
+                return new FetchMsgListRsp[size];
+            }
+        };
+    }
+
+    @Message
+    public static class FetchMsgListReq {
+        //req=msgpack(cid, type, id, timeMsec)
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int msgType;
+        @Index(2)
+        public String faceId;
+        @Index(3)
+        public long seq;
+
+        @Override
+        public String toString() {
+            return "FetchMsgList{" +
+                    "cid='" + cid + '\'' +
+                    ", msgType=" + msgType +
+                    ", faceId='" + faceId + '\'' +
+                    ", seq=" + seq +
+                    '}';
+        }
+    }
+
+    @Message
+    public static class VisitsTimesRsp implements Parcelable {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int msgType;
+        @Index(2)
+        public String faceFaceId;
+        @Index(3)
+        public int count;
+
+        @Override
+        public String toString() {
+            return "VisitsTimesRsp{" +
+                    "cid='" + cid + '\'' +
+                    ", msgType=" + msgType +
+                    ", faceFaceId='" + faceFaceId + '\'' +
+                    ", count=" + count +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.cid);
+            dest.writeInt(this.msgType);
+            dest.writeString(this.faceFaceId);
+            dest.writeInt(this.count);
+        }
+
+        public VisitsTimesRsp() {
+        }
+
+        protected VisitsTimesRsp(Parcel in) {
+            this.cid = in.readString();
+            this.msgType = in.readInt();
+            this.faceFaceId = in.readString();
+            this.count = in.readInt();
+        }
+
+        public static final Parcelable.Creator<VisitsTimesRsp> CREATOR = new Parcelable.Creator<VisitsTimesRsp>() {
+            @Override
+            public VisitsTimesRsp createFromParcel(Parcel source) {
+                return new VisitsTimesRsp(source);
+            }
+
+            @Override
+            public VisitsTimesRsp[] newArray(int size) {
+                return new VisitsTimesRsp[size];
+            }
+        };
+    }
+
+    @Message
+    public static class VisitsTimesReq implements Parcelable {
+
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int msgType;
+        @Index(2)
+        public String faceId;
+
+        @Override
+        public String toString() {
+            return "VisitsTimesReq{" +
+                    "cid='" + cid + '\'' +
+                    ", msgType=" + msgType +
+                    ", faceId='" + faceId + '\'' +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.cid);
+            dest.writeInt(this.msgType);
+            dest.writeString(this.faceId);
+        }
+
+        public VisitsTimesReq() {
+        }
+
+        protected VisitsTimesReq(Parcel in) {
+            this.cid = in.readString();
+            this.msgType = in.readInt();
+            this.faceId = in.readString();
+        }
+
+        public static final Parcelable.Creator<VisitsTimesReq> CREATOR = new Parcelable.Creator<VisitsTimesReq>() {
+            @Override
+            public VisitsTimesReq createFromParcel(Parcel source) {
+                return new VisitsTimesReq(source);
+            }
+
+            @Override
+            public VisitsTimesReq[] newArray(int size) {
+                return new VisitsTimesReq[size];
+            }
+        };
+    }
 }

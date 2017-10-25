@@ -249,6 +249,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
     }
 
+    private void fetchMsgList(String faceId) {
+        basePresenter.fetchMessageList(faceId);
+    }
+
     private void initFaceHeader() {
         if (JFGRules.isFaceFragment(getDevice().pid)) {
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
@@ -257,9 +261,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             faceDefaultFragment = VisitorListFragmentV2.Companion.newInstance(getUuid());
             faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
                 @Override
+                public void onVisitorTimes(int times) {
+                    setFaceVisitsCounts(times);
+                }
+
+                @Override
                 public void onItemClick(int gPosition) {
                     FaceItem faceItem = FaceItemsProvider.Companion.getGet().getVisitorItems().get(gPosition);
                     changeContentByHeaderClick(faceItem.getFaceType());
+                    //全部和陌生人 都没有faceId
+//                    fetchMsgList(faceItem.getFaceinformation().face_id);
                 }
 
                 @Override
@@ -277,7 +288,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             });
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
             //显示 所有面孔列表
-            ActivityUtils.replaceFragment(getChildFragmentManager(),
+            ActivityUtils.replaceFragment(getFragmentManager(),
                     faceDefaultFragment, R.id.fLayout_message_face, "faceDefaultFragment", false);
             aplCamMessageAppbar.setExpanded(true, false);
         } else {
@@ -338,8 +349,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void changeAdapterAndExitStranger() {
-        getChildFragmentManager().popBackStack();
+        getFragmentManager().popBackStack();
         setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
+    }
+
+    private void setFaceVisitsCounts(final int count) {
+        tvCamMessageIndicatorWatcherText.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count));
     }
 
     private void changeContentByHeaderClick(int faceType) {
@@ -363,13 +378,21 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorStrangerSubFragment == null) {
             visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(getUuid());
         }
-        ActivityUtils.replaceFragment(getChildFragmentManager(),
+        ActivityUtils.replaceFragment(getFragmentManager(),
                 visitorStrangerSubFragment,
                 R.id.fLayout_message_face, "visitorStrangerSubFragment", true);
         visitorStrangerSubFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
             @Override
+            public void onVisitorTimes(int times) {
+                setFaceVisitsCounts(times);
+            }
+
+            @Override
             public void onItemClick(int gPosition) {
                 Log.d("click", "click:" + gPosition);
+                FaceItem faceItem = FaceItemsProvider.Companion.getGet().getStrangerItems().get(gPosition);
+//                changeContentByHeaderClick(faceItem.getFaceType());
+//                fetchMsgList(faceItem.getFaceinformation().face_id);
             }
 
             @Override
@@ -662,6 +685,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             faceInformationMap.put(information.face_id, information);
         }
         camMessageListAdapter.appendFaceInformation(faceInformationMap);
+    }
+
+    @Override
+    public void onListAppend(ArrayList<CamMessageBean> beanArrayList, String faceId) {
+        AppLogger.d("faceId相关的列表回来:" + ListUtils.getSize(beanArrayList) + "," + faceId);
     }
 
     @Override
