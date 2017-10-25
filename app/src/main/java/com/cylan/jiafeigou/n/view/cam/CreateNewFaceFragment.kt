@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import butterknife.ButterKnife
+import butterknife.OnClick
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
@@ -55,7 +57,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_face_create, container, false)
-
+        ButterKnife.bind(this, view)
         return view
     }
 
@@ -86,10 +88,11 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 var empty = TextUtils.isEmpty(s) || TextUtils.isEmpty(s?.trim())
                 custom_toolbar.setRightEnable(!empty)
+                clear_icon.visibility = if (empty) View.INVISIBLE else View.VISIBLE
             }
         })
 
-        name.filters = arrayOf( InputFilter { source, _, _, dest, _, _ ->
+        name.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
             val originWidth = BoringLayout.getDesiredWidth("$dest", name.paint)
             val measuredWidth = name.measuredWidth
             var result = "$source"
@@ -119,6 +122,11 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     private fun sendResultIfNeed() {
 
+    }
+
+    @OnClick(R.id.clear_icon)
+    fun clearInputText() {
+        name.setText("")
     }
 
     companion object {

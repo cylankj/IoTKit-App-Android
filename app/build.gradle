@@ -419,10 +419,7 @@ dependencies {
     compile('com.google.apis:google-api-services-youtube:v3-rev120-1.19.0') {
         exclude group: 'org.apache.httpcomponents', module: "httpclient"
     }
-    compile('com.google.http-client:google-http-client-android:+') {
-        exclude group: 'org.apache.httpcomponents', module: "httpclient"
-    }
-    compile('com.google.api-client:google-api-client-android:+') {
+    compile('com.google.api-client:google-api-client-android:1.23.0') {
         exclude group: 'org.apache.httpcomponents', module: "httpclient"
     }
     compile 'pub.devrel:easypermissions:0.4.3'

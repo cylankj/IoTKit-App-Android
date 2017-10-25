@@ -450,4 +450,18 @@ public class TimeUtils {
             return getSimpleDateFormat_3_12.get().format(l);
         }
     }
+
+    public static String getVisitorTime(Long lastTime) {
+        long second = (System.currentTimeMillis() - lastTime) / 1000;
+        long minute = second / 60;
+        if (minute < 60) {
+            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_MIN, String.valueOf(minute));
+        }
+        long hour = minute / 60;
+        if (hour < 24) {
+            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_HOUR, String.valueOf(hour));
+        }
+        long days = hour / 24;
+        return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_DAY, String.valueOf(days));
+    }
 }

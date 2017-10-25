@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
+import com.cylan.jiafeigou.utils.TimeUtils
 import com.mikepenz.fastadapter.items.AbstractItem
 
 /**
@@ -22,16 +24,15 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         return (this.version - other.version).toInt()
     }
 
-    var faceinformation: DpMsgDefine.FaceInformation? = null
 
     var uuid: String? = null
 
     var version: Long = 0
 
     //对应 msgType =5返回的列表 item
-    private var visitor: DpMsgDefine.Visitor? = null
+    var visitor: DpMsgDefine.Visitor? = null
 
-    private var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
+    var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
 
     private var faceType: Int = 0 //熟人或者陌生人
 
@@ -65,19 +66,12 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     }
 
     fun withVisitor(visitor: DpMsgDefine.Visitor): FaceItem {
-        if (faceinformation == null)
-            faceinformation = DpMsgDefine.FaceInformation()
-        faceinformation!!.face_name = visitor.personName
-        faceinformation!!.face_id = visitor.personId
         version = visitor.lastTime
         this.visitor = visitor
         return this
     }
 
     fun withStrangerVisitor(visitor: DpMsgDefine.StrangerVisitor): FaceItem {
-        if (faceinformation == null)
-            faceinformation = DpMsgDefine.FaceInformation()
-        faceinformation!!.face_id = visitor.faceId
         this.strangerVisitor = visitor
         version = visitor.lastTime
         return this
@@ -123,24 +117,24 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
             }
-            //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
+        //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
-                holder.text.text = faceinformation?.face_name
+                holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime)
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(faceinformation?.source_image_url)
+                        .load(JFGFaceGlideURL(uuid, visitor?.faceIdList?.get(0), false))
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
-                holder.text.text = faceinformation?.face_name
+                holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(faceinformation?.source_image_url)
+                        .load(JFGFaceGlideURL(uuid, strangerVisitor?.faceId, true))
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)
@@ -172,7 +166,6 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 
         other as FaceItem
 
-        if (faceinformation != other.faceinformation) return false
         if (uuid != other.uuid) return false
         if (version != other.version) return false
         if (visitor != other.visitor) return false
@@ -184,7 +177,6 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + (faceinformation?.hashCode() ?: 0)
         result = 31 * result + (uuid?.hashCode() ?: 0)
         result = 31 * result + version.hashCode()
         result = 31 * result + (visitor?.hashCode() ?: 0)
@@ -202,7 +194,8 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 
         const val FACE_TYPE_STRANGER_SUB: Int = 2
 
-        @JvmField val CREATOR: Parcelable.Creator<FaceItem> = object : Parcelable.Creator<FaceItem> {
+        @JvmField
+        val CREATOR: Parcelable.Creator<FaceItem> = object : Parcelable.Creator<FaceItem> {
             override fun createFromParcel(source: Parcel): FaceItem = FaceItem(source)
             override fun newArray(size: Int): Array<FaceItem?> = arrayOfNulls(size)
         }

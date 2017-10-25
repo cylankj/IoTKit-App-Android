@@ -47,12 +47,11 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     }
 
     private fun saveLiveConfigure() {
-        PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
-
         when (rtmp_type_tabs.selectedTabPosition) {
             0 -> {
                 //facebook
                 if (facebookFragment.isFacebookAccountBinded()) {
+                    PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
                     PreferencesUtils.putString(JConstant.FACEBOOK_PREF_DESCRIPTION + ":" + uuid, facebookFragment.getFacebookDescription())
                     finish()
                 } else {
@@ -64,6 +63,8 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
                 //youtube
 //                PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
                 if (youtubeFragment.isYoutubeAccountBinded()) {
+                    PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
+                    PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
                     finish()
                 } else {
                     ToastUtil.showToast(getString(R.string.LIVE_ACCOUNT_BIND_TIPS))
@@ -73,6 +74,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
                 //weibo
                 if (weiboFragment.isWeiboAccountBinded()) {
                     PreferencesUtils.putString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, weiboFragment.getWeiboLiveDescription())
+                    PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
                     finish()
                 } else {
                     ToastUtil.showToast(getString(R.string.LIVE_ACCOUNT_BIND_TIPS))
@@ -88,6 +90,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
                 } else if (!rtmpServer.startsWith("rtmp://")) {
                     ToastUtil.showToast(getString(R.string.RTMP_ERROR_TIPS))
                 } else {
+                    PreferencesUtils.putInt(JConstant.LIVE_PLATFORM_KEY, rtmp_type_tabs.selectedTabPosition)
                     if (rtmpServer.endsWith("/")) {
                         PreferencesUtils.putString(JConstant.RTMP_PREF_CONFIGURE + ":" + uuid, "$rtmpServer$secretKey")
                     } else {

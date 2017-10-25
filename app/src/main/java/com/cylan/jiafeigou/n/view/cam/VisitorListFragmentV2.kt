@@ -352,7 +352,7 @@ class FaceFragment : Fragment() {
             popupWindow.dismiss()
 //            faceItem.isDrawingCacheEnabled = true
 //            val image = faceItem.drawingCache
-            showDetectFaceAlert(adapter.getItem(position).faceinformation!!.face_id)
+            showDetectFaceAlert(adapter.getItem(position).strangerVisitor?.faceId ?: "")
         }
 
         contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
@@ -361,8 +361,8 @@ class FaceFragment : Fragment() {
             val item = visitorAdapter?.getItem(position)
             if (item != null) {
                 val fragment = FaceInformationFragment.newInstance(uuid,
-                        item.faceinformation!!.face_id, item.faceinformation!!.face_name,
-                        item.faceinformation!!.person_id)
+                        item.visitor?.faceIdList?.get(0) ?: "", item.visitor?.personName ?: "",
+                        item.visitor?.personId ?: "")
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {
                 // TODO: 2017/10/16 为什么会出现这种情况?
@@ -390,7 +390,9 @@ class FaceFragment : Fragment() {
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else if (newFace!!.isChecked) {
                 val fragment = CreateNewFaceFragment.newInstance(uuid, faceId)
-                fragment.resultCallback = { null }
+                fragment.resultCallback = {
+                    //todo 返回创建的personID
+                }
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             }
             dialog.dismiss()
@@ -412,10 +414,7 @@ class FaceFragment : Fragment() {
             val radioButtonId = radioGroup!!.checkedRadioButtonId
             if (radioButtonId == R.id.delete_only_face) {
                 AppLogger.w("only face")
-                val faceInformation = item.faceinformation
-                if (faceInformation != null) {
-//                    basePresenter.deleteFace(faceInformation.face_id, null, null)
-                }
+                //TODO
             } else if (radioButtonId == R.id.delete_face_and_message) {
                 AppLogger.w("face and message")
             } else {
