@@ -18,7 +18,7 @@ interface VisitorListContract {
     interface Presenter : BasePresenter {
         fun fetchVisitorList()
         fun fetchStrangerVisitorList()
-        fun fetchVisitsTimes(faceId: String)
+        fun fetchVisitsCount(faceId: String)
     }
 
 }

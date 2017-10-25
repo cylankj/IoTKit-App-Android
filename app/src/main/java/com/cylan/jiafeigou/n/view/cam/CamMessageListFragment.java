@@ -270,7 +270,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     FaceItem faceItem = FaceItemsProvider.Companion.getGet().getVisitorItems().get(gPosition);
                     changeContentByHeaderClick(faceItem.getFaceType());
                     //全部和陌生人 都没有faceId
-                    fetchMsgList(faceItem.getFaceinformation().face_id);
+//                    fetchMsgList(faceItem.getFaceinformation().face_id);
                 }
 
                 @Override
@@ -288,7 +288,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             });
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
             //显示 所有面孔列表
-            ActivityUtils.replaceFragment(getChildFragmentManager(),
+            ActivityUtils.replaceFragment(getFragmentManager(),
                     faceDefaultFragment, R.id.fLayout_message_face, "faceDefaultFragment", false);
             aplCamMessageAppbar.setExpanded(true, false);
         } else {
@@ -349,7 +349,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void changeAdapterAndExitStranger() {
-        getChildFragmentManager().popBackStack();
+        getFragmentManager().popBackStack();
         setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
     }
 
@@ -378,7 +378,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorStrangerSubFragment == null) {
             visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(getUuid());
         }
-        ActivityUtils.replaceFragment(getChildFragmentManager(),
+        ActivityUtils.replaceFragment(getFragmentManager(),
                 visitorStrangerSubFragment,
                 R.id.fLayout_message_face, "visitorStrangerSubFragment", true);
         visitorStrangerSubFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
@@ -392,7 +392,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 Log.d("click", "click:" + gPosition);
                 FaceItem faceItem = FaceItemsProvider.Companion.getGet().getStrangerItems().get(gPosition);
 //                changeContentByHeaderClick(faceItem.getFaceType());
-                fetchMsgList(faceItem.getFaceinformation().face_id);
+//                fetchMsgList(faceItem.getFaceinformation().face_id);
             }
 
             @Override

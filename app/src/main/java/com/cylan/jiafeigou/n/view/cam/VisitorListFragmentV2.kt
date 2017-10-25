@@ -73,11 +73,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cViewPager.adapter = faceAdapter
 
         faceAdapter.itemClickListener = object : ItemClickListener {
-            override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
+            override fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int) {
                 onVisitorListCallback?.onItemClick(globalPosition)
-                val faceId = ((faceAdapter.getItem(pageIndex)) as FaceFragment)
-                        .adapter.getItem(position).faceinformation!!.face_id
-                basePresenter.fetchVisitsTimes(faceId)
+                if (globalPosition > 1 || !isV2()) {//前面两个
+                    val faceId = fragment.adapter.getItem(position).faceinformation?.face_id
+                    basePresenter.fetchVisitsCount(faceId!!)
+                }
             }
         }
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
@@ -173,7 +174,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     interface ItemClickListener {
 
-        fun itemClick(globalPosition: Int, position: Int, pageIndex: Int)
+        fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int)
     }
 
 }// Required empty public constructor
@@ -222,9 +223,9 @@ class FaceAdapter(private var fm: FragmentManager?, private var isV2: Boolean) :
     override fun getItem(position: Int): Fragment {
         val f = FaceFragment.newInstance(position, uuid, isV2)
         f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
-            override fun itemClick(globalPosition: Int, position: Int, pageIndex: Int) {
+            override fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int) {
                 updateClickItem(position, pageIndex)
-                itemClickListener?.itemClick(globalPosition, position, pageIndex)
+                itemClickListener?.itemClick(fragment, globalPosition, position, pageIndex)
             }
         }
         return f
@@ -245,12 +246,12 @@ class FaceAdapter(private var fm: FragmentManager?, private var isV2: Boolean) :
 
 class FaceFragment : Fragment() {
 
-    lateinit var visitorAdapter: FaceFastItemAdapter
+    var visitorAdapter = FaceFastItemAdapter()
     lateinit var rvList: RecyclerView
     lateinit var uuid: String
     var pageIndex: Int = 0
     lateinit var itemClickListener: VisitorListFragmentV2.ItemClickListener
-    lateinit var adapter: FastAdapter<FaceItem>
+    var adapter = FastAdapter<FaceItem>()
 
     companion object {
         fun newInstance(pageIndex: Int, uuid: String, isV2: Boolean): FaceFragment {
@@ -279,8 +280,6 @@ class FaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rvList = view.findViewById(R.id.message_face_page_item) as RecyclerView
-        adapter = FastAdapter<FaceItem>()
-        visitorAdapter = FaceFastItemAdapter()
         rvList.layoutManager = GridLayoutManager(context, 3)
         rvList.adapter = visitorAdapter.wrap(adapter)
         adapter.withSelectable(true)
@@ -298,7 +297,7 @@ class FaceFragment : Fragment() {
         })
         adapter.withOnClickListener { _, _, item, position ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
-            itemClickListener?.itemClick(globalPosition, position, pageIndex)
+            itemClickListener?.itemClick(this, globalPosition, position, pageIndex)
             true
         }
         adapter.withOnLongClickListener { _v, _, _, _p ->
@@ -449,7 +448,7 @@ class FaceItemsProvider private constructor() {
         ensurePreloadHeaderItem()
         if (ListUtils.isEmpty(visitorItems)) return
         this.visitorItems.addAll(visitorItems)
-        this.visitorItems = ArrayList(TreeSet(this.visitorItems))
+        this.visitorItems = ArrayList<FaceItem>(TreeSet(this.visitorItems))
         Collections.sort(this.visitorItems)
     }
 

@@ -63,7 +63,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     }
 
     @Override
-    public void fetchVisitsTimes(@NotNull String faceId) {
+    public void fetchVisitsCount(@NotNull String faceId) {
         //msgType = 7
         //req=msgpack(cid, type, id)
         //rsp=msgpack(cid, type, id, count)
@@ -90,7 +90,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     }, throwable -> {
 
                     });
-            addSubscription(su, "fetchVisitsTimes");
+            addSubscription(su, "fetchVisitsCount");
 
         } catch (JfgException e) {
             e.printStackTrace();
