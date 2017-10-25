@@ -76,8 +76,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             override fun itemClick(fragment: FaceFragment, globalPosition: Int, position: Int, pageIndex: Int) {
                 onVisitorListCallback?.onItemClick(globalPosition)
                 if (globalPosition > 1 || !isV2()) {//前面两个
-                    val faceId = fragment.adapter.getItem(position).faceinformation?.face_id
-                    basePresenter.fetchVisitsCount(faceId!!)
+                    val item = fragment.adapter.getItem(position)
+                    val faceId = when (item.getFaceType()) {
+                        FaceItem.FACE_TYPE_STRANGER_SUB -> item.strangerVisitor?.faceId
+                        else -> item.visitor?.faceIdList?.get(0)
+                    } ?: ""
+                    basePresenter.fetchVisitsCount(faceId)
                 }
             }
         }
