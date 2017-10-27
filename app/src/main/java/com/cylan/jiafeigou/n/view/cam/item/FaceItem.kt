@@ -21,7 +21,7 @@ import com.mikepenz.fastadapter.items.AbstractItem
 class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcelable, Comparable<FaceItem> {
 
     override fun compareTo(other: FaceItem): Int {
-        return (this.version - other.version).toInt()
+        return (other.version - this.version).toInt()
     }
 
 
@@ -130,7 +130,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
-                holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime)
+                holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)

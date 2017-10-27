@@ -24,7 +24,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by hds on 17-10-20.
+ * @author hds
+ *         Created by hds on 17-10-20.
  */
 
 public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListContract.View>
@@ -37,12 +38,15 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 
     @Override
     public void fetchVisitorList() {
+        if (containsSubscription(FETCH_VISITOR_LIST)) {
+            return;
+        }
         Subscription subscription = VisitorLoader.loadAllVisitorList(getUuid())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
                 .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
-        addSubscription(subscription, "fetchVisitorList");
+        addSubscription(subscription, FETCH_VISITOR_LIST);
     }
 
     @Override
@@ -52,14 +56,20 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         fetchStrangerVisitorList();
     }
 
+    private static final String FETCH_VISITOR_LIST = "fetchVisitorList";
+    private static final String FETCH_STRANGER_VISITOR_LIST = "fetchStrangerVisitorList";
+
     @Override
     public void fetchStrangerVisitorList() {
+        if (containsSubscription(FETCH_STRANGER_VISITOR_LIST)) {
+            return;
+        }
         Subscription subscription = VisitorLoader.loadAllStrangerList(getUuid())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
                 .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
-        addSubscription(subscription, "fetchStrangerVisitorList");
+        addSubscription(subscription, FETCH_STRANGER_VISITOR_LIST);
     }
 
     @Override

@@ -148,7 +148,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private LinearLayoutManager layoutManager;
     private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
 
-    private VisitorListFragmentV2 faceDefaultFragment;
+    private VisitorListFragmentV2 visitorFragment;
     private VisitorStrangerSubFragment visitorStrangerSubFragment;
 
     public CamMessageListFragment() {
@@ -258,8 +258,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
 
             tvCamMessageListDate.setClickable(false);
-            faceDefaultFragment = VisitorListFragmentV2.Companion.newInstance(getUuid());
-            faceDefaultFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
+            visitorFragment = VisitorListFragmentV2.Companion.newInstance(getUuid());
+            visitorFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
                 @Override
                 public void onVisitorTimes(int times) {
                     setFaceVisitsCounts(times);
@@ -289,7 +289,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
             //显示 所有面孔列表
             ActivityUtils.replaceFragment(getFragmentManager(),
-                    faceDefaultFragment, R.id.fLayout_message_face, "faceDefaultFragment", false);
+                    visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
             aplCamMessageAppbar.setExpanded(true, false);
         } else {
             tvCamMessageListDate.setClickable(true);
@@ -373,6 +373,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void enterStranger() {
+        if (ListUtils.isEmpty(FaceItemsProvider.Companion.getGet().getStrangerItems())) {
+            ToastUtil.showToast("缺资源：没有发现陌生人");
+            visitorFragment.fetchStrangerVisitorList();
+            return;
+        }
         AppLogger.w("Clicked enterStranger");
         //需要刷数据
         if (visitorStrangerSubFragment == null) {
