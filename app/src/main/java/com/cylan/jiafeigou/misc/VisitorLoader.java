@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.misc;
 
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
@@ -19,7 +20,6 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 /**
- *
  * @author hds
  * @date 17-10-20
  */
@@ -87,7 +87,7 @@ public class VisitorLoader {
                     return getDataByte(uuid, 5, timeSec)
                             .flatMap(bytes -> {
                                 DpMsgDefine.VisitorList list = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.VisitorList.class, null);
-                                AppLogger.d("收到数据？");
+                                AppLogger.d("收到数据？" + (BuildConfig.DEBUG ? list : null));
                                 if (list != null && list.total > 0) {
                                     visitorList.total = list.total;
                                     final int cnt = ListUtils.getSize(list.dataList);

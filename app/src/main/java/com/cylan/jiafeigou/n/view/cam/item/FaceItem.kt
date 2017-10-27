@@ -30,13 +30,13 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     var version: Long = 0
 
     //对应 msgType =5返回的列表 item
-    var visitor: DpMsgDefine.Visitor? = null
+    var visitor: DpMsgDefine.Visitor? = null//熟人
 
-    var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
+    var strangerVisitor: DpMsgDefine.StrangerVisitor? = null//定义为陌生人
 
     private var faceType: Int = 0 //熟人或者陌生人
 
-    var markHint: Boolean = false
+    var markHint: Boolean = false//红点标记
 
     override fun getViewHolder(v: View): FaceItemViewHolder {
         return FaceItemViewHolder(v)
@@ -119,7 +119,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
             }
         //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
-                holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime)
+                holder.text.text = TimeUtils.getVisitorTime(visitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)

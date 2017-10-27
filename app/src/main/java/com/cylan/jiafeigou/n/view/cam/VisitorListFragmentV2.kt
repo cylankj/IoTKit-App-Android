@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.widget.WrapContentViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -75,7 +76,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceAdapter.itemClickListener = object : ItemClickListener {
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 onVisitorListCallback?.onItemClick(globalPosition)
-                if (globalPosition > 1 || !isV2()) {//前面两个
+                val next = item.getFaceType() != FaceItem.FACE_TYPE_STRANGER &&
+                        item.getFaceType() != FaceItem.FACE_TYPE_ALL
+                if (next || !isV2()) {//前面两个
                     val faceId = if (isV2()) item.visitor?.personId else item.strangerVisitor?.faceId
                     AppLogger.d("主列表的 faceId?personId")
                     basePresenter.fetchVisitsCount(faceId!!)
@@ -457,9 +460,14 @@ class FaceItemsProvider private constructor() {
         checkEmpty()
         ensurePreloadHeaderItem()
         if (ListUtils.isEmpty(visitorItems)) return
-        this.visitorItems.addAll(visitorItems)
-        this.visitorItems = ArrayList<FaceItem>(TreeSet(this.visitorItems))
-        Collections.sort(this.visitorItems)
+        //保留前面两个,
+        val cnt = ListUtils.getSize(this.visitorItems)
+        var tmpList = if (cnt > 2) this.visitorItems.subList(2, cnt) else
+            ArrayList<FaceItem>()
+        tmpList.addAll(visitorItems)
+        tmpList = ArrayList<FaceItem>(TreeSet(tmpList))
+        Collections.sort(tmpList)
+        this.visitorItems.addAll(tmpList)
     }
 
     fun populateStrangerItems(strangerItems: ArrayList<FaceItem>) {
@@ -478,16 +486,14 @@ class FaceItemsProvider private constructor() {
 
     fun ensurePreloadHeaderItem() {
         if (!(hasPreloadFaceItems())) {
-            val list = ArrayList<FaceItem>()
+            checkEmpty()
             val allFace = FaceItem()
             allFace.withSetSelected(true)
             allFace.withFaceType(FaceItem.FACE_TYPE_ALL)
-            list.add(allFace)
+            visitorItems.add(0, allFace)
             val strangerFace = FaceItem()
             strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER)
-            list.add(strangerFace)
-            checkEmpty()
-            visitorItems.addAll(list)
+            visitorItems.add(1, strangerFace)
         }
     }
 

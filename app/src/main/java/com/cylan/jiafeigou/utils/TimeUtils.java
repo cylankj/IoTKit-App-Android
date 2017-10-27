@@ -452,6 +452,9 @@ public class TimeUtils {
     }
 
     public static String getVisitorTime(Long lastTime) {
+        if (lastTime == null) {
+            return "";
+        }
         long second = (System.currentTimeMillis() - lastTime) / 1000;
         long minute = second / 60;
         if (minute < 60) {
