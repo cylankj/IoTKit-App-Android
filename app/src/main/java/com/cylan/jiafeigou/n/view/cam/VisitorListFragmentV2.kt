@@ -92,6 +92,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceAdapter.populateItems(provideData())
     }
 
+    open fun fetchStrangerVisitorList() {
+        if (basePresenter != null) {
+            basePresenter.fetchStrangerVisitorList()
+        }
+    }
+
     open fun isV2(): Boolean {
         return true
     }

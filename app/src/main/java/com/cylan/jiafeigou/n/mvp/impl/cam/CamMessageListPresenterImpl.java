@@ -577,21 +577,4 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 //        addSubscription(subscription, "fetchStrangerVisitorList");
 //    }
 
-    @Override
-    public void stop() {
-        super.stop();
-    }
-
-    public static class GFN {
-        public String group_id;
-        public String face_id;
-        public String face_name;
-    }
-
-    private ListCache visitorCache;
-
-    private static class ListCache {
-        private List<DpMsgDefine.VisitorList> visitorLists;
-        private List<DpMsgDefine.StrangerVisitorList> strangerVisitorLists;
-    }
 }

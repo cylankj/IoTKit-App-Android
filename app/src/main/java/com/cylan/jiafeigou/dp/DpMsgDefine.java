@@ -1946,14 +1946,20 @@ public class DpMsgDefine {
         @Index(0)
         public String faceId;
         @Index(1)
+        public String image_url;
+        @Index(2)
         public long lastTime;
 
         @Override
         public String toString() {
             return "StrangerVisitor{" +
                     "faceId='" + faceId + '\'' +
+                    ", image_url='" + image_url + '\'' +
                     ", lastTime=" + lastTime +
                     '}';
+        }
+
+        public StrangerVisitor() {
         }
 
         @Override
@@ -1964,18 +1970,17 @@ public class DpMsgDefine {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.faceId);
+            dest.writeString(this.image_url);
             dest.writeLong(this.lastTime);
-        }
-
-        public StrangerVisitor() {
         }
 
         protected StrangerVisitor(Parcel in) {
             this.faceId = in.readString();
+            this.image_url = in.readString();
             this.lastTime = in.readLong();
         }
 
-        public static final Parcelable.Creator<StrangerVisitor> CREATOR = new Parcelable.Creator<StrangerVisitor>() {
+        public static final Creator<StrangerVisitor> CREATOR = new Creator<StrangerVisitor>() {
             @Override
             public StrangerVisitor createFromParcel(Parcel source) {
                 return new StrangerVisitor(source);
