@@ -124,7 +124,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(JFGFaceGlideURL(uuid, visitor?.faceIdList?.get(0), false))
+                        .load(JFGFaceGlideURL(uuid, visitor?.detailList?.get(0)?.faceId, false))
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)

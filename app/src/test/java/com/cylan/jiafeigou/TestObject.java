@@ -25,7 +25,7 @@ public class TestObject {
             visitor.lastTime = System.currentTimeMillis() - RandomUtils.getRandom(24) * 3600;
             visitor.personId = i + "";
             visitor.personName = i + "," + i;
-            visitor.faceIdList = getProvinces();
+//            visitor.faceIdList = getProvinces();
             mockList.add(visitor);
         }
         System.out.println(mockList);

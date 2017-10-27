@@ -1827,6 +1827,53 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static class VisitorDetail implements Parcelable {
+        @Index(0)
+        public String faceId;
+        @Index(1)
+        public String imgUrl;
+
+        @Override
+        public String toString() {
+            return "VisitorDetail{" +
+                    "faceId='" + faceId + '\'' +
+                    ", imgUrl='" + imgUrl + '\'' +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.faceId);
+            dest.writeString(this.imgUrl);
+        }
+
+        public VisitorDetail() {
+        }
+
+        protected VisitorDetail(Parcel in) {
+            this.faceId = in.readString();
+            this.imgUrl = in.readString();
+        }
+
+        public static final Parcelable.Creator<VisitorDetail> CREATOR = new Parcelable.Creator<VisitorDetail>() {
+            @Override
+            public VisitorDetail createFromParcel(Parcel source) {
+                return new VisitorDetail(source);
+            }
+
+            @Override
+            public VisitorDetail[] newArray(int size) {
+                return new VisitorDetail[size];
+            }
+        };
+    }
+
+    @Message
     public static class Visitor implements Parcelable {
 
         @Index(0)
@@ -1838,7 +1885,7 @@ public class DpMsgDefine {
         @Index(3)
         public long lastTime;
         @Index(4)
-        public List<String> faceIdList;
+        public List<VisitorDetail> detailList;
 
         @Override
         public String toString() {
@@ -1847,8 +1894,11 @@ public class DpMsgDefine {
                     ", personId='" + personId + '\'' +
                     ", personName='" + personName + '\'' +
                     ", lastTime=" + lastTime +
-                    ", faceIdList=" + faceIdList +
+                    ", detailList=" + detailList +
                     '}';
+        }
+
+        public Visitor() {
         }
 
         @Override
@@ -1862,21 +1912,18 @@ public class DpMsgDefine {
             dest.writeString(this.personId);
             dest.writeString(this.personName);
             dest.writeLong(this.lastTime);
-            dest.writeStringList(this.faceIdList);
-        }
-
-        public Visitor() {
+            dest.writeTypedList(this.detailList);
         }
 
         protected Visitor(Parcel in) {
             this.objectType = in.readInt();
             this.personId = in.readString();
             this.personName = in.readString();
-            this.lastTime = in.readInt();
-            this.faceIdList = in.createStringArrayList();
+            this.lastTime = in.readLong();
+            this.detailList = in.createTypedArrayList(VisitorDetail.CREATOR);
         }
 
-        public static final Parcelable.Creator<Visitor> CREATOR = new Parcelable.Creator<Visitor>() {
+        public static final Creator<Visitor> CREATOR = new Creator<Visitor>() {
             @Override
             public Visitor createFromParcel(Parcel source) {
                 return new Visitor(source);

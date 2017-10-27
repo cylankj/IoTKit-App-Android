@@ -374,7 +374,7 @@ class FaceFragment : Fragment() {
             val item = visitorAdapter?.getItem(position)
             if (item != null) {
                 val fragment = FaceInformationFragment.newInstance(uuid,
-                        item.visitor?.faceIdList?.get(0) ?: "", item.visitor?.personName ?: "",
+                        item.visitor?.detailList?.get(0)?.faceId ?: "", item.visitor?.personName ?: "",
                         item.visitor?.personId ?: "")
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {
