@@ -125,6 +125,11 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         return new int[]{R.anim.slide_in_right, R.anim.slide_out_left};
     }
 
+    protected int[] getExitOverridePendingTransition() {
+        return new int[]{R.anim.slide_in_left_without_interpolator,
+                R.anim.slide_out_right_without_interpolator};
+    }
+
     /**
      * 用于隐藏系统状态栏
      */
@@ -289,7 +294,8 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     public void finishExt() {
         finish();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
+            overridePendingTransition(getExitOverridePendingTransition()[0],
+                    getExitOverridePendingTransition()[1]);
         }
     }
 

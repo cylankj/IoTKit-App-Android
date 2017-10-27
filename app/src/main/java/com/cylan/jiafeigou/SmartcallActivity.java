@@ -147,8 +147,13 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                 getSupportFragmentManager().popBackStack();
             }
         } else {
-            finishExt();
+            finish();
         }
+    }
+
+    @Override
+    protected int[] getExitOverridePendingTransition() {
+        return new int[]{R.anim.alpha_in, R.anim.alpha_out};
     }
 
     /**
