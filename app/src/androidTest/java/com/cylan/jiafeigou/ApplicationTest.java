@@ -3,8 +3,11 @@ package com.cylan.jiafeigou;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
+import com.alibaba.sdk.android.oss.common.auth.HmacSHA1Signature;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
+import com.cylan.jiafeigou.utils.AESUtil;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +52,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         Thread.sleep(100000000);
     }
 
-    public void testMy() {
+    public void testMy() throws Exception {
 //        JFGDevice jfgDevice = new JFGDevice();
 //        jfgDevice.pid = 5;
 //        jfgDevice.alias = "摄像头88";
@@ -83,6 +86,15 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        }
 //        long end = System.currentTimeMillis();
 //        Log.e("AAAAA", "解析100000条数据共耗时" + (end - initSubscription) + "毫秒");
+        String timeMillis = String.valueOf(System.currentTimeMillis() / 1000);
+        System.out.println(timeMillis);
+        String seceret = "6ZVBcFK6NLMg0zwjY0uuwdBiXUs7D1d9";
+        String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timeMillis);
+
+        System.out.println(sign);
+
+        System.out.println(new HmacSHA1Signature().computeSignature(seceret,
+                JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API + "\n" + timeMillis));
     }
 
 

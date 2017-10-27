@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
  * Created by yzd on 16-12-30.
  */
 
-public interface ViewablePresenter<V extends ViewableView> extends JFGPresenter<V> {
+public interface ViewablePresenter extends JFGPresenter {
     /**
      * 能查看设备摄像头的view,都应该具备静音的能力
      */
@@ -42,4 +42,5 @@ public interface ViewablePresenter<V extends ViewableView> extends JFGPresenter<
     SurfaceView getViewerInstance();
 
     ViewableView.LiveStreamAction getLiveAction();
+
 }

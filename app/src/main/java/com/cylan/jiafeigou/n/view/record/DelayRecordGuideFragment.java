@@ -5,18 +5,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import java.lang.ref.WeakReference;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -29,6 +29,8 @@ public class DelayRecordGuideFragment extends BaseFragment {
 
     @BindView(R.id.header_delay_record_container)
     ViewGroup mHeaderContainer;
+    @Inject
+    JFGSourceManager sourceManager;
 
     public static DelayRecordGuideFragment newInstance(String uuid) {
         DelayRecordGuideFragment fragment = new DelayRecordGuideFragment();
@@ -40,10 +42,6 @@ public class DelayRecordGuideFragment extends BaseFragment {
 
     private WeakReference<BaseDialog> mEnableDeviceDialog;
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
 
     @Override
     public void onStart() {
@@ -78,7 +76,8 @@ public class DelayRecordGuideFragment extends BaseFragment {
             initDeviceEnableDialog();
             mEnableDeviceDialog.get().show(getChildFragmentManager(), BaseDialog.class.getName());
         } else {
-            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, uuid);
+            // TODO: 2017/10/26  
+//            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, uuid);
         }
     }
 

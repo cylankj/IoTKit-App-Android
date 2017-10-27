@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.content.Intent;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 
 /**
@@ -11,10 +10,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
  */
 
 public class ConnectionActivity extends BaseActivity {
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
 
-    }
 
     @Override
     protected int getContentViewID() {

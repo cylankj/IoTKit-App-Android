@@ -26,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -51,6 +51,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,6 +104,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private boolean isLoading = false;
     private boolean isPrepaper = false;
     private View rootView;
+    @Inject
+    JFGSourceManager sourceManager;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -124,9 +128,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 //        super.onViewCreated(view, savedInstanceState);
-        if (presenter != null) {
-            presenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
-        }
     }
 
 
@@ -193,11 +194,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
     }
 
 

@@ -4,6 +4,8 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -15,15 +17,16 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
     private boolean httpApiInitFinish;
     private String baseUrl;
 
+    @Inject
+    public PanoramaLogoConfigurePresenter(PanoramaLogoConfigureContact.View view) {
+        super(view);
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
         checkAndInitLogoOption();
-    }
-
-    @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
     }
 
     private void checkAndInitLogoOption() {
@@ -38,12 +41,12 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#checkAndInitLogoOption",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#checkAndInitLogoOption", subscribe);
     }
 
     @Override
     public void changeLogoType(int position) {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().setLogo(uuid,position)
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().setLogo(uuid, position)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.ret == 0) {
@@ -54,6 +57,6 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#changeLogoType",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#changeLogoType", subscribe);
     }
 }

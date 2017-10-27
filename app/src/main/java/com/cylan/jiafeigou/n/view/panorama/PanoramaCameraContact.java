@@ -123,7 +123,7 @@ public interface PanoramaCameraContact {
         }
     }
 
-    interface Presenter extends ViewablePresenter<View> {
+    interface Presenter extends ViewablePresenter {
 
         void makePhotograph();//拍照
 

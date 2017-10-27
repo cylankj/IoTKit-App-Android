@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,10 +48,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
     private boolean hasSDCard;
 
-
-    @Override
-    public void onViewAttached(PanoramaAlbumContact.View view) {
-        super.onViewAttached(view);
+    @Inject
+    public PanoramaAlbumPresenter(PanoramaAlbumContact.View view) {
+        super(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.MEDIA_PATH + File.separator + uuid);
         BaseDeviceInformationFetcher.getInstance().init(uuid);
         if (monitorDeleteSubscription != null && !monitorDeleteSubscription.isUnsubscribed()) {
@@ -81,14 +82,11 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
-//        registerSubscription(monitorPanoramaAPI());
+    public void subscribe() {
+        super.subscribe();
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#monitorSDCardUnMount", monitorSDCardUnMount());
-//        registerSubscription(monitorDeleteUpdateSub());
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
     }
-
 
     private Subscription getNetWorkMonitorSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
@@ -168,7 +166,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#checkSDCardAndInit",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#checkSDCardAndInit", subscribe);
     }
 
     @Override

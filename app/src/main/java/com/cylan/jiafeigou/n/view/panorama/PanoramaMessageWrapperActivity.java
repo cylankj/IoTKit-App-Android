@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.os.Bundle;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -46,16 +45,6 @@ public class PanoramaMessageWrapperActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
 
-    }
-
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-
-    }
-
-    @Override
-    protected void onPrepareToExit(Action action) {
-        super.onPrepareToExit(action);
     }
 
     private void removeHint() {

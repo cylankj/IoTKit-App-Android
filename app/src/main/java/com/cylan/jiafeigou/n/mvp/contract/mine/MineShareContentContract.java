@@ -19,7 +19,7 @@ public interface MineShareContentContract {
         void onUnShareContentResponse(int resultCode, Iterable<Integer> selection);
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
         void loadFromServer(long version, boolean refresh);
 

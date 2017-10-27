@@ -342,32 +342,38 @@ class FaceFragment : Fragment() {
     private fun showHeaderFacePopMenu(gPosition: Int, position: Int, faceItem: View, faceType: Int) {
 //        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
         val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
+
+        // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
+        when (faceType) {
+            FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                view.findViewById(R.id.detect).visibility = View.GONE
+            }
+            FaceItem.FACE_TYPE_STRANGER, FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                view.findViewById(R.id.viewer).visibility = View.GONE
+            }
+        }
+
+
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
 
         val contentView = popupWindow.contentView
-        contentView.findViewById(R.id.detect).visibility =
-                if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) View.GONE else View.VISIBLE
-        // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
-        if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE)
 
-            contentView.findViewById(R.id.delete).setOnClickListener { v ->
-                // TODO: 2017/10/9 删除操作
-                AppLogger.w("将删除面孔")
-                popupWindow.dismiss()
-                val item = visitorAdapter.getItem(position)
-                        as FaceItem
-                showDeleteFaceAlert(item)
-            }
+        contentView.findViewById(R.id.delete).setOnClickListener { v ->
+            // TODO: 2017/10/9 删除操作
+            AppLogger.w("将删除面孔")
+            popupWindow.dismiss()
+            val item = visitorAdapter.getItem(position)
+                    as FaceItem
+            showDeleteFaceAlert(item)
+        }
 
         contentView.findViewById(R.id.detect).setOnClickListener { v ->
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔")
             popupWindow.dismiss()
-//            faceItem.isDrawingCacheEnabled = true
-//            val image = faceItem.drawingCache
             showDetectFaceAlert(adapter.getItem(position).strangerVisitor?.faceId ?: "")
         }
 
@@ -377,7 +383,8 @@ class FaceFragment : Fragment() {
             val item = visitorAdapter?.getItem(position)
             if (item != null) {
                 val fragment = FaceInformationFragment.newInstance(uuid,
-                        item.visitor?.detailList?.get(0)?.faceId ?: "", item.visitor?.personName ?: "",
+                        item.visitor?.detailList?.get(0)?.imgUrl ?: "",
+                        item.visitor?.personName ?: "",
                         item.visitor?.personId ?: "")
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {

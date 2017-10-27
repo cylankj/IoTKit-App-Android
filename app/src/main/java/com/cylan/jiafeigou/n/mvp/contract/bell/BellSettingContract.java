@@ -22,7 +22,7 @@ public interface BellSettingContract {
         void onClearBellRecordFailed();
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
         /**
          * 解绑设备
          */

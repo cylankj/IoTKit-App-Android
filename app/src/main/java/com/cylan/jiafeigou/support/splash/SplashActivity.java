@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.support.login.LoginActivity;
 
@@ -16,10 +15,6 @@ import com.cylan.jiafeigou.support.login.LoginActivity;
 
 public class SplashActivity extends BaseActivity<SplashContact.Presenter> implements SplashContact.View {
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
 
 
     @Override

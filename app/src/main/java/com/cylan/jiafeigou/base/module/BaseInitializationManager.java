@@ -8,12 +8,13 @@ import android.util.Log;
 
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
+import com.cylan.jiafeigou.dagger.annotation.ContextLife;
+import com.cylan.jiafeigou.dagger.annotation.Named;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
@@ -39,7 +40,6 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.android.schedulers.AndroidSchedulers;

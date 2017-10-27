@@ -12,8 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -29,6 +30,8 @@ import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 import com.google.gson.Gson;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +81,10 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     CustomToolbar customToolbar;
 
     private RxEvent.CheckVersionRsp checkDevVersion;
+    @Inject
+    JFGSourceManager sourceManager;
+    @Inject
+    AppCmd appCmd;
 
     public static BellDetailFragment newInstance(Bundle bundle) {
         BellDetailFragment fragment = new BellDetailFragment();
@@ -143,11 +150,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         }
     }
 
-    @Override
-    public String onResolveViewLaunchType() {
-        return null;
-    }
-
 
     @Override
     public void onShowProperty(Device device) {
@@ -184,11 +186,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
-    }
-
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
     }
 
 

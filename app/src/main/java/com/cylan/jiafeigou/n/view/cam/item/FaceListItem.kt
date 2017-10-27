@@ -49,7 +49,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
 
         //todo 基于 FaceInformation
         //imageUrl 怎么定义的一个 visitor 下有多个人脸
-        var imageUrl: String = ""
+        var imageUrl: String = visitor?.detailList?.get(0)?.imgUrl ?: ""
         var personName: String = visitor?.personName ?: "小明啊"
         Glide
                 .with(holder.itemView.context)

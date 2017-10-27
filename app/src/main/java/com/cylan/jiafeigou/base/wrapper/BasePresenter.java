@@ -6,26 +6,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 
-import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
+import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.trello.rxlifecycle.android.FragmentEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -37,15 +42,65 @@ import rx.schedulers.Schedulers;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V> {
+public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleProvider<FragmentEvent> {
     protected String TAG = getClass().getName();
-    protected String uuid;
-    protected JFGSourceManager sourceManager;
+    @Inject
+    @ContextLife
+    protected Context mContext;
+    @Inject
     protected IDPTaskDispatcher taskDispatcher;
-    protected AppCmd appCmd;
-    private Map<LIFE_CYCLE, MapSubscription> lifeCycleCompositeSubscriptionMap;
+    @Inject
+    protected ILoadingManager mLoadingManager;
 
-    protected V mView;
+    private Map<LIFE_CYCLE, MapSubscription> lifeCycleCompositeSubscriptionMap;
+    protected String uuid;
+    protected View mView;
+    protected volatile boolean subscribed = false;
+
+    public BasePresenter(View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void uuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    @CallSuper
+    public void subscribe() {
+        subscribed = true;
+        onStart();
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());
+    }
+
+    @Override
+    public void unsubscribe() {
+        subscribed = false;
+    }
+
+    @Override
+    public boolean isUnsubscribed() {
+        return subscribed;
+    }
+
+    @Nonnull
+    @Override
+    public Observable<FragmentEvent> lifecycle() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LifecycleTransformer<T> bindToLifecycle() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LifecycleTransformer<T> bindUntilEvent(@Nonnull FragmentEvent event) {
+        return null;
+    }
 
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
@@ -57,28 +112,8 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
         }
     }
 
-    public void setSourceManager(JFGSourceManager manager) {
-        this.sourceManager = manager;
-    }
-
-    public void setTaskDispatcher(IDPTaskDispatcher taskDispatcher) {
-        this.taskDispatcher = taskDispatcher;
-    }
-
-    public void setAppCmd(AppCmd appCmd) {
-        this.appCmd = appCmd;
-    }
-
-    @Override
-    public void onViewAttached(V view) {
-        mView = view;
-        onRegisterResponseParser();
-    }
-
-    @Override
     @CallSuper
     public void onStart() {
-        onRegisterSubscription();
         if (registerTimeTick()) {
             if (timeTick == null) {
                 timeTick = new TimeTick(this);
@@ -88,30 +123,12 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
         }
     }
 
-    @Override
     public void onResume() {
     }
 
-    @Override
     public void onPause() {
     }
 
-    @CallSuper
-    protected void onRegisterSubscription() {
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeviceSyncSub", getDeviceSyncSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeleteDataRspSub", getDeleteDataRspSub());
-    }
-
-    @CallSuper
-    protected void onRegisterResponseParser() {
-    }
-
-    /**
-     * 如果不需要在onStop中进行反注册,可以重写这个方法,然后在自定义的地方反注册
-     *
-     * @param lifeCycle
-     */
     protected void onUnRegisterSubscription(LIFE_CYCLE lifeCycle) {
         if (lifeCycleCompositeSubscriptionMap != null) {
             MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.remove(lifeCycle);
@@ -119,7 +136,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
         }
     }
 
-    @Override
     @CallSuper
     public void onStop() {
         onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP);
@@ -130,11 +146,8 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
         }
     }
 
-    @Override
     public void onViewDetached() {
         onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY);
-        mView = null;
-        sourceManager = null;
     }
 
     protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
@@ -155,81 +168,12 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
                 });
     }
 
-    /**
-     * 监听设备同步消息是基本功能,所以提取到基类中
-     */
-    private Subscription getDeviceSyncSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .subscribeOn(Schedulers.io())
-                .filter(rsp -> accept(rsp.uuid))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    onDeviceSync();
-                }, e -> {
-                    e.printStackTrace();//打印错误日志以便排错
-                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeviceSyncSub", getDeviceSyncSub());//基类不能崩,否则一些功能异常
-                });
-    }
-
-    protected void onDeviceSync() {
-    }
-
-    private Subscription getDeleteDataRspSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(deleteDataRsp -> {
-
-                }, e -> {
-                    e.printStackTrace();
-                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getDeleteDataRspSub", getDeleteDataRspSub());
-                });
-    }
-
-    public boolean hasReadyForExit() {
-        return true;
-    }
-
     public Observable<IDPTaskResult> perform(IDPEntity entity) {
         return taskDispatcher.perform(entity);
     }
 
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entity) {
         return taskDispatcher.perform(entity);
-    }
-
-    /**
-     * 获取代表当前view的cid有些feature需要这个cid属性来进行过滤
-     *
-     * @deprecated 现在view会自动设置uuid到presenter中, 因此这个方法也就意义不大了
-     */
-    @Deprecated
-    protected String onResolveViewIdentify() {
-        return "This Method Should Be Override If The View Should Use The Identify To Filter";
-    }
-
-    @Override
-    public void onSetViewUUID(String uuid) {
-        this.uuid = uuid;
-    }
-
-    @Override
-    public void onViewAction(int action, String handle, Object extra) {
-    }
-
-    @Override
-    public void onScreenRotationChanged(boolean land) {
-    }
-
-    @Override
-    public void onSetContentView() {
-    }
-
-    /**
-     * 用户判断当前uuid是否是自己需要的
-     */
-    protected boolean accept(String uuid) {
-        return TextUtils.equals(this.uuid, uuid);
     }
 
     /**

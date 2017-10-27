@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -35,6 +35,8 @@ import com.cylan.panorama.Panoramic720View;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -48,11 +50,13 @@ import static com.cylan.panorama.Panoramic720View.DM_LittlePlanet;
  * Use the {@link Pan720FullFragment#newInstance} factory method to
  * fetch an instance of this fragment.
  */
-public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presenter> {
+public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presenter> implements Pan720FullContract.View {
 
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     Panoramic720View panoramic720View;
+    @Inject
+    JFGSourceManager sourceManager;
 
     public Pan720FullFragment() {
         // Required empty public constructor
@@ -126,10 +130,6 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
         return rootView;
     }
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
 
     @Override
     public void onDestroyView() {

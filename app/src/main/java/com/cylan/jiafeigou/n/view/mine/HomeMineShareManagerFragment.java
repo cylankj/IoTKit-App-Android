@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -43,10 +42,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     Unbinder unbinder;
     private FragmentMineShareManagerBinding managerBinding;
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
+
 
     @Override
     protected int getContentViewID() {

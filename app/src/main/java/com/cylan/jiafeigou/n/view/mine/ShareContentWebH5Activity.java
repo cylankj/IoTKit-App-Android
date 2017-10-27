@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -174,8 +173,5 @@ public class ShareContentWebH5Activity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
 
-    }
 }

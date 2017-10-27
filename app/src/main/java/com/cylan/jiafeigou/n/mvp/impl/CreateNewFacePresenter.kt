@@ -20,11 +20,12 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by yanzhendong on 2017/10/14.
  */
-class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFaceContact.Presenter {
+class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) : BasePresenter<CreateFaceContact.View>(view), CreateFaceContact.Presenter {
 
 
     override fun createNewFace(faceId: String, faceName: String) {
@@ -35,8 +36,8 @@ class CreateNewFacePresenter : BasePresenter<CreateFaceContact.View>(), CreateFa
             val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
             val seceret = OptionsImpl.getServiceSeceret(vid)
             var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
-            imageUrl = BaseApplication.getAppComponent().cmd.getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
-            val sessionId = BaseApplication.getAppComponent().cmd.sessionId
+            imageUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
+            val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
             if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                 throw IllegalArgumentException("ServiceKey或Seceret为空")
             }

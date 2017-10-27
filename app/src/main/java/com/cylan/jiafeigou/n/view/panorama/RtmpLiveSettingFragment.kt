@@ -6,7 +6,6 @@ import android.widget.CompoundButton
 import android.widget.ScrollView
 import butterknife.OnCheckedChanged
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
@@ -22,9 +21,7 @@ import kotlinx.android.synthetic.main.layout_rtmp.*
  * Created by yanzhendong on 2017/9/7.
  */
 class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
 
-    }
 
     override fun getContentViewID(): Int {
         return R.layout.layout_rtmp

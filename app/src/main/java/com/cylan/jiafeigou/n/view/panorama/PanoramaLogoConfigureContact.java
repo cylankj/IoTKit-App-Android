@@ -29,7 +29,7 @@ public interface PanoramaLogoConfigureContact {
         void onChangeLogoTypeError(int position);
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
         void changeLogoType(int position);
     }

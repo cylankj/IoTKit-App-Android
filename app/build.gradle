@@ -382,6 +382,10 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.google.dagger:dagger:2.12'
+    compile 'com.google.dagger:dagger-android:2.12'
+    compile 'com.google.dagger:dagger-android-support:2.12'
+    kapt 'com.google.dagger:dagger-android-processor:2.12'
+    kapt 'com.google.dagger:dagger-compiler:2.12'
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:1.0.1'
@@ -399,7 +403,6 @@ dependencies {
     compile 'com.romandanylyk:pageindicatorview:0.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    kapt 'com.google.dagger:dagger-compiler:2.12'
     compile 'com.mcxiaoke.packer-ng:helper:2.0.0'
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
     compile 'org.msgpack:msgpack-core:0.8.13'
@@ -427,6 +430,14 @@ dependencies {
     compile 'com.github.worker8:RadioGroupPlus:v1.0.1'
     compile 'net.openid:appauth:0.7.0'
     compile 'com.github.promeg:tinypinyin:2.0.1'
+    compile 'com.trello:rxlifecycle:1.0'
+// If you want to bind to Android-specific lifecycles
+    compile 'com.trello:rxlifecycle-android:1.0'
+    // If you want to use Kotlin syntax
+    compile 'com.trello:rxlifecycle-kotlin:1.0'
+    compile 'com.trello:rxlifecycle-components:1.0'
+
+// If you want to use Kotlin syntax with Android Lifecycle
 //    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20171019.084208-15', ext: 'pom')
 }
 

@@ -14,7 +14,6 @@ import android.widget.PopupWindow
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
@@ -52,9 +51,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     lateinit var adapter: FastItemAdapter<FaceManagerItem>
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
-        fragmentComponent.inject(this)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_face_manager, container, false)
@@ -128,17 +124,17 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 //        custom_toolbar.setRightEnable(false)
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
 
-        //todo just for test
-
-        val items: MutableList<FaceManagerItem> = mutableListOf()
-        words.forEach {
-            val item = FaceManagerItem()
-            val information = DpMsgDefine.FaceInformation()
-            information.face_name = it
-            item.withFaceInformation(information)
-            items.add(item)
-        }
-        adapter.add(items)
+//        //todo just for test
+//
+//        val items: MutableList<FaceManagerItem> = mutableListOf()
+//        words.forEach {
+//            val item = FaceManagerItem()
+//            val information = DpMsgDefine.FaceInformation()
+//            information.face_name = it
+//            item.withFaceInformation(information)
+//            items.add(item)
+//        }
+//        adapter.add(items)
 
     }
 
@@ -209,12 +205,12 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter.notifyDataSetChanged()
     }
 
-    override fun onBackPressed(): Boolean {
+    override fun performBackIntercept(): Boolean {
         if (isEditMode()) {
             setEditMode(false)
             return true
         }
-        return super.onBackPressed()
+        return super.performBackIntercept()
     }
 
     companion object {

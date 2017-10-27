@@ -2,12 +2,15 @@ package com.cylan.jiafeigou.n.mvp.impl.record;
 
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /*
  *  @项目名：  JFGAndroid 
@@ -21,7 +24,15 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
 
     private String mLaunchType;
 
-    @Override
+    @Inject
+    JFGSourceManager sourceManager;
+
+    @Inject
+    public DelayRecordPresenterImpl(DelayRecordContract.View view) {
+        super(view);
+    }
+
+
     public void onSetContentView() {
         setupLaunchView();
     }
@@ -30,7 +41,8 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
      * 在获取到设备列表后根据launchViewType设置显示页
      */
     private void setupLaunchView() {
-        mLaunchType = mView.onResolveViewLaunchType();
+        // TODO: 2017/10/27
+//        mLaunchType = mView.onResolveViewLaunchType();
         if (TextUtils.isEmpty(mLaunchType)) {
             //在这里设置默认的view
             return;
@@ -73,7 +85,6 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
     }
 
 
-    @Override
     public void onViewAction(int action, String handle, Object extra) {
         switch (handle) {
             case DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW:

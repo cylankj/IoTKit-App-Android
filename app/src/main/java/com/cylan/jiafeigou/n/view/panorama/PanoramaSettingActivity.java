@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -61,10 +60,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         super.onStop();
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
+
 
     @Override
     protected void initViewAndListener() {

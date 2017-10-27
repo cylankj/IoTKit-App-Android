@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,16 +42,21 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     private static final int MAX_DAY_COUNT = 40;
     private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
 
+    @Inject
+    public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
+        super(view);
+    }
+
     @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getPageScrolledSub",getPageScrolledSub());
+    public void subscribe() {
+        super.subscribe();
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getPageScrolledSub", getPageScrolledSub());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getDeleteWonderfulSub",getDeleteWonderfulSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getDeleteWonderfulSub", getDeleteWonderfulSub());
     }
 
     @Override
@@ -143,7 +150,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     AppLogger.d(e.getMessage());
                     mView.onQueryTimeLineCompleted();
                 }, () -> mView.onQueryTimeLineCompleted());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startRefresh",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startRefresh", subscribe);
     }
 
     @Override
@@ -170,7 +177,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, () -> {
                     mView.onQueryTimeLineCompleted();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"HomeWonderfulPresenterImpl#startLoadMore", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startLoadMore", subscribe);
     }
 
     @Override
@@ -211,15 +218,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"HomeWonderfulPresenterImpl#deleteTimeline", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#deleteTimeline", subscribe);
     }
 
     @Override
     public boolean checkWechat() {
         try {
-            return mView
-                    .getAppContext()
-                    .getPackageManager()
+            return mContext.getPackageManager()
                     .getPackageInfo("com.tencent.mm", PackageManager.GET_SIGNATURES) != null;
         } catch (PackageManager.NameNotFoundException e) {
             return false;

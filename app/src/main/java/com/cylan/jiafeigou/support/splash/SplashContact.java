@@ -16,7 +16,7 @@ public class SplashContact {
         void onExitApp();
     }
 
-    public interface Presenter extends JFGPresenter<View> {
+    public interface Presenter extends JFGPresenter {
 
         void initPermissions();
 

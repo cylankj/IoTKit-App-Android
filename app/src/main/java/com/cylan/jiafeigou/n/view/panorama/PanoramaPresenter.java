@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -62,6 +63,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -84,7 +87,19 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private volatile boolean isRtmpLive = false;
     private volatile boolean hasSDCard;
     private volatile boolean isInProgress = false;
-    private volatile boolean upgrade=false;
+    private volatile boolean upgrade = false;
+    @Inject
+    JFGSourceManager sourceManager;
+
+    @Inject
+    public PanoramaPresenter(PanoramaCameraContact.View view) {
+        super(view);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+        hasSDCard = status.hasSdcard;
+    }
+
+
     @Override
     public boolean isApiAvailable() {
         RxEvent.PanoramaApiAvailable event = RxBus.getCacheInstance().getStickyEvent(RxEvent.PanoramaApiAvailable.class);
@@ -120,13 +135,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(Schedulers.newThread())//需要一个新线程以使 timeout 生效
                 .map(ret -> {
                     try {
-                        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mView.getAppContext(), YouTubeScopes.all());
+                        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mContext, YouTubeScopes.all());
                         credential.setSelectedAccountName(PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME));
                         YouTube youTube = new YouTube.Builder(AndroidHttp.newCompatibleTransport(),
                                 JacksonFactory.getDefaultInstance(),
                                 credential
                         )
-                                .setApplicationName(mView.getAppContext().getString(R.string.app_name))
+                                .setApplicationName(mContext.getString(R.string.app_name))
                                 .build();
                         String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
                         EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
@@ -216,13 +231,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(Schedulers.newThread())//需要创建新的线程
                 .map(ret -> {
                     try {
-                        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mView.getAppContext(), YouTubeScopes.all());
+                        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mContext, YouTubeScopes.all());
                         credential.setSelectedAccountName(PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME));
                         YouTube youTube = new YouTube.Builder(AndroidHttp.newCompatibleTransport(),
                                 JacksonFactory.getDefaultInstance(),
                                 credential
                         )
-                                .setApplicationName(mView.getAppContext().getString(R.string.app_name))
+                                .setApplicationName(mContext.getString(R.string.app_name))
                                 .build();
                         String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null);
                         EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
@@ -256,12 +271,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             if (oauth2AccessToken == null || oauth2AccessToken.getExpiresTime() - System.currentTimeMillis() <= 0) {
                 subscriber.onError(new IllegalStateException("showRtmpLiveSetting"));
             } else {
-                Context context = mView.getAppContext();
-                mView.showBottomPanelInformation(context.getString(R.string.LIVE_CREATING, getPlatformString(context, 2)), false);
-                String defaultContent = context.getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT);
+                mView.showBottomPanelInformation(mContext.getString(R.string.LIVE_CREATING, getPlatformString(mContext, 2)), false);
+                String defaultContent = mContext.getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT);
                 String content = PreferencesUtils.getString(JConstant.WEIBO_PREF_DESCRIPTION + ":" + uuid, defaultContent);
-                WeiboLiveCreate weiboLiveCreate = new WeiboLiveCreate(mView.getAppContext(), PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"), oauth2AccessToken);
-                weiboLiveCreate.setAc(mView.getActivityContext());
+                WeiboLiveCreate weiboLiveCreate = new WeiboLiveCreate(mContext, PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"), oauth2AccessToken);
+                weiboLiveCreate.setAc(mView.activity());
                 weiboLiveCreate.setTitle(defaultContent);
                 weiboLiveCreate.setHeight("1080");
                 weiboLiveCreate.setWidth("1920");
@@ -407,8 +421,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         }
                         subscriber.onError(new IllegalArgumentException("token 或者 直播 id 不存在"));
                     } else {
-                        Context context = mView.getAppContext();
-                        WeiboLiveUpdate liveUpdate = new WeiboLiveUpdate(context, PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"), oauth2AccessToken);
+                        WeiboLiveUpdate liveUpdate = new WeiboLiveUpdate(mContext, PackageUtils.getMetaString(mContext, "sinaAppKey"), oauth2AccessToken);
                         liveUpdate.setId(liveId);
                         liveUpdate.setStop("1");
                         liveUpdate.updateLive(new RequestListener() {
@@ -646,7 +659,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         switch (livePlatform) {
             case 0://facebook
             {
-                FacebookSdk.sdkInitialize(mView.getAppContext(), () -> {
+                FacebookSdk.sdkInitialize(mContext, () -> {
                     if (enable == 1) {
                         if (AccessToken.getCurrentAccessToken() != null) {
                             mView.showBottomPanelInformation(context.getString(R.string.LIVE_CREATING, getPlatformString(context, livePlatform)), false);
@@ -741,13 +754,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return battery;
     }
 
-    @Override
-    public void onViewAttached(PanoramaCameraContact.View view) {
-        super.onViewAttached(view);
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
-        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        hasSDCard = status.hasSdcard;
-    }
 
     @Override
     public void onStart() {
@@ -768,9 +774,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
-//        registerSubscription(getApiMonitorSub());
+    public void subscribe() {
+        super.subscribe();
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#newVersionRspSub", newVersionRspSub());
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getReportMsgSub", getReportMsgSub());
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());

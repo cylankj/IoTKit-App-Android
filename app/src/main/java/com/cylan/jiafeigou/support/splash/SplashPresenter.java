@@ -2,11 +2,18 @@ package com.cylan.jiafeigou.support.splash;
 
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 
+import javax.inject.Inject;
+
 /**
  * Created by yanzhendong on 2017/7/5.
  */
 
 public class SplashPresenter extends BasePresenter<SplashContact.View> implements SplashContact.Presenter {
+
+    @Inject
+    public SplashPresenter(SplashContact.View view) {
+        super(view);
+    }
 
     @Override
     public void initPermissions() {

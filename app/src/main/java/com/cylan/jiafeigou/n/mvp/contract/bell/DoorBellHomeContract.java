@@ -36,7 +36,7 @@ public interface DoorBellHomeContract {
         void showFirmwareDialog();
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter{
 
         void fetchBellRecordsList(boolean asc, long time);
 

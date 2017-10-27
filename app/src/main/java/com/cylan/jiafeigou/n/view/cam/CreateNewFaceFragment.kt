@@ -11,12 +11,10 @@ import butterknife.OnClick
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.IMEUtils
-import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.fragment_face_create.*
 
@@ -36,6 +34,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun onCreateNewFaceSuccess(personId: String) {
         AppLogger.w("创建面孔返回值为:$personId")
+        ToastUtil.showToast(getString(R.string.PWD_OK_2))
         resultCallback?.invoke(personId)
         fragmentManager.popBackStack()
 
@@ -46,14 +45,10 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         ToastUtil.showToast("创建失败了")
     }
 
-
+    private var imageUrl: String? = null
     var faceId: String? = null
     var resultCallback: ((personId: String) -> Unit)? = null
 
-
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
-        fragmentComponent.inject(this)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_face_create, container, false)
@@ -61,9 +56,11 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         return view
     }
 
+
     override fun initViewAndListener() {
         super.initViewAndListener()
         faceId = arguments.getString("face_id")
+        imageUrl = arguments.getString("image")
         custom_toolbar.setRightAction {
             if (faceId == null || picture == null) {
                 AppLogger.w("FaceId :$faceId ,picture:$picture")
@@ -108,7 +105,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         })
 
         Glide.with(this)
-                .load(JFGFaceGlideURL(uuid, faceId, true))
+                .load(imageUrl)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -131,12 +128,13 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     companion object {
 
-        fun newInstance(uuid: String, faceId: String): CreateNewFaceFragment {
+        fun newInstance(uuid: String, faceId: String, imageUrl: String): CreateNewFaceFragment {
             val fragment = CreateNewFaceFragment()
-
+//            HmacSHA1Signature().computeSignature()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
             argument.putString("face_id", faceId)
+            argument.putString("image", imageUrl)
             fragment.arguments = argument
             return fragment
         }

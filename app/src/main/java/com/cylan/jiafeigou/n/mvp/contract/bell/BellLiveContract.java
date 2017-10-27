@@ -25,7 +25,7 @@ public interface BellLiveContract {
         void onDeviceUnBind();
     }
 
-    interface Presenter extends CallablePresenter<View> {
+    interface Presenter extends CallablePresenter {
 
         void capture();
     }

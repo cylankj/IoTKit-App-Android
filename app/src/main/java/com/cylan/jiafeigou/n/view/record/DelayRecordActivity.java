@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -30,10 +29,7 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
+
 
     @Override
     protected int getContentViewID() {

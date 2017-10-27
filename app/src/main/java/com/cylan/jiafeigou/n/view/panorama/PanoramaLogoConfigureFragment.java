@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -81,7 +80,7 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     }
 
     private void initPanoramaView() {
-        panoramicView720Ext = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, getActivityContext(), true);
+        panoramicView720Ext = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, getActivity(), true);
         panoramicView720Ext.configV720();
         panoramicView720Ext.setId("IVideoView".hashCode());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -91,10 +90,6 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
         panoramicView720Ext.loadImage(R.drawable.panorama_logo_mask);
     }
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
 
     @Override
     protected int getContentViewID() {

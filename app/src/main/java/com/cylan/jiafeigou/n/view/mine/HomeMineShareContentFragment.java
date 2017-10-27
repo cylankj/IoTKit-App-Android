@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineShareContentBinding;
 import com.cylan.jiafeigou.databinding.ItemShareContentBinding;
@@ -50,10 +49,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private ObservableInt selectNumber = new ObservableInt(0);
     private ObservableBoolean empty = new ObservableBoolean(true);
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
+
 
     @Nullable
     @Override
@@ -180,12 +176,12 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     }
 
     @Override
-    protected boolean onBackPressed() {
+    public boolean performBackIntercept() {
         if (editMode.get()) {
             editMode.set(false);
             return true;
         } else {
-            return super.onBackPressed();
+            return super.performBackIntercept();
         }
     }
 

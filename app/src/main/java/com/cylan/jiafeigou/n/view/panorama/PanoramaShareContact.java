@@ -16,7 +16,7 @@ public interface PanoramaShareContact {
         void onShareH5Result(boolean success, String h5);
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
         void check(String uuid, int time);
 

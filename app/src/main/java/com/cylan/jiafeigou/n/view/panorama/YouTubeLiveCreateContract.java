@@ -28,7 +28,7 @@ public interface YouTubeLiveCreateContract {
         void onAuthorizationException();
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
         void createLiveBroadcast(GoogleAccountCredential credential, String title, String description, long startTime, long endTime);
 

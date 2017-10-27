@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
+import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;

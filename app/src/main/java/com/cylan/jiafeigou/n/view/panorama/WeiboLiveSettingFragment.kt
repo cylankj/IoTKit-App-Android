@@ -6,7 +6,6 @@ import android.text.TextUtils
 import butterknife.OnClick
 import butterknife.OnTextChanged
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
@@ -45,9 +44,6 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
     override fun onError(p0: SHARE_MEDIA?, p1: Int, p2: Throwable?) {
     }
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
-
-    }
 
     override fun getContentViewID(): Int {
         return R.layout.layout_weibo

@@ -22,16 +22,18 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by yanzhendong on 2017/9/7.
  */
-class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), YouTubeLiveSetting.Presenter {
+class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.View) : BasePresenter<YouTubeLiveSetting.View>(view), YouTubeLiveSetting.Presenter {
     override fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?) {
         AppLogger.w("YOUTUBE:getLiveList ,the id is $liveBroadcastID")
         val subscribe = Observable.just("getLiveList")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
+
                 .map {
 
                     val youTube = YouTube.Builder(
@@ -67,7 +69,7 @@ class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), Yo
         val subscribe = Observable.just("getLiveFromDevice")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .map { BaseApplication.getAppComponent().cmd.robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0) }
+                .map { BaseApplication.getAppComponent().getCmd().robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0) }
                 .flatMap { seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq } }
                 .first()
                 .map {

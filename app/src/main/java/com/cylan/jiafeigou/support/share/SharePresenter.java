@@ -7,6 +7,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import javax.inject.Inject;
+
 /**
  * Created by yanzhendong on 2017/6/1.
  */
@@ -34,6 +36,11 @@ public class SharePresenter extends BasePresenter<ShareMediaContact.View> implem
             AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
         }
     };
+
+    @Inject
+    public SharePresenter(ShareMediaContact.View view) {
+        super(view);
+    }
 
     public void share(int shareStyle, Bundle bundle) {
 //        Observable.create((Observable.OnSubscribe<ShareAction>) subscriber -> {

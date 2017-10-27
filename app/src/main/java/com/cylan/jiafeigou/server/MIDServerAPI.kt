@@ -2483,7 +2483,7 @@ object MIDServerAPI {
             //          OS_PROPERTY.valueOf()
         }
 
-        BaseApplication.getAppComponent().cmd.robotGetMultiData(params, 1, false, 0)
+        BaseApplication.getAppComponent().getCmd().robotGetMultiData(params, 1, false, 0)
 
     }
 

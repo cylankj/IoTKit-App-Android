@@ -18,7 +18,7 @@ interface YouTubeLiveSetting {
         fun onLiveEventResponse(rtmp: EventData)
     }
 
-    interface Presenter : JFGPresenter<View> {
+    interface Presenter : JFGPresenter {
 
         fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?)
 

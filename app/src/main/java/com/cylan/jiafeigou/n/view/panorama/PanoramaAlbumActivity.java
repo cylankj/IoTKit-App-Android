@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.databinding.LayoutBottomFooterBinding;
@@ -156,10 +155,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         ViewUtils.clearViewPaddingStatusBar(toolbarContainer);
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
+
 
     //    @OnClick(R.id.act_panorama_album_toolbar_header_title)
 //    public void showAlbumViewModePop(View view) {

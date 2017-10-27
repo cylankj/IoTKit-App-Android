@@ -22,7 +22,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -192,10 +191,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         }
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
+
 
     @OnClick(R.id.act_bell_picture_opt_download)
     public void download() {

@@ -20,11 +20,12 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by yanzhendong on 2017/10/10.
  */
-class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManagerContact.Presenter {
+class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : BasePresenter<FaceManagerContact.View>(view), FaceManagerContact.Presenter {
 
     override fun deleteFace(personId: String?, listOf: List<String>) {
         val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
@@ -34,7 +35,7 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val sessionId = BaseApplication.getAppComponent().cmd.sessionId
+                val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
@@ -56,7 +57,7 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
                             .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, listOf.joinToString(separator = ","))
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, listOf.toString())
                             .execute()
 
 
@@ -69,7 +70,7 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
                     subscriber.onNext(header)
                     subscriber.onCompleted()
                 }
-            } catch (e: Exception) {
+            } catch (e: java.lang.Exception) {
                 subscriber.onError(e)
             }
         }
@@ -101,7 +102,7 @@ class FaceManagerPresenter : BasePresenter<FaceManagerContact.View>(), FaceManag
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val sessionId = BaseApplication.getAppComponent().cmd.sessionId
+                val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {

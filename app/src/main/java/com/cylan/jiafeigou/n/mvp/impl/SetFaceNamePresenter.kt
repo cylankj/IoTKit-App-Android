@@ -18,11 +18,12 @@ import com.lzy.okgo.cache.CacheMode
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * Created by yanzhendong on 2017/10/9.
  */
-class SetFaceNamePresenter : BasePresenter<SetFaceNameContact.View>(), SetFaceNameContact.Presenter {
+class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : BasePresenter<SetFaceNameContact.View>(view), SetFaceNameContact.Presenter {
 
     /**
      * 4.人脸修改接口（客户端）
@@ -37,7 +38,7 @@ class SetFaceNamePresenter : BasePresenter<SetFaceNameContact.View>(), SetFaceNa
     sn	设备标识（选填项）cid
     access_token	【必填项】
      * */
-    override fun setFaceName(faceId: String, personId: String, faceName: String) {
+    override fun setFaceName( personId: String, faceName: String) {
         val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
             try {
                 val account = DataSourceManager.getInstance().account.account
@@ -45,12 +46,12 @@ class SetFaceNamePresenter : BasePresenter<SetFaceNameContact.View>(), SetFaceNa
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val accessToken = BaseApplication.getAppComponent().cmd.sessionId
+                val accessToken = BaseApplication.getAppComponent().getCmd().sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
-                    val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_UPDATE_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_UPDATE_API
+                    val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
+                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
                     if (!url.startsWith("http://")) {
                         url = "http://" + url
                     }
@@ -65,8 +66,8 @@ class SetFaceNamePresenter : BasePresenter<SetFaceNameContact.View>(), SetFaceNa
                             //上面是全局参数,下面是接口参数
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, faceId)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
                             .params(JConstant.RobotCloudApi.ACCESS_TOKEN, accessToken)
                             .execute()
 

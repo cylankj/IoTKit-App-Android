@@ -13,7 +13,7 @@ public interface LivePremissionContract {
 
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
     }
 }

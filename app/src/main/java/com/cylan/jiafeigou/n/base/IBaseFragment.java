@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.n.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
+import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
@@ -19,13 +19,18 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
  * Created by cylan-hunt on 16-11-11.
  */
 
-public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
+public abstract class IBaseFragment<P extends BasePresenter> extends BaseFragment {
 
     protected P basePresenter;
     private final String TAG = getClass().getSimpleName();
 
     protected AlertDialogManager getAlertDialogManager() {
         return AlertDialogManager.getInstance();
+    }
+
+    @Override
+    public boolean supportInject() {
+        return false;
     }
 
     @Override
@@ -100,18 +105,5 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
 
     }
 
-    protected Object cache;
-    public CallBack callBack;
 
-    public void setCache(Object cache) {
-        this.cache = cache;
-    }
-
-    public void setCallBack(CallBack callBack) {
-        this.callBack = callBack;
-    }
-
-    public interface CallBack {
-        void callBack(Object t);
-    }
 }

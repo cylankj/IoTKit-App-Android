@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
@@ -49,9 +48,6 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
     }
 
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
-        fragmentComponent!!.inject(this)
-    }
 
     override fun getContentViewID(): Int {
         return R.layout.fragment_youtube_create_live

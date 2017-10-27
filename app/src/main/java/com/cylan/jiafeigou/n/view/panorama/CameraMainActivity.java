@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 
 public class CameraMainActivity extends BaseActivity {
@@ -38,8 +37,5 @@ public class CameraMainActivity extends BaseActivity {
         super.onStart();
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
 
-    }
 }

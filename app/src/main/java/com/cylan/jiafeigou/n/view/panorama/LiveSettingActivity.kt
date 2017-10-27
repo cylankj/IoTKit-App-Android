@@ -4,7 +4,6 @@ import android.content.Intent
 import android.text.TextUtils
 import com.androidkun.xtablayout.XTabLayout
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent
 import com.cylan.jiafeigou.base.wrapper.BaseActivity
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -21,9 +20,7 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     private val weiboFragment by lazy { WeiboLiveSettingFragment.newInstance(uuid) }
     private val rtmpFragment by lazy { RtmpLiveSettingFragment.newInstance(uuid) }
 
-    override fun setActivityComponent(activityComponent: ActivityComponent?) {
-        activityComponent!!.inject(this)
-    }
+
 
     override fun getContentViewID(): Int {
         return R.layout.activity_live_setting

@@ -32,7 +32,7 @@ public interface DelayRecordContract {
 
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
     }
 

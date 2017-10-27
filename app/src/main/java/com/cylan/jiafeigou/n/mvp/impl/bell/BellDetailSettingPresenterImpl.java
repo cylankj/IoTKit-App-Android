@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.AppCmd;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -12,6 +14,8 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -28,11 +32,20 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         implements BellDetailContract.Presenter {
 
     private CompositeSubscription subscription;
+    @Inject
+    JFGSourceManager sourceManager;
+    @Inject
+    AppCmd appCmd;
+
+    @Inject
+    public BellDetailSettingPresenterImpl(BellDetailContract.View view) {
+        super(view);
+    }
 
     @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellDetailSettingPresenterImpl#checkNewVersionBack",checkNewVersionBack());
+    public void subscribe() {
+        super.subscribe();
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellDetailSettingPresenterImpl#checkNewVersionBack", checkNewVersionBack());
     }
 
     @Override

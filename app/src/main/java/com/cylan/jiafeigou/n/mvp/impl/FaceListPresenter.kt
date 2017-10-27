@@ -24,11 +24,12 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 
 /**
  * Created by yanzhendong on 2017/10/16.
  */
-class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact.Presenter {
+class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePresenter<FaceListContact.View>(view), FaceListContact.Presenter {
 
     /**
      * face_id	人脸注册图像标识【必填项】
@@ -48,13 +49,13 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val sessionId = BaseApplication.getAppComponent().cmd.sessionId
+                val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
                 val account = DataSourceManager.getInstance().account.account
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
-                    val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_UPDATE_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_UPDATE_API
+                    val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
+                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
                     if (!url.startsWith("http://")) {
                         url = "http://" + url
                     }
@@ -125,7 +126,7 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val sessionId = BaseApplication.getAppComponent().cmd.sessionId
+                val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
@@ -188,12 +189,12 @@ class FaceListPresenter : BasePresenter<FaceListContact.View>(), FaceListContact
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#loadPersonItems", subscribe)
     }
 
-   override fun loadPersonItem2() {
+    override fun loadPersonItem2() {
         val subscribe = Observable.just("loadPersonItem2")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap {
-                    val seq = BaseApplication.getAppComponent().cmd
+                    val seq = BaseApplication.getAppComponent().getCmd()
                             .sendUniservalDataSeq(5, DpUtils.pack(DpMsgDefine.ReqContent(uuid, System.currentTimeMillis())))
                     RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java)
                             .first { it.seq == seq }.timeout(30, TimeUnit.SECONDS)

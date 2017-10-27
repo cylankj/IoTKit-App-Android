@@ -14,7 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -79,10 +78,6 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
 
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
 
     @Override
     protected View getContentRootView() {
@@ -253,9 +248,9 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     }
 
     @Override
-    protected void onPrepareToExit(Action action) {
+    public boolean performBackIntercept() {
         cancelShare(null);
-
+        return super.performBackIntercept();
     }
 
     public void cancelShare(View view) {

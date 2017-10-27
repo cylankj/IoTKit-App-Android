@@ -31,14 +31,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ImageViewTargetFactory;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -138,7 +136,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private MediaPlayer mediaPlayer;
     private RoundCardPopup roundCardPopup;
     @Inject
-    JFGSourceManager sourceManager;
+    protected JFGSourceManager sourceManager;
     private float ratio;
 
     private boolean isAnswerd = false;
@@ -346,11 +344,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         handleScreenUpdate(!land);
     }
 
+
     @Override
-    protected void onPrepareToExit(Action action) {
+    public boolean performBackIntercept() {
         presenter.dismiss();
-        finishExt();
-        action.actionDone();
+        return super.performBackIntercept();
     }
 
     private void handleScreenUpdate(final boolean port) {
@@ -390,7 +388,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
      */
     private void initLandView() {
         if (fLayoutLandHolderRef == null || fLayoutLandHolderRef.get() == null) {
-            View view = LayoutInflater.from(getAppContext())
+            View view = LayoutInflater.from(this)
                     .inflate(R.layout.layout_bell_live_land_layer, null);
             if (view != null) {
                 fLayoutLandHolderRef = new WeakReference<>(view);
@@ -760,11 +758,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
     }
 
-    @Override
-    public String onResolveViewLaunchType() {
-        return getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
-    }
-
     /**
      * 初始化videoView
      *
@@ -823,7 +816,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        mNewCallHandle = showAlert(getString(R.string.Tap1_Index_Tips_Newvisitor), getString(R.string.Tap1_Index_Tips_Newvisitor), getString(R.string.EFAMILY_CALL_ANSWER), getString(R.string.IGNORE));
     }
 
-    @Override
     public void onViewAction(int action, String handler, Object extra) {
         if (TextUtils.equals(mNewCallHandle, handler)) {
             switch (action) {
@@ -939,10 +931,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         clearHeadSetEventReceiver();
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
 
 //    protected void hideBottomUIMenu() {
 //        //隐藏虚拟按键，并且全屏

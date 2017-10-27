@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.view.View
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
@@ -124,9 +123,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 //    private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
 
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
-        fragmentComponent!!.inject(this)
-    }
+
 
     override fun getContentViewID(): Int {
         return R.layout.layout_youtube

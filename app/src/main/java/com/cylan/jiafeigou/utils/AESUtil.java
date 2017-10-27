@@ -160,7 +160,6 @@ public class AESUtil {
             // Base64编码
 
             String base64 =  Base64.encodeBase64String(hmac);;
-            System.out.println(base64);
             signature = URLEncoder.encode(base64, "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();

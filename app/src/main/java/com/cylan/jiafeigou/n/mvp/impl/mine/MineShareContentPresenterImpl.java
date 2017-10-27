@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,6 +28,10 @@ import rx.schedulers.Schedulers;
 
 public class MineShareContentPresenterImpl extends BasePresenter<MineShareContentContract.View> implements MineShareContentContract.Presenter {
 
+    @Inject
+    public MineShareContentPresenterImpl(MineShareContentContract.View view) {
+        super(view);
+    }
 
     @Override
     public void unShareContent(Iterable<DpMsgDefine.DPShareItem> item, Iterable<Integer> selection) {
@@ -58,7 +64,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "MineShareContentPresenterImpl#unShareContent",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "MineShareContentPresenterImpl#unShareContent", subscribe);
     }
 
     @Override
@@ -83,13 +89,13 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> mView.showLoading(R.string.LOADING, true))
-                .doOnTerminate(() -> mView.hideLoading())
+                .doOnSubscribe(() -> mLoadingManager.showLoading(R.string.LOADING, true))
+                .doOnTerminate(() -> mLoadingManager.hideLoading())
                 .subscribe(result -> {
                     mView.onShareContentResponse(result, refresh);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"MineShareContentPresenterImpl#loadFromServer", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "MineShareContentPresenterImpl#loadFromServer", subscribe);
     }
 }

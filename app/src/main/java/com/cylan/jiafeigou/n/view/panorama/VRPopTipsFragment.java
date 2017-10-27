@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 
 /**
@@ -8,10 +7,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
  */
 
 public class VRPopTipsFragment extends BaseFragment {
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
 
-    }
 
     @Override
     protected int getContentViewID() {

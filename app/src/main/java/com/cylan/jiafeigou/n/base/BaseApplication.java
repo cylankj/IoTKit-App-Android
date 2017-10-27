@@ -7,12 +7,14 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.base.injector.component.AppComponent;
-import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
-import com.cylan.jiafeigou.base.injector.module.AppModule;
+import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.base.module.BaseInitializationManager;
+import com.cylan.jiafeigou.dagger.component.AppComponent;
+import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -28,6 +30,14 @@ import com.danikula.videocache.HttpProxyCacheServer;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+import dagger.android.HasFragmentInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import permissions.dispatcher.PermissionUtils;
@@ -38,19 +48,30 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-14.
  */
-public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
+public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, HasActivityInjector, HasSupportFragmentInjector, HasFragmentInjector {
+
+    @Inject
+    DispatchingAndroidInjector<Activity> activityDispatchingAndroidInjector;
+    @Inject
+    DispatchingAndroidInjector<Fragment> supportFragmentDispatchingAndroidInjector;
+    @Inject
+    DispatchingAndroidInjector<android.app.Fragment> fragmentDispatchingAndroidInjector;
+    @Inject
+    BaseInitializationManager initializationManager;
+
 
     private static final String TAG = "BaseApplication";
 
 
-
-    private static AppComponent appComponent;
+    //    private static AppComponent appComponent;
     private static int viewCount = 0;
     private static BoxStore boxStore;
 
     private static Box<PropertyItem> propertyItemBox;
 
     private static Box<Device> deviceBox;
+    private volatile boolean needToInject = true;
+    private static AppComponent appComponent;
 
     public static BoxStore getBoxStore() {
         return boxStore;
@@ -68,8 +89,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
+        injectIfNecessary();
         //这是主进程
-//
 
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             //设计师不需要这个固定通知栏.20170531
@@ -81,10 +102,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
             boxStore = MyObjectBox.builder().androidContext(this).build();
             propertyItemBox = boxStore.boxFor(PropertyItem.class);
             deviceBox = boxStore.boxFor(Device.class);
-            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            appComponent.getInitializationManager().initialization();
+            initializationManager.initialization();
             if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initAppCmd());
+                Schedulers.io().createWorker().schedule(() -> initializationManager.initAppCmd());
             }
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
@@ -100,9 +120,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onTerminate() {
         super.onTerminate();
         AppLogger.d("进程已被销毁!!!!");
-        appComponent.getInitializationManager().clean();
-
-
+        initializationManager.clean();
     }
 
     @Override
@@ -186,10 +204,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
                     .delay(3, TimeUnit.MINUTES)
                     .subscribe(ret -> {
                         AppLogger.d("timeout for report");
-//                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     }, throwable -> {
                         AppLogger.d("timeout for report");
-//                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     });
         }
     }
@@ -198,7 +216,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         if (reportTask != null) {
             reportTask.unsubscribe();
         }
-//        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
+        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 
     public static boolean isBackground() {
@@ -224,6 +242,52 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     public static boolean isOnline() {
-        return appComponent.getSourceManager().isOnline();
+        return false;
     }
+
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return activityDispatchingAndroidInjector;
+    }
+
+    @Override
+    public AndroidInjector<android.app.Fragment> fragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return supportFragmentDispatchingAndroidInjector;
+    }
+
+    /**
+     * Lazily injects the {@link DaggerApplication}'s members. Injection cannot be performed in {@link
+     * Application#onCreate()} since {@link android.content.ContentProvider}s' {@link
+     * android.content.ContentProvider#onCreate() onCreate()} method will be called first and might
+     * need injected members on the application. Injection is not performed in the the constructor, as
+     * that may result in members-injection methods being called before the constructor has completed,
+     * allowing for a partially-constructed instance to escape.
+     */
+    private void injectIfNecessary() {
+        if (needToInject) {
+            synchronized (this) {
+                if (needToInject) {
+                    appComponent = DaggerAppComponent.builder().application(this).build();
+                    appComponent.inject(this);
+                    if (needToInject) {
+                        throw new IllegalStateException(
+                                "The AndroidInjector returned from applicationInjector() did not inject the "
+                                        + "DaggerApplication");
+                    }
+                }
+            }
+        }
+    }
+
+    @Inject
+    void setInjected() {
+        needToInject = false;
+    }
+
+
 }

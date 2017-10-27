@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
+import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;

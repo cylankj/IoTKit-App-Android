@@ -16,6 +16,8 @@ import com.google.gson.Gson;
 
 import java.util.concurrent.TimeoutException;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,10 +28,15 @@ import rx.schedulers.Schedulers;
  */
 public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingContact.View> implements PanoramaSettingContact.Presenter {
 
+    @Inject
+    public PanoramaSettingPresenter(PanoramaSettingContact.View view) {
+        super(view);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaSettingPresenter#newVersionRspSub", newVersionRspSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#newVersionRspSub", newVersionRspSub());
     }
 
     private Subscription newVersionRspSub() {
@@ -65,6 +72,6 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaSettingPresenter#unBindDevice", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#unBindDevice", subscribe);
     }
 }

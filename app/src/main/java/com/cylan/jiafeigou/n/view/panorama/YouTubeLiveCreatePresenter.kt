@@ -25,11 +25,12 @@ import rx.schedulers.Schedulers
 import java.lang.Exception
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by yanzhendong on 2017/9/7.
  */
-class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>(), YouTubeLiveCreateContract.Presenter {
+class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateContract.View?) : BasePresenter<YouTubeLiveCreateContract.View>(view), YouTubeLiveCreateContract.Presenter {
     override fun createLiveBroadcast(credential: GoogleAccountCredential, title: String?, description: String?, startTime: Long, endTime: Long) {
         val subscribe = Observable.just("createLiveBroadcast")
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -45,8 +46,8 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                     YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mView.showLoading(R.string.CREATING, false) }
-                .doOnTerminate { mView.hideLoading() }
+                .doOnSubscribe { mLoadingManager.showLoading(R.string.CREATING, false) }
+                .doOnTerminate { mLoadingManager.hideLoading() }
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     if (it == null) {
@@ -80,10 +81,10 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                 .observeOn(Schedulers.io())
                 .flatMap {
                     return@flatMap Observable.create<EventData> {
-                        val authStateManager = AuthStateManager.getInstance(mView.appContext)
+                        val authStateManager = AuthStateManager.getInstance(mContext)
                         val authState = authStateManager.current
                         if (authState.isAuthorized) {
-                            authState.performActionWithFreshTokens(AuthorizationService(mView.appContext), { accessToken, _, ex ->
+                            authState.performActionWithFreshTokens(AuthorizationService(mContext), { accessToken, _, ex ->
                                 if (ex == null) {
                                     val youTube = YouTube.Builder(
                                             AndroidHttp.newCompatibleTransport(),
@@ -113,8 +114,8 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mView.showLoading(R.string.CREATING, false) }
-                .doOnTerminate { mView.hideLoading() }
+                .doOnSubscribe { mLoadingManager.showLoading(R.string.CREATING, false) }
+                .doOnTerminate { mLoadingManager.hideLoading() }
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     if (it == null) {

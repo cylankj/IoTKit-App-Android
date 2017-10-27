@@ -2,6 +2,7 @@ package com.cylan.jiafeigou;
 
 import android.text.TextUtils;
 
+import com.alibaba.sdk.android.oss.common.auth.HmacSHA1Signature;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -430,5 +431,19 @@ public class DP {
         System.out.println(response.body().string());
 
         Thread.sleep(1000000);
+    }
+
+    @Test
+    public void testHmac() throws Exception {
+        String timeMillis = String.valueOf(10000000);
+        System.out.println(timeMillis);
+        //WfZCXJwU7j3eLjA4IWBVFSHgoH0=
+        String seceret = "6ZVBcFK6NLMg0zwjY0uuwdBiXUs7D1d9";
+        String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timeMillis);
+
+        System.out.println(sign);
+
+        System.out.println(new HmacSHA1Signature().computeSignature(seceret,
+                JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API + "\n" + timeMillis));
     }
 }

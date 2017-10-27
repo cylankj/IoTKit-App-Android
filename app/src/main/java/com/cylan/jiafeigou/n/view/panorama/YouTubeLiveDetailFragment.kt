@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.panorama
 import android.os.Bundle
 import android.text.TextUtils
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
@@ -18,9 +17,7 @@ import kotlinx.android.synthetic.main.fragment_youtube_detail.*
  * Created by yanzhendong on 2017/9/7.
  */
 class YouTubeLiveDetailFragment : BaseFragment<BasePresenter<JFGView>>() {
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
 
-    }
 
     override fun getContentViewID(): Int {
         return R.layout.fragment_youtube_detail

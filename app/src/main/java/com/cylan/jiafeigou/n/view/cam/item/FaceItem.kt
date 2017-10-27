@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
-import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.cylan.jiafeigou.utils.TimeUtils
 import com.mikepenz.fastadapter.items.AbstractItem
 
@@ -124,7 +123,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(JFGFaceGlideURL(uuid, visitor?.detailList?.get(0)?.faceId, false))
+                        .load(visitor?.detailList?.get(0)?.imgUrl)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)
@@ -134,7 +133,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(JFGFaceGlideURL(uuid, strangerVisitor?.faceId, true))
+                        .load(strangerVisitor?.image_url)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)

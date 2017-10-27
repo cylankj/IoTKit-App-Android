@@ -8,10 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
-import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -51,10 +48,6 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
         return fragment;
     }
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
 
     @Override
     public void onStart() {
@@ -75,7 +68,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
         if (getArguments() != null) {
             list = getArguments().getStringArrayList(KEY_DEVICES);
         }
-        mDeviceAdapter = new DeviceListAdapter(getActivityContext(), list, R.layout.item_delay_record_device);
+        mDeviceAdapter = new DeviceListAdapter(getActivity(), list, R.layout.item_delay_record_device);
         mDeviceAdapter.setOnItemClickListener(this);
         mDevicesList.setAdapter(mDeviceAdapter);
         refreshLayout();
@@ -87,20 +80,6 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
         } else {
             mDeviceEmptyView.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onViewAction(int action, String handler, Object extra) {
-//        if (option == JFGView.VIEW_ACTION_OFFER) {
-//            if (TextUtils.equals(handler, "devices")) {
-//                mDeviceEmptyView.setVisibility(View.GONE);
-//                mDeviceAdapter.clearLocal();
-//                mDeviceAdapter.addAll((List<String>) extra);
-//            }
-//            if (TextUtils.equals(handler, "empty")) {//无任何可用３G狗设备
-//                mDeviceEmptyView.setVisibility(View.VISIBLE);
-//            }
-//        }
     }
 
     @OnClick(R.id.header_delay_record_back)
@@ -117,7 +96,8 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
         String uuid = mDeviceAdapter.getItem(position);
-        onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, uuid);
+        // TODO: 2017/10/26
+        //onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, uuid);
     }
 
     private static class DeviceListAdapter extends SuperAdapter<String> {

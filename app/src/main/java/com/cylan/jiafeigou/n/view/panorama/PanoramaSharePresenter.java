@@ -6,7 +6,9 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -21,6 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -31,6 +35,18 @@ import rx.schedulers.Schedulers;
  */
 
 public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.View> implements PanoramaShareContact.Presenter {
+
+    @Inject
+    AppCmd appCmd;
+    @Inject
+    JFGSourceManager sourceManager;
+
+    @Inject
+    public PanoramaSharePresenter(PanoramaShareContact.View view) {
+        super(view);
+    }
+
+
     @Override
     @Deprecated
     public void check(String uuid, int time) {

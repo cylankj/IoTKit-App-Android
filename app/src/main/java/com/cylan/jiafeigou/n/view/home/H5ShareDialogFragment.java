@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 
 /**
@@ -8,8 +7,5 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
  */
 
 public class H5ShareDialogFragment extends BaseFragment {
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
 
-    }
 }

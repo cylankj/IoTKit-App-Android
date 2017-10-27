@@ -17,7 +17,7 @@ public interface BellDetailContract {
         void checkResult(RxEvent.CheckVersionRsp checkDevVersionRsp);
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
         //        void saveBellInfo(BeanBellInfo info, int msgId);
         <T extends DataPoint> void updateInfoReq(String uuid, T value, long id);
 

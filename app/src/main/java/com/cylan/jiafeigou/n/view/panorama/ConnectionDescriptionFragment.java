@@ -8,9 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.view.JFGView;
-import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentConnectionDescriptionBinding;
 
@@ -22,10 +19,6 @@ public class ConnectionDescriptionFragment extends BaseFragment {
 
     private FragmentConnectionDescriptionBinding descriptionBinding;
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        //do nothing
-    }
 
     @Nullable
     @Override
@@ -47,12 +40,20 @@ public class ConnectionDescriptionFragment extends BaseFragment {
         return fragment;
     }
 
+//    @Override
+//    protected boolean onBackPressed() {
+//        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+//            BaseActivity activity = (BaseActivity) getActivity();
+//            // TODO: 2017/10/26
+//           // activity.onViewAction(JFGView.VIEW_ACTION_OK, null, null);
+//        }
+//        return super.onBackPressed();
+//    }
+
     @Override
-    protected boolean onBackPressed() {
-        if (getActivity() != null && getActivity() instanceof BaseActivity) {
-            BaseActivity activity = (BaseActivity) getActivity();
-            activity.onViewAction(JFGView.VIEW_ACTION_OK, null, null);
-        }
-        return super.onBackPressed();
+    public boolean performBackIntercept() {
+
+        return super.performBackIntercept();
+
     }
 }

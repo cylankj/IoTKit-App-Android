@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.graphics.Bitmap;
-import android.support.annotation.CallSuper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -27,24 +25,23 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by yzd on 16-12-30.
  */
 
-public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter<V> {
+public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
     protected Caller mCaller;
     protected Caller mHolderCaller;
     protected boolean mIsInViewerMode = false;
 
-    @Override
-    @CallSuper
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
+    public BaseCallablePresenter(V view) {
+        super(view);
     }
 
     @Override
-    protected void onRegisterResponseParser() {
-        super.onRegisterResponseParser();
+    public void subscribe() {
+        super.subscribe();
+
     }
 
     @Override
-    protected String onResolveViewIdentify() {
+    protected String getViewHandler() {
         return mCaller == null ? null : mCaller.caller;
     }
 
@@ -77,21 +74,21 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .filter(who -> !mIsInViewerMode)
                                 .flatMap(who -> {
-                                    switch (mView.onResolveViewLaunchType()) {
-                                        case JConstant.VIEW_CALL_WAY_LISTEN:
-                                            if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
+//                                    switch (mView.onResolveViewLaunchType()) {
+//                                        case JConstant.VIEW_CALL_WAY_LISTEN:
+                                    if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
-                                            } else if (mHolderCaller != null) {
-                                                mView.onListen();
-                                                AppLogger.d("收到门铃呼叫");
-                                            }
-                                            break;
-                                        case JConstant.VIEW_CALL_WAY_VIEWER:
-                                            mCaller = mHolderCaller;
-                                            mHolderCaller = null;
-                                            startViewer();
-                                            break;
+                                    } else if (mHolderCaller != null) {
+                                        mView.onListen();
+                                        AppLogger.d("收到门铃呼叫");
                                     }
+//                                            break;
+//                                        case JConstant.VIEW_CALL_WAY_VIEWER:
+//                                            mCaller = mHolderCaller;
+//                                            mHolderCaller = null;
+//                                            startViewer();
+//                                            break;
+//                                    }
                                     return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
                                 })
                 )
@@ -117,7 +114,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"BaseCallablePresenter#newCall", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "BaseCallablePresenter#newCall", subscribe);
     }
 
     @Override
@@ -130,7 +127,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     public void loadPreview(String url) {
         Subscription subscription = load(BellPuller.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY,"BaseCallablePresenter#loadPreview", subscription);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "BaseCallablePresenter#loadPreview", subscription);
     }
 
     protected Observable<Long> load(String url) {
@@ -157,8 +154,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     private void preload(String url) {
-        if (mView != null && mView.getAppContext() != null && url != null) {
-            Glide.with(mView.getActivityContext()).load(url)
+        if (mView != null && url != null) {
+            Glide.with(mView.activity()).load(url)
                     .asBitmap()
                     .listener(new RequestListener<String, Bitmap>() {
                         @Override

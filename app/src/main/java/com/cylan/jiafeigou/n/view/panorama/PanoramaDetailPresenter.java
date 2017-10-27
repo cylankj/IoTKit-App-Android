@@ -34,6 +34,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,21 +50,21 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact.View> implements PanoramaDetailContact.Presenter {
     private boolean hasSDCard;
 
-    @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getReportMsgSub", getReportMsgSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
-    }
-
-    @Override
-    public void onViewAttached(PanoramaDetailContact.View view) {
-        super.onViewAttached(view);
+    @Inject
+    public PanoramaDetailPresenter(PanoramaDetailContact.View view) {
+        super(view);
         Device device = DataSourceManager.getInstance().getDevice(uuid);
 
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
 
         hasSDCard = status.hasSdcard;
+    }
+
+    @Override
+    public void subscribe() {
+        super.subscribe();
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getReportMsgSub", getReportMsgSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
     }
 
     private Subscription getReportMsgSub() {
@@ -132,7 +134,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 //                    }, e -> {
 //                        AppLogger.e(e.getMessage());
 //                    });
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaDetailPresenter#delete", subscribe);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#delete", subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3  
             Subscription subscribe = Observable.just(version)
@@ -154,7 +156,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         e.printStackTrace();
                         AppLogger.d(e.getMessage());
                     });
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"PanoramaDetailPresenter#delete1", subscribe);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#delete1", subscribe);
 
         }
     }
@@ -178,7 +180,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 
     @Override
     public void saveImage(CamWarnGlideURL glideURL, String fileName) {
-        Glide.with(mView.getActivityContext())//注意contxt
+        Glide.with(mView.activity())//注意contxt
                 .load(glideURL)
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

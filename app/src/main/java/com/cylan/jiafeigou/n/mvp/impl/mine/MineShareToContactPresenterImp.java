@@ -84,7 +84,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                             //说明是自己
                             shareContactItem.shared = true;
                         }
-                        AppLogger.d("添加电话联系人:" + new Gson().toJson(shareContactItem));
+                        AppLogger.w("添加电话联系人:" + new Gson().toJson(shareContactItem));
                     }
                     if (phoneQuery != null) {
                         phoneQuery.close();
@@ -105,7 +105,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                             //说明是自己
                             shareContactItem.shared = true;
                         }
-                        AppLogger.d("添加邮箱联系人:" + new Gson().toJson(shareContactItem));
+                        AppLogger.w("添加邮箱联系人:" + new Gson().toJson(shareContactItem));
                     }
                     if (emailQuery != null) {
                         emailQuery.close();

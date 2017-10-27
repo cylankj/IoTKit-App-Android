@@ -12,6 +12,6 @@ public interface Pan720FullContract {
     interface View extends JFGView {
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
     }
 }

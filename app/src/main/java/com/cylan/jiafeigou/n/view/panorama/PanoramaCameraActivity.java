@@ -46,7 +46,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.DeviceInformation;
@@ -60,6 +59,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
@@ -88,6 +88,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -201,6 +204,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private int livePlatform;
     private boolean apMode;
     //    private String rtmpAddress;
+    @Inject
+    @Singleton
+    protected ILoadingManager mLoadingManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -415,7 +421,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onDeviceUnBind() {
         AppLogger.w("当前设备已解绑" + uuid);
         presenter.cancelViewer();
-        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivityContext());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(this);
         builder.setPositiveButton(getString(R.string.OK), (dialog, which) -> {
             finish();
             Intent intent = new Intent(this, NewHomeActivity.class);
@@ -543,10 +549,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         PreferencesUtils.putInt(JConstant.PANORAMA_VIEW_MODE + ":" + uuid, panoramaViewMode);
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
 
     //    @Override
 //    protected void setActivityComponent(ActivityComponent activityComponent) {
@@ -788,9 +790,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         AppLogger.w("clickedToolBarBackMenu");
     }
 
-    //    @Override
     @Override
-    protected void onPrepareToExit(Action action) {
+    public boolean performBackIntercept() {
         presenter.dismiss();
         if (surfaceView != null) {
             surfaceView.onPause();
@@ -798,7 +799,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             surfaceView = null;
             muteAudio(false);
         }
-        action.actionDone();
+        return super.performBackIntercept();
     }
 
     @OnClick(R.id.act_panorama_camera_banner_bad_net_work_close)
@@ -1092,7 +1093,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             bottomPanelSwitcher.showPrevious();
         }
         if (enable) {
-            hideLoading();
+            mLoadingManager.hideLoading();
         }
 
         setting.setEnabled(true);

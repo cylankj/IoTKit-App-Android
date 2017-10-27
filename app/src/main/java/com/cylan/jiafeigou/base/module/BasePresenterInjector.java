@@ -26,9 +26,6 @@ public class BasePresenterInjector implements IBasePresenterInjector {
 
     @Override
     public <T extends BasePresenter> T inject(T presenter) {
-        presenter.setSourceManager(sourceManager);
-        presenter.setTaskDispatcher(taskDispatcher);
-        presenter.setAppCmd(appCmd);
         return presenter;
     }
 }

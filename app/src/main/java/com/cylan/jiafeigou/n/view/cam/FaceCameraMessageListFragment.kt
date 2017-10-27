@@ -42,12 +42,11 @@ class FaceCameraMessageListFragment : IBaseFragment<BasePresenter>() {
         return view
     }
 
-    private fun initViewAndListener() {
+    override fun initViewAndListener() {
         messageAdapter = FastItemAdapter<IItem<*, *>>()
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
         messageContent.layoutManager = manager
         messageContent.adapter = messageAdapter
-
 
 
     }

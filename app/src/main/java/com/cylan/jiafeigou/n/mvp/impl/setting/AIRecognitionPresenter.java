@@ -6,6 +6,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -15,6 +17,10 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.View> implements AIRecognitionContact.Presenter {
 
+    @Inject
+    public AIRecognitionPresenter(AIRecognitionContact.View view) {
+        super(view);
+    }
 
     @Override
     public void getObjectDetect() {
@@ -34,7 +40,7 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
     @Override
     public void onStart() {
         super.onStart();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"AIRecognitionPresenter#getSyncSub", getSyncSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "AIRecognitionPresenter#getSyncSub", getSyncSub());
     }
 
     private Subscription getSyncSub() {

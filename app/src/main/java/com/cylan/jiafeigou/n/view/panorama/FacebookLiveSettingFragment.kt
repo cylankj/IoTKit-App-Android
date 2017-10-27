@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.View
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
@@ -46,8 +45,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     override fun onError(p0: SHARE_MEDIA?, p1: Int, p2: Throwable?) {
     }
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
-    }
+
 
     override fun getContentViewID(): Int {
         return R.layout.layout_facebook

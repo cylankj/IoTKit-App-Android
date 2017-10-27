@@ -1701,7 +1701,20 @@ public class DpMsgDefine {
         }
     }
 
+//     "face_id": "201710271551094XL1rPiBrkyv3fluSb",
+//             "face_name": "就地解决阿胶阿胶阿胶浆",
+//             "coord": "[0,567],[593,512]",
+//             "account": "18503060168",
+//             "sn": "290100000003",
+//             "person_id": "2017102715560094KNgILKKdHUY5LJ9Q",
+//             "source_image_url": "http://jiafeigou-yf.oss-cn-hangzhou.aliyuncs.com/long/0001/18503060168/AI/290100000003/1524642063_0.jpg?OSSAccessKeyId=xjBdwD1du8lf2wMI\u0026Expires=1524642663\u0026Signature=I1hqJnCeRccXvs9mp9%2BxahMs60o%3D",
+//             "image_url": "https://jiafeigou-yf.oss-cn-hangzhou.aliyuncs.com:443/7day/0001/18503060168/AI/290100000003/201710271551094XL1rPiBrkyv3fluSb.jpg?security-token=CAISrAR1q6Ft5B2yfSjIrbmMG9%2Fsq41tgrG8MEGFt0M6VPlEmrLz1zz2IHpPendgAu8ev%2Fo%2FmGpR6PsYlq0rE8ccHZFKnEvtrcY5yxioRqackT%2Fej9Vd%2BmDOewW6Dxr8w7WMAYHQR8%2FcffGAck3NkjQJr5LxaTSlWS7TU%2FiOkoU1VskLeQO6YDFaZrJRPRAwh8IGEnHTOP2xSKWA4AzqAVFvpxB3hE5m9K272bf80BfFi0DgweJnee6TbZGvdJtrJ4wtEYX3ju53f6TM0SFX9l1b%2BuAs1fQcoW%2Bf4InHUwQWoXfJOuHPoNp0N107NOpoGa9NovX9mvpl%2F%2F3d0N6nk00VZbkNC36DFMfiooTNE%2Fj7Mc0iJ%2FSpeSbP09mBO5j6tB5hcHxcblISIoJ5cicoUUR2DXO4Zaas4wLNeRzxCfrHgqM32JR4zlrv4J%2BbKR%2FVEu3AiX5AYsdkNxhvdXxd1Gf6IKgdaF4OIRE1BbecQ4hyYxdD7LLm%2BgbTWmo4likO%2BL%2BcK%2FrdofIYcp6tHMAEg4gcbZpLsmQtUhHmRfWqjUEbMzQ9Ge8RksulMJSkurie27fRM6yUCPEOtFhbfjfM6juDDnJVJCL8oZ9BIlOT4JbW17eescEiQgkv795SDA6CbJN8oRti5KT1t0zLqaihcBDxpjZjo4eIobMisxU0Iq2W5MaJpSPbsXCqZq00pdzaQmUHQ27sIScnnqDJ2SpW%2BUBdyTjqZkwFgFOKznYep2R9GoABXMDXGzsS1SQ6B8NPGUUDrzvJhRc7OSsjbOmpym8Sbzq4LjjDVIdDEZp21ObeMYud",
+//             "service_type": 1,
+//             "species": 1
+
     public static class FaceInformation implements Parcelable {
+
+
         public String face_id;
         public String face_name;
         public String coord;
@@ -1710,8 +1723,8 @@ public class DpMsgDefine {
         public String person_id;
         public String source_image_url;
         public String image_url;
-        public String group_id;
         public String service_type;
+        public String species;
 
         @Override
         public String toString() {
@@ -1724,7 +1737,7 @@ public class DpMsgDefine {
                     ", person_id='" + person_id + '\'' +
                     ", source_image_url='" + source_image_url + '\'' +
                     ", image_url='" + image_url + '\'' +
-                    ", group_id='" + group_id + '\'' +
+                    ", species='" + species + '\'' +
                     ", service_type='" + service_type + '\'' +
                     '}';
         }
@@ -1744,7 +1757,7 @@ public class DpMsgDefine {
             dest.writeString(this.person_id);
             dest.writeString(this.source_image_url);
             dest.writeString(this.image_url);
-            dest.writeString(this.group_id);
+            dest.writeString(this.species);
             dest.writeString(this.service_type);
         }
 
@@ -1760,7 +1773,7 @@ public class DpMsgDefine {
             this.person_id = in.readString();
             this.source_image_url = in.readString();
             this.image_url = in.readString();
-            this.group_id = in.readString();
+            this.species = in.readString();
             this.service_type = in.readString();
         }
 

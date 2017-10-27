@@ -5,6 +5,7 @@ import android.media.MediaScannerConnection;
 import android.text.TextUtils;
 
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseCallablePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -23,6 +24,8 @@ import com.cylan.utils.JfgUtils;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -33,9 +36,12 @@ import rx.schedulers.Schedulers;
 
 public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContract.View> implements
         BellLiveContract.Presenter {
-    @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
+    @Inject
+    JFGSourceManager sourceManager;
+
+    @Inject
+    public BellLivePresenterImpl(BellLiveContract.View view) {
+        super(view);
     }
 
     @Override
@@ -55,7 +61,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                         String fileName = System.currentTimeMillis() + ".png";
                         MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
                         BitmapUtils.saveBitmap2file(bitmap, filePath);
-                        MediaScannerConnection.scanFile(mView.getActivityContext(), new String[]{filePath}, null, null);
+                        MediaScannerConnection.scanFile(mView.activity(), new String[]{filePath}, null, null);
                         AppLogger.e("截图文件地址:" + filePath);
                         DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                         item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;

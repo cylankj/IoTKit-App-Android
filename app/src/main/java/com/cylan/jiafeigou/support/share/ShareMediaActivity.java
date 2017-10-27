@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -45,10 +44,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
     private ShareOptionMenuDialog shareOptionMenuDialog;
     private boolean shareStarted = false;
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
+
 
     @Override
     protected void initViewAndListener() {

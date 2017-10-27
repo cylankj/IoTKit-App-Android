@@ -13,6 +13,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 
 /**
@@ -41,7 +43,12 @@ public interface CamDelayRecordContract {
         private long mRecordStartTime = -1;
         private long mRecordDuration = -1;
 
-        @Override
+        @Inject
+        public Presenter(View view) {
+            super(view);
+        }
+
+
         public void onViewAction(int action, String handle, Object extra) {
             switch (handle) {
                 case View.HANDLE_TIME_INTERVAL:

@@ -16,8 +16,8 @@ interface SetFaceNameContact {
         fun onSetFaceNameSuccess()
     }
 
-    interface Presenter : JFGPresenter<View> {
-        fun setFaceName(faceId: String, personId: String, faceName: String)
+    interface Presenter : JFGPresenter {
+        fun setFaceName( personId: String, faceName: String)
     }
 }
 
@@ -33,7 +33,7 @@ interface FaceManagerContact {
 
     }
 
-    interface Presenter : JFGPresenter<View> {
+    interface Presenter : JFGPresenter {
 
         fun loadFacesByPersonId(personId: String)
 
@@ -54,7 +54,7 @@ interface CreateFaceContact {
         fun onFaceNotExistError()
     }
 
-    interface Presenter : JFGPresenter<View> {
+    interface Presenter : JFGPresenter {
 
         fun createNewFace(faceId: String, faceName: String)
 
@@ -75,7 +75,7 @@ interface FaceListContact {
 
     }
 
-    interface Presenter : JFGPresenter<View> {
+    interface Presenter : JFGPresenter {
         // todo 是否需要 uuid?
         fun loadPersonItems(account: String, uuid: String)
 

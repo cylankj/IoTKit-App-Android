@@ -794,9 +794,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-    @Override
-    public void onBackPressed() {
 
+    public boolean onBackPressed() {
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
         } else {
@@ -806,6 +805,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
         }
+        return false;
     }
 
 //    @Override

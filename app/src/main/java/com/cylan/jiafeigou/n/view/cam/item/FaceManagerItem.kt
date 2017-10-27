@@ -42,8 +42,8 @@ class FaceManagerItem : AbstractItem<FaceManagerItem, FaceManagerItem.FaceManage
         super.bindView(holder, payloads)
         Glide.with(holder.itemView.context)
                 .load(faceInformation?.source_image_url)
-                .error(R.drawable.pic_welcome_page_1)
-                .placeholder(R.drawable.pic_welcome_page_1)
+                .error(R.color.color_E8EAEC)
+                .placeholder(R.color.color_E8EAEC)
                 .into(holder.faceIcon)
         holder.faceCheckBox.isChecked = isSelected
         val fastAdapter = holder.itemView.getTag(R.id.fastadapter_item_adapter) as FastAdapter<*>

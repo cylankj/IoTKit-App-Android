@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.support.login;
 
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 
 /**
@@ -8,8 +7,5 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
  */
 
 public class LoginActivity extends BaseActivity {
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
 
-    }
 }

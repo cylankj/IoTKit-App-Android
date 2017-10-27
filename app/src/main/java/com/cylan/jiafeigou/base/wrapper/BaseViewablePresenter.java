@@ -14,7 +14,9 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.cache.SimpleCache;
@@ -41,6 +43,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -54,18 +58,26 @@ import static com.cylan.jiafeigou.misc.JError.ErrorVideoPeerDisconnect;
 /**
  * Created by yzd on 16-12-30.
  */
-
-public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter<V>, IFeedRtcp.MonitorListener, HeadsetObserver.HeadsetListener {
-    protected String mViewLaunchType;
+public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter, IFeedRtcp.MonitorListener, HeadsetObserver.HeadsetListener {
 
     protected ViewableView.LiveStreamAction liveStreamAction = new ViewableView.LiveStreamAction();
-    IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
+    protected IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
     protected HeadsetObserver headsetObserver;
     protected AudioManager audioManager;
+    @Inject
+    protected JFGSourceManager sourceManager;
+    @Inject
+    protected AppCmd appCmd;
+
+
+    public BaseViewablePresenter(V view) {
+        super(view);
+    }
+
 
     @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
+    public void subscribe() {
+        super.subscribe();
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#getDeviceUnBindSub", getDeviceUnBindSub());
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#getLoadSub", getLoadSub());
     }
@@ -113,7 +125,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         Subscription subscribe = Observable.just(sourceManager.isOnline())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(isOnline -> {
-                    if (!isOnline && !NetUtils.isNetworkAvailable(mView.getAppContext())) {
+                    if (!isOnline && !NetUtils.isNetworkAvailable(mContext)) {
                         mView.onVideoDisconnect(BAD_NET_WORK);
                         liveStreamAction.reset();
                         return false;
@@ -164,7 +176,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             AppLogger.w("接收到分辨率消息,准备播放直播");
                             mView.onResolution(rsp);
                         }
-                        mViewLaunchType = onResolveViewIdentify();
                         RxBus.getCacheInstance().post(new BaseCallablePresenter.Notify(false));//发送一条 Notify 消息表明不需要再查询预览图了
                         registerHeadSetObservable();
                     } catch (JfgException e) {
@@ -208,7 +219,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                 });
 
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"BaseViewablePresenter#startViewer", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#startViewer", subscribe);
     }
 
     protected boolean shouldShowPreview() {
@@ -220,7 +231,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void cancelViewer() {
         Subscription subscribe = stopViewer().subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#cancelViewer",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#cancelViewer", subscribe);
     }
 
     protected boolean disconnectBeforePlay() {
@@ -358,12 +369,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 }, AppLogger::e);
     }
 
-    @Override
-    protected String onResolveViewIdentify() {
-        return uuid;
-    }
-
-    @Override
+    // TODO: 2017/10/26
     public void onScreenRotationChanged(boolean land) {
         if (mView != null) {
             mView.onSpeaker(liveStreamAction.speakerOn);
@@ -393,7 +399,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected String getViewHandler() {
-        return onResolveViewIdentify();
+        return uuid;
     }
 
     @Override
@@ -409,7 +415,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         mView.onDismiss();
                     }
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#dismiss",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#dismiss", subscribe);
     }
 
     @Override
@@ -424,7 +430,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"BaseViewablePresenter#switchSpeaker", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#switchSpeaker", subscribe);
     }
 
     @Override
@@ -439,7 +445,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#switchMicrophone",subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BaseViewablePresenter#switchMicrophone", subscribe);
     }
 
     private Observable<Boolean> setMicrophone(boolean on) {
@@ -492,7 +498,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public SurfaceView getViewerInstance() {
-        SurfaceView surfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, mView.getAppContext(), true, false);
+        SurfaceView surfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, mContext, true, false);
         surfaceView.setId("IVideoView".hashCode());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         surfaceView.setLayoutParams(params);

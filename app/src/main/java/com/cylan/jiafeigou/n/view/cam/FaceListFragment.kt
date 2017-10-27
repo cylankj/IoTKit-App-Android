@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
@@ -30,7 +29,6 @@ import kotlinx.android.synthetic.main.fragment_facelist.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListContact.View {
-
     private var faceId: String? = null
 
     override fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?) {
@@ -80,9 +78,6 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     lateinit var adapter: FastAdapter<*>
     private lateinit var itemAdapter: ItemAdapter<FaceListItem>
 
-    override fun setFragmentComponent(fragmentComponent: FragmentComponent) {
-        fragmentComponent.inject(this)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_facelist, container, false)
@@ -95,8 +90,8 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        account = arguments.getString("account")
-
+        account = arguments?.getString("account")
+        faceId = arguments?.getString("face_id")
         when (arguments?.getInt("type", TYPE_ADD_TO)) {
             TYPE_ADD_TO -> {
                 custom_toolbar.setToolbarLeftTitle(R.string.MESSAGES_IDENTIFY_ADD_BTN)
@@ -126,7 +121,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             custom_toolbar.setRightEnable(adapter.selections.size > 0)
         }
 
-        BaseApplication.getAppComponent().cmd.sessionId
+        BaseApplication.getAppComponent().getCmd().sessionId
         custom_toolbar.setRightEnable(false)
         itemAdapter.withComparator { item1, item2 ->
             val char1 = item1.visitor?.personName?.get(0) ?: '#'

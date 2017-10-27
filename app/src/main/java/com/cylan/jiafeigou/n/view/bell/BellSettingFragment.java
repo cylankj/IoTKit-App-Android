@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -27,6 +27,8 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,6 +54,8 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     LinearLayout mNetWorkContainer;
 
     private SimpleDialogFragment mClearRecordFragment;
+    @Inject
+    JFGSourceManager sourceManager;
 
     public static BellSettingFragment newInstance(String uuid) {
         BellSettingFragment fragment = new BellSettingFragment();
@@ -66,10 +70,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
         return R.layout.layout_fragment_bell_setting;
     }
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

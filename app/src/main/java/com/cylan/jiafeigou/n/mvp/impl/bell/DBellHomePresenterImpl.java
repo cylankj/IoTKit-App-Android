@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -26,6 +27,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -44,6 +47,14 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private List<BellCallRecordBean> mRecords = new ArrayList<>();
     private boolean isFirst = true;
     private Subscription subscribe;
+    @Inject
+    JFGSourceManager sourceManager;
+
+    @Inject
+    public DBellHomePresenterImpl(DoorBellHomeContract.View view) {
+        super(view);
+    }
+
 
     private void notifyBellLowBattery() {
         if (isFirst) {
@@ -74,9 +85,9 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             mView.onDeviceUnBind();
         } else {
             mView.onShowProperty(device);
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"DBellHomePresenterImpl#getClearDataSub", getClearDataSub());
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"DBellHomePresenterImpl#getNewFirmware", getNewFirmware());
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"DBellHomePresenterImpl#getDeviceUnBindSub", getDeviceUnBindSub());
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getClearDataSub", getClearDataSub());
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getNewFirmware", getNewFirmware());
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getDeviceUnBindSub", getDeviceUnBindSub());
 
         }
     }
@@ -156,7 +167,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         e.printStackTrace();
                     }
                 }, () -> mView.onRecordsListRsp(null));
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"DBellHomePresenterImpl#fetchBellRecordsList", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#fetchBellRecordsList", subscribe);
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
@@ -203,7 +214,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"DBellHomePresenterImpl#deleteBellCallRecord", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#deleteBellCallRecord", subscribe);
     }
 
     @Override

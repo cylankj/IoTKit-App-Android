@@ -15,7 +15,7 @@ public interface AIRecognitionContact {
 
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
         void getObjectDetect();
     }
 }

@@ -31,7 +31,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.LayoutVerticalFooterBinding;
@@ -163,10 +162,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         }
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
 
     @Override
     public void showFirmwareDialog() {
@@ -185,12 +180,12 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     private void initAdapter() {
-        bellCallRecordListAdapter = new BellCallRecordListAdapter(getAppContext(),
+        bellCallRecordListAdapter = new BellCallRecordListAdapter(this,
                 null, R.layout.layout_bell_call_list_item, this);
         bellCallRecordListAdapter.setOnItemClickListener(this);
         bellCallRecordListAdapter.setOnItemLongClickListener(this);
 
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getAppContext(), LinearLayoutManager.HORIZONTAL, false) {
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 try {
@@ -266,21 +261,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         LoadingDialog.dismissLoading();
     }
 
+    @Override
+    public boolean performBackIntercept() {
+        boolean editionMode = reverseEditionMode();
+        if (!editionMode) {
+            presenter.cancelFetch();
+            LoadingDialog.dismissLoading();
+        }
+        return editionMode;
+    }
+
     private void initSettingFragment() {
         if (fragmentWeakReference == null || fragmentWeakReference.get() == null) {
             fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(uuid));
         }
-    }
-
-    @Override
-    protected boolean shouldExit() {
-        return !checkExtraChildFragment() && !checkExtraFragment() && !reverseEditionMode();
-    }
-
-    @Override
-    protected void onPrepareToExit(Action action) {
-        finishExt();
-        action.actionDone();
     }
 
     /**
@@ -303,7 +297,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onLoginStateChanged(boolean online) {
         super.onLoginStateChanged(online);
         if (!online) {
-            LoadingDialog.dismissLoading();
             LoadingDialog.dismissLoading();//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         }
     }
@@ -463,7 +456,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                     @Override
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getAppContext().getResources(), resource);
+                                RoundedBitmapDrawableFactory.create(getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
                         if (imageView instanceof ImageViewTip) {
                             //顺便实现了红点。
@@ -551,7 +544,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBackStackChanged() {
         final int count = getSupportFragmentManager().getBackStackEntryCount();
         if (count == 0) {
-            presenter.onStart();
+//            presenter.onStart();
         } else {
             for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                 if (fragment instanceof BellSettingFragment) {

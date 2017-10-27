@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -24,6 +24,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.RecordControllerView;
 
 import java.lang.ref.WeakReference;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -76,6 +78,8 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
 
     private int mDelayRecordState = DELAY_RECORD_SETTING;
+    @Inject
+    AppCmd appCmd;
 
     public static DelayRecordMainFragment newInstance(String uuid) {
         DelayRecordMainFragment fragment = new DelayRecordMainFragment();
@@ -350,10 +354,6 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         refreshLayout();
     }
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
-    }
 
     @Override
     public void onStop() {

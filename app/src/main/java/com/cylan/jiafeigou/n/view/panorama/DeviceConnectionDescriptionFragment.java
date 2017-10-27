@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.FragmentDeviceConnectionDescriptionBinding;
@@ -27,10 +26,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
 
     private FragmentDeviceConnectionDescriptionBinding descriptionBinding;
 
-    @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        //do nothing
-    }
+
 
     @Nullable
     @Override

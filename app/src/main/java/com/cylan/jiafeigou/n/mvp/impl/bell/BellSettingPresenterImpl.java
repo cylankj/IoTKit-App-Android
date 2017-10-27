@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -11,6 +12,8 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeoutException;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -24,9 +27,12 @@ import rx.schedulers.Schedulers;
 public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.View>
         implements BellSettingContract.Presenter {
 
-    @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
+    @Inject
+    JFGSourceManager sourceManager;
+
+    @Inject
+    public BellSettingPresenterImpl(BellSettingContract.View view) {
+        super(view);
     }
 
     @Override
@@ -57,7 +63,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"BellSettingPresenterImpl#unbindDevice", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#unbindDevice", subscribe);
     }
 
     @Override
@@ -84,6 +90,6 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     AppLogger.d(e.getMessage());
                     AppLogger.d("清空呼叫记录失败!");
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP,"BellSettingPresenterImpl#clearBellRecord", subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#clearBellRecord", subscribe);
     }
 }
