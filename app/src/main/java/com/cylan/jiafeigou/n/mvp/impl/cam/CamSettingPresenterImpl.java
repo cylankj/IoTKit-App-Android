@@ -56,7 +56,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view);
-        view.setPresenter(this);
         BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
     }
 

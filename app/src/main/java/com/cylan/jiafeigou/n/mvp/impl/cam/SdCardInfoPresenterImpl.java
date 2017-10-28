@@ -42,7 +42,6 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     public SdCardInfoPresenterImpl(SdCardInfoContract.View view, String uuid) {
         super(view, uuid);
-        view.setPresenter(this);
     }
 
 

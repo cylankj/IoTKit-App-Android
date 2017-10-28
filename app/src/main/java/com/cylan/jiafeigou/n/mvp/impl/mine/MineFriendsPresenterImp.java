@@ -45,7 +45,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

@@ -13,7 +13,7 @@ import rx.Subscription;
  */
 public interface MineAddFromContactContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void initEditText(String alias);
 

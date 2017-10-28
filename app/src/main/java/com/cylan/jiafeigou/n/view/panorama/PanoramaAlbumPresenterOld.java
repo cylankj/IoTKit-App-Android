@@ -11,8 +11,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //
 //
 //    @Override
-//    public void onStart() {
-//        super.onStart();
+//    public void start() {
+//        super.start();
 //        fetch(false);//下拉刷新
 //        Observable.just("make")
 //                .subscribeOn(Schedulers.io())
@@ -24,8 +24,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //    }
 //
 //    @Override
-//    public void onStop() {
-//        super.onStop();
+//    public void stop() {
+//        super.stop();
 //    }
 //
 //    @Override

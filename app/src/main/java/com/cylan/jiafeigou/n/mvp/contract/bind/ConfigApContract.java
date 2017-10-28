@@ -15,7 +15,7 @@ import java.util.List;
 public interface ConfigApContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * wifi状态变化

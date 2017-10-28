@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 public class ApSettingContract {
 
-    public interface View extends BaseView<Presenter> {
+    public interface View extends BaseView {
         void timeout();
 
         void success();
@@ -17,7 +17,7 @@ public class ApSettingContract {
         String getHotSpotName();
     }
 
-    public interface Presenter extends BasePresenter, BaseView {
+    public interface Presenter extends BasePresenter {
 
         void monitorHotSpot();
     }

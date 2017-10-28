@@ -58,7 +58,7 @@ import static com.cylan.jiafeigou.rx.RxEvent.ResultEvent.JFG_RESULT_VERIFY_SMS;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContract.View, BaseDialog.BaseDialogAction {
+public class ForgetPwdFragment extends IBaseFragment<ForgetPwdContract.Presenter> implements ForgetPwdContract.View, BaseDialog.BaseDialogAction {
 
 
     @BindView(R.id.et_forget_username)
@@ -168,13 +168,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
+
 
     @Override
     public void onStop() {
@@ -182,9 +176,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (countDownTimer != null) {
             countDownTimer.onFinish();
             countDownTimer = null;
-        }
-        if (presenter != null) {
-            presenter.stop();
         }
     }
 
@@ -584,12 +575,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             }
         }
     }
-
-    @Override
-    public void setPresenter(ForgetPwdContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
 //    @Nullable
 //    @OnTextChanged(R.id.et_new_pwd_input)
 //    public void newPwdInputBoxChanged(CharSequence s, final int before, final int count, final int len) {

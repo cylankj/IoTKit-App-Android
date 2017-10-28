@@ -16,7 +16,6 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
 
     public MineFriendsAddFriendPresenterImp(MineFriendsAddFriendContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     /**

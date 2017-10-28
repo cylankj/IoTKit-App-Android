@@ -73,7 +73,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
         setContentView(R.layout.activity_config_wifi_2);
         ButterKnife.bind(this);
         this.uuid = getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID);
-        this.basePresenter = new ConfigApPresenterImpl(this);
+        this.presenter = new ConfigApPresenterImpl(this);
         rvWifiList.setAdapter(new AAdapter(getContext(), null, R.layout.layout_wifi_list_item));
         ((AAdapter) rvWifiList.getAdapter()).setOnItemClickListener(this);
         rvWifiList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -85,16 +85,6 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     }
 
     @Override
-    public void setPresenter(ConfigApContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
-    }
-
-    @Override
     public void onNetStateChanged(int state) {
 
     }
@@ -102,8 +92,8 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
-            basePresenter.refreshWifiList();
+        if (presenter != null) {
+            presenter.refreshWifiList();
         }
     }
 
@@ -191,8 +181,8 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));
                     return;
                 }
-                if (basePresenter != null) {
-                    basePresenter.sendWifiInfo(uuid, ssid, (String) value, security);
+                if (presenter != null) {
+                    presenter.sendWifiInfo(uuid, ssid, (String) value, security);
                 }
                 ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
                 Intent intent = new Intent(this, NewHomeActivity.class);
@@ -205,19 +195,19 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
 
     @Override
     public void onRefresh() {
-        if (basePresenter != null) {
-            basePresenter.refreshWifiList();
+        if (presenter != null) {
+            presenter.refreshWifiList();
         }
         swRefreshWifi.setRefreshing(true);
     }
 
-
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     finishExt();
                 }, getString(R.string.CANCEL), null, false);
+        return true;
     }
 
     private class AAdapter extends SuperAdapter<ScanResult> {

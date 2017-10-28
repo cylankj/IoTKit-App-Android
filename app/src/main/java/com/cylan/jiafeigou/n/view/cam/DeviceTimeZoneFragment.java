@@ -85,11 +85,6 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
 
     }
 
-    @Override
-    public void setPresenter(TimezoneContract.Presenter presenter) {
-        basePresenter = presenter;
-    }
-
     public DeviceTimeZoneFragment() {
     }
 
@@ -103,7 +98,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-        basePresenter = new TimezonePresenterImpl(this, uuid);
+        presenter = new TimezonePresenterImpl(this, uuid);
     }
 
     @Nullable
@@ -194,7 +189,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
 
     @OnTextChanged(R.id.et_timezone_search)
     public void onInputTextChanged(CharSequence s, int start, int before, int count) {
-        basePresenter.onSearch(s.toString());
+        presenter.onSearch(s.toString());
     }
 
     /**

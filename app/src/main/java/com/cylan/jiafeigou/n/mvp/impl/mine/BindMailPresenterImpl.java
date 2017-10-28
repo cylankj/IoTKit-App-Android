@@ -35,7 +35,6 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
 
     public BindMailPresenterImpl(BindMailContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

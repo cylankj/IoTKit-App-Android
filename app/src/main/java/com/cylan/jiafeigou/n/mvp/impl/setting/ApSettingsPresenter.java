@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -34,16 +33,6 @@ public class ApSettingsPresenter extends AbstractPresenter<ApSettingContract.Vie
     }
 
     @Override
-    public void setPresenter(Object presenter) {
-
-    }
-
-    @Override
-    public Context getContext() {
-        return null;
-    }
-
-    @Override
     public void monitorHotSpot() {
         //还有另外一种方式，直接ping此设备
         final String mac = getDevice().$(202, "");
@@ -51,7 +40,7 @@ public class ApSettingsPresenter extends AbstractPresenter<ApSettingContract.Vie
         if (TextUtils.isEmpty(mac)) {
             return;
         }
-        if (hasSubscroption("monitorHotSpot")) {
+        if (containsSubscription("monitorHotSpot")) {
             return;
         }
         Subscription subscription = Observable.interval(2, TimeUnit.SECONDS)

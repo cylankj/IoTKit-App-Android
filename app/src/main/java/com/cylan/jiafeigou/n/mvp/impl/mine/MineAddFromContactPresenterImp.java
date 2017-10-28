@@ -39,7 +39,6 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     public MineAddFromContactPresenterImp(MineAddFromContactContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

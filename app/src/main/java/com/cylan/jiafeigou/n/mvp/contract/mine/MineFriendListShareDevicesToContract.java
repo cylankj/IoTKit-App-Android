@@ -17,7 +17,7 @@ import rx.Subscription;
  */
 public interface MineFriendListShareDevicesToContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 初始化列表的显示
          *

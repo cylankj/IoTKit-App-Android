@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public interface SafeInfoContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void onAIStrategyRsp();
 

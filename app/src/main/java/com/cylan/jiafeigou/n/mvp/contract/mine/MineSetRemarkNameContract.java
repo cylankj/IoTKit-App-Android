@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
  */
 public interface MineSetRemarkNameContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         String getEditName();
 
         /**

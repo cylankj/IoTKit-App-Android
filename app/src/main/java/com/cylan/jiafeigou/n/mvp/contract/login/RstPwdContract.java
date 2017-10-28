@@ -10,7 +10,7 @@ import org.msgpack.annotation.NotNullable;
  */
 public interface RstPwdContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 登陆结果

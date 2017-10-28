@@ -129,21 +129,11 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         updateHint();
         svHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
         customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
-        svHomeSettingClear.setSubTitle(basePresenter.calculateCacheSize());
+        svHomeSettingClear.setSubTitle(presenter.calculateCacheSize());
     }
 
     private void initPresenter() {
-        basePresenter = new HomeSettingPresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(HomeSettingContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
+        presenter = new HomeSettingPresenterImp(this);
     }
 
     @OnClick({R.id.sv_home_setting_about,
@@ -163,7 +153,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 if ("0.0M".equals(svHomeSettingClear.getSubTitle())) {
                     return;
                 }
-                basePresenter.clearCache();
+                presenter.clearCache();
                 break;
             case R.id.sv_home_setting_recommend:
                 //推荐给亲友
@@ -244,7 +234,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public boolean switchAcceptMesg() {
-        return basePresenter.getNegation();
+        return presenter.getNegation();
     }
 
     @Override
@@ -286,7 +276,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                         .setTitle(R.string.PUSH_MSG);
                 AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), getActivity(), builder);
             } else {
-                basePresenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
                 if (!isChecked) {
                     svSoundContainer.setVisibility(View.GONE);
                     svVibrateContainer.setVisibility(View.GONE);
@@ -297,10 +287,10 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             }
         });
         svSoundContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            basePresenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
+            presenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
         });
         svVibrateContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            basePresenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
+            presenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
         });
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         //已经关注公众号
@@ -456,7 +446,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void onStart(SHARE_MEDIA share_media) {
-        Log.d("getOpenID", "onStart: ");
+        Log.d("getOpenID", "start: ");
     }
 
     @Override
@@ -511,7 +501,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
                     JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     if (jfgAccount != null) {
-                        basePresenter.logOut(jfgAccount.getAccount(), getActivity());
+                        presenter.logOut(jfgAccount.getAccount(), getActivity());
                         //进入登陆页 login page
                         Intent intent = new Intent(getContext(), SmartcallActivity.class);
                         intent.putExtra(JConstant.FROM_LOG_OUT, true);

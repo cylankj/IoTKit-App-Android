@@ -100,8 +100,8 @@
 //    }
 //
 //    @Override
-//    public void onStop() {
-//        super.onStop();
+//    public void stop() {
+//        super.stop();
 //        if (resultSub != null && !resultSub.isUnsubscribed()) {
 //            resultSub.unsubscribe();
 //        }

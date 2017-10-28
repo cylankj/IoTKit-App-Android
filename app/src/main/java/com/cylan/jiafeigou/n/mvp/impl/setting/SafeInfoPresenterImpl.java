@@ -38,9 +38,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
 
     public SafeInfoPresenterImpl(SafeInfoContract.View view, String uuid) {
-        super(view);
-        this.uuid = uuid;
-        view.setPresenter(this);
+        super(view,uuid);
     }
 
     @Override

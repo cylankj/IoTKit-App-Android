@@ -71,8 +71,8 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
     };
 
     @Override
-    public void stop() {
-        super.stop();
+    public void unsubscribe() {
+        super.unsubscribe();
         try {
             if (mService != null) {
                 mService.unregisterCallback(mCallback);

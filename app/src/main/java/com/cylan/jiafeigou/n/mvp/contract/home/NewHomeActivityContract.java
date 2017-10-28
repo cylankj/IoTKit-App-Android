@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 
 public interface NewHomeActivityContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void initView();
 
 //        void updateProcess(long currentByte, long totalByte);

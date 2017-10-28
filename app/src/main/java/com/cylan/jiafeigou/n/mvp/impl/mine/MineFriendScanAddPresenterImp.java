@@ -44,7 +44,6 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     public MineFriendScanAddPresenterImp(MineFriendScanAddContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

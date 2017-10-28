@@ -17,7 +17,7 @@ interface SetFaceNameContact {
     }
 
     interface Presenter : JFGPresenter {
-        fun setFaceName( personId: String, faceName: String)
+        fun setFaceName(personId: String, faceName: String)
     }
 }
 
@@ -43,7 +43,7 @@ interface FaceManagerContact {
 }
 
 interface CreateFaceContact {
-    interface View : JFGView {
+    interface View : JFGView  {
 
         fun onCreateNewFaceSuccess(personId: String)
 

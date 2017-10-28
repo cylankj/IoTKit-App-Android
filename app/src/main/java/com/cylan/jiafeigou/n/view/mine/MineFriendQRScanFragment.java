@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendScanAddBinding;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -36,7 +36,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendQRScanFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
+public class MineFriendQRScanFragment extends IBaseFragment<MineFriendScanAddContract.Presenter> implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
 
     private MineFriendScanAddContract.Presenter presenter;
     private FragmentMineFriendScanAddBinding scanAddBinding;
@@ -86,16 +86,6 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
 //        erWeimalayoutParams.height = (int) (screenHeight * 0.135 + 0.5);
 //        erWeimalayoutParams.width = (int) (screenWidth * 0.24 + 0.5);
 //        ivErweima.setLayoutParams(erWeimalayoutParams);
-    }
-
-    @Override
-    public void setPresenter(MineFriendScanAddContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     @OnClick(R.id.tv_toolbar_icon)
@@ -190,14 +180,6 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         scanAddBinding.qrScanView.setResultHandler(MineFriendQRScanFragment.this);
@@ -207,14 +189,6 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
     public void onPause() {
         super.onPause();
         scanAddBinding.qrScanView.stopCamera();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 
 }

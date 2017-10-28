@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +30,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -64,7 +64,7 @@ import permissions.dispatcher.RuntimePermissions;
  * 描述：
  */
 @RuntimePermissions
-public class MineContactManagerFragment extends Fragment implements MineShareToContactContract.View {
+public class MineContactManagerFragment extends IBaseFragment implements MineShareToContactContract.View {
     private MineShareToContactContract.Presenter presenter;
     private FastItemAdapter<ShareContactItem> shareFriendItemItemAdapter;
     private FragmentMineShareToContactBinding shareToContactBinding;
@@ -158,7 +158,6 @@ public class MineContactManagerFragment extends Fragment implements MineShareToC
     public void onStart() {
         super.onStart();
         if (presenter != null) {
-            presenter.start();
             presenter.checkAndInitContactList(contactType);
         }
     }
@@ -173,16 +172,6 @@ public class MineContactManagerFragment extends Fragment implements MineShareToC
 
     private void initPresenter() {
         presenter = new MineShareToContactPresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(MineShareToContactContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return uuid;
     }
 
     @OnClick({R.id.iv_mine_share_to_contact_back, R.id.iv_mine_share_to_contact_search})
@@ -210,16 +199,6 @@ public class MineContactManagerFragment extends Fragment implements MineShareToC
         } else {
             IMEUtils.hide(getActivity());
         }
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-        IMEUtils.hide(getActivity());
     }
 
     @Override

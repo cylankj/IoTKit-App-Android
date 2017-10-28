@@ -73,7 +73,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
         this.isBell = getArguments().getBoolean(KEY_DEVICE_ITEM_IS_BELL, false);
-        basePresenter = new VideoAutoRecordPresenterImpl(this, uuid);
+        presenter = new VideoAutoRecordPresenterImpl(this, uuid);
     }
 
     /**
@@ -179,7 +179,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 //                rbMotion.setChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 0;
-                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                presenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
                 siv_mode_24_hours.setRadioButtonChecked(false);
                 siv_mode_never.setRadioButtonChecked(false);
             }
@@ -193,7 +193,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 siv_mode_24_hours.setRadioButtonChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 1;
-                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                presenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
                 siv_mode_motion.setRadioButtonChecked(false);
                 siv_mode_never.setRadioButtonChecked(false);
             }
@@ -207,7 +207,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 siv_mode_never.setRadioButtonChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 2;
-                basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                presenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
                 siv_mode_24_hours.setRadioButtonChecked(false);
                 siv_mode_motion.setRadioButtonChecked(false);
             }
@@ -233,7 +233,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
         oldOption = flag.value = checked ? 0 : 2;//#118091 - 1 为无效值
 //        if (oldOption == -1) oldOption = 2;
-        basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        presenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
     }
 
     private void clickWatchVideoSwitcher(CompoundButton button, boolean checked) {
@@ -250,7 +250,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             return;
         }
         AppLogger.w("开启自动录像:" + checked);
-        basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(checked), 305);
+        presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(checked), 305);
     }
 
     @Override
@@ -261,12 +261,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (oldOption != a && oldOption != -1) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
-    }
-
-
-    @Override
-    public void setPresenter(VideoAutoRecordContract.Presenter presenter) {
-        basePresenter = presenter;
     }
 
     @OnClick({R.id.lLayout_mode_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
@@ -296,7 +290,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     }
                     DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                     wFlag.value = true;
-                    basePresenter.updateInfoReq(wFlag, ID_501_CAMERA_ALARM_FLAG);
+                    presenter.updateInfoReq(wFlag, ID_501_CAMERA_ALARM_FLAG);
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     if (index == 1) {
                         siv_mode_24_hours.setRadioButtonChecked(true);
@@ -306,7 +300,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     }
                     DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                     flag.value = index;
-                    basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                    presenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
                 })
                 .setNegativeButton(getString(R.string.CANCEL), null)
                 .show();

@@ -93,7 +93,7 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-        this.basePresenter = new WifiListPresenterImpl(this, uuid);
+        this.presenter = new WifiListPresenterImpl(this, uuid);
     }
 
     @Override
@@ -152,8 +152,8 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                 return;
             }
         }
-        if (basePresenter != null) {
-            basePresenter.startScan();
+        if (presenter != null) {
+            presenter.startScan();
         }
     }
 
@@ -185,12 +185,6 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     public void showRationaleForLocation(PermissionRequest request) {
         onDeniedLocationPermission();
     }
-
-    @Override
-    public void setPresenter(WifiListContract.Presenter presenter) {
-
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -217,8 +211,8 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                 new AlertDialog.Builder(getContext())
                         .setMessage(getString(R.string.GetWifiList_FaiTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                            if (basePresenter != null) {
-                                basePresenter.startScan();
+                            if (presenter != null) {
+                                presenter.startScan();
                             }
                         })
                         .setNegativeButton(getString(R.string.CALL_CAMERA_NAME), null)
@@ -232,8 +226,8 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
 
     @Override
     public void onRefresh() {
-        if (basePresenter != null) {
-            basePresenter.startScan();
+        if (presenter != null) {
+            presenter.startScan();
         }
         swRefreshWifi.setRefreshing(true);
     }
@@ -262,8 +256,8 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));
                     return;
                 }
-                if (basePresenter != null) {
-                    basePresenter.sendWifiInfo(ssid, (String) value, security);
+                if (presenter != null) {
+                    presenter.sendWifiInfo(ssid, (String) value, security);
                 }
                 ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
                 Intent intent = new Intent(getActivity(), NewHomeActivity.class);

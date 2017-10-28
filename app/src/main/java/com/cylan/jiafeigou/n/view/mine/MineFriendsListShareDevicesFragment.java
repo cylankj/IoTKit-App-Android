@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendShareDevicesBinding;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendsListShareDevicesFragment extends Fragment implements MineFriendListShareDevicesToContract.View {
+public class MineFriendsListShareDevicesFragment extends IBaseFragment implements MineFriendListShareDevicesToContract.View {
     private MineFriendListShareDevicesToContract.Presenter presenter;
     private FriendContextItem friendItem;
     private ChooseShareDeviceAdapter chooseShareDeviceAdapter;
@@ -86,35 +86,10 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-    }
-
     private void initPresenter() {
         presenter = new MineFriendListShareDevicesPresenterImp(friendItem.friendAccount.account, this);
     }
 
-    @Override
-    public void setPresenter(MineFriendListShareDevicesToContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
-    }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {

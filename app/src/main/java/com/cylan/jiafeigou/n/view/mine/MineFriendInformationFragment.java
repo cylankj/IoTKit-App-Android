@@ -79,13 +79,6 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
 
     /**
      * desc:获取到传过来的数据
@@ -126,16 +119,6 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
 
     private void initPresenter() {
         presenter = new MineFriendInformationPresenter(this);
-    }
-
-    @Override
-    public void setPresenter(MineFriendInformationContact.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     public void onClick(View view) {
@@ -315,14 +298,5 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
             default:
                 ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-        IMEUtils.hide(getActivity());
     }
 }

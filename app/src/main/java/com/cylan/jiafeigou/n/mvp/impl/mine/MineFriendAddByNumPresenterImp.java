@@ -46,7 +46,6 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     public MineFriendAddByNumPresenterImp(MineFriendSearchContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

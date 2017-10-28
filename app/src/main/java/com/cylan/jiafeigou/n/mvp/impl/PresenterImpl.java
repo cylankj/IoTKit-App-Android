@@ -23,7 +23,6 @@ public class PresenterImpl extends AbstractPresenter<RstPwdContract.View> implem
 
     public PresenterImpl(RstPwdContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

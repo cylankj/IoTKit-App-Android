@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.media;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -107,7 +106,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         camMessageBean = getIntent().getParcelableExtra(KEY_BUNDLE);
 
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        basePresenter = new CamMediaPresenterImpl(this, uuid);
+        presenter = new CamMediaPresenterImpl(this, uuid);
 
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
         customAdapter.setCamMessageBean(camMessageBean);
@@ -121,8 +120,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             @Override
             public void onPageSelected(int position) {
                 currentIndex = position;
-                if (basePresenter != null) {
-                    basePresenter.checkCollection(MiscUtils.getVersion(camMessageBean), currentIndex, camMessageBean);
+                if (presenter != null) {
+                    presenter.checkCollection(MiscUtils.getVersion(camMessageBean), currentIndex, camMessageBean);
                 }
             }
         });
@@ -227,8 +226,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 v.setScaleY(0.8f);
             }
         }
-        if (basePresenter != null) {
-            basePresenter.checkCollection(MiscUtils.getVersion(camMessageBean), index, camMessageBean);
+        if (presenter != null) {
+            presenter.checkCollection(MiscUtils.getVersion(camMessageBean), index, camMessageBean);
         }
     }
 
@@ -277,12 +276,12 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 }
                 Object tag = imgVBigPicCollect.getTag();
                 if (tag == null || !(boolean) tag) {
-                    if (basePresenter != null) {
-                        basePresenter.collect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
+                    if (presenter != null) {
+                        presenter.collect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
                     }
                 } else {
-                    if (basePresenter != null) {
-                        basePresenter.unCollect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
+                    if (presenter != null) {
+                        presenter.unCollect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
                     }
                 }
                 LoadingDialog.showLoading(this);
@@ -292,18 +291,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         finishExt();
-    }
-
-    @Override
-    public void setPresenter(CamMediaContract.Presenter presenter) {
-        basePresenter = presenter;
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
+        return true;
     }
 
     @Override
@@ -431,8 +421,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
-        if (basePresenter != null) {
-            basePresenter.saveImage(MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1));
+        if (presenter != null) {
+            presenter.saveImage(MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1));
         }
     }
 

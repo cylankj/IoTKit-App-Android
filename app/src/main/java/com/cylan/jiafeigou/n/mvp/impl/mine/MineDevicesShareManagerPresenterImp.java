@@ -36,7 +36,6 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
 
     public MineDevicesShareManagerPresenterImp(MineDevicesShareManagerContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
 
@@ -71,7 +70,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     try {
                         JFGFriendAccount account = shareListInfo.friends.get(position);
                         AppLogger.e("正在取消分享:" + account.account);
-                        seq = BaseApplication.getAppComponent().getCmd().unShareDevice(getUuid(), account.account);
+                        seq = BaseApplication.getAppComponent().getCmd().unShareDevice(uuid, account.account);
                     } catch (Exception e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());

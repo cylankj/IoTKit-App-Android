@@ -14,7 +14,7 @@ import rx.Observable;
  */
 public interface FeedBackContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 初始化显示列表
          *

@@ -26,7 +26,6 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
 
     public MineInfoSetNewPwdPresenterImp(MineInfoSetNewPwdContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     /**

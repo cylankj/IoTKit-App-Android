@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 public interface SubmitBindingInfoContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 绑定状态: -2:超时,-1:连接中,0离线,>1 成功 ,2：已经被绑定
          */

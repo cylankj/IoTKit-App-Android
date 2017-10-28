@@ -33,7 +33,6 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     //计数10分钟3次

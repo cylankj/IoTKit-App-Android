@@ -24,8 +24,8 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
+        super.start();
         checkAndInitLogoOption();
     }
 
@@ -41,7 +41,7 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#checkAndInitLogoOption", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#checkAndInitLogoOption", subscribe);
     }
 
     @Override
@@ -57,6 +57,6 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#changeLogoType", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#changeLogoType", subscribe);
     }
 }

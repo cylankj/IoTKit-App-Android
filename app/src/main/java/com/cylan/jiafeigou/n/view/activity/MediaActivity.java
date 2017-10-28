@@ -475,7 +475,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @Override
     protected void onStop() {
         super.onStop();
-        AppLogger.d("onStop");
+        AppLogger.d("stop");
         stopVideoPlay();
     }
 

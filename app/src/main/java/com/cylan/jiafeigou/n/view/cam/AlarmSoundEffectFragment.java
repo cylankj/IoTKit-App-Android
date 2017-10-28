@@ -73,7 +73,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        basePresenter = new CamAlarmPresenterImpl(this, uuid);
+        presenter = new CamAlarmPresenterImpl(this, uuid);
     }
 
     @Override
@@ -119,10 +119,6 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     }
 
 
-    @Override
-    public void setPresenter(CamWarnContract.Presenter presenter) {
-        basePresenter = presenter;
-    }
 
     @Override
     public void onDestroyView() {
@@ -142,13 +138,13 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
             case R.id.sv_mode_bark:
                 svWarnRepeatMode.setVisibility(View.VISIBLE);
                 rbWarnEffectDog.setChecked(true);
-                basePresenter.playSound(R.raw.wangwang_voice);
+                presenter.playSound(R.raw.wangwang_voice);
                 notificationInfo.notification = 1;
                 break;
             case R.id.sv_mode_alarm:
                 svWarnRepeatMode.setVisibility(View.VISIBLE);
                 rbWarnEffectWaring.setChecked(true);
-                basePresenter.playSound(R.raw.warm_voice);
+                presenter.playSound(R.raw.warm_voice);
                 notificationInfo.notification = 2;
                 break;
             case R.id.sv_warn_repeat_mode:
@@ -158,11 +154,11 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                 durationDialogFragment.setAction((int id, Object value) -> {
                     svWarnRepeatMode.setSubTitle(String.format(Locale.getDefault(), "%ss", value));
                     notificationInfo.duration = (int) value;
-                    basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                    presenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                 });
                 durationDialogFragment.show(getActivity().getSupportFragmentManager(), "durationDialogFragment");
                 return;
         }
-        basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+        presenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
     }
 }

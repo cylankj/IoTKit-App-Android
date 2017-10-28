@@ -122,7 +122,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
@@ -199,7 +199,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
 
     @Override
     public void onStart(SHARE_MEDIA share_media) {
-        AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+        AppLogger.e("start,分享开始啦!,当前分享到的平台为:" + share_media);
         shareStarted = true;
     }
 

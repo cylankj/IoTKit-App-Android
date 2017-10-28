@@ -75,8 +75,9 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         finishExt();
+        return true;
     }
 
     @Override
@@ -184,7 +185,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             }
 
             String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
-            if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), getUuid())
+            if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), uuid())
                     && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
                 Bundle bundle = new Bundle();
                 bundle.putString("PanoramaConfigure", panoramaConfigure);

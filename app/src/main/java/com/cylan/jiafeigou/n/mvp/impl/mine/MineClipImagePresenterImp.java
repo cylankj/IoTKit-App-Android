@@ -44,7 +44,6 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     public MineClipImagePresenterImp(MineClipImageContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     /**

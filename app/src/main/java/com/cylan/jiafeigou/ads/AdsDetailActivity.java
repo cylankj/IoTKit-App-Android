@@ -141,7 +141,8 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         onClick();
+        return true;
     }
 }

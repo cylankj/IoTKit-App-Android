@@ -46,7 +46,6 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

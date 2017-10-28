@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface MineInfoContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void initPersonalInformation(Account account);          //初始化显示个人信息
 

@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 public interface ForgetPwdContract {
 
 
-    interface View extends BaseFragmentView<Presenter> {
+    interface View extends BaseFragmentView {
 
         void onResult(int event, int errId);
 

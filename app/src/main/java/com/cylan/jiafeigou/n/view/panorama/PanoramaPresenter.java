@@ -199,7 +199,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startYoutubeLiveRtmp", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startYoutubeLiveRtmp", subscribe);
     }
 
     @Override
@@ -261,7 +261,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopYoutubeLiveRtmp", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopYoutubeLiveRtmp", subscribe);
     }
 
     private void startWeiboLiveRtmp() {
@@ -378,7 +378,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             AppLogger.w(MiscUtils.getErr(e));
                         }
                 );
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startWeiboLiveRtmp", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startWeiboLiveRtmp", subscribe);
 
     }
 
@@ -453,7 +453,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopWeiboLiveRtmp", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopWeiboLiveRtmp", subscribe);
     }
 
     private void startRtmpLive(String url, int liveType) {
@@ -500,7 +500,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.w(MiscUtils.getErr(e));
                     RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startRtmpLive", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startRtmpLive", subscribe);
     }
 
     private void stopRtmpLive(int liveType) {
@@ -533,7 +533,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopYoutubeLiveRtmp", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopYoutubeLiveRtmp", subscribe);
     }
 
     private void startFacebookRtmpLive() {
@@ -611,7 +611,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.showRtmpLiveSetting();
                     }
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startFacebookRtmpLive", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startFacebookRtmpLive", subscribe);
 
     }
 
@@ -635,7 +635,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(response -> stopRtmpLive(1), e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopFacebookRtmpLive", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopFacebookRtmpLive", subscribe);
     }
 
     private String getPlatformString(Context context, int livePlatform) {
@@ -756,17 +756,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
+        super.start();
         BaseDeviceInformationFetcher.getInstance().init(uuid);
         DataSourceManager.getInstance().syncAllProperty(uuid);
     }
-
-    @Override
-    public void onViewDetached() {
-        super.onViewDetached();
-    }
-
 
     @Override
     protected boolean disconnectBeforePlay() {
@@ -776,11 +770,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void subscribe() {
         super.subscribe();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#newVersionRspSub", newVersionRspSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getReportMsgSub", getReportMsgSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getDeviceRecordStateSub", getDeviceRecordStateSub());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#makeNewMsgSub", makeNewMsgSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#newVersionRspSub", newVersionRspSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getReportMsgSub", getReportMsgSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#getDeviceRecordStateSub", getDeviceRecordStateSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#makeNewMsgSub", makeNewMsgSub());
     }
 
     private Subscription getDeviceRecordStateSub() {
@@ -993,7 +987,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(e);
                     mView.onReportDeviceError(-1, false);//timeout
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#makePhotograph", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#makePhotograph", subscribe);
     }
 
     @Override
@@ -1126,7 +1120,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(MiscUtils.getErr(e));
                 });
 
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#checkAndInitRecord", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#checkAndInitRecord", subscribe);
     }
 
     @Override
@@ -1144,7 +1138,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#switchVideoResolution", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#switchVideoResolution", subscribe);
     }
 
     @Override
@@ -1175,7 +1169,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 //                    shouldRefreshRecord = false;
                     mView.onReportDeviceError(-1, false);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startVideoRecord", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#startVideoRecord", subscribe);
     }
 
     @Override
@@ -1202,7 +1196,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onReportDeviceError(-1, false);
                     AppLogger.e(MiscUtils.getErr(e));
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopVideoRecord", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#stopVideoRecord", subscribe);
     }
 
     @Override
@@ -1220,7 +1214,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(MiscUtils.getErr(e));
                     mView.onSDFormatResult(-1);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#formatSDCard", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#formatSDCard", subscribe);
     }
 
     public void refreshVideoRecordUI(int offset, @PanoramaCameraContact.View.PANORAMA_RECORD_MODE int type) {
@@ -1246,7 +1240,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshVideoRecordUI(second, type);
                     }
                 }, AppLogger::e);
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#refreshVideoRecordUI", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaPresenter#refreshVideoRecordUI", subscribe);
     }
 
     private Subscription makeNewMsgSub() {

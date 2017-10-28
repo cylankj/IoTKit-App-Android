@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -95,7 +94,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         initBottomMenu();
         initMainContentAdapter();
         initShowWonderPageSub();
-        basePresenter = new NewHomeActivityPresenterImpl(this);
+        presenter = new NewHomeActivityPresenterImpl(this);
         AfterLoginService.resumeTryCheckVersion();
 
         showHomeFragment(0);
@@ -109,6 +108,11 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     showHomeFragment(1);
 //                    vpHomeContent.setCurrentItem(1);
                 }, e -> AppLogger.d(e.getMessage()));
+    }
+
+    @Override
+    protected boolean theLastActivity() {
+        return true;
     }
 
     @Override
@@ -302,15 +306,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     @Override
-    public void setPresenter(NewHomeActivityContract.Presenter presenter) {
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
-    }
-
-    @Override
     public void onActivityReenter(int requestCode, Intent data) {
         super.onActivityReenter(requestCode, data);
         if (onActivityReenterListener != null) {
@@ -319,7 +314,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
 

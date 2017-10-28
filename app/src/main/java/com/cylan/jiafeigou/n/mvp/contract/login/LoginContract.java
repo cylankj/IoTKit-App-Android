@@ -29,7 +29,7 @@ public interface LoginContract {
     static final int AUTHORIZE_SUCCESSFUL = 0;
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * @return

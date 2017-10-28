@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
@@ -18,6 +17,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.FragmentMineDeviceShareManagerBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineDevicesShareManagerPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
  * 创建时间：2016/9/8
  * 描述：
  */
-public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View {
+public class MineDevicesShareManagerFragment extends IBaseFragment implements MineDevicesShareManagerContract.View {
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter shareFriendsAdapter;
     private String uuid;
@@ -79,23 +79,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onResume() {
         super.onResume();
         if (presenter != null) {
-            presenter.start();
             presenter.initShareDeviceList(uuid);
         }
     }
 
     private void initPresenter() {
         presenter = new MineDevicesShareManagerPresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(MineDevicesShareManagerContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return uuid;
     }
 
     public void onClick(View view) {
@@ -116,13 +105,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         LoadingDialog.dismissLoading();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-    }
 
     public void onCancelShare(int position, JFGFriendAccount item) {
         if (getView() != null) {

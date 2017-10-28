@@ -31,7 +31,7 @@ public interface CamLiveContract {
     int TYPE_HISTORY = 2;
 
 
-    interface View extends BaseFragmentView<Presenter> {
+    interface View extends BaseFragmentView {
 
         boolean isLocalMicOn();
 
@@ -179,7 +179,6 @@ public interface CamLiveContract {
          */
         Observable<Boolean> stopPlayVideo(boolean detach);
 
-        @Override
         String getUuid();
 
         /**

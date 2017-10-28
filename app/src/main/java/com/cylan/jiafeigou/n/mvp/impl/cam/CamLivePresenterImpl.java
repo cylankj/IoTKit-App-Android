@@ -104,7 +104,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
-        view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
         if (historyDataProvider != null) {
             historyDataProvider.clean();
@@ -125,7 +124,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         super.pause();
         //历史视频播放的时候，如果来了门铃。然而等待onStop，unSubscribe就非常晚。会导致这里的
         //rtcp还会继续接受数据。继续更新时间轴。
-        removeSubscription("RTCPNotifySub");
+        unSubscribe("RTCPNotifySub");
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -361,7 +360,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     mView.onHistoryLoadFinished();
                     RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
                 }, AppLogger::e);
-        removeSubscription("getHistoryList");
+        unSubscribe("getHistoryList");
         addSubscription(subscription, "getHistoryList");
         return true;
     }
@@ -627,7 +626,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     private void removeTimeoutSub() {
-        removeSubscription("timeoutSub");
+        unSubscribe("timeoutSub");
     }
 
     private void updateLiveStream(int type, long time, int state) {

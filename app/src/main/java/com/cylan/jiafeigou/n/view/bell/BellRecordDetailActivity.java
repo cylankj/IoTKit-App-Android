@@ -192,7 +192,6 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     }
 
 
-
     @OnClick(R.id.act_bell_picture_opt_download)
     public void download() {
         BellRecordDetailActivityPermissionsDispatcher.downloadFileWithCheck(this);
@@ -380,9 +379,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 //        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
     }
 
-    @Override
     @OnClick(R.id.act_bell_header_back)
-    public void onBackPressed() {
+    public void clickBellHeaderBack() {
         super.onBackPressed();
     }
 

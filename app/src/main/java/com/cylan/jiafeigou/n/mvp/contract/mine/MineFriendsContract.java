@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface MineFriendsContract {
 
-    interface View extends BaseFragmentView<Presenter> {
+    interface View extends BaseFragmentView {
 
         void showLoading(int resId, String... args);
 

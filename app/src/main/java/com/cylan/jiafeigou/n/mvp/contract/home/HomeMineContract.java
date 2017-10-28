@@ -15,7 +15,7 @@ import rx.Subscription;
  */
 public interface HomeMineContract {
 
-    interface View extends BaseFragmentView<Presenter> {
+    interface View extends BaseFragmentView {
         /**
          * @param url: 返回url,可以使用`glide`或者`uil`直接加载
          */

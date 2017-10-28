@@ -26,12 +26,16 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
 
     public AddFriendsReqDetailPresenterImp(MineFriendAddReqDetailContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override
     public void start() {
         super.start();
+        executeAddAction();
+    }
+
+    @Override
+    public void executeAddAction() {
         addSubscription(executeGetAddReqList());
         addSubscription(getAddReqListDataCall());
         addSubscription(sendAddFriendRsp());

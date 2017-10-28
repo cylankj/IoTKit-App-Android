@@ -91,7 +91,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     mView.onDeleteFaceError()
                     AppLogger.e(MiscUtils.getErr(it))
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#deleteFace", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#deleteFace", subscribe)
     }
 
     override fun loadFacesByPersonId(personId: String) {
@@ -163,6 +163,6 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#loadFacesByPersonId", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#loadFacesByPersonId", subscribe)
     }
 }

@@ -14,7 +14,7 @@ import rx.Subscription;
  */
 public interface MineFriendAddReqDetailContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 显示或隐藏添加请求信息
@@ -52,6 +52,8 @@ public interface MineFriendAddReqDetailContract {
     }
 
     interface Presenter extends BasePresenter {
+        void executeAddAction();
+
         /**
          * 添加为亲友
          */

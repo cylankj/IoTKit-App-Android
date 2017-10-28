@@ -4,7 +4,6 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.databinding.FragmentMineShareToFriendBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToFriendPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareFriendItem;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
  * 创建时间：2016/9/13
  * 描述：
  */
-public class MineShareToFriendFragment extends Fragment implements MineShareToFriendContract.View {
+public class MineShareToFriendFragment extends IBaseFragment implements MineShareToFriendContract.View {
     private static final int MAX_SHARE_NUMBER = 5;
     private MineShareToFriendContract.Presenter presenter;
     private ItemAdapter<ShareFriendItem> shareToFriendsAdapter;
@@ -99,21 +99,9 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void onStart() {
         super.onStart();
         if (presenter != null) {
-            presenter.start();
             presenter.getCanShareFriendsList(uuid);
         }
     }
-
-    @Override
-    public void setPresenter(MineShareToFriendContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return this.uuid;
-    }
-
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon: {
@@ -195,13 +183,5 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         });
         builder.setNegativeButton(getString(R.string.MAGNETISM_OFF), null);
         AlertDialogManager.getInstance().showDialog("showShareResultDialog", getActivity(), builder);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 }

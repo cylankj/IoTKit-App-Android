@@ -113,7 +113,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        basePresenter = new DeviceInfoDetailPresenterImpl(this, uuid);
+        presenter = new DeviceInfoDetailPresenterImpl(this, uuid);
     }
 
     @Nullable
@@ -290,7 +290,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void jump2HardwareUpdateFragment() {
         Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid());
         startActivity(intent);
     }
 
@@ -320,7 +320,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         simpleDialogFragment.setAction((int id, Object value) -> {
             //开始格式化
             if (id == R.id.tv_dialog_btn_left) {
-                basePresenter.clearSdcard();
+                presenter.clearSdcard();
                 showLoading();
             }
         });
@@ -388,24 +388,20 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
                     device.alias = content;
                     tvDeviceAlias.setSubTitle((CharSequence) value);
-                    if (basePresenter != null) {
-                        basePresenter.updateAlias(device);
+                    if (presenter != null) {
+                        presenter.updateAlias(device);
                     }
                 }
             }
         });
     }
 
-    @Override
-    public void setPresenter(CamInfoContract.Presenter presenter) {
-        basePresenter = presenter;
-    }
 
     public void checkDevResult() {
         String s = device.$(207, "");
         rlHardwareUpdate.setSubTitle(s);
         try {
-            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid());
             rlHardwareUpdate.setSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
 
             rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));

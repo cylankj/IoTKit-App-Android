@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.cam;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -63,7 +62,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         setContentView(R.layout.fragement_sdcard_detail_info);
         ButterKnife.bind(this);
         this.uuid = getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID);
-        basePresenter = new SdCardInfoPresenterImpl(this, uuid);
+        presenter = new SdCardInfoPresenterImpl(this, uuid);
         customToolbar.setBackAction(o -> onBackPressed());
         initDetailData();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -82,8 +81,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         finishExt();
+        return true;
     }
 
     @Override
@@ -123,7 +123,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Clear_Sdcard_tips),
                 getString(R.string.Clear_Sdcard_tips),
                 getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                    basePresenter.clearSDCard();
+                    presenter.clearSDCard();
                     showLoading();
                 }, getString(R.string.CANCEL), null);
     }
@@ -215,7 +215,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     }
 
     private void initDetailData() {
-//        if (!basePresenter.getSdcardState()) {
+//        if (!presenter.getSdcardState()) {
 //            AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
 //                    getString(R.string.OK), (DialogInterface dialog, int which) -> finishExt());
 //            return;
@@ -232,8 +232,4 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         }
     }
 
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
-    }
 }

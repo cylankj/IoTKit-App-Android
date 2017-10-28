@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +22,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsReqDetailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -42,7 +42,7 @@ import butterknife.OnClick;
  * 描述：该类已废弃,请使用 MineFriendInformationFragment
  */
 @Deprecated
-public class AddFriendReqDetailFragment extends Fragment implements MineFriendAddReqDetailContract.View {
+public class AddFriendReqDetailFragment extends IBaseFragment<MineFriendAddReqDetailContract.Presenter> implements MineFriendAddReqDetailContract.View {
 
     @BindView(R.id.iv_detail_user_head)
     ImageView ivDetailUserHead;
@@ -156,16 +156,6 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
         }
     }
 
-    @Override
-    public void setPresenter(MineFriendAddReqDetailContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
-    }
-
     @OnClick({R.id.tv_toolbar_icon, R.id.iv_detail_user_head, R.id.tv_add_as_relative_and_friend})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -181,7 +171,7 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
                 if (presenter != null) {
-                    presenter.start();
+                    presenter.executeAddAction();
                 }
                 break;
         }
@@ -287,13 +277,5 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
 //            }
 //        }
 
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 }

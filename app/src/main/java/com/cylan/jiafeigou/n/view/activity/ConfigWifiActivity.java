@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -104,7 +103,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_wifi);
         ButterKnife.bind(this);
-        basePresenter = new ConfigApPresenterImpl(this);
+        presenter = new ConfigApPresenterImpl(this);
         //默认隐藏
         ViewUtils.showPwd(etWifiPwd, false);
 //        ViewUtils.setViewMarginStatusBar(customToolbar);
@@ -135,11 +134,11 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     protected void onResume() {
         super.onResume();
         initFragment();
-        if (basePresenter != null && TextUtils.isEmpty(tvConfigApName.getText())) {
+        if (presenter != null && TextUtils.isEmpty(tvConfigApName.getText())) {
             LoadingDialog.showLoading(this,
                     getString(R.string.LOADING), false, null);
-            basePresenter.refreshWifiList();
-            basePresenter.check3GDogCase();
+            presenter.refreshWifiList();
+            presenter.check3GDogCase();
         }
     }
 
@@ -208,14 +207,14 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 tvWifiPwdSubmit.viewZoomSmall(null);
                 //判断当前
                 if (getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
-                    if (basePresenter != null) {
-                        basePresenter.sendWifiInfo(getIntent().getStringExtra(JConstant.JUST_SEND_INFO),
+                    if (presenter != null) {
+                        presenter.sendWifiInfo(getIntent().getStringExtra(JConstant.JUST_SEND_INFO),
                                 ViewUtils.getTextViewContent(tvConfigApName),
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
                     }
                 } else {
-                    if (basePresenter != null) {
-                        basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
+                    if (presenter != null) {
+                        presenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
                     }
                 }
@@ -229,8 +228,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 fiListDialogFragment.setClickCallBack(this);
                 fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
                 fiListDialogFragment.show(getSupportFragmentManager(), "WiFiListDialogFragment");
-                if (basePresenter != null) {
-                    basePresenter.refreshWifiList();
+                if (presenter != null) {
+                    presenter.refreshWifiList();
                 }
                 break;
         }
@@ -239,7 +238,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     private void createDialog() {
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_disconnected), getString(R.string.Tap1_AddDevice_disconnected),
                 getString(R.string.OK), (dialog, which) -> {
-                    basePresenter.finish();
+                    presenter.finish();
                     final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName(this, className));
@@ -247,9 +246,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 }, false);
     }
 
-
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         IMEUtils.hide(this);
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
@@ -279,17 +277,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 //                    }
 
                 }, getString(R.string.CANCEL), null, false);
-    }
-
-
-    @Override
-    public void setPresenter(ConfigApContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
+        return true;
     }
 
     @Override
@@ -389,8 +377,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             startActivity(intent);
             finishExt();
         }
-        if (basePresenter != null) {
-            basePresenter.finish();
+        if (presenter != null) {
+            presenter.finish();
         }
     }
 

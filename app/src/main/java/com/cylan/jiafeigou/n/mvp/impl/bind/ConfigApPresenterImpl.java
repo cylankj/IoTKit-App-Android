@@ -62,7 +62,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
-        view.setPresenter(this);
         aFullBind = new SimpleBindFlow(this);
     }
 

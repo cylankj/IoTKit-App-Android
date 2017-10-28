@@ -65,9 +65,4 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
     public void onShowDeviceSettingView(String uuid) {
 
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }

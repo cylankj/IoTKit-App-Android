@@ -1,28 +1,23 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.support.network.NetworkCallback;
 import com.cylan.jiafeigou.utils.ContextUtils;
-
-import java.lang.ref.WeakReference;
+import com.cylan.jiafeigou.view.SubscriptionAdapter;
 
 import rx.Observable;
 import rx.Subscription;
@@ -35,21 +30,17 @@ import rx.subscriptions.CompositeSubscription;
  * 一个基本模型的Presenter
  * Created by cylan-hunt on 16-6-30.
  */
-public abstract class AbstractPresenter<T extends BaseView> implements BasePresenter,
+public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter<T> implements SubscriptionAdapter,
         NetworkCallback, HeadsetObserver.HeadsetListener {
-
-    protected final String TAG = this.getClass().getSimpleName();
-    protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
-    protected String uuid;
-    private CompositeSubscription compositeSubscription;
-    private MapSubscription refCacheMap = new MapSubscription();
-    private TimeTick timeTick;
-    private HeadsetObserver headsetObserver;
-    private AudioManager audioManager;
+    protected CompositeSubscription compositeSubscription;
+    protected MapSubscription refCacheMap = new MapSubscription();
+    protected HeadsetObserver headsetObserver;
+    protected AudioManager audioManager;
 
     public AbstractPresenter(T view) {
+        super(view);
         mView = view;
-        this.uuid = mView.getUuid();
+        this.uuid = mView.uuid();
     }
 
     @Override
@@ -58,19 +49,16 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     public AbstractPresenter(T view, String uuid) {
+        super(view);
         mView = view;
-        this.uuid = uuid;
-        this.uuid = mView.getUuid();
+        this.uuid = mView.uuid();
     }
+
+
 
     @Override
     public void pause() {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return uuid;
+        super.pause();
     }
 
     public T getView() {
@@ -106,6 +94,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @CallSuper
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }
@@ -127,13 +116,6 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);
             AppLogger.w("register network true");
-        }
-        if (registerTimeTick()) {
-            if (timeTick == null) {
-                timeTick = new TimeTick(this);
-            }
-            LocalBroadcastManager.getInstance(ContextUtils.getContext())
-                    .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
         }
     }
 
@@ -170,7 +152,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         return true;
     }
 
-    public boolean hasSubscroption(final String tag) {
+    public boolean containsSubscription(final String tag) {
         return refCacheMap.hasSubscription(tag);
     }
 
@@ -181,6 +163,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @CallSuper
     @Override
     public void stop() {
+        super.stop();
         Log.d("stop", "stop: " + this.getClass().getSimpleName());
         unSubscribe(refCacheMap);
         unSubscribe(compositeSubscription);
@@ -191,11 +174,6 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
             refCacheMap.clear();
         }
         NetMonitor.getNetMonitor().unregister(this);
-        if (registerTimeTick()) {
-            if (timeTick != null) {
-                LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
-            }
-        }
         unRegisterHeadSetObservable();
         abandonAudioFocus();
     }
@@ -210,21 +188,6 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     protected void onTimeTick() {
-    }
-
-    private static class TimeTick extends BroadcastReceiver {
-        private WeakReference<AbstractPresenter> abstractPresenter;
-
-        public TimeTick(AbstractPresenter abstractPresenter) {
-            this.abstractPresenter = new WeakReference<>(abstractPresenter);
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (abstractPresenter != null && abstractPresenter.get() != null) {
-                abstractPresenter.get().onTimeTick();
-            }
-        }
     }
 
     @NonNull
@@ -248,14 +211,14 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
     }
 
-    protected boolean isEarpiecePlug() {
+    public boolean isEarpiecePlug() {
         if (headsetObserver == null) {
             headsetObserver = HeadsetObserver.getHeadsetObserver();
         }
         return headsetObserver.isHeadsetOn();
     }
 
-    protected void switchEarpiece(boolean enable) {
+    public void switchEarpiece(boolean enable) {
         getAudioManager().setMode(enable ? AudioManager.MODE_CURRENT : AudioManager.MODE_IN_CALL);
         getAudioManager().setSpeakerphoneOn(!enable);
     }

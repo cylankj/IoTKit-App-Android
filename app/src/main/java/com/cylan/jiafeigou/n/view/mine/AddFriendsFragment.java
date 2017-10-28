@@ -72,13 +72,9 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
-            basePresenter.getFriendListData();
+        if (presenter != null) {
+            presenter.getFriendListData();
             LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
-            if (basePresenter != null) {
-                basePresenter.start();
-                basePresenter.getFriendListData();
-            }
         }
     }
 
@@ -101,17 +97,11 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
 
     @OnTextChanged(R.id.et_add_phone_number)
     public void initEditTextListenter(CharSequence s, int start, int before, int count) {
-        basePresenter.filterPhoneData(s.toString());
+        presenter.filterPhoneData(s.toString());
     }
 
     private void initPresenter() {
-        basePresenter = new AddFriendsContactImp(this);
-    }
-
-
-    @Override
-    public String getUuid() {
-        return null;
+        presenter = new AddFriendsContactImp(this);
     }
 
     @OnClick(R.id.iv_home_mine_friends_add_from_contact_back)
@@ -214,7 +204,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
             sendEmail();
             return;
         }
-        if (basePresenter.checkSmsPermission()) {
+        if (presenter.checkSmsPermission()) {
             sendSms();
         } else {
             //申请权限
@@ -245,19 +235,11 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (basePresenter != null) {
-            basePresenter.stop();
-        }
-    }
-
-    @Override
     public void onAddClick(View view, int position, final FriendBean item) {
         friendAccount = item.account;
-        if (getView() != null && basePresenter != null) {
+        if (getView() != null && presenter != null) {
             showLoadingPro();
-            getView().postDelayed(() -> basePresenter.checkFriendAccount(item.account), 2000);
+            getView().postDelayed(() -> presenter.checkFriendAccount(item.account), 2000);
         }
     }
 

@@ -133,22 +133,6 @@ public class MineLookBigImageFragment extends IBaseFragment implements MineLookB
                 });
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        presenter.stop();
-    }
-
-    @Override
-    public void setPresenter(MineLookBigImageContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
-    }
-
     public void onClick(View view) {
         //点击大图退出全屏
         if (success) {

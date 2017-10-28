@@ -49,7 +49,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override
@@ -272,7 +271,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 //        AppLogger.d("sessionId:" + sessionId);
 //        try {
 //            DpMsgDefine.ReqContent reqContent = new DpMsgDefine.ReqContent();
-//            reqContent.uuid = getUuid();
+//            reqContent.uuid = uuid();
 //            reqContent.timeSec = timeSec;
 //            final long seq = BaseApplication.getAppComponent()
 //                    .getCmd().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
@@ -441,7 +440,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         AppLogger.d("sessionId:" + sessionId);
         try {
             DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
-            reqContent.cid = getUuid();
+            reqContent.cid = uuid;
             reqContent.faceId = faceId;
             reqContent.msgType = 8;
             final long seq = BaseApplication.getAppComponent()
@@ -453,7 +452,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     .flatMap(rsp -> {
                         DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
                         AppLogger.d("fetchMessageList by faceId：");
-                        if (rrsp == null || !TextUtils.equals(rrsp.cid, getUuid())) {
+                        if (rrsp == null || !TextUtils.equals(rrsp.cid, uuid)) {
                             return Observable.just(new ArrayList<CamMessageBean>());
                         }
                         //转化出。
@@ -559,7 +558,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
 //    @Override
 //    public void fetchStrangerVisitorList() {
-//        if (hasSubscroption("fetchStrangerVisitorList")) {
+//        if (containsSubscription("fetchStrangerVisitorList")) {
 //            AppLogger.d("is fetching strangers");
 //            return;
 //        }

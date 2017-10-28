@@ -92,11 +92,6 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
     }
 
-    @Override
-    public void onBackPressed() {
-        finishExt();
-    }
-
     @OnClick({R.id.sv_sight_horizontal, R.id.sv_sight_vertical})
     public void onClick(View view) {
         switch (view.getId()) {

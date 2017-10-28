@@ -14,7 +14,6 @@ public class ScanPresenterImpl extends AbstractPresenter<ScanContract.View> impl
 
     public ScanPresenterImpl(ScanContract.View v) {
         super(v);
-        v.setPresenter(this);
     }
 
 

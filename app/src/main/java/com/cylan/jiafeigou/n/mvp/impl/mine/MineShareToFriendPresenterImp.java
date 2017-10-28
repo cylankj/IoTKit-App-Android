@@ -33,7 +33,6 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     public MineShareToFriendPresenterImp(MineShareToFriendContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     /**

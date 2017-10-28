@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  * 描述：
  */
 public interface MineInfoSetNewPwdContract {
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void registerResult(int code);
 
         /**

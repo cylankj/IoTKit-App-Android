@@ -99,7 +99,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.basePresenter = new HomeMinePresenterImpl(this);
+        this.presenter = new HomeMinePresenterImpl(this);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     private void lazyLoad() {
         if (isPrepared) {
-            basePresenter.fetchNewInfo();
+            presenter.fetchNewInfo();
         }
     }
 
@@ -129,13 +129,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onStart() {
         super.onStart();
         //查询好友列表.
-        basePresenter.fetchNewInfo();
+        presenter.fetchNewInfo();
         boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             Schedulers.io().createWorker().schedule(() -> {
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-                basePresenter.portraitBlur(bm);
+                presenter.portraitBlur(bm);
             });
         }
 
@@ -173,9 +173,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 //            return;
 //        }
 
-        if (basePresenter.checkOpenLogIn()) {
-            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
-                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
+        if (presenter.checkOpenLogIn()) {
+            if (TextUtils.isEmpty(presenter.getUserInfoBean().getEmail()) &&
+                    TextUtils.isEmpty(presenter.getUserInfoBean().getPhone())) {
                 showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
                 return;
             }
@@ -272,7 +272,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 //                        .subscribeOn(Schedulers.io())
 //                        .subscribe(ret -> {
 //                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-//                            basePresenter.portraitBlur(bm);
+//                            presenter.portraitBlur(bm);
 //                        }, AppLogger::e);
 //            }
 //            lazyLoad();
@@ -304,7 +304,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserImageHeadByUrl(String url) {
         AppLogger.w("user_img:" + url);
-//        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getContext().getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
+//        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getContext().getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, presenter);
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
 //        if (account != null) {
         url = isDefaultPhoto(url) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : url;
@@ -321,51 +321,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     @Override
                     protected void setResource(Bitmap resource) {
                         view.setImageBitmap(resource);
-                        basePresenter.portraitBlur(Bitmap.createBitmap(resource));
+                        presenter.portraitBlur(Bitmap.createBitmap(resource));
                     }
                 });
 //        }
 //                .into(mySimpleTarget);
     }
-
-    public static class MySimpleTarget extends SimpleTarget<Bitmap> {
-        private final WeakReference<ImageView> image;
-        private final WeakReference<HomeMineContract.Presenter> basePresenter;
-        private final WeakReference<ImageView> mFrameLayout;
-        private final WeakReference<Drawable> mDrawable;
-        private String url;
-
-        public MySimpleTarget(ImageView view, Drawable drawable, ImageView frameLayout, String url, HomeMineContract.Presenter presenter) {
-            image = new WeakReference<>(view);
-            mFrameLayout = new WeakReference<>(frameLayout);
-            basePresenter = new WeakReference<>(presenter);
-            mDrawable = new WeakReference<>(drawable);
-            this.url = url;
-        }
-
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-            image.get().setImageBitmap(resource);
-            if (!TextUtils.isEmpty(url)) {
-                if (url.contains("default")) {
-                    mFrameLayout.get().setBackground(mDrawable.get());
-                } else {
-                    Observable.just("go")
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(ret -> basePresenter.get().portraitBlur(Bitmap.createBitmap(resource)), AppLogger::e);
-                }
-            } else {
-                mFrameLayout.get().setBackground(mDrawable.get());
-            }
-        }
-
-        @Override
-        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            super.onLoadFailed(e, errorDrawable);
-            mFrameLayout.get().setBackground(mDrawable.get());
-        }
-    }
-
 
     private boolean needStartLoginFragment() {
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {

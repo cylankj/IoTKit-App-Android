@@ -34,9 +34,9 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#newVersionRspSub", newVersionRspSub());
+    public void start() {
+        super.start();
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#newVersionRspSub", newVersionRspSub());
     }
 
     private Subscription newVersionRspSub() {
@@ -72,6 +72,6 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#unBindDevice", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#unBindDevice", subscribe);
     }
 }

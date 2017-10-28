@@ -41,7 +41,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         if (containsSubscription(FETCH_VISITOR_LIST)) {
             return;
         }
-        Subscription subscription = VisitorLoader.loadAllVisitorList(getUuid())
+        Subscription subscription = VisitorLoader.loadAllVisitorList(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
@@ -64,7 +64,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         if (containsSubscription(FETCH_STRANGER_VISITOR_LIST)) {
             return;
         }
-        Subscription subscription = VisitorLoader.loadAllStrangerList(getUuid())
+        Subscription subscription = VisitorLoader.loadAllStrangerList(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
@@ -81,7 +81,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         AppLogger.d("sessionId:" + sessionId);
         try {
             DpMsgDefine.VisitsTimesReq reqContent = new DpMsgDefine.VisitsTimesReq();
-            reqContent.cid = getUuid();
+            reqContent.cid = uuid;
             reqContent.faceId = faceId;
             reqContent.msgType = 7;
             final long seq = BaseApplication.getAppComponent()
@@ -93,7 +93,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     .filter(ret -> mView != null)
                     .subscribe(rsp -> {
                         DpMsgDefine.VisitsTimesRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.VisitsTimesRsp.class, null);
-                        if (rrsp == null || !TextUtils.equals(rrsp.cid, getUuid())) {
+                        if (rrsp == null || !TextUtils.equals(rrsp.cid, uuid)) {
                             return;
                         }
                         mView.onVisitsTimeRsp(rrsp.faceFaceId, rrsp.count);

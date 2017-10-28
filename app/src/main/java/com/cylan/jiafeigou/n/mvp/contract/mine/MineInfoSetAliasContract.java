@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
  */
 public interface MineInfoSetAliasContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 获取到输入的昵称
          *

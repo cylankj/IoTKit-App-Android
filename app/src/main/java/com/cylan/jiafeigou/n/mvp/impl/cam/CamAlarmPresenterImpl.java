@@ -21,7 +21,6 @@ public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.Vie
 
     public CamAlarmPresenterImpl(CamWarnContract.View view, String uuid) {
         super(view, uuid);
-        view.setPresenter(this);
     }
 
     @Override

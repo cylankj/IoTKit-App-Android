@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.SysMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.SysMessagePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
@@ -33,7 +33,7 @@ import butterknife.OnClick;
  * 描述：
  */
 @Badge(parentTag = "HomeMineFragment")
-public class SystemMessageFragment extends Fragment implements SysMessageContract.View {
+public class SystemMessageFragment extends IBaseFragment implements SysMessageContract.View {
 
     @BindView(R.id.rcl_home_mine_message_recyclerview)
     RecyclerView rclHomeMineMessageRecyclerview;
@@ -79,13 +79,7 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
         return view;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
+
 
     private void initPresenter() {
         presenter = new SysMessagePresenterImp(this);
@@ -97,13 +91,6 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
 //        if (presenter != null) presenter.initSubscription();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-    }
 
     /**
      * 初始化列表显示
@@ -131,17 +118,6 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
     public void hideNoMesgView() {
         rclHomeMineMessageRecyclerview.setVisibility(View.VISIBLE);
         llNoMesg.setVisibility(View.GONE);
-    }
-
-
-    @Override
-    public void setPresenter(SysMessageContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_check_all, R.id.tv_delete})

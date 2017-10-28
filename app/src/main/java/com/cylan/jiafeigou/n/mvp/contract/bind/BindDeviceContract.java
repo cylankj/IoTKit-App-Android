@@ -16,7 +16,7 @@ public interface BindDeviceContract {
     int STATE_HAS_RESULT = 1;
     int STATE_NO_JFG_DEVICE = 2;
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 成功找到匹配的AP

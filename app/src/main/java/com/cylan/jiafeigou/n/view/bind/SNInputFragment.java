@@ -64,7 +64,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new SnPresenter(this);
+        presenter = new SnPresenter(this);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
                     }
                 }
                 LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
-                basePresenter.getPid(etInputBox.getText().toString().trim());
+                presenter.getPid(etInputBox.getText().toString().trim());
                 break;
         }
     }

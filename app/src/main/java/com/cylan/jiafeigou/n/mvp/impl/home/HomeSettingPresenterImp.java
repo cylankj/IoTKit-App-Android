@@ -63,7 +63,6 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     public HomeSettingPresenterImp(HomeSettingContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

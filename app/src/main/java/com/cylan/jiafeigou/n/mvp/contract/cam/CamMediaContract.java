@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 
 public interface CamMediaContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void savePicResult(boolean state);
 
         /**

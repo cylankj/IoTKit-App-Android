@@ -72,7 +72,7 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                         }
                     }
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast", subscribe)
     }
 
     override fun createLiveBroadcast(title: String?, description: String?, startTime: Long, endTime: Long) {
@@ -146,6 +146,6 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                         }
                     }
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast1", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast1", subscribe)
     }
 }

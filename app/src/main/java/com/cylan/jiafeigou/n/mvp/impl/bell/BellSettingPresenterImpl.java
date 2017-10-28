@@ -36,8 +36,8 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
+        super.start();
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);
@@ -63,7 +63,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#unbindDevice", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#unbindDevice", subscribe);
     }
 
     @Override
@@ -90,6 +90,6 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     AppLogger.d(e.getMessage());
                     AppLogger.d("清空呼叫记录失败!");
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#clearBellRecord", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#clearBellRecord", subscribe);
     }
 }

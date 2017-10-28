@@ -32,7 +32,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

@@ -56,14 +56,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (pwdPresenter != null) {
-            pwdPresenter.start();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         customToolbar.setBackAction((View v) -> showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false));
@@ -256,13 +248,5 @@ public class RegisterPwdFragment extends SetupPwdFragment
         }
         Log.d("perform", "perform: " + (System.currentTimeMillis() - time));
         return notNull;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (pwdPresenter != null) {
-            pwdPresenter.stop();
-        }
     }
 }

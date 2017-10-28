@@ -92,11 +92,6 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
         showSystemUI();
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
-
     @OnClick({R.id.imv_ads_pic, R.id.imv_ads_timer})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -124,7 +119,7 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case JConstant.CODE_AD_FINISH:
                 setResult(JConstant.CODE_AD_FINISH);

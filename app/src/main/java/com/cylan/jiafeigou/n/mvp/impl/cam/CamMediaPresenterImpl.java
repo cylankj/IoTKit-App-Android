@@ -46,7 +46,6 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
 
     public CamMediaPresenterImpl(CamMediaContract.View view, String uuid) {
         super(view);
-        view.setPresenter(this);
     }
 
     private void save(Bitmap bitmap) {

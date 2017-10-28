@@ -298,8 +298,8 @@ public class DataSourceManager implements JFGSourceManager {
 //                for (int i = 0; i < devices.size(); i++) {
 //                    com.cylan.jiafeigou.server.cache.Device device = devices.get(i);
 //
-//                    rawDeviceOrder.add(new Pair<>(i, String.valueOf(device.getUuid())));
-//                    mCachedDeviceMap.put(String.valueOf(device.getUuid()), device.cast());
+//                    rawDeviceOrder.add(new Pair<>(i, String.valueOf(device.uuid())));
+//                    mCachedDeviceMap.put(String.valueOf(device.uuid()), device.cast());
 //                }
 //            }
 //        }

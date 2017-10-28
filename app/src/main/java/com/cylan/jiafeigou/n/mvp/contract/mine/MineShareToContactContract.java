@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface MineShareToContactContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void onInitContactFriends(List<ShareContactItem> friendItems);
 

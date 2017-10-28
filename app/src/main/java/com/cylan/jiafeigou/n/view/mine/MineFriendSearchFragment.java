@@ -4,7 +4,6 @@ import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,6 +19,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendAddByNumBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -40,7 +40,7 @@ import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineFriendSearchFragment extends Fragment implements MineFriendSearchContract.View {
+public class MineFriendSearchFragment extends IBaseFragment implements MineFriendSearchContract.View {
     @BindView(R.id.et_add_by_number)
     EditText etAddByNumber;
 
@@ -70,14 +70,6 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setChineseExclude(etAddByNumber, 65);
         initKeyListener();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
     }
 
     private void initPresenter() {
@@ -121,16 +113,6 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
                 empty.set(false);
             }
         });
-    }
-
-    @Override
-    public void setPresenter(MineFriendSearchContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     /**
@@ -199,14 +181,4 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-            IMEUtils.hide(getActivity());
-        }
-    }
-
 }

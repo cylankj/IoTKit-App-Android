@@ -1,26 +1,22 @@
 package com.cylan.jiafeigou.n;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.ViewServer;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
@@ -34,16 +30,14 @@ import static com.cylan.jiafeigou.misc.INotify.KEY_NEED_EMPTY_NOTIFICATION;
  * Created by cylan-hunt on 16-6-6.
  */
 
-public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends AppCompatActivity {
+public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends BaseActivity<T> {
 
-    protected T basePresenter;
     private SystemBarTintManager tintManager;
     private WeakReference<SystemUiHider> systemUiHiderWeakReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
         handleIntent(getIntent());
         overridePendingTransition(getOverridePendingTransition()[0], getOverridePendingTransition()[1]);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -55,20 +49,13 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         }
     }
 
+    @Override
+    public boolean supportInject() {
+        return false;
+    }
+
     public AlertDialogManager getAlertDialogManager() {
         return AlertDialogManager.getInstance();
-    }
-
-    public String getUuid() {
-        return getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (basePresenter != null) {
-            basePresenter.start();
-        }
     }
 
     @Override
@@ -77,23 +64,6 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         if (BuildConfig.DEBUG) {
             ViewServer.get(this).setFocusedWindow(this);
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (basePresenter != null) {
-            basePresenter.pause();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (basePresenter != null) {
-            basePresenter.stop();
-        }
-        IMEUtils.hide(this);
     }
 
     @Override
@@ -212,27 +182,22 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     private static long time = 0;
 
     @Override
-    public void onBackPressed() {
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment()) {
-            return;
-        }
-        if (theLastActivity()) {
+    public boolean performBackIntercept() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0 && theLastActivity()) {
             if (System.currentTimeMillis() - time < 1500) {
-                super.onBackPressed();
+                return false;
             } else {
                 time = System.currentTimeMillis();
-                Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit),
-                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit), getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+                return true;
             }
         } else {
-            super.onBackPressed();
+            return super.performBackIntercept();
         }
     }
 
     protected boolean theLastActivity() {
-        return true;
+        return false;
     }
 
     /**
@@ -298,13 +263,4 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
                     getExitOverridePendingTransition()[1]);
         }
     }
-
-    public Context getContext() {
-        return ContextUtils.getContext();
-    }
-
-    public void setPresenter(T presenter) {
-
-    }
-
 }

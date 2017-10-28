@@ -171,7 +171,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        basePresenter = new CamMessageListPresenterImpl(this, uuid);
+        presenter = new CamMessageListPresenterImpl(this, uuid);
     }
 
     @Override
@@ -250,7 +250,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void fetchMsgList(String faceId) {
-        basePresenter.fetchMessageList(faceId);
+        presenter.fetchMessageList(faceId);
     }
 
     private void initFaceHeader() {
@@ -258,7 +258,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
 
             tvCamMessageListDate.setClickable(false);
-            visitorFragment = VisitorListFragmentV2.Companion.newInstance(getUuid());
+            visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
             visitorFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
                 @Override
                 public void onVisitorTimes(int times) {
@@ -381,7 +381,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         AppLogger.w("Clicked enterStranger");
         //需要刷数据
         if (visitorStrangerSubFragment == null) {
-            visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(getUuid());
+            visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(uuid());
         }
         ActivityUtils.replaceFragment(getFragmentManager(),
                 visitorStrangerSubFragment,
@@ -478,7 +478,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         super.setUserVisibleHint(isVisibleToUser);
         //刚刚进入页面，尽量少点加载
 
-        if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
+        if (isVisibleToUser && presenter != null && getActivity() != null && isResumed()) {
 //            if (camMessageListAdapter.getCount() == 0)
             startRequest(true);//需要每次刷新,而不是第一次刷新
             ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -504,8 +504,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version;
             }
         }
-        if (basePresenter != null) {
-            basePresenter.fetchMessageList(time, asc, false);
+        if (presenter != null) {
+            presenter.fetchMessageList(time, asc, false);
         }
     }
 
@@ -533,8 +533,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         fLayoutCamMessageListTimeline.init(dateMap);
         fLayoutCamMessageListTimeline.setListener(time -> {
             AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
-            if (basePresenter != null) {
-                basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false, false);
+            if (presenter != null) {
+                presenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false, false);
             }
             camMessageListAdapter.clear();
             LoadingDialog.showLoading(getActivity());
@@ -698,11 +698,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
-    public void setPresenter(CamMessageListContract.Presenter presenter) {
-        this.basePresenter = presenter;
-    }
-
-    @Override
     public void onRefresh() {
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             srLayoutCamListRefresh.setRefreshing(false);
@@ -727,10 +722,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (TextUtils.equals(getString(R.string.CANCEL), tvCamMessageListEdit.getText())) {
                     return;
                 }
-                if (basePresenter != null && basePresenter.getDateList().size() == 0) {
+                if (presenter != null && presenter.getDateList().size() == 0) {
                     LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
                     AppLogger.d("日期加载中...");
-                    basePresenter.refreshDateList(true);
+                    presenter.refreshDateList(true);
                 }
                 boolean reset = tvCamMessageListDate.getTag() == null ||
                         ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
@@ -781,8 +776,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         .setMessage(R.string.Tips_SureDelete)
                         .setPositiveButton(R.string.OK, (dialog, which) -> {
                             camMessageListAdapter.removeAll(list);
-                            if (basePresenter != null) {
-                                basePresenter.removeItems(list);
+                            if (presenter != null) {
+                                presenter.removeItems(list);
                             }
                             camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
                             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
@@ -811,8 +806,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                                 list.add(camMessageListAdapter.getItem(position));
                             }
                             camMessageListAdapter.removeAll(list);
-                            if (basePresenter != null) {
-                                basePresenter.removeItems(list);
+                            if (presenter != null) {
+                                presenter.removeItems(list);
                             }
                             LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), false, null);
                         }, getString(R.string.CANCEL), null, false);

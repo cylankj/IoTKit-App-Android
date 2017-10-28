@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface SdCardInfoContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void sdUseDetail(String volume, float data);
 

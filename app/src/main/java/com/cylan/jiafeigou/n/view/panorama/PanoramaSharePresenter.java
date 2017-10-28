@@ -89,7 +89,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     AppLogger.e(e.getMessage());
                     mView.onUploadResult(-1);
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSharePresenter#check", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSharePresenter#check", subscribe);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSharePresenter#upload", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSharePresenter#upload", subscribe);
     }
 
     private String getRemoteFilePath(String fileName, boolean hasPrefix) {
@@ -228,7 +228,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     mView.onShareH5Result(false, "");
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSharePresenter#share", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSharePresenter#share", subscribe);
 
     }
 }

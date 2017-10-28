@@ -48,8 +48,6 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
 
     public WifiListPresenterImpl(WifiListContract.View view, String uuid) {
         super(view);
-        this.uuid = uuid;
-        view.setPresenter(this);
         wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
     }
 

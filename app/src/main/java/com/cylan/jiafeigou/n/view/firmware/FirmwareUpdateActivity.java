@@ -98,7 +98,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_hardware_update);
         ButterKnife.bind(this);
-        basePresenter = new FirmwareUpdatePresenterImpl(this);
+        presenter = new FirmwareUpdatePresenterImpl(this);
         customToolbar.setBackAction(v -> {
             if (isCurrentUpdating()) {
                 //升级中,返回直播页面.
@@ -121,7 +121,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
     private AbstractVersion.BinVersion getVersion() {
-        final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+        final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid());
         if (TextUtils.isEmpty(content)) {
             return AbstractVersion.BinVersion.NULL;
         }
@@ -135,7 +135,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     protected void onStart() {
         super.onStart();
-        Device device = basePresenter.getDevice();
+        Device device = presenter.getDevice();
         currentVersion = device.$(207, "");
         boolean result = isDownloading();
         if (!result) {
@@ -160,7 +160,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         tvCurrentVersion.setText(currentVersion);
         tvNewVersionName.setText(newVersion);
         if (TextUtils.equals(currentVersion, newVersion)) {
-            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid());
             AppLogger.d("相同版本:" + newVersion);
             return false;
         }
@@ -203,7 +203,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
     private boolean isCurrentUpdating() {
-        BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+        BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
         return update != null && update.getUpdateState() == JConstant.U.UPDATING;
     }
 
@@ -237,7 +237,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
      * 可能是在升级
      */
     private void dealUpdate() {
-        BaseFUUpdate baseFUUpdate = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+        BaseFUUpdate baseFUUpdate = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
         if (baseFUUpdate != null && baseFUUpdate.getUpdateState() == JConstant.U.UPDATING) {
             baseFUUpdate.setListener(new FUUpdating(this));
         } else if (baseFUUpdate != null && baseFUUpdate.getUpdateState() == JConstant.U.SUCCESS) {
@@ -300,7 +300,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
 
     private boolean checkEnv() {
-        Device device = basePresenter.getDevice();
+        Device device = presenter.getDevice();
         //相同版本
         if (TextUtils.equals(tvCurrentVersion.getText(), tvNewVersionName.getText())) {
             //相同版本
@@ -353,7 +353,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 return;
             }
             //2.电量
-            int battery = basePresenter.getDevice().$(206, 0);
+            int battery = presenter.getDevice().$(206, 0);
             if (battery <= 30) {
                 AlertDialogManager.getInstance().showDialog(this, FirmwareUpdateActivity.class.getSimpleName(),
                         getString(R.string.Tap1_Update_Electricity),
@@ -362,15 +362,15 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 return;
             }
             //开始升级
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
-            BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+            BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
             if (JFGRules.isPan720(device.pid)) {
-                update = new PanFUUpdate(getUuid(), getFileNameList());
+                update = new PanFUUpdate(uuid(), getFileNameList());
             } else {
-                update = new NormalFUUpdate(getUuid(), getFileNameList().get(0));
+                update = new NormalFUUpdate(uuid(), getFileNameList().get(0));
             }
             update.setListener(this);
-            ClientUpdateManager.getInstance().enqueue(getUuid(), update);
+            ClientUpdateManager.getInstance().enqueue(uuid(), update);
         } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
             //Tap1_FirmwareDownloading:正在下载(%s),
         } else {
@@ -429,12 +429,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         super.onStop();
     }
 
-
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         finishExt();
+        return true;
     }
-
 
     /**
      * 固件升级的

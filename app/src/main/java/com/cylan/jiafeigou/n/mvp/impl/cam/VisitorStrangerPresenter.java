@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import com.cylan.jiafeigou.misc.VisitorLoader;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FaceStrangerContract;
-import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -24,7 +23,7 @@ public class VisitorStrangerPresenter extends AbstractFragmentPresenter<FaceStra
 
     @Override
     public void fetchVisitorList() {
-        Subscription subscription = VisitorLoader.loadAllStrangerList(getUuid())
+        Subscription subscription = VisitorLoader.loadAllStrangerList(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)

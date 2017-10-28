@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +20,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
@@ -50,7 +50,7 @@ import permissions.dispatcher.RuntimePermissions;
  * 描述：
  */
 @RuntimePermissions
-public class MineShareDeviceFragment extends Fragment implements MineShareDeviceContract.View {
+public class MineShareDeviceFragment extends IBaseFragment implements MineShareDeviceContract.View {
     @BindView(R.id.recycle_share_device_list)
     RecyclerView recycleShareDeviceList;
     @BindView(R.id.ll_no_device)
@@ -99,14 +99,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         presenter.initShareList();
@@ -114,15 +106,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     private void initPresenter() {
         presenter = new MineShareDevicePresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(MineShareDeviceContract.Presenter presenter) {
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     public void showShareDialog() {
@@ -217,14 +200,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @OnClick(R.id.tv_toolbar_icon)
     public void onClick() {
         getActivity().getSupportFragmentManager().popBackStack();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 
     @Override

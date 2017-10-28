@@ -23,12 +23,11 @@
 
     </com.cylan.jiafeigou.widget.CustomToolbar>
 
-    <ImageView
+    <com.cylan.jiafeigou.support.photoselect.CircleImageView
         android:id="@+id/face_icon"
         android:layout_width="@dimen/y80"
         android:layout_height="@dimen/y80"
-        android:layout_marginTop="@dimen/y42"
-        android:src="@drawable/home_icon_outcam" />
+        android:layout_marginTop="@dimen/y42" />
 
     <TextView
         android:id="@+id/face_name"

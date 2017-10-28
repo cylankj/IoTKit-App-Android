@@ -78,16 +78,16 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
+        super.start();
         Device device = sourceManager.getDevice(uuid);
         if (device == null) {
             mView.onDeviceUnBind();
         } else {
             mView.onShowProperty(device);
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getClearDataSub", getClearDataSub());
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getNewFirmware", getNewFirmware());
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getDeviceUnBindSub", getDeviceUnBindSub());
+            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getClearDataSub", getClearDataSub());
+            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getNewFirmware", getNewFirmware());
+            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getDeviceUnBindSub", getDeviceUnBindSub());
 
         }
     }
@@ -167,7 +167,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         e.printStackTrace();
                     }
                 }, () -> mView.onRecordsListRsp(null));
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#fetchBellRecordsList", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#fetchBellRecordsList", subscribe);
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
@@ -214,7 +214,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#deleteBellCallRecord", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#deleteBellCallRecord", subscribe);
     }
 
     @Override

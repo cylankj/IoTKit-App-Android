@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public interface MineDevicesShareManagerContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * desc：显示取消分享的进度

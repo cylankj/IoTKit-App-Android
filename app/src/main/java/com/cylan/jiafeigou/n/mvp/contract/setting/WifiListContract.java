@@ -15,7 +15,7 @@ public interface WifiListContract {
 
     public static final int ERR_NO_RAW_LIST = -1;
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void onResults(ArrayList<ScanResult> results);
 
         void onErr(int err);

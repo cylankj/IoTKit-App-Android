@@ -50,19 +50,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void subscribe() {
         super.subscribe();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getPageScrolledSub", getPageScrolledSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getPageScrolledSub", getPageScrolledSub());
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getDeleteWonderfulSub", getDeleteWonderfulSub());
-    }
-
-    @Override
-    public void onViewDetached() {
-        super.onViewDetached();
-        onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP);
+    public void stop() {
+        super.stop();
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "HomeWonderfulPresenterImpl#getDeleteWonderfulSub", getDeleteWonderfulSub());
     }
 
     private Subscription getDeleteWonderfulSub() {
@@ -79,8 +73,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
+        super.start();
 //        if (showGuidePage()) {
 //            mView.chooseEmptyView(VIEW_TYPE_GUIDE);
 //        }
@@ -117,7 +111,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(timeTickEvent -> {
-                    onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP);
+                    unsubscribe(LIFE_CYCLE.LIFE_CYCLE_STOP);
                     mView.onPageScrolled();
                 }, e -> {
                     AppLogger.e(e.getMessage());
@@ -150,7 +144,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     AppLogger.d(e.getMessage());
                     mView.onQueryTimeLineCompleted();
                 }, () -> mView.onQueryTimeLineCompleted());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startRefresh", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startRefresh", subscribe);
     }
 
     @Override
@@ -177,7 +171,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, () -> {
                     mView.onQueryTimeLineCompleted();
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startLoadMore", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startLoadMore", subscribe);
     }
 
     @Override
@@ -218,7 +212,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#deleteTimeline", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#deleteTimeline", subscribe);
     }
 
     @Override

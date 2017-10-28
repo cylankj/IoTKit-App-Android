@@ -110,7 +110,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        basePresenter = new SafeInfoPresenterImpl(this, uuid);
+        presenter = new SafeInfoPresenterImpl(this, uuid);
     }
 
     /**
@@ -154,7 +154,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 if (!JFGRules.hasSdcard(sdcard)) {
                     DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                     wFlag.value = false;
-                    basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    presenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                     showDetail(false);
                     updateDetails();
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
@@ -165,7 +165,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 if (oldOption != 0) {
                     DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                     wFlag.value = false;
-                    basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    presenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                     showDetail(false);
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     return;
@@ -174,7 +174,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                             DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                             wFlag.value = false;
-                            basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                            presenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                             showDetail(false);
                             updateDetails();
                             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
@@ -184,7 +184,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             } else {
                 DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                 wFlag.value = true;
-                basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                presenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                 showDetail(true);
                 updateDetails();
             }
@@ -259,7 +259,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                             : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
                     //报警周期
                     DpMsgDefine.DPAlarmInfo info = device.$(502, new DpMsgDefine.DPAlarmInfo());
-                    fLayoutProtectionRepeatPeriod.setSubTitle(basePresenter.getRepeatMode(getContext()));
+                    fLayoutProtectionRepeatPeriod.setSubTitle(presenter.getRepeatMode(getContext()));
                     if (info != null) {
                         fLayoutProtectionStartTime.setSubTitle(MiscUtils.parse2Time(info.timeStart));
                         fLayoutProtectionEndTime.setSubTitle(MiscUtils.parse2Time(info.timeEnd));
@@ -299,7 +299,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         int level = (int) value;
                         DpMsgDefine.DPPrimary<Integer> wFlag = new DpMsgDefine.DPPrimary<>();
                         wFlag.value = level;
-                        basePresenter.updateInfoReq(wFlag, ID_503_CAMERA_ALARM_SENSITIVITY);
+                        presenter.updateInfoReq(wFlag, ID_503_CAMERA_ALARM_SENSITIVITY);
                         fLayoutProtectionSensitivity.setSubTitle(level == 0 ? getString(R.string.SENSITIVI_LOW)
                                 : (level == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
                         ToastUtil.showToast(getString(R.string.SCENE_SAVED));
@@ -324,7 +324,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.timeStart != (int) value) {
                             info.timeStart = (int) value;
-                            basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            presenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
                         ToastUtil.showToast(getString(R.string.PWD_OK_2));
@@ -344,7 +344,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.timeEnd != (int) value) {
                             info.timeEnd = (int) value;
-                            basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            presenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
                         ToastUtil.showToast(getString(R.string.PWD_OK_2));
@@ -367,7 +367,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.day != result) {
                             info.day = result;
-                            basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            presenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
                         ToastUtil.showToast(getString(R.string.PWD_OK_2));
@@ -397,7 +397,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         }
                         if (list1.size() != list2.size() || ListUtils.getDiff(list1, list2).size() != 0) {
                             objectDetect = select;
-                            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(objectDetect), DpMsgMap.ID_515_CAM_ObjectDetect);
+                            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(objectDetect), DpMsgMap.ID_515_CAM_ObjectDetect);
                             updateDetails();
                             ToastUtil.showToast(getString(R.string.PWD_OK_2));
                         }
@@ -416,7 +416,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         int info = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);
                         if (info != result) {
                             info = result;
-                            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(info), DpMsgMap.ID_514_CAM_WARNINTERVAL);
+                            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(info), DpMsgMap.ID_514_CAM_WARNINTERVAL);
                             updateDetails();
                             ToastUtil.showToast(getString(R.string.PWD_OK_2));
                         }
@@ -458,11 +458,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 .add(id, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
-    }
-
-    @Override
-    public void setPresenter(SafeInfoContract.Presenter presenter) {
-        this.basePresenter = presenter;
     }
 
     @Override

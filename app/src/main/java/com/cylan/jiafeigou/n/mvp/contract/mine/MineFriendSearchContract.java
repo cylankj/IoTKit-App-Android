@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
  */
 public interface MineFriendSearchContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
 
         /**

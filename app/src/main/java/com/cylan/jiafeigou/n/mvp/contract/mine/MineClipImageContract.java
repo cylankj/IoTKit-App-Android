@@ -12,7 +12,7 @@ import rx.Subscription;
  */
 public interface MineClipImageContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 显示上传的进度

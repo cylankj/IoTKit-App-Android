@@ -34,13 +34,13 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
 //                }, e -> {
 //                    AppLogger.e(e.getMessage());
 //                });
-//        registerSubscription(subscribe);
+//        addSubscription(subscribe);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "AIRecognitionPresenter#getSyncSub", getSyncSub());
+    public void start() {
+        super.start();
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "AIRecognitionPresenter#getSyncSub", getSyncSub());
     }
 
     private Subscription getSyncSub() {

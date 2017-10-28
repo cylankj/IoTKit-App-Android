@@ -255,13 +255,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        presenter.cancelFetch();
-        LoadingDialog.dismissLoading();
-    }
-
-    @Override
     public boolean performBackIntercept() {
         boolean editionMode = reverseEditionMode();
         if (!editionMode) {
@@ -544,7 +537,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBackStackChanged() {
         final int count = getSupportFragmentManager().getBackStackEntryCount();
         if (count == 0) {
-//            presenter.onStart();
+//            presenter.start();
         } else {
             for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                 if (fragment instanceof BellSettingFragment) {

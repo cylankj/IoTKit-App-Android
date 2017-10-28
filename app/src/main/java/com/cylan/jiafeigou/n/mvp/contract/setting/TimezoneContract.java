@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface TimezoneContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void timezoneList(List<TimeZoneBean> list);
 
         void onNextTheme(@ColorInt int color);

@@ -112,7 +112,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             public void onClick(View v, int position, FastAdapter fastAdapter, IItem item) {
                 if (item instanceof FriendContextItem) {
                     AppLogger.d("点击了接受按钮");
-                    basePresenter.acceptFriendRequest((FriendContextItem) item);
+                    presenter.acceptFriendRequest((FriendContextItem) item);
                 }
             }
 
@@ -135,9 +135,9 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         FriendContextItem friendContextItem = (FriendContextItem) item;
         Bundle bundle = new Bundle();
         if (friendContextItem.friendRequest != null) {
-            if (!basePresenter.checkRequestAvailable(friendContextItem)) {
+            if (!presenter.checkRequestAvailable(friendContextItem)) {
                 AppLogger.d("请求已过期,将删除过期请求");
-                basePresenter.deleteFriendRequest(friendContextItem, false);
+                presenter.deleteFriendRequest(friendContextItem, false);
                 friendContextItem.friendRequest.sayHi = null;
                 friendContextItem.friendRequest.time = System.currentTimeMillis();
             }
@@ -160,7 +160,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
                 builder.setTitle(R.string.Tips_SureDelete)
                         .setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
-                            basePresenter.deleteFriendRequest((FriendContextItem) item, true);
+                            presenter.deleteFriendRequest((FriendContextItem) item, true);
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null);
                 AlertDialogManager.getInstance().showDialog("showLongClickDialog", getActivity(), builder);
@@ -172,7 +172,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     @Override
     public void onResume() {
         super.onResume();
-        basePresenter.initRequestAndFriendList();
+        presenter.initRequestAndFriendList();
     }
 
     @Override
@@ -191,7 +191,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
         builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), (dialog, which) -> {
-            basePresenter.deleteFriendRequest(item, true);
+            presenter.deleteFriendRequest(item, true);
             dialog.dismiss();
             Bundle bundle = new Bundle();
             bundle.putParcelable("friendItem", item);
@@ -199,7 +199,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), informationFragment, android.R.id.content);
         });
         builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> {
-            basePresenter.deleteFriendRequest(item, alert);
+            presenter.deleteFriendRequest(item, alert);
             dialog.dismiss();
         }).show();
     }
@@ -274,16 +274,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     }
 
     private void initPresenter() {
-        basePresenter = new MineFriendsPresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(MineFriendsContract.Presenter basePresenter) {
-    }
-
-    @Override
-    public String getUuid() {
-        return "";
+        presenter = new MineFriendsPresenterImp(this);
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})

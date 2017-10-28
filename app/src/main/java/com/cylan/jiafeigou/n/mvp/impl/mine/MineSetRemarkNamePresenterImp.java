@@ -42,7 +42,6 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     public MineSetRemarkNamePresenterImp(MineSetRemarkNameContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

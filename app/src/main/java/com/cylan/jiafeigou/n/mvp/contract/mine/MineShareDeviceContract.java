@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public interface MineShareDeviceContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
 
         /**

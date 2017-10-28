@@ -59,7 +59,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new MineInfoSetPassWordPresenterImp(this);
+        presenter = new MineInfoSetPassWordPresenterImp(this);
     }
 
     @Nullable
@@ -132,16 +132,6 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
         }
     }
 
-    @Override
-    public void setPresenter(MineInfoSetPassWordContract.Presenter basePresenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
-    }
-
     @OnClick({R.id.tv_toolbar_icon, R.id.iv_mine_personal_information_old_password_clear,
             R.id.iv_mine_personal_information_new_password_clear, R.id.tv_toolbar_right})
     public void onClick(View view) {
@@ -167,13 +157,13 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
      * desc：保存新密码
      */
     private void saveNewPassword() {
-        if (basePresenter.checkNewPasswordLength(getNewPassword())) {
+        if (presenter.checkNewPasswordLength(getNewPassword())) {
             ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
             return;
         }
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgAccount != null) {
-            basePresenter.sendChangePassReq(jfgAccount.getAccount(), getOldPassword(), getNewPassword());
+            presenter.sendChangePassReq(jfgAccount.getAccount(), getOldPassword(), getNewPassword());
         }
 
     }

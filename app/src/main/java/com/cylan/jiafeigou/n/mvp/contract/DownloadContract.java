@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 public interface DownloadContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 闪屏结束
          */

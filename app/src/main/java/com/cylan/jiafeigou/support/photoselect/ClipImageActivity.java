@@ -1,17 +1,16 @@
 package com.cylan.jiafeigou.support.photoselect;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineClipImagePresenterImp;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -27,7 +26,7 @@ import java.io.OutputStream;
 /**
  * 头像裁剪Activity
  */
-public class ClipImageActivity extends AppCompatActivity implements MineClipImageContract.View, View.OnClickListener {
+public class ClipImageActivity extends BaseActivity implements MineClipImageContract.View, View.OnClickListener {
     private ClipViewLayout clipViewLayout1;
     private ClipViewLayout clipViewLayout2;
     private TextView btnCancel;
@@ -49,14 +48,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     private void initPresenter() {
         handler = new Handler();
         presenter = new MineClipImagePresenterImp(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
     }
 
     /**
@@ -168,21 +159,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
         finish();
     }
 
-    @Override
-    public void setPresenter(MineClipImageContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
-    }
-
-    @Override
-    public String getUuid() {
-        return "";
-    }
-
     /**
      * 网络状态变化
      *
@@ -199,13 +175,5 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     public void upLoadTimeOut() {
         ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 }

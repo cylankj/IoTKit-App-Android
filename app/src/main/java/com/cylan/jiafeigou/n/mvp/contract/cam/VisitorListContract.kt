@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter
  */
 interface VisitorListContract {
 
-    interface View : BaseFragmentView<Presenter> {
+    interface View : BaseFragmentView {
         fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
         fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?)
         fun onVisitsTimeRsp(faceId: String, cnt: Int)
@@ -25,7 +25,7 @@ interface VisitorListContract {
 
 interface FaceStrangerContract {
 
-    interface View : BaseFragmentView<Presenter> {
+    interface View : BaseFragmentView {
         fun onStrangerVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList)
     }
 

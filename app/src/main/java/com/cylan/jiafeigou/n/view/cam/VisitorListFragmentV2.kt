@@ -56,7 +56,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     lateinit var cViewPager: WrapContentViewPager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        basePresenter = BaseVisitorPresenter(this)
+        presenter = BaseVisitorPresenter(this)
     }
 
 
@@ -81,7 +81,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 if (next || !isV2()) {//前面两个
                     val faceId = if (isV2()) item.visitor?.personId else item.strangerVisitor?.faceId
                     AppLogger.d("主列表的 faceId?personId")
-                    basePresenter.fetchVisitsCount(faceId!!)
+                    presenter.fetchVisitsCount(faceId!!)
                 }
             }
         }
@@ -96,8 +96,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     open fun fetchStrangerVisitorList() {
-        if (basePresenter != null) {
-            basePresenter.fetchStrangerVisitorList()
+        if (presenter != null) {
+            presenter.fetchStrangerVisitorList()
         }
     }
 
@@ -374,7 +374,8 @@ class FaceFragment : Fragment() {
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔")
             popupWindow.dismiss()
-            showDetectFaceAlert(adapter.getItem(position).strangerVisitor?.faceId ?: "")
+            val item = adapter.getItem(position)
+            showDetectFaceAlert(item.strangerVisitor?.faceId ?: "", item.strangerVisitor?.image_url ?: "")
         }
 
         contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
@@ -394,7 +395,7 @@ class FaceFragment : Fragment() {
         PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START)
     }
 
-    private fun showDetectFaceAlert(faceId: String) {
+    private fun showDetectFaceAlert(faceId: String, imageUrl: String) {
         val dialog = AlertDialog.Builder(context)
                 .setView(R.layout.layout_face_detect_pop_alert)
                 .show()
@@ -412,7 +413,7 @@ class FaceFragment : Fragment() {
                 }// TODO: 2017/10/10 移动到面孔的结果回调
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else if (newFace!!.isChecked) {
-                val fragment = CreateNewFaceFragment.newInstance(uuid, faceId)
+                val fragment = CreateNewFaceFragment.newInstance(uuid, faceId, imageUrl)
                 fragment.resultCallback = {
                     //todo 返回创建的personID
                 }

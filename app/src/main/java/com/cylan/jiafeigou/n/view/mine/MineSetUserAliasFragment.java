@@ -64,13 +64,6 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (basePresenter != null) {
-            basePresenter.start();
-        }
-    }
 
 
     @OnTextChanged(R.id.et_mine_personal_information_new_name)
@@ -98,7 +91,7 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
     }
 
     private void initPresenter() {
-        basePresenter = new MineInfoSetNamePresenterImpl(this);
+        presenter = new MineInfoSetNamePresenterImpl(this);
     }
 
     @Override
@@ -148,16 +141,6 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
         }
     }
 
-    @Override
-    public void setPresenter(MineInfoSetAliasContract.Presenter basePresenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
-    }
-
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.iv_mine_personal_information_new_name_clear})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -165,11 +148,11 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:
-                if (basePresenter.isEditEmpty(getEditName())) {
+                if (presenter.isEditEmpty(getEditName())) {
                     return;
                 } else {
-                    if (basePresenter != null) {
-                        basePresenter.saveName(getEditName());
+                    if (presenter != null) {
+                        presenter.saveName(getEditName());
                     }
                 }
                 break;

@@ -45,12 +45,12 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     public void subscribe() {
         super.subscribe();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellDetailSettingPresenterImpl#checkNewVersionBack", checkNewVersionBack());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellDetailSettingPresenterImpl#checkNewVersionBack", checkNewVersionBack());
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
+        super.start();
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);

@@ -30,7 +30,6 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
 
     public MineInfoSetNamePresenterImpl(MineInfoSetAliasContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     /**

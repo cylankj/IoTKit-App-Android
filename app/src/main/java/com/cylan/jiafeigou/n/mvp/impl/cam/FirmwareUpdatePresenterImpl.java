@@ -40,6 +40,6 @@ public class FirmwareUpdatePresenterImpl extends AbstractPresenter<FirmwareUpdat
         Observable.just("cleanFile")
                 .subscribeOn(Schedulers.io())
                 .subscribe(ret -> FileUtils.deleteFile(ContextUtils.getContext().getFilesDir().getAbsolutePath()
-                        + File.separator + "." + getUuid()), AppLogger::e);
+                        + File.separator + "." + uuid), AppLogger::e);
     }
 }

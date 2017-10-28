@@ -367,7 +367,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         @Override
         public void onStop() {
             super.onStop();
-            AppLogger.w("加载预览图 is onStop");
+            AppLogger.w("加载预览图 is stop");
         }
 
         @Override

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
@@ -20,6 +21,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.view.LifecycleAdapter;
+import com.cylan.jiafeigou.view.PresenterAdapter;
 import com.trello.rxlifecycle.LifecycleProvider;
 import com.trello.rxlifecycle.LifecycleTransformer;
 import com.trello.rxlifecycle.android.FragmentEvent;
@@ -42,27 +45,34 @@ import rx.schedulers.Schedulers;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleProvider<FragmentEvent> {
+public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleProvider<FragmentEvent>, LifecycleAdapter {
     protected String TAG = getClass().getName();
     @Inject
     @ContextLife
-    protected Context mContext;
+    protected Context mContext;//在不支持 inject 的时候为空,小心使用
     @Inject
-    protected IDPTaskDispatcher taskDispatcher;
+    protected IDPTaskDispatcher taskDispatcher;//在不支持 inject 的时候为空,小心使用
     @Inject
-    protected ILoadingManager mLoadingManager;
-
-    private Map<LIFE_CYCLE, MapSubscription> lifeCycleCompositeSubscriptionMap;
+    protected ILoadingManager mLoadingManager;//在不支持 inject 的时候为空,小心使用
+    protected Map<LIFE_CYCLE, MapSubscription> lifeCycleCompositeSubscriptionMap;
     protected String uuid;
     protected View mView;
     protected volatile boolean subscribed = false;
 
     public BasePresenter(View view) {
         this.mView = view;
+        setPresenter();
+    }
+
+    @Deprecated
+    protected final void setPresenter() {
+        if (mView instanceof PresenterAdapter) {
+            ((PresenterAdapter) mView).setPresenter(this);
+        }
     }
 
     @Override
-    public void uuid(String uuid) {
+    public final void uuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -70,13 +80,17 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @CallSuper
     public void subscribe() {
         subscribed = true;
-        onStart();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());
     }
 
     @Override
+    @CallSuper
     public void unsubscribe() {
         subscribed = false;
+        for (LIFE_CYCLE cycle : LIFE_CYCLE.values()) {
+            unsubscribe(cycle);
+        }
+        mView = null;
     }
 
     @Override
@@ -102,7 +116,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         return null;
     }
 
-    protected void unSubscribe(Subscription... subscriptions) {
+    protected void unsubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
             for (Subscription subscription : subscriptions) {
                 if (subscription != null && !subscription.isUnsubscribed()) {
@@ -112,8 +126,15 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         }
     }
 
+    protected void unsubscribe(LIFE_CYCLE lifeCycle) {
+        if (lifeCycleCompositeSubscriptionMap != null) {
+            MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.remove(lifeCycle);
+            unsubscribe(compositeSubscription);
+        }
+    }
+
     @CallSuper
-    public void onStart() {
+    public void start() {
         if (registerTimeTick()) {
             if (timeTick == null) {
                 timeTick = new TimeTick(this);
@@ -123,31 +144,20 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         }
     }
 
-    public void onResume() {
-    }
+    @Override
+    @CallSuper
+    public void pause() {
 
-    public void onPause() {
-    }
-
-    protected void onUnRegisterSubscription(LIFE_CYCLE lifeCycle) {
-        if (lifeCycleCompositeSubscriptionMap != null) {
-            MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.remove(lifeCycle);
-            unSubscribe(compositeSubscription);
-        }
     }
 
     @CallSuper
-    public void onStop() {
-        onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP);
+    public void stop() {
+        unsubscribe(LIFE_CYCLE.LIFE_CYCLE_STOP);
         if (registerTimeTick()) {
             if (timeTick != null) {
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
             }
         }
-    }
-
-    public void onViewDetached() {
-        onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY);
     }
 
     protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
@@ -164,7 +174,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onLoginStateChanged, e -> {
                     e.printStackTrace();
-                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());//出现异常了要重现注册
+                    addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BasePresenter#getLoginStateSub", getLoginStateSub());//出现异常了要重现注册
                 });
     }
 
@@ -189,7 +199,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         LIFE_CYCLE_DESTROY,
     }
 
-    protected void registerSubscription(LIFE_CYCLE lifeCycle, String tag, Subscription subscription) {
+    protected void addSubscription(LIFE_CYCLE lifeCycle, String tag, Subscription subscription) {
         if (lifeCycleCompositeSubscriptionMap == null) {
             synchronized (this) {
                 if (lifeCycleCompositeSubscriptionMap == null) {
@@ -197,19 +207,21 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
                 }
             }
         }
-        MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.get(lifeCycle);
+        if (!TextUtils.isEmpty(tag)) {
+            MapSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.get(lifeCycle);
 
-        if (compositeSubscription == null) {
-            compositeSubscription = new MapSubscription();
-            lifeCycleCompositeSubscriptionMap.put(lifeCycle, compositeSubscription);
-        }
+            if (compositeSubscription == null) {
+                compositeSubscription = new MapSubscription();
+                lifeCycleCompositeSubscriptionMap.put(lifeCycle, compositeSubscription);
+            }
 
-        if (subscription != null) {
-            compositeSubscription.add(subscription, tag);
+            if (subscription != null) {
+                compositeSubscription.add(subscription, tag);
+            }
         }
     }
 
-    private TimeTick timeTick;
+    protected TimeTick timeTick;
 
     private static class TimeTick extends BroadcastReceiver {
         private WeakReference<BasePresenter> abstractPresenter;

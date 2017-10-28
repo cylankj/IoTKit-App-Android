@@ -347,7 +347,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public boolean performBackIntercept() {
-        presenter.dismiss();
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            presenter.dismiss();
+        }
         return super.performBackIntercept();
     }
 
@@ -826,16 +828,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
                     break;
             }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            super.onBackPressed();
-            presenter.dismiss();
         }
     }
 

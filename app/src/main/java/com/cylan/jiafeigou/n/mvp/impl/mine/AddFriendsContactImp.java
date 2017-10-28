@@ -51,7 +51,6 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
 
     public AddFriendsContactImp(AddFriendContract.View view) {
         super(view);
-        view.setPresenter(this);
         helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
     }
 

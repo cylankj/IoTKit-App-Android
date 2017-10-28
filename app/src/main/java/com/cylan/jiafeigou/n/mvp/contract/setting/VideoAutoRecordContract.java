@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 public interface VideoAutoRecordContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void onSDCardSync(DpMsgDefine.DPSdStatus status);
 

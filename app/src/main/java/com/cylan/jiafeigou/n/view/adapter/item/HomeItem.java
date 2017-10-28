@@ -109,7 +109,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 //
 //            BaseApplication.getDeviceBox().query().build().subscribe().
 //
-//            String uuid = String.valueOf(device.getUuid());
+//            String uuid = String.valueOf(device.uuid());
 //            long[] properties = new long[]{
 //                    CacheHolderKt.msgIdKey(uuid, 201),
 //                    CacheHolderKt.msgIdKey(uuid, 206),
@@ -417,7 +417,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 //
 //            BaseApplication.getDeviceBox().query().build().subscribe().
 //
-//            String uuid = String.valueOf(device.getUuid());
+//            String uuid = String.valueOf(device.uuid());
 //            long[] properties = new long[]{
 //                    CacheHolderKt.msgIdKey(uuid, 201),
 //                    CacheHolderKt.msgIdKey(uuid, 206),

@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -34,7 +34,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineAddFromContactFragment extends Fragment implements MineAddFromContactContract.View {
+public class MineAddFromContactFragment extends IBaseFragment implements MineAddFromContactContract.View {
 
     @BindView(R.id.et_mine_add_contact_mesg)
     EditText etMineAddContactMesg;
@@ -86,16 +86,6 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     private void initPresenter() {
         presenter = new MineAddFromContactPresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(MineAddFromContactContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     @Override
@@ -172,13 +162,6 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
 
     @OnClick({R.id.tv_toolbar_right, R.id.tv_toolbar_icon})
     public void onClick(View view) {
@@ -194,14 +177,6 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
             case R.id.tv_toolbar_icon:
                 getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
         }
     }
 

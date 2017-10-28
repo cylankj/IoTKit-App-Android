@@ -43,7 +43,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override
@@ -202,13 +201,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-//        unSubscribe(refreshSub);
-    }
-
-//    private Subscription refreshSub;
 
     @Override
     public void fetchDeviceList(boolean manually) {

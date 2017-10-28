@@ -165,7 +165,7 @@ public class ShareManager {
 
         @Override
         public void onStart(SHARE_MEDIA share_media) {
-            AppLogger.w("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+            AppLogger.w("start,分享开始啦!,当前分享到的平台为:" + share_media);
 //            if (activity != null) {
 //                LoadingDialog.showLoading(activity.getSupportFragmentManager(), activity.getResources().getString(R.string.LOADING));
 //            }

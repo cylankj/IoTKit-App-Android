@@ -5,7 +5,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
-import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.util.List;
 public interface CamMessageListContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
 
         void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap);

@@ -1538,12 +1538,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-    }
-
     @OnClick(R.id.imv_toolbar_message)
     public void onEnterMessage() {
         AppLogger.w("onEnterMessage");

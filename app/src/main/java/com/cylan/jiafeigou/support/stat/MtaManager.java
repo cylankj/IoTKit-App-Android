@@ -35,7 +35,7 @@
 //    }
 //
 //    /**
-//     * onResume and onStop must be called .
+//     * onResume and stop must be called .
 //     *
 //     * @param context
 //     */

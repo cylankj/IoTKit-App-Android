@@ -85,7 +85,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         super.onCreate(savedInstanceState);
         homeMineInfoBinding = DataBindingUtil.setContentView(this, R.layout.fragment_home_mine_info);
         ButterKnife.bind(this);
-        basePresenter = new MineInfoPresenterImpl(this, getContext());
+        presenter = new MineInfoPresenterImpl(this, getContext());
         createCameraTempFile(savedInstanceState);
         initInformationLayout();
     }
@@ -108,17 +108,11 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
     @Override
-    public void onBackPressed() {
-        if (backInterface != null && backInterface.onBack()) {
-            return;
+    public boolean performBackIntercept() {
+        if (backInterface != null) {
+            return backInterface.onBack();
         }
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment()) {
-            return;
-        }
-
-        finishExt();
+        return super.performBackIntercept();
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
@@ -168,7 +162,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         } else {
             homeMineInfoBinding.svPhone.setVisibility(View.VISIBLE);
         }
-        basePresenter.monitorPersonInformation();
+        presenter.monitorPersonInformation();
     }
 
     @OnClick({R.id.tv_toolbar_icon,
@@ -227,7 +221,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
      */
     private void showQrCodeDialog() {
         Bundle bundle = new Bundle();
-        bundle.putBoolean("isopenlogin", basePresenter.checkOpenLogin());
+        bundle.putBoolean("isopenlogin", presenter.checkOpenLogin());
         MyQRCodeDialog.newInstance(bundle).show(getSupportFragmentManager(), "myqrcode");
     }
 
@@ -261,7 +255,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         Bundle bundle = new Bundle();
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgAccount != null) {
-            bundle.putString("imageUrl", isDefaultPhoto(jfgAccount.getPhotoUrl()) && basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl());
+            bundle.putString("imageUrl", isDefaultPhoto(jfgAccount.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl());
         }
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
@@ -278,7 +272,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         String url = null;
         if (jfgAccount != null) {
-            url = isDefaultPhoto(jfgAccount.getPhotoUrl()) && basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl();
+            url = isDefaultPhoto(jfgAccount.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl();
         }
         Glide.with(this).load(url)
                 .listener(new RequestListener<String, GlideDrawable>() {
@@ -311,7 +305,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
             homeMineInfoBinding.tvMyId.setSubTitle(account.getAccount());
         }
 
-        if (basePresenter.checkOpenLogin() && TextUtils.isEmpty(account.getAlias())) {
+        if (presenter.checkOpenLogin() && TextUtils.isEmpty(account.getAlias())) {
             String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
             homeMineInfoBinding.svAlias.setSubTitle(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
         } else {
@@ -329,7 +323,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         } else {
             homeMineInfoBinding.svPhone.setSubTitle(account.getPhone());
         }
-        showSetPwd(!basePresenter.checkOpenLogin());
+        showSetPwd(!presenter.checkOpenLogin());
     }
 
     public void jump2SetEmailFragment() {
@@ -374,18 +368,6 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 bindPhoneFragment, android.R.id.content, "bindStack");
         bindPhoneFragment.setOnChangePhoneListener(phone -> homeMineInfoBinding.svPhone.setSubTitle(phone));
-    }
-
-
-    @Override
-    public void setPresenter(MineInfoContract.Presenter basePresenter) {
-
-    }
-
-
-    @Override
-    public String getUuid() {
-        return "";
     }
 
     @Override

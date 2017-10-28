@@ -79,7 +79,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.basePresenter = new ScanPresenterImpl(this);
+        this.presenter = new ScanPresenterImpl(this);
     }
 
     @Override
@@ -268,12 +268,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onStartScan() {
         zxVScan.startCamera();
-    }
-
-
-    @Override
-    public void setPresenter(ScanContract.Presenter presenter) {
-        this.basePresenter = presenter;
     }
 
     private static final class ProductInfo {

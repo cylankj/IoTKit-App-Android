@@ -20,7 +20,7 @@ import rx.Subscription;
 public interface CamSettingContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void attributeUpdate();
 

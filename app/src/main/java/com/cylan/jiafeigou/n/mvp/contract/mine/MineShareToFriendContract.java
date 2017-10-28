@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public interface MineShareToFriendContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 初始化列表显示
          *

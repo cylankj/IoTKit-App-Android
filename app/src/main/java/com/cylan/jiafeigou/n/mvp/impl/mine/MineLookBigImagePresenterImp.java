@@ -30,7 +30,6 @@ public class MineLookBigImagePresenterImp extends AbstractPresenter<MineLookBigI
 
     public MineLookBigImagePresenterImp(MineLookBigImageContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     /**

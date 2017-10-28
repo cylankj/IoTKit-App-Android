@@ -75,7 +75,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_mine_help_suggestion);
         ButterKnife.bind(this);
-        basePresenter = new FeedbackImpl(this);
+        presenter = new FeedbackImpl(this);
         initKeyBoard();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRvMineSuggestion.setLayoutManager(layoutManager);
@@ -91,8 +91,9 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         finishExt();
+        return true;
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_home_mine_suggestion})
@@ -249,16 +250,6 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
             dialog.dismiss();
         });
         AlertDialogManager.getInstance().showDialog("showResendFeedBackDialog", this, b);
-    }
-
-    @Override
-    public void setPresenter(FeedBackContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     private void initKeyBoard() {

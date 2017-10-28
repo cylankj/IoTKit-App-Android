@@ -13,7 +13,7 @@ import rx.Subscription;
  */
 public interface MineInfoSetPassWordContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         String getOldPassword();
 

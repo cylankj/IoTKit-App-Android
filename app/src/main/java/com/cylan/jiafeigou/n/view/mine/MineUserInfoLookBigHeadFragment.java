@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
@@ -29,7 +29,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUserInfoLookBigHeadContract.View {
+public class MineUserInfoLookBigHeadFragment extends IBaseFragment implements MineUserInfoLookBigHeadContract.View {
 
     @BindView(R.id.iv_userinfo_big_image)
     PhotoView ivUserinfoBigImage;
@@ -137,7 +137,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         }
     }
 
-
     @Override
     public void showLoadImageProgress() {
       LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
@@ -146,15 +145,5 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     @Override
     public void hideLoadImageProgress() {
         LoadingDialog.dismissLoading();
-    }
-
-    @Override
-    public void setPresenter(MineUserInfoLookBigHeadContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 }

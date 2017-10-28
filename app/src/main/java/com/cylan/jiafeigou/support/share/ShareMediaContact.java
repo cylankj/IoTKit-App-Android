@@ -16,7 +16,7 @@ public interface ShareMediaContact {
     interface Presenter extends JFGPresenter {
     }
 
-    interface ShareOptionItemView extends JFGView{
+    interface ShareOptionItemView extends JFGView {
 
     }
 

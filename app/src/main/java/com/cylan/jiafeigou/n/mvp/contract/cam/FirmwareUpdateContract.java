@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
  */
 public interface FirmwareUpdateContract {
 
-    interface View extends BaseActivityView<Presenter> {
+    interface View extends BaseActivityView {
     }
 
     interface Presenter extends BasePresenter {

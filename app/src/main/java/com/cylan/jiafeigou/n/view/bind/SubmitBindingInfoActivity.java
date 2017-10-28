@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -56,7 +55,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_submit_binding_info);
         ButterKnife.bind(this);
-        this.basePresenter = new SubmitBindingInfoImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+        this.presenter = new SubmitBindingInfoImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
         adjustViewSize();
         customToolbar.setBackAction(v -> {
             onBackPressed();
@@ -78,22 +77,12 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     }
 
     @Override
-    public void setPresenter(SubmitBindingInfoContract.Presenter presenter) {
-
-    }
-
-
-    @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     onBindNext();
                 }, getString(R.string.CANCEL), null, false);
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
+        return true;
     }
 
     @Override
@@ -118,8 +107,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                         }, false);
             } else if (state == BindUtils.BIND_SUC) {//成功
                 progressLoading.setVisibility(View.INVISIBLE);
-                if (basePresenter != null) {
-                    basePresenter.stop();
+                if (presenter != null) {
+                    presenter.unsubscribe();
                 }
                 String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
                 AppLogger.d("panoramaConfigure:" + panoramaConfigure);
@@ -146,8 +135,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                         getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         }, false);
-                if (basePresenter != null) {
-                    basePresenter.stop();
+                if (presenter != null) {
+                    presenter.unsubscribe();
                 }
             } else {
                 AppLogger.d("绑定失败了!!!!!!!!!!!!!");
@@ -170,7 +159,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     @OnClick(R.id.btn_bind_failed_repeat)
     public void onBindNext() {
-        basePresenter.stop();
+        presenter.unsubscribe();
         final String className = getIntent().getStringExtra(JConstant.KEY_BIND_BACK_ACTIVITY);
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(this, className));

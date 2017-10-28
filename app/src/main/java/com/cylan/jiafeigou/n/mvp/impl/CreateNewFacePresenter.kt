@@ -107,7 +107,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                     mView.onCreateNewFaceError(-1)
                     AppLogger.e(MiscUtils.getErr(e))
                 }
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "CreateNewFacePresenter#createNewFace", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "CreateNewFacePresenter#createNewFace", subscribe)
     }
 
 

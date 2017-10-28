@@ -44,7 +44,6 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
 
     public MineFriendListShareDevicesPresenterImp(String relAndFriendBean, MineFriendListShareDevicesToContract.View view) {
         super(view);
-        view.setPresenter(this);
         this.relAndFriendBean = relAndFriendBean;
     }
 

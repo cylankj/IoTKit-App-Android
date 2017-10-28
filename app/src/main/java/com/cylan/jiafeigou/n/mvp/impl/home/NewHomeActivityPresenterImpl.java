@@ -27,7 +27,6 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
 
     public NewHomeActivityPresenterImpl(NewHomeActivityContract.View view) {
         super(view);
-        view.setPresenter(this);
         view.initView();
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (account == null && PermissionUtils.hasSelfPermissions(ContextUtils.getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {

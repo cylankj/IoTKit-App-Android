@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.n.view.misc;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -12,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.contract.DownloadContract;
 import com.cylan.jiafeigou.n.mvp.impl.DownloadContractPresenterImpl;
@@ -19,7 +18,7 @@ import com.cylan.jiafeigou.n.mvp.impl.DownloadContractPresenterImpl;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UpdateActivity extends FragmentActivity implements DownloadContract.View {
+public class UpdateActivity extends BaseFullScreenFragmentActivity<DownloadContract.Presenter> implements DownloadContract.View {
 
     @BindView(R.id.update_progress)
     ProgressBar updateProgress;
@@ -29,8 +28,6 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
     LinearLayout lLayoutUpdateDialog;
     @BindView(R.id.btn_update_cancel)
     Button btnUpdateCancel;
-    private DownloadContract.Presenter presenter;
-
     private static final String DIALOG_KEY = "dialogFragment";
     private Parcelable parcelableExtra;
 
@@ -47,7 +44,7 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
                         presenter.stopDownload();
                     }
                     if (presenter != null) {
-                        presenter.stop();
+                        presenter.unsubscribe();
                     }
                 });
         updateDialog();
@@ -63,8 +60,8 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
     }
 
     @Override
-    public void onBackPressed() {
-        //do nothing but you click cancel btn
+    public boolean performBackIntercept() {
+        return true;
     }
 
     @Override
@@ -88,20 +85,4 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
     public void onDownloadErr(int reason) {
 
     }
-
-    @Override
-    public void setPresenter(DownloadContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
-    }
-
-    @Override
-    public String getUuid() {
-        return "";
-    }
-
 }

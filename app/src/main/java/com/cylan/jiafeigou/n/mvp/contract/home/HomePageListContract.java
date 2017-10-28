@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface HomePageListContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         @UiThread
         void onItemsRsp(List<Device> DeviceList);

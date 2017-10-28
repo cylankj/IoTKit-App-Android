@@ -62,7 +62,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
         Bundle arguments = getArguments();
         userAccount = arguments.getString("useraccount");
         token = arguments.getString("token");
-        this.basePresenter = new MineInfoSetNewPwdPresenterImp(this);
+        this.presenter = new MineInfoSetNewPwdPresenterImp(this);
     }
 
     @Nullable
@@ -78,11 +78,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setChineseExclude(etMineSetNewpwd, getResources().getInteger(R.integer.max_password_length));
         etMineSetNewpwd.requestFocus();//默认为可输入状态
-    }
-
-    @Override
-    public void setPresenter(MineInfoSetNewPwdContract.Presenter presenter) {
-
     }
 
     @OnTextChanged(R.id.et_mine_set_newpwd)
@@ -110,7 +105,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
-                basePresenter.openLoginRegister(userAccount, getNewPwd(), token);
+                presenter.openLoginRegister(userAccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
                 etMineSetNewpwd.setText("");

@@ -156,7 +156,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
 
-
     //    @OnClick(R.id.act_panorama_album_toolbar_header_title)
 //    public void showAlbumViewModePop(View view) {
 //        ViewUtils.deBounceClick(view);
@@ -211,10 +210,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 //                return ALBUM_VIEW_MODE.MODE_PHOTO;
 //        }
 //    }
-
-    @Override
     @OnClick(R.id.act_panorama_album_back)
-    public void onBackPressed() {
+    public void clickBack() {
         if (!isEditMode) {
             super.onBackPressed();
         } else {

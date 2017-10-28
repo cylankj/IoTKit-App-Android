@@ -46,15 +46,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         customToolbar.setBackAction((View v) -> onBackPressed());
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (popAllFragmentStack()) {
-            return;
-        }
-        finishExt();
-    }
-
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == R.id.tv_dialog_btn_right) {

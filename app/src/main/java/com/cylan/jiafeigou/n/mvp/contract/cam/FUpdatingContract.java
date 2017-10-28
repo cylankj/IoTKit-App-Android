@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
  */
 public interface FUpdatingContract {
 
-    interface View extends BaseFragmentView<Presenter> {
+    interface View extends BaseFragmentView {
     }
 
     interface Presenter extends BasePresenter {

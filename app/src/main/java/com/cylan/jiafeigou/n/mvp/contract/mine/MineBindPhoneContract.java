@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
  */
 public interface MineBindPhoneContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void onResult(int event, int errId);
 

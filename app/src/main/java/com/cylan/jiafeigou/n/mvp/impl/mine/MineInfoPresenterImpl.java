@@ -23,7 +23,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     public MineInfoPresenterImpl(MineInfoContract.View view, Context context) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

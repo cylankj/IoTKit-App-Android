@@ -15,7 +15,7 @@ import rx.Subscription;
  */
 public interface HardwareUpdateContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void handlerResult(int code);
 

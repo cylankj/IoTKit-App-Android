@@ -150,7 +150,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new LoginPresenterImpl(this);
+        presenter = new LoginPresenterImpl(this);
     }
 
     /**
@@ -191,23 +191,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         super.onStart();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (basePresenter != null) {
-            basePresenter.start();
-        }
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (basePresenter != null) {
-            basePresenter.stop();
-        }
-//        if (lbLogin != null) lbLogin.cancelAnim();
-//        if (verificationCodeLogic != null) verificationCodeLogic.stop();
-    }
 
     @Override
     public void onDetach() {
@@ -429,7 +413,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                basePresenter.performAuthentication(3);
+                presenter.performAuthentication(3);
                 break;
             case R.id.tv_xlLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
@@ -442,7 +426,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showToast(getString(R.string.Tap0_Login_NoInstalled, getString(R.string.Weibo)));
                     return;
                 }
-                basePresenter.performAuthentication(4);
+                presenter.performAuthentication(4);
                 break;
             case R.id.tv_toolbar_icon:
                 IMEUtils.hide(getActivity());
@@ -467,7 +451,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                basePresenter.performAuthentication(6);
+                presenter.performAuthentication(6);
                 break;
 
             case R.id.tv_facebookLogin_commit:
@@ -475,7 +459,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                basePresenter.performAuthentication(7);
+                presenter.performAuthentication(7);
                 break;
         }
     }
@@ -539,10 +523,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
         AnimatorUtils.viewTranslationY(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? rLayoutLoginThirdParty : rLayoutLoginThirdPartyAbroad, false, 100, 0, 800, 500);
         lbLogin.viewZoomSmall(() -> {
-            if (basePresenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+            if (presenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
                 String account = ViewUtils.getTextViewContent(etLoginUsername);
                 String password = ViewUtils.getTextViewContent(etLoginPwd);
-                basePresenter.performLogin(account, password);
+                presenter.performLogin(account, password);
             }
         });
 
@@ -678,12 +662,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     }
 
     @Override
-    public void setPresenter(LoginContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
-//        AppLogger.e("setPresenter");
-    }
-
-    @Override
     public void registerResult(int result) {
         if (result == JError.ErrorAccountAlreadyExist) {
             showSimpleDialog(getString(R.string.RET_EREGISTER_PHONE_EXIST), getString(R.string.CANCEL), getString(R.string.Tap0_register_GoToLogin), false);
@@ -766,8 +744,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 校验 验证码
      */
     private void verifyCode() {
-        if (basePresenter != null) {
-            basePresenter.verifyCode(ViewUtils.getTextViewContent(etRegisterInputBox),
+        if (presenter != null) {
+            presenter.verifyCode(ViewUtils.getTextViewContent(etRegisterInputBox),
                     ViewUtils.getTextViewContent(etVerificationInput),
                     PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         }
@@ -817,7 +795,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             if (isRegetCode) {
                 //重新获取验证码也要检测一下账号
-                if (basePresenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
+                if (presenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     isRegetCode = false;
                     return;
@@ -826,8 +804,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 if (verificationCodeLogic != null) {
                     verificationCodeLogic.start();
                 }
-                if (basePresenter != null) {
-                    basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+                if (presenter != null) {
+                    presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 }
                 tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 isRegetCode = false;
@@ -841,7 +819,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             } else {
                 //第一次检测账号是否注册返回执行获取验证码
-                if (basePresenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
+                if (presenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     return;
                 }
@@ -849,7 +827,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
                 }
                 verificationCodeLogic.start();
-                basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+                presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 //显示验证码输入框
                 handleVerificationCodeBox(true);
@@ -905,8 +883,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
         }
         //检测账号是否注册
-        if (basePresenter != null) {
-            basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+        if (presenter != null) {
+            presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
         }
     }
 
@@ -956,8 +934,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     return;
                 }
                 isRegetCode = true;
-                if (basePresenter != null) {
-                    basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+                if (presenter != null) {
+                    presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
                 }
                 break;
             case R.id.tv_register_submit:

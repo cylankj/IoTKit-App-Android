@@ -39,7 +39,6 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
 
     public DeviceInfoDetailPresenterImpl(CamInfoContract.View view, String uuid) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

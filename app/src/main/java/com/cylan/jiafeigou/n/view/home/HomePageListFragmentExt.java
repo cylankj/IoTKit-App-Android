@@ -130,13 +130,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.basePresenter = new HomePageListPresenterImpl(this);
+        this.presenter = new HomePageListPresenterImpl(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
+        if (presenter != null) {
 //            PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, true);
 //            srLayoutMainContentHolder.setRefreshing(false);
 //            enableNestedScroll();
@@ -145,7 +145,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             srLayoutMainContentHolder.setOnRefreshListener(this);
             onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
             updateAccount.run();
-            basePresenter.fetchDeviceList(false);
+            presenter.fetchDeviceList(false);
         } else {
             AppLogger.e("presenter is null");
         }
@@ -233,17 +233,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
 //        view.post(updateAccount);
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //只有app退出后，被调用。
-        if (basePresenter != null) {
-            basePresenter.stop();
-            basePresenter = null;
-        }
-    }
-
     private void initListAdapter() {
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
@@ -329,11 +318,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    @Override
-    public void setPresenter(HomePageListContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
     }
 
     private List<Device> resultList;
@@ -592,12 +576,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
 
             Log.d("fetch", "fetch:initSubscription ");
-            if (basePresenter != null) {
-                basePresenter.fetchDeviceList(true);
+            if (presenter != null) {
+                presenter.fetchDeviceList(true);
             }
         }
 
-//        basePresenter.refreshDevices();
+//        presenter.refreshDevices();
 
         refreshFinish = false;
     }
@@ -708,14 +692,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(rsp -> {
                                 ToastUtil.showToast(getString(R.string.DELETED_SUC));
-                                if (basePresenter != null) {
-                                    basePresenter.fetchDeviceList(true);
+                                if (presenter != null) {
+                                    presenter.fetchDeviceList(true);
                                 }
                             }, e -> {
                                 ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
                                 AppLogger.e("err: " + MiscUtils.getErr(e));
                             }, () -> LoadingDialog.dismissLoading());
-                    basePresenter.addSubscription("unbind", subscribe);
+                    presenter.addSubscription("unbind", subscribe);
                 }, getString(R.string.CANCEL), null);
         return true;
     }

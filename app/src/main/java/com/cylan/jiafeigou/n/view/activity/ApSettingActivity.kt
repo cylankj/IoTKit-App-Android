@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.ApSettingsPresenter
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.*
+import com.cylan.jiafeigou.view.SubscriptionAdapter
 import com.cylan.jiafeigou.widget.LoadingDialog
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_ap_setting.*
@@ -58,7 +59,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ap_setting)
         //初始化presenter
-        basePresenter = ApSettingsPresenter(this)
+        presenter = ApSettingsPresenter(this)
         //获取AP_Name
         ct_tool_bar.setBackAction {
             AlertDialogManager.getInstance().showDialog(this, "back", getString(R.string.Tap1_AddDevice_tips),
@@ -127,7 +128,9 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                         ToastUtil.showToast(getString(R.string.Start_Failed))
                         Log.d("...", ",,,...:" + r)
                     })
-            basePresenter.addSubscription("getDevicePortrait", s)
+            if (presenter is SubscriptionAdapter) {
+                (presenter as SubscriptionAdapter).addSubscription("getDevicePortrait", s)
+            }
         }
         //默认密文
         ViewUtils.showPwd(et_ap_pwd, false)
@@ -162,8 +165,9 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             unregisterReceiver(tetherChangeReceiver)
     }
 
-    override fun onBackPressed() {
-        ct_tool_bar.performClick();
+    override fun performBackIntercept(): Boolean {
+        ct_tool_bar.performClick()
+        return super.performBackIntercept()
     }
 
     fun needTurnOnWriteSetting(): Boolean {
@@ -219,7 +223,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                 val active: ArrayList<String> = intent.getStringArrayListExtra("activeArray")
                 val errored: ArrayList<String> = intent.getStringArrayListExtra("erroredArray")
                 Log.d("...", "TETHER_STATE_CHANGED:" + Gson().toJson(available) + "," + Gson().toJson(active))
-                basePresenter!!.monitorHotSpot()
+                presenter!!.monitorHotSpot()
             } else if (action == ("android.net.wifi.WIFI_AP_STATE_CHANGED")) {
                 val state: Int = intent.getIntExtra("wifi_state", 0)
                 Log.d("...", "WIFI_AP_STATE_CHANGED:" + state)

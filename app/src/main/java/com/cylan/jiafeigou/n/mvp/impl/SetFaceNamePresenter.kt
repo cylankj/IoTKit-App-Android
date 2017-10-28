@@ -99,7 +99,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "SetFaceNamePresenter#setFaceName", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "SetFaceNamePresenter#setFaceName", subscribe)
 
     }
 }

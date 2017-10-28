@@ -85,9 +85,4 @@ public class BaseBindActivity<T extends BasePresenter> extends BaseFullScreenFra
         onDeniedLocationPermission();
     }
 
-    @Override
-    public void onBackPressed() {
-        finishExt();
-    }
-
 }

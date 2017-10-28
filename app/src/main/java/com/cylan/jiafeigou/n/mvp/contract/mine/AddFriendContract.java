@@ -15,7 +15,7 @@ import rx.Subscription;
  */
 public interface AddFriendContract {
 
-    interface View extends BaseFragmentView<Presenter> {
+    interface View extends BaseFragmentView {
         /**
          * 初始化联系人列表
          *

@@ -65,16 +65,16 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     @Override
-    public void onViewDetached() {
-        super.onViewDetached();
+    public void unsubscribe() {
+        super.unsubscribe();
         if (monitorDeleteSubscription != null && !monitorDeleteSubscription.isUnsubscribed()) {
             monitorDeleteSubscription.unsubscribe();
         }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void stop() {
+        super.stop();
 //        DownloadManager.getInstance().stopAllTask();//#113300
 
         //1.1.0 新需求,需要在退出页面是停止下载
@@ -84,8 +84,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     public void subscribe() {
         super.subscribe();
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#monitorSDCardUnMount", monitorSDCardUnMount());
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#monitorSDCardUnMount", monitorSDCardUnMount());
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
     }
 
     private Subscription getNetWorkMonitorSub() {
@@ -166,7 +166,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#checkSDCardAndInit", subscribe);
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#checkSDCardAndInit", subscribe);
     }
 
     @Override
@@ -230,7 +230,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     });
         }
         if (fetchLocation != -1) {
-            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#fetch", fetchSubscription);
+            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#fetch", fetchSubscription);
         }
     }
 

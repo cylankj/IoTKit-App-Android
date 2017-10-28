@@ -11,7 +11,7 @@ import rx.Observable;
  */
 public interface SplashContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void loginSuccess();
 
         void loginError(int code);

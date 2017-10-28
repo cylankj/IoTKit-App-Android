@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface BindMailContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 显示请求发送之后的对话框

@@ -62,7 +62,7 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
                         }
                     }
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveList", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveList", subscribe)
     }
 
     override fun getLiveFromDevice() {
@@ -85,6 +85,6 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
                 }, {
 
                 })
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveFromDevice", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveFromDevice", subscribe)
     }
 }

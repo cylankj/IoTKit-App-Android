@@ -90,7 +90,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 onStop 延迟调用 bug #118078
+        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 stop 延迟调用 bug #118078
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
@@ -118,6 +118,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         makeNewMsgSub();
     }
+
 
     private void makeNewMsgSub() {
         if (newMsgSub != null) {
@@ -231,12 +232,12 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private boolean hasNewFirmware() {
         try {
-            final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid());
             AbstractVersion.BinVersion version = new Gson().fromJson(content, AbstractVersion.BinVersion.class);
             final String newVersion = version.getTagVersion();
-            final String currentVersion = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid()).$(207, "");
+            final String currentVersion = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid()).$(207, "");
             if (BindUtils.versionCompare(currentVersion, newVersion) < 0) {
-                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid());
                 return false;
             }
             return true;
@@ -318,25 +319,15 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        Log.d("onBackPressed", this.getClass().getSimpleName());
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment()) {
-            return;
-        }
-
-        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 onStop 延迟调用 bug #118078
+    public boolean performBackIntercept() {
+        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 stop 延迟调用 bug #118078
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
             ((CameraLiveFragmentEx) fragment).onBackPressed();
             ((CameraLiveFragmentEx) fragment).removeVideoView();
         }
-        if (this.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT) {
-            finishExt();
-        }
+        return super.performBackIntercept();
     }
 
     public void onNavBack() {
@@ -357,7 +348,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE:

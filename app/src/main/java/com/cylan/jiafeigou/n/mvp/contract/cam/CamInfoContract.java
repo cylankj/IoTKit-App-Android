@@ -16,7 +16,7 @@ import rx.Subscription;
 
 public interface CamInfoContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void showLoading();
 

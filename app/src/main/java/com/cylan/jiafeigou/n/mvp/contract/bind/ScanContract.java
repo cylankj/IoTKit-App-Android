@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface ScanContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 成功找到匹配的AP
@@ -22,7 +22,7 @@ public interface ScanContract {
         void onStartScan();
 
         @Override
-        String getUuid();
+        String uuid();
     }
 
     interface Presenter extends BasePresenter {

@@ -57,7 +57,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(rsp -> performLocal());
 
 //                        Observable.from(multiEntity)
-//                                .flatMap(entity -> dpHelper.deleteDPMsgForce(entity.getUuid(), null, entity.getUuid(), entity.getVersion(), entity.getMsgId())).last()
+//                                .flatMap(entity -> dpHelper.deleteDPMsgForce(entity.uuid(), null, entity.uuid(), entity.getVersion(), entity.getMsgId())).last()
 //                                .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(multiEntity)));
     }
 }

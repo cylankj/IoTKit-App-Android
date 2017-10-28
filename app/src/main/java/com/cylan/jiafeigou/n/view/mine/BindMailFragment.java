@@ -56,16 +56,6 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
 
     private String mailBox;
 
-    @Override
-    public void setPresenter(BindMailContract.Presenter basePresenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
-    }
-
     /**
      * 显示请求发送结果
      */
@@ -78,7 +68,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
             hideLoading();
             if (code == JError.ErrorOK) {
                 //区分第三方登录
-                if (basePresenter.isOpenLogin()) {
+                if (presenter.isOpenLogin()) {
                     JFGAccount userAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     AppLogger.d("bindmail2:" + userAccount.getPhone());
                     if (TextUtils.isEmpty(userAccount.getPhone())) {
@@ -107,24 +97,6 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         return fragment;
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (basePresenter != null) {
-            basePresenter.start();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (basePresenter != null) {
-            basePresenter.stop();
-        }
-        IMEUtils.hide(getActivity());
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -147,7 +119,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setChineseExclude(mETMailBox, 65);
         initMailEdit();
-        Account account = basePresenter.getUserAccount();
+        Account account = presenter.getUserAccount();
         if (account != null) {
             customToolbar.setToolbarLeftTitle(TextUtils.isEmpty(account.getEmail()) ? getString(R.string.Tap0_BindEmail) : getString(R.string.CHANGE_EMAIL));
         }
@@ -163,7 +135,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
 
 
     private void initPresenter() {
-        basePresenter = new BindMailPresenterImpl(this);
+        presenter = new BindMailPresenterImpl(this);
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_mailbox)
@@ -201,11 +173,11 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
                 mailBox = getEditText();
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
-                } else if (!basePresenter.checkEmail(mailBox)) {
+                } else if (!presenter.checkEmail(mailBox)) {
                     ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
                     return;
                 } else {
-                    basePresenter.sendSetAccountReq(mailBox);
+                    presenter.sendSetAccountReq(mailBox);
                 }
                 break;
         }

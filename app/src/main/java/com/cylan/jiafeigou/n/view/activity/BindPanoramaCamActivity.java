@@ -58,7 +58,7 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         super.onCreate(savedInstanceState);
         String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
         final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-        if (TextUtils.equals(panoramaConfigure, "OutDoor") && info != null && ApFilter.isAPMode(info.getSSID(), getUuid())
+        if (TextUtils.equals(panoramaConfigure, "OutDoor") && info != null && ApFilter.isAPMode(info.getSSID(), uuid())
                 && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
             Bundle bundle = new Bundle();
             bundle.putString("PanoramaConfigure", panoramaConfigure);

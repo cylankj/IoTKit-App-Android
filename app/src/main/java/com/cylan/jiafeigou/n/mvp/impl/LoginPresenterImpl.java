@@ -48,7 +48,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

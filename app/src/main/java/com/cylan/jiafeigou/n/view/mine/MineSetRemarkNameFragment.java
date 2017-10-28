@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -31,7 +31,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/23
  * 描述：
  */
-public class MineSetRemarkNameFragment extends Fragment implements MineSetRemarkNameContract.View {
+public class MineSetRemarkNameFragment extends IBaseFragment implements MineSetRemarkNameContract.View {
 
     @BindView(R.id.et_mine_set_remarkname_new_name)
     EditText etMineSetRemarknameNewName;
@@ -76,35 +76,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-    }
-
     private void initPresenter() {
         presenter = new MineSetRemarkNamePresenterImp(this);
-    }
-
-    @Override
-    public void setPresenter(MineSetRemarkNameContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
     @OnTextChanged(R.id.et_mine_set_remarkname_new_name)

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public interface SuggestionChatContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 //        void showChatList();
 //
 //        String getEditContent();

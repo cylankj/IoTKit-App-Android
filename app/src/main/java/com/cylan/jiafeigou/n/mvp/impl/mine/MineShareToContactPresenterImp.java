@@ -43,7 +43,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override
@@ -111,7 +110,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         emailQuery.close();
                     }
 
-                    JFGShareListInfo jfgShareListInfo = DataSourceManager.getInstance().getShareListByCid(getUuid());
+                    JFGShareListInfo jfgShareListInfo = DataSourceManager.getInstance().getShareListByCid(uuid);
                     if (jfgShareListInfo != null && jfgShareListInfo.friends != null) {
                         for (JFGFriendAccount friend : jfgShareListInfo.friends) {
                             for (ShareContactItem contactItem : result) {
@@ -144,7 +143,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().shareDevice(getUuid(), shareContactItem.getAccount());
+                        BaseApplication.getAppComponent().getCmd().shareDevice(uuid, shareContactItem.getAccount());
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());

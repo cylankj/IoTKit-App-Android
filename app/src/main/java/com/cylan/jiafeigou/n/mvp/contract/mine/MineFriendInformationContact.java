@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
  */
 public interface MineFriendInformationContact {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         /**
          * 处理删除的回调
          */

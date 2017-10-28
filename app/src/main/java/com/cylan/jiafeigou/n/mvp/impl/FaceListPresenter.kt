@@ -116,7 +116,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceListPresenter#moveFaceToPerson", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceListPresenter#moveFaceToPerson", subscribe)
     }
 
     override fun loadPersonItems(account: String, uuid: String) {
@@ -186,7 +186,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#loadPersonItems", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceManagerPresenter#loadPersonItems", subscribe)
     }
 
     override fun loadPersonItem2() {
@@ -217,6 +217,6 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     AppLogger.e(MiscUtils.getErr(it))
                 })
 
-        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceListPresenter#loadPersonItem2", subscribe)
+        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "FaceListPresenter#loadPersonItem2", subscribe)
     }
 }

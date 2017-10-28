@@ -349,10 +349,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         refreshLayout();
     }
 
-    @Override
-    protected void onEnterAnimationFinished() {
-        refreshLayout();
-    }
+
 
 
     @Override

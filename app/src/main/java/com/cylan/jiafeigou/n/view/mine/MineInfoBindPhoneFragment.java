@@ -73,7 +73,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new MineBindPhonePresenterImp(this);
+        presenter = new MineBindPhonePresenterImp(this);
     }
 
     public OnChangePhoneListener changeAccListener;
@@ -199,7 +199,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         super.onStart();
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgAccount != null) {
-            basePresenter.isBindOrChange(jfgAccount);
+            presenter.isBindOrChange(jfgAccount);
         }
     }
 
@@ -229,7 +229,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 //                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
 //                        return;
 //                    }
-                    basePresenter.getVerifyCode(getInputPhone());
+                    presenter.getVerifyCode(getInputPhone());
                     vCode = new VCode();
                     vCode.account = getInputPhone();
                 } else {
@@ -252,7 +252,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 if (getInputCheckCode().length() != 6) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
                 } else {
-                    basePresenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(),
+                    presenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(),
                             getInputCheckCode());
                 }
                 break;
@@ -366,7 +366,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         if (resultVerifyCode == null) {
             ToastUtil.showToast(getString(R.string.Request_TimeOut));
         } else if (resultVerifyCode.code == JError.ErrorOK) {
-//            basePresenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+//            presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
             hideLoadingDialog();
             ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
@@ -385,7 +385,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         JFGAccount userinfo = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (userinfo != null && !TextUtils.isEmpty(getInputPhone())) {
             if (code == JError.ErrorOK) {
-                if (basePresenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
+                if (presenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
                     //是三方登录
                     jump2SetPWDFragment(userinfo.getAccount());
                     return;

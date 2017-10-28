@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 public interface AccountInfoContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void initBackStackChangeListener();
 
         void onTitleActionChange();

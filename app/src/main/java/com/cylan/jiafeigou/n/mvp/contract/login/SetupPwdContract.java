@@ -13,7 +13,7 @@ import rx.Subscription;
 public interface SetupPwdContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         /**
          * 登陆结果

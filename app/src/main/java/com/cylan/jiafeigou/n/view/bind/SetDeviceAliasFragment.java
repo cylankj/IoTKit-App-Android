@@ -64,7 +64,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new SetDeviceAliasPresenterImpl(this,
+        presenter = new SetDeviceAliasPresenterImpl(this,
                 getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID));
     }
 
@@ -108,26 +108,20 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
                 etInputBox.getText().clear();
                 break;
             case R.id.btn_bind_done:
-                if (basePresenter != null) {
+                if (presenter != null) {
                     /*
                     * 针对所有设备，设备名称、个人昵称编辑时去除“空格键”限制
                     * 针对所有设备，当编辑设备名称、个人昵称时，有空格则保留空格字符。
                     * */
                     CharSequence alias = TextUtils.isEmpty(etInputBox.getText().toString())
                             ? etInputBox.getHint() : etInputBox.getText().toString();
-                    basePresenter.setupAlias(alias.toString());
+                    presenter.setupAlias(alias.toString());
                 }
                 btnBindDone.viewZoomSmall(null);
                 IMEUtils.hide(getActivity());
                 break;
         }
     }
-
-    @Override
-    public void setPresenter(SetDeviceAliasContract.Presenter presenter) {
-        this.basePresenter = presenter;
-    }
-
     @Override
     public void setupAliasDone(int state) {
         if (state == JError.ErrorOK) {

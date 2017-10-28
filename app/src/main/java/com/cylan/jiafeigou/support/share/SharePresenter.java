@@ -18,7 +18,7 @@ public class SharePresenter extends BasePresenter<ShareMediaContact.View> implem
     private UMShareListener listener = new UMShareListener() {
         @Override
         public void onStart(SHARE_MEDIA share_media) {
-            AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+            AppLogger.e("start,分享开始啦!,当前分享到的平台为:" + share_media);
         }
 
         @Override

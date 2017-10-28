@@ -522,7 +522,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         boolean vrEnabled = panoramicView720Ext.isVREnabled();
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE && vrEnabled) {
@@ -550,8 +550,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 bottomVideoMenuMode.setEnabled(true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
+            return true;
         } else {
-            finish();
+            return super.performBackIntercept();
         }
     }
 

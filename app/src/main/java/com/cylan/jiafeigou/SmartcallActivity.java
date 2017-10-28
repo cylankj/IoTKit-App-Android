@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -97,23 +96,16 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             PerformanceUtils.stopTrace("smartCall2LogResult");
             finish();
         }
-        if (basePresenter != null) {
+        if (presenter != null) {
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
             if (showSplash)//退出登录,不需要再去执行登录.
             {
-                basePresenter.autoLogin();
+                presenter.autoLogin();
             }
-            basePresenter.selectNext(showSplash);
+            presenter.selectNext(showSplash);
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (basePresenter != null) {
-            basePresenter.stop();
-        }
-    }
 
     @Override
     protected int[] getOverridePendingTransition() {
@@ -121,11 +113,11 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     }
 
     private void initPresenter() {
-        basePresenter = new SmartCallPresenterImpl(this);
+        presenter = new SmartCallPresenterImpl(this);
     }
 
     @Override
-    public void onBackPressed() {
+    public boolean performBackIntercept() {
         //3.1.0
 //        View view = findViewById(R.id.welcome_frame_container);
 //        if (view != null) {
@@ -146,9 +138,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             if (((ViewGroup) view).getChildAt(1).getId() == R.id.rLayout_login) {
                 getSupportFragmentManager().popBackStack();
             }
-        } else {
-            finish();
+            return true;
         }
+        return super.performBackIntercept();
     }
 
     @Override
@@ -292,9 +284,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                     .subscribe(rettt -> {
                         //检查广告的有效性
                         boolean fromLogout = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
-                        if (basePresenter != null && showOnceInCircle && !fromLogout) {
+                        if (presenter != null && showOnceInCircle && !fromLogout) {
                             showOnceInCircle = false;
-                            basePresenter.showAds()
+                            presenter.showAds()
                                     .subscribeOn(AndroidSchedulers.mainThread())
                                     .flatMap(ret -> {
                                         goAheadAfterPermissionGranted();
@@ -314,8 +306,8 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                         } else if (fromLogout) {
                             goAheadAfterPermissionGranted();
                         }
-                        if (basePresenter != null) {
-                            basePresenter.reEnableSmartcallLog();
+                        if (presenter != null) {
+                            presenter.reEnableSmartcallLog();
                         }
 
                     });
@@ -324,7 +316,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);//接入了友盟登录功能,必须调用 super
         switch (requestCode) {
             case JConstant.CODE_AD_FINISH:
@@ -345,16 +337,6 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @NeedsPermission({Manifest.permission.SYSTEM_ALERT_WINDOW})
     public void showAlertWindowPermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showAlertWindowPermissions");
-    }
-
-    @Override
-    public void setPresenter(SplashContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
     }
 
     @Override

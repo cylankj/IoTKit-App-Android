@@ -30,7 +30,6 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     public SetupPwdPresenterImpl(SetupPwdContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

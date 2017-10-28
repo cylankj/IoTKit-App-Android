@@ -26,7 +26,6 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     public MineInfoSetPassWordPresenterImp(MineInfoSetPassWordContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

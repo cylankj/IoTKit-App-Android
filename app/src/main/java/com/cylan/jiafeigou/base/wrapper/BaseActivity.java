@@ -1,19 +1,25 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.dagger.Injectable;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.ActivityBackInterceptor;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.view.LifecycleAdapter;
+import com.cylan.jiafeigou.view.PresenterAdapter;
 import com.umeng.socialize.UMShareAPI;
 
 import java.util.ArrayList;
@@ -22,15 +28,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 /**
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivity implements JFGView, ActivityBackInterceptor {
+public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView, ActivityBackInterceptor,
+        PresenterAdapter<P>, Injectable {
     protected String uuid;
     protected P presenter;
-
+    protected LifecycleAdapter lifecycleAdapter;
     protected List<ActivityBackInterceptor> interceptors = new ArrayList<>();
 
     public void addActivityBackInterceptor(ActivityBackInterceptor interceptor) {
@@ -41,17 +49,43 @@ public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivit
         interceptors.remove(interceptor);
     }
 
+
     @Inject
-    public void setPresenter(@NonNull P presenter) {
+    public final void setPresenter(@NonNull P presenter) {
         this.presenter = presenter;
         this.presenter.uuid(uuid);
+        if (presenter instanceof LifecycleAdapter) {
+            this.lifecycleAdapter = (LifecycleAdapter) presenter;
+        }
+    }
+
+    @Override
+    public final String uuid() {
+        return getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+    }
+
+    @Override
+    public boolean supportInject() {
+        return true;
+    }
+
+    private final void injectDagger() {
+        if (supportInject()) {
+            try {
+                AndroidInjection.inject(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 supportInject 方法并返回 FALSE");
+            }
+        }
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        interceptors.add(this);
         getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
+        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        interceptors.add(0, this);
+        injectDagger();
         super.onCreate(savedInstanceState);
         if (getContentViewID() != -1) {
             setContentView(getContentViewID());
@@ -66,24 +100,40 @@ public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivit
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.subscribe();
+        if (presenter != null) {
+            presenter.subscribe();
+        }
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.pause();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         IMEUtils.hide(this);
-        if (presenter instanceof BasePresenter) {
-            ((BasePresenter) presenter).onStop();
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.stop();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!presenter.isUnsubscribed()) {
-            presenter.unsubscribe();
+        if (presenter != null) {
+            if (!presenter.isUnsubscribed()) {
+                presenter.unsubscribe();
+            }
         }
+        interceptors.clear();
     }
 
     protected View getContentRootView() {
@@ -93,7 +143,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivit
     @Override
     protected void onNewIntent(Intent intent) {
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        presenter.uuid(uuid);
+        if (presenter != null) {
+            presenter.uuid(uuid);
+        }
         super.onNewIntent(intent);
     }
 
@@ -109,7 +161,12 @@ public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivit
     }
 
     @Override
-    public Activity activity() {
+    public final Activity activity() {
+        return this;
+    }
+
+    @Override
+    public final Context getContext() {
         return this;
     }
 
@@ -131,8 +188,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivit
         //do nothing
     }
 
+    /**
+     * 如果需要拦截 activity 的 back 事件,请使用performBackIntercept
+     */
     @Override
-    public void onBackPressed() {
+    public final void onBackPressed() {
         for (ActivityBackInterceptor interceptor : interceptors) {
             if (interceptor.performBackIntercept()) {
                 return;
@@ -159,7 +219,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends DaggerActivit
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }

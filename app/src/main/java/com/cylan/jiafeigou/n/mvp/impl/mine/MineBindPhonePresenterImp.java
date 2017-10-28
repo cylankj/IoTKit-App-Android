@@ -43,7 +43,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
-        view.setPresenter(this);
     }
 
     @Override

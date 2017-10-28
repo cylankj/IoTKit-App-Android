@@ -37,7 +37,6 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
 
     public FeedbackImpl(FeedBackContract.View view) {
         super(view);
-        view.setPresenter(this);
         pushManager = FeedbackManager.getInstance();
     }
 

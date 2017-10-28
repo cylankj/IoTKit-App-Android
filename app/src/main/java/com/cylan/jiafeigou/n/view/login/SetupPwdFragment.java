@@ -20,6 +20,7 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -44,7 +45,7 @@ import butterknife.OnTextChanged;
  * Use the {@link SetupPwdFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SetupPwdFragment extends Fragment implements SetupPwdContract.View {
+public class SetupPwdFragment extends IBaseFragment<SetupPwdContract.Presenter> implements SetupPwdContract.View {
 
     @BindView(R.id.tv_register_pwd_submit)
     TextView tvRegisterPwdSubmit;
@@ -187,16 +188,6 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
 
     public void doAction(String account, String pwd, String code) {
 
-    }
-
-    @Override
-    public void setPresenter(SetupPwdContract.Presenter presenter) {
-        this.pwdPresenter = presenter;
-    }
-
-    @Override
-    public String getUuid() {
-        return null;
     }
 
 
