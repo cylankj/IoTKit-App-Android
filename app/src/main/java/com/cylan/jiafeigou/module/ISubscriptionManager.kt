@@ -13,9 +13,9 @@ interface ISubscriptionManager {
      * */
     fun atomicMethod(): Observable<String>
 
-    fun bind(lifecycleProvider: LifecycleProvider<FragmentEvent>)
+    fun bind(name: String, lifecycleProvider: LifecycleProvider<FragmentEvent>)
 
-    fun unbind()
+    fun unbind(name: String)
 
     fun stop(): Observable<String>
 

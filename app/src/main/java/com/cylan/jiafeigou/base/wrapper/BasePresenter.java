@@ -64,7 +64,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     public void setSubscriptionManager(ISubscriptionManager mSubscriptionManager) {
         this.mSubscriptionManager = mSubscriptionManager;
         if (mView instanceof LifecycleProvider && mSubscriptionManager != null) {
-            mSubscriptionManager.bind((LifecycleProvider) mView);
+            mSubscriptionManager.bind(getClass().getName(), (LifecycleProvider) mView);
         }
     }
 
@@ -92,7 +92,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     public void unsubscribe() {
         subscribed = false;
         if (mSubscriptionManager != null) {
-            mSubscriptionManager.unbind();
+            mSubscriptionManager.unbind(getClass().getName());
         }
         mContext = null;
         mTaskDispatcher = null;
