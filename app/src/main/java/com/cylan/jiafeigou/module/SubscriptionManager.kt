@@ -18,14 +18,11 @@ import javax.inject.Inject
 class SubscriptionManager @Inject constructor() : ISubscriptionManager {
     private var lifecycleProviderMap = ConcurrentHashMap<String, LifecycleProvider<FragmentEvent>>()
     override fun bind(name: String, lifecycleProvider: LifecycleProvider<FragmentEvent>) {
-        val traceElement = Thread.currentThread().stackTrace[2]
-        val method = "${traceElement.fileName}(L:${traceElement.lineNumber}):${traceElement.className}.${traceElement.methodName}"
+        AppLogger.w("bind:$name")
         lifecycleProviderMap.put(name, lifecycleProvider)
     }
 
     override fun unbind(name: String) {
-        val traceElement = Thread.currentThread().stackTrace[2]
-        val method = "${traceElement.fileName}(L:${traceElement.lineNumber}):${traceElement.className}.${traceElement.methodName}"
         lifecycleProviderMap.remove(name)
     }
 
@@ -34,7 +31,7 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
     override fun stop(): Observable<String> {
         val traceElement = Thread.currentThread().stackTrace[3]
         val method = "${traceElement.fileName}(L:${traceElement.lineNumber}):${traceElement.className}.${traceElement.methodName}"
-        val lifecycleProvider = lifecycleProviderMap[method]
+        val lifecycleProvider = lifecycleProviderMap[traceElement.className]
         AppLogger.w("stop:method:$method")
         return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
             AppLogger.w("lifecycle 不存在, bind to stop 失败了")
@@ -45,7 +42,7 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
     override fun destroy(): Observable<String> {
         val traceElement = Thread.currentThread().stackTrace[3]
         val method = "${traceElement.fileName}(L:${traceElement.lineNumber}):${traceElement.className}.${traceElement.methodName}"
-        val lifecycleProvider = lifecycleProviderMap[method]
+        val lifecycleProvider = lifecycleProviderMap[traceElement.className]
         AppLogger.w("destroy:method:$method")
         return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
             AppLogger.w("lifecycle 不存在, bind to destroy 失败了")
