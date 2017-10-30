@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -37,14 +36,16 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
 //        addSubscription(subscribe);
     }
 
+
     @Override
-    public void start() {
-        super.start();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "AIRecognitionPresenter#getSyncSub", getSyncSub());
+    public void subscribe() {
+        super.subscribe();
+        subscribeSync();
     }
 
-    private Subscription getSyncSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void subscribeSync() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     // TODO: 2017/8/3 监听其他端的操作,及时更新

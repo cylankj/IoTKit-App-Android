@@ -29,51 +29,54 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
 
 
     override fun createNewFace(faceId: String, faceName: String) {
-        val subscribe = Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
-            val account = DataSourceManager.getInstance().account.account
-            val vid = Security.getVId()
-            val serviceKey = OptionsImpl.getServiceKey(vid)
-            val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
-            val seceret = OptionsImpl.getServiceSeceret(vid)
-            var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
-            imageUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
-            val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
-            if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
-                throw IllegalArgumentException("ServiceKey或Seceret为空")
-            }
+        mSubscriptionManager.destroy()
+                .flatMap {
+                    Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
+                        val account = DataSourceManager.getInstance().account.account
+                        val vid = Security.getVId()
+                        val serviceKey = OptionsImpl.getServiceKey(vid)
+                        val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
+                        val seceret = OptionsImpl.getServiceSeceret(vid)
+                        var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
+                        imageUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
+                        val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
+                        if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
+                            throw IllegalArgumentException("ServiceKey或Seceret为空")
+                        }
 
-            val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
-            var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
-            if (!url.startsWith("http://")) {
-                url = "http://" + url
-            }
-            val response = OkGo.post(url)
-                    .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+                        val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
+                        var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
+                        if (!url.startsWith("http://")) {
+                            url = "http://" + url
+                        }
+                        val response = OkGo.post(url)
+                                .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
 
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, faceId)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_IMAGE_URL, imageUrl)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_NAME, faceName)
-                    .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
-                    .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
-                    .execute()
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, faceId)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_IMAGE_URL, imageUrl)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_NAME, faceName)
+                                .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+                                .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
+                                .execute()
 
-            val body = response.body()
+                        val body = response.body()
 
-            val string = body?.string()
-            AppLogger.w(string)
-            val gson = Gson()
-            val header = gson.fromJson<DpMsgDefine.GenericResponse>(string, DpMsgDefine.GenericResponse::class.java)
-            subscriber.onNext(header)
-            subscriber.onCompleted()
-        }
+                        val string = body?.string()
+                        AppLogger.w(string)
+                        val gson = Gson()
+                        val header = gson.fromJson<DpMsgDefine.GenericResponse>(string, DpMsgDefine.GenericResponse::class.java)
+                        subscriber.onNext(header)
+                        subscriber.onCompleted()
+                    }
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
@@ -107,7 +110,6 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                     mView.onCreateNewFaceError(-1)
                     AppLogger.e(MiscUtils.getErr(e))
                 }
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "CreateNewFacePresenter#createNewFace", subscribe)
     }
 
 

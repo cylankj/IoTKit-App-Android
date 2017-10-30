@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
 import android.text.TextUtils
+import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
@@ -38,57 +39,63 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
     sn	设备标识（选填项）cid
     access_token	【必填项】
      * */
-    override fun setFaceName( personId: String, faceName: String) {
-        val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
-            try {
-                val account = DataSourceManager.getInstance().account.account
-                val vid = Security.getVId()
-                val serviceKey = OptionsImpl.getServiceKey(vid)
-                val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
-                val seceret = OptionsImpl.getServiceSeceret(vid)
-                val accessToken = BaseApplication.getAppComponent().getCmd().sessionId
-                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
-                    subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
-                } else {
-                    val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
-                    if (!url.startsWith("http://")) {
-                        url = "http://" + url
-                    }
-                    val response = OkGo.post(url)
-                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
-                            //上面是全局参数,下面是接口参数
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
-                            .params(JConstant.RobotCloudApi.ACCESS_TOKEN, accessToken)
-                            .execute()
+    override fun setFaceName(personId: String, faceName: String) {
+        mSubscriptionManager.destroy()
+                .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
+                .observeOn(Schedulers.io())
+                .flatMap {
+                    Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
+                        try {
+                            val account = DataSourceManager.getInstance().account.account
+                            val vid = Security.getVId()
+                            val serviceKey = OptionsImpl.getServiceKey(vid)
+                            val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
+                            val seceret = OptionsImpl.getServiceSeceret(vid)
+                            val accessToken = BaseApplication.getAppComponent().getCmd().sessionId
+                            if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
+                                subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
+                            } else {
+                                val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
+                                var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
+                                if (!url.startsWith("http://")) {
+                                    url = "http://" + url
+                                }
+                                val response = OkGo.post(url)
+                                        .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+                                        //上面是全局参数,下面是接口参数
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
+                                        .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
+                                        .params(JConstant.RobotCloudApi.ACCESS_TOKEN, accessToken)
+                                        .execute()
 
-                    val body = response.body()
+                                val body = response.body()
 
-                    if (body != null) {
-                        val string = body.string()
-                        AppLogger.w(string)
-                        val gson = Gson()
-                        val header = gson.fromJson<DpMsgDefine.ResponseHeader>(string, DpMsgDefine.ResponseHeader::class.java)
-                        subscriber.onNext(header)
-                    } else {
-                        subscriber.onError(null)
+                                if (body != null) {
+                                    val string = body.string()
+                                    AppLogger.w(string)
+                                    val gson = Gson()
+                                    val header = gson.fromJson<DpMsgDefine.ResponseHeader>(string, DpMsgDefine.ResponseHeader::class.java)
+                                    subscriber.onNext(header)
+                                    subscriber.onCompleted()
+                                } else {
+                                    subscriber.onError(null)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            subscriber.onError(e)
+                        }
                     }
                 }
-            } catch (e: Exception) {
-                subscriber.onError(e)
-            }
-        }
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate { mLoadingManager.hideLoading() }
                 .subscribe({ rsp ->
                     if (rsp != null && rsp.ret == 0) {
                         mView.onSetFaceNameSuccess()
@@ -99,7 +106,5 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "SetFaceNamePresenter#setFaceName", subscribe)
-
     }
 }

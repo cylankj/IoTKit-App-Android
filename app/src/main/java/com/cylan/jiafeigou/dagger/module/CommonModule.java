@@ -26,7 +26,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.module.ILoadingManager;
+import com.cylan.jiafeigou.module.ISubscriptionManager;
 import com.cylan.jiafeigou.module.LoadingManager;
+import com.cylan.jiafeigou.module.SubscriptionManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
@@ -220,4 +222,8 @@ public abstract class CommonModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build().create(IHttpApi.class);
     }
+
+    @Binds
+    @Singleton
+    public abstract ISubscriptionManager bindSubscriptionManager(SubscriptionManager subscriptionManager);
 }

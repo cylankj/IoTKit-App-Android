@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -63,12 +62,13 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
     @Override
     public void subscribe() {
         super.subscribe();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getReportMsgSub", getReportMsgSub());
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
+        subscribeReportMsg();
+        subscribeNetwork();
     }
 
-    private Subscription getReportMsgSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void subscribeReportMsg() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -117,7 +117,8 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
-            Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
+            mSubscriptionManager.stop()
+                    .flatMap(ret -> BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName)))
                     .timeout(500, TimeUnit.MILLISECONDS, Observable.just(null))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
@@ -134,10 +135,10 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 //                    }, e -> {
 //                        AppLogger.e(e.getMessage());
 //                    });
-            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#delete", subscribe);
         } else if (mode == 3) {
-            // TODO: 2017/8/3  
-            Subscription subscribe = Observable.just(version)
+            // TODO: 2017/8/3
+            mSubscriptionManager.stop()
+                    .flatMap(ret -> Observable.just(version))
                     .observeOn(Schedulers.io())
                     .map(ver -> new DPEntity()
                             .setUuid(uuid)
@@ -156,13 +157,12 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         e.printStackTrace();
                         AppLogger.d(e.getMessage());
                     });
-            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaDetailPresenter#delete1", subscribe);
-
         }
     }
 
-    private Subscription getNetWorkMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+    private void subscribeNetwork() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");

@@ -87,7 +87,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
 
                 })
                 .filter(ret -> ret != null)
-                .flatMap(entity -> taskDispatcher.perform(entity))
+                .flatMap(entity -> mTaskDispatcher.perform(entity))
                 .subscribe(result -> {
                 }, e -> AppLogger.d(e.getMessage()));
     }

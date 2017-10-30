@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -30,7 +29,8 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
     }
 
     private void checkAndInitLogoOption() {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().getLogo(uuid)
+        mSubscriptionManager.stop()
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getLogo(uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.ret == 0) {//成功了
@@ -41,12 +41,12 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#checkAndInitLogoOption", subscribe);
     }
 
     @Override
     public void changeLogoType(int position) {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().setLogo(uuid, position)
+        mSubscriptionManager.stop()
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().setLogo(uuid, position))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.ret == 0) {
@@ -57,6 +57,5 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaLogoConfigurePresenter#changeLogoType", subscribe);
     }
 }

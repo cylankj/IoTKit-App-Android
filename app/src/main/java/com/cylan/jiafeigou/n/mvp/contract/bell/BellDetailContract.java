@@ -5,8 +5,6 @@ import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.rx.RxEvent;
 
-import rx.Subscription;
-
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -26,7 +24,7 @@ public interface BellDetailContract {
          */
         void checkNewVersion(String uuid);
 
-        Subscription checkNewVersionBack();
+        void subscribeNewVersion();
     }
 }
 

@@ -19,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -36,11 +35,12 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
     @Override
     public void start() {
         super.start();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#newVersionRspSub", newVersionRspSub());
+        subscribeNewVersion();
     }
 
-    private Subscription newVersionRspSub() {
-        Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
+    private void subscribeNewVersion() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class))
                 .subscribeOn(Schedulers.io())
                 .subscribe(version -> {
                     version.setLastShowTime(System.currentTimeMillis());
@@ -52,14 +52,14 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.startCheck();
-        return subscription;
     }
 
     @Override
     public void unBindDevice() {
-        Subscription subscribe = Observable.just(new DPEntity()
-                .setUuid(uuid)
-                .setAction(DBAction.UNBIND))
+        mSubscriptionManager.stop()
+                .flatMap(ret -> Observable.just(new DPEntity()
+                        .setUuid(uuid)
+                        .setAction(DBAction.UNBIND)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -72,6 +72,5 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     e.printStackTrace();
                 }, () -> {
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaSettingPresenter#unBindDevice", subscribe);
     }
 }

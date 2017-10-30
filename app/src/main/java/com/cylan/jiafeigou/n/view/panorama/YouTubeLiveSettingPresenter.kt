@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.rtmp.youtube.util.YouTubeApi
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -30,20 +31,21 @@ import javax.inject.Inject
 class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.View) : BasePresenter<YouTubeLiveSetting.View>(view), YouTubeLiveSetting.Presenter {
     override fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?) {
         AppLogger.w("YOUTUBE:getLiveList ,the id is $liveBroadcastID")
-        val subscribe = Observable.just("getLiveList")
-                .subscribeOn(AndroidSchedulers.mainThread())
+        mSubscriptionManager.destroy()
                 .observeOn(Schedulers.io())
-
-                .map {
-
-                    val youTube = YouTube.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            JacksonFactory.getDefaultInstance(),
-                            credential
-                    )
-                            .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
-                            .build()
-                    YouTubeApi.getLiveEvents(youTube, liveBroadcastID)
+                .flatMap {
+                    Observable.create<List<EventData>> { subscriber ->
+                        val youTube = YouTube.Builder(
+                                AndroidHttp.newCompatibleTransport(),
+                                JacksonFactory.getDefaultInstance(),
+                                credential
+                        )
+                                .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
+                                .build()
+                        val liveEvents = YouTubeApi.getLiveEvents(youTube, liveBroadcastID)
+                        subscriber.onNext(liveEvents)
+                        subscriber.onCompleted()
+                    }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -62,15 +64,21 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
                         }
                     }
                 })
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveList", subscribe)
     }
 
     override fun getLiveFromDevice() {
-        val subscribe = Observable.just("getLiveFromDevice")
-                .subscribeOn(AndroidSchedulers.mainThread())
+        mSubscriptionManager.destroy()
                 .observeOn(Schedulers.io())
-                .map { BaseApplication.getAppComponent().getCmd().robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0) }
-                .flatMap { seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq } }
+                .flatMap {
+                    Observable.create<RobotoGetDataRsp> { subscriber ->
+                        val seq = BaseApplication.getAppComponent().getCmd()
+                                .robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0)
+                        RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq }.subscribe {
+                            subscriber.onNext(it)
+                            subscriber.onCompleted()
+                        }
+                    }
+                }
                 .first()
                 .map {
                     val dp = it.map[517]
@@ -85,6 +93,5 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
                 }, {
 
                 })
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveSettingPresenter#getLiveFromDevice", subscribe)
     }
 }

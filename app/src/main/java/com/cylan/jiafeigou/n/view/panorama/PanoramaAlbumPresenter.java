@@ -84,12 +84,13 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     public void subscribe() {
         super.subscribe();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#monitorSDCardUnMount", monitorSDCardUnMount());
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#getNetWorkMonitorSub", getNetWorkMonitorSub());
+        subscribeSDCardUnMount();
+        subscribeNetwork();
     }
 
-    private Subscription getNetWorkMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+    private void subscribeNetwork() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
@@ -106,8 +107,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 });
     }
 
-    private Subscription monitorSDCardUnMount() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void subscribeSDCardUnMount() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -166,7 +168,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#checkSDCardAndInit", subscribe);
     }
 
     @Override
@@ -174,64 +175,49 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         if (fetchSubscription != null && !fetchSubscription.isUnsubscribed()) {
             fetchSubscription.unsubscribe();
         }
-        if (fetchLocation == 0) {
-            fetchSubscription = loadFromLocal(time)
-                    .delay(1, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(items -> {
-                        mView.onAppend(items, time == 0, true, fetchLocation);
-                    }, e -> {
-                        AppLogger.e(e.getMessage());
-//                        ToastUtil.showNegativeToast("获取设备文件列表超时");
-                    });
-        } else if (fetchLocation == 1) {
-            fetchSubscription = loadFromServer(time)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(items -> {
-                        mView.onAppend(items, time == 0, true, fetchLocation);
-                    }, e -> {
-                        AppLogger.e(e.getMessage());
-//                        ToastUtil.showNegativeToast("获取设备文件列表超时");
-                    });
-        } else if (fetchLocation == 2) {
-            fetchSubscription = loadFromLocal(time)
-                    .observeOn(AndroidSchedulers.mainThread())
-//                    .map(items -> {
-//                        mView.onAppend(items, time == 0, false);
-//                        return items;
-//                    })
-                    .observeOn(Schedulers.io())
-                    .flatMap(items -> JFGRules.isDeviceOnline(uuid) ?//设备当前真的不在线,就不需要去 Ping 浪费时间等待了
-                            loadFromServer(time).map(items1 -> {
-                                if (items1 != null) {
-                                    Map<String, PanoramaAlbumContact.PanoramaItem> sort = new HashMap<>();
-                                    items1.addAll(items);
-                                    for (PanoramaAlbumContact.PanoramaItem panoramaItem : items1) {
-                                        PanoramaAlbumContact.PanoramaItem panoramaItem1 = sort.get(panoramaItem.fileName);
-                                        if (panoramaItem1 == null) {
-                                            sort.put(panoramaItem.fileName, panoramaItem);
-                                        } else {
-                                            panoramaItem1.location = 2;
-                                        }
-                                    }
-                                    List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
-                                    Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
-                                    return result.subList(0, result.size() > 20 ? 20 : result.size());
-                                } else {
-                                    return items;
-                                }
-                            }) : Observable.just(items)
-                    )
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(items -> {
-                        mView.onAppend(items, time == 0, true, fetchLocation);
-                    }, e -> {
-                        AppLogger.e(e.getMessage());
-                    });
-        }
-        if (fetchLocation != -1) {
-            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "PanoramaAlbumPresenter#fetch", fetchSubscription);
-        }
+        mSubscriptionManager.stop()
+                .flatMap(ret -> {
+                    Observable<List<PanoramaAlbumContact.PanoramaItem>> observableResult = null;
+                    if (fetchLocation == 0) {
+                        observableResult = loadFromLocal(time)
+                                .delay(1, TimeUnit.SECONDS);
+                    } else if (fetchLocation == 1) {
+                        observableResult = loadFromServer(time);
+                    } else if (fetchLocation == 2) {
+                        observableResult = loadFromLocal(time)
+                                .observeOn(Schedulers.io())
+                                .flatMap(items -> JFGRules.isDeviceOnline(uuid) ?//设备当前真的不在线,就不需要去 Ping 浪费时间等待了
+                                        loadFromServer(time).map(items1 -> {
+                                            if (items1 != null) {
+                                                Map<String, PanoramaAlbumContact.PanoramaItem> sort = new HashMap<>();
+                                                items1.addAll(items);
+                                                for (PanoramaAlbumContact.PanoramaItem panoramaItem : items1) {
+                                                    PanoramaAlbumContact.PanoramaItem panoramaItem1 = sort.get(panoramaItem.fileName);
+                                                    if (panoramaItem1 == null) {
+                                                        sort.put(panoramaItem.fileName, panoramaItem);
+                                                    } else {
+                                                        panoramaItem1.location = 2;
+                                                    }
+                                                }
+                                                List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
+                                                Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
+                                                return result.subList(0, result.size() > 20 ? 20 : result.size());
+                                            } else {
+                                                return items;
+                                            }
+                                        }) : Observable.just(items)
+                                );
+                    }
+                    if (observableResult == null) {
+                        observableResult = Observable.empty();
+                    }
+                    return observableResult;
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(items -> {
+                    mView.onAppend(items, time == 0, true, fetchLocation);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromServer(int time) {

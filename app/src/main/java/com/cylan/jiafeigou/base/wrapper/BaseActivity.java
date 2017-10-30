@@ -18,28 +18,38 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.ActivityBackInterceptor;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.view.LifecycleAdapter;
 import com.cylan.jiafeigou.view.PresenterAdapter;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.umeng.socialize.UMShareAPI;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 /**
  * Created by yzd on 16-12-28.
  */
 
 public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView, ActivityBackInterceptor,
-        PresenterAdapter<P>, Injectable {
+        PresenterAdapter<P>, Injectable, LifecycleProvider<FragmentEvent> {
     protected String uuid;
     protected P presenter;
     protected LifecycleAdapter lifecycleAdapter;
     protected List<ActivityBackInterceptor> interceptors = new ArrayList<>();
+    protected final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
 
     public void addActivityBackInterceptor(ActivityBackInterceptor interceptor) {
         interceptors.add(1, interceptor);
@@ -80,6 +90,24 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         }
     }
 
+    @Nonnull
+    @Override
+    public final Observable<FragmentEvent> lifecycle() {
+        return lifecycleSubject.asObservable();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LifecycleTransformer<T> bindUntilEvent(@Nonnull FragmentEvent event) {
+        return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LifecycleTransformer<T> bindToLifecycle() {
+        return RxLifecycleAndroid.bindFragment(lifecycleSubject);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
@@ -94,6 +122,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             setContentView(getContentRootView());
         }
         initViewAndListener();
+        lifecycleSubject.onNext(FragmentEvent.CREATE);
     }
 
 
@@ -106,10 +135,18 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (lifecycleAdapter != null) {
             lifecycleAdapter.start();
         }
+        lifecycleSubject.onNext(FragmentEvent.START);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        lifecycleSubject.onNext(FragmentEvent.RESUME);
     }
 
     @Override
     protected void onPause() {
+        lifecycleSubject.onNext(FragmentEvent.PAUSE);
         super.onPause();
         if (lifecycleAdapter != null) {
             lifecycleAdapter.pause();
@@ -118,6 +155,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     protected void onStop() {
+        lifecycleSubject.onNext(FragmentEvent.STOP);
         super.onStop();
         IMEUtils.hide(this);
         if (lifecycleAdapter != null) {
@@ -127,6 +165,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     protected void onDestroy() {
+        lifecycleSubject.onNext(FragmentEvent.DESTROY);
         super.onDestroy();
         if (presenter != null) {
             if (!presenter.isUnsubscribed()) {
@@ -194,8 +233,13 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     @Override
     public final void onBackPressed() {
         for (ActivityBackInterceptor interceptor : interceptors) {
-            if (interceptor.performBackIntercept()) {
-                return;
+            try {
+                if (interceptor.performBackIntercept()) {
+                    return;
+                }
+                //如果出现异常直接捕获就行了
+            } catch (Exception e) {
+                AppLogger.e(MiscUtils.getErr(e));
             }
         }
 

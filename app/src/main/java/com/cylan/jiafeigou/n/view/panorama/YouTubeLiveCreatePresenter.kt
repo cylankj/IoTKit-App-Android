@@ -32,21 +32,25 @@ import javax.inject.Inject
  */
 class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateContract.View?) : BasePresenter<YouTubeLiveCreateContract.View>(view), YouTubeLiveCreateContract.Presenter {
     override fun createLiveBroadcast(credential: GoogleAccountCredential, title: String?, description: String?, startTime: Long, endTime: Long) {
-        val subscribe = Observable.just("createLiveBroadcast")
+        mSubscriptionManager.destroy()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .map {
-                    val youTube = YouTube.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            JacksonFactory.getDefaultInstance(),
-                            credential
-                    )
-                            .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
-                            .build()
-                    YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
+                .flatMap {
+                    Observable.create<EventData> { subscriber ->
+                        val youTube = YouTube.Builder(
+                                AndroidHttp.newCompatibleTransport(),
+                                JacksonFactory.getDefaultInstance(),
+                                credential
+                        )
+                                .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
+                                .build()
+                        val liveEvent = YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
+                        subscriber.onNext(liveEvent)
+                        subscriber.onCompleted()
+                    }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingManager.showLoading(R.string.CREATING, false) }
+                .doOnSubscribe { mLoadingManager.showLoading(mView.activity(), R.string.CREATING, false) }
                 .doOnTerminate { mLoadingManager.hideLoading() }
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
@@ -72,11 +76,10 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                         }
                     }
                 })
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast", subscribe)
     }
 
     override fun createLiveBroadcast(title: String?, description: String?, startTime: Long, endTime: Long) {
-        val subscribe = Observable.just("createLiveBroadcast")
+        mSubscriptionManager.destroy()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -114,7 +117,7 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingManager.showLoading(R.string.CREATING, false) }
+                .doOnSubscribe { mLoadingManager.showLoading(mView.activity(), R.string.CREATING, false) }
                 .doOnTerminate { mLoadingManager.hideLoading() }
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
@@ -146,6 +149,5 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                         }
                     }
                 })
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "YouTubeLiveCreatePresenter#createLiveBroadcast1", subscribe)
     }
 }

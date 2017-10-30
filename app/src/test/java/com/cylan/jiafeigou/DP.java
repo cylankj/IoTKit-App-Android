@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
+import com.cylan.jiafeigou.module.SubscriptionManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
@@ -446,4 +447,24 @@ public class DP {
         System.out.println(new HmacSHA1Signature().computeSignature(seceret,
                 JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API + "\n" + timeMillis));
     }
+
+    @Test
+    public void testMethodOverCall() throws Exception {
+        for (int i = 0; i < 300; i++) {
+            mmm();
+        }
+
+        Thread.sleep(10000L);
+    }
+
+    SubscriptionManager manager = new SubscriptionManager();
+
+    public String mmm() {
+        manager.atomicMethod()
+                .subscribeOn(Schedulers.computation())
+                .delay(1000, TimeUnit.MILLISECONDS)
+                .subscribe(System.out::println, System.err::println);
+        return "";
+    }
+
 }

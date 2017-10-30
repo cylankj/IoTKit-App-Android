@@ -48,9 +48,10 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
 
     @Override
     public void unbindDevice() {
-        Subscription subscribe = Observable.just(new DPEntity()
-                .setUuid(uuid)
-                .setAction(DBAction.UNBIND))
+        mSubscriptionManager.stop()
+                .flatMap(ret -> Observable.just(new DPEntity()
+                        .setUuid(uuid)
+                        .setAction(DBAction.UNBIND)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -63,15 +64,15 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     e.printStackTrace();
                 }, () -> {
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#unbindDevice", subscribe);
     }
 
     @Override
     public void clearBellRecord(String uuid) {
-        Subscription subscribe = Observable.just(new DPEntity()
-                .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
-                .setUuid(uuid)
-                .setAction(DBAction.CLEARED))
+        mSubscriptionManager.stop()
+                .map(ret-> new DPEntity()
+                        .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
+                        .setUuid(uuid)
+                        .setAction(DBAction.CLEARED))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -90,6 +91,5 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     AppLogger.d(e.getMessage());
                     AppLogger.d("清空呼叫记录失败!");
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellSettingPresenterImpl#clearBellRecord", subscribe);
     }
 }

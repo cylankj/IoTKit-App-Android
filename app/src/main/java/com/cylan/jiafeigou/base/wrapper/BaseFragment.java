@@ -19,11 +19,19 @@ import com.cylan.jiafeigou.module.ActivityBackInterceptor;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.view.LifecycleAdapter;
 import com.cylan.jiafeigou.view.PresenterAdapter;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 import static android.app.Activity.RESULT_CANCELED;
 
@@ -31,13 +39,14 @@ import static android.app.Activity.RESULT_CANCELED;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView, ActivityBackInterceptor, PresenterAdapter<P>, Injectable {
+public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView, ActivityBackInterceptor
+        , PresenterAdapter<P>, LifecycleProvider<FragmentEvent>, Injectable {
     protected String uuid;
 
     protected P presenter;
 
     protected LifecycleAdapter lifecycleAdapter;
-
+    protected final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
     protected int resultCode = RESULT_CANCELED;
     protected Intent resultData = null;
 
@@ -69,9 +78,28 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         return getActivity();
     }
 
+    @Nonnull
+    @Override
+    public Observable<FragmentEvent> lifecycle() {
+        return lifecycleSubject.asObservable();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LifecycleTransformer<T> bindToLifecycle() {
+        return RxLifecycleAndroid.bindFragment(lifecycleSubject);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LifecycleTransformer<T> bindUntilEvent(@Nonnull FragmentEvent event) {
+        return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        lifecycleSubject.onNext(FragmentEvent.CREATE);
     }
 
     @Nullable
@@ -119,17 +147,34 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         }
         injectDagger();
         super.onAttach(context);
+        lifecycleSubject.onNext(FragmentEvent.ATTACH);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
 
+    @Override
+    public void onDestroyView() {
+        lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
+        /**
+         *需要在 onDestroyView 之前移除对 backEvent 的监听,在这个方法调用后 View 不存在了
+         * 继续对 UI 界面操作可能会出错
+         * */
         final FragmentActivity activity = getActivity();
         if (activity instanceof BaseActivity) {
             ((BaseActivity) activity).removeActivityBackInterceptor(this);
         }
+        super.onDestroyView();
+    }
 
+    @Override
+    public void onDestroy() {
+        lifecycleSubject.onNext(FragmentEvent.DESTROY);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        lifecycleSubject.onNext(FragmentEvent.DETACH);
+        super.onDetach();
         performActivityResult();
 
         if (callBack != null) {
@@ -155,6 +200,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViewAndListener();
+        lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);
     }
 
     @Override
@@ -163,10 +209,18 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (lifecycleAdapter != null) {
             lifecycleAdapter.start();
         }
+        lifecycleSubject.onNext(FragmentEvent.START);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        lifecycleSubject.onNext(FragmentEvent.RESUME);
     }
 
     @Override
     public void onPause() {
+        lifecycleSubject.onNext(FragmentEvent.PAUSE);
         super.onPause();
         if (lifecycleAdapter != null) {
             lifecycleAdapter.pause();
@@ -175,6 +229,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     public void onStop() {
+        lifecycleSubject.onNext(FragmentEvent.STOP);
         super.onStop();
         if (lifecycleAdapter != null) {
             lifecycleAdapter.stop();

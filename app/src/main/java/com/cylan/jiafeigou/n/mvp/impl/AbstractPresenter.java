@@ -41,6 +41,7 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         super(view);
         mView = view;
         this.uuid = mView.uuid();
+        setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
     }
 
     @Override
@@ -52,8 +53,8 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         super(view);
         mView = view;
         this.uuid = mView.uuid();
+        setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
     }
-
 
 
     @Override

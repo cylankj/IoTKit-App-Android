@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 
@@ -63,20 +62,21 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         //直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
 //说明不是自己接听的
-        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
-                .mergeWith(
-                        Observable.just(mHolderCaller = caller)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .filter(who -> !mIsInViewerMode)
-                                .flatMap(who -> {
+        mSubscriptionManager.destroy()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
+                        .mergeWith(
+                                Observable.just(mHolderCaller = caller)
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .filter(who -> !mIsInViewerMode)
+                                        .flatMap(who -> {
 //                                    switch (mView.onResolveViewLaunchType()) {
 //                                        case JConstant.VIEW_CALL_WAY_LISTEN:
-                                    if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
+                                            if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
-                                    } else if (mHolderCaller != null) {
-                                        mView.onListen();
-                                        AppLogger.d("收到门铃呼叫");
-                                    }
+                                            } else if (mHolderCaller != null) {
+                                                mView.onListen();
+                                                AppLogger.d("收到门铃呼叫");
+                                            }
 //                                            break;
 //                                        case JConstant.VIEW_CALL_WAY_VIEWER:
 //                                            mCaller = mHolderCaller;
@@ -84,9 +84,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 //                                            startViewer();
 //                                            break;
 //                                    }
-                                    return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
-                                })
-                )
+                                            return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
+                                        })
+                        ))
                 .first()
                 .timeout(JFGRules.getCallTimeOut(sourceManager.getDevice(uuid)), TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,7 +109,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "BaseCallablePresenter#newCall", subscribe);
     }
 
     @Override
@@ -120,9 +119,10 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscription = load(BellPuller.getInstance().getUrl(uuid)).subscribe(ret -> {
-        }, AppLogger::e);
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "BaseCallablePresenter#loadPreview", subscription);
+        mSubscriptionManager.destroy()
+                .flatMap(ret -> load(BellPuller.getInstance().getUrl(uuid)))
+                .subscribe(ret -> {
+                }, AppLogger::e);
     }
 
     protected Observable<Long> load(String url) {

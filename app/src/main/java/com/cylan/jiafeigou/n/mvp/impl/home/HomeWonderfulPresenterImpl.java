@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -50,17 +49,18 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void subscribe() {
         super.subscribe();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#getPageScrolledSub", getPageScrolledSub());
+        subscribePageScrolled();
     }
 
     @Override
     public void stop() {
         super.stop();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, "HomeWonderfulPresenterImpl#getDeleteWonderfulSub", getDeleteWonderfulSub());
+        subscribeDeleteWonderful();
     }
 
-    private Subscription getDeleteWonderfulSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class)
+    private void subscribeDeleteWonderful() {
+        mSubscriptionManager.destroy()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteWonder -> {
@@ -105,13 +105,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         }
     }
 
-    private Subscription getPageScrolledSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class)
+    private void subscribePageScrolled() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class))
                 .subscribeOn(Schedulers.io())
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(timeTickEvent -> {
-                    unsubscribe(LIFE_CYCLE.LIFE_CYCLE_STOP);
                     mView.onPageScrolled();
                 }, e -> {
                     AppLogger.e(e.getMessage());
@@ -121,12 +121,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        Subscription subscribe = Observable.just(new DPEntity()
-                .setUuid("")
-                .setVersion(0L)
-                .setAction(DBAction.QUERY)
-                .setOption(DBOption.SingleQueryOption.DESC_15_LIMIT)
-                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+        mSubscriptionManager.stop()
+                .map(ret -> new DPEntity()
+                        .setUuid("")
+                        .setVersion(0L)
+                        .setAction(DBAction.QUERY)
+                        .setOption(DBOption.SingleQueryOption.DESC_15_LIMIT)
+                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -144,12 +145,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     AppLogger.d(e.getMessage());
                     mView.onQueryTimeLineCompleted();
                 }, () -> mView.onQueryTimeLineCompleted());
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startRefresh", subscribe);
     }
 
     @Override
     public void startLoadMore() {
-        Subscription subscribe = Observable.just(mWonderItems.get(mWonderItems.size() - 1).version)
+        mSubscriptionManager.stop()
+                .map(ret -> mWonderItems.get(mWonderItems.size() - 1).version)
                 .map(version -> new DPEntity()
                         .setVersion(version)
                         .setAction(DBAction.QUERY)
@@ -171,12 +172,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, () -> {
                     mView.onQueryTimeLineCompleted();
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#startLoadMore", subscribe);
     }
 
     @Override
     public void deleteTimeline(int position) {
-        Subscription subscribe = Observable.just(mWonderItems.get(position).version)
+        mSubscriptionManager.stop()
+                .map(ret -> mWonderItems.get(position).version)
                 .observeOn(Schedulers.io())
                 .map(version -> new DPEntity()
                         .setUuid("")
@@ -212,7 +213,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "HomeWonderfulPresenterImpl#deleteTimeline", subscribe);
     }
 
     @Override

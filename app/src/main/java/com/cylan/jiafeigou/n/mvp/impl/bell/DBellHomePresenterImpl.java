@@ -85,15 +85,15 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             mView.onDeviceUnBind();
         } else {
             mView.onShowProperty(device);
-            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getClearDataSub", getClearDataSub());
-            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getNewFirmware", getNewFirmware());
-            addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#getDeviceUnBindSub", getDeviceUnBindSub());
-
+            subscribeClearData();
+            subscribeNewFirmware();
+            subscribeDeviceUnBind();
         }
     }
 
-    private Subscription getNewFirmware() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class)
+    private void subscribeNewFirmware() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class))
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .retry()
                 .subscribe(ret -> {
@@ -119,8 +119,9 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 }, AppLogger::e);
     }
 
-    private Subscription getDeviceUnBindSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+    private void subscribeDeviceUnBind() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(event -> TextUtils.equals(event.uuid, uuid))
@@ -131,8 +132,9 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 }, e -> AppLogger.d(e.getMessage()));
     }
 
-    private Subscription getClearDataSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ClearDataEvent.class)
+    private void subscribeClearData() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ClearDataEvent.class))
                 .filter(event -> event.msgId == DpMsgMap.ID_401_BELL_CALL_STATE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
@@ -146,12 +148,13 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
-        subscribe = Observable.just(new DPEntity()
-                .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
-                .setVersion(time)
-                .setAction(DBAction.QUERY)
-                .setOption(new DBOption.SingleQueryOption(asc, 20))
-                .setUuid(uuid))
+        mSubscriptionManager.stop()
+                .flatMap(ret -> Observable.just(new DPEntity()
+                        .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
+                        .setVersion(time)
+                        .setAction(DBAction.QUERY)
+                        .setOption(new DBOption.SingleQueryOption(asc, 20))
+                        .setUuid(uuid)))
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -167,7 +170,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         e.printStackTrace();
                     }
                 }, () -> mView.onRecordsListRsp(null));
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#fetchBellRecordsList", subscribe);
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
@@ -200,7 +202,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void deleteBellCallRecord(List<BellCallRecordBean> list) {
-        Subscription subscribe = Observable.just(build(list))
+        mSubscriptionManager.stop()
+                .flatMap(ret -> Observable.just(build(list)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -214,7 +217,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     e.printStackTrace();
                 }, () -> {
                 });
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "DBellHomePresenterImpl#deleteBellCallRecord", subscribe);
     }
 
     @Override

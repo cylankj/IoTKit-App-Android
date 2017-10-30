@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -45,7 +44,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     public void subscribe() {
         super.subscribe();
-        addSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, "BellDetailSettingPresenterImpl#checkNewVersionBack", checkNewVersionBack());
+        subscribeNewVersion();
     }
 
     @Override
@@ -93,8 +92,9 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     }
 
     @Override
-    public Subscription checkNewVersionBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
+    public void subscribeNewVersion() {
+        mSubscriptionManager.stop()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null && TextUtils.equals(uuid, ret.uuid))
                 .subscribe((RxEvent.CheckVersionRsp checkDevVersionRsp) -> {
