@@ -13,12 +13,12 @@ interface ISubscriptionManager {
      * */
     fun atomicMethod(): Observable<String>
 
-    fun bind(name: String, lifecycleProvider: LifecycleProvider<FragmentEvent>)
+    fun bind(target: Any, lifecycleProvider: LifecycleProvider<FragmentEvent>)
 
-    fun unbind(name: String)
+    fun unbind(target: Any)
 
-    fun stop(): Observable<String>
+    fun stop(target: Any): Observable<String>
 
-    fun destroy(): Observable<String>
+    fun destroy(target: Any): Observable<String>
 
 }

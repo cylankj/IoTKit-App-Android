@@ -107,7 +107,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startYoutubeLiveRtmp(String url) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -202,7 +202,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void stopYoutubeLiveRtmp() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -262,7 +262,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void startWeiboLiveRtmp() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(ret -> {
                     return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
@@ -381,7 +381,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void stopWeiboLiveRtmp() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -454,7 +454,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void startRtmpLive(String url, int liveType) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -500,7 +500,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void stopRtmpLive(int liveType) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -532,7 +532,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void startFacebookRtmpLive() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.newThread())//新建线程吧,以免阻塞 IO 线程
                 .map(cmd -> {
@@ -609,7 +609,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void stopFacebookRtmpLive() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.newThread())
                 .map(cmd -> {
@@ -770,7 +770,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void subscribeDeviceRecordState() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceRecordStateChanged.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -803,7 +803,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void subscribeNetwork() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
@@ -822,7 +822,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void subscribeNewVersionRsp() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class))
                 .subscribeOn(Schedulers.io())
                 .subscribe(version -> {
@@ -853,7 +853,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void subscribeReportMsg() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -957,7 +957,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void makePhotograph() {
         mView.onRefreshControllerViewVisible(false);
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().snapShot(uuid))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -992,7 +992,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void checkAndInitRecord() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getUpgradeStatus(uuid))
                 .firstOrDefault(null)
                 .subscribeOn(Schedulers.io())
@@ -1120,7 +1120,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().setResolution(uuid, mode))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1138,7 +1138,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startVideoRecord(int type) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().startRec(uuid, type))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1169,7 +1169,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void stopVideoRecord(int type) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().stopRec(uuid, type))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1196,7 +1196,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void formatSDCard() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().sdFormat(uuid))
                 .timeout(120, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1213,7 +1213,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     public void refreshVideoRecordUI(int offset, @PanoramaCameraContact.View.PANORAMA_RECORD_MODE int type) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.interval(0, 500, TimeUnit.MILLISECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(count -> (int) (count / 2) + offset)
@@ -1239,7 +1239,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void subscribeNewMsg() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .subscribeOn(Schedulers.io())
                 .flatMap(ret -> Observable.from(ret.dpList))

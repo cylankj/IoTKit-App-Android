@@ -58,7 +58,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         this.presenter = presenter;
         this.presenter.uuid(uuid);
         if (presenter instanceof LifecycleAdapter) {
-            this.lifecycleAdapter = (LifecycleAdapter) presenter;
+            lifecycleAdapter = (LifecycleAdapter) presenter;
         }
     }
 
@@ -107,18 +107,29 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     }
 
     @Override
-    public boolean supportInject() {
+    public boolean useDaggerInject() {
+        return true;
+    }
+
+    @Override
+    public boolean useButterKnifeInject() {
         return true;
     }
 
     private final void injectDagger() {
-        if (supportInject()) {
+        if (useDaggerInject()) {
             try {
                 AndroidSupportInjection.inject(this);
             } catch (Exception e) {
                 e.printStackTrace();
-                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 supportInject 方法并返回 FALSE");
+                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 useDaggerInject 方法并返回 FALSE");
             }
+        }
+    }
+
+    private final void injectButterKinfe(View view) {
+        if (useButterKnifeInject()) {
+            unbinder = ButterKnife.bind(this, view);
         }
     }
 
@@ -136,6 +147,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
         injectDagger();
         super.onAttach(context);
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.attachToLifecycle(this);
+        }
         lifecycleSubject.onNext(FragmentEvent.ATTACH);
     }
 
@@ -185,10 +199,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
         super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
-            unbinder = null;
-        }
     }
 
     @Override
@@ -203,6 +213,13 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (presenter != null && presenter.isSubscribed()) {
             presenter.unsubscribe();
         }
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.detachToLifecycle();
+        }
+//        if (unbinder != null) {
+//            unbinder.unbind();
+//        }
+        unbinder = null;
         callBack = null;
         presenter = null;
         lifecycleAdapter = null;
@@ -232,7 +249,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (unbinder != null) {
             unbinder.unbind();
         }
-        unbinder = ButterKnife.bind(this, view);
+        injectButterKinfe(view);
         initViewAndListener();
         lazyLoad();
         lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);

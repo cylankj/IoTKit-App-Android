@@ -29,7 +29,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
 
 
     override fun createNewFace(faceId: String, faceName: String) {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap {
                     Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
                         val account = DataSourceManager.getInstance().account.account

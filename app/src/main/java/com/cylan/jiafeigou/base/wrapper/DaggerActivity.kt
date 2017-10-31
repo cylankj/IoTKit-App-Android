@@ -30,16 +30,16 @@ abstract class DaggerActivity : AppCompatActivity(), HasFragmentInjector, HasSup
         return supportFragmentInjector
     }
 
-    override fun supportInject(): Boolean = true
+    override fun useDaggerInject(): Boolean = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (supportInject()) {
+        if (useDaggerInject()) {
             try {
                 AndroidInjection.inject(this)
             } catch (e: Exception) {
                 e.printStackTrace()
-                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 supportInject 方法并返回 FALSE")
+                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 useDaggerInject 方法并返回 FALSE")
             }
         }
         super.onCreate(savedInstanceState)

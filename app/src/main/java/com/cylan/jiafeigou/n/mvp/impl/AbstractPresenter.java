@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.support.network.NetworkCallback;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.view.SubscriptionAdapter;
+import com.trello.rxlifecycle.LifecycleProvider;
 
 import rx.Observable;
 import rx.Subscription;
@@ -42,6 +43,9 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         mView = view;
         this.uuid = mView.uuid();
         setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
+        if (mView instanceof LifecycleProvider) {
+            attachToLifecycle((LifecycleProvider) mView);
+        }
     }
 
     @Override

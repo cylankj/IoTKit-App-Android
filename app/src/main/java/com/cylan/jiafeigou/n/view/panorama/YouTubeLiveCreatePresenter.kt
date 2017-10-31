@@ -32,7 +32,7 @@ import javax.inject.Inject
  */
 class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateContract.View?) : BasePresenter<YouTubeLiveCreateContract.View>(view), YouTubeLiveCreateContract.Presenter {
     override fun createLiveBroadcast(credential: GoogleAccountCredential, title: String?, description: String?, startTime: Long, endTime: Long) {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -79,7 +79,7 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
     }
 
     override fun createLiveBroadcast(title: String?, description: String?, startTime: Long, endTime: Long) {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap {

@@ -89,7 +89,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private void subscribeNetwork() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
@@ -108,7 +108,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private void subscribeSDCardUnMount() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -175,7 +175,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         if (fetchSubscription != null && !fetchSubscription.isUnsubscribed()) {
             fetchSubscription.unsubscribe();
         }
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> {
                     Observable<List<PanoramaAlbumContact.PanoramaItem>> observableResult = null;
                     if (fetchLocation == 0) {

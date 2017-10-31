@@ -35,7 +35,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
 
     @Override
     public void unShareContent(Iterable<DpMsgDefine.DPShareItem> item, Iterable<Integer> selection) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .map(ret -> item)
                 .map(items -> {
                     List<DPEntity> result = new ArrayList<>();
@@ -69,7 +69,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
 
     @Override
     public void loadFromServer(long version, boolean refresh) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .map(ret->new DPEntity(null, 606, 0, DBAction.QUERY, DBOption.SingleQueryOption.DESC_20_LIMIT))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

@@ -5,5 +5,7 @@ package com.cylan.jiafeigou.dagger
  */
 interface Injectable {
 
-    fun supportInject(): Boolean
+    fun useDaggerInject(): Boolean
+
+    fun useButterKnifeInject(): Boolean
 }

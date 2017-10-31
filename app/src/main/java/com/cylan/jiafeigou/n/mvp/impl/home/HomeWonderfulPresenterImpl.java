@@ -59,7 +59,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void subscribeDeleteWonderful() {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -106,7 +106,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void subscribePageScrolled() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class))
                 .subscribeOn(Schedulers.io())
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
@@ -121,7 +121,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .map(ret -> new DPEntity()
                         .setUuid("")
                         .setVersion(0L)
@@ -149,7 +149,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startLoadMore() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .map(ret -> mWonderItems.get(mWonderItems.size() - 1).version)
                 .map(version -> new DPEntity()
                         .setVersion(version)
@@ -176,7 +176,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void deleteTimeline(int position) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .map(ret -> mWonderItems.get(position).version)
                 .observeOn(Schedulers.io())
                 .map(version -> new DPEntity()

@@ -44,7 +44,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
      * */
 
     override fun moveFaceToPerson(personId: String, faceId: String) {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -132,7 +132,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
     }
 
     override fun loadPersonItems(account: String, uuid: String) {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -206,7 +206,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
     }
 
     override fun loadPersonItem2() {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())

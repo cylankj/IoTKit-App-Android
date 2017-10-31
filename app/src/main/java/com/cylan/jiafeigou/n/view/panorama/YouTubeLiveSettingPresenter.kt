@@ -31,7 +31,7 @@ import javax.inject.Inject
 class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.View) : BasePresenter<YouTubeLiveSetting.View>(view), YouTubeLiveSetting.Presenter {
     override fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?) {
         AppLogger.w("YOUTUBE:getLiveList ,the id is $liveBroadcastID")
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .observeOn(Schedulers.io())
                 .flatMap {
                     Observable.create<List<EventData>> { subscriber ->
@@ -67,7 +67,7 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
     }
 
     override fun getLiveFromDevice() {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .observeOn(Schedulers.io())
                 .flatMap {
                     Observable.create<RobotoGetDataRsp> { subscriber ->

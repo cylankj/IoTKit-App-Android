@@ -40,7 +40,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
     access_token	【必填项】
      * */
     override fun setFaceName(personId: String, faceName: String) {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
