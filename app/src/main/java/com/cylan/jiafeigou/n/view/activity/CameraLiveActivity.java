@@ -62,7 +62,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private PagerSlidingTabStrip vIndicator;
 
     private Device device;
-    private String uuid;
     private Subscription newMsgSub;
 
     @Override
@@ -70,7 +69,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
         ButterKnife.bind(this);
-        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("what the hell uuid is null");
             finishExt();
@@ -325,7 +323,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
             ((CameraLiveFragmentEx) fragment).onBackPressed();
-            ((CameraLiveFragmentEx) fragment).removeVideoView();
+//            ((CameraLiveFragmentEx) fragment).removeVideoView();
         }
         return super.performBackIntercept();
     }

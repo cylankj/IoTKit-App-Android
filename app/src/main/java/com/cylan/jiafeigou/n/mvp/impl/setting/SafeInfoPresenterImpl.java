@@ -32,13 +32,12 @@ import rx.schedulers.Schedulers;
 
 public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.View>
         implements SafeInfoContract.Presenter {
-    private String uuid;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
 
-    public SafeInfoPresenterImpl(SafeInfoContract.View view, String uuid) {
-        super(view,uuid);
+    public SafeInfoPresenterImpl(SafeInfoContract.View view) {
+        super(view);
     }
 
     @Override

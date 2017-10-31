@@ -25,12 +25,10 @@ import rx.schedulers.Schedulers;
 
 public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAliasContract.View>
         implements SetDeviceAliasContract.Presenter {
-    private String uuid;
 
     public SetDeviceAliasPresenterImpl(SetDeviceAliasContract.View view,
                                        String uuid) {
         super(view);
-        this.uuid = uuid;
     }
 
     private int count = 0;

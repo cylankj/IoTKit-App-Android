@@ -43,7 +43,6 @@ import static com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract.ERR_NO
 public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.View>
         implements WifiListContract.Presenter {
     private WifiManager wifiManager;
-    private String uuid;
 
 
     public WifiListPresenterImpl(WifiListContract.View view, String uuid) {

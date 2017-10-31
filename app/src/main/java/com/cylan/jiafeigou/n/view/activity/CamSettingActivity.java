@@ -146,7 +146,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sv_setting_device_ap)
     SettingItemView0 svSettingDeviceAp;
 
-    private String uuid;
     //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
 //    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
     private SimpleDialogFragment mClearRecordFragment;

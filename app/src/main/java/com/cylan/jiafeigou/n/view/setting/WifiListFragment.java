@@ -77,7 +77,6 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-    private String uuid;
 
     public WifiListFragment() {
         // Required empty public constructor

@@ -49,7 +49,6 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     RadioButton rbWarnEffectWaring;
     @BindView(R.id.sv_warn_repeat_mode)
     SettingItemView0 svWarnRepeatMode;
-    private String uuid;
 
     public AlarmSoundEffectFragment() {
         // Required empty public constructor
@@ -73,7 +72,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        presenter = new CamAlarmPresenterImpl(this, uuid);
+        presenter = new CamAlarmPresenterImpl(this);
     }
 
     @Override

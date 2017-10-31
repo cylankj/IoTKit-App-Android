@@ -97,7 +97,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView0 swMotionInterval;
     //    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     //    private TimePickDialogFragment timePickDialogFragment;
-    private String uuid;
 
     private Device device;
 
@@ -110,7 +109,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        presenter = new SafeInfoPresenterImpl(this, uuid);
+        presenter = new SafeInfoPresenterImpl(this);
     }
 
     /**

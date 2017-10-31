@@ -91,7 +91,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     private int currentIndex = -1;
     private CamMessageBean camMessageBean;
-    private String uuid;
     private Device device;
 
     @Override
@@ -102,7 +101,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
-        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         camMessageBean = getIntent().getParcelableExtra(KEY_BUNDLE);
 
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);

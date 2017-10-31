@@ -20,7 +20,6 @@ import rx.functions.Func1;
 public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.View>
         implements TimezoneContract.Presenter {
     private static final String TAG = "TimezonePresenterImpl";
-    private String uuid;
     private List<TimeZoneBean> timeZoneBeenList;
 
     public TimezonePresenterImpl(TimezoneContract.View view, String uuid) {
