@@ -29,12 +29,10 @@ import rx.schedulers.Schedulers;
 public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRecordContract.View>
         implements VideoAutoRecordContract.Presenter {
     //    private BeanCamInfo beanCamInfo;
-    private String uuid;
 
     public VideoAutoRecordPresenterImpl(VideoAutoRecordContract.View view,
                                         String uuid) {
         super(view);
-        this.uuid = uuid;
     }
 
     @Override

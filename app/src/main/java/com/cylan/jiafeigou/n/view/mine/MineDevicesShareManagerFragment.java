@@ -36,7 +36,6 @@ import java.util.ArrayList;
 public class MineDevicesShareManagerFragment extends IBaseFragment implements MineDevicesShareManagerContract.View {
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter shareFriendsAdapter;
-    private String uuid;
     private Device device;
     private FragmentMineDeviceShareManagerBinding shareManagerBinding;
     private ObservableBoolean empty = new ObservableBoolean(false);

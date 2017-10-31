@@ -62,7 +62,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private PagerSlidingTabStrip vIndicator;
 
     private Device device;
-    private String uuid;
     private Subscription newMsgSub;
 
     @Override
@@ -70,7 +69,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
         ButterKnife.bind(this);
-        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("what the hell uuid is null");
             finishExt();
@@ -316,6 +314,18 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean performBackIntercept() {
+        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 stop 延迟调用 bug #118078
+        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+            ((CameraLiveFragmentEx) fragment).onBackPressed();
+//            ((CameraLiveFragmentEx) fragment).removeVideoView();
+        }
+        return super.performBackIntercept();
     }
 
     public void onNavBack() {

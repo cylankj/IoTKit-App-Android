@@ -49,12 +49,12 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         addSubscription(s, tag);
     }
 
-    public AbstractPresenter(T view, String uuid) {
-        super(view);
-        mView = view;
-        this.uuid = mView.uuid();
-        setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
-    }
+//    public AbstractPresenter(T view, String uuid) {
+//        super(view);
+//        mView = view;
+//        this.uuid = mView.uuid();
+//        setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
+//    }
 
 
     @Override

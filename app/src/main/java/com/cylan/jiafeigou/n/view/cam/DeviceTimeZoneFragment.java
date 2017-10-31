@@ -69,7 +69,6 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     private DeviceTimeZoneAdapter adapter;
-    private String uuid;
 
     @Override
     public void timezoneList(List<TimeZoneBean> list) {

@@ -39,7 +39,6 @@ public class MineShareToFriendFragment extends IBaseFragment implements MineShar
     private static final int MAX_SHARE_NUMBER = 5;
     private MineShareToFriendContract.Presenter presenter;
     private ItemAdapter<ShareFriendItem> shareToFriendsAdapter;
-    private String uuid;
     private FragmentMineShareToFriendBinding shareToFriendBinding;
     private ObservableBoolean empty = new ObservableBoolean(true);
     private ObservableInt sharedNumber = new ObservableInt();

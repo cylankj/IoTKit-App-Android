@@ -34,7 +34,6 @@ public class ConfigPanoramaWiFiSuccessFragment extends IBaseFragment {
     LoginButton modeDone;
     private boolean success;
     private String mode;
-    private String uuid;
 
     public static ConfigPanoramaWiFiSuccessFragment newInstance(Bundle bundle) {
         ConfigPanoramaWiFiSuccessFragment fragment = new ConfigPanoramaWiFiSuccessFragment();

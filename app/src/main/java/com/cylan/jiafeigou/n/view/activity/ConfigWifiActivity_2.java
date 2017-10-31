@@ -65,7 +65,6 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-    private String uuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -56,7 +56,6 @@ public class PanoramicViewFragment extends IBaseFragment {
 
     @BindView(R.id.fLayout_panoramic_container)
     FrameLayout mPanoramicContainer;
-    private String uuid;
     private PanoramicView360_Ext panoramicView;
     private CamMessageBean camMessageBean;
     private Subscription subscription;

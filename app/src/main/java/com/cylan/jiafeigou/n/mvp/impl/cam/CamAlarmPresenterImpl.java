@@ -19,8 +19,8 @@ public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.Vie
         CamWarnContract.Presenter {
     private MediaPlayer mediaPlayer;
 
-    public CamAlarmPresenterImpl(CamWarnContract.View view, String uuid) {
-        super(view, uuid);
+    public CamAlarmPresenterImpl(CamWarnContract.View view) {
+        super(view);
     }
 
     @Override
