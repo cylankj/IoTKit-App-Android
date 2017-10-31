@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -39,7 +40,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
     }
 
     private void subscribeNewVersion() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class))
                 .subscribeOn(Schedulers.io())
                 .subscribe(version -> {
@@ -48,6 +49,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     //必须手动断开,因为rxBus订阅不会断开
                     throw new RxEvent.HelperBreaker(version);
                 }, AppLogger::e);
+        addSubscription(subscribe);
         AbstractVersion<PanDeviceVersionChecker.BinVersion> version = new PanDeviceVersionChecker();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
@@ -56,7 +58,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
 
     @Override
     public void unBindDevice() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.just(new DPEntity()
                         .setUuid(uuid)
                         .setAction(DBAction.UNBIND)))
@@ -72,5 +74,6 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     e.printStackTrace();
                 }, () -> {
                 });
+        addSubscription(subscribe);
     }
 }

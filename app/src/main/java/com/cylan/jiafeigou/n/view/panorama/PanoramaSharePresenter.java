@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -49,7 +50,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
     @Override
     @Deprecated
     public void check(String uuid, int time) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
                     try {
@@ -88,11 +89,12 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     AppLogger.e(e.getMessage());
                     mView.onUploadResult(-1);
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void upload(String fileName, String filePath) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(ret -> getRemoteFilePath(fileName, true))
                 .observeOn(Schedulers.io())
@@ -117,6 +119,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
+        addSubscription(subscribe);
     }
 
     private String getRemoteFilePath(String fileName, boolean hasPrefix) {
@@ -128,7 +131,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
                     try {
@@ -225,6 +228,6 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     mView.onShareH5Result(false, "");
                     AppLogger.e(e.getMessage());
                 });
-
+        addSubscription(subscribe);
     }
 }

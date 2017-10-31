@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -59,7 +60,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void subscribeDeleteWonderful() {
-        mSubscriptionManager.destroy(this)
+        Subscription subscribe = mSubscriptionManager.destroy(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,6 +71,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+        addSubscription(subscribe);
     }
 
     @Override
@@ -106,7 +108,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void subscribePageScrolled() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class))
                 .subscribeOn(Schedulers.io())
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
@@ -117,11 +119,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void startRefresh() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .map(ret -> new DPEntity()
                         .setUuid("")
                         .setVersion(0L)
@@ -143,13 +146,20 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
-                    mView.onQueryTimeLineCompleted();
-                }, () -> mView.onQueryTimeLineCompleted());
+                    if (mView != null) {
+                        mView.onQueryTimeLineCompleted();
+                    }
+                }, () -> {
+                    if (mView != null) {
+                        mView.onQueryTimeLineCompleted();
+                    }
+                });
+        addSubscription(subscribe);
     }
 
     @Override
     public void startLoadMore() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .map(ret -> mWonderItems.get(mWonderItems.size() - 1).version)
                 .map(version -> new DPEntity()
                         .setVersion(version)
@@ -172,11 +182,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, () -> {
                     mView.onQueryTimeLineCompleted();
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void deleteTimeline(int position) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .map(ret -> mWonderItems.get(position).version)
                 .observeOn(Schedulers.io())
                 .map(version -> new DPEntity()
@@ -213,6 +224,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
                 });
+        addSubscription(subscribe);
     }
 
     @Override

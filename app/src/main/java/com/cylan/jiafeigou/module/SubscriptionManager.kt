@@ -44,10 +44,14 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
         val method = "$name(L:${traceElement.lineNumber}):${traceElement.methodName}"
         val lifecycleProvider = lifecycleProviderMap[name]
         Log.i(JConstant.CYLAN_TAG, "SubscriptionManager:target:$name,stop:method:$method")
-        return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
+        return Observable.just(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
             Log.i(JConstant.CYLAN_TAG, "SubscriptionManager:target:$name, lifecycle 不存在, bind to stop 失败了")
             it
         })
+//        return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
+//            Log.i(JConstant.CYLAN_TAG, "SubscriptionManager:target:$name, lifecycle 不存在, bind to stop 失败了")
+//            it
+//        })
     }
 
     override fun destroy(target: Any): Observable<String> {
@@ -56,7 +60,7 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
         val method = "$name(L:${traceElement.lineNumber}):${traceElement.methodName}"
         val lifecycleProvider = lifecycleProviderMap[name]
         Log.i(JConstant.CYLAN_TAG, "SubscriptionManager:target:$name,destroy:method:$method")
-        return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.DESTROY) ?: Observable.Transformer {
+        return Observable.just(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.DESTROY) ?: Observable.Transformer {
             Log.i(JConstant.CYLAN_TAG, "SubscriptionManager:target:$name,lifecycle 不存在, bind to destroy 失败了")
             it
         })

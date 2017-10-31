@@ -307,7 +307,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (TextUtils.isEmpty(url)) {
             return;//空 不需要加载
         }
-        Glide.with(getContext()).load(url)
+        Glide.with(this).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)

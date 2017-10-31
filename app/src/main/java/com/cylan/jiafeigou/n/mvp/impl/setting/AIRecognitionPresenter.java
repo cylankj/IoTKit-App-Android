@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -44,7 +45,7 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
     }
 
     private void subscribeSync() {
-        mSubscriptionManager.stop(this)
+        Subscription  subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -53,5 +54,10 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+        addSubscription(subscribe);
+    }
+
+    protected void addSubscription(Subscription subscribe) {
+
     }
 }
