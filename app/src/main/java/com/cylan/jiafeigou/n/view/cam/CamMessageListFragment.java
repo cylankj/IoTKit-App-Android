@@ -359,8 +359,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void changeContentByHeaderClick(int faceType) {
         if (faceType == FaceItem.FACE_TYPE_STRANGER) {
             // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
-            layoutBarMenu(BAR_TYPE_STRANGER);
-            enterStranger();
+            if (enterStranger()) {
+                layoutBarMenu(BAR_TYPE_STRANGER);
+            }
         } else if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
             // TODO: 2017/10/10 点击的是熟人,但具体是哪个人还不知道
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
@@ -371,11 +372,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
     }
 
-    private void enterStranger() {
+    private boolean enterStranger() {
         if (ListUtils.isEmpty(FaceItemsProvider.Companion.getGet().getStrangerItems())) {
             ToastUtil.showToast("缺资源：没有发现陌生人");
             visitorFragment.fetchStrangerVisitorList();
-            return;
+            return false;
         }
         AppLogger.w("Clicked enterStranger");
         //需要刷数据
@@ -410,6 +411,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 setFaceHeaderPageIndicator(currentItem, total);
             }
         });
+        visitorStrangerSubFragment.setCallBack(t -> barBack.setVisibility(View.GONE));
+        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getStrangerItems()));
+        return true;
     }
 
     private void setFaceHeaderPageIndicator(int currentItem, int total) {

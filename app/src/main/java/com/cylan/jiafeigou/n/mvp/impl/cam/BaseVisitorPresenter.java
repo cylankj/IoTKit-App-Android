@@ -52,7 +52,9 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     @Override
     public void start() {
         super.start();
-        fetchVisitorList();
+        if (mView.isNormalVisitor()) {
+            fetchVisitorList();
+        }
         fetchStrangerVisitorList();
     }
 

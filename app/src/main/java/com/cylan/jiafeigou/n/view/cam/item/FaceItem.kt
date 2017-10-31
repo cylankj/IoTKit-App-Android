@@ -161,27 +161,21 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {}
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other?.javaClass != javaClass) return false
+        if (javaClass != other?.javaClass) return false
         if (!super.equals(other)) return false
 
         other as FaceItem
 
-        if (uuid != other.uuid) return false
-        if (version != other.version) return false
         if (visitor != other.visitor) return false
         if (strangerVisitor != other.strangerVisitor) return false
-        if (faceType != other.faceType) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + (uuid?.hashCode() ?: 0)
-        result = 31 * result + version.hashCode()
         result = 31 * result + (visitor?.hashCode() ?: 0)
         result = 31 * result + (strangerVisitor?.hashCode() ?: 0)
-        result = 31 * result + faceType
         return result
     }
 

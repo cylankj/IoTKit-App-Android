@@ -380,8 +380,8 @@ public class MiscUtils {
         }
     }
 
-//    public static long[] getChaosDpList(boolean isV2) {
-//        return isV2 ? new long[]{505L,222L,512} : new long[]{222L, 512L};
+//    public static long[] getChaosDpList(boolean isNormalVisitor) {
+//        return isNormalVisitor ? new long[]{505L,222L,512} : new long[]{222L, 512L};
 //    }
 
     /**

@@ -35,7 +35,7 @@ class VisitorStrangerSubFragment : VisitorListFragmentV2() {
         return FaceItemsProvider.get.strangerItems
     }
 
-    override fun isV2(): Boolean {
+    override fun isNormalVisitor(): Boolean {
         return false
     }
     override fun cleanData(): Boolean {

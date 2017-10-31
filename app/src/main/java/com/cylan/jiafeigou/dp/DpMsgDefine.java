@@ -1947,6 +1947,21 @@ public class DpMsgDefine {
                 return new Visitor[size];
             }
         };
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Visitor visitor = (Visitor) o;
+
+            return lastTime == visitor.lastTime;
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) (lastTime ^ (lastTime >>> 32));
+        }
     }
 
     @Message
@@ -2051,6 +2066,21 @@ public class DpMsgDefine {
                 return new StrangerVisitor[size];
             }
         };
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            StrangerVisitor that = (StrangerVisitor) o;
+
+            return lastTime == that.lastTime;
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) (lastTime ^ (lastTime >>> 32));
+        }
     }
 
     @Message

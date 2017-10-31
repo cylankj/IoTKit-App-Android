@@ -185,10 +185,10 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
         super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
-            unbinder = null;
-        }
+//        if (unbinder != null) {
+//            unbinder.unbind();
+//            unbinder = null;
+//        }
     }
 
     @Override

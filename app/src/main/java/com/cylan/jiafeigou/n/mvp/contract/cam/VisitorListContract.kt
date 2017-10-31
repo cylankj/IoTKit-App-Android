@@ -13,6 +13,7 @@ interface VisitorListContract {
         fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
         fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?)
         fun onVisitsTimeRsp(faceId: String, cnt: Int)
+        fun isNormalVisitor(): Boolean
     }
 
     interface Presenter : BasePresenter {
