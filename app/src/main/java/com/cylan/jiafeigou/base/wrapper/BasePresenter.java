@@ -102,7 +102,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     }
 
     @Override
-    public boolean isUnsubscribed() {
+    public boolean isSubscribed() {
         return subscribed;
     }
 

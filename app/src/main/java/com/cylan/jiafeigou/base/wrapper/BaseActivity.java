@@ -178,7 +178,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
         super.onDestroy();
         if (presenter != null) {
-            if (!presenter.isUnsubscribed()) {
+            if (presenter.isSubscribed()) {
                 presenter.unsubscribe();
             }
         }

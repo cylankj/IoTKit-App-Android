@@ -10,7 +10,7 @@ public interface JFGPresenter {
 
     void unsubscribe();
 
-    boolean isUnsubscribed();
+    boolean isSubscribed();
 
     void uuid(String uuid);
 }

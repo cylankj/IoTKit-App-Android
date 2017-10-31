@@ -41,8 +41,8 @@ public class MapSubscription implements Subscription {
      * @param s the {@link Subscription} to add
      */
     public void add(final Subscription s, String tag) {
-//        if (account.isUnsubscribed()) {
-//            AppLogger.d("isUnsubscribed:" + tag);
+//        if (account.isSubscribed()) {
+//            AppLogger.d("isSubscribed:" + tag);
 //            return;
 //        }
         remove(tag);

@@ -200,7 +200,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (callBack != null) {
             callBack.callBack(cache);
         }
-        if (presenter != null && !presenter.isUnsubscribed()) {
+        if (presenter != null && presenter.isSubscribed()) {
             presenter.unsubscribe();
         }
         callBack = null;

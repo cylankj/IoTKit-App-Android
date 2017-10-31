@@ -102,7 +102,7 @@
 //    @Override
 //    public void stop() {
 //        super.stop();
-//        if (resultSub != null && !resultSub.isUnsubscribed()) {
+//        if (resultSub != null && !resultSub.isSubscribed()) {
 //            resultSub.unsubscribe();
 //        }
 //    }
