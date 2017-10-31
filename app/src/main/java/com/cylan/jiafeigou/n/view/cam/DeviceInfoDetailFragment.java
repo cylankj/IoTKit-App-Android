@@ -98,7 +98,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @BindView(R.id.tv_device_ip)
     SettingItemView0 tvDeviceIp;
 
-    private String uuid;
     private EditFragmentDialog editDialogFragment;
     private Device device;
 

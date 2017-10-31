@@ -57,7 +57,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     SettingItemView0 siv_mode_24_hours;
     @BindView(R.id.lLayout_mode_never)
     SettingItemView0 siv_mode_never;
-    private String uuid;
     private int oldOption;
 
     @BindView(R.id.rl_alarm_setting_container)

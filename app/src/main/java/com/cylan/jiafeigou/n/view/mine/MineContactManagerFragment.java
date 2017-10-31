@@ -68,7 +68,6 @@ public class MineContactManagerFragment extends IBaseFragment implements MineSha
     private MineShareToContactContract.Presenter presenter;
     private FastItemAdapter<ShareContactItem> shareFriendItemItemAdapter;
     private FragmentMineShareToContactBinding shareToContactBinding;
-    private String uuid;
     private ObservableBoolean empty = new ObservableBoolean(true);
     private boolean searchMode = false;
     //Custom Toolbar Views

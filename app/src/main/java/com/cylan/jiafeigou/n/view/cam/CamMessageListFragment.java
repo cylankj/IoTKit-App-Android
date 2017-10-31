@@ -138,7 +138,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      */
     private CamMessageListAdapter camMessageListAdapter;
 
-    private String uuid;
 
     /**
      * 加载更多

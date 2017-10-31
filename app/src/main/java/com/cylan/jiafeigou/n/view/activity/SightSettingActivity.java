@@ -40,7 +40,6 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     RadioButton rbtnSightHorizontal;
     @BindView(R.id.rbtn_sight_vertical)
     RadioButton rbtnSightVertical;
-    private String uuid;
     private String initValue;
     private Subscription subscription;
 

@@ -53,7 +53,6 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     TextView tvClearRestart;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private String uuid;
     private Subscription subscription;
 
     @Override
