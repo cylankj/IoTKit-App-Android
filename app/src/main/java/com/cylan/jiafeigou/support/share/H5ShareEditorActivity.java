@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.support.v7.app.AlertDialog;
@@ -78,11 +79,11 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
 
     }
 
-
     @Override
-    protected View getContentRootView() {
-        shareBinding = FragmentPanoramaShareBinding.inflate(getLayoutInflater());
-        return shareBinding.getRoot();
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        shareBinding = DataBindingUtil.setContentView(this, R.layout.fragment_panorama_share);
+        return true;
     }
 
     private void startCount() {

@@ -364,8 +364,17 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         camLiveControlLayer.onLiveDestroy();
+        super.onDestroyView();
+    }
+
+    @Override
+    public boolean performBackIntercept() {
+        if (isVisible && isPrepared) {
+            onBackPressed();
+            removeVideoView();
+        }
+        return super.performBackIntercept();
     }
 
     @Override
@@ -789,12 +798,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-
     public boolean onBackPressed() {
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
         } else {
-
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 stop 延迟调用");
             presenter.stopPlayVideo(true).subscribe(ret -> {
 //            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
@@ -802,12 +809,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         return false;
     }
-
-//    @Override
-//    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
-//
-//    }
-
 
     class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
 

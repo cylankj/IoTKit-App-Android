@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
@@ -29,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -42,13 +42,16 @@ import static android.app.Activity.RESULT_CANCELED;
 public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView, ActivityBackInterceptor
         , PresenterAdapter<P>, LifecycleProvider<FragmentEvent>, Injectable {
     protected String uuid;
-
     protected P presenter;
-
     protected LifecycleAdapter lifecycleAdapter;
-    protected final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
+    protected BehaviorSubject<FragmentEvent> lifecycleSubject;
     protected int resultCode = RESULT_CANCELED;
     protected Intent resultData = null;
+    protected boolean isVisible;
+    protected boolean isPrepared;
+    protected Unbinder unbinder;
+    //可以被重复使用的之前创建的 View ,子类可以决定是否使用 CacheView
+    protected View mCachedRootView;
 
     @Inject
     public final void setPresenter(P presenter) {
@@ -69,6 +72,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     }
 
     @Override
+    @CallSuper
     public boolean performBackIntercept() {
         return false;
     }
@@ -80,19 +84,19 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Nonnull
     @Override
-    public Observable<FragmentEvent> lifecycle() {
+    public final Observable<FragmentEvent> lifecycle() {
         return lifecycleSubject.asObservable();
     }
 
     @Nonnull
     @Override
-    public <T> LifecycleTransformer<T> bindToLifecycle() {
+    public final <T> LifecycleTransformer<T> bindToLifecycle() {
         return RxLifecycleAndroid.bindFragment(lifecycleSubject);
     }
 
     @Nonnull
     @Override
-    public <T> LifecycleTransformer<T> bindUntilEvent(@Nonnull FragmentEvent event) {
+    public final <T> LifecycleTransformer<T> bindUntilEvent(@Nonnull FragmentEvent event) {
         return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
     }
 
@@ -100,23 +104,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lifecycleSubject.onNext(FragmentEvent.CREATE);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = null;
-        if (getContentViewID() != -1) {
-            contentView = inflater.inflate(getContentViewID(), container, false);
-            ButterKnife.bind(this, contentView);
-        } else if (getContentRootView() != null) {
-            contentView = getContentRootView();
-        }
-        return contentView;
-    }
-
-    protected View getContentRootView() {
-        return null;
     }
 
     @Override
@@ -137,6 +124,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     public void onAttach(Context context) {
+        lifecycleSubject = BehaviorSubject.create();
         final Bundle arguments = getArguments();
         if (arguments != null) {
             uuid = arguments.getString(JConstant.KEY_DEVICE_ITEM_UUID);
@@ -145,11 +133,38 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (activity instanceof BaseActivity) {
             ((BaseActivity) activity).addActivityBackInterceptor(this);
         }
+
         injectDagger();
         super.onAttach(context);
         lifecycleSubject.onNext(FragmentEvent.ATTACH);
     }
 
+    @CallSuper
+    protected void lazyLoad() {
+    }
+
+    @Override
+    @CallSuper
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getUserVisibleHint()) {
+            isVisible = true;
+            onVisible();
+        } else {
+            isVisible = false;
+            onInvisible();
+        }
+    }
+
+    @CallSuper
+    protected void onVisible() {
+        lazyLoad();
+    }
+
+    @CallSuper
+    protected void onInvisible() {
+
+    }
 
     @Override
     public void onDestroyView() {
@@ -162,6 +177,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (activity instanceof BaseActivity) {
             ((BaseActivity) activity).removeActivityBackInterceptor(this);
         }
+        mCachedRootView = getView();
         super.onDestroyView();
     }
 
@@ -169,17 +185,29 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
         super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+            unbinder = null;
+        }
     }
 
     @Override
     public void onDetach() {
         lifecycleSubject.onNext(FragmentEvent.DETACH);
+        lifecycleSubject.onCompleted();
         super.onDetach();
         performActivityResult();
-
         if (callBack != null) {
             callBack.callBack(cache);
         }
+        if (presenter != null && !presenter.isUnsubscribed()) {
+            presenter.unsubscribe();
+        }
+        callBack = null;
+        presenter = null;
+        lifecycleAdapter = null;
+        lifecycleSubject = null;
+        mCachedRootView = null;
     }
 
     private void performActivityResult() {
@@ -189,23 +217,33 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             resultCode = this.resultCode;
             resultData = this.resultData;
         }
-        if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).onActivityResult(getTargetRequestCode(), resultCode, resultData);
-        } else if (getTargetFragment() != null) {
+        if (getTargetFragment() != null) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, resultData);
+        } else if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).onActivityResult(getTargetRequestCode(), resultCode, resultData);
         }
     }
 
     @Override
+    @CallSuper
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        isPrepared = true;
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+        unbinder = ButterKnife.bind(this, view);
         initViewAndListener();
+        lazyLoad();
         lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        if (presenter != null) {
+            presenter.subscribe();
+        }
         if (lifecycleAdapter != null) {
             lifecycleAdapter.start();
         }
@@ -236,14 +274,10 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         }
     }
 
-
-    protected int getContentViewID() {
-        return -1;
-    }
-
+    @CallSuper
     protected void initViewAndListener() {
-    }
 
+    }
 
     @Override
     public void onLoginStateChanged(boolean online) {
@@ -263,7 +297,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             this.resultData = data;
         }
     }
-
 
     /**
      * 使用 setResult 配合 onActivityResult 回调

@@ -20,11 +20,10 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     private val weiboFragment by lazy { WeiboLiveSettingFragment.newInstance(uuid) }
     private val rtmpFragment by lazy { RtmpLiveSettingFragment.newInstance(uuid) }
 
-
-
-    override fun getContentViewID(): Int {
-        return R.layout.activity_live_setting
-
+    override fun onSetContentView(): Boolean {
+        super.onSetContentView()
+        setContentView(R.layout.activity_live_setting)
+        return true
     }
 
     override fun initViewAndListener() {

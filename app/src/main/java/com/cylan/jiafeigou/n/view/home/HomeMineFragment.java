@@ -18,9 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
@@ -54,7 +52,6 @@ import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -62,7 +59,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
@@ -87,8 +83,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     HomeMineItemView homeMineItemHelp;
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
-    private boolean isPrepared = false;
-    private boolean isVisible = false;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -112,7 +106,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         return view;
     }
 
-    private void lazyLoad() {
+    @Override
+    protected void lazyLoad() {
+        super.lazyLoad();
         if (isPrepared) {
             presenter.fetchNewInfo();
         }
@@ -264,7 +260,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
+        super.setUserVisibleHint(isVisibleToUser);
 //        if (isVisibleToUser && isAdded()) {
 //            if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //                //访客状态

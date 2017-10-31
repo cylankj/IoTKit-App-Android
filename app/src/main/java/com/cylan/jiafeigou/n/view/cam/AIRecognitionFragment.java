@@ -3,10 +3,13 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -68,12 +71,11 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
         return fragment;
     }
 
+    @Nullable
     @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_airecognition;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_airecognition,container,false);
     }
-
-
 
     @Override
     public void onDeviceUpdate(DataPoint dataPoint) {

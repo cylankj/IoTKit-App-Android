@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -52,9 +53,10 @@ public class ShareContentWebH5Activity extends BaseActivity {
     }
 
     @Override
-    protected View getContentRootView() {
-        h5DetailBinding = FragmentShareContentH5DetailBinding.inflate(getLayoutInflater());
-        return h5DetailBinding.getRoot();
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        h5DetailBinding = DataBindingUtil.setContentView(this, R.layout.fragment_share_content_h5_detail);
+        return true;
     }
 
     @Override

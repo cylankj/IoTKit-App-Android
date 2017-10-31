@@ -98,7 +98,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                 .doOnTerminate { mLoadingManager.hideLoading() }
                 .subscribe({ rsp ->
                     if (rsp != null && rsp.ret == 0) {
-                        mView.onSetFaceNameSuccess()
+                        mView.onSetFaceNameSuccess(faceName)
                     } else {
                         // TODO: 2017/10/13 怎么处理呢? 最好不处理
                         mView.onSetFaceNameError(rsp?.ret)

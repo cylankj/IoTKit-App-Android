@@ -2,8 +2,10 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -90,10 +92,10 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
         panoramicView720Ext.loadImage(R.drawable.panorama_logo_mask);
     }
 
-
+    @Nullable
     @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_panorama_logo_configure;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate( R.layout.fragment_panorama_logo_configure,container,false);
     }
 
     @Override

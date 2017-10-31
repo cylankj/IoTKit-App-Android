@@ -98,8 +98,10 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     IDPTaskDispatcher taskDispatcher;
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_bell_record_detail;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_bell_record_detail);
+        return true;
     }
 
     @Override

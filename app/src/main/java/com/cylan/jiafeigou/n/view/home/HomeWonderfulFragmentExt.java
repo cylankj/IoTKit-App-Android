@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -55,7 +54,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
@@ -102,8 +100,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private LinearLayoutManager mLinearLayoutManager;
     private boolean mHasMore;
     private boolean isLoading = false;
-    private boolean isPrepaper = false;
-    private View rootView;
     @Inject
     JFGSourceManager sourceManager;
 
@@ -113,26 +109,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         return fragment;
     }
 
-
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (getUserVisibleHint()) lazyLoad();
-//        else {
-//            if (srLayoutMainContentHolder != null)
-//                srLayoutMainContentHolder.removeCallbacks(autoLoading);//
-//        }
-//    }
-
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-    }
-
-
     @Override
     protected void initViewAndListener() {
+        super.initViewAndListener();
         homeWonderAdapter = new HomeWonderfulAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
@@ -145,8 +124,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         initHeaderView();
 
         initSomeViewMargin();
-        isPrepaper = true;
-//        lazyLoad();
     }
 
     private Runnable autoLoading = () -> presenter.startRefresh();
@@ -157,13 +134,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         srLayoutMainContentHolder.setRefreshing(true);
         presenter.startRefresh();
     }
-
-//    private void lazyLoad() {
-//        if (getUserVisibleHint() && isPrepaper && sourceManager.getAccount() != null && sourceManager.getAccount().isAvailable()) {
-//            srLayoutMainContentHolder.setRefreshing(true);
-//            srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
-//        }
-//    }
 
     private SimpleDialogFragment initDeleteDialog() {
         if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {
@@ -184,11 +154,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onResume() {
         super.onResume();
         onTimeTick(JFGRules.getTimeRule());
-    }
-
-    @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_home_wonderful_ext;
     }
 
     @Override
@@ -610,18 +575,11 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        if (rootView == null) {
-            rootView = super.onCreateView(inflater, container, savedInstanceState);
-            initViewAndListener();
-        }
-        unbinder = ButterKnife.bind(this, rootView);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_home_wonderful_ext, container, false);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 }

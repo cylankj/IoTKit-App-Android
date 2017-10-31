@@ -452,8 +452,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_panorama_camera;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_panorama_camera);
+        return true;
     }
 
     @Override

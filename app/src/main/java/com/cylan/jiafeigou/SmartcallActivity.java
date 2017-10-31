@@ -37,7 +37,6 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
@@ -62,15 +61,17 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
 
     private boolean showOnceInCircle = true;
 
-    //这个页面先请求 sd卡权限
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        getWindow().setBackgroundDrawableResource(R.drawable.splash_screen);
+    protected boolean onSetContentView() {
+        setContentView(R.layout.activity_welcome_page);
+        return true;
+    }
+
+    @Override
+    protected void initViewAndListener() {
+        super.initViewAndListener();
         PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
-        setContentView(R.layout.activity_welcome_page);
-        ButterKnife.bind(this);
         initPresenter();
     }
 

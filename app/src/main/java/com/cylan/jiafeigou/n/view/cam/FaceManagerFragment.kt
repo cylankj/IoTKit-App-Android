@@ -45,7 +45,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
             items.add(face)
         }
 
-        adapter.add(items)
+        adapter.setNewList(items)
         custom_toolbar.setRightEnable(adapter.itemCount > 0)
     }
 

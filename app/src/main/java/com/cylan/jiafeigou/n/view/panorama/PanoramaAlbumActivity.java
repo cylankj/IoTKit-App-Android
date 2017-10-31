@@ -137,10 +137,11 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_panorama_album;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_panorama_album);
+        return true;
     }
-
 
     @Override
     protected void onStart() {

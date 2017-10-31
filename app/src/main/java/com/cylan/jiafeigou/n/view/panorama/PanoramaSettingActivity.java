@@ -61,7 +61,6 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     }
 
 
-
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
@@ -72,8 +71,10 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_panorama_setting;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.fragment_panorama_setting);
+        return true;
     }
 
     public void exit(View view) {

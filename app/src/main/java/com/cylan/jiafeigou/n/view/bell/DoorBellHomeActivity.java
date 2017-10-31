@@ -175,8 +175,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_door_bell;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_door_bell);
+        return true;
     }
 
     private void initAdapter() {

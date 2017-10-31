@@ -10,7 +10,9 @@ import android.os.Bundle
 import android.support.annotation.MainThread
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
@@ -122,11 +124,8 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 //    }
 //    private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
 
-
-
-
-    override fun getContentViewID(): Int {
-        return R.layout.layout_youtube
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.layout_youtube, container, false)
     }
 
 

@@ -22,15 +22,17 @@ public class PanoramaMessageWrapperActivity extends BaseActivity {
     private CamMessageListFragment fragment;
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_panorama_message_wrapper;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.fragment_panorama_message_wrapper);
+        return true;
     }
 
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
         removeHint();
-        customToolbar.setBackAction(view -> finish() );
+        customToolbar.setBackAction(view -> finish());
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         bundle.putBoolean(JConstant.KEY_JUMP_TO_MESSAGE, true);

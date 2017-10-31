@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.bell;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -34,7 +33,6 @@ import com.google.gson.Gson;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_201_NET;
@@ -92,15 +90,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         return fragment;
     }
 
-
-    @Override
-    protected int getContentViewID() {
-        return R.layout.layout_fragment_bell_detail_setting;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    }
 
     @Override
     public void onDialogAction(int id, Object value) {
@@ -182,10 +171,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+        return inflater.inflate(R.layout.layout_fragment_bell_detail_setting, container, false);
     }
 
 

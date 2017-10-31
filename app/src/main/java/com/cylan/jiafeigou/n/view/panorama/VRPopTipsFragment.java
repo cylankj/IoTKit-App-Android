@@ -8,9 +8,4 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 
 public class VRPopTipsFragment extends BaseFragment {
 
-
-    @Override
-    protected int getContentViewID() {
-        return super.getContentViewID();
-    }
 }

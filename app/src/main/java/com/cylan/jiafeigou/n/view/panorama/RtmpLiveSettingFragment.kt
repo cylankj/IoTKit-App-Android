@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.n.view.panorama
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.CompoundButton
 import android.widget.ScrollView
@@ -22,9 +25,8 @@ import kotlinx.android.synthetic.main.layout_rtmp.*
  */
 class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
 
-
-    override fun getContentViewID(): Int {
-        return R.layout.layout_rtmp
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.layout_rtmp, container, false)
     }
 
     override fun initViewAndListener() {

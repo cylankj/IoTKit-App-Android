@@ -29,13 +29,12 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
     }
 
-
-
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_delay_record;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_delay_record);
+        return true;
     }
-
 
     @Override
     public void onShowRecordMainView(String uuid) {

@@ -3,7 +3,9 @@ package com.cylan.jiafeigou.n.view.panorama
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
@@ -45,10 +47,8 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     override fun onError(p0: SHARE_MEDIA?, p1: Int, p2: Throwable?) {
     }
 
-
-
-    override fun getContentViewID(): Int {
-        return R.layout.layout_facebook
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.layout_facebook, container, false)
     }
 
     private var account: String? = null

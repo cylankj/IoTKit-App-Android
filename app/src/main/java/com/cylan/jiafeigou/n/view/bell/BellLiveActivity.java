@@ -154,8 +154,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_bell_live;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_bell_live);
+        return true;
     }
 
     @Override

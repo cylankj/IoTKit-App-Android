@@ -32,9 +32,9 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
         val traceElement = Thread.currentThread().stackTrace[3]
         val method = "${traceElement.fileName}(L:${traceElement.lineNumber}):${traceElement.className}.${traceElement.methodName}"
         val lifecycleProvider = lifecycleProviderMap[traceElement.className]
-        AppLogger.w("stop:method:$method")
+        Log.i(JConstant.CYLAN_TAG, "stop:method:$method")
         return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
-            AppLogger.w("lifecycle 不存在, bind to stop 失败了")
+            Log.i(JConstant.CYLAN_TAG, "lifecycle 不存在, bind to stop 失败了")
             it
         })
     }
@@ -43,9 +43,9 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
         val traceElement = Thread.currentThread().stackTrace[3]
         val method = "${traceElement.fileName}(L:${traceElement.lineNumber}):${traceElement.className}.${traceElement.methodName}"
         val lifecycleProvider = lifecycleProviderMap[traceElement.className]
-        AppLogger.w("destroy:method:$method")
-        return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.STOP) ?: Observable.Transformer {
-            AppLogger.w("lifecycle 不存在, bind to destroy 失败了")
+        Log.i(JConstant.CYLAN_TAG, "destroy:method:$method")
+        return atomicMethod(method).compose(lifecycleProvider?.bindUntilEvent(FragmentEvent.DESTROY) ?: Observable.Transformer {
+            Log.i(JConstant.CYLAN_TAG, "lifecycle 不存在, bind to destroy 失败了")
             it
         })
     }

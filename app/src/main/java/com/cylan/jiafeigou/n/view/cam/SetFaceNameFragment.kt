@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -26,7 +28,12 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
         ToastUtil.showToast("语言包:设置 FaceName 失败了")
     }
 
-    override fun onSetFaceNameSuccess() {
+    override fun onSetFaceNameSuccess(faceName: String) {
+        AppLogger.w("设置面孔名称成功了")
+        ToastUtil.showToast(getString(R.string.PWD_OK_2))
+        val intent = Intent()
+        intent.putExtra("name", faceName)
+        setResult(Activity.RESULT_OK, intent)
     }
 
     private var personId: String? = null

@@ -105,18 +105,26 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate { mLoadingManager.hideLoading() }
                 .subscribe({ rsp ->
+                    AppLogger.d("修改面孔信息返回的结果为:$rsp,person id is :$personId, face id is :$faceId, uuid is:$uuid")
                     when {
                         rsp == null -> {
                             //返回结果为空?
-                            AppLogger.w("修改面孔信息返回了 null, 可能是超时或者服务器错误!")
+                            AppLogger.w("修改面孔信息返回了 null, 可能是超时或者服务器错误! ")
                         }
                         rsp.ret == 0 -> {
                             //移动 face 成功了
                             mView.onMoveFaceToPersonSuccess("todo:person_id")
+                            AppLogger.w("修改面孔信息成功了")
                         }
                         rsp.ret == -1 -> {
                             //face_id 不存在
                             mView.onFaceNotExistError()
+                            AppLogger.w("修改面孔信息失败:面孔不存在")
+                        }
+                        rsp.ret == 100 -> {
+                            //授权失败了
+                            mView.onAuthorizationError()
+                            AppLogger.w("修改面孔信息失败:授权失败")
                         }
                     }
                 }
@@ -200,22 +208,25 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
     override fun loadPersonItem2() {
         mSubscriptionManager.destroy()
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .flatMap {
-                    Observable.create<List<DpMsgDefine.Visitor>> {
-                        val seq = BaseApplication.getAppComponent().getCmd()
-                                .sendUniservalDataSeq(5, DpUtils.pack(DpMsgDefine.ReqContent(uuid, System.currentTimeMillis())))
-                        RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java)
-                                .first { it.seq == seq }.timeout(30, TimeUnit.SECONDS)
-                                .map {
-                                    val visitorList = DpUtils.unpackData(it.data, DpMsgDefine.VisitorList::class.java)
-                                    visitorList.dataList
-                                }
-                    }
+                .map {
+                    BaseApplication.getAppComponent().getCmd()
+                            .sendUniservalDataSeq(5, DpUtils.pack(DpMsgDefine.ReqContent(uuid, System.currentTimeMillis())))
                 }
+                .flatMap { seq ->
+                    RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java)
+                            .first { it.seq == seq }
+                            .map {
+                                val visitorList = DpUtils.unpackData(it.data, DpMsgDefine.VisitorList::class.java)
+                                visitorList.dataList
+                            }
+                }
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate { mLoadingManager.hideLoading() }
                 .subscribe({
+
                     mView.onVisitorInformationReady(it)
                 }, {
                     when (it) {

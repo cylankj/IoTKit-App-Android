@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.n.view.panorama
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import butterknife.OnClick
 import butterknife.OnTextChanged
 import com.cylan.jiafeigou.R
@@ -44,9 +47,8 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
     override fun onError(p0: SHARE_MEDIA?, p1: Int, p2: Throwable?) {
     }
 
-
-    override fun getContentViewID(): Int {
-        return R.layout.layout_weibo
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.layout_weibo, container, false)
     }
 
     open var accessToken: String? = null

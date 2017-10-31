@@ -180,11 +180,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         return intent;
     }
 
-
-
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_panorama_detail;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_panorama_detail);
+        return true;
     }
 
     @Override

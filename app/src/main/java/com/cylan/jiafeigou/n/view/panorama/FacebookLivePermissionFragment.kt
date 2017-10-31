@@ -1,5 +1,9 @@
 package com.cylan.jiafeigou.n.view.panorama
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
@@ -12,9 +16,8 @@ import kotlinx.android.synthetic.main.fragment_live_permission.*
 class FacebookLivePermissionFragment : BaseFragment<LivePremissionContract.Presenter>(), LivePremissionContract.View {
 
 
-
-    override fun getContentViewID(): Int {
-        return R.layout.fragment_live_permission
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_live_permission, container, false)
     }
 
     private var permission: String? = null

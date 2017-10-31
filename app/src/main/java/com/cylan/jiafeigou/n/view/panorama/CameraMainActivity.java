@@ -6,8 +6,10 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 public class CameraMainActivity extends BaseActivity {
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_camera_main;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_camera_main);
+        return true;
     }
 
     @Override

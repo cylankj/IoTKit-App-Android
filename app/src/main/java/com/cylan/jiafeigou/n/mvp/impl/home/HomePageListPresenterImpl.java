@@ -204,62 +204,29 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
-        if (state != LogState.STATE_ACCOUNT_ON) {
-            getView().onLoginState(false);
-        }
-//        if (refreshSub != null && !refreshSub.isUnsubscribed()) {
-//            refreshSub.unsubscribe();
-//        }
+        BaseApplication.getAppComponent().getSubscriptionManager()
+                .stop()
+                .observeOn(Schedulers.io())
+                .map(ret -> {
 
-        if (manually) {
-            Schedulers.io().createWorker().schedule(() -> {
-                BaseApplication.getAppComponent().getCmd().refreshDevList();
-            });
-        }
-
-        AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-            mView.onRefreshFinish();
-        }, 30, TimeUnit.SECONDS);
-
-//        addSubscription(Observable.just("go")
-//                .subscribeOn(Schedulers.io())
-//                .delay(30, TimeUnit.SECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(ret -> mView != null)
-//                .subscribe(ret -> mView.onRefreshFinish(),
-//                        throwable -> mView.onRefreshFinish()), "30s_timeout");
-//
-//        refreshSub = Observable.just(manually)
-//                .subscribeOn(Schedulers.io())
-//                .delay(1, TimeUnit.SECONDS)
-//                .map((Boolean aBoolean) -> {
-//                    if (manually)
-//                        BaseApplication.getAppComponent().getCmd().refreshDevList();
-//                    // TODO: 2017/9/27 和 DataSource 里重复了,
-////                    BaseApplication.getAppComponent().getSourceManager().syncHomeProperty();
-//                    AppLogger.i("fetchDeviceList: " + aBoolean);
-//                    return aBoolean;
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(aBoolean -> {
-//                    RxBus.getCacheInstance().post(new InternalHelp());
-//                    return aBoolean;
-//                })
-//                .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
-//                .observeOn(Schedulers.io())
-//                .delay(3, TimeUnit.SECONDS)
-//                .filter(aBoolean -> getView() != null)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
-//                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-//        addSubscription(Observable.just("go")
-//                .subscribeOn(Schedulers.io())
-//                .delay(30, TimeUnit.SECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(ret -> mView != null)
-//                .subscribe(ret -> mView.onRefreshFinish(),
-//                        throwable -> mView.onRefreshFinish()), "30s_timeout");
+                    AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
+                        if (state != LogState.STATE_ACCOUNT_ON) {
+                            getView().onLoginState(false);
+                        }
+                    });
+                    if (manually) {
+                        BaseApplication.getAppComponent().getCmd().refreshDevList();
+                    }
+                    return ret;
+                })
+                .delay(30, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    mView.onRefreshFinish();
+                }, e -> {
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
     }
 
     @Override

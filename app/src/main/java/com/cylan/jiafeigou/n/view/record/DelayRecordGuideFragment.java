@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.record;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -42,6 +44,11 @@ public class DelayRecordGuideFragment extends BaseFragment {
 
     private WeakReference<BaseDialog> mEnableDeviceDialog;
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_delay_record_guide, container, false);
+    }
 
     @Override
     public void onStart() {
@@ -53,15 +60,6 @@ public class DelayRecordGuideFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewMarginStatusBar(mHeaderContainer);
-    }
-
-    @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_delay_record_guide;
-    }
-
-    @Override
-    protected void initViewAndListener() {
     }
 
     @OnClick(R.id.header_delay_record_back)

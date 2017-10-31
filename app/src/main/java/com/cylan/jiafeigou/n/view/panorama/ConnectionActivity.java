@@ -11,10 +11,11 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 
 public class ConnectionActivity extends BaseActivity {
 
-
     @Override
-    protected int getContentViewID() {
-        return R.layout.activity_device_connection;
+    protected boolean onSetContentView() {
+        super.onSetContentView();
+        setContentView(R.layout.activity_device_connection);
+        return true;
     }
 
     @Override

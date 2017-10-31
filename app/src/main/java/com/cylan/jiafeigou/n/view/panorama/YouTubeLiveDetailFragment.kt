@@ -2,6 +2,9 @@ package com.cylan.jiafeigou.n.view.panorama
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
@@ -18,16 +21,15 @@ import kotlinx.android.synthetic.main.fragment_youtube_detail.*
  */
 class YouTubeLiveDetailFragment : BaseFragment<BasePresenter<JFGView>>() {
 
-
-    override fun getContentViewID(): Int {
-        return R.layout.fragment_youtube_detail
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_youtube_detail, container, false)
     }
 
     private var youtubeEvent: EventData? = null
         private set
         get() {
             if (field == null) {
-                val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE+":"+uuid, null)
+                val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid, null)
                 if (!TextUtils.isEmpty(broadcast)) {
                     field = JacksonFactory.getDefaultInstance().fromString(broadcast, EventData::class.java)
                 }

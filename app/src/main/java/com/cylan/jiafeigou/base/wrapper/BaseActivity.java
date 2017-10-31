@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
@@ -35,6 +35,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.android.AndroidInjection;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -49,9 +50,13 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected P presenter;
     protected LifecycleAdapter lifecycleAdapter;
     protected List<ActivityBackInterceptor> interceptors = new ArrayList<>();
-    protected final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
+    protected BehaviorSubject<FragmentEvent> lifecycleSubject;
+    private Unbinder unbinder;
+    protected boolean mInitCalled = false;
 
     public void addActivityBackInterceptor(ActivityBackInterceptor interceptor) {
+        //先确保之前没有这个 interceptor ,防止重复 add
+        interceptors.remove(interceptor);
         interceptors.add(1, interceptor);
     }
 
@@ -109,22 +114,27 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     @Override
+    @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
+        lifecycleSubject = BehaviorSubject.create();
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         interceptors.add(0, this);
         injectDagger();
         super.onCreate(savedInstanceState);
-        if (getContentViewID() != -1) {
-            setContentView(getContentViewID());
-            ButterKnife.bind(this);
-        } else if (getContentRootView() != null) {
-            setContentView(getContentRootView());
+        if (onSetContentView()) {
+            if (unbinder != null) {
+                unbinder.unbind();
+            }
+            unbinder = ButterKnife.bind(this);
+            initViewAndListener();
         }
-        initViewAndListener();
         lifecycleSubject.onNext(FragmentEvent.CREATE);
     }
 
+    protected boolean onSetContentView() {
+        return false;
+    }
 
     @Override
     protected void onStart() {
@@ -172,12 +182,17 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
                 presenter.unsubscribe();
             }
         }
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
         interceptors.clear();
+        presenter = null;
+        unbinder = null;
+        lifecycleSubject = null;
+        lifecycleAdapter = null;
+        mInitCalled = false;
     }
 
-    protected View getContentRootView() {
-        return null;
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -192,11 +207,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     public void onLoginStateChanged(boolean online) {
     }
 
-    protected int getContentViewID() {
-        return -1;
-    }
-
+    @CallSuper
     protected void initViewAndListener() {
+        mInitCalled = true;
     }
 
     @Override

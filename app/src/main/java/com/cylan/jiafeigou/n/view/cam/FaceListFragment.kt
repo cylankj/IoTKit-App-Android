@@ -29,13 +29,17 @@ import kotlinx.android.synthetic.main.fragment_facelist.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListContact.View {
+    override fun onAuthorizationError() {
+        ToastUtil.showToast("语言包:授权失败!")
+    }
+
     private var faceId: String? = null
 
     override fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?) {
         visitors?.map {
             FaceListItem().withVisitorInformation(it)
         }?.apply {
-            itemAdapter.add(this)
+            itemAdapter.setNewList(this)
             when {
                 itemAdapter.adapterItemCount == 0 -> {
                     empty_view.visibility = View.VISIBLE
@@ -67,7 +71,6 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     }
 
     override fun onFaceNotExistError() {
-        AppLogger.w("面孔不存在,无法移动")
         ToastUtil.showToast("语言包:面孔不存在,移动失败")
     }
 
@@ -169,16 +172,6 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
         custom_toolbar.setRightAction { moveFaceTo() }
 
-        //todo just for test
-//        val items: MutableList<FaceListItem> = mutableListOf()
-//        words.forEach {
-//            val item = FaceListItem()
-//            val information = DpMsgDefine.FaceInformation()
-//            information.face_name = it
-//            item.withFaceInformation(information)
-//            items.add(item)
-//        }
-//        itemAdapter.add(items)
     }
 
     private fun moveFaceTo() {

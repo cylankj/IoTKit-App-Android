@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.n.view.cam
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,6 +66,22 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
         fragment.setTargetFragment(this, REQ_SET_FACE_NAME)
 
         ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQ_SET_FACE_NAME -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val newName = data?.getStringExtra("name")
+                    if (!TextUtils.isEmpty(newName)) {
+                        face_name.text = newName
+                        setting_item_face_name.subTitle = newName
+                    }
+                }
+
+            }
+        }
     }
 
     companion object {

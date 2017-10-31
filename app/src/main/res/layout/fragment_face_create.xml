@@ -56,11 +56,12 @@
             android:id="@+id/clear_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y20"
             android:layout_marginStart="@dimen/y15"
-            android:layout_toEndOf="@+id/name"
             android:src="@drawable/icon_clear_text"
-            android:visibility="invisible" />
+            android:visibility="visible" />
 
         <View
             android:layout_width="match_parent"

@@ -38,7 +38,6 @@ import java.io.File;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.panorama.Panoramic720View.DM_Equirectangular;
@@ -82,12 +81,8 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_pan720_full;
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         panoramic720View = new Panoramic720View(getContext());
         panoramic720View.setEventListener(new CommonPanoramicView.PanoramaEventListener() {
             @Override
@@ -124,10 +119,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_pan720_full, container, false);
     }
 
 

@@ -30,7 +30,7 @@ import static com.cylan.jiafeigou.misc.INotify.KEY_NEED_EMPTY_NOTIFICATION;
  * Created by cylan-hunt on 16-6-6.
  */
 
-public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends BaseActivity<T> {
+public abstract class BaseFullScreenFragmentActivity<T extends BasePresenter> extends BaseActivity<T> {
 
     private SystemBarTintManager tintManager;
     private WeakReference<SystemUiHider> systemUiHiderWeakReference;

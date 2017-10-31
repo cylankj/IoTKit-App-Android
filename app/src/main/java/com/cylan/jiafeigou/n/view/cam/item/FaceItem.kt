@@ -111,6 +111,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 //                        .into(holder.icon)
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
 //                holder.icon.isDisableCircularTransformation = true
+                holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(true)
                 holder.icon.setImageResource(R.drawable.news_icon_stranger)
                 holder.icon.showBorder(isSelected)

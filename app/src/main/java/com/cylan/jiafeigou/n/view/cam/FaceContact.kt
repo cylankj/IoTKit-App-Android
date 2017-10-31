@@ -13,7 +13,7 @@ interface SetFaceNameContact {
 
     interface View : JFGView {
         fun onSetFaceNameError(ret: Int?)
-        fun onSetFaceNameSuccess()
+        fun onSetFaceNameSuccess(faceName: String)
     }
 
     interface Presenter : JFGPresenter {
@@ -43,7 +43,7 @@ interface FaceManagerContact {
 }
 
 interface CreateFaceContact {
-    interface View : JFGView  {
+    interface View : JFGView {
 
         fun onCreateNewFaceSuccess(personId: String)
 
@@ -73,6 +73,7 @@ interface FaceListContact {
 
         fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?)
 
+        fun onAuthorizationError()
     }
 
     interface Presenter : JFGPresenter {

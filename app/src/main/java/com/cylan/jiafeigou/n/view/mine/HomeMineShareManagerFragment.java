@@ -25,8 +25,6 @@ import com.cylan.jiafeigou.widget.HomeMineItemView;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by yanzhendong on 2017/5/26.
@@ -39,28 +37,19 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     HomeMineItemView sharedDevice;
     @BindView(R.id.sharedContent)
     HomeMineItemView sharedContent;
-    Unbinder unbinder;
     private FragmentMineShareManagerBinding managerBinding;
-
-
-
-    @Override
-    protected int getContentViewID() {
-        return R.layout.fragment_mine_share_manager;
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         managerBinding = FragmentMineShareManagerBinding.inflate(inflater);
-        unbinder = ButterKnife.bind(this, managerBinding.getRoot());
-        managerBinding.setListener(this);
         return managerBinding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initViewAndListener() {
+        super.initViewAndListener();
+        managerBinding.setListener(this);
         List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
         boolean showShareContent = false;
         if (!ListUtils.isEmpty(list)) {
@@ -72,12 +61,6 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
             }
         }
         sharedContent.setVisibility(showShareContent ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    protected void initViewAndListener() {
-        super.initViewAndListener();
-//        managerBinding.setListener(this);
     }
 
     public static HomeMineShareManagerFragment newInstance(Bundle bundle) {
@@ -140,9 +123,4 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineShareDeviceFragment, android.R.id.content);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 }

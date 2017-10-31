@@ -1,6 +1,10 @@
 package com.cylan.jiafeigou.dagger.module;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
@@ -76,12 +80,12 @@ import com.cylan.jiafeigou.support.share.SharePresenter;
 import com.cylan.jiafeigou.support.splash.SplashActivity;
 import com.cylan.jiafeigou.support.splash.SplashContact;
 import com.cylan.jiafeigou.support.splash.SplashPresenter;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 import javax.inject.Inject;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 /**
  * Created by yanzhendong on 2017/10/26.
@@ -91,15 +95,42 @@ public abstract class MVPModule2 {
 
     public static class DefaultPresenter extends BasePresenter implements JFGPresenter {
         @Inject
-        public DefaultPresenter() {
-            super(null);
+        public DefaultPresenter(JFGView view) {
+            super(view);
         }
     }
 
-    @Provides
-    public static JFGPresenter providePresenter() {
-        return new DefaultPresenter();
+    public static class DefaultView implements JFGView {
+        @Inject
+        public DefaultView() {
+        }
+
+        @Override
+        public Activity activity() {
+            return null;
+        }
+
+        @Override
+        public Context getContext() {
+            return ContextUtils.getContext();
+        }
+
+        @Override
+        public String uuid() {
+            return "404 not found";
+        }
+
+        @Override
+        public void onLoginStateChanged(boolean online) {
+
+        }
     }
+
+    @Binds
+    public abstract JFGPresenter providePresenter(DefaultPresenter presenter);
+
+    @Binds
+    public abstract JFGView bindDefaultView(DefaultView view);
 
     @Binds
     public abstract BellLiveContract.Presenter provideBellLivePresenter(BellLivePresenterImpl presenter);
