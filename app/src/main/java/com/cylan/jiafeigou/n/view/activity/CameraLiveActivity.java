@@ -34,7 +34,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.widget.HintTextView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
@@ -54,7 +54,7 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @BindView(R.id.vp_camera_live)
-    CustomViewPager vpCameraLive;
+    EViewPager vpCameraLive;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 

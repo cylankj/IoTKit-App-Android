@@ -31,7 +31,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.HackyViewPager;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
@@ -91,7 +91,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private static final long NETWORK_ERROR_WAIT_TIME = 15000;
 
     @BindView(R.id.act_media_pager)
-    HackyViewPager mMediaPager;
+    EViewPager mMediaPager;
     @BindView(R.id.act_media_header_title)
     TextView mHeaderTitle;
     @BindView(R.id.act_media_header_opt_delete)
@@ -271,7 +271,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mMediaPager.setAdapter(mAdapter);
         mMediaPager.setCurrentItem(mStartPosition);
         mMediaPager.addOnPageChangeListener(this);
-        mMediaPager.setOnLockModeTouchListener((view, event) -> {
+        mMediaPager.setPagingScrollListener((event) -> {
             if (!mFooterContainer.isShown() && !mHeaderContainer.isShown()) {
                 mContentRootView.removeCallbacks(mHideHeaderAndFooterCallback);
                 animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(mHideHeaderAndFooterCallback, HEADER_AND_FOOTER_SHOW_TIME));

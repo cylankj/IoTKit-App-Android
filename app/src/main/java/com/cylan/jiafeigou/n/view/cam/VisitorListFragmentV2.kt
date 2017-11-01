@@ -31,8 +31,7 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
-import com.cylan.jiafeigou.widget.WrapContentViewPager
-import com.google.gson.Gson
+import com.cylan.jiafeigou.widget.page.EViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import kotlinx.android.synthetic.main.fragment_visitor_list.*
@@ -57,7 +56,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     lateinit var onVisitorListCallback: OnVisitorListCallback
 
     lateinit var faceAdapter: FaceAdapter
-    lateinit var cViewPager: WrapContentViewPager
+    lateinit var cViewPager: EViewPager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = BaseVisitorPresenter(this)
@@ -72,7 +71,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cViewPager = view.findViewById(R.id.vp_default) as WrapContentViewPager
+        cViewPager = view.findViewById(R.id.vp_default) as EViewPager
         faceAdapter = FaceAdapter(childFragmentManager, isNormalVisitor())
         faceAdapter.uuid = uuid
         cViewPager.adapter = faceAdapter
@@ -100,6 +99,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 setFaceHeaderPageIndicator(position, ListUtils.getSize(provideData()))
             }
         })
+//        cViewPager.parentInterceptor = object : EViewPager.ParentInterceptor {
+//
+//            override fun disableParentTouch(): Boolean {
+//                return false
+//            }
+//        }
         FaceItemsProvider.get.ensurePreloadHeaderItem()
         faceAdapter.populateItems(provideData())
         setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
@@ -115,7 +120,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
         }
-        cam_message_indicator_watcher_text.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count))
+        cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count)
     }
 
     open fun fetchStrangerVisitorList() {
@@ -127,8 +132,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     override fun isNormalVisitor(): Boolean {
         return true
     }
-
-
 
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
@@ -543,7 +546,7 @@ class FaceItemsProvider private constructor() {
         }
     }
 
-    fun hasPreloadFaceItems(): Boolean {
+    private fun hasPreloadFaceItems(): Boolean {
         if (ListUtils.getSize(visitorItems) < 2) return false
         return visitorItems[0].getFaceType() == FaceItem.FACE_TYPE_ALL
                 && visitorItems[1].getFaceType() == FaceItem.FACE_TYPE_STRANGER

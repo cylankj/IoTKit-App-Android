@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
 
-    <com.cylan.jiafeigou.widget.WrapContentViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.cylan.jiafeigou.widget.page.EViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/vp_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

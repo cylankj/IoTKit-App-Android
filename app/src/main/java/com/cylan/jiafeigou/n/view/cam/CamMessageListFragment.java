@@ -432,7 +432,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         });
         visitorStrangerSubFragment.setCallBack(t -> barBack.setVisibility(View.GONE));
-        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getStrangerItems()));
+//        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getStrangerItems()));
         return true;
     }
 
