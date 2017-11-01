@@ -271,21 +271,27 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
             vpCameraLive.setAdapter(simpleAdapterPager);
         }
-        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
-            //消息页面,不需要拦截
-            if (vpCameraLive.getCurrentItem() == 1) {
-                return true;
-            }
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-            if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
-                Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
-                //true:不在区域内，
-                boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
-                Log.d("contains", "contains:" + contains);
-                return contains;
+            final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), vpCameraLive.getCurrentItem());
+            if (vpCameraLive.getCurrentItem() == 0) {
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+                if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+                    Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
+                    //true:不在区域内，
+                    boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
+                    Log.d("contains", "contains:" + contains);
+                    return contains;
+                } else {
+                    return true;
+                }
             } else {
-                return true;
+                //消息页面,需要拦截,
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+                if (fragment != null && fragment instanceof CamMessageListFragment) {
+                    return ((CamMessageListFragment) fragment).handleViewPagerState();
+                } else {
+                    return true;
+                }
             }
         });
     }

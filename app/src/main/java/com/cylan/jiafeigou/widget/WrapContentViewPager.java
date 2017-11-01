@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -61,4 +62,22 @@ public class WrapContentViewPager extends ViewPager {
         }
         return result;
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (parentInterceptor != null) {
+            this.requestDisallowInterceptTouchEvent(parentInterceptor.disableParentTouch());
+        }
+        return super.onInterceptTouchEvent(event);
+    }
+
+    public ParentInterceptor parentInterceptor;
+
+    public interface ParentInterceptor {
+        /**
+         * @return  true:disallow父类处理事件，false:allow父类处理事件
+         */
+        boolean disableParentTouch();
+    }
+
 }

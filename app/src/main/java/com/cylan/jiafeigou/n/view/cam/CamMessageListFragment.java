@@ -347,6 +347,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         AppLogger.d("还需要重新选中All");
     }
 
+    public boolean handleViewPagerState() {
+        return true;
+    }
+
     private void changeAdapterAndExitStranger() {
         getFragmentManager().popBackStack();
         setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
