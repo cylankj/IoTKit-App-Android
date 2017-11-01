@@ -16,7 +16,7 @@
         app:ct_enable_theme="true"
         app:ct_fit_system_window="true" />
 
-    <com.cylan.jiafeigou.widget.CustomViewPager
+    <com.cylan.jiafeigou.widget.page.EViewPager
         android:id="@+id/vp_camera_live"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

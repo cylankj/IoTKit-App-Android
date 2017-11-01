@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.cylan.jiafeigou.misc.HackyViewPager
+    <com.cylan.jiafeigou.widget.page.EViewPager
         android:id="@+id/v_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -34,7 +34,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.widget.HintTextView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
@@ -54,7 +54,7 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @BindView(R.id.vp_camera_live)
-    CustomViewPager vpCameraLive;
+    EViewPager vpCameraLive;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
@@ -278,20 +278,21 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
                     Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
                     //true:不在区域内，
-                    boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
+                    boolean contains = rect.contains((int) event.getRawX(), (int) event.getY());
                     Log.d("contains", "contains:" + contains);
                     return contains;
                 } else {
                     return true;
                 }
             } else {
-                //消息页面,需要拦截,
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-                if (fragment != null && fragment instanceof CamMessageListFragment) {
-                    return ((CamMessageListFragment) fragment).handleViewPagerState();
-                } else {
-                    return true;
-                }
+                return false;
+//                //消息页面,需要拦截,
+//                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+//                if (fragment != null && fragment instanceof CamMessageListFragment) {
+//                    return ((CamMessageListFragment) fragment).handleViewPagerState();
+//                } else {
+//                    return true;
+//                }
             }
         });
     }

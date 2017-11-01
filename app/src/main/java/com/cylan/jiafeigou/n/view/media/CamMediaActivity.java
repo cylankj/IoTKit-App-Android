@@ -31,7 +31,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.misc.HackyViewPager;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -75,7 +75,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     public static final String KEY_BELL_RECORD_BUNDLE = "key_bell_record_bundle";
 
     @BindView(R.id.vp_container)
-    HackyViewPager vpContainer;
+    EViewPager vpContainer;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.fLayout_cam_handle_bar)

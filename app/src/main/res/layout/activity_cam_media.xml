@@ -9,7 +9,7 @@
     tools:context="com.cylan.jiafeigou.n.view.media.CamMediaActivity">
 
 
-    <com.cylan.jiafeigou.misc.HackyViewPager
+    <com.cylan.jiafeigou.widget.page.EViewPager
         android:id="@+id/vp_container"
         android:layout_width="match_parent"
         android:layout_height="400dp"

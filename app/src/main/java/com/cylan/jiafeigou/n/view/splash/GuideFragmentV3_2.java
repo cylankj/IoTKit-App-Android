@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.HackyViewPager;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.rd.PageIndicatorView;
@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  */
 public class GuideFragmentV3_2 extends Fragment {
     @BindView(R.id.v_pager)
-    HackyViewPager viewPager;
+    EViewPager viewPager;
     @BindView(R.id.pageIndicatorView)
     PageIndicatorView pageIndicatorView;
 

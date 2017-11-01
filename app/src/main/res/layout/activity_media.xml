@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <com.cylan.jiafeigou.misc.HackyViewPager
+    <com.cylan.jiafeigou.widget.page.EViewPager
         android:id="@+id/act_media_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
