@@ -7,6 +7,9 @@
         <attr name="a_max_time" format="integer|reference" />
         <attr name="a_default_content" format="string|reference" />
     </declare-styleable>
+    <declare-styleable name="EViewPager">
+        <attr name="vp_need_wrap" format="boolean|reference" />
+    </declare-styleable>
     <declare-styleable name="ImageViewTipsTheme">
         <attr name="t_radius" format="dimension" />
         <attr name="t_round_within" format="boolean|reference" />

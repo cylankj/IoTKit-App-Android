@@ -1,19 +1,25 @@
 package com.cylan.jiafeigou.widget.page;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.cylan.jiafeigou.R;
+
 /**
- * Created by hds on 17-11-1.
+ * @author hds
+ * @date 17-11-1
  */
 
 public class EViewPager extends ViewPager {
     private boolean isPagingEnabled = true;
-    private EnableScrollListener enableScrollListener;
+    private boolean isNeedWrap = false;
+    public EnableScrollListener enableScrollListener;
 
     public EViewPager(Context context) {
         super(context);
@@ -21,24 +27,29 @@ public class EViewPager extends ViewPager {
 
     public EViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.EViewPager, 0, 0);
+        this.isNeedWrap = a.getBoolean(R.styleable.EViewPager_vp_need_wrap, false);
+        a.recycle();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        int height = 0;
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            child.measure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            int h = child.getMeasuredHeight();
-            if (h > height) {
-                height = h;
+        if (isNeedWrap) {
+            int height = 0;
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                child.measure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                int h = child.getMeasuredHeight();
+                if (h > height) {
+                    height = h;
+                }
             }
+            heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-
-        heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     /**
@@ -72,48 +83,30 @@ public class EViewPager extends ViewPager {
         setPagingEnabled(isLocked);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction() & MotionEventCompat.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: {
-                if (isPagingEnabled && enableScrollListener != null && enableScrollListener.enable(event)) {
-                    return super.onTouchEvent(event);
-                } else {
-                    return false;
-                }
-            }
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
-        if (v != this && v instanceof ViewPager) {
-            int currentItem = ((ViewPager) v).getCurrentItem();
-            int countItem = ((ViewPager) v).getAdapter().getCount();
-            if ((currentItem == (countItem - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
-                return false;
-            }
-            return true;
-        }
-        return super.canScroll(v, checkV, dx, x, y);
-    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEventCompat.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                if (isPagingEnabled && enableScrollListener != null && enableScrollListener.enable(event)) {
-                    return super.onInterceptTouchEvent(event);
-                } else {
+                if (isPagingEnabled && isConsumedOutside(event)) {
                     return false;
                 }
+                return handleIntercept(event);
             }
+            default:
+                return handleIntercept(event);
         }
+    }
+
+    private boolean isConsumedOutside(MotionEvent event) {
+        return enableScrollListener != null && enableScrollListener.enable(event);
+    }
+
+    private boolean handleIntercept(MotionEvent event) {
         try {
             return super.onInterceptTouchEvent(event);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Log.d("failed", "failed:" + e.getLocalizedMessage());
             return false;
         }
     }
@@ -133,6 +126,7 @@ public class EViewPager extends ViewPager {
     public interface EnableScrollListener {
         /**
          * 滚动
+         *
          * @param event
          * @return
          */
@@ -149,3 +143,15 @@ public class EViewPager extends ViewPager {
         super.setCurrentItem(item, false);
     }
 }
+//    @Override
+//    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+//        if (v != this && v instanceof ViewPager) {
+//            int currentItem = ((ViewPager) v).getCurrentItem();
+//            int countItem = ((ViewPager) v).getAdapter().getCount();
+//            if ((currentItem == (countItem - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
+//                return false;
+//            }
+//            return true;
+//        }
+//        return super.canScroll(v, checkV, dx, x, y);
+//    }

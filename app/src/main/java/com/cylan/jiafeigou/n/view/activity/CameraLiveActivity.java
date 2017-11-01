@@ -278,20 +278,21 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
                     Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
                     //true:不在区域内，
-                    boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
+                    boolean contains = rect.contains((int) event.getRawX(), (int) event.getY());
                     Log.d("contains", "contains:" + contains);
                     return contains;
                 } else {
                     return true;
                 }
             } else {
-                //消息页面,需要拦截,
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-                if (fragment != null && fragment instanceof CamMessageListFragment) {
-                    return ((CamMessageListFragment) fragment).handleViewPagerState();
-                } else {
-                    return true;
-                }
+                return false;
+//                //消息页面,需要拦截,
+//                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+//                if (fragment != null && fragment instanceof CamMessageListFragment) {
+//                    return ((CamMessageListFragment) fragment).handleViewPagerState();
+//                } else {
+//                    return true;
+//                }
             }
         });
     }

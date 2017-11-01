@@ -116,7 +116,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //    RelativeLayout rlCamMessageIndicator;
     @BindView(R.id.iv_back)
     TextView barBack;
-    @BindView(R.id.parent)
+    @BindView(R.id.c_layout_parent)
     CoordinatorLayout parent;
 //    @BindView(R.id.cam_message_indicator_watcher_text)
 //    TextView tvCamMessageIndicatorWatcherText;
@@ -349,7 +349,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     public boolean handleViewPagerState() {
-        return true;
+        return false;
     }
 
     private void changeAdapterAndExitStranger() {

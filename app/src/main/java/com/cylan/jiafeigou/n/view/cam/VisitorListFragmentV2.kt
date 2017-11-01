@@ -13,10 +13,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -99,12 +96,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 setFaceHeaderPageIndicator(position, ListUtils.getSize(provideData()))
             }
         })
-//        cViewPager.parentInterceptor = object : EViewPager.ParentInterceptor {
-//
-//            override fun disableParentTouch(): Boolean {
-//                return false
-//            }
-//        }
+        cViewPager.enableScrollListener = EViewPager.EnableScrollListener { false }
         FaceItemsProvider.get.ensurePreloadHeaderItem()
         faceAdapter.populateItems(provideData())
         setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
@@ -525,6 +517,7 @@ class FaceItemsProvider private constructor() {
         if (ListUtils.isEmpty(strangerItems)) return
         this.strangerItems.addAll(strangerItems)
         this.strangerItems = ArrayList(TreeSet(this.strangerItems))
+        this.strangerItems.addAll(this.strangerItems)
         Collections.sort(this.strangerItems)
     }
 
