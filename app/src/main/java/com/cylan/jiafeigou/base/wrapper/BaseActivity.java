@@ -70,7 +70,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         this.presenter = presenter;
         this.presenter.uuid(uuid);
         if (presenter instanceof LifecycleAdapter) {
-            this.lifecycleAdapter = (LifecycleAdapter) presenter;
+            lifecycleAdapter = (LifecycleAdapter) presenter;
         }
     }
 
@@ -80,18 +80,29 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     @Override
-    public boolean supportInject() {
+    public boolean useDaggerInject() {
+        return true;
+    }
+
+    @Override
+    public boolean useButterKnifeInject() {
         return true;
     }
 
     private final void injectDagger() {
-        if (supportInject()) {
+        if (useDaggerInject()) {
             try {
                 AndroidInjection.inject(this);
             } catch (Exception e) {
                 e.printStackTrace();
-                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 supportInject 方法并返回 FALSE");
+                AppLogger.w("Dagger 注入失败了,如果不需要 Dagger 注入,重写 useDaggerInject 方法并返回 FALSE");
             }
+        }
+    }
+
+    private final void injectButterKnife() {
+        if (useButterKnifeInject()) {
+            unbinder = ButterKnife.bind(this);
         }
     }
 
@@ -123,11 +134,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         injectDagger();
         super.onCreate(savedInstanceState);
         if (onSetContentView()) {
-            if (unbinder != null) {
-                unbinder.unbind();
-            }
-            unbinder = ButterKnife.bind(this);
+            injectButterKnife();
             initViewAndListener();
+        }
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.attachToLifecycle(this);
         }
         lifecycleSubject.onNext(FragmentEvent.CREATE);
     }
@@ -182,9 +193,12 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
                 presenter.unsubscribe();
             }
         }
-        if (unbinder != null) {
-            unbinder.unbind();
+        if (lifecycleAdapter != null) {
+            lifecycleAdapter.detachToLifecycle();
         }
+//        if (unbinder != null) {
+//            unbinder.unbind();
+//        }
         interceptors.clear();
         presenter = null;
         unbinder = null;

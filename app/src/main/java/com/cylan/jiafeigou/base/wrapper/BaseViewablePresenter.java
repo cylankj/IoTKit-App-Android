@@ -83,7 +83,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected void subscribeStreamLoading() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.VideoLoadingEvent.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(load -> {
@@ -109,7 +109,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     private void subscribeDeviceUnBind() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -124,7 +124,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.just(sourceManager.isOnline()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(isOnline -> {
@@ -230,7 +230,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void cancelViewer() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> stopViewer())
                 .subscribe(ret -> {
                 }, AppLogger::e);
@@ -406,7 +406,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void dismiss() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> stopViewer())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
@@ -423,7 +423,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchSpeaker() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> setSpeaker(!liveStreamAction.speakerOn))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
@@ -438,7 +438,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchMicrophone() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> setMicrophone(liveStreamAction.microphoneOn))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {

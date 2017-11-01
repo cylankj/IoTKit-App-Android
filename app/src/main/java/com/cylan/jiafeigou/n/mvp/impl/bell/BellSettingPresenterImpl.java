@@ -48,7 +48,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
 
     @Override
     public void unbindDevice() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.just(new DPEntity()
                         .setUuid(uuid)
                         .setAction(DBAction.UNBIND)))
@@ -68,7 +68,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
 
     @Override
     public void clearBellRecord(String uuid) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .map(ret-> new DPEntity()
                         .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                         .setUuid(uuid)

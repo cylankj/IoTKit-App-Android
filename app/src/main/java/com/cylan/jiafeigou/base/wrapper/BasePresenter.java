@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.view.LifecycleAdapter;
 import com.cylan.jiafeigou.view.PresenterAdapter;
 import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.android.FragmentEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -63,9 +64,19 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @Inject
     public void setSubscriptionManager(ISubscriptionManager mSubscriptionManager) {
         this.mSubscriptionManager = mSubscriptionManager;
-        if (mView instanceof LifecycleProvider && mSubscriptionManager != null) {
-            mSubscriptionManager.bind(getClass().getName(), (LifecycleProvider) mView);
+    }
+
+    @Override
+    public final void attachToLifecycle(LifecycleProvider<FragmentEvent> provider) {
+        mSubscriptionManager.bind(this, provider);
+    }
+
+    @Override
+    public final void detachToLifecycle() {
+        if (mSubscriptionManager != null) {
+            mSubscriptionManager.unbind(this);
         }
+        mSubscriptionManager = null;
     }
 
     @Deprecated
@@ -91,13 +102,9 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @CallSuper
     public void unsubscribe() {
         subscribed = false;
-        if (mSubscriptionManager != null) {
-            mSubscriptionManager.unbind(getClass().getName());
-        }
         mContext = null;
         mTaskDispatcher = null;
         mLoadingManager = null;
-        mSubscriptionManager = null;
         mView = null;
     }
 
@@ -151,7 +158,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
      * 监听登录状态的变化时基本的功能,所以提取到基类中
      */
     private void subscribeLoginState() {
-        mSubscriptionManager.destroy()
+        mSubscriptionManager.destroy(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.OnlineStatusRsp.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -174,12 +181,6 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
      */
     protected void post(Runnable action) {
         HandlerThreadUtils.post(action);
-    }
-
-
-    public enum LIFE_CYCLE {
-        LIFE_CYCLE_STOP,
-        LIFE_CYCLE_DESTROY,
     }
 
     protected TimeTick timeTick;

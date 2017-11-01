@@ -39,7 +39,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
     }
 
     private void subscribeNewVersion() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class))
                 .subscribeOn(Schedulers.io())
                 .subscribe(version -> {
@@ -56,7 +56,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
 
     @Override
     public void unBindDevice() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.just(new DPEntity()
                         .setUuid(uuid)
                         .setAction(DBAction.UNBIND)))

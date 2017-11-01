@@ -44,7 +44,7 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
     }
 
     private void subscribeSync() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {

@@ -50,7 +50,7 @@ public abstract class BaseFullScreenFragmentActivity<T extends BasePresenter> ex
     }
 
     @Override
-    public boolean supportInject() {
+    public boolean useDaggerInject() {
         return false;
     }
 

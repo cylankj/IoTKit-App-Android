@@ -52,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -461,7 +462,15 @@ public class DP {
 
     public String mmm() {
         manager.atomicMethod()
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
+                .flatMap(s -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return Observable.just(s);
+                })
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .subscribe(System.out::println, System.err::println);
         return "";

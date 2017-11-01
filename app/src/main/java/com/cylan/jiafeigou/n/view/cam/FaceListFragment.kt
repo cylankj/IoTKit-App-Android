@@ -57,6 +57,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     override fun onMoveFaceToPersonSuccess(personId: String) {
         AppLogger.w("移动面孔成功了")
+        ToastUtil.showToast("语言包:移动面孔成功了!")
         fragmentManager.popBackStack()
 
         if (targetFragment != null) {

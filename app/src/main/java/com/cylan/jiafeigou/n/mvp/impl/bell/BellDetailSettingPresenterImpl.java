@@ -93,7 +93,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
 
     @Override
     public void subscribeNewVersion() {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null && TextUtils.equals(uuid, ret.uuid))

@@ -49,7 +49,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
     @Override
     @Deprecated
     public void check(String uuid, int time) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
                     try {
@@ -92,7 +92,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void upload(String fileName, String filePath) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(ret -> getRemoteFilePath(fileName, true))
                 .observeOn(Schedulers.io())
@@ -128,7 +128,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath) {
-        mSubscriptionManager.stop()
+        mSubscriptionManager.stop(this)
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
                     try {

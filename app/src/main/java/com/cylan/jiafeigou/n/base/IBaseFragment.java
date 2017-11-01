@@ -22,7 +22,12 @@ public abstract class IBaseFragment<P extends BasePresenter> extends BaseFragmen
     }
 
     @Override
-    public boolean supportInject() {
+    public boolean useDaggerInject() {
+        return false;
+    }
+
+    @Override
+    public boolean useButterKnifeInject() {
         return false;
     }
 
