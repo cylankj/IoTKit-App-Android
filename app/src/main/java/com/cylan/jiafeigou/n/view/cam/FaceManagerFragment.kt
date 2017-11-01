@@ -205,12 +205,12 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter.notifyDataSetChanged()
     }
 
-    override fun performBackIntercept(): Boolean {
+    override fun performBackIntercept(willExit: Boolean): Boolean {
         if (isEditMode()) {
             setEditMode(false)
             return true
         }
-        return super.performBackIntercept()
+        return super.performBackIntercept(willExit)
     }
 
     companion object {

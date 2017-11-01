@@ -176,12 +176,12 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         if (editMode.get()) {
             editMode.set(false);
             return true;
         } else {
-            return super.performBackIntercept();
+            return super.performBackIntercept(willExit);
         }
     }
 

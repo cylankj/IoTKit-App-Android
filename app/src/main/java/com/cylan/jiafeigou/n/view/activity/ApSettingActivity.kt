@@ -165,9 +165,9 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             unregisterReceiver(tetherChangeReceiver)
     }
 
-    override fun performBackIntercept(): Boolean {
+    override fun performBackIntercept(willExit: Boolean): Boolean {
         ct_tool_bar.performClick()
-        return super.performBackIntercept()
+        return super.performBackIntercept(willExit)
     }
 
     fun needTurnOnWriteSetting(): Boolean {

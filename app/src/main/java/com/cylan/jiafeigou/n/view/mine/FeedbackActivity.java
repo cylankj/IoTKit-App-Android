@@ -91,7 +91,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         finishExt();
         return true;
     }

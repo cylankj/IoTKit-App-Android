@@ -199,12 +199,12 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 //        if (unbinder != null) {
 //            unbinder.unbind();
 //        }
-        interceptors.clear();
-        presenter = null;
-        unbinder = null;
-        lifecycleSubject = null;
-        lifecycleAdapter = null;
-        mInitCalled = false;
+//        interceptors.clear();
+//        presenter = null;
+//        unbinder = null;
+//        lifecycleSubject = null;
+//        lifecycleAdapter = null;
+//        mInitCalled = false;
     }
 
 
@@ -259,9 +259,10 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
      */
     @Override
     public final void onBackPressed() {
+        boolean willExit = getSupportFragmentManager().getBackStackEntryCount() == 0;
         for (ActivityBackInterceptor interceptor : interceptors) {
             try {
-                if (interceptor.performBackIntercept()) {
+                if (interceptor.performBackIntercept(willExit)) {
                     return;
                 }
                 //如果出现异常直接捕获就行了
@@ -279,7 +280,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         return false;
     }
 

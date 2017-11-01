@@ -369,12 +369,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public boolean performBackIntercept() {
-        if (isVisible && isPrepared) {
+    public boolean performBackIntercept(boolean willExit) {
+        if ((isVisible && isPrepared) || willExit) {
             onBackPressed();
             removeVideoView();
         }
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
     }
 
     @Override

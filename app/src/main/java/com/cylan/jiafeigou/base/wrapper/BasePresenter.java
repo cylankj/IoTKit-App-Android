@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.module.ISubscriptionManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -57,6 +58,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     protected View mView;
     protected MapSubscription subscriptions;
     protected volatile boolean subscribed = false;
+    protected LifecycleProvider<FragmentEvent> lifecycleProvider;
 
     public BasePresenter(View view) {
         this.mView = view;
@@ -66,15 +68,22 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @Inject
     public void setSubscriptionManager(ISubscriptionManager mSubscriptionManager) {
         this.mSubscriptionManager = mSubscriptionManager;
+        if (lifecycleProvider != null) {
+            mSubscriptionManager.bind(this, lifecycleProvider);
+        }
     }
 
     @Override
     public final void attachToLifecycle(LifecycleProvider<FragmentEvent> provider) {
+        this.lifecycleProvider = provider;
         if (subscriptions != null && !subscriptions.isUnsubscribed()) {
             subscriptions.unsubscribe();
         }
         subscriptions = new MapSubscription();
-        mSubscriptionManager.bind(this, provider);
+        if (mSubscriptionManager == null) {
+            mSubscriptionManager = BaseApplication.getAppComponent().getSubscriptionManager();
+        }
+        mSubscriptionManager.bind(this, lifecycleProvider);
     }
 
     @Override
@@ -86,9 +95,10 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
             if (!subscriptions.isUnsubscribed()) {
                 subscriptions.unsubscribe();
             }
+            subscriptions.clear();
             subscriptions = null;
         }
-        mSubscriptionManager = null;
+//        mSubscriptionManager = null;
     }
 
     @Deprecated
@@ -114,10 +124,10 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @CallSuper
     public void unsubscribe() {
         subscribed = false;
-        mContext = null;
-        mTaskDispatcher = null;
-        mLoadingManager = null;
-        mView = null;
+//        mContext = null;
+//        mTaskDispatcher = null;
+//        mLoadingManager = null;
+//        mView = null;
     }
 
     @Override

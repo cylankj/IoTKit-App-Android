@@ -118,7 +118,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         //3.1.0
 //        View view = findViewById(R.id.welcome_frame_container);
 //        if (view != null) {
@@ -141,7 +141,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             }
             return true;
         }
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
     }
 
     @Override
