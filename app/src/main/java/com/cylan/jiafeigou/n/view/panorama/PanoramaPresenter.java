@@ -66,6 +66,7 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -107,7 +108,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startYoutubeLiveRtmp(String url) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -198,11 +199,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void stopYoutubeLiveRtmp() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -259,10 +261,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     private void startWeiboLiveRtmp() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(ret -> {
                     return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
@@ -378,10 +381,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             AppLogger.w(MiscUtils.getErr(e));
                         }
                 );
+        addSubscription(subscribe);
     }
 
     private void stopWeiboLiveRtmp() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -451,10 +455,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     private void startRtmpLive(String url, int liveType) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -497,10 +502,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.w(MiscUtils.getErr(e));
                     RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordEvent.RECORD_END_EVENT);
                 });
+        addSubscription(subscribe);
     }
 
     private void stopRtmpLive(int liveType) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
@@ -529,10 +535,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_LIVE, getLiveAction().hasResolution, false);
                     AppLogger.w(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     private void startFacebookRtmpLive() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.newThread())//新建线程吧,以免阻塞 IO 线程
                 .map(cmd -> {
@@ -606,10 +613,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.showRtmpLiveSetting();
                     }
                 });
+        addSubscription(subscribe);
     }
 
     private void stopFacebookRtmpLive() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.newThread())
                 .map(cmd -> {
@@ -628,6 +636,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(response -> stopRtmpLive(1), e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     private String getPlatformString(Context context, int livePlatform) {
@@ -770,7 +779,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private void subscribeDeviceRecordState() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceRecordStateChanged.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -800,10 +809,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
+        addSubscription(subscribe);
     }
 
     private void subscribeNetwork() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
@@ -819,10 +829,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                 }, e -> {
                 });
+        addSubscription(subscribe);
     }
 
     private void subscribeNewVersionRsp() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class))
                 .subscribeOn(Schedulers.io())
                 .subscribe(version -> {
@@ -850,10 +861,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             return true;
         });
         version.startCheck();
+        addSubscription(subscribe);
     }
 
     private void subscribeReportMsg() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -952,12 +964,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void makePhotograph() {
         mView.onRefreshControllerViewVisible(false);
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().snapShot(uuid))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -983,6 +996,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(e);
                     mView.onReportDeviceError(-1, false);//timeout
                 });
+        addSubscription(subscribe);
     }
 
     @Override
@@ -992,7 +1006,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void checkAndInitRecord() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getUpgradeStatus(uuid))
                 .firstOrDefault(null)
                 .subscribeOn(Schedulers.io())
@@ -1115,12 +1129,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
-
+        addSubscription(subscribe);
     }
 
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().setResolution(uuid, mode))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1134,11 +1148,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void startVideoRecord(int type) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().startRec(uuid, type))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1165,11 +1180,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 //                    shouldRefreshRecord = false;
                     mView.onReportDeviceError(-1, false);
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void stopVideoRecord(int type) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().stopRec(uuid, type))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1192,11 +1208,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     mView.onReportDeviceError(-1, false);
                     AppLogger.e(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void formatSDCard() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().sdFormat(uuid))
                 .timeout(120, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1210,10 +1227,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(MiscUtils.getErr(e));
                     mView.onSDFormatResult(-1);
                 });
+        addSubscription(subscribe);
     }
 
     public void refreshVideoRecordUI(int offset, @PanoramaCameraContact.View.PANORAMA_RECORD_MODE int type) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.interval(0, 500, TimeUnit.MILLISECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(count -> (int) (count / 2) + offset)
@@ -1236,10 +1254,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshVideoRecordUI(second, type);
                     }
                 }, AppLogger::e);
+        addSubscription(subscribe);
     }
 
     private void subscribeNewMsg() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
                 .subscribeOn(Schedulers.io())
                 .flatMap(ret -> Observable.from(ret.dpList))
@@ -1248,6 +1267,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(ret -> {
                     mView.onShowNewMsgHint();
                 }, AppLogger::e);
+        addSubscription(subscribe);
     }
 
     private boolean filterNewMsgId(long id) {

@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -29,7 +30,7 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
     }
 
     private void checkAndInitLogoOption() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getLogo(uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
@@ -41,11 +42,12 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void changeLogoType(int position) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().setLogo(uuid, position))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
@@ -57,5 +59,6 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
+        addSubscription(subscribe);
     }
 }

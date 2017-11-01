@@ -16,6 +16,8 @@ import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.module.ISubscriptionManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -54,7 +56,9 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     protected ISubscriptionManager mSubscriptionManager;
     protected String uuid;
     protected View mView;
+    protected MapSubscription subscriptions;
     protected volatile boolean subscribed = false;
+    protected LifecycleProvider<FragmentEvent> lifecycleProvider;
 
     public BasePresenter(View view) {
         this.mView = view;
@@ -64,11 +68,22 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @Inject
     public void setSubscriptionManager(ISubscriptionManager mSubscriptionManager) {
         this.mSubscriptionManager = mSubscriptionManager;
+        if (lifecycleProvider != null) {
+            mSubscriptionManager.bind(this, lifecycleProvider);
+        }
     }
 
     @Override
     public final void attachToLifecycle(LifecycleProvider<FragmentEvent> provider) {
-        mSubscriptionManager.bind(this, provider);
+        this.lifecycleProvider = provider;
+        if (subscriptions != null && !subscriptions.isUnsubscribed()) {
+            subscriptions.unsubscribe();
+        }
+        subscriptions = new MapSubscription();
+        if (mSubscriptionManager == null) {
+            mSubscriptionManager = BaseApplication.getAppComponent().getSubscriptionManager();
+        }
+        mSubscriptionManager.bind(this, lifecycleProvider);
     }
 
     @Override
@@ -76,7 +91,14 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         if (mSubscriptionManager != null) {
             mSubscriptionManager.unbind(this);
         }
-        mSubscriptionManager = null;
+        if (subscriptions != null) {
+            if (!subscriptions.isUnsubscribed()) {
+                subscriptions.unsubscribe();
+            }
+            subscriptions.clear();
+            subscriptions = null;
+        }
+//        mSubscriptionManager = null;
     }
 
     @Deprecated
@@ -102,10 +124,10 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @CallSuper
     public void unsubscribe() {
         subscribed = false;
-        mContext = null;
-        mTaskDispatcher = null;
-        mLoadingManager = null;
-        mView = null;
+//        mContext = null;
+//        mTaskDispatcher = null;
+//        mLoadingManager = null;
+//        mView = null;
     }
 
     @Override
@@ -153,12 +175,18 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         mView.onLoginStateChanged(loginState.state);
     }
 
+    protected void addSubscription(Subscription subscription) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
+        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):" + traceElement.getMethodName();
+        AppLogger.w("addSubscription" + method);
+        subscriptions.add(subscription, method);
+    }
 
     /**
      * 监听登录状态的变化时基本的功能,所以提取到基类中
      */
     private void subscribeLoginState() {
-        mSubscriptionManager.destroy(this)
+        Subscription subscribe = mSubscriptionManager.destroy(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.OnlineStatusRsp.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -166,6 +194,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
                     AppLogger.e(MiscUtils.getErr(e));
                     subscribeLoginState();
                 });
+        addSubscription(subscribe);
     }
 
     public Observable<IDPTaskResult> perform(IDPEntity entity) {

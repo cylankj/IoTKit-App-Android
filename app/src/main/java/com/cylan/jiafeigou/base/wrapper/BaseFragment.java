@@ -51,7 +51,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     protected boolean isPrepared;
     protected Unbinder unbinder;
     //可以被重复使用的之前创建的 View ,子类可以决定是否使用 CacheView
-    protected View mCachedRootView;
+//    protected View mCachedRootView;
 
     @Inject
     public final void setPresenter(P presenter) {
@@ -73,7 +73,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     @CallSuper
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         return false;
     }
 
@@ -135,6 +135,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     public void onAttach(Context context) {
+        injectDagger();
         lifecycleSubject = BehaviorSubject.create();
         final Bundle arguments = getArguments();
         if (arguments != null) {
@@ -145,7 +146,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             ((BaseActivity) activity).addActivityBackInterceptor(this);
         }
 
-        injectDagger();
         super.onAttach(context);
         if (lifecycleAdapter != null) {
             lifecycleAdapter.attachToLifecycle(this);
@@ -183,15 +183,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onDestroyView() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
-        /**
-         *需要在 onDestroyView 之前移除对 backEvent 的监听,在这个方法调用后 View 不存在了
-         * 继续对 UI 界面操作可能会出错
-         * */
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof BaseActivity) {
-            ((BaseActivity) activity).removeActivityBackInterceptor(this);
-        }
-        mCachedRootView = getView();
+
+//        mCachedRootView = getView();
         super.onDestroyView();
     }
 
@@ -208,11 +201,17 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onDetach() {
         lifecycleSubject.onNext(FragmentEvent.DETACH);
-        lifecycleSubject.onCompleted();
         super.onDetach();
         performActivityResult();
         if (callBack != null) {
             callBack.callBack(cache);
+        }
+        if (presenter != null && presenter.isSubscribed()) {
+            presenter.unsubscribe();
+        }
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity) activity).removeActivityBackInterceptor(this);
         }
         if (lifecycleAdapter != null) {
             lifecycleAdapter.detachToLifecycle();
@@ -223,12 +222,12 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 //        if (unbinder != null) {
 //            unbinder.unbind();
 //        }
-        unbinder = null;
-        callBack = null;
-        presenter = null;
-        lifecycleAdapter = null;
-        lifecycleSubject = null;
-        mCachedRootView = null;
+//        unbinder = null;
+//        callBack = null;
+//        presenter = null;
+//        lifecycleAdapter = null;
+//        lifecycleSubject = null;
+//        mCachedRootView = null;
     }
 
     private void performActivityResult() {

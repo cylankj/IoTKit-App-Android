@@ -182,8 +182,8 @@ public abstract class BaseFullScreenFragmentActivity<T extends BasePresenter> ex
     private static long time = 0;
 
     @Override
-    public boolean performBackIntercept() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0 && theLastActivity()) {
+    public boolean performBackIntercept(boolean willExit) {
+        if (willExit && theLastActivity()) {
             if (System.currentTimeMillis() - time < 1500) {
                 return false;
             } else {
@@ -192,7 +192,7 @@ public abstract class BaseFullScreenFragmentActivity<T extends BasePresenter> ex
                 return true;
             }
         } else {
-            return super.performBackIntercept();
+            return super.performBackIntercept(willExit);
         }
     }
 

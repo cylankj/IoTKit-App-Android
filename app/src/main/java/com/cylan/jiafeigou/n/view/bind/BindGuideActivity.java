@@ -75,7 +75,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         finishExt();
         return true;
     }

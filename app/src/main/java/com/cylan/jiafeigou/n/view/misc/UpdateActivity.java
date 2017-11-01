@@ -60,7 +60,7 @@ public class UpdateActivity extends BaseFullScreenFragmentActivity<DownloadContr
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         return true;
     }
 

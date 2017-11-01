@@ -257,7 +257,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         boolean editionMode = reverseEditionMode();
         if (!editionMode) {
             presenter.cancelFetch();

@@ -108,11 +108,11 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         if (backInterface != null) {
             return backInterface.onBack();
         }
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)

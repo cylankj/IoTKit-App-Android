@@ -249,9 +249,9 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         cancelShare(null);
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
     }
 
     public void cancelShare(View view) {

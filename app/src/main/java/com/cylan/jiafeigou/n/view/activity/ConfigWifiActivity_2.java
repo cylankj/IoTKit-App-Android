@@ -201,7 +201,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     finishExt();

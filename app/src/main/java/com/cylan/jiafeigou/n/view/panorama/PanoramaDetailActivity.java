@@ -522,7 +522,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         boolean vrEnabled = panoramicView720Ext.isVREnabled();
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE && vrEnabled) {
@@ -552,7 +552,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             }
             return true;
         } else {
-            return super.performBackIntercept();
+            return super.performBackIntercept(willExit);
         }
     }
 

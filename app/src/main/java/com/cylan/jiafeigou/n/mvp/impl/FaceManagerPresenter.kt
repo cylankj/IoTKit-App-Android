@@ -29,7 +29,7 @@ import javax.inject.Inject
 class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : BasePresenter<FaceManagerContact.View>(view), FaceManagerContact.Presenter {
 
     override fun deleteFace(personId: String?, listOf: List<String>) {
-        mSubscriptionManager.destroy(this)
+         val subscribe = mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -97,10 +97,11 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     mView.onDeleteFaceError()
                     AppLogger.e(MiscUtils.getErr(it))
                 })
+        addSubscription(subscribe)
     }
 
     override fun loadFacesByPersonId(personId: String) {
-        mSubscriptionManager.destroy(this)
+         val subscribe = mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -173,5 +174,6 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                 }
 
                 ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
+        addSubscription(subscribe)
     }
 }

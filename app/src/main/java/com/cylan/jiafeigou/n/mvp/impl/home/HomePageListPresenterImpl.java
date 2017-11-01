@@ -204,7 +204,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        BaseApplication.getAppComponent().getSubscriptionManager()
+        Subscription subscribe = BaseApplication.getAppComponent().getSubscriptionManager()
                 .stop(this)
                 .observeOn(Schedulers.io())
                 .map(ret -> {
@@ -227,6 +227,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 }, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                 });
+        addSubscription(subscribe);
     }
 
     @Override

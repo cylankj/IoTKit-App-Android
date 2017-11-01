@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 
@@ -62,7 +63,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         //直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
 //说明不是自己接听的
-        mSubscriptionManager.destroy(this)
+        Subscription subscribe = mSubscriptionManager.destroy(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
                         .mergeWith(
                                 Observable.just(mHolderCaller = caller)
@@ -109,6 +110,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                     AppLogger.e(e.getMessage());
                 });
+        addSubscription(subscribe);
     }
 
     @Override
@@ -119,10 +121,11 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        mSubscriptionManager.destroy(this)
+        Subscription subscribe = mSubscriptionManager.destroy(this)
                 .flatMap(ret -> load(BellPuller.getInstance().getUrl(uuid)))
                 .subscribe(ret -> {
                 }, AppLogger::e);
+        addSubscription(subscribe);
     }
 
     protected Observable<Long> load(String url) {

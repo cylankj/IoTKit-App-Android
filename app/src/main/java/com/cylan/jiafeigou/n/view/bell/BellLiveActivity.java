@@ -348,11 +348,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             presenter.dismiss();
         }
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
     }
 
     private void handleScreenUpdate(final boolean port) {

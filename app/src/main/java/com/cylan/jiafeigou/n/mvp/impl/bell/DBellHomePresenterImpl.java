@@ -92,7 +92,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
     private void subscribeNewFirmware() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class))
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .retry()
@@ -117,10 +117,11 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         mView.showFirmwareDialog();
                     }
                 }, AppLogger::e);
+        addSubscription(subscribe);
     }
 
     private void subscribeDeviceUnBind() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -130,10 +131,11 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         mView.onDeviceUnBind();
                     }
                 }, e -> AppLogger.d(e.getMessage()));
+        addSubscription(subscribe);
     }
 
     private void subscribeClearData() {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ClearDataEvent.class))
                 .filter(event -> event.msgId == DpMsgMap.ID_401_BELL_CALL_STATE)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -144,11 +146,12 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+        addSubscription(subscribe);
     }
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.just(new DPEntity()
                         .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                         .setVersion(time)
@@ -170,6 +173,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         e.printStackTrace();
                     }
                 }, () -> mView.onRecordsListRsp(null));
+        addSubscription(subscribe);
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
@@ -202,7 +206,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void deleteBellCallRecord(List<BellCallRecordBean> list) {
-        mSubscriptionManager.stop(this)
+        Subscription subscribe = mSubscriptionManager.stop(this)
                 .flatMap(ret -> Observable.just(build(list)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -217,6 +221,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     e.printStackTrace();
                 }, () -> {
                 });
+        addSubscription(subscribe);
     }
 
     @Override

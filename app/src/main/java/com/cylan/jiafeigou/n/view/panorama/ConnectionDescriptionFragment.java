@@ -51,9 +51,9 @@ public class ConnectionDescriptionFragment extends BaseFragment {
 //    }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
 
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
 
     }
 }

@@ -793,7 +793,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         presenter.dismiss();
         if (surfaceView != null) {
             surfaceView.onPause();
@@ -801,7 +801,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             surfaceView = null;
             muteAudio(false);
         }
-        return super.performBackIntercept();
+        return super.performBackIntercept(willExit);
     }
 
     @OnClick(R.id.act_panorama_camera_banner_bad_net_work_close)

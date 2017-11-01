@@ -430,7 +430,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         finishExt();
         return true;
     }

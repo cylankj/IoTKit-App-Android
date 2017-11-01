@@ -247,7 +247,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         IMEUtils.hide(this);
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {

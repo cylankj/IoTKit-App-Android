@@ -289,7 +289,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         finishExt();
         return true;
     }

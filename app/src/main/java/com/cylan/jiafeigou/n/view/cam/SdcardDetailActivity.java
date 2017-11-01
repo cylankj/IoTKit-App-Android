@@ -80,7 +80,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     }
 
     @Override
-    public boolean performBackIntercept() {
+    public boolean performBackIntercept(boolean willExit) {
         finishExt();
         return true;
     }
