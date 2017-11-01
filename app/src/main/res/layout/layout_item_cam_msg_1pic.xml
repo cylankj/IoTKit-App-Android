@@ -57,22 +57,11 @@
             android:layout_marginTop="@dimen/y14"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/watcher_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_gravity="end"
-                android:layout_marginBottom="@dimen/y15"
-                android:text="最近30天来访15次"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/sp12" />
 
             <TextView
                 android:id="@+id/tv_cam_message_item_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/watcher_text"
                 android:gravity="center"
                 android:textColor="@color/color_666666"
                 android:textSize="@dimen/sp13" />

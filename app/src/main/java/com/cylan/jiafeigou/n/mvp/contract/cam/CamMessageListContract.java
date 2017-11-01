@@ -54,7 +54,7 @@ public interface CamMessageListContract {
          * @param timeStart
          * @param refresh
          */
-        void fetchMessageList(long timeStart, boolean asc, boolean refresh);
+        void fetchMessageListByFaceId(long timeStart, boolean asc, boolean refresh);
 
 
         void removeItems(ArrayList<CamMessageBean> beanList);
@@ -65,7 +65,11 @@ public interface CamMessageListContract {
 
         void refreshDateList(boolean needToLoadList);
 
-        void fetchMessageList(final String faceId);
+        void fetchMessageListByFaceId(final String faceId);
+
+        void fetchMessageListByPersonId(String personId);
+
+        void fetchMessageList(Object o);
     }
 }
 

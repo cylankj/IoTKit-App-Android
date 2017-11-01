@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceManagerItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.AnimatorUtils
+import com.cylan.jiafeigou.utils.ToastUtil
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import kotlinx.android.synthetic.main.fragment_face_manager.*
 
@@ -29,8 +30,14 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
-    override fun onDeleteFaceError() {
+    override fun onAuthorizationError() {
+        AppLogger.w("获取面孔失败:授权失败")
+        ToastUtil.showToast("语言包: 授权失败")
+    }
 
+    override fun onDeleteFaceError() {
+        AppLogger.w("删除面孔失败")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
     }
 
     override fun onDeleteFaceSuccess() {

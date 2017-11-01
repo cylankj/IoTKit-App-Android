@@ -193,14 +193,14 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         boolean showDivider = !sameDay && faceFragment;
         holder.setVisibility(R.id.message_time_divider, showDivider ? View.VISIBLE : View.GONE);
-        holder.setVisibility(R.id.watcher_text, showDivider ? View.VISIBLE : View.GONE);
-        if (showDivider) {
-            String content = TimeUtils.getTimeSpecial(item.version);
-            holder.setText(R.id.time_divider, content);
-            // TODO: 2017/10/18 显示右边的人数统计,现在不知道从哪获取数据
-
-            holder.setText(R.id.watcher_text, "最近30天来访15次");
-        }
+//        holder.setVisibility(R.id.watcher_text, showDivider ? View.VISIBLE : View.GONE);
+//        if (showDivider) {
+//            String content = TimeUtils.getTimeSpecial(item.version);
+//            holder.setText(R.id.time_divider, content);
+//            // TODO: 2017/10/18 显示右边的人数统计,现在不知道从哪获取数据
+//
+//            holder.setText(R.id.watcher_text, "最近30天来访15次");
+//        }
 
         //设置删除可见性,共享设备不可删除消息
 //        Device device = DataSourceManager.getInstance().getDevice(uuid);

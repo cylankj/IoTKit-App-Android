@@ -18,100 +18,25 @@
             android:layout_height="wrap_content"
             android:background="@color/color_white">
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/cl_header_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/y42"
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed">
 
-                <RelativeLayout
-                    android:id="@+id/cl_header_container"
+                <FrameLayout
+                    android:id="@+id/fLayout_message_face"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/y13">
+                    android:layout_height="wrap_content" />
 
-                    <FrameLayout
-                        android:id="@+id/fLayout_message_face"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/y18"
-                        app:layout_constraintBottom_toTopOf="@+id/cam_message_indicator_holder"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_goneMarginBottom="@dimen/y21" />
-
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/cam_message_indicator_holder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/fLayout_message_face"
-                        android:paddingEnd="@dimen/y15"
-                        android:paddingStart="@dimen/y15"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/fLayout_message_face">
-
-
-                        <TextView
-                            android:id="@+id/cam_message_indicator_page_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginEnd="@dimen/y53"
-                            android:text="-/-"
-                            android:textColor="@color/color_adadad"
-                            android:textSize="@dimen/sp12"
-                            android:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/cam_message_indicator_watcher_text"
-                            app:layout_constraintHorizontal_chainStyle="spread_inside"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_goneMarginEnd="@dimen/y15" />
-
-                        <TextView
-                            android:id="@+id/cam_message_indicator_watcher_text"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_gravity="end"
-                            android:ellipsize="end"
-                            android:gravity="end"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="最近-天来访-次"
-                            android:textColor="@color/color_999999"
-                            android:textSize="@dimen/sp12"
-                            android:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/cam_message_indicator_page_text"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </android.support.constraint.ConstraintLayout>
-
-                    <View
-                        android:id="@+id/cover_layer"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:alpha="0.7"
-                        android:background="@color/color_white"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/rLayout_cam_message_list_top"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y42"
+                    android:layout_below="@+id/fLayout_message_face"
                     android:visibility="visible">
 
                     <View
@@ -137,7 +62,9 @@
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
+                        android:clickable="true"
                         android:drawablePadding="@dimen/x10"
+                        android:enabled="false"
                         android:gravity="center_vertical" />
 
                     <TextView
@@ -155,14 +82,15 @@
 
                     <ImageView
                         android:id="@+id/iv_cam_message_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/y26"
+                        android:layout_height="@dimen/y26"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
                         android:clickable="true"
+                        android:layout_marginEnd="@dimen/y12"
                         android:focusable="true"
-                        android:padding="@dimen/y15"
+                        android:tag="@drawable/btn_unfolded"
                         android:src="@drawable/btn_unfolded" />
 
                     <View
@@ -172,8 +100,9 @@
                         android:layout_gravity="bottom"
                         android:background="@color/color_d2d2d2" />
                 </RelativeLayout>
+            </RelativeLayout>
 
-            </LinearLayout>
+
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView

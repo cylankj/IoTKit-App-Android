@@ -29,7 +29,7 @@ import javax.inject.Inject
 class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : BasePresenter<FaceManagerContact.View>(view), FaceManagerContact.Presenter {
 
     override fun deleteFace(personId: String?, listOf: List<String>) {
-         val subscribe = mSubscriptionManager.destroy(this)
+        val subscribe = mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -101,7 +101,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
     }
 
     override fun loadFacesByPersonId(personId: String) {
-         val subscribe = mSubscriptionManager.destroy(this)
+        val subscribe = mSubscriptionManager.destroy(this)
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
@@ -142,20 +142,12 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                                     val string = body.string()
                                     AppLogger.w(string)
                                     val gson = Gson()
-                                    val header = gson.fromJson<DpMsgDefine.ResponseHeader>(string, DpMsgDefine.ResponseHeader::class.java)
-                                    if (header.ret == 0) {
-                                        val queryResponse = Gson().fromJson<DpMsgDefine.FaceQueryResponse>(string, DpMsgDefine.FaceQueryResponse::class.java)
-                                        subscriber.onNext(queryResponse)
-                                        subscriber.onCompleted()
-                                    } else {
-                                        if (header.ret == 100) {
-                                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
-                                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
-                                        }
-                                        subscriber.onError(IllegalArgumentException("ret:" + header.ret + ",msg:" + header.msg))
-                                    }
+                                    val header = gson.fromJson<DpMsgDefine.FaceQueryResponse>(string, DpMsgDefine.FaceQueryResponse::class.java)
+                                    subscriber.onNext(header)
+                                    subscriber.onCompleted()
                                 } else {
-                                    subscriber.onError(null)
+                                    subscriber.onNext(null)
+                                    subscriber.onCompleted()
                                 }
                             }
                         } catch (e: Exception) {
@@ -166,10 +158,18 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate { mLoadingManager.hideLoading() }
                 .subscribe({ rsp ->
-                    if (rsp != null && rsp.ret == 0) {
-                        mView.onFaceInformationReady(rsp.data)
-                    } else {
-                        // TODO: 2017/10/13 怎么处理呢? 最好不处理
+                    when {
+                        rsp == null -> {
+                            AppLogger.w("加载面孔列表: null")
+                        }
+                        rsp.ret == 0 -> {
+                            mView.onFaceInformationReady(rsp.data)
+                        }
+                        rsp.ret == 100 -> {
+                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)
+                            PreferencesUtils.remove(JConstant.ROBOT_SERVICES_SECERET)
+                            mView.onAuthorizationError()
+                        }
                     }
                 }
 

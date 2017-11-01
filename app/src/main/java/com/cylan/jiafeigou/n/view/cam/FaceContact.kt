@@ -30,7 +30,7 @@ interface FaceManagerContact {
         fun onDeleteFaceError()
 
         fun onDeleteFaceSuccess()
-
+        fun onAuthorizationError()
     }
 
     interface Presenter : JFGPresenter {
