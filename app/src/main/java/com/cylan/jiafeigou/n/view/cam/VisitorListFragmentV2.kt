@@ -13,7 +13,10 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -28,9 +31,8 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
-import com.cylan.jiafeigou.widget.page.EViewPager
 import com.cylan.jiafeigou.utils.ToastUtil
-import com.cylan.jiafeigou.widget.WrapContentViewPager
+import com.cylan.jiafeigou.widget.page.EViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import kotlinx.android.synthetic.main.fragment_visitor_list.*
@@ -119,17 +121,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 setFaceHeaderPageIndicator(position, ListUtils.getSize(provideData()))
             }
         })
+        cViewPager.enableScrollListener = EViewPager.EnableScrollListener { false }
         if (isNormalVisitor()) {
             FaceItemsProvider.get.ensurePreloadHeaderItem()
             faceAdapter.populateItems(provideData())
             cam_message_indicator_holder.visibility = View.VISIBLE
             setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
         }
-        cViewPager.enableScrollListener = EViewPager.EnableScrollListener { false }
-        FaceItemsProvider.get.ensurePreloadHeaderItem()
-        faceAdapter.populateItems(provideData())
-        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
-
     }
 
     private fun setFaceHeaderPageIndicator(currentItem: Int, total: Int) {
@@ -141,7 +139,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
         }
-        cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count)
         cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
     }
 
