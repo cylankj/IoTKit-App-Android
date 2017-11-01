@@ -44,7 +44,7 @@ import rx.schedulers.Schedulers;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleAdapter {
+public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleAdapter  {
     protected String TAG = getClass().getName();
     @Inject
     @ContextLife

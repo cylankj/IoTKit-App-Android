@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.utils.ListUtils
 import com.cylan.jiafeigou.widget.WrapContentViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import kotlinx.android.synthetic.main.fragment_visitor_list.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,7 +48,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         VisitorListContract.View {
 
     override fun onVisitsTimeRsp(faceId: String, cnt: Int) {
-        onVisitorListCallback?.onVisitorTimes(cnt)
+        setFaceVisitsCounts(cnt)
+//        onVisitorListCallback?.onVisitorTimes(cnt)
     }
 
     lateinit var onVisitorListCallback: OnVisitorListCallback
@@ -81,18 +83,37 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 if (next || !isV2()) {//前面两个
                     val faceId = if (isV2()) item.visitor?.personId else item.strangerVisitor?.faceId
                     AppLogger.d("主列表的 faceId?personId")
+                    cam_message_indicator_watcher_text.visibility = View.VISIBLE
                     presenter.fetchVisitsCount(faceId!!)
+                } else {
+                    cam_message_indicator_watcher_text.visibility = View.GONE
                 }
             }
         }
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                onVisitorListCallback?.onPageScroll(position,
-                        ListUtils.getSize(provideData()) as Int)
+
+//                onVisitorListCallback?.onPageScroll(position,
+//                        ListUtils.getSize(provideData()) as Int)
+                setFaceHeaderPageIndicator(position, ListUtils.getSize(provideData()))
             }
         })
         FaceItemsProvider.get.ensurePreloadHeaderItem()
         faceAdapter.populateItems(provideData())
+        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
+
+    }
+
+    private fun setFaceHeaderPageIndicator(currentItem: Int, total: Int) {
+        cam_message_indicator_page_text.text = String.format("%s/%s", currentItem + 1, total / 6 + if (total % 6 == 0) 0 else 1)
+        cam_message_indicator_page_text.visibility = if (total > 6) View.VISIBLE else View.GONE
+    }
+
+    private fun setFaceVisitsCounts(count: Int) {
+        if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
+            cam_message_indicator_watcher_text.visibility = View.VISIBLE
+        }
+        cam_message_indicator_watcher_text.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count))
     }
 
     open fun fetchStrangerVisitorList() {
@@ -105,10 +126,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         return true
     }
 
+
+
+
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
         assembleFaceList(visitorList!!.dataList)
-        onVisitorListCallback?.onPageScroll(cViewPager.currentItem,
-                ListUtils.getSize(FaceItemsProvider.get.visitorItems))
+        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(FaceItemsProvider.get.visitorItems))
+//        onVisitorListCallback?.onPageScroll(cViewPager.currentItem,
+//                ListUtils.getSize(FaceItemsProvider.get.visitorItems))
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {

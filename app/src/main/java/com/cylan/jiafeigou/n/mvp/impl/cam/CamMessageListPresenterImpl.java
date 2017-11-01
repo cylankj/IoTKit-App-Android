@@ -146,7 +146,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchMessageList(long timeStart, boolean asc, boolean refresh) {
+    public void fetchMessageListByFaceId(long timeStart, boolean asc, boolean refresh) {
         //1.timeStart==0->服务器，本地
         //服务器：1.日历。2.偏移到最靠近有数据的一天。开始查。以后，点击开始查。
         //本地，查出日历。
@@ -409,7 +409,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         AppLogger.d("Max dateList timeHit before:" + timeHit);
                         timeHit = TimeUtils.getSpecificDayEndTime(timeHit);
                         AppLogger.d("Max dateList timeHit:" + timeHit);
-                        fetchMessageList(timeHit, false, false);
+                        fetchMessageListByFaceId(timeHit, false, false);
                     }
                     if (theItem != null) {
                         int index = dateItemList.indexOf(theItem);
@@ -434,8 +434,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchMessageList(String faceId) {
-
+    public void fetchMessageListByFaceId(String faceId) {
         final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
         AppLogger.d("sessionId:" + sessionId);
         try {
@@ -451,7 +450,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
                     .flatMap(rsp -> {
                         DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
-                        AppLogger.d("fetchMessageList by faceId：");
+                        AppLogger.d("fetchMessageListByFaceId by faceId：");
                         if (rrsp == null || !TextUtils.equals(rrsp.cid, uuid)) {
                             return Observable.just(new ArrayList<CamMessageBean>());
                         }
@@ -489,6 +488,16 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         } catch (JfgException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void fetchMessageListByPersonId(String personId) {
+
+    }
+
+    @Override
+    public void fetchMessageList(Object o) {
+
     }
 
 //    @Override

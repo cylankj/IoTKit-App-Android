@@ -573,8 +573,6 @@ public class JFGRules {
             } catch (Exception e) {
             }
         }
-        //just for test
-        hasFaceFeature = true;
         return hasFaceFeature;
     }
 
@@ -589,8 +587,6 @@ public class JFGRules {
             } catch (Exception e) {
             }
         }
-        //just for test
-        hasMicFeature = false;
         return hasMicFeature;
     }
 
