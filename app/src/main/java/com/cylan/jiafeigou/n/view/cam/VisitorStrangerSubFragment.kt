@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.cam
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 
@@ -39,10 +38,7 @@ class VisitorStrangerSubFragment : VisitorListFragmentV2() {
         return false
     }
     override fun cleanData(): Boolean {
-        return false
-    }
-
-    override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {
+        return true
     }
 
 }// Required empty public constructor

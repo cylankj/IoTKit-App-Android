@@ -105,7 +105,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                 .flatMap { mLoadingManager.showLoadingRx(mView.activity(), R.string.LOADING, true) }
                 .observeOn(Schedulers.io())
                 .flatMap {
-                    Observable.create<DpMsgDefine.FaceQueryResponse> { subscriber ->
+                    Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
                         try {
                             val account = DataSourceManager.getInstance().account.account
                             val vid = Security.getVId()
@@ -135,15 +135,19 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                                         .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
                                         .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
                                         .execute()
-
+                                AppLogger.w("FaceManagerPresenter:$response")
                                 val body = response.body()
 
                                 if (body != null) {
                                     val string = body.string()
                                     AppLogger.w(string)
                                     val gson = Gson()
-                                    val header = gson.fromJson<DpMsgDefine.FaceQueryResponse>(string, DpMsgDefine.FaceQueryResponse::class.java)
-                                    subscriber.onNext(header)
+                                    val response = try {
+                                        gson.fromJson<DpMsgDefine.FaceQueryResponse>(string, DpMsgDefine.FaceQueryResponse::class.java)
+                                    } catch (e: Exception) {
+                                        gson.fromJson<DpMsgDefine.GenericResponse>(string, DpMsgDefine.GenericResponse::class.java)
+                                    }
+                                    subscriber.onNext(response)
                                     subscriber.onCompleted()
                                 } else {
                                     subscriber.onNext(null)
@@ -163,7 +167,11 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                             AppLogger.w("加载面孔列表: null")
                         }
                         rsp.ret == 0 -> {
-                            mView.onFaceInformationReady(rsp.data)
+                            if (rsp is DpMsgDefine.FaceQueryResponse) {
+                                mView.onFaceInformationReady(rsp.data)
+                            } else {
+                                AppLogger.w("未知错误" + rsp)
+                            }
                         }
                         rsp.ret == 100 -> {
                             PreferencesUtils.remove(JConstant.ROBOT_SERVICES_KEY)

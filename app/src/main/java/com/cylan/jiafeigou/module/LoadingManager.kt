@@ -74,7 +74,7 @@ class LoadingManager @Inject constructor() : ILoadingManager {
         LoadingDialog.dismissLoading()
     }
 
-    fun ss(method:KFunction<*>){
+    fun ss(method: KFunction<*>) {
     }
 
     override fun showLoading(context: Context, resId: Int, cancelable: Boolean, vararg args: Any) {
@@ -84,14 +84,17 @@ class LoadingManager @Inject constructor() : ILoadingManager {
                     subscriber.unsubscribe()
                 }
             }
+            val dialog = LoadingDialog(context)
             if (!subscriber.isUnsubscribed) {
-                LoadingDialog.showLoading(context, context.getString(resId, *args), cancelable, listener)
+                dialog.setMessageText(context.getString(resId, *args))
+                dialog.setCancelable(cancelable)
+                dialog.setOnCancelListener(listener)
                 subscriber.onNext(null)
                 subscriber.onCompleted()
             }
             subscriber.add(object : MainThreadSubscription() {
                 override fun onUnsubscribe() {
-                    LoadingDialog.clearListener()
+                    dialog.setOnCancelListener(null)
                 }
             })
             serialSubscription.set(subscriber)
@@ -108,14 +111,17 @@ class LoadingManager @Inject constructor() : ILoadingManager {
                     subscriber.unsubscribe()
                 }
             }
+            val dialog = LoadingDialog(context)
             if (!subscriber.isUnsubscribed) {
-                LoadingDialog.showLoading(context, context.getString(resId, *args), cancelable, listener)
+                dialog.setMessageText(context.getString(resId, *args))
+                dialog.setCancelable(cancelable)
+                dialog.setOnCancelListener(listener)
                 subscriber.onNext(null)
                 subscriber.onCompleted()
             }
             subscriber.add(object : MainThreadSubscription() {
                 override fun onUnsubscribe() {
-                    LoadingDialog.clearListener()
+                    dialog.setOnCancelListener(null)
                 }
             })
             serialSubscription.set(subscriber)

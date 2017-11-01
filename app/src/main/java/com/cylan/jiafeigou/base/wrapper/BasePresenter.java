@@ -44,7 +44,7 @@ import rx.schedulers.Schedulers;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleAdapter  {
+public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleAdapter {
     protected String TAG = getClass().getName();
     @Inject
     @ContextLife
@@ -180,6 +180,13 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):" + traceElement.getMethodName();
         AppLogger.w("addSubscription" + method);
         subscriptions.add(subscription, method);
+    }
+
+    protected String getMethodName() {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
+        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):" + traceElement.getMethodName();
+        AppLogger.w("getMethodName:" + method);
+        return method;
     }
 
     /**

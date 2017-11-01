@@ -500,6 +500,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     }
 
+
+
 //    @Override
 //    public void deleteFace(String face_id, String person_id, String group_id) {
 //        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {

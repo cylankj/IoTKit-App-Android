@@ -7,15 +7,16 @@
     <com.cylan.jiafeigou.widget.WrapContentViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/vp_default"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/y18" />
+        android:layout_height="wrap_content" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cam_message_indicator_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vp_default"
-        android:paddingBottom="@dimen/y13"
+        android:layout_marginTop="@dimen/y18"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/y13"
         android:paddingEnd="@dimen/y15"
         android:paddingStart="@dimen/y15">
 
@@ -62,8 +63,6 @@
         android:id="@+id/cover_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/cam_message_indicator_holder"
-        android:layout_alignTop="@id/vp_default"
         android:alpha="0.7"
         android:background="@color/color_white"
         android:clickable="true"

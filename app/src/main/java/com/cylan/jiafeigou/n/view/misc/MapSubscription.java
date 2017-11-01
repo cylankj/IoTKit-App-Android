@@ -98,9 +98,10 @@ public class MapSubscription implements Subscription {
                     return;
                 } else {
                     unsubscribe = subscriptions.entrySet();
+                    unsubscribeFromAll(unsubscribe);
+                    subscriptions.clear();
                     subscriptions = null;
                 }
-                unsubscribeFromAll(unsubscribe);
             }
         }
     }
@@ -115,10 +116,11 @@ public class MapSubscription implements Subscription {
                 }
                 unsubscribed = true;
                 unsubscribe = subscriptions.entrySet();
+                // we will only get here once
+                unsubscribeFromAll(unsubscribe);
+                subscriptions.clear();
                 subscriptions = null;
             }
-            // we will only get here once
-            unsubscribeFromAll(unsubscribe);
         }
     }
 

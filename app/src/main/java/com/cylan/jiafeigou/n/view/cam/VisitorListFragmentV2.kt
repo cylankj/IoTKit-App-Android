@@ -31,8 +31,8 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
+import com.cylan.jiafeigou.utils.ToastUtil
 import com.cylan.jiafeigou.widget.WrapContentViewPager
-import com.google.gson.Gson
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import kotlinx.android.synthetic.main.fragment_visitor_list.*
@@ -47,11 +47,30 @@ import kotlin.collections.ArrayList
  */
 open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         VisitorListContract.View {
+    override fun onDeleteFaceSuccess(type: Int, delMsg: Int) {
+        AppLogger.w("删除面孔消息成功了")
+        ToastUtil.showToast("语言包:删除面孔成功了!")
+        when (type) {
+            1 -> {
+                //陌生人
+                presenter.fetchStrangerVisitorList()
+            }
+            2 -> {
+                //熟人
+                presenter.fetchVisitorList()
+            }
+        }
+    }
+
+    override fun onDeleteFaceError() {
+        AppLogger.w("删除面孔消息失败了")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
+
+    }
 
 
     override fun onVisitsTimeRsp(faceId: String, cnt: Int) {
         setFaceVisitsCounts(cnt)
-//        onVisitorListCallback?.onVisitorTimes(cnt)
     }
 
     lateinit var onVisitorListCallback: OnVisitorListCallback
@@ -78,6 +97,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cViewPager.adapter = faceAdapter
 
         faceAdapter.itemClickListener = object : ItemClickListener {
+            override fun itemLongClick(globalPosition: Int, _p: Int, _v: View, faceType: Int, pageIndex: Int) {
+                faceAdapter.updateClickItem(_p, pageIndex)
+                showHeaderFacePopMenu(globalPosition, _p, _v, faceType)
+            }
+
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 onVisitorListCallback?.onItemClick(globalPosition)
                 val next = item.getFaceType() != FaceItem.FACE_TYPE_STRANGER &&
@@ -94,28 +118,28 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
         cViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-
-//                onVisitorListCallback?.onPageScroll(position,
-//                        ListUtils.getSize(provideData()) as Int)
                 setFaceHeaderPageIndicator(position, ListUtils.getSize(provideData()))
             }
         })
-        FaceItemsProvider.get.ensurePreloadHeaderItem()
-        faceAdapter.populateItems(provideData())
-        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
+        if (isNormalVisitor()) {
+            FaceItemsProvider.get.ensurePreloadHeaderItem()
+            faceAdapter.populateItems(provideData())
+            cam_message_indicator_holder.visibility = View.VISIBLE
+            setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
+        }
 
     }
 
     private fun setFaceHeaderPageIndicator(currentItem: Int, total: Int) {
         cam_message_indicator_page_text.text = String.format("%s/%s", currentItem + 1, total / 6 + if (total % 6 == 0) 0 else 1)
-        cam_message_indicator_page_text.visibility = if (total > 6) View.VISIBLE else View.GONE
+        cam_message_indicator_page_text.visibility = if (total > 3) View.VISIBLE else View.GONE
     }
 
     private fun setFaceVisitsCounts(count: Int) {
         if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
         }
-        cam_message_indicator_watcher_text.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count))
+        cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
     }
 
     open fun fetchStrangerVisitorList() {
@@ -129,23 +153,22 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
 
-
-
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
+        FaceItemsProvider.get.visitorItems.clear()
         assembleFaceList(visitorList!!.dataList)
-        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(FaceItemsProvider.get.visitorItems))
-//        onVisitorListCallback?.onPageScroll(cViewPager.currentItem,
-//                ListUtils.getSize(FaceItemsProvider.get.visitorItems))
+        cam_message_indicator_holder.visibility = View.VISIBLE
+        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {
         AppLogger.d("陌生人列表")
+        FaceItemsProvider.get.strangerItems.clear()
         val listCnt = ListUtils.getSize(visitorList?.strangerVisitors)
         if (listCnt == 0) {
             return
         }
         var list = ArrayList<FaceItem>()
-        for (i in 0..listCnt - 1) {
+        for (i in 0 until listCnt) {
             val strangerFace = FaceItem()
             strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
             strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
@@ -153,6 +176,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             list.add(strangerFace)
         }
         FaceItemsProvider.get.populateStrangerItems(list)
+        faceAdapter.populateItems(FaceItemsProvider.get.strangerItems)
+        cam_message_indicator_holder.visibility = View.VISIBLE
+        setFaceHeaderPageIndicator(cViewPager.currentItem, ListUtils.getSize(provideData()))
     }
 
 
@@ -214,10 +240,146 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         fun onVisitorTimes(times: Int)
     }
 
+    private fun showHeaderFacePopMenu(gPosition: Int, position: Int, faceItem: View, faceType: Int) {
+//        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
+        val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
+
+        // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
+        when (faceType) {
+            FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                view.findViewById(R.id.detect).visibility = View.GONE
+            }
+            FaceItem.FACE_TYPE_STRANGER, FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                view.findViewById(R.id.viewer).visibility = View.GONE
+            }
+        }
+
+
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
+        popupWindow.setBackgroundDrawable(ColorDrawable(0))
+        popupWindow.isOutsideTouchable = true
+
+        val contentView = popupWindow.contentView
+
+        contentView.findViewById(R.id.delete).setOnClickListener { v ->
+            // TODO: 2017/10/9 删除操作
+            AppLogger.w("将删除面孔")
+            popupWindow.dismiss()
+            when (faceType) {
+                FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                    val item = FaceItemsProvider.get.visitorItems[position]
+                    showDeleteFaceAlert(item)
+                }
+                FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                    val item = FaceItemsProvider.get.strangerItems[position]
+                    showDeleteFaceAlert(item)
+                }
+            }
+        }
+
+        contentView.findViewById(R.id.detect).setOnClickListener { v ->
+            // TODO: 2017/10/9 识别操作
+            AppLogger.w("将识别面孔")
+            popupWindow.dismiss()
+            val item = FaceItemsProvider.get.strangerItems[position]
+            showDetectFaceAlert(item.strangerVisitor?.faceId ?: "", item.strangerVisitor?.image_url ?: "")
+        }
+
+        contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
+            AppLogger.w("将查看面孔详细信息")
+            popupWindow.dismiss()
+
+            val item = FaceItemsProvider.get.visitorItems[position]
+            if (item != null) {
+                val fragment = FaceInformationFragment.newInstance(uuid,
+                        item.visitor?.detailList?.get(0)?.imgUrl ?: "",
+                        item.visitor?.personName ?: "",
+                        item.visitor?.personId ?: "")
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
+            } else {
+                // TODO: 2017/10/16 为什么会出现这种情况?
+            }
+        }
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START)
+    }
+
+    private fun showDetectFaceAlert(faceId: String, imageUrl: String) {
+        val dialog = AlertDialog.Builder(context)
+                .setView(R.layout.layout_face_detect_pop_alert)
+                .show()
+
+        dialog.findViewById(R.id.detect_cancel)!!.setOnClickListener { v -> dialog.dismiss() }
+
+        dialog.findViewById(R.id.detect_ok)!!.setOnClickListener { v ->
+            val addTo = dialog.findViewById(R.id.detect_add_to) as RadioButton?
+            val newFace = dialog.findViewById(R.id.detect_new_face) as RadioButton?
+            if (addTo!!.isChecked) {
+                val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account,
+                        uuid, faceId, FaceListFragment.TYPE_ADD_TO)
+                fragment.resultCallback = { o, o2, o3 ->
+
+                }// TODO: 2017/10/10 移动到面孔的结果回调
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
+            } else if (newFace!!.isChecked) {
+                val fragment = CreateNewFaceFragment.newInstance(uuid, faceId, imageUrl)
+                fragment.resultCallback = {
+                    //todo 返回创建的personID
+                }
+                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
+            }
+            dialog.dismiss()
+        }
+    }
+
+    private fun showDeleteFaceAlert(item: FaceItem) {
+        val dialog = AlertDialog.Builder(context)
+                .setView(R.layout.layout_face_delete_pop_alert)
+                .show()
+        dialog.findViewById(R.id.delete_cancel)!!.setOnClickListener { v1 ->
+            // TODO: 2017/10/9 取消了 什么也不做
+            dialog.dismiss()
+
+        }
+
+        dialog.findViewById(R.id.delete_ok)!!.setOnClickListener { v ->
+            val radioGroup = dialog.findViewById(R.id.delete_radio) as RadioGroup?
+            val radioButtonId = radioGroup!!.checkedRadioButtonId
+            if (radioButtonId == R.id.delete_only_face) {
+                AppLogger.w("only face")
+                //TODO
+                when (item.getFaceType()) {
+                    FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                        presenter.deleteFace(2, item.visitor?.personId!!, 0)
+                    }
+                    FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                        presenter.deleteFace(1, item.strangerVisitor?.faceId!!, 0)
+
+                    }
+                }
+
+            } else if (radioButtonId == R.id.delete_face_and_message) {
+                AppLogger.w("face and message")
+                when (item.getFaceType()) {
+                    FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                        presenter.deleteFace(2, item.visitor?.personId!!, 1)
+                    }
+                    FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                        presenter.deleteFace(1, item.strangerVisitor?.faceId!!, 1)
+                    }
+                }
+            } else {
+                // 什么也没选
+            }
+            dialog.dismiss()
+        }
+
+    }
 
     interface ItemClickListener {
 
         fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int)
+        fun itemLongClick(globalPosition: Int, _p: Int, _v: View, faceType: Int, pageIndex: Int)
     }
 
 }// Required empty public constructor
@@ -234,6 +396,7 @@ class FaceAdapter(private var fm: FragmentManager?, private var isNormalVisitor:
 
     var dataItems = ArrayList<FaceItem>()
 
+
     override fun getCount(): Int {
         val totalCount = ListUtils.getSize(dataItems)
         val cnt = totalCount / JConstant.FACE_CNT_IN_PAGE + if (totalCount % JConstant.FACE_CNT_IN_PAGE == 0) 0 else 1
@@ -246,7 +409,7 @@ class FaceAdapter(private var fm: FragmentManager?, private var isNormalVisitor:
         notifyDataSetChanged()
     }
 
-    private fun updateClickItem(position: Int, pageIndex: Int) {
+    fun updateClickItem(position: Int, pageIndex: Int) {
         if (preClickPage == pageIndex) {
             preClickPosition = position//同一个page,自动刷新。
             return
@@ -265,12 +428,18 @@ class FaceAdapter(private var fm: FragmentManager?, private var isNormalVisitor:
 
     override fun getItem(position: Int): Fragment {
         val f = FaceFragment.newInstance(position, uuid, isNormalVisitor)
-        f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
-            override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
-                updateClickItem(position, pageIndex)
-                itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
-            }
+        if (itemClickListener != null) {
+            f.itemClickListener = itemClickListener
         }
+//        f.itemClickListener = object : VisitorListFragmentV2.ItemClickListener {
+//            override fun itemLongClick(globalPosition: Int, _p: Int, _v: View, faceType: Int, pageIndex: Int) {
+//
+//            }
+//
+//            override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
+//
+//            }
+//        }
         return f
     }
 
@@ -347,7 +516,8 @@ class FaceFragment : Fragment() {
         adapter.withOnLongClickListener { _v, _, _, _p ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + _p
             if (globalPosition > 1 || !arguments.getBoolean("isNormalVisitor")) {
-                showHeaderFacePopMenu(globalPosition, _p, _v, adapter.getItem(_p).getFaceType())
+                itemClickListener?.itemLongClick(globalPosition, _p, _v, adapter.getItem(_p).getFaceType(), pageIndex)
+
             }
             true
         }
@@ -369,115 +539,7 @@ class FaceFragment : Fragment() {
         visitorAdapter.add(subList)
     }
 
-    private fun showHeaderFacePopMenu(gPosition: Int, position: Int, faceItem: View, faceType: Int) {
-//        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
-        val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
 
-        // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
-        when (faceType) {
-            FaceItem.FACE_TYPE_ACQUAINTANCE -> {
-                view.findViewById(R.id.detect).visibility = View.GONE
-            }
-            FaceItem.FACE_TYPE_STRANGER, FaceItem.FACE_TYPE_STRANGER_SUB -> {
-                view.findViewById(R.id.viewer).visibility = View.GONE
-            }
-        }
-
-
-        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
-        popupWindow.setBackgroundDrawable(ColorDrawable(0))
-        popupWindow.isOutsideTouchable = true
-
-        val contentView = popupWindow.contentView
-
-        contentView.findViewById(R.id.delete).setOnClickListener { v ->
-            // TODO: 2017/10/9 删除操作
-            AppLogger.w("将删除面孔")
-            popupWindow.dismiss()
-            val item = visitorAdapter.getItem(position)
-                    as FaceItem
-            showDeleteFaceAlert(item)
-        }
-
-        contentView.findViewById(R.id.detect).setOnClickListener { v ->
-            // TODO: 2017/10/9 识别操作
-            AppLogger.w("将识别面孔")
-            popupWindow.dismiss()
-            val item = adapter.getItem(position)
-            showDetectFaceAlert(item.strangerVisitor?.faceId ?: "", item.strangerVisitor?.image_url ?: "")
-        }
-
-        contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
-            AppLogger.w("将查看面孔详细信息")
-            popupWindow.dismiss()
-            val item = visitorAdapter?.getItem(position)
-            if (item != null) {
-                val fragment = FaceInformationFragment.newInstance(uuid,
-                        item.visitor?.detailList?.get(0)?.imgUrl ?: "",
-                        item.visitor?.personName ?: "",
-                        item.visitor?.personId ?: "")
-                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
-            } else {
-                // TODO: 2017/10/16 为什么会出现这种情况?
-            }
-        }
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START)
-    }
-
-    private fun showDetectFaceAlert(faceId: String, imageUrl: String) {
-        val dialog = AlertDialog.Builder(context)
-                .setView(R.layout.layout_face_detect_pop_alert)
-                .show()
-
-        dialog.findViewById(R.id.detect_cancel)!!.setOnClickListener { v -> dialog.dismiss() }
-
-        dialog.findViewById(R.id.detect_ok)!!.setOnClickListener { v ->
-            val addTo = dialog.findViewById(R.id.detect_add_to) as RadioButton?
-            val newFace = dialog.findViewById(R.id.detect_new_face) as RadioButton?
-            if (addTo!!.isChecked) {
-                val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account,
-                        uuid, faceId, FaceListFragment.TYPE_ADD_TO)
-                fragment.resultCallback = { o, o2, o3 ->
-
-                }// TODO: 2017/10/10 移动到面孔的结果回调
-                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
-            } else if (newFace!!.isChecked) {
-                val fragment = CreateNewFaceFragment.newInstance(uuid, faceId, imageUrl)
-                fragment.resultCallback = {
-                    //todo 返回创建的personID
-                }
-                ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
-            }
-            dialog.dismiss()
-        }
-    }
-
-    private fun showDeleteFaceAlert(item: FaceItem) {
-        val dialog = AlertDialog.Builder(context)
-                .setView(R.layout.layout_face_delete_pop_alert)
-                .show()
-        dialog.findViewById(R.id.delete_cancel)!!.setOnClickListener { v1 ->
-            // TODO: 2017/10/9 取消了 什么也不做
-            dialog.dismiss()
-
-        }
-
-        dialog.findViewById(R.id.delete_ok)!!.setOnClickListener { v ->
-            val radioGroup = dialog.findViewById(R.id.delete_radio) as RadioGroup?
-            val radioButtonId = radioGroup!!.checkedRadioButtonId
-            if (radioButtonId == R.id.delete_only_face) {
-                AppLogger.w("only face")
-                //TODO
-            } else if (radioButtonId == R.id.delete_face_and_message) {
-                AppLogger.w("face and message")
-            } else {
-                // 什么也没选
-            }
-            dialog.dismiss()
-        }
-
-    }
 }
 
 class FaceItemsProvider private constructor() {

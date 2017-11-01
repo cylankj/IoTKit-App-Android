@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.ButterKnife
 import butterknife.OnClick
 import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
@@ -29,9 +28,7 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
     override fun useDaggerInject(): Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_face_information, container, false)
-        ButterKnife.bind(this, view)
-        return view
+        return inflater.inflate(R.layout.fragment_face_information, container, false)
     }
 
     override fun initViewAndListener() {
@@ -39,12 +36,13 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
         faceName = arguments?.getString("face_name")
         personId = arguments?.getString("person_id")
         imageUrl = arguments?.getString("image")
+        AppLogger.w("image url faceInformation:$imageUrl")
         custom_toolbar.setBackAction {
             fragmentManager.popBackStack()
         }
         setting_item_face_name.subTitle = faceName
         face_name.text = faceName
-        Glide.with(context)
+        Glide.with(this)
                 .load(imageUrl)
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)

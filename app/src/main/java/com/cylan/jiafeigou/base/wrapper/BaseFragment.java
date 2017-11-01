@@ -135,12 +135,12 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     public void onAttach(Context context) {
-        injectDagger();
-        lifecycleSubject = BehaviorSubject.create();
         final Bundle arguments = getArguments();
         if (arguments != null) {
             uuid = arguments.getString(JConstant.KEY_DEVICE_ITEM_UUID);
         }
+        lifecycleSubject = BehaviorSubject.create();
+        injectDagger();
         final FragmentActivity activity = getActivity();
         if (activity instanceof BaseActivity) {
             ((BaseActivity) activity).addActivityBackInterceptor(this);
@@ -249,9 +249,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         isPrepared = true;
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
+//        if (unbinder != null) {
+//            unbinder.unbind();
+//        }
         injectButterKinfe(view);
         initViewAndListener();
         lazyLoad();

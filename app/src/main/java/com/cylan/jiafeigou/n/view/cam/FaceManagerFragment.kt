@@ -4,7 +4,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -42,6 +41,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onDeleteFaceSuccess() {
         adapter.deleteAllSelectedItems()
+        empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
     override fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>) {
@@ -54,6 +54,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
         adapter.setNewList(items)
         custom_toolbar.setRightEnable(adapter.itemCount > 0)
+        empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
     lateinit var adapter: FastItemAdapter<FaceManagerItem>
@@ -83,17 +84,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter.withMultiSelect(true)
         adapter.withAllowDeselection(true)
         adapter.withSelectWithItemUpdate(true)
-        adapter.itemAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                custom_toolbar.setRightEnable(adapter.itemCount > 0)
-                empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
-            }
-
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                custom_toolbar.setRightEnable(true)
-                empty_view.visibility = View.GONE
-            }
-        })
 
         adapter.withOnLongClickListener { v, adapter, iItem, position ->
             if (isEditMode()) {

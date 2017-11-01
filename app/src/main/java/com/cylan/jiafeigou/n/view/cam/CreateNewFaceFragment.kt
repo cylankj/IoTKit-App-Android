@@ -6,10 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.ButterKnife
 import butterknife.OnClick
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
@@ -51,9 +49,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_face_create, container, false)
-        ButterKnife.bind(this, view)
-        return view
+        return inflater.inflate(R.layout.fragment_face_create, container, false)
     }
 
 
@@ -61,6 +57,13 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         super.initViewAndListener()
         faceId = arguments.getString("face_id")
         imageUrl = arguments.getString("image")
+        Log.i(JConstant.CYLAN_TAG, "create new face ,image url:" + imageUrl)
+
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
+                .into(picture)
         custom_toolbar.setRightAction {
             if (faceId == null || picture == null) {
                 AppLogger.w("FaceId :$faceId ,picture:$picture")
@@ -104,12 +107,6 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
             result
         })
 
-        Glide.with(this)
-                .load(imageUrl)
-                .placeholder(R.drawable.icon_mine_head_normal)
-                .error(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(picture)
     }
 
     override fun onDetach() {

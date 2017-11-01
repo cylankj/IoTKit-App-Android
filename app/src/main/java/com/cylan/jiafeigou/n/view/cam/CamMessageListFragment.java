@@ -256,7 +256,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
 
             tvCamMessageListDate.setClickable(false);
-            tvCamMessageListDate.setEnabled(true);
             visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
             visitorFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
                 @Override
@@ -393,11 +392,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private boolean enterStranger() {
-        if (ListUtils.isEmpty(FaceItemsProvider.Companion.getGet().getStrangerItems())) {
-            ToastUtil.showToast("缺资源：没有发现陌生人");
-            visitorFragment.fetchStrangerVisitorList();
-            return false;
-        }
+//        if (ListUtils.isEmpty(FaceItemsProvider.Companion.getGet().getStrangerItems())) {
+//            ToastUtil.showToast("缺资源：没有发现陌生人");
+//            visitorFragment.fetchStrangerVisitorList();
+//            return false;
+//        }
         AppLogger.w("Clicked enterStranger");
         //需要刷数据
         if (visitorStrangerSubFragment == null) {
@@ -432,7 +431,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         });
         visitorStrangerSubFragment.setCallBack(t -> barBack.setVisibility(View.GONE));
-        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getStrangerItems()));
+//        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getStrangerItems()));
         return true;
     }
 
@@ -962,16 +961,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @OnClick(R.id.iv_cam_message_arrow)
     public void onMessageArrowClick() {
-        if ((int) arrow.getTag() == R.drawable.btn_put_away) {
+        if (TextUtils.equals((CharSequence) arrow.getTag(), "arrow_down")) {
             arrow.setImageResource(R.drawable.btn_unfolded);
-            arrow.setTag(R.drawable.btn_unfolded);
+            arrow.setTag("arrow_up");
             if (JFGRules.isFaceFragment(getDevice().pid)) {
                 aplCamMessageAppbar.setExpanded(false, true);
             }
 
         } else {
             arrow.setImageResource(R.drawable.btn_put_away);
-            arrow.setTag(R.drawable.btn_put_away);
+            arrow.setTag("arrow_down");
             if (JFGRules.isFaceFragment(getDevice().pid)) {
                 aplCamMessageAppbar.setExpanded(true, true);
             }

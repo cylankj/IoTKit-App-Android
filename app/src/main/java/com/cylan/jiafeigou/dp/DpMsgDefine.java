@@ -2322,4 +2322,25 @@ public class DpMsgDefine {
             }
         };
     }
+
+    @Message
+    public static class DelVisitorReq {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int type;
+        @Index(2)
+        public String id;
+
+        public DelVisitorReq(String cid, int type, String id, int delMsg) {
+            this.cid = cid;
+            this.type = type;
+            this.id = id;
+            this.delMsg = delMsg;
+        }
+
+        @Index(3)
+
+        public int delMsg;
+    }
 }

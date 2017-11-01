@@ -45,6 +45,7 @@ public class LoadingDialog extends AppCompatDialog {
         }
     }
 
+
     public static LoadingDialog getLoadingDialog(Context context) {
         if (loadingDialog == null) {
             synchronized (LoadingDialog.class) {

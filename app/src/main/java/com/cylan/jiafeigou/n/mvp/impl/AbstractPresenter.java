@@ -178,6 +178,12 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         if (refCacheMap != null) {
             refCacheMap.clear();
         }
+        if (mSubscriptionManager != null) {
+            mSubscriptionManager.unbind(this);
+        }
+        if (subscriptions != null) {
+            subscriptions.clear();
+        }
         NetMonitor.getNetMonitor().unregister(this);
         unRegisterHeadSetObservable();
         abandonAudioFocus();

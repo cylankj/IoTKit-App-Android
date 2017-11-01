@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.misc;
 
-import android.os.Build;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
@@ -14,7 +13,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -62,11 +60,9 @@ public class VisitorLoader {
                     .filter(rsp -> rsp.seq == seq)
                     .map(ret -> {
                         AppLogger.d("收到了?" + ret.data);
-                        return ret;
+                        return ret.data;
                     })
-                    .subscribeOn(Schedulers.io())
-                    .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
-                    .flatMap(universalDataRsp -> Observable.just(universalDataRsp.data));
+                    .subscribeOn(Schedulers.io());
         } catch (JfgException e) {
             e.printStackTrace();
         }
