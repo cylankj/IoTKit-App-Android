@@ -19,6 +19,7 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheMode
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -75,6 +76,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                 subscriber.onError(e)
             }
         }
+                .subscribeOn(Schedulers.io())
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))

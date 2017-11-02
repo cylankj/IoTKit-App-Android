@@ -44,6 +44,7 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
             subscriber.onNext(liveEvent)
             subscriber.onCompleted()
         }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.CREATING))
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))

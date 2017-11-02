@@ -320,6 +320,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                 });
             }
+
         })
                 .observeOn(Schedulers.io())
                 .map(url -> {

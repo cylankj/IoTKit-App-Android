@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.AESUtil
 import com.cylan.jiafeigou.utils.MiscUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
-import com.cylan.jiafeigou.widget.LoadingDialog
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheMode
@@ -99,6 +98,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 subscriber.onError(e)
             }
         }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ rsp ->
@@ -187,6 +187,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
             }
 
         }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ rsp ->
