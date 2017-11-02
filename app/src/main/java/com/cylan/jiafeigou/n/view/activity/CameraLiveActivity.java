@@ -285,14 +285,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                     return true;
                 }
             } else {
-                return false;
 //                //消息页面,需要拦截,
-//                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-//                if (fragment != null && fragment instanceof CamMessageListFragment) {
-//                    return ((CamMessageListFragment) fragment).handleViewPagerState();
-//                } else {
-//                    return true;
-//                }
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+                if (fragment != null && fragment instanceof CamMessageListFragment) {
+                    return ((CamMessageListFragment) fragment).handleViewPagerState();
+                } else {
+                    return false;
+                }
             }
         });
     }
