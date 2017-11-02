@@ -48,11 +48,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -451,11 +451,37 @@ public class DP {
 
     @Test
     public void testMethodOverCall() throws Exception {
-        for (int i = 0; i < 300; i++) {
-            mmm();
-        }
+        CountDownLatch countDownLatch = new CountDownLatch(0);
+        Observable.create(s -> {
+            s.add(new SubscriptionManager.AbstractSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    System.out.println("$$$$$$$$$$$$$4");
+                }
+            });
 
-        Thread.sleep(10000L);
+//            s.onNext("AAA");
+            s.onNext("AAAAAAAAAA");
+        })
+                .flatMap(ret -> Observable.from(new String[]{"SSS", "DDDDD"}))
+                .flatMap(ret -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return Observable.from(new String[]{"SSS", "DDDDD"});
+                })
+                .subscribe(ret -> {
+                    System.out.println("BBBBBBBBBBB");
+                }, e -> {
+                    countDownLatch.countDown();
+                    System.err.println(e);
+                }, () -> {
+                    countDownLatch.countDown();
+                    System.out.println("AAAAAAAAAA");
+                });
+        countDownLatch.await();
     }
 
     SubscriptionManager manager = new SubscriptionManager();
@@ -463,16 +489,17 @@ public class DP {
     public String mmm() {
         manager.atomicMethod()
                 .subscribeOn(Schedulers.io())
-                .flatMap(s -> {
+                .map(s -> {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
-                    return Observable.just(s);
+                    return s;
                 })
-                .delay(1000, TimeUnit.MILLISECONDS)
-                .subscribe(System.out::println, System.err::println);
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .subscribe(System.out::println, System.err::println, () -> {
+                    System.out.println("completed");
+                });
         return "";
     }
 

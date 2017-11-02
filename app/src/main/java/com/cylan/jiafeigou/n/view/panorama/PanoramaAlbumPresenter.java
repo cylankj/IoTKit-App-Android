@@ -89,15 +89,14 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private void subscribeNetwork() {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
+        Subscription subscribe =  RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
                     BaseDeviceInformationFetcher.getInstance().init(uuid);
                 }, e -> {
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     private Subscription monitorDeleteUpdateSub() {
@@ -109,8 +108,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private void subscribeSDCardUnMount() {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -152,7 +150,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
 
@@ -177,7 +175,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         if (fetchSubscription != null && !fetchSubscription.isUnsubscribed()) {
             fetchSubscription.unsubscribe();
         }
-        Subscription subscribe = mSubscriptionManager.stop(this)
+        Subscription subscribe = Observable.just("")
                 .flatMap(ret -> {
                     Observable<List<PanoramaAlbumContact.PanoramaItem>> observableResult = null;
                     if (fetchLocation == 0) {
@@ -220,7 +218,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromServer(int time) {

@@ -94,8 +94,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
 
     @Override
     public void subscribeNewVersion() {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class))
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null && TextUtils.equals(uuid, ret.uuid))
                 .subscribe((RxEvent.CheckVersionRsp checkDevVersionRsp) -> {
@@ -103,7 +102,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                         mView.checkResult(checkDevVersionRsp);
                     }
                 }, AppLogger::e);
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
 }

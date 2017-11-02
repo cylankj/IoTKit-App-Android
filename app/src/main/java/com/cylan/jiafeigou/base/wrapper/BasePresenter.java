@@ -14,9 +14,6 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.module.ILoadingManager;
-import com.cylan.jiafeigou.module.ISubscriptionManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -26,8 +23,7 @@ import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.view.LifecycleAdapter;
 import com.cylan.jiafeigou.view.PresenterAdapter;
-import com.trello.rxlifecycle.LifecycleProvider;
-import com.trello.rxlifecycle.android.FragmentEvent;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -38,6 +34,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -51,54 +48,18 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     protected Context mContext;//在不支持 inject 的时候为空,小心使用
     @Inject
     protected IDPTaskDispatcher mTaskDispatcher;//在不支持 inject 的时候为空,小心使用
-    @Inject
-    protected ILoadingManager mLoadingManager;//在不支持 inject 的时候为空,小心使用
-    protected ISubscriptionManager mSubscriptionManager;
     protected String uuid;
     protected View mView;
-    protected MapSubscription subscriptions;
+    protected MapSubscription stopSubscriptions = new MapSubscription();
+    protected MapSubscription destroySubscriptions = new MapSubscription();
+
     protected volatile boolean subscribed = false;
-    protected LifecycleProvider<FragmentEvent> lifecycleProvider;
+    protected CompositeSubscription compositeSubscription;
+    protected MapSubscription refCacheMap = new MapSubscription();
 
     public BasePresenter(View view) {
         this.mView = view;
         setPresenter();
-    }
-
-    @Inject
-    public void setSubscriptionManager(ISubscriptionManager mSubscriptionManager) {
-        this.mSubscriptionManager = mSubscriptionManager;
-        if (lifecycleProvider != null) {
-            mSubscriptionManager.bind(this, lifecycleProvider);
-        }
-    }
-
-    @Override
-    public final void attachToLifecycle(LifecycleProvider<FragmentEvent> provider) {
-        this.lifecycleProvider = provider;
-        if (subscriptions != null && !subscriptions.isUnsubscribed()) {
-            subscriptions.unsubscribe();
-        }
-        subscriptions = new MapSubscription();
-        if (mSubscriptionManager == null) {
-            mSubscriptionManager = BaseApplication.getAppComponent().getSubscriptionManager();
-        }
-        mSubscriptionManager.bind(this, lifecycleProvider);
-    }
-
-    @Override
-    public final void detachToLifecycle() {
-        if (mSubscriptionManager != null) {
-            mSubscriptionManager.unbind(this);
-        }
-        if (subscriptions != null) {
-            if (!subscriptions.isUnsubscribed()) {
-                subscriptions.unsubscribe();
-            }
-            subscriptions.clear();
-            subscriptions = null;
-        }
-//        mSubscriptionManager = null;
     }
 
     @Deprecated
@@ -128,6 +89,15 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
 //        mTaskDispatcher = null;
 //        mLoadingManager = null;
 //        mView = null;
+    }
+
+    @Override
+    @CallSuper
+    public void destroy() {
+        if (destroySubscriptions != null) {
+            destroySubscriptions.unsubscribe();
+            destroySubscriptions = new MapSubscription();
+        }
     }
 
     @Override
@@ -169,20 +139,62 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
             }
         }
+        if (stopSubscriptions != null) {
+            stopSubscriptions.unsubscribe();
+            stopSubscriptions = new MapSubscription();
+        }
     }
 
     protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
         mView.onLoginStateChanged(loginState.state);
     }
 
-    protected void addSubscription(Subscription subscription) {
+//    protected void addSubscription(Subscription subscription) {
+//
+//    }
+
+    protected String addStopSubscription(Subscription subscription) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
-        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):" + traceElement.getMethodName();
+        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):stop:" + traceElement.getMethodName();
         AppLogger.w("addSubscription" + method);
-        subscriptions.add(subscription, method);
+        stopSubscriptions.add(subscription, method);
+        return method;
+    }
+
+    protected <T> Observable.Transformer<T, T> applyLoading(int resId, Object... args) {
+        return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
+                mContext.getString(resId, args), false))
+                .doOnTerminate(LoadingDialog::dismissLoading);
+    }
+
+    protected <T> Observable.Transformer<T, T> applyLoading(int resId, String subscription, Object... args) {
+        return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
+                mContext.getString(resId, args), true,
+                dialog -> unsubscribe(subscription)))
+                .doOnTerminate(LoadingDialog::dismissLoading);
+    }
+
+    protected void unsubscribe(String subscription) {
+        destroySubscriptions.remove(subscription);
+        stopSubscriptions.remove(subscription);
+    }
+
+    protected String addDestroySubscription(Subscription subscription) {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
+        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):destroy:" + traceElement.getMethodName();
+        AppLogger.w("addSubscription" + method);
+        destroySubscriptions.add(subscription, method);
+        return method;
     }
 
     protected String getMethodName() {
+        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
+        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):" + traceElement.getMethodName();
+        AppLogger.w("getMethodName:" + method);
+        return method;
+    }
+
+    protected String method() {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
         String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):" + traceElement.getMethodName();
         AppLogger.w("getMethodName:" + method);
@@ -193,15 +205,14 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
      * 监听登录状态的变化时基本的功能,所以提取到基类中
      */
     private void subscribeLoginState() {
-        Subscription subscribe = mSubscriptionManager.destroy(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.OnlineStatusRsp.class))
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.OnlineStatusRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onLoginStateChanged, e -> {
                     AppLogger.e(MiscUtils.getErr(e));
                     subscribeLoginState();
                 });
-        addSubscription(subscribe);
+        addDestroySubscription(subscribe);
     }
 
     public Observable<IDPTaskResult> perform(IDPEntity entity) {

@@ -30,8 +30,7 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
     }
 
     private void checkAndInitLogoOption() {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getLogo(uuid))
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().getLogo(uuid)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.ret == 0) {//成功了
@@ -42,13 +41,12 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override
     public void changeLogoType(int position) {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().setLogo(uuid, position))
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().setLogo(uuid, position)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.ret == 0) {
@@ -59,6 +57,6 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 }

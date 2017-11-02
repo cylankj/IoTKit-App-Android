@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.module
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import com.cylan.jiafeigou.n.view.misc.MapSubscription
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.MiscUtils
 import com.cylan.jiafeigou.widget.LoadingDialog
@@ -12,13 +13,15 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.SerialSubscription
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KFunction
 
 /**
  * Created by yanzhendong on 2017/10/27.
  */
 @Singleton
 class LoadingManager @Inject constructor() : ILoadingManager {
+
+    private var subscriptions: MapSubscription = MapSubscription()
+
     override fun showAlert(dialog: Dialog) {
         Observable.create<Void> { subscriber ->
             dialog.setOnDismissListener {
@@ -70,11 +73,7 @@ class LoadingManager @Inject constructor() : ILoadingManager {
     private val serialSubscription: SerialSubscription = SerialSubscription()
 
     override fun hideLoading() {
-        val kFunction0 = this::hideLoading
         LoadingDialog.dismissLoading()
-    }
-
-    fun ss(method: KFunction<*>) {
     }
 
     override fun showLoading(context: Context, resId: Int, cancelable: Boolean, vararg args: Any) {
@@ -89,43 +88,38 @@ class LoadingManager @Inject constructor() : ILoadingManager {
                 dialog.setMessageText(context.getString(resId, *args))
                 dialog.setCancelable(cancelable)
                 dialog.setOnCancelListener(listener)
+                dialog.show()
                 subscriber.onNext(null)
-                subscriber.onCompleted()
             }
             subscriber.add(object : MainThreadSubscription() {
                 override fun onUnsubscribe() {
                     dialog.setOnCancelListener(null)
+                    dialog.dismiss()
                 }
             })
             serialSubscription.set(subscriber)
         }
+        Observable.just("").doOnUnsubscribe {  }
         Observable.create(subscribe).subscribe({}) {
             AppLogger.e(MiscUtils.getErr(it))
         }
     }
 
     override fun showLoadingRx(context: Context, resId: Int, cancelable: Boolean, vararg args: Any): Observable<Void> {
-        val subscribe = Observable.OnSubscribe<Void> { subscriber ->
-            val listener = DialogInterface.OnCancelListener {
-                if (!subscriber.isUnsubscribed) {
-                    subscriber.unsubscribe()
-                }
-            }
+        return Observable.create { subscriber ->
             val dialog = LoadingDialog(context)
-            if (!subscriber.isUnsubscribed) {
-                dialog.setMessageText(context.getString(resId, *args))
-                dialog.setCancelable(cancelable)
-                dialog.setOnCancelListener(listener)
-                subscriber.onNext(null)
-                subscriber.onCompleted()
-            }
             subscriber.add(object : MainThreadSubscription() {
                 override fun onUnsubscribe() {
+                    AppLogger.w("will unsubscribed")
                     dialog.setOnCancelListener(null)
+                    dialog.dismiss()
                 }
             })
-            serialSubscription.set(subscriber)
+            dialog.setMessageText(context.getString(resId, *args))
+            dialog.setCancelable(cancelable)
+            dialog.setOnCancelListener { subscriber.onCompleted() }
+            dialog.show()
+            subscriber.onNext(null)
         }
-        return Observable.create(subscribe)
     }
 }

@@ -45,8 +45,7 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
     }
 
     private void subscribeSync() {
-        Subscription  subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
+        Subscription  subscribe =RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     // TODO: 2017/8/3 监听其他端的操作,及时更新
@@ -54,10 +53,6 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        addSubscription(subscribe);
-    }
-
-    protected void addSubscription(Subscription subscribe) {
-
+        addStopSubscription(subscribe);
     }
 }

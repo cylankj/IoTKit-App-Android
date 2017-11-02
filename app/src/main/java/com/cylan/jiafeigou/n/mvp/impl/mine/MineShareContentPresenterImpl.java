@@ -35,8 +35,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
 
     @Override
     public void unShareContent(Iterable<DpMsgDefine.DPShareItem> item, Iterable<Integer> selection) {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .map(ret -> item)
+        Subscription subscribe = Observable.just(item)
                 .map(items -> {
                     List<DPEntity> result = new ArrayList<>();
                     DPEntity entity;
@@ -65,13 +64,13 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override
     public void loadFromServer(long version, boolean refresh) {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .map(ret->new DPEntity(null, 606, 0, DBAction.QUERY, DBOption.SingleQueryOption.DESC_20_LIMIT))
+        String method = method();
+        Subscription subscribe = Observable.just(new DPEntity(null, 606, 0, DBAction.QUERY, DBOption.SingleQueryOption.DESC_20_LIMIT))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -91,13 +90,12 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> mLoadingManager.showLoading(mView.activity(), R.string.LOADING, true))
-                .doOnTerminate(() -> mLoadingManager.hideLoading())
+                .compose(applyLoading(R.string.LOADING,method))
                 .subscribe(result -> {
                     mView.onShareContentResponse(result, refresh);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 }

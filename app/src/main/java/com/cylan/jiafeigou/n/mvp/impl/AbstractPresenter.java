@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.support.network.NetworkCallback;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.view.SubscriptionAdapter;
-import com.trello.rxlifecycle.LifecycleProvider;
 
 import rx.Observable;
 import rx.Subscription;
@@ -33,8 +32,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter<T> implements SubscriptionAdapter,
         NetworkCallback, HeadsetObserver.HeadsetListener {
-    protected CompositeSubscription compositeSubscription;
-    protected MapSubscription refCacheMap = new MapSubscription();
+
     protected HeadsetObserver headsetObserver;
     protected AudioManager audioManager;
 
@@ -42,10 +40,6 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         super(view);
         mView = view;
         this.uuid = mView.uuid();
-        setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
-        if (mView instanceof LifecycleProvider) {
-            attachToLifecycle((LifecycleProvider) mView);
-        }
     }
 
     @Override
@@ -177,12 +171,6 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         }
         if (refCacheMap != null) {
             refCacheMap.clear();
-        }
-        if (mSubscriptionManager != null) {
-            mSubscriptionManager.unbind(this);
-        }
-        if (subscriptions != null) {
-            subscriptions.clear();
         }
         NetMonitor.getNetMonitor().unregister(this);
         unRegisterHeadSetObservable();

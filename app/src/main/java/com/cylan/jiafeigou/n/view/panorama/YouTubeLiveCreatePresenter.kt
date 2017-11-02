@@ -32,26 +32,20 @@ import javax.inject.Inject
  */
 class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateContract.View?) : BasePresenter<YouTubeLiveCreateContract.View>(view), YouTubeLiveCreateContract.Presenter {
     override fun createLiveBroadcast(credential: GoogleAccountCredential, title: String?, description: String?, startTime: Long, endTime: Long) {
-         val subscribe = mSubscriptionManager.destroy(this)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
-                .flatMap {
-                    Observable.create<EventData> { subscriber ->
-                        val youTube = YouTube.Builder(
-                                AndroidHttp.newCompatibleTransport(),
-                                JacksonFactory.getDefaultInstance(),
-                                credential
-                        )
-                                .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
-                                .build()
-                        val liveEvent = YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
-                        subscriber.onNext(liveEvent)
-                        subscriber.onCompleted()
-                    }
-                }
+        val subscribe = Observable.create<EventData> { subscriber ->
+            val youTube = YouTube.Builder(
+                    AndroidHttp.newCompatibleTransport(),
+                    JacksonFactory.getDefaultInstance(),
+                    credential
+            )
+                    .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
+                    .build()
+            val liveEvent = YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
+            subscriber.onNext(liveEvent)
+            subscriber.onCompleted()
+        }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingManager.showLoading(mView.activity(), R.string.CREATING, false) }
-                .doOnTerminate { mLoadingManager.hideLoading() }
+                .compose(applyLoading(R.string.CREATING))
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     if (it == null) {
@@ -76,50 +70,45 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                         }
                     }
                 })
-        addSubscription(subscribe)
+        addDestroySubscription(subscribe)
     }
 
     override fun createLiveBroadcast(title: String?, description: String?, startTime: Long, endTime: Long) {
-         val subscribe = mSubscriptionManager.destroy(this)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
-                .flatMap {
-                    return@flatMap Observable.create<EventData> {
-                        val authStateManager = AuthStateManager.getInstance(mContext)
-                        val authState = authStateManager.current
-                        if (authState.isAuthorized) {
-                            authState.performActionWithFreshTokens(AuthorizationService(mContext), { accessToken, _, ex ->
-                                if (ex == null) {
-                                    val youTube = YouTube.Builder(
-                                            AndroidHttp.newCompatibleTransport(),
-                                            JacksonFactory.getDefaultInstance(),
-                                            HttpRequestInitializer { it.headers.authorization = "Bearer $accessToken" }
-                                    )
-                                            .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
-                                            .build()
-                                    //内部使用了 asyncTask 所以这里实在主线程了
-                                    Schedulers.io().createWorker().schedule {
-                                        try {
-                                            val eventData = YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
-                                            it.onNext(eventData)
-                                            it.onCompleted()
-                                        } catch (e: Exception) {
-                                            it.onError(e)
-                                        }
-                                    }
-
-                                } else {
-                                    it.onError(ex)
-                                }
-                            })
-                        } else {
-                            it.onError(IllegalStateException("没有有效的验证信息,请确保已经登录授权过"))
+        val subscribe = Observable.create<EventData> {
+            val authStateManager = AuthStateManager.getInstance(mContext)
+            val authState = authStateManager.current
+            if (authState.isAuthorized) {
+                authState.performActionWithFreshTokens(AuthorizationService(mContext), { accessToken, _, ex ->
+                    if (ex == null) {
+                        val youTube = YouTube.Builder(
+                                AndroidHttp.newCompatibleTransport(),
+                                JacksonFactory.getDefaultInstance(),
+                                HttpRequestInitializer { it.headers.authorization = "Bearer $accessToken" }
+                        )
+                                .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
+                                .build()
+                        //内部使用了 asyncTask 所以这里实在主线程了
+                        Schedulers.io().createWorker().schedule {
+                            try {
+                                val eventData = YouTubeApi.createLiveEvent(youTube, description, title, startTime, endTime)
+                                it.onNext(eventData)
+                                it.onCompleted()
+                            } catch (e: Exception) {
+                                it.onError(e)
+                            }
                         }
+
+                    } else {
+                        it.onError(ex)
                     }
-                }
+                })
+            } else {
+                it.onError(IllegalStateException("没有有效的验证信息,请确保已经登录授权过"))
+            }
+        }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingManager.showLoading(mView.activity(), R.string.CREATING, false) }
-                .doOnTerminate { mLoadingManager.hideLoading() }
+                .compose(applyLoading(R.string.CREATING))
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     if (it == null) {
@@ -150,6 +139,6 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
                         }
                     }
                 })
-        addSubscription(subscribe)
+        addDestroySubscription(subscribe)
     }
 }

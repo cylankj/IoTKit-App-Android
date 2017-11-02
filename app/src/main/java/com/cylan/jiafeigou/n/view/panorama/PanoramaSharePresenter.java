@@ -50,21 +50,20 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
     @Override
     @Deprecated
     public void check(String uuid, int time) {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .observeOn(Schedulers.io())
-                .flatMap(ret -> Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-                    try {
-                        ArrayList<JFGDPMsg> params = new ArrayList<>();
-                        JFGDPMsg msg = new JFGDPMsg(511, time);
-                        params.add(msg);
-                        long seq = appCmd.robotGetDataByTime(uuid, params, 0);
-                        subscriber.onNext(seq);
-                        subscriber.onCompleted();
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                        subscriber.onError(e);
-                    }
-                }))
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                ArrayList<JFGDPMsg> params = new ArrayList<>();
+                JFGDPMsg msg = new JFGDPMsg(511, time);
+                params.add(msg);
+                long seq = appCmd.robotGetDataByTime(uuid, params, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).first(rsp -> rsp.seq == ret))
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -89,12 +88,12 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     AppLogger.e(e.getMessage());
                     mView.onUploadResult(-1);
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override
     public void upload(String fileName, String filePath) {
-        Subscription subscribe = mSubscriptionManager.stop(this)
+        Subscription subscribe = Observable.just("")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(ret -> getRemoteFilePath(fileName, true))
                 .observeOn(Schedulers.io())
@@ -119,7 +118,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     private String getRemoteFilePath(String fileName, boolean hasPrefix) {
@@ -131,20 +130,19 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath) {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .observeOn(Schedulers.io())
-                .flatMap(ret -> Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-                    try {
-                        String remoteFilePath = getRemoteFilePath(item.fileName, false);
-                        long seq = appCmd.getVideoShareUrl(remoteFilePath, desc, DataSourceManager.getInstance().getStorageType(), item.type);
-                        AppLogger.e("获取 H5返回码为:" + seq + ",remoteFilePath:" + remoteFilePath + ",type" + item.type + ",storageType" + DataSourceManager.getInstance().getStorageType());
-                        subscriber.onNext(seq);
-                        subscriber.onCompleted();
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                        subscriber.onError(e);
-                    }
-                }))
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                String remoteFilePath = getRemoteFilePath(item.fileName, false);
+                long seq = appCmd.getVideoShareUrl(remoteFilePath, desc, DataSourceManager.getInstance().getStorageType(), item.type);
+                AppLogger.e("获取 H5返回码为:" + seq + ",remoteFilePath:" + remoteFilePath + ",type" + item.type + ",storageType" + DataSourceManager.getInstance().getStorageType());
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.GetVideoShareUrlEvent.class).first())
                 .map(h5 -> {
                     AppLogger.e("当前分享的 H5URL为:" + h5.url);
@@ -228,6 +226,6 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     mView.onShareH5Result(false, "");
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 }

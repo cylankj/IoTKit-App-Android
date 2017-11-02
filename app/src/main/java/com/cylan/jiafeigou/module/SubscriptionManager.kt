@@ -5,8 +5,8 @@ import com.cylan.jiafeigou.misc.JConstant
 import com.trello.rxlifecycle.LifecycleProvider
 import com.trello.rxlifecycle.android.FragmentEvent
 import rx.Observable
+import rx.Subscriber
 import rx.Subscription
-import rx.subscriptions.SerialSubscription
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 class SubscriptionManager @Inject constructor() : ISubscriptionManager {
     @Volatile private var lifecycleProviderMap = ConcurrentHashMap<String, LifecycleProvider<FragmentEvent>>()
-    @Volatile private var subscriptions: ConcurrentHashMap<String, SerialSubscription> = ConcurrentHashMap()
+    @Volatile private var subscriptions: ConcurrentHashMap<String, Subscriber<*>> = ConcurrentHashMap()
     override fun bind(target: Any, lifecycleProvider: LifecycleProvider<FragmentEvent>) {
         val name = target::class.java.name
         lifecycleProviderMap.put(name, lifecycleProvider)
@@ -76,26 +76,27 @@ class SubscriptionManager @Inject constructor() : ISubscriptionManager {
     private fun atomicMethod(method: String): Observable<String> {
         val subscribe = Observable.OnSubscribe<String> { subscriber ->
             var serialSubscription = subscriptions[method]
-            if (serialSubscription == null) {
-                serialSubscription = SerialSubscription()
-                subscriptions[method] = serialSubscription
-            }
-            serialSubscription.set(subscriber)
-            subscriber.add(object : AbstractSubscription() {
-                override fun onUnsubscribe() {
-                    if (serialSubscription!!.get().isUnsubscribed) {
+            if (serialSubscription != null) {
+                println("A")
+                subscriber.unsubscribe()
+            } else {
+                println("C")
+                subscriptions[method] = subscriber
+                subscriber.add(object : AbstractSubscription() {
+                    override fun onUnsubscribe() {
+                        println("B")
                         subscriptions.remove(method)
                         Log.i(JConstant.CYLAN_TAG, "SubscriptionManager:method finished:$method")
                     }
-                }
-            })
-            subscriber.onNext(method)
-            subscriber.onCompleted()
+                })
+                subscriber.onNext(method)
+                subscriber.onCompleted()
+            }
         }
-        return Observable.create(subscribe)
+        return Observable.create(subscribe).first()
     }
 
-    internal abstract class AbstractSubscription : Subscription {
+    open abstract class AbstractSubscription : Subscription {
 
         private val unsubscribed = AtomicBoolean()
 

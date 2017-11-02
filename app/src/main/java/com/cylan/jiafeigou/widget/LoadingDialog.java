@@ -26,16 +26,20 @@ public class LoadingDialog extends AppCompatDialog {
     @Override
     public void cancel() {
         super.cancel();
-        loadingDialog = null;
         if (listener != null) {
             listener.onCancel(this);
+        }
+        if (loadingDialog == this) {
+            loadingDialog = null;
         }
     }
 
     @Override
     public void dismiss() {
         super.dismiss();
-        loadingDialog = null;
+        if (loadingDialog == this) {
+            loadingDialog = null;
+        }
     }
 
 
@@ -47,13 +51,12 @@ public class LoadingDialog extends AppCompatDialog {
 
 
     public static LoadingDialog getLoadingDialog(Context context) {
-        if (loadingDialog == null) {
-            synchronized (LoadingDialog.class) {
-                if (loadingDialog == null) {
-                    loadingDialog = new LoadingDialog(context);
-                }
-            }
+        final LoadingDialog dialog=loadingDialog;
+        loadingDialog=null;
+        if (dialog!=null){
+            dialog.dismiss();
         }
+        loadingDialog=new LoadingDialog(context);
         return loadingDialog;
     }
 
@@ -63,7 +66,6 @@ public class LoadingDialog extends AppCompatDialog {
         dialog.setMessageText(content);
         dialog.setCanceledOnTouchOutside(dismissTouchOutside);
         dialog.setOnCancelListener(listener);
-
         dialog.show();
     }
 

@@ -68,8 +68,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
     }
 
     private void subscribeReportMsg() {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class))
+        Subscription subscribe =RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -110,7 +109,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -119,8 +118,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
-            Subscription subscribe = mSubscriptionManager.stop(this)
-                    .flatMap(ret -> BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName)))
+            Subscription subscribe =  BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
                     .timeout(500, TimeUnit.MILLISECONDS, Observable.just(null))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
@@ -137,11 +135,10 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 //                    }, e -> {
 //                        AppLogger.e(e.getMessage());
 //                    });
-            addSubscription(subscribe);
+            addStopSubscription(subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3
-            Subscription subscribe = mSubscriptionManager.stop(this)
-                    .flatMap(ret -> Observable.just(version))
+            Subscription subscribe = Observable.just(version)
                     .observeOn(Schedulers.io())
                     .map(ver -> new DPEntity()
                             .setUuid(uuid)
@@ -160,13 +157,12 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         e.printStackTrace();
                         AppLogger.d(e.getMessage());
                     });
-            addSubscription(subscribe);
+            addStopSubscription(subscribe);
         }
     }
 
     private void subscribeNetwork() {
-        Subscription subscribe = mSubscriptionManager.stop(this)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class))
+        Subscription subscribe =RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
@@ -180,7 +176,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                     }
                 }, e -> {
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override

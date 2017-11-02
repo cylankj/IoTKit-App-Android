@@ -21,7 +21,6 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.youtube.YouTube
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -31,69 +30,63 @@ import javax.inject.Inject
 class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.View) : BasePresenter<YouTubeLiveSetting.View>(view), YouTubeLiveSetting.Presenter {
     override fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?) {
         AppLogger.w("YOUTUBE:getLiveList ,the id is $liveBroadcastID")
-         val subscribe = mSubscriptionManager.destroy(this)
-                .observeOn(Schedulers.io())
-                .flatMap {
-                    Observable.create<List<EventData>> { subscriber ->
-                        val youTube = YouTube.Builder(
-                                AndroidHttp.newCompatibleTransport(),
-                                JacksonFactory.getDefaultInstance(),
-                                credential
-                        )
-                                .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
-                                .build()
-                        val liveEvents = YouTubeApi.getLiveEvents(youTube, liveBroadcastID)
-                        subscriber.onNext(liveEvents)
-                        subscriber.onCompleted()
-                    }
+        val subscribe =
+                Observable.create<List<EventData>> { subscriber ->
+                    val youTube = YouTube.Builder(
+                            AndroidHttp.newCompatibleTransport(),
+                            JacksonFactory.getDefaultInstance(),
+                            credential
+                    )
+                            .setApplicationName(ContextUtils.getContext().getString(R.string.app_name))
+                            .build()
+                    val liveEvents = YouTubeApi.getLiveEvents(youTube, liveBroadcastID)
+                    subscriber.onNext(liveEvents)
+                    subscriber.onCompleted()
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mView.onLiveEventResponse(it[0])
-                    AppLogger.w("YOUTUBE: ${it[0]},${it[0].title}")
-                }, {
-                    when (it) {
-                        is GooglePlayServicesAvailabilityIOException -> {
-                            mView.showGooglePlayServicesAvailabilityErrorDialog(it.connectionStatusCode)
-                        }
-                        is UserRecoverableAuthIOException -> {
-                            mView.onUserRecoverableAuthIOException(it)
-                        }
-                        else -> {
-                            AppLogger.w(MiscUtils.getErr(it))
-                        }
-                    }
-                })
-        addSubscription(subscribe)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            mView.onLiveEventResponse(it[0])
+                            AppLogger.w("YOUTUBE: ${it[0]},${it[0].title}")
+                        }, {
+                            when (it) {
+                                is GooglePlayServicesAvailabilityIOException -> {
+                                    mView.showGooglePlayServicesAvailabilityErrorDialog(it.connectionStatusCode)
+                                }
+                                is UserRecoverableAuthIOException -> {
+                                    mView.onUserRecoverableAuthIOException(it)
+                                }
+                                else -> {
+                                    AppLogger.w(MiscUtils.getErr(it))
+                                }
+                            }
+                        })
+        addDestroySubscription(subscribe)
     }
 
     override fun getLiveFromDevice() {
-         val subscribe = mSubscriptionManager.destroy(this)
-                .observeOn(Schedulers.io())
-                .flatMap {
-                    Observable.create<RobotoGetDataRsp> { subscriber ->
-                        val seq = BaseApplication.getAppComponent().getCmd()
-                                .robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0)
-                        RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq }.subscribe {
-                            subscriber.onNext(it)
-                            subscriber.onCompleted()
-                        }
+        val subscribe =
+                Observable.create<RobotoGetDataRsp> { subscriber ->
+                    val seq = BaseApplication.getAppComponent().getCmd()
+                            .robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0)
+                    RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq }.subscribe {
+                        subscriber.onNext(it)
+                        subscriber.onCompleted()
                     }
                 }
-                .first()
-                .map {
-                    val dp = it.map[517]
-                    val get = dp?.get(0)
-                    DpUtils.unpackData(get?.packValue, DpMsgDefine.DPCameraLiveRtmpStatus::class.java)
-                }
-                .onErrorResumeNext(Observable.just(null))
-                .timeout(30, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    //                    mView.onLiveEventResponse(it)
-                }, {
+                        .first()
+                        .map {
+                            val dp = it.map[517]
+                            val get = dp?.get(0)
+                            DpUtils.unpackData(get?.packValue, DpMsgDefine.DPCameraLiveRtmpStatus::class.java)
+                        }
+                        .onErrorResumeNext(Observable.just(null))
+                        .timeout(30, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            //                    mView.onLiveEventResponse(it)
+                        }, {
 
-                })
-        addSubscription(subscribe)
+                        })
+        addDestroySubscription(subscribe)
     }
 }

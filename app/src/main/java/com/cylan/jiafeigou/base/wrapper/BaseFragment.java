@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.dagger.Injectable;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.ActivityBackInterceptor;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.view.LifecycleAdapter;
 import com.cylan.jiafeigou.view.PresenterAdapter;
 import com.trello.rxlifecycle.LifecycleProvider;
@@ -147,9 +148,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         }
 
         super.onAttach(context);
-        if (lifecycleAdapter != null) {
-            lifecycleAdapter.attachToLifecycle(this);
-        }
         lifecycleSubject.onNext(FragmentEvent.ATTACH);
     }
 
@@ -191,7 +189,11 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
+        if (lifecycleAdapter!=null){
+            lifecycleAdapter.destroy();
+        }
         super.onDestroy();
+
 //        if (unbinder != null) {
 //            unbinder.unbind();
 //            unbinder = null;
@@ -213,9 +215,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (activity instanceof BaseActivity) {
             ((BaseActivity) activity).removeActivityBackInterceptor(this);
         }
-        if (lifecycleAdapter != null) {
-            lifecycleAdapter.detachToLifecycle();
-        }
+
         if (presenter != null && presenter.isSubscribed()) {
             presenter.unsubscribe();
         }
@@ -292,6 +292,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (lifecycleAdapter != null) {
             lifecycleAdapter.stop();
         }
+        IMEUtils.hide(getActivity());
     }
 
     @CallSuper

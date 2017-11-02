@@ -34,6 +34,7 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
         val intent = Intent()
         intent.putExtra("name", faceName)
         setResult(Activity.RESULT_OK, intent)
+        fragmentManager.popBackStack()
     }
 
     private var personId: String? = null

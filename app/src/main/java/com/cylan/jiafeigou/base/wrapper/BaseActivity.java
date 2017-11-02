@@ -137,9 +137,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             injectButterKnife();
             initViewAndListener();
         }
-        if (lifecycleAdapter != null) {
-            lifecycleAdapter.attachToLifecycle(this);
-        }
         lifecycleSubject.onNext(FragmentEvent.CREATE);
     }
 
@@ -194,7 +191,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             }
         }
         if (lifecycleAdapter != null) {
-            lifecycleAdapter.detachToLifecycle();
+            lifecycleAdapter.destroy();
         }
 //        if (unbinder != null) {
 //            unbinder.unbind();

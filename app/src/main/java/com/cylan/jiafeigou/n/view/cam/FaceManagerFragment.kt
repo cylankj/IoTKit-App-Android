@@ -41,6 +41,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onDeleteFaceSuccess() {
         adapter.deleteAllSelectedItems()
+        adapter.notifyDataSetChanged()
         empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
