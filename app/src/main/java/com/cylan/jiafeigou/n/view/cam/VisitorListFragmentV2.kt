@@ -190,7 +190,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         val uiList = ArrayList(faceAdapter.dataItems)
         val mayBeList = ArrayList(provideData())
         mayBeList.removeAll(uiList)
-        faceAdapter.populateItems(mayBeList)
+        faceAdapter.populateItems(provideData())
     }
 
     open fun provideData(): ArrayList<FaceItem> {
@@ -477,8 +477,10 @@ class FaceFragment : Fragment() {
 
 class FaceItemsProvider private constructor() {
     //熟人
+    @Deprecated("outdate")
     var visitorItems = ArrayList<FaceItem>()
     //陌生人
+    @Deprecated("outdate")
     var strangerItems = ArrayList<FaceItem>()
 
     private object Holder {
@@ -517,7 +519,6 @@ class FaceItemsProvider private constructor() {
         if (ListUtils.isEmpty(strangerItems)) return
         this.strangerItems.addAll(strangerItems)
         this.strangerItems = ArrayList(TreeSet(this.strangerItems))
-        this.strangerItems.addAll(this.strangerItems)
         Collections.sort(this.strangerItems)
     }
 

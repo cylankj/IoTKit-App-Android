@@ -34,6 +34,19 @@ public class EViewPager extends ViewPager {
     }
 
     @Override
+    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+        if (v != this && v instanceof ViewPager) {
+            int currentItem = ((ViewPager) v).getCurrentItem();
+            int countItem = ((ViewPager) v).getAdapter().getCount();
+            if ((currentItem == (countItem - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
+                return false;
+            }
+            return true;
+        }
+        return super.canScroll(v, checkV, dx, x, y);
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (isNeedWrap) {
             int height = 0;
@@ -143,15 +156,3 @@ public class EViewPager extends ViewPager {
         super.setCurrentItem(item, false);
     }
 }
-//    @Override
-//    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
-//        if (v != this && v instanceof ViewPager) {
-//            int currentItem = ((ViewPager) v).getCurrentItem();
-//            int countItem = ((ViewPager) v).getAdapter().getCount();
-//            if ((currentItem == (countItem - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
-//                return false;
-//            }
-//            return true;
-//        }
-//        return super.canScroll(v, checkV, dx, x, y);
-//    }
