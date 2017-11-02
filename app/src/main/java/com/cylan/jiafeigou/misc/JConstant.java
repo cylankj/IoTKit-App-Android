@@ -617,4 +617,10 @@ public class JConstant {
     }
 
     public static final int FACE_CNT_IN_PAGE = 6;
+
+    public static int getPageCnt(int totalCount) {
+        return totalCount / JConstant.FACE_CNT_IN_PAGE +
+                (totalCount % JConstant.FACE_CNT_IN_PAGE == 0 ? 0 : 1);
+    }
+
 }

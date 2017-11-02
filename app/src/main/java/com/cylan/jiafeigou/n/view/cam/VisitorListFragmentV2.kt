@@ -218,9 +218,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
         }
         FaceItemsProvider.get.populateItems(list)
-        val uiList = ArrayList(faceAdapter.dataItems)
-        val mayBeList = ArrayList(provideData())
-        mayBeList.removeAll(uiList)
+//        val uiList = ArrayList(faceAdapter.dataItems)
+//        val mayBeList = ArrayList(provideData())
+//        mayBeList.removeAll(uiList)
         faceAdapter.populateItems(provideData())
     }
 
@@ -399,9 +399,9 @@ class FaceAdapter(private var fm: FragmentManager?, private var isNormalVisitor:
 
     override fun getCount(): Int {
         val totalCount = ListUtils.getSize(dataItems)
-        val cnt = totalCount / JConstant.FACE_CNT_IN_PAGE + if (totalCount % JConstant.FACE_CNT_IN_PAGE == 0) 0 else 1
-        Log.d("cnt", "cnt:$cnt,$totalCount")
-        return cnt
+        val pageCnt = JConstant.getPageCnt(totalCount)
+        Log.d("cnt", "pageCnt:$pageCnt,$totalCount")
+        return pageCnt
     }
 
     fun populateItems(dataItems: ArrayList<FaceItem>) {
@@ -532,8 +532,14 @@ class FaceFragment : Fragment() {
         if (totalCnt == 0) {
             return
         }
-        val subList = list.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex,
-                JConstant.FACE_CNT_IN_PAGE * pageIndex + Math.min(JConstant.FACE_CNT_IN_PAGE, totalCnt - JConstant.FACE_CNT_IN_PAGE * pageIndex))
+        if (pageIndex >= JConstant.getPageCnt(totalCnt)) {
+            //viewPager中的fragment会被缓存
+            Log.d("cnt", "bad")
+            return
+        }
+        val lastIndex = JConstant.FACE_CNT_IN_PAGE * pageIndex + Math.min(JConstant.FACE_CNT_IN_PAGE, totalCnt - JConstant.FACE_CNT_IN_PAGE * pageIndex)
+        Log.d("cnt", "pre cnt,,," + ListUtils.getSize(list) + ",pageIndex:" + pageIndex + ",lastIndex:" + lastIndex)
+        val subList = list.subList(JConstant.FACE_CNT_IN_PAGE * pageIndex, lastIndex)
         Log.d("cnt", "cnt,,," + ListUtils.getSize(subList) + ",pageIndex:" + pageIndex)
         visitorAdapter.clear()
         visitorAdapter.add(subList)
