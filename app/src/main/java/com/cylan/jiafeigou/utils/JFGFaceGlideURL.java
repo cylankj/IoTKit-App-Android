@@ -24,13 +24,13 @@ public class JFGFaceGlideURL extends GlideUrl {
     private boolean stranger;
     private int regionType;
 
-    public JFGFaceGlideURL(String cid, String faceId, boolean stranger) {
+    public JFGFaceGlideURL(String cid, String faceId, int regionType, boolean stranger) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         this.vid = Security.getVId();
         this.cid = cid;
         this.account = DataSourceManager.getInstance().getAccount().getAccount();
         this.stranger = stranger;
-        this.regionType = DataSourceManager.getInstance().getStorageType();
+        this.regionType = regionType;
     }
 
     @Override

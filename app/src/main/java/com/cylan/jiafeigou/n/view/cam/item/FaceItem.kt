@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
+import com.cylan.jiafeigou.utils.ListUtils
 import com.cylan.jiafeigou.utils.TimeUtils
 import com.mikepenz.fastadapter.items.AbstractItem
 
@@ -123,18 +125,25 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
+                var url = if (ListUtils.getSize(visitor?.detailList) > 0) {
+                    val detail = visitor?.detailList!![0]
+                    JFGFaceGlideURL(uuid, detail.faceId, detail.ossType, false)
+                } else {
+                    null
+                }
                 Glide.with(holder.itemView.context)
-                        .load(visitor?.detailList?.get(0)?.imgUrl)
+                        .load(url)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
+                var url = JFGFaceGlideURL(uuid, strangerVisitor?.faceId, strangerVisitor?.ossType!!, true)
                 holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(strangerVisitor?.image_url)
+                        .load(url)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .into(holder.icon)
