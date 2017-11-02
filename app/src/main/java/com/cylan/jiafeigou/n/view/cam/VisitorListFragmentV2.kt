@@ -379,7 +379,7 @@ class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
     val rvList: RecyclerView = itemview.findViewById(R.id.message_face_page_item) as RecyclerView
     val visitorAdapter = FaceFastItemAdapter()
     val adapter = FastAdapter<FaceItem>()
-    fun bindItem(pageIndex: Int, isNormalVisitor: Boolean, items: List<FaceItem>, itemClickListener: VisitorListFragmentV2.ItemClickListener) {
+    fun bindItem(pageIndex: Int, isNormalVisitor: Boolean, items: List<FaceItem>, itemClickListener: VisitorListFragmentV2.ItemClickListener, maxHeight: Int) {
         adapter.withOnClickListener { _, _, item, position ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
             itemClickListener?.itemClick(visitorAdapter.getItem(position),
@@ -417,12 +417,15 @@ class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
 }
 
 class FaceAdapter(var isNormalVisitor: Boolean) : RecyclerView.Adapter<ViewHolder>() {
+
+    private var maxHeight: Int = 0
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val start = JConstant.FACE_CNT_IN_PAGE * position
         val end = Math.min(dataItems.size, start + JConstant.FACE_CNT_IN_PAGE)
         AppLogger.e("start:$start,end:$end")
         val list = (JConstant.FACE_CNT_IN_PAGE * position until Math.min(dataItems.size, start + JConstant.FACE_CNT_IN_PAGE)).map { dataItems[it] }
-        holder.bindItem(position, isNormalVisitor, list, itemClickListener)
+        holder.bindItem(position, isNormalVisitor, list, itemClickListener, maxHeight)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
