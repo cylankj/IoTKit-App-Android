@@ -61,7 +61,7 @@
             android:layout_marginEnd="@dimen/y20"
             android:layout_marginStart="@dimen/y15"
             android:src="@drawable/icon_clear_text"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
         <View
             android:layout_width="match_parent"

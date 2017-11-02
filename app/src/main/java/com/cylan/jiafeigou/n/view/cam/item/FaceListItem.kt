@@ -56,6 +56,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
                 .load(imageUrl)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
+                .dontAnimate()
                 .into(holder.icon)
 
         holder.name.text = personName

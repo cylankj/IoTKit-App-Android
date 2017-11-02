@@ -225,6 +225,8 @@ public class JConstant {
         public static final String ROBOTSCLOUD_FACE_ADD_API = ROBOTSCLOUD_BASE_API + "reg_face_app";
         public static final String ROBOTSCLOUD_FACE_UPDATE_API = ROBOTSCLOUD_BASE_API + "edit_face_app";
         public static final String ROBOTSCLOUD_FACE_DELETE_API = ROBOTSCLOUD_BASE_API + "del_face_app";
+        public static final String ROBOTSCLOUD_PERSON_DELETE_API = ROBOTSCLOUD_BASE_API + "del_person";
+        public static final String ROBOTSCLOUD_PERSON_SEARCH_API = ROBOTSCLOUD_BASE_API + "search_person";
         public static final String ROBOTSCLOUD_GROUP_QUERY_API = ROBOTSCLOUD_BASE_API + "search_group";
         public static final String ROBOTSCLOUD_GROUP_ADD_API = ROBOTSCLOUD_BASE_API + "add_group";
         public static final String ROBOTSCLOUD_GROUP_UPDATE_API = ROBOTSCLOUD_BASE_API + "edit_group";

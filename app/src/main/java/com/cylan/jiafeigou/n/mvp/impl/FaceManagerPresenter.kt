@@ -72,7 +72,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     subscriber.onNext(header)
                     subscriber.onCompleted()
                 }
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 subscriber.onError(e)
             }
         }
@@ -88,6 +88,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                         }
                         it.ret == -1 -> {
                             AppLogger.w("face_id 不存在")
+                            mView.onDeleteFaceError()
                         }
                     }
                 }, {
@@ -153,6 +154,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                         subscriber.onError(e)
                     }
                 }
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .compose(applyLoading(R.string.LOADING, method))
                         .subscribe({ rsp ->

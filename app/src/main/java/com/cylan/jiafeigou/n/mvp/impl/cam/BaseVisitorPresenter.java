@@ -50,9 +50,6 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 
     @Override
     public void fetchVisitorList() {
-//        if (containsSubscription(FETCH_VISITOR_LIST)) {
-//            return;
-//        }
         Subscription subscription = VisitorLoader.loadAllVisitorList(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,11 +62,6 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     @Override
     public void start() {
         super.start();
-        if (mView.isNormalVisitor()) {
-            fetchVisitorList();
-        } else {
-            fetchStrangerVisitorList();
-        }
     }
 
     private static final String FETCH_VISITOR_LIST = "fetchVisitorList";
@@ -142,7 +134,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).first(ret -> ret.seq == seq));
     }
 
-    public Observable<DpMsgDefine.ResponseHeader> deleteFaceByRobot(String faceId, String personId) {
+    public Observable<DpMsgDefine.ResponseHeader> deleteFaceByRobot(String faceId) {
         return Observable.create(subscriber -> {
             try {
                 String account = DataSourceManager.getInstance().getAccount().getAccount();
@@ -172,9 +164,6 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
                             .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId);
 
-                    if (!TextUtils.isEmpty(personId)) {
-                        request.params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId);
-                    }
 //                    if (!TextUtils.isEmpty(faceId)) {
                     request.params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, "[" + faceId + "]");
 //                    }
@@ -195,9 +184,66 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         });
     }
 
+    public Observable<DpMsgDefine.ResponseHeader> deletePersonByRobot(String personId) {
+        return Observable.create(subscriber -> {
+            try {
+                String account = DataSourceManager.getInstance().getAccount().getAccount();
+                String vid = Security.getVId();
+                String serviceKey = OptionsImpl.getServiceKey(vid);
+                String timestamp = String.valueOf((System.currentTimeMillis() / 1000));//这里的时间是秒
+                String seceret = OptionsImpl.getServiceSeceret(vid);
+                String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
+                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
+                } else {
+                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_DELETE_API, seceret, timestamp);
+                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_DELETE_API;
+                    if (!url.startsWith("http://")) {
+                        url = "http://" + url;
+                    }
+                    PostRequest request = OkGo.post(url)
+                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
+
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
+                            .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId);
+
+//                    if (!TextUtils.isEmpty(faceId)) {
+                    request.params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId);
+//                    }
+                    Response response = request.execute();
+                    ResponseBody body = response.body();
+                    if (body != null) {
+                        String string = body.string();
+                        AppLogger.w(string);
+                        Gson gson = new Gson();
+                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
+                        subscriber.onNext(header);
+                        subscriber.onCompleted();
+                    }
+                }
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        });
+    }
+
     @Override
     public void deleteFace(int type, String id, int delMsg) {
-        Subscription subscribe = Observable.zip(deleteFaceByDp(type, id, delMsg), deleteFaceByRobot(type == 1 ? id : null, type == 2 ? id : null),
+        Observable<DpMsgDefine.ResponseHeader> faceByRobot = null;
+        if (type == 1) {
+            faceByRobot = deleteFaceByRobot(id);
+        } else if (type == 2) {
+            faceByRobot = deletePersonByRobot(id);
+        }
+
+        Subscription subscribe = Observable.zip(deleteFaceByDp(type, id, delMsg), faceByRobot,
                 (universalDataRsp, responseHeader) -> {
                     Integer result = DpUtils.unpackDataWithoutThrow(universalDataRsp.data, int.class, -1);
                     if (result == 0 && responseHeader.ret == 0) {

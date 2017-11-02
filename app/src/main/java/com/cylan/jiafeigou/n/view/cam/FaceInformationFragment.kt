@@ -46,6 +46,7 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
                 .load(imageUrl)
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
+                .dontAnimate()
                 .into(face_icon)
     }
 

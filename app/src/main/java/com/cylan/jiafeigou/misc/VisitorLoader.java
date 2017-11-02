@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.misc;
 
-import android.text.TextUtils;
-
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -11,8 +9,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
-
-import java.util.ArrayList;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -75,73 +71,73 @@ public class VisitorLoader {
      * @return
      */
     public static Observable<DpMsgDefine.VisitorList> loadAllVisitorList(final String uuid) {
-        final DpMsgDefine.VisitorList visitorList = new DpMsgDefine.VisitorList();
-        visitorList.total = -1;
+//        final DpMsgDefine.VisitorList visitorList = new DpMsgDefine.VisitorList();
+//        visitorList.total = -1;
         return Observable.just("")
                 .flatMap(s -> {
-                    final long timeSec = getMaxTimeFromList(visitorList);
-                    return getDataByte(uuid, 5, timeSec)
+//                    final long timeSec = getMaxTimeFromList(visitorList);
+                    return getDataByte(uuid, 5, 0)
                             .flatMap(bytes -> {
                                 DpMsgDefine.VisitorList list = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.VisitorList.class, null);
                                 AppLogger.d("收到数据？" + (BuildConfig.DEBUG ? list : null));
-                                if (list != null && list.total > 0) {
-                                    visitorList.total = list.total;
-                                    final int cnt = ListUtils.getSize(list.dataList);
-                                    if (visitorList.dataList == null) {
-                                        visitorList.dataList = new ArrayList<>();
-                                    }
-                                    if (cnt > 0) {
-                                        visitorList.dataList.addAll(list.dataList);
-                                    }
-                                    if (ListUtils.getSize(visitorList.dataList) != list.total) {
-                                        //还不是全部数据
-                                        throw new IllegalArgumentException("go_n_get");
-                                    } else {
-                                        return Observable.just(visitorList);
-                                    }
-                                }
-                                return Observable.just(new DpMsgDefine.VisitorList());
+//                                if (list != null && list.total > 0) {
+//                                    visitorList.total = list.total;
+//                                    final int cnt = ListUtils.getSize(list.dataList);
+//                                    if (visitorList.dataList == null) {
+//                                        visitorList.dataList = new ArrayList<>();
+//                                    }
+//                                    if (cnt > 0) {
+//                                        visitorList.dataList.addAll(list.dataList);
+//                                    }
+//                                    if (ListUtils.getSize(visitorList.dataList) != list.total) {
+//                                        //还不是全部数据
+//                                        throw new IllegalArgumentException("go_n_get");
+//                                    } else {
+//                                        return Observable.just(visitorList);
+//                                    }
+//                                }
+                                return Observable.just(list);
                             });
-                })
-                .retry((integer, throwable) -> {
-                    AppLogger.d("可能继续获取剩余的数据?" + throwable.getLocalizedMessage());
-                    return !TextUtils.isEmpty(throwable.getLocalizedMessage()) && throwable.getLocalizedMessage().contains("go_n_get");
                 });
+//                .retry((integer, throwable) -> {
+//                    AppLogger.d("可能继续获取剩余的数据?" + throwable.getLocalizedMessage());
+//                    return !TextUtils.isEmpty(throwable.getLocalizedMessage()) && throwable.getLocalizedMessage().contains("go_n_get");
+//                });
     }
 
     public static Observable<DpMsgDefine.StrangerVisitorList>
     loadAllStrangerList(String uuid) {
-        final DpMsgDefine.StrangerVisitorList visitorList = new DpMsgDefine.StrangerVisitorList();
-        visitorList.total = -1;
+//        final DpMsgDefine.StrangerVisitorList visitorList = new DpMsgDefine.StrangerVisitorList();
+//        visitorList.total = -1;
         return Observable.just("")
                 .flatMap(s -> {
-                    final long timeSec = getMaxTimeFromList(visitorList);
-                    return getDataByte(uuid, 6, timeSec)
+//                    final long timeSec = getMaxTimeFromList(visitorList);
+                    return getDataByte(uuid, 6, 0)
                             .flatMap(bytes -> {
                                 DpMsgDefine.StrangerVisitorList list = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.StrangerVisitorList.class, null);
-                                if (list != null && list.total > 0) {
-                                    visitorList.total = list.total;
-                                    final int cnt = ListUtils.getSize(list.strangerVisitors);
-                                    if (visitorList.strangerVisitors == null) {
-                                        visitorList.strangerVisitors = new ArrayList<>();
-                                    }
-                                    if (cnt > 0) {
-                                        visitorList.strangerVisitors.addAll(list.strangerVisitors);
-                                    }
-                                    if (ListUtils.getSize(visitorList.strangerVisitors) != list.total) {
-                                        //还不是全部数据
-                                        throw new IllegalArgumentException("go_n_get");
-                                    } else {
-                                        return Observable.just(visitorList);
-                                    }
-                                }
-                                return Observable.just(new DpMsgDefine.StrangerVisitorList());
+//                                if (list != null && list.total > 0) {
+//                                    visitorList.total = list.total;
+//                                    final int cnt = ListUtils.getSize(list.strangerVisitors);
+//                                    if (visitorList.strangerVisitors == null) {
+//                                        visitorList.strangerVisitors = new ArrayList<>();
+//                                    }
+//                                    if (cnt > 0) {
+//                                        visitorList.strangerVisitors.addAll(list.strangerVisitors);
+//                                    }
+//                                    if (ListUtils.getSize(visitorList.strangerVisitors) != list.total) {
+//                                        //还不是全部数据
+//                                        throw new IllegalArgumentException("go_n_get");
+//                                    } else {
+//                                        return Observable.just(visitorList);
+//                                    }
+//                                }
+                                return Observable.just(list);
                             });
-                })
-                .retry((integer, throwable) -> {
-                    AppLogger.d("继续获取剩余的数据");
-                    return throwable.getLocalizedMessage().contains("go_n_get");
                 });
+//                .retry((integer, throwable) -> {
+//                    AppLogger.d("继续获取剩余的数据");
+//                    return throwable.getLocalizedMessage().contains("go_n_get");
+//                });
     }
 
 }

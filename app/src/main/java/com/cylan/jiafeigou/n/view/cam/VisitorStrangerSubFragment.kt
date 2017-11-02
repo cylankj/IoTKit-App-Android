@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.cam
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 
 
 /**
@@ -27,18 +26,5 @@ class VisitorStrangerSubFragment : VisitorListFragmentV2() {
         }
     }
 
-    /**
-     * 提供数据，陌生人
-     */
-    override fun provideData(): ArrayList<FaceItem> {
-        return FaceItemsProvider.get.strangerItems
-    }
-
-    override fun isNormalVisitor(): Boolean {
-        return false
-    }
-    override fun cleanData(): Boolean {
-        return true
-    }
 
 }// Required empty public constructor

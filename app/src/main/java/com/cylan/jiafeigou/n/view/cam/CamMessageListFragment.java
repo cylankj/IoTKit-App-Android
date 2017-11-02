@@ -147,7 +147,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
 
     private VisitorListFragmentV2 visitorFragment;
-    private VisitorStrangerSubFragment visitorStrangerSubFragment;
 
     public CamMessageListFragment() {
         // Required empty public constructor
@@ -251,29 +250,41 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         presenter.fetchMessageListByFaceId(faceId);
     }
 
+    private void refreshFaceHeader() {
+        if (visitorFragment != null) {
+            visitorFragment.refreshContent();
+        }
+    }
+
     private void initFaceHeader() {
         if (JFGRules.isFaceFragment(getDevice().pid)) {
             aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
 
             tvCamMessageListDate.setClickable(false);
+            layoutBarMenu(BAR_TYPE_FACE_COMMON);
+            aplCamMessageAppbar.setExpanded(true, false);
+
+            if (visitorFragment != null) return;//do nothing
+
             visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
             visitorFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
+                @Override
+                public void onStrangeListReady() {
+                    layoutBarMenu(BAR_TYPE_STRANGER);
+                }
+
                 @Override
                 public void onVisitorTimes(int times) {
 //                    setFaceVisitsCounts(times);
                 }
 
                 @Override
-                public void onItemClick(int gPosition) {
-                    FaceItem faceItem = FaceItemsProvider.Companion.getGet().getVisitorItems().get(gPosition);
-                    changeContentByHeaderClick(gPosition, faceItem);
-                    //全部和陌生人 都没有faceId
-//                    fetchMsgList(faceItem.getFaceinformation().face_id);
+                public void onItemClick(FaceItem faceItem) {
+                    changeContentByHeaderClick(faceItem);
                 }
 
                 @Override
                 public void onPageScroll(int currentPage, int total) {
-//                    setFaceHeaderPageIndicator(currentPage, total);
                 }
 
 
@@ -284,11 +295,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //                    setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
                 }
             });
-            layoutBarMenu(BAR_TYPE_FACE_COMMON);
             //显示 所有面孔列表
             ActivityUtils.replaceFragment(getFragmentManager(),
                     visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
-            aplCamMessageAppbar.setExpanded(true, false);
+
         } else {
             ViewUtils.setDrawablePadding(tvCamMessageListDate, R.drawable.wonderful_arrow_down, 2);
             arrow.setVisibility(View.GONE);
@@ -343,7 +353,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void clickStrangerBack() {
         AppLogger.w("clickStrangerBack");
         layoutBarMenu(BAR_TYPE_FACE_COMMON);
-        changeAdapterAndExitStranger();
+        if (visitorFragment != null) {
+            visitorFragment.exitStranger();
+        }
         AppLogger.d("还需要重新选中All");
     }
 
@@ -351,22 +363,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         return false;
     }
 
-    private void changeAdapterAndExitStranger() {
-        getFragmentManager().popBackStack();
-//        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getVisitorItems()));
-    }
-
-//    private void setFaceVisitsCounts(final int count) {
-//        tvCamMessageIndicatorWatcherText.setText(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count));
-//    }
-
-    private void changeContentByHeaderClick(int gPosition, FaceItem faceItem) {
+    private void changeContentByHeaderClick(FaceItem faceItem) {
         int faceType = faceItem.getFaceType();
         if (faceType == FaceItem.FACE_TYPE_STRANGER) {
             // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
-            if (enterStranger()) {
-                layoutBarMenu(BAR_TYPE_STRANGER);
-            }
+            layoutBarMenu(BAR_TYPE_STRANGER);
         } else if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
             // TODO: 2017/10/10 点击的是熟人,但具体是哪个人还不知道
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
@@ -390,51 +391,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         }
     }
-
-    private boolean enterStranger() {
-//        if (ListUtils.isEmpty(FaceItemsProvider.Companion.getGet().getStrangerItems())) {
-//            ToastUtil.showToast("缺资源：没有发现陌生人");
-//            visitorFragment.fetchStrangerVisitorList();
-//            return false;
-//        }
-        AppLogger.w("Clicked enterStranger");
-        //需要刷数据
-        if (visitorStrangerSubFragment == null) {
-            visitorStrangerSubFragment = VisitorStrangerSubFragment.Companion.newInstance(uuid());
-        }
-        ActivityUtils.replaceFragment(getFragmentManager(),
-                visitorStrangerSubFragment,
-                R.id.fLayout_message_face, "visitorStrangerSubFragment", true);
-        visitorStrangerSubFragment.setOnVisitorListCallback(new VisitorListFragmentV2.OnVisitorListCallback() {
-            @Override
-            public void onVisitorTimes(int times) {
-//                setFaceVisitsCounts(times);
-            }
-
-            @Override
-            public void onItemClick(int gPosition) {
-                Log.d("click", "click:" + gPosition);
-                FaceItem faceItem = FaceItemsProvider.Companion.getGet().getStrangerItems().get(gPosition);
-//                changeContentByHeaderClick(faceItem.getFaceType());
-//                fetchMsgList(faceItem.getFaceinformation().face_id);
-            }
-
-            @Override
-            public void onVisitorListReady() {
-
-            }
-
-            @Override
-            public void onPageScroll(int currentItem, int total) {
-                Log.d("click", "currentItem:" + currentItem + "," + total);
-//                setFaceHeaderPageIndicator(currentItem, total);
-            }
-        });
-        visitorStrangerSubFragment.setCallBack(t -> barBack.setVisibility(View.GONE));
-//        setFaceHeaderPageIndicator(0, ListUtils.getSize(FaceItemsProvider.Companion.getGet().getStrangerItems()));
-        return true;
-    }
-
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
         Log.i("onMessageAppbarScrolled", "offset is:" + offset + ",total is:" + appBarLayout.getTotalScrollRange());
@@ -486,7 +442,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         if (needRefresh) {
             startRequest(true);
-            initFaceHeader();
+            refreshFaceHeader();
         }
     }
 

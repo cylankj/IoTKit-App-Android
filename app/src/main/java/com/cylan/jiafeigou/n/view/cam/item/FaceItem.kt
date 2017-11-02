@@ -124,9 +124,10 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
                 Glide.with(holder.itemView.context)
-                        .load(visitor?.detailList?.get(0)?.imgUrl)
+                        .load(visitor?.detailList?.getOrNull(0)?.imgUrl)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
+                        .dontAnimate()
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
@@ -137,6 +138,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                         .load(strangerVisitor?.image_url)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
+                        .dontAnimate()
                         .into(holder.icon)
             }
             else -> {

@@ -63,6 +63,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
                 .load(imageUrl)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
+                .dontAnimate()
                 .into(picture)
         custom_toolbar.setRightAction {
             if (faceId == null || picture == null) {
