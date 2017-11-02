@@ -34,10 +34,10 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.widget.HintTextView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.gson.Gson;
 
 import butterknife.BindView;

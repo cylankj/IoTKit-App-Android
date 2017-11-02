@@ -1845,13 +1845,19 @@ public class DpMsgDefine {
         public String faceId;
         @Index(1)
         public String imgUrl;
+        @Index(2)
+        public int ossType;
 
         @Override
         public String toString() {
             return "VisitorDetail{" +
                     "faceId='" + faceId + '\'' +
                     ", imgUrl='" + imgUrl + '\'' +
+                    ", ossType=" + ossType +
                     '}';
+        }
+
+        public VisitorDetail() {
         }
 
         @Override
@@ -1863,17 +1869,16 @@ public class DpMsgDefine {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.faceId);
             dest.writeString(this.imgUrl);
-        }
-
-        public VisitorDetail() {
+            dest.writeInt(this.ossType);
         }
 
         protected VisitorDetail(Parcel in) {
             this.faceId = in.readString();
             this.imgUrl = in.readString();
+            this.ossType = in.readInt();
         }
 
-        public static final Parcelable.Creator<VisitorDetail> CREATOR = new Parcelable.Creator<VisitorDetail>() {
+        public static final Creator<VisitorDetail> CREATOR = new Creator<VisitorDetail>() {
             @Override
             public VisitorDetail createFromParcel(Parcel source) {
                 return new VisitorDetail(source);
@@ -2023,49 +2028,24 @@ public class DpMsgDefine {
         @Index(1)
         public String image_url;
         @Index(2)
+        public int ossType;
+        @Index(3)
         public long lastTime;
+
+
 
         @Override
         public String toString() {
             return "StrangerVisitor{" +
                     "faceId='" + faceId + '\'' +
                     ", image_url='" + image_url + '\'' +
+                    ", ossType=" + ossType +
                     ", lastTime=" + lastTime +
                     '}';
         }
 
         public StrangerVisitor() {
         }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.faceId);
-            dest.writeString(this.image_url);
-            dest.writeLong(this.lastTime);
-        }
-
-        protected StrangerVisitor(Parcel in) {
-            this.faceId = in.readString();
-            this.image_url = in.readString();
-            this.lastTime = in.readLong();
-        }
-
-        public static final Creator<StrangerVisitor> CREATOR = new Creator<StrangerVisitor>() {
-            @Override
-            public StrangerVisitor createFromParcel(Parcel source) {
-                return new StrangerVisitor(source);
-            }
-
-            @Override
-            public StrangerVisitor[] newArray(int size) {
-                return new StrangerVisitor[size];
-            }
-        };
 
         @Override
         public boolean equals(Object o) {
@@ -2081,6 +2061,38 @@ public class DpMsgDefine {
         public int hashCode() {
             return (int) (lastTime ^ (lastTime >>> 32));
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.faceId);
+            dest.writeString(this.image_url);
+            dest.writeInt(this.ossType);
+            dest.writeLong(this.lastTime);
+        }
+
+        protected StrangerVisitor(Parcel in) {
+            this.faceId = in.readString();
+            this.image_url = in.readString();
+            this.ossType = in.readInt();
+            this.lastTime = in.readLong();
+        }
+
+        public static final Creator<StrangerVisitor> CREATOR = new Creator<StrangerVisitor>() {
+            @Override
+            public StrangerVisitor createFromParcel(Parcel source) {
+                return new StrangerVisitor(source);
+            }
+
+            @Override
+            public StrangerVisitor[] newArray(int size) {
+                return new StrangerVisitor[size];
+            }
+        };
     }
 
     @Message

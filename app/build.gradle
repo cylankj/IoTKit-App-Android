@@ -442,29 +442,29 @@ dependencies {
 
 /////////////////编译过滤器/////////////////////////////////
 //只需要在一个文件中读出需要编译的 variant名字
-//def List<String> getBuildVariantList() {
-//    Properties vFile = new Properties()
-//    File file = rootProject.file('variant.properties')
-//    if (file.exists())
-//        vFile.load(file.newDataInputStream())
-//    else throw new IllegalArgumentException("variant.properties 文件不存在")
-//    String buildVariant = vFile.getProperty('buildVariant')
-//    if (buildVariant == null) return new ArrayList<String>()
-//    ArrayList<String> vList = new ArrayList(Arrays.asList(buildVariant.split(",")))
-//    println("hunt..." + vList)
-//    return vList
-//}
-//
-//List<String> variantFilterList = getBuildVariantList()
+def List<String> getBuildVariantList() {
+    Properties vFile = new Properties()
+    File file = rootProject.file('variant.properties')
+    if (file.exists())
+        vFile.load(file.newDataInputStream())
+    else throw new IllegalArgumentException("variant.properties 文件不存在")
+    String buildVariant = vFile.getProperty('buildVariant')
+    if (buildVariant == null) return new ArrayList<String>()
+    ArrayList<String> vList = new ArrayList(Arrays.asList(buildVariant.split(",")))
+    println("hunt..." + vList)
+    return vList
+}
 
-//android.variantFilter { variant ->
-//    String name = variant.getFlavors().get(0).name
-//    boolean toBuild = variantFilterList.contains(name)
-//    println("oem...." + name + ",toBuild?" + toBuild)
-//    if (!toBuild) {
-//        variant.setIgnore(true)//true:不编译此variant
-//    }
-//}
+List<String> variantFilterList = getBuildVariantList()
+
+android.variantFilter { variant ->
+    String name = variant.getFlavors().get(0).name
+    boolean toBuild = variantFilterList.contains(name)
+    println("oem...." + name + ",toBuild?" + toBuild)
+    if (!toBuild) {
+        variant.setIgnore(true)//true:不编译此variant
+    }
+}
 /////////////////////////////////////////////////////
 //谷歌推送
 //apply plugin: 'com.google.gms.google-services'
