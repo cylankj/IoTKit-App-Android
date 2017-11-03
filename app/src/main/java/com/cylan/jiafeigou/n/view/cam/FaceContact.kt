@@ -76,6 +76,7 @@ interface FaceListContact {
         fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?)
 
         fun onAuthorizationError()
+        fun onMoveFaceError()
     }
 
     interface Presenter : JFGPresenter {

@@ -29,6 +29,10 @@ import kotlinx.android.synthetic.main.fragment_facelist.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListContact.View {
+    override fun onMoveFaceError() {
+        ToastUtil.showToast("语言包:移动面孔失败")
+    }
+
     override fun onAuthorizationError() {
         ToastUtil.showToast("语言包:授权失败!")
     }

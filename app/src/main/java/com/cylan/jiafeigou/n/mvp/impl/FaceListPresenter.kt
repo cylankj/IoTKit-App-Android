@@ -108,6 +108,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     when {
                         rsp == null -> {
                             //返回结果为空?
+                            mView.onMoveFaceError()
                             AppLogger.w("修改面孔信息返回了 null, 可能是超时或者服务器错误! ")
                         }
                         rsp.ret == 0 -> {
@@ -127,7 +128,9 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                         }
                     }
                 }
-                ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
+                ) { e ->
+                     mView.onMoveFaceError()
+                    AppLogger.e(MiscUtils.getErr(e)) }
         addDestroySubscription(subscribe)
     }
 
