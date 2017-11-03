@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.base.IBaseFragment
 import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract
 import com.cylan.jiafeigou.n.mvp.impl.cam.BaseVisitorPresenter
@@ -73,6 +72,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     var itemClickListener: ItemClickListener? = null
+
+    var visitorReadyListener: VisitorReadyListener? = null
+
+    interface VisitorReadyListener {
+        fun onStrangerVisitorReady()
+        fun onVisitorReady()
+    }
 
     lateinit var faceAdapter: FaceAdapter
     lateinit var strangerAdapter: FaceAdapter
@@ -200,11 +206,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
         cam_message_indicator_holder.visibility = View.VISIBLE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
+        visitorReadyListener?.onVisitorReady()
     }
 
     open fun exitStranger() {
 //        face_header.ad(faceAdapter, true)
         vp_default.adapter = faceAdapter
+        faceAdapter.updateClickItem(0)
         presenter.fetchVisitorList()
     }
 
@@ -225,8 +233,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
         strangerAdapter.populateItems(list)
 //        vp_default.swapAdapter(strangerAdapter, true)
-        cam_message_indicator_holder.visibility = View.VISIBLE
+        cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
+        visitorReadyListener?.onStrangerVisitorReady()
     }
 
     open fun refreshContent() {
@@ -294,9 +303,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔")
             popupWindow.dismiss()
-            val image = item.strangerVisitor?.image_url ?: ""
-            val signedCloudUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(item.strangerVisitor?.ossType ?: 0, image)
-            showDetectFaceAlert(item.strangerVisitor?.faceId ?: "", signedCloudUrl)
+            showDetectFaceAlert(item.strangerVisitor)
         }
 
         contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
@@ -304,21 +311,16 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             popupWindow.dismiss()
 
             if (item != null) {
-                val detail = item.visitor?.detailList?.getOrNull(0)
-                val signedCloudUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(detail?.ossType ?: 0, detail?.imgUrl ?: "")
-                val fragment = FaceInformationFragment.newInstance(uuid,
-                        signedCloudUrl,
-                        item.visitor?.personName ?: "",
-                        item.visitor?.personId ?: "")
+                val fragment = FaceInformationFragment.newInstance(uuid, item.visitor)
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else {
                 // TODO: 2017/10/16 为什么会出现这种情况?
             }
         }
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.NO_GRAVITY)
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START or Gravity.BOTTOM)
     }
 
-    private fun showDetectFaceAlert(faceId: String, imageUrl: String) {
+    private fun showDetectFaceAlert(strangerVisitor: DpMsgDefine.StrangerVisitor?) {
         val dialog = AlertDialog.Builder(context)
                 .setView(R.layout.layout_face_detect_pop_alert)
                 .show()
@@ -330,14 +332,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             val newFace = dialog.findViewById(R.id.detect_new_face) as RadioButton?
             if (addTo!!.isChecked) {
                 val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account,
-                        uuid, faceId, FaceListFragment.TYPE_ADD_TO)
+                        uuid, strangerVisitor?.faceId ?: "", FaceListFragment.TYPE_ADD_TO)
                 fragment.resultCallback = { o, o2, o3 ->
                     presenter.fetchStrangerVisitorList()
 
                 }// TODO: 2017/10/10 移动到面孔的结果回调
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             } else if (newFace!!.isChecked) {
-                val fragment = CreateNewFaceFragment.newInstance(uuid, faceId, imageUrl)
+                val fragment = CreateNewFaceFragment.newInstance(uuid, strangerVisitor)
                 fragment.resultCallback = {
                     //todo 返回创建的personID
                 }

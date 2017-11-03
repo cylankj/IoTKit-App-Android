@@ -435,15 +435,16 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchVisitorMessageList(int type, String id, long sec) {
+    public void fetchVisitorMessageList(int type, String id, long sec, boolean refresh) {
         final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
         AppLogger.d("sessionId:" + sessionId);
         try {
+            if (id == null) id = "";
             DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
             reqContent.cid = uuid;
             reqContent.faceId = id;
             reqContent.msgType = type;
-            reqContent.seq = 0L;
+            reqContent.seq = sec;
             final long seq = BaseApplication.getAppComponent()
                     .getCmd().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
             Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
@@ -453,21 +454,25 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     .flatMap(rsp -> {
                         AppLogger.d("Fetch Information:" + Arrays.toString(rsp.data));
                         DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
-                        AppLogger.d("fetchMessageListByFaceId by faceId：");
+                        AppLogger.d("Raw Fetch Result:" + rrsp);
                         //转化出。
 
                         ArrayList<CamMessageBean> list = new ArrayList<>();
                         if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
                             CamMessageBean bean;
                             for (DpMsgDefine.DPHeader header : rrsp.dataList) {
-                                bean = new CamMessageBean();
                                 if (header.msgId == 505) {
+                                    bean = new CamMessageBean();
                                     DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
                                     if (dpAlarm != null) {
+                                        bean.version = header.version;
+                                        bean.id = header.msgId;
                                         bean.alarmMsg = dpAlarm;
                                     }
+                                    list.add(bean);
+                                } else if (header.msgId == 201) {
+
                                 }
-                                list.add(bean);
                             }
                         }
                         return Observable.just(list);
@@ -476,7 +481,11 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(rsp -> {
                         AppLogger.e("Fetch Result:" + rsp);
-                        mView.onListInsert(rsp, 0);
+                        if (refresh) {
+                            mView.onVisitorListInsert(rsp);
+                        } else {
+                            mView.onVisitorListAppend(rsp);
+                        }
                     }, throwable -> {
 
                     });

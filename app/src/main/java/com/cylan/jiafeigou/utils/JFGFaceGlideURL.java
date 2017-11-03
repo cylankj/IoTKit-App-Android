@@ -35,7 +35,7 @@ public class JFGFaceGlideURL extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return OptionsImpl.getServer() + vid + "-" + cid + "-" + account + "-" + stranger + "-" + regionType + "-" + faceId;
+        return OptionsImpl.getServer() + faceId + regionType;
     }
 
 
@@ -53,7 +53,7 @@ public class JFGFaceGlideURL extends GlideUrl {
             return new URL(urlV2);
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
-            return new URL("");
+            return new URL(faceId);
         }
     }
 }

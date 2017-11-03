@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
@@ -136,8 +137,10 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 }
                 Glide.with(holder.itemView.context)
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
+                        .dontAnimate()
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
@@ -149,8 +152,10 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.strangerIcon.visibility = View.VISIBLE
                 Glide.with(holder.itemView.context)
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
+                        .dontAnimate()
                         .into(holder.icon)
             }
             FACE_TYPE_EMPTY -> {

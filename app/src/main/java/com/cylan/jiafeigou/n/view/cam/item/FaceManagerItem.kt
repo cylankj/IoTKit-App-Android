@@ -8,6 +8,7 @@ import android.widget.ImageView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.utils.JFGFaceGlideURL
@@ -43,6 +44,7 @@ class FaceManagerItem : AbstractItem<FaceManagerItem, FaceManagerItem.FaceManage
         super.bindView(holder, payloads)
         Glide.with(holder.itemView.context)
                 .load(JFGFaceGlideURL("", faceInformation?.image_url, faceInformation?.oss_type ?: 0, false))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.color.color_E8EAEC)
                 .placeholder(R.color.color_E8EAEC)
                 .into(holder.faceIcon)

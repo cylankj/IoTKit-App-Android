@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.RadioButton
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
@@ -55,6 +56,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
         Glide
                 .with(holder.itemView.context)
                 .load(JFGFaceGlideURL("", visitorDetail?.imgUrl ?: "", visitorDetail?.ossType ?: 0, false))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .dontAnimate()

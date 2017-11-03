@@ -2209,7 +2209,7 @@ public class DpMsgDefine {
         @Index(0)
         public int msgId;
         @Index(1)
-        public long seq;
+        public long version;
         @Index(2)
         public byte[] bytes;
 
@@ -2217,7 +2217,7 @@ public class DpMsgDefine {
         public String toString() {
             return "DPHeader{" +
                     "msgId=" + msgId +
-                    ", seq=" + seq +
+                    ", seq=" + version +
                     ", bytes=" + Arrays.toString(bytes) +
                     '}';
         }
@@ -2230,7 +2230,7 @@ public class DpMsgDefine {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.msgId);
-            dest.writeLong(this.seq);
+            dest.writeLong(this.version);
             dest.writeByteArray(this.bytes);
         }
 
@@ -2239,7 +2239,7 @@ public class DpMsgDefine {
 
         protected DPHeader(Parcel in) {
             this.msgId = in.readInt();
-            this.seq = in.readLong();
+            this.version = in.readLong();
             this.bytes = in.createByteArray();
         }
 
