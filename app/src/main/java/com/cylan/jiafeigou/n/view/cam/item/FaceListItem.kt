@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
@@ -18,12 +19,12 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * Created by yanzhendong on 2017/10/12.
  */
 class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>() {
-    var faceInformation: DpMsgDefine.FaceInformation? = null
+    //    var faceInformation: DpMsgDefine.FaceInformation? = null
     var visitor: DpMsgDefine.Visitor? = null
-    fun withFaceInformation(faceInformation: DpMsgDefine.FaceInformation): FaceListItem {
-        this.faceInformation = faceInformation
-        return this
-    }
+//    fun withFaceInformation(faceInformation: DpMsgDefine.FaceInformation): FaceListItem {
+//        this.faceInformation = faceInformation
+//        return this
+//    }
 
     fun withVisitorInformation(visitor: DpMsgDefine.Visitor): FaceListItem {
         this.visitor = visitor
@@ -49,11 +50,11 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
 
         //todo 基于 FaceInformation
         //imageUrl 怎么定义的一个 visitor 下有多个人脸
-        var imageUrl: String = visitor?.detailList?.get(0)?.imgUrl ?: ""
         var personName: String = visitor?.personName ?: "小明啊"
+        val visitorDetail = visitor?.detailList?.getOrNull(0)
         Glide
                 .with(holder.itemView.context)
-                .load(imageUrl)
+                .load(JFGFaceGlideURL("", visitorDetail?.imgUrl ?: "", visitorDetail?.ossType ?: 0, false))
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .dontAnimate()
@@ -84,7 +85,12 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
 
     private fun getPinYinLatter(text: String?): String {
         val char = text?.get(0) ?: '#'
-        return Pinyin.toPinyin(if (Pinyin.isChinese(char)) char else '#')?.get(0).toString()
+        val toPinyin = Pinyin.toPinyin(char)[0].toString()
+        return if ("[a-z,A-Z]".toRegex().matches(toPinyin)) {
+            toPinyin
+        } else {
+            "#"
+        }
     }
 
 

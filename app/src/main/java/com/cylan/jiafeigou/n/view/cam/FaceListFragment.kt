@@ -52,6 +52,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
                     }
                 }
             }
+
         }
     }
 

@@ -31,6 +31,7 @@ interface FaceManagerContact {
 
         fun onDeleteFaceSuccess()
         fun onAuthorizationError()
+        fun onAcquaintanceReady(data: List<DpMsgDefine.AcquaintanceItem>)
     }
 
     interface Presenter : JFGPresenter {
@@ -39,6 +40,7 @@ interface FaceManagerContact {
 
         fun deleteFace(personId: String?, listOf: List<String>)
 
+        fun loadFaceByPersonIdByDP(personId: String)
     }
 }
 

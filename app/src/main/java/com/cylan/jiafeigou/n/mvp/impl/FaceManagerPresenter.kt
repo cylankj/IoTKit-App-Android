@@ -1,13 +1,17 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
 import android.text.TextUtils
+import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.FaceManagerContact
+import com.cylan.jiafeigou.rx.RxBus
+import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -27,6 +31,7 @@ import javax.inject.Inject
  * Created by yanzhendong on 2017/10/10.
  */
 class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : BasePresenter<FaceManagerContact.View>(view), FaceManagerContact.Presenter {
+    @Inject lateinit var appCmd: AppCmd
 
     override fun deleteFace(personId: String?, listOf: List<String>) {
         val method = method()
@@ -96,6 +101,37 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     AppLogger.e(MiscUtils.getErr(it))
                 })
         addDestroySubscription(subscribe)
+    }
+
+    override fun loadFaceByPersonIdByDP(personId: String) {
+        val method = method()
+        val subscribe = Observable.just(method)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map {
+                    appCmd.sendUniservalDataSeq(11, DpUtils.pack(DpMsgDefine.AcquaintanceListReq(uuid, personId)))
+                }
+                .flatMap { seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java).first { seq == it.seq } }
+                .map {
+                    val acquaintanceListRsp = DpUtils.unpackData(it.data, DpMsgDefine.AcquaintanceListRsp::class.java)
+                    acquaintanceListRsp
+                }
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .compose(applyLoading(R.string.LOADING, method))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    when (it) {
+                        null -> {
+                            AppLogger.w("加载面孔列表: null")
+                        }
+                        else -> {
+                            mView.onAcquaintanceReady(it.acquaintanceItems)
+                        }
+                    }
+                }) {
+
+                }
+        addStopSubscription(subscribe)
     }
 
     override fun loadFacesByPersonId(personId: String) {

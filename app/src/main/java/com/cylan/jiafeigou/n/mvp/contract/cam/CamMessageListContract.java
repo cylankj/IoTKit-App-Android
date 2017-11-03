@@ -65,11 +65,7 @@ public interface CamMessageListContract {
 
         void refreshDateList(boolean needToLoadList);
 
-        void fetchMessageListByFaceId(final String faceId);
-
-        void fetchMessageListByPersonId(String personId);
-
-        void fetchMessageList(Object o);
+        void fetchVisitorMessageList(int type, String id, long sec);
     }
 }
 

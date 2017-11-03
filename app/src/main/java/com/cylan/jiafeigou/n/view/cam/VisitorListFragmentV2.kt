@@ -5,11 +5,11 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.base.IBaseFragment
 import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract
 import com.cylan.jiafeigou.n.mvp.impl.cam.BaseVisitorPresenter
@@ -30,6 +31,7 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
 import com.cylan.jiafeigou.utils.ToastUtil
+import com.cylan.jiafeigou.widget.page.EViewPager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import kotlinx.android.synthetic.main.fragment_visitor_list.*
@@ -70,7 +72,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         setFaceVisitsCounts(cnt)
     }
 
-    lateinit var onVisitorListCallback: OnVisitorListCallback
+    var itemClickListener: ItemClickListener? = null
 
     lateinit var faceAdapter: FaceAdapter
     lateinit var strangerAdapter: FaceAdapter
@@ -86,7 +88,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         return inflater!!.inflate(R.layout.fragment_visitor_list, container, false)
     }
 
-    private lateinit var layoutManager: LinearLayoutManager
+//    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,12 +96,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceAdapter.uuid = uuid
         strangerAdapter = FaceAdapter(false)
         strangerAdapter.uuid = uuid
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        face_header.layoutManager = layoutManager
-        face_header.adapter = faceAdapter
+//        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        vp_default.adapter = faceAdapter
         val itemClickListener: ItemClickListener = object : ItemClickListener {
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
-                (face_header.adapter as FaceAdapter?)?.updateClickItem(globalPosition)
+                itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
+                (vp_default.adapter as FaceAdapter?)?.updateClickItem(globalPosition)
                 when (item.getFaceType()) {
                     FaceItem.FACE_TYPE_ALL -> {
                         presenter.fetchVisitorList()
@@ -110,14 +112,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         presenter.fetchStrangerVisitorList()
                     }
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
-                        val adapter = face_header.adapter as FaceAdapter?
+                        val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.d("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
                         presenter.fetchVisitsCount(faceId!!)
                     }
                     FaceItem.FACE_TYPE_STRANGER_SUB -> {
-                        val adapter = face_header.adapter as FaceAdapter?
+                        val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.d("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
@@ -127,7 +129,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
 
             override fun itemLongClick(globalPosition: Int, _p: Int, _v: View, faceType: Int, pageIndex: Int) {
-                val adapter = face_header.adapter as FaceAdapter?
+                itemClickListener?.itemLongClick(globalPosition, _p, _v, faceType, pageIndex)
+                val adapter = vp_default.adapter as FaceAdapter?
                 if (adapter != null) {
                     adapter.updateClickItem(globalPosition)
                     val faceItem = adapter.dataItems[globalPosition]
@@ -139,27 +142,36 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceAdapter.itemClickListener = itemClickListener
         strangerAdapter.itemClickListener = itemClickListener
 
-//        vp_default.enableScrollListener = EViewPager.EnableScrollListener { false }
+        vp_default.enableScrollListener = EViewPager.EnableScrollListener { false }
         cam_message_indicator_holder.visibility = View.VISIBLE
-        val count = (face_header.adapter as FaceAdapter).getItemCount()
-        val position = layoutManager.findFirstCompletelyVisibleItemPosition();
-        setFaceHeaderPageIndicator(position, count)
+        val count = (vp_default.adapter as FaceAdapter).getItemSize()
+//        val position = layoutManager.findFirstCompletelyVisibleItemPosition();
+        setFaceHeaderPageIndicator(vp_default.currentItem, count)
+        vp_default.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
 
-        PagerSnapHelper().attachToRecyclerView(face_header)
-        face_header.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val itemPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
-                    val count = (face_header.adapter as FaceAdapter).getItemSize()
-                    setFaceHeaderPageIndicator(itemPosition, count)
-                }
             }
-        })
-    }
 
-    override fun onStart() {
-        super.onStart()
-        presenter.fetchVisitorList()
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                val itemSize = (vp_default.adapter as FaceAdapter).getItemSize()
+                setFaceHeaderPageIndicator(position, itemSize)
+            }
+
+        })
+
+//        PagerSnapHelper().attachToRecyclerView(face_header)
+//        face_header.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    val itemPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+//                    val count = (face_header.adapter as FaceAdapter).getItemSize()
+//                    setFaceHeaderPageIndicator(itemPosition, count)
+//                }
+//            }
+//        })
     }
 
     private fun setFaceHeaderPageIndicator(currentItem: Int, total: Int) {
@@ -175,19 +187,24 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
+        if (!(vp_default.adapter as FaceAdapter).isNormalVisitor) {
+            vp_default.adapter = faceAdapter
+        }
         visitorList?.dataList?.map {
             val allFace = FaceItem()
             allFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
             allFace.withVisitor(it)
+            allFace.withUuid(uuid)
         }?.apply {
             faceAdapter.populateItems(this)
         }
         cam_message_indicator_holder.visibility = View.VISIBLE
-        setFaceHeaderPageIndicator(layoutManager.findFirstCompletelyVisibleItemPosition(), (face_header.adapter as FaceAdapter).getItemSize())
+        setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
     }
 
     open fun exitStranger() {
-        face_header.swapAdapter(faceAdapter, true)
+//        face_header.ad(faceAdapter, true)
+        vp_default.adapter = faceAdapter
         presenter.fetchVisitorList()
     }
 
@@ -200,17 +217,20 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
             strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
             strangerFace.withSetSelected(false)
+            strangerFace.withUuid(uuid)
             list.add(strangerFace)
         }
+        if ((vp_default.adapter as FaceAdapter).isNormalVisitor) {
+            vp_default.adapter = strangerAdapter
+        }
         strangerAdapter.populateItems(list)
-        face_header.swapAdapter(strangerAdapter, true)
+//        vp_default.swapAdapter(strangerAdapter, true)
         cam_message_indicator_holder.visibility = View.VISIBLE
-        setFaceHeaderPageIndicator(layoutManager.findFirstCompletelyVisibleItemPosition(), ListUtils.getSize(list))
-        onVisitorListCallback?.onStrangeListReady()
+        setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
     }
 
     open fun refreshContent() {
-        val adapter = face_header.adapter as FaceAdapter?
+        val adapter = vp_default.adapter as FaceAdapter?
         if (adapter?.isNormalVisitor == true) {
             presenter.fetchVisitorList()
         } else {
@@ -228,18 +248,18 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
     }
 
-    interface OnVisitorListCallback {
-        /**
-         * gPosition: global position
-         */
-        fun onItemClick(item: FaceItem)
-
-        fun onVisitorListReady()
-        fun onPageScroll(currentItem: Int, total: Int)
-
-        fun onVisitorTimes(times: Int)
-        fun onStrangeListReady()
-    }
+//    interface OnVisitorListCallback {
+//        /**
+//         * gPosition: global position
+//         */
+//        fun onItemClick(item: FaceItem)
+//
+//        fun onVisitorListReady()
+//        fun onPageScroll(currentItem: Int, total: Int)
+//
+//        fun onVisitorTimes(times: Int)
+//        fun onStrangeListReady()
+//    }
 
     private fun showHeaderFacePopMenu(item: FaceItem, position: Int, faceItem: View, faceType: Int) {
 //        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
@@ -274,7 +294,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔")
             popupWindow.dismiss()
-            showDetectFaceAlert(item.strangerVisitor?.faceId ?: "", item.strangerVisitor?.image_url ?: "")
+            val image = item.strangerVisitor?.image_url ?: ""
+            val signedCloudUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(item.strangerVisitor?.ossType ?: 0, image)
+            showDetectFaceAlert(item.strangerVisitor?.faceId ?: "", signedCloudUrl)
         }
 
         contentView.findViewById(R.id.viewer).setOnClickListener { _ ->
@@ -282,8 +304,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             popupWindow.dismiss()
 
             if (item != null) {
+                val detail = item.visitor?.detailList?.getOrNull(0)
+                val signedCloudUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(detail?.ossType ?: 0, detail?.imgUrl ?: "")
                 val fragment = FaceInformationFragment.newInstance(uuid,
-                        item.visitor?.detailList?.getOrNull(0)?.imgUrl ?: "",
+                        signedCloudUrl,
                         item.visitor?.personName ?: "",
                         item.visitor?.personId ?: "")
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
@@ -291,7 +315,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 // TODO: 2017/10/16 为什么会出现这种情况?
             }
         }
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START)
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.NO_GRAVITY)
     }
 
     private fun showDetectFaceAlert(faceId: String, imageUrl: String) {
@@ -308,6 +332,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account,
                         uuid, faceId, FaceListFragment.TYPE_ADD_TO)
                 fragment.resultCallback = { o, o2, o3 ->
+                    presenter.fetchStrangerVisitorList()
 
                 }// TODO: 2017/10/10 移动到面孔的结果回调
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
@@ -375,11 +400,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 }// Required empty public constructor
 
 class FaceFastItemAdapter : ItemAdapter<FaceItem>()
-class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
+class ViewHolder(val itemview: View) {
     val rvList: RecyclerView = itemview.findViewById(R.id.message_face_page_item) as RecyclerView
     val visitorAdapter = FaceFastItemAdapter()
     val adapter = FastAdapter<FaceItem>()
-    fun bindItem(pageIndex: Int, isNormalVisitor: Boolean, items: List<FaceItem>, itemClickListener: VisitorListFragmentV2.ItemClickListener, maxHeight: Int) {
+    fun bindItem(pageIndex: Int, isNormalVisitor: Boolean, items: List<FaceItem>, itemClickListener: VisitorListFragmentV2.ItemClickListener) {
         adapter.withOnClickListener { _, _, item, position ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
             itemClickListener?.itemClick(visitorAdapter.getItem(position),
@@ -393,7 +418,8 @@ class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
             }
             true
         }
-        visitorAdapter.set(items)
+
+        visitorAdapter.setNewList(items)
         adapter.notifyDataSetChanged()
     }
 
@@ -416,22 +442,46 @@ class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
     }
 }
 
-class FaceAdapter(var isNormalVisitor: Boolean) : RecyclerView.Adapter<ViewHolder>() {
+class FaceAdapter(var isNormalVisitor: Boolean) : PagerAdapter() {
+    override fun isViewFromObject(view: View?, viewHolder: Any?): Boolean {
+        return (viewHolder as? ViewHolder)?.itemview == view
+    }
 
-    private var maxHeight: Int = 0
+    private val cachedItems = mutableListOf<ViewHolder>()
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+    override fun getCount(): Int {
+        return JConstant.getPageCnt(ListUtils.getSize(dataItems))
+    }
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val viewHolder = if (cachedItems.size > 0) {
+            cachedItems.removeAt(0)
+        } else {
+            val inflate = LayoutInflater.from(container.context).inflate(R.layout.message_face_page, container, false)
+            ViewHolder(inflate)
+        }
         val start = JConstant.FACE_CNT_IN_PAGE * position
         val end = Math.min(dataItems.size, start + JConstant.FACE_CNT_IN_PAGE)
         AppLogger.e("start:$start,end:$end")
         val list = (JConstant.FACE_CNT_IN_PAGE * position until Math.min(dataItems.size, start + JConstant.FACE_CNT_IN_PAGE)).map { dataItems[it] }
-        holder.bindItem(position, isNormalVisitor, list, itemClickListener, maxHeight)
+        viewHolder.bindItem(position, isNormalVisitor, list, itemClickListener)
+        container.addView(viewHolder.itemview)
+        return viewHolder
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflate = LayoutInflater.from(parent.context).inflate(R.layout.message_face_page, parent, false)
-        val viewHolder = ViewHolder(inflate)
-        return viewHolder
+    override fun notifyDataSetChanged() {
+        super.notifyDataSetChanged()
+
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, viewHolder: Any?) {
+        container.removeView((viewHolder as ViewHolder).itemview)
+        cachedItems.add(viewHolder)
+    }
+
+    override fun getItemPosition(`object`: Any?): Int {
+        return POSITION_NONE
     }
 
 
@@ -453,10 +503,6 @@ class FaceAdapter(var isNormalVisitor: Boolean) : RecyclerView.Adapter<ViewHolde
         if (isNormalVisitor) {
             dataItems.addAll(preloadItems)
         }
-    }
-
-    override fun getItemCount(): Int {
-        return JConstant.getPageCnt(ListUtils.getSize(dataItems))
     }
 
     fun getItemSize(): Int {

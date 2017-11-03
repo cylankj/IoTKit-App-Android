@@ -10,6 +10,7 @@ import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 
@@ -18,9 +19,9 @@ import com.mikepenz.fastadapter.items.AbstractItem
  */
 class FaceManagerItem : AbstractItem<FaceManagerItem, FaceManagerItem.FaceManagerViewHolder>() {
 
-    var faceInformation: DpMsgDefine.FaceInformation? = null
+    var faceInformation: DpMsgDefine.AcquaintanceItem? = null
 
-    fun withFaceInformation(faceInformation: DpMsgDefine.FaceInformation): FaceManagerItem {
+    fun withFaceInformation(faceInformation: DpMsgDefine.AcquaintanceItem): FaceManagerItem {
         this.faceInformation = faceInformation
         return this
     }
@@ -41,7 +42,7 @@ class FaceManagerItem : AbstractItem<FaceManagerItem, FaceManagerItem.FaceManage
     override fun bindView(holder: FaceManagerViewHolder, payloads: MutableList<Any>?) {
         super.bindView(holder, payloads)
         Glide.with(holder.itemView.context)
-                .load(faceInformation?.source_image_url)
+                .load(JFGFaceGlideURL("", faceInformation?.image_url, faceInformation?.oss_type ?: 0, false))
                 .error(R.color.color_E8EAEC)
                 .placeholder(R.color.color_E8EAEC)
                 .into(holder.faceIcon)

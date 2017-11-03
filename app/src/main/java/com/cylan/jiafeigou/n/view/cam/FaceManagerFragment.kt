@@ -29,6 +29,19 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
+    override fun onAcquaintanceReady(data: List<DpMsgDefine.AcquaintanceItem>) {
+        var face: FaceManagerItem
+        val items: MutableList<FaceManagerItem> = mutableListOf()
+        for (information in data) {
+            face = FaceManagerItem().withFaceInformation(information)
+            items.add(face)
+        }
+
+        adapter.setNewList(items)
+        custom_toolbar.setRightEnable(adapter.itemCount > 0)
+        empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+    }
+
     override fun onAuthorizationError() {
         AppLogger.w("获取面孔失败:授权失败")
         ToastUtil.showToast("语言包: 授权失败")
@@ -46,16 +59,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
     }
 
     override fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>) {
-        var face: FaceManagerItem
-        val items: MutableList<FaceManagerItem> = mutableListOf()
-        for (information in data) {
-            face = FaceManagerItem().withFaceInformation(information)
-            items.add(face)
-        }
 
-        adapter.setNewList(items)
-        custom_toolbar.setRightEnable(adapter.itemCount > 0)
-        empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
     lateinit var adapter: FastItemAdapter<FaceManagerItem>
@@ -71,7 +75,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onStart() {
         super.onStart()
-        presenter.loadFacesByPersonId(personId ?: "")
+        presenter.loadFaceByPersonIdByDP(personId ?: "")
     }
 
     override fun initViewAndListener() {

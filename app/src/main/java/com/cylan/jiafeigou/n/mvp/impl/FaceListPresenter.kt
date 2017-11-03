@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
 import android.text.TextUtils
+import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
@@ -32,6 +33,7 @@ import javax.inject.Inject
  */
 class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePresenter<FaceListContact.View>(view), FaceListContact.Presenter {
 
+    @Inject lateinit var appCmd: AppCmd
     /**
      * face_id	人脸注册图像标识【必填项】
     person_id	人唯一标识【必填项】

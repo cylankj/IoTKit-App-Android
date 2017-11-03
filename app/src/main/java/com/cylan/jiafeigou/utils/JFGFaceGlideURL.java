@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Locale;
 
 /**
  * Created by yzd on 16-12-26.
@@ -31,6 +30,7 @@ public class JFGFaceGlideURL extends GlideUrl {
         this.account = DataSourceManager.getInstance().getAccount().getAccount();
         this.stranger = stranger;
         this.regionType = regionType;
+        this.faceId = faceId;
     }
 
     @Override
@@ -44,11 +44,11 @@ public class JFGFaceGlideURL extends GlideUrl {
         try {
             String urlV2;
             if (stranger) {
-                urlV2 = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+//                urlV2 = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
+                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, faceId);
             } else {
-                urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+//                urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
+                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, faceId);
             }
             return new URL(urlV2);
         } catch (Exception e) {
