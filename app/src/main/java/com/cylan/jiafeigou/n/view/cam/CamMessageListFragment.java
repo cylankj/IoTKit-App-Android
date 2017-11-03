@@ -706,14 +706,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onVisitorListInsert(ArrayList<CamMessageBean> beans) {
+
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
+        LoadingDialog.dismissLoading();
         camMessageListAdapter.clear();
         camMessageListAdapter.addAll(beans);
+        int itemPosition = layoutManager.findFirstVisibleItemPosition();
+        setCurrentPosition(Math.max(0, itemPosition));
         lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
-        rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 && !hasFaceHeader ? View.GONE : View.VISIBLE);
-        setCurrentPosition(0);
+        rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
+        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 );
     }
 
     @Override
