@@ -713,6 +713,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.addAll(beans);
         lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 && !hasFaceHeader ? View.GONE : View.VISIBLE);
+        setCurrentPosition(0);
     }
 
     @Override
