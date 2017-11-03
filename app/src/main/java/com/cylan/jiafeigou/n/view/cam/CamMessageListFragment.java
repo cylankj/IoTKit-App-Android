@@ -246,9 +246,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
     }
 
-    private void fetchMsgList(String faceId) {
-        presenter.fetchMessageListByFaceId(faceId);
-    }
+//    private void fetchMsgList(String faceId) {
+//        presenter.fetchMessageListByFaceId(faceId);
+//    }
 
     private void refreshFaceHeader() {
         if (visitorFragment != null) {

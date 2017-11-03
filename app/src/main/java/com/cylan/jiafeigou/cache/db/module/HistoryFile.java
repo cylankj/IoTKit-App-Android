@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 
 /**
  * Created by holy on 2017/3/19.
@@ -21,6 +22,22 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
     @Generated(hash = 735721945)
     public String uuid;
     public String server;
+    @Transient
+    public int mode;
+
+
+
+    @Override
+    public String toString() {
+        return "HistoryFile{" +
+                "id=" + id +
+                ", time=" + time +
+                ", duration=" + duration +
+                ", uuid='" + uuid + '\'' +
+                ", server='" + server + '\'' +
+                ", mode=" + mode +
+                '}';
+    }
 
     public void setDuration(int duration) {
         this.duration = duration;
@@ -66,17 +83,21 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
     public HistoryFile() {
     }
 
-    @Override
-    public String toString() {
-        return "HistoryFile{" +
-                "id=" + id +
-                ", time=" + time +
-                ", duration=" + duration +
-                ", uuid='" + uuid + '\'' +
-                ", server='" + server + '\'' +
-                '}';
+
+    @Generated(hash = 6595676)
+    public HistoryFile(Long id, long time, int duration, String uuid,
+            String server) {
+        this.id = id;
+        this.time = time;
+        this.duration = duration;
+        this.uuid = uuid;
+        this.server = server;
     }
 
+    @Override
+    public int compareTo(@NonNull HistoryFile another) {
+        return (int) (another.time - this.time);
+    }
 
     @Override
     public int describeContents() {
@@ -90,6 +111,7 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
         dest.writeInt(this.duration);
         dest.writeString(this.uuid);
         dest.writeString(this.server);
+        dest.writeInt(this.mode);
     }
 
     protected HistoryFile(Parcel in) {
@@ -98,16 +120,7 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
         this.duration = in.readInt();
         this.uuid = in.readString();
         this.server = in.readString();
-    }
-
-    @Generated(hash = 6595676)
-    public HistoryFile(Long id, long time, int duration, String uuid,
-                       String server) {
-        this.id = id;
-        this.time = time;
-        this.duration = duration;
-        this.uuid = uuid;
-        this.server = server;
+        this.mode = in.readInt();
     }
 
     public static final Creator<HistoryFile> CREATOR = new Creator<HistoryFile>() {
@@ -121,9 +134,4 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
             return new HistoryFile[size];
         }
     };
-
-    @Override
-    public int compareTo(@NonNull HistoryFile another) {
-        return (int) (another.time - this.time);
-    }
 }

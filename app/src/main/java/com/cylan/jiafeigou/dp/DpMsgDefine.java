@@ -13,7 +13,9 @@ import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -1955,8 +1957,12 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             Visitor visitor = (Visitor) o;
 
@@ -2033,7 +2039,6 @@ public class DpMsgDefine {
         public long lastTime;
 
 
-
         @Override
         public String toString() {
             return "StrangerVisitor{" +
@@ -2049,8 +2054,12 @@ public class DpMsgDefine {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             StrangerVisitor that = (StrangerVisitor) o;
 
@@ -2352,7 +2361,132 @@ public class DpMsgDefine {
         }
 
         @Index(3)
-
         public int delMsg;
+    }
+
+    @Message
+    public static class Unit implements Parcelable {
+        @Index(0)
+        public short video;
+        @Optional
+        @Index(1)
+        public short mode;
+
+
+        @Override
+        public String toString() {
+            return "Unit{" +
+                    "video=" + video +
+                    ", mode=" + mode +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.video);
+            dest.writeInt(this.mode);
+        }
+
+        public Unit() {
+        }
+
+        protected Unit(Parcel in) {
+            this.video = (short) in.readInt();
+            this.mode = (short) in.readInt();
+        }
+
+        public static final Parcelable.Creator<Unit> CREATOR = new Parcelable.Creator<Unit>() {
+            @Override
+            public Unit createFromParcel(Parcel source) {
+                return new Unit(source);
+            }
+
+            @Override
+            public Unit[] newArray(int size) {
+                return new Unit[size];
+            }
+        };
+    }
+
+    @Message
+    public static class UniversalDataBaseRsp implements Parcelable {
+        @Index(0)
+        public int id;
+        @Index(1)
+        public String caller;
+        @Index(2)
+        public String callee;
+        @Index(3)
+        public long seq;
+        @Index(4)
+        public int way;
+        @Index(5)
+        public Map<Integer, List<Unit>> dataMap;
+
+        @Override
+        public String toString() {
+            return "UniversalDataBaseRsp{" +
+                    "id=" + id +
+                    ", caller='" + caller + '\'' +
+                    ", callee='" + callee + '\'' +
+                    ", seq=" + seq +
+                    ", way=" + way +
+                    ", dataMap=" + dataMap +
+                    '}';
+        }
+
+        public UniversalDataBaseRsp() {
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeString(this.caller);
+            dest.writeString(this.callee);
+            dest.writeLong(this.seq);
+            dest.writeInt(this.way);
+            dest.writeInt(this.dataMap.size());
+            for (Map.Entry<Integer, List<Unit>> entry : this.dataMap.entrySet()) {
+                dest.writeValue(entry.getKey());
+                dest.writeTypedList(entry.getValue());
+            }
+        }
+
+        protected UniversalDataBaseRsp(Parcel in) {
+            this.id = in.readInt();
+            this.caller = in.readString();
+            this.callee = in.readString();
+            this.seq = in.readLong();
+            this.way = in.readInt();
+            int dataMapSize = in.readInt();
+            this.dataMap = new HashMap<Integer, List<Unit>>(dataMapSize);
+            for (int i = 0; i < dataMapSize; i++) {
+                Integer key = (Integer) in.readValue(Integer.class.getClassLoader());
+                List<Unit> value = in.createTypedArrayList(Unit.CREATOR);
+                this.dataMap.put(key, value);
+            }
+        }
+
+        public static final Creator<UniversalDataBaseRsp> CREATOR = new Creator<UniversalDataBaseRsp>() {
+            @Override
+            public UniversalDataBaseRsp createFromParcel(Parcel source) {
+                return new UniversalDataBaseRsp(source);
+            }
+
+            @Override
+            public UniversalDataBaseRsp[] newArray(int size) {
+                return new UniversalDataBaseRsp[size];
+            }
+        };
     }
 }

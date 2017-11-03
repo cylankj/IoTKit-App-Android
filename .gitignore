@@ -28,3 +28,4 @@
 /compiler/build/classes/
 /gradle.properties
 /fastdex.properties
+将删除 app/sampledata/

@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -17,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -58,59 +58,90 @@ public class DpMsgDefineTest {
         }
     }
 
+    @Message
+    public static class UniversalDataBaseRsp {
+        @Index(0)
+        public int id;
+        @Index(1)
+        public String caller;
+        @Index(2)
+        public String callee;
+        @Index(3)
+        public long seq;
+        @Index(4)
+        public int ret;
+        @Index(5)
+        public Map<Integer, List<DpMsgDefine.Unit>> dataMap;
+
+        @Override
+        public String toString() {
+            return "UniversalDataBaseRsp{" +
+                    "id=" + id +
+                    ", caller='" + caller + '\'' +
+                    ", callee='" + callee + '\'' +
+                    ", seq=" + seq +
+                    ", ret=" + ret +
+                    ", dataMap=" + dataMap +
+                    '}';
+        }
+    }
+
     @Test
     public void testObject() throws IOException {
 
-        System.out.println("DPSdcardSummary:" + unpackData(new byte[]{-110,-62,0},
-                DpMsgDefine.DPSdcardSummary.class));
-        System.out.println("DPBellCallRecord:" + unpackData(new byte[]{-108, 0, -50, 89, 120, 45, -68, 0, 1},
-                DpMsgDefine.DPBellCallRecord.class));
+        byte[] raw = new byte[]{-106, -51, 9, -32, -84, 54, 53, 48, 48, 48, 48, 48, 48, 48, 52, 48, 51, -38, 0, 36, 48, 48, 48, 49, 54, 85, 75, 70, 83, 103, 99, 113, 55, 77, 117, 73, 80, 100, 82, 120, 88, 97, 112, 52, 112, 110, 117, 101, 100, 88, 87, 114, 103, 53, 86, 74, 0, 1, -116, -50, 89, -6, 96, 0, -112, -50, 89, -25, -21, 0, -112, -50, 89, -10, 107, -128, -112, -50, 89, -14, 119, 0, -112, -50, 89, -13, -56, -128, -112, -50, 89, -26, -103, -128, -112, -50, 89, -27, 72, 0, -112, -50, 89, -7, 14, -128, -112, -50, 89, -23, 60, -128, -112, -50, 89, -18, -126, -128, -112, -50, 89, -19, 49, 0, -112, -50, 89, -29, -10, -128, -112};
+        System.out.println(DpUtils.unpackData(raw, UniversalDataBaseRsp.class));
 
-        Good good = new Good();
-        good.cid = "11111";
-        byte[] raw = DpUtils.pack(good);
-        System.out.println("raw: " + Arrays.toString(raw));
-        System.out.println("raw->obj: " + unpackData(raw, Good.class));
-        byte[] array = new byte[]{-108, -86, 102, 95, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 49, 50, 50, -79, 65, 67, 58, 56, 51, 58, 70, 51, 58, 56, 49, 58, 54, 54, 58, 67, 70, -72, 49, 46, 48, 46, 48, 46, 48, 48, 50, 54, 44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107};
-        System.out.println(byteArrayToHex(array));
-        System.out.println("UdpSecondaryHeard:" + unpackData(new byte[]{-110, -1, -90, 121, 121, 116, 101, 115, 116}, DpMsgDefine.DPNet.class));
-        System.out.println("FPingAck:" + unpackData(array, Good.class));
-        System.out.println("FPingAck:" + unpackData(new byte[]{49, 46, 48, 46, 48, 46, 48, 48, 50, 54,
-                44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107}, TT.class));
-        System.out.println(unpackData(new byte[]{-108, 0, 0, -9, -62}, DpMsgDefine.DPSdStatus.class));
-//        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
-//        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
-        System.out.println(unpackData(new byte[]{-110, 3, -84, -28, -72, -83, -27, -101, -67, -24, -127, -108, -23, -128, -102}, DpMsgDefine.DPNet.class));
-//        System.out.println(unpackData(new byte[]{-108, 0, 0, 0, -62}, DpMsgDefine.DPSdStatus.class));
-//        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -51, -64, 0, 0, 0, -22, -61}, DpMsgDefine.DPSdStatus.class));
-//        System.out.println(unpackData(new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50}, DpMsgDefine.DPNet.class));
+//        System.out.println("DPSdcardSummary:" + unpackData(new byte[]{-110,-62,0},
+//                DpMsgDefine.DPSdcardSummary.class));
+//        System.out.println("DPBellCallRecord:" + unpackData(new byte[]{-108, 0, -50, 89, 120, 45, -68, 0, 1},
+//                DpMsgDefine.DPBellCallRecord.class));
 //
-//        data = new byte[]{-107, -50, 88, -44, -46, 55, 0, 0, 1, -95, 48};
-//        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
-//        data = new byte[]{-107, -50, 88, -42, 98, 115, 0, 0, 1, -95, 48};
-//        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
+//        Good good = new Good();
+//        good.cid = "11111";
+//        byte[] raw = DpUtils.pack(good);
+//        System.out.println("raw: " + Arrays.toString(raw));
+//        System.out.println("raw->obj: " + unpackData(raw, Good.class));
+//        byte[] array = new byte[]{-108, -86, 102, 95, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 49, 50, 50, -79, 65, 67, 58, 56, 51, 58, 70, 51, 58, 56, 49, 58, 54, 54, 58, 67, 70, -72, 49, 46, 48, 46, 48, 46, 48, 48, 50, 54, 44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107};
+//        System.out.println(byteArrayToHex(array));
+//        System.out.println("UdpSecondaryHeard:" + unpackData(new byte[]{-110, -1, -90, 121, 121, 116, 101, 115, 116}, DpMsgDefine.DPNet.class));
+//        System.out.println("FPingAck:" + unpackData(array, Good.class));
+//        System.out.println("FPingAck:" + unpackData(new byte[]{49, 46, 48, 46, 48, 46, 48, 48, 50, 54,
+//                44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107}, TT.class));
+//        System.out.println(unpackData(new byte[]{-108, 0, 0, -9, -62}, DpMsgDefine.DPSdStatus.class));
+////        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
+////        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
+//        System.out.println(unpackData(new byte[]{-110, 3, -84, -28, -72, -83, -27, -101, -67, -24, -127, -108, -23, -128, -102}, DpMsgDefine.DPNet.class));
+////        System.out.println(unpackData(new byte[]{-108, 0, 0, 0, -62}, DpMsgDefine.DPSdStatus.class));
+////        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -51, -64, 0, 0, 0, -22, -61}, DpMsgDefine.DPSdStatus.class));
+////        System.out.println(unpackData(new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50}, DpMsgDefine.DPNet.class));
+////
+////        data = new byte[]{-107, -50, 88, -44, -46, 55, 0, 0, 1, -95, 48};
+////        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
+////        data = new byte[]{-107, -50, 88, -42, 98, 115, 0, 0, 1, -95, 48};
+////        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
+////
+////        data = new byte[]{-49, 0, 0, 1, 91, 14, 80, -82, -98};
+////        System.out.println(unpackData(data, Long.class));
+////
+////        data = new byte[]{-107, -51, 2, -119, -51, 1, -20, -51, 1, -49, -51, 5, 0, -51, 3, -64};
+////        System.out.println(unpackData(data, Long.class));
+////        data = new byte[]{-65, 59};
+////        System.out.println(unpackData(data, int.class));
+//        System.out.println(unpackData(new byte[]{-108, -88, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 56, 48, 48, 48, 48, 48, 48, 50, 55, 49, 51, 1, 0},
+//                JfgUdpMsg.UdpRecvHeard.class));
 //
-//        data = new byte[]{-49, 0, 0, 1, 91, 14, 80, -82, -98};
-//        System.out.println(unpackData(data, Long.class));
+//        System.out.println(unpackData(new byte[]{-108, -91, 102, 95, 97, 99, 107, -84, 50, 48, 48, 48, 48, 48, 48, 48, 48, 57, 49, 53, -51, 6, 16, -46, -7, -1, -1, -1},
+//                TTTest.class));
 //
-//        data = new byte[]{-107, -51, 2, -119, -51, 1, -20, -51, 1, -49, -51, 5, 0, -51, 3, -64};
-//        System.out.println(unpackData(data, Long.class));
-//        data = new byte[]{-65, 59};
-//        System.out.println(unpackData(data, int.class));
-        System.out.println(unpackData(new byte[]{-108, -88, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 56, 48, 48, 48, 48, 48, 48, 50, 55, 49, 51, 1, 0},
-                JfgUdpMsg.UdpRecvHeard.class));
-
-        System.out.println(unpackData(new byte[]{-108, -91, 102, 95, 97, 99, 107, -84, 50, 48, 48, 48, 48, 48, 48, 48, 48, 57, 49, 53, -51, 6, 16, -46, -7, -1, -1, -1},
-                TTTest.class));
-
-        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -37, 0, 0, 0, -50, 91, 112, 0, 0, 0, -61},
-                DpMsgDefine.DPSdStatus.class));
-
-        System.out.println(unpackData(new byte[]{-110, -83, 65, 115, 105, 97, 47, 83, 104, 97, 110, 103, 104, 97, 105, -51, 112, -128},
-                DpMsgDefine.DPTimeZone.class));
-
-        System.out.println(unpackData(new byte[]{-108, -86, 115, 101, 116, 95, 97, 112, 95, 114, 115, 112, -84, 54, 48, 48, 54, 48, 48, 48, 48, 48, 49, 48, 48, -96, -46, -117, 8, -6, -73},
-                UdpConstant.SetApRsp.class));
+//        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -37, 0, 0, 0, -50, 91, 112, 0, 0, 0, -61},
+//                DpMsgDefine.DPSdStatus.class));
+//
+//        System.out.println(unpackData(new byte[]{-110, -83, 65, 115, 105, 97, 47, 83, 104, 97, 110, 103, 104, 97, 105, -51, 112, -128},
+//                DpMsgDefine.DPTimeZone.class));
+//
+//        System.out.println(unpackData(new byte[]{-108, -86, 115, 101, 116, 95, 97, 112, 95, 114, 115, 112, -84, 54, 48, 48, 54, 48, 48, 48, 48, 48, 49, 48, 48, -96, -46, -117, 8, -6, -73},
+//                UdpConstant.SetApRsp.class));
 
     }
 

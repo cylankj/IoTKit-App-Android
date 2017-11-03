@@ -16,22 +16,13 @@ import java.util.regex.Pattern;
  */
 
 public class ApFilter {
-    public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("^DOG");
-    public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("^DOG-ML");
-    public static final Pattern JFG_BELL_DEVICE_REG_1 = Pattern.compile("^DOORBELL");
-    public static final Pattern JFG_BELL_DEVICE_REG_2 = Pattern.compile("^BELL");
-    public static final Pattern RS_GENERAL_DEVICE = Pattern.compile("^RS-CAM");
+    /**
+     * 可以模仿 {@link android.util.Patterns.IP_ADDRESS}
+     */
+    private static final Pattern DEVICE_REG = Pattern.compile("(DOG|DOORBELL|BELL|RS-CAM)");
 
     public static boolean accept(String ssid) {
-        if (!TextUtils.isEmpty(ssid)) {
-            return JFG_DOG_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JFG_BELL_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JFG_BELL_DEVICE_REG_1.matcher(ssid.replace("\"", "")).find()
-                    || RS_GENERAL_DEVICE.matcher(ssid.replace("\"", "")).find()
-                    || JFG_BELL_DEVICE_REG_2.matcher(ssid.replace("\"", "")).find();
-        }
-        return false;
-
+        return DEVICE_REG.matcher(ssid).find();
     }
 
     public static boolean isAPMode(String ssid, String uuid) {

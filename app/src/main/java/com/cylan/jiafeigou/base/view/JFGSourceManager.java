@@ -127,6 +127,8 @@ public interface JFGSourceManager {
 
     void cacheHistoryDataList(JFGHistoryVideo historyVideo);
 
+    void cacheHistoryDataList(byte[] rawV2Data);
+
     void clear();
 
     Observable<Account> logout();
