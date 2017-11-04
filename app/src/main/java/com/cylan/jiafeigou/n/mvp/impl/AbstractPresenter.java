@@ -145,6 +145,11 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         }
     }
 
+    protected boolean isunSubscribed(String tag) {
+        Subscription subscription = refCacheMap.getSub(tag);
+        return subscription == null || subscription.isUnsubscribed();
+    }
+
     @Override
     public boolean unSubscribe(String tag) {
         refCacheMap.remove(tag);

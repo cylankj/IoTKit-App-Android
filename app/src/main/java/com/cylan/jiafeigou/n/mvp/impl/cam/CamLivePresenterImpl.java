@@ -250,10 +250,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public Observable<IData> assembleTheDay() {
-        long timeEnd = Integer.MAX_VALUE;
         AppLogger.d("historyFile:timeEnd?" + 0);
-        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, 0, timeEnd)
-                .subscribeOn(Schedulers.io())
+        return Observable.just(History.getHistory().getAllHistoryFile())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
                     if (!ListUtils.isEmpty(historyFiles)) {
@@ -341,6 +339,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
             AppLogger.d("有历史录像了.");
             RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
+            return false;
+        }
+        boolean sub = isunSubscribed("getHistoryList");
+        if (!sub) {
+            AppLogger.d("这次 请求还没结束");
             return false;
         }
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
