@@ -44,6 +44,7 @@ public interface CamMessageListContract {
         boolean isUserVisible();
 
         void onVisitorListAppend(ArrayList<CamMessageBean> beanArrayList);
+
         void onVisitorListInsert(ArrayList<CamMessageBean> beans);
     }
 
@@ -63,7 +64,12 @@ public interface CamMessageListContract {
 
         void refreshDateList(boolean needToLoadList);
 
-        void fetchVisitorMessageList(int type, String id, long sec,boolean refresh);
+        /**
+         * int,       type     // 检索条件：1-陌生人 2-已注册人物 3-全部
+         * string,    id       // type为1：填充face id 表示查询指定陌生人消息， 为空则查询所有陌生人消息；type为2：填充person id；type为3：空
+         * int64,     timeMsec // 时间戳，单位：毫秒
+         */
+        void fetchVisitorMessageList(int type, String id, long sec, boolean refresh);
     }
 }
 

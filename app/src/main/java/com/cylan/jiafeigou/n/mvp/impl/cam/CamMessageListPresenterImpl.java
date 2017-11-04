@@ -5,7 +5,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -26,6 +25,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
@@ -435,64 +435,65 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchVisitorMessageList(int type, String id, long sec, boolean refresh) {
-        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
-        AppLogger.d("sessionId:" + sessionId);
-        try {
-            if (id == null) id = "";
-            DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
-            reqContent.cid = uuid;
-            reqContent.faceId = id;
-            reqContent.msgType = type;
-            reqContent.seq = sec;
-            final long seq = BaseApplication.getAppComponent()
-                    .getCmd().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
-            Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
-                    .filter(rsp -> rsp.seq == seq)
-                    .subscribeOn(Schedulers.io())
-                    .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
-                    .flatMap(rsp -> {
-                        AppLogger.d("Fetch Information:" + Arrays.toString(rsp.data));
-                        DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
-                        AppLogger.d("Raw Fetch Result:" + rrsp);
-                        //转化出。
-
-                        ArrayList<CamMessageBean> list = new ArrayList<>();
-                        if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
-                            CamMessageBean bean;
-                            for (DpMsgDefine.DPHeader header : rrsp.dataList) {
-                                if (header.msgId == 505) {
-                                    bean = new CamMessageBean();
-                                    DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
-                                    if (dpAlarm != null) {
-                                        bean.version = header.version;
-                                        bean.id = header.msgId;
-                                        bean.alarmMsg = dpAlarm;
-                                    }
-                                    list.add(bean);
-                                } else if (header.msgId == 201) {
-
+    public void fetchVisitorMessageList(int type, final String id, long sec, boolean refresh) {
+        Subscription subscribe = Observable.just("fetchVisitorMessageList")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+                        AppLogger.d("sessionId:" + sessionId);
+                        String person = id == null ? "" : id;
+                        DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
+                        reqContent.cid = uuid;
+                        reqContent.faceId = person;
+                        reqContent.msgType = type;
+                        reqContent.seq = refresh ? 0 : sec;
+                        return BaseApplication.getAppComponent()
+                                .getCmd().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
+                    } catch (Exception e) {
+                        AppLogger.e(MiscUtils.getErr(e));
+                        throw new RuntimeException(e);
+                    }
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).first(rsp -> rsp.seq == seq))
+                .map(rsp -> {
+                    AppLogger.d("Fetch Information:" + Arrays.toString(rsp.data));
+                    DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
+                    AppLogger.d("Raw Fetch Result:" + rrsp);
+                    //转化出。
+                    ArrayList<CamMessageBean> list = new ArrayList<>();
+                    if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
+                        CamMessageBean bean;
+                        for (DpMsgDefine.DPHeader header : rrsp.dataList) {
+                            if (header.msgId == 505) {
+                                bean = new CamMessageBean();
+                                DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
+                                if (dpAlarm != null) {
+                                    bean.version = header.version;
+                                    bean.id = header.msgId;
+                                    bean.alarmMsg = dpAlarm;
                                 }
+                                list.add(bean);
+                            } else if (header.msgId == 201) {
+
                             }
                         }
-                        return Observable.just(list);
-                    })
-                    .filter(ret -> mView != null)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(rsp -> {
-                        AppLogger.e("Fetch Result:" + rsp);
-                        if (refresh) {
-                            mView.onVisitorListInsert(rsp);
-                        } else {
-                            mView.onVisitorListAppend(rsp);
-                        }
-                    }, throwable -> {
+                    }
+                    return list;
+                })
+                .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(items -> {
+                    AppLogger.e("Fetch Result:" + items);
+                    if (refresh) {
+                        mView.onVisitorListInsert(items);
+                    } else {
+                        mView.onVisitorListAppend(items);
+                    }
+                }, e -> {
 
-                    });
-            addSubscription(su, "fetchMessageList_faceId");
-
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
+                });
+        addSubscription(subscribe, "fetchMessageList_faceId");
     }
 }

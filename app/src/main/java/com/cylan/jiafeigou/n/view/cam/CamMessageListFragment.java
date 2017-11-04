@@ -350,6 +350,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorFragment != null) {
             visitorFragment.exitStranger();
         }
+        presenter.fetchVisitorMessageList(3, "", 0, true);
         AppLogger.d("还需要重新选中All");
     }
 

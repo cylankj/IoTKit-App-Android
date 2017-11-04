@@ -43,7 +43,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun onCreateNewFaceError(ret: Int) {
         AppLogger.w("创建面孔失败了")
-        ToastUtil.showToast("创建失败了")
+        ToastUtil.showToast("语言包:创建失败了")
     }
 
     private var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
@@ -59,7 +59,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
     override fun initViewAndListener() {
         super.initViewAndListener()
         strangerVisitor = arguments.getParcelable("strangerVisitor")
-        faceId = arguments.getString("face_id")
+        faceId = strangerVisitor?.faceId ?: ""
 
         Glide.with(this)
                 .load(JFGFaceGlideURL("", strangerVisitor?.image_url, strangerVisitor?.ossType ?: 0, true))
@@ -69,8 +69,9 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
                 .dontAnimate()
                 .into(picture)
         custom_toolbar.setRightAction {
-            if (faceId == null || picture == null) {
-                AppLogger.w("FaceId :$faceId ,picture:$picture")
+            if (faceId == null) {
+                ToastUtil.showToast("语言包: face_id is null")
+                AppLogger.w("FaceId :$faceId ")
             } else {
                 IMEUtils.hide(activity)
                 presenter.createNewFace(faceId!!, name.text.toString().trim())

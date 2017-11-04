@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
 import android.text.TextUtils
+import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
@@ -29,6 +30,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
 
 
     override fun createNewFace(faceId: String, faceName: String) {
+        val method = method()
         val subscribe = Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
             val account = DataSourceManager.getInstance().account.account
             val vid = Security.getVId()
@@ -76,6 +78,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ response ->
                     when {
                         response == null -> {
@@ -88,6 +91,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                                 mView.onCreateNewFaceSuccess(response.data)
                             } else {
                                 //这是什么情况呢? 操作成功了数据没有?
+                                mView.onCreateNewFaceError(-1)
                             }
                         }
                         response.ret == 100 -> {

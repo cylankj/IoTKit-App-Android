@@ -342,6 +342,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 val fragment = CreateNewFaceFragment.newInstance(uuid, strangerVisitor)
                 fragment.resultCallback = {
                     //todo 返回创建的personID
+                    presenter.fetchStrangerVisitorList()
                 }
                 ActivityUtils.addFragmentSlideInFromRight(activity.supportFragmentManager, fragment, android.R.id.content)
             }
@@ -524,6 +525,8 @@ class FaceAdapter(var isNormalVisitor: Boolean) : PagerAdapter() {
         dataItems.forEachIndexed { index, faceItem ->
             if (index != position) {
                 faceItem.withSetSelected(false)
+            } else {
+                faceItem.withSetSelected(true)
             }
         }
         notifyDataSetChanged()
