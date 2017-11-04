@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -434,14 +435,16 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchMessageListByFaceId(String faceId) {
+    public void fetchVisitorMessageList(int type, String id, long sec, boolean refresh) {
         final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
         AppLogger.d("sessionId:" + sessionId);
         try {
+            if (id == null) id = "";
             DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
             reqContent.cid = uuid;
-            reqContent.faceId = faceId;
-            reqContent.msgType = 8;
+            reqContent.faceId = id;
+            reqContent.msgType = type;
+            reqContent.seq = sec;
             final long seq = BaseApplication.getAppComponent()
                     .getCmd().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
             Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
@@ -449,37 +452,40 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     .subscribeOn(Schedulers.io())
                     .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
                     .flatMap(rsp -> {
+                        AppLogger.d("Fetch Information:" + Arrays.toString(rsp.data));
                         DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
-                        AppLogger.d("fetchMessageListByFaceId by faceId：");
-                        if (rrsp == null || !TextUtils.equals(rrsp.cid, uuid)) {
-                            return Observable.just(new ArrayList<CamMessageBean>());
-                        }
+                        AppLogger.d("Raw Fetch Result:" + rrsp);
                         //转化出。
+
                         ArrayList<CamMessageBean> list = new ArrayList<>();
-//                        for (DataPoint dataPoint : result) {
-//                            CamMessageBean bean = new CamMessageBean();
-//                            bean.id = dataPoint.getMsgId();
-//                            bean.version = dataPoint.getVersion();
-//                            if (bean.id == 222) {
-//                                bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
-//                            }
-//                            if (bean.id == 512 || bean.id == 505) {
-//                                bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
-//                            }
-//                            if (bean.id == 401) {
-//                                bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
-//                            }
-//                            if (!list.contains(bean))//防止重复
-//                            {
-//                                list.add(bean);
-//                            }
-//                        }
+                        if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
+                            CamMessageBean bean;
+                            for (DpMsgDefine.DPHeader header : rrsp.dataList) {
+                                if (header.msgId == 505) {
+                                    bean = new CamMessageBean();
+                                    DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
+                                    if (dpAlarm != null) {
+                                        bean.version = header.version;
+                                        bean.id = header.msgId;
+                                        bean.alarmMsg = dpAlarm;
+                                    }
+                                    list.add(bean);
+                                } else if (header.msgId == 201) {
+
+                                }
+                            }
+                        }
                         return Observable.just(list);
                     })
                     .filter(ret -> mView != null)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(rsp -> {
-
+                        AppLogger.e("Fetch Result:" + rsp);
+                        if (refresh) {
+                            mView.onVisitorListInsert(rsp);
+                        } else {
+                            mView.onVisitorListAppend(rsp);
+                        }
                     }, throwable -> {
 
                     });
@@ -489,102 +495,4 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             e.printStackTrace();
         }
     }
-
-    @Override
-    public void fetchMessageListByPersonId(String personId) {
-
-    }
-
-    @Override
-    public void fetchMessageList(Object o) {
-
-    }
-
-
-
-//    @Override
-//    public void deleteFace(String face_id, String person_id, String group_id) {
-//        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
-//            try {
-//                String account = DataSourceManager.getInstance().getAccount().getAccount();
-//                String vid = Security.getVId();
-//                String serviceKey = blockGetServiceKey();
-//                String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//这里的时间是秒
-//                String seceret = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_SECERET, null);
-//                if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
-//                    subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
-//                } else {
-//                    String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API, seceret, timestamp);
-//                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API;
-//                    if (!url.startsWith("http://")) {
-//                        url = "http://" + url;
-//                    }
-//                    Response response = OkGo.post(url)
-//                            .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICETYPE, "1")
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SIGN, sign)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_TIMESTAMP, timestamp)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, face_id)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, person_id)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_GROUP_ID, group_id)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
-//                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
-//                            .execute();
-//
-//                    ResponseBody body = response.body();
-//
-//                    if (body != null) {
-//                        String string = body.string();
-//                        AppLogger.w(string);
-//                        Gson gson = new Gson();
-//                        DpMsgDefine.ResponseHeader header = gson.fromJson(string, DpMsgDefine.ResponseHeader.class);
-//                        subscriber.onNext(header == null ? -1 : header.ret);
-//                    } else {
-//                        subscriber.onError(null);
-//                    }
-//                }
-//            } catch (Exception e) {
-//                subscriber.onError(e);
-//            }
-//        })
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(rsp -> {
-//                    if (rsp == 0) {
-//                        // TODO: 2017/10/14 删除成功了
-//                    } else {
-//                        // TODO: 2017/10/14 删除失败了
-//                    }
-//                }, e ->
-//
-//                {
-//                    AppLogger.e(MiscUtils.getErr(e));
-//                });
-//
-//
-//    }
-
-//    @Override
-//    public void fetchStrangerVisitorList() {
-//        if (containsSubscription("fetchStrangerVisitorList")) {
-//            AppLogger.d("is fetching strangers");
-//            return;
-//        }
-//        Subscription subscription = loadAllStrangerList()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(r -> mView != null)
-//                .subscribe(sList -> {
-//                    if (sList == null || sList.total == 0) {
-//                        AppLogger.d("a ha no strangers");
-//                    } else {
-////                        mView.onStrangerVisitorListReady(sList);
-//                    }
-//                }, AppLogger::e);
-//        addSubscription(subscription, "fetchStrangerVisitorList");
-//    }
-
 }

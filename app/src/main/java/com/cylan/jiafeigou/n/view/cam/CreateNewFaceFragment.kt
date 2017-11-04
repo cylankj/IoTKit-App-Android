@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import butterknife.OnClick
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
+import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.IMEUtils
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.fragment_face_create.*
 
@@ -43,8 +46,8 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         ToastUtil.showToast("创建失败了")
     }
 
-    private var imageUrl: String? = null
-    var faceId: String? = null
+    private var strangerVisitor: DpMsgDefine.StrangerVisitor? = null
+    private var faceId: String? = null
     var resultCallback: ((personId: String) -> Unit)? = null
 
 
@@ -55,12 +58,12 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun initViewAndListener() {
         super.initViewAndListener()
+        strangerVisitor = arguments.getParcelable("strangerVisitor")
         faceId = arguments.getString("face_id")
-        imageUrl = arguments.getString("image")
-        Log.i(JConstant.CYLAN_TAG, "create new face ,image url:" + imageUrl)
 
         Glide.with(this)
-                .load(imageUrl)
+                .load(JFGFaceGlideURL("", strangerVisitor?.image_url, strangerVisitor?.ossType ?: 0, true))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .dontAnimate()
@@ -126,13 +129,12 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     companion object {
 
-        fun newInstance(uuid: String, faceId: String, imageUrl: String): CreateNewFaceFragment {
+        fun newInstance(uuid: String, strangerVisitor: DpMsgDefine.StrangerVisitor?): CreateNewFaceFragment {
             val fragment = CreateNewFaceFragment()
 //            HmacSHA1Signature().computeSignature()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
-            argument.putString("face_id", faceId)
-            argument.putString("image", imageUrl)
+            argument.putParcelable("strangerVisitor", strangerVisitor)
             fragment.arguments = argument
             return fragment
         }

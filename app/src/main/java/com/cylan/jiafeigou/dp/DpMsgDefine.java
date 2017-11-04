@@ -13,6 +13,7 @@ import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -2162,7 +2163,9 @@ public class DpMsgDefine {
         @Index(2)
         public String faceId;
         @Index(3)
-        public List<DPAlarm> dataList;
+        public int timeMsec;
+        @Index(4)
+        public List<DPHeader> dataList;
 
 
         @Override
@@ -2195,7 +2198,7 @@ public class DpMsgDefine {
             this.cid = in.readString();
             this.msgType = in.readInt();
             this.faceId = in.readString();
-            this.dataList = in.createTypedArrayList(DPAlarm.CREATOR);
+            this.dataList = in.createTypedArrayList(DPHeader.CREATOR);
         }
 
         public static final Parcelable.Creator<FetchMsgListRsp> CREATOR = new Parcelable.Creator<FetchMsgListRsp>() {
@@ -2207,6 +2210,58 @@ public class DpMsgDefine {
             @Override
             public FetchMsgListRsp[] newArray(int size) {
                 return new FetchMsgListRsp[size];
+            }
+        };
+    }
+
+    @Message
+    public static class DPHeader implements Parcelable {
+        @Index(0)
+        public int msgId;
+        @Index(1)
+        public long version;
+        @Index(2)
+        public byte[] bytes;
+
+        @Override
+        public String toString() {
+            return "DPHeader{" +
+                    "msgId=" + msgId +
+                    ", seq=" + version +
+                    ", bytes=" + Arrays.toString(bytes) +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.msgId);
+            dest.writeLong(this.version);
+            dest.writeByteArray(this.bytes);
+        }
+
+        public DPHeader() {
+        }
+
+        protected DPHeader(Parcel in) {
+            this.msgId = in.readInt();
+            this.version = in.readLong();
+            this.bytes = in.createByteArray();
+        }
+
+        public static final Creator<DPHeader> CREATOR = new Creator<DPHeader>() {
+            @Override
+            public DPHeader createFromParcel(Parcel source) {
+                return new DPHeader(source);
+            }
+
+            @Override
+            public DPHeader[] newArray(int size) {
+                return new DPHeader[size];
             }
         };
     }
@@ -2488,5 +2543,40 @@ public class DpMsgDefine {
                 return new UniversalDataBaseRsp[size];
             }
         };
+    }
+
+    @Message
+    public static class AcquaintanceItem {
+        @Index(0)
+        public String face_id;
+        @Index(1)
+        public String image_url;
+        @Index(2)
+        public int oss_type;
+    }
+
+    //rsp=msgpack(cid, person_id, [[face_id1, image_url1, oss_type1],  [face_id2, image_url2, oss_type2], ...])
+    @Message
+    public static class AcquaintanceListRsp {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public String person_id;
+        @Index(2)
+        public List<AcquaintanceItem> acquaintanceItems;
+    }
+
+    //req=msgpack(cid, person_id)
+    @Message
+    public static class AcquaintanceListReq {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public String person_id;
+
+        public AcquaintanceListReq(String cid, String person_id) {
+            this.cid = cid;
+            this.person_id = person_id;
+        }
     }
 }

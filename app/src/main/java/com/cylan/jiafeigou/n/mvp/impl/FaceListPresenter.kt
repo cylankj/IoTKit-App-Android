@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
 import android.text.TextUtils
+import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
@@ -32,6 +33,7 @@ import javax.inject.Inject
  */
 class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePresenter<FaceListContact.View>(view), FaceListContact.Presenter {
 
+    @Inject lateinit var appCmd: AppCmd
     /**
      * face_id	人脸注册图像标识【必填项】
     person_id	人唯一标识【必填项】
@@ -106,6 +108,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     when {
                         rsp == null -> {
                             //返回结果为空?
+                            mView.onMoveFaceError()
                             AppLogger.w("修改面孔信息返回了 null, 可能是超时或者服务器错误! ")
                         }
                         rsp.ret == 0 -> {
@@ -125,7 +128,9 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                         }
                     }
                 }
-                ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
+                ) { e ->
+                     mView.onMoveFaceError()
+                    AppLogger.e(MiscUtils.getErr(e)) }
         addDestroySubscription(subscribe)
     }
 

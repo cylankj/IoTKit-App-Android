@@ -9,12 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import butterknife.OnClick
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.view.JFGPresenter
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
+import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
+import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import kotlinx.android.synthetic.main.fragment_face_information.*
 
 /**
@@ -24,7 +27,7 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
 
     private var faceName: String? = null
     private var personId: String? = null
-    private var imageUrl: String? = null
+    private var visitor: DpMsgDefine.Visitor? = null
     override fun useDaggerInject(): Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,19 +36,20 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        faceName = arguments?.getString("face_name")
-        personId = arguments?.getString("person_id")
-        imageUrl = arguments?.getString("image")
-        AppLogger.w("image url faceInformation:$imageUrl")
+        visitor = arguments.getParcelable("visitor")
+        faceName = visitor?.personName
+        personId = visitor?.personId
         custom_toolbar.setBackAction {
             fragmentManager.popBackStack()
         }
         setting_item_face_name.subTitle = faceName
         face_name.text = faceName
+        val visitorDetail = visitor?.detailList?.getOrNull(0)
         Glide.with(this)
-                .load(imageUrl)
+                .load(JFGFaceGlideURL("", visitorDetail?.imgUrl, visitorDetail?.ossType ?: 0, false))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .into(face_icon)
     }
@@ -85,15 +89,11 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
 
     companion object {
         const val REQ_SET_FACE_NAME = 1000
-        fun newInstance(uuid: String, image: String, faceName: String?, personId: String): FaceInformationFragment {
+        fun newInstance(uuid: String, visitor: DpMsgDefine.Visitor?): FaceInformationFragment {
             val fragment = FaceInformationFragment()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
-            if (faceName != null) {
-                argument.putString("face_name", faceName)
-            }
-            argument.putString("image", image)
-            argument.putString("person_id", personId)
+            argument.putParcelable("visitor", visitor)
             fragment.arguments = argument
             return fragment
         }

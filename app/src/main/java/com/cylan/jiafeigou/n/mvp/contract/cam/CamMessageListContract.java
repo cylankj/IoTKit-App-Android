@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -44,9 +43,8 @@ public interface CamMessageListContract {
 
         boolean isUserVisible();
 
-        void onFaceInformationReady(List<DpMsgDefine.FaceInformation> data);
-
-        void onListAppend(ArrayList<CamMessageBean> beanArrayList, String faceId);
+        void onVisitorListAppend(ArrayList<CamMessageBean> beanArrayList);
+        void onVisitorListInsert(ArrayList<CamMessageBean> beans);
     }
 
     interface Presenter extends BasePresenter {
@@ -65,11 +63,7 @@ public interface CamMessageListContract {
 
         void refreshDateList(boolean needToLoadList);
 
-        void fetchMessageListByFaceId(final String faceId);
-
-        void fetchMessageListByPersonId(String personId);
-
-        void fetchMessageList(Object o);
+        void fetchVisitorMessageList(int type, String id, long sec,boolean refresh);
     }
 }
 

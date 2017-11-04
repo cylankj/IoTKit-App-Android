@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
@@ -95,6 +96,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         //todo 全部是默认图,陌生人是组合图片,需要特殊处理
         when (faceType) {
             FACE_TYPE_ALL -> {
+                holder.itemView.visibility = View.VISIBLE
                 //todo UI图导入
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_ALL)
                 holder.icon.setImageResource(R.drawable.news_icon_all_selector)
@@ -111,6 +113,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 //                        .error(R.drawable.news_icon_stranger)
 ////                        .bitmapTransform(AvatarTransform(holder.itemView.context, message!!.alarmMsg!!.face_id))
 //                        .into(holder.icon)
+                holder.itemView.visibility = View.VISIBLE
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
 //                holder.icon.isDisableCircularTransformation = true
                 holder.strangerIcon.visibility = View.GONE
@@ -121,32 +124,42 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
             }
         //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
+                holder.itemView.visibility = View.VISIBLE
                 holder.text.text = TimeUtils.getVisitorTime(visitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
                 var url = if (ListUtils.getSize(visitor?.detailList) > 0) {
                     val detail = visitor?.detailList!![0]
-                    JFGFaceGlideURL(uuid, detail.faceId, detail.ossType, false)
+                    JFGFaceGlideURL(uuid, detail.imgUrl, detail.ossType, false)
                 } else {
                     null
                 }
                 Glide.with(holder.itemView.context)
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
+                        .dontAnimate()
                         .into(holder.icon)
             }
             FACE_TYPE_STRANGER_SUB -> {
-                var url = JFGFaceGlideURL(uuid, strangerVisitor?.faceId, strangerVisitor?.ossType!!, true)
+                holder.itemView.visibility = View.VISIBLE
+                var url = JFGFaceGlideURL(uuid, strangerVisitor?.image_url, strangerVisitor?.ossType!!, true)
                 holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
+                holder.strangerIcon.visibility = View.VISIBLE
                 Glide.with(holder.itemView.context)
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
+                        .dontAnimate()
                         .into(holder.icon)
+            }
+            FACE_TYPE_EMPTY -> {
+                holder.itemView.visibility = View.INVISIBLE
             }
             else -> {
                 //todo 陌生人详情页的处理逻辑
@@ -196,6 +209,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         const val FACE_TYPE_ACQUAINTANCE: Int = 1//熟人
 
         const val FACE_TYPE_STRANGER_SUB: Int = 2
+        const val FACE_TYPE_EMPTY = 3;
 
         @JvmField
         val CREATOR: Parcelable.Creator<FaceItem> = object : Parcelable.Creator<FaceItem> {
