@@ -290,6 +290,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 @Override
                 public void onStrangerVisitorReady() {
                     layoutBarMenu(BAR_TYPE_STRANGER);
+                    presenter.fetchVisitorMessageList(1, "", 0, true);
                 }
 
                 @Override
@@ -718,7 +719,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         setCurrentPosition(Math.max(0, itemPosition));
         lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
-        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 );
+        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0);
     }
 
     @Override
@@ -992,4 +993,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private TextView mockView;
+
+    @Override
+    public boolean performBackIntercept(boolean willExit) {
+        if (isUserVisible() && isResumed()) {
+            if (camMessageListAdapter.isEditMode()) {
+                AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                return true;//拦截掉
+            }
+        }
+        return super.performBackIntercept(willExit);
+    }
 }

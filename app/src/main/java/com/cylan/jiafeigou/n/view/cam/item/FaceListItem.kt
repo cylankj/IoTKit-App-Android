@@ -89,7 +89,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
         val char = text?.get(0) ?: '#'
         val toPinyin = Pinyin.toPinyin(char)[0].toString()
         return if ("[a-z,A-Z]".toRegex().matches(toPinyin)) {
-            toPinyin
+            toPinyin.toUpperCase()
         } else {
             "#"
         }
