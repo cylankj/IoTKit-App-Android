@@ -39,6 +39,25 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        HistoryFile that = (HistoryFile) o;
+
+        return time == that.time;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (time ^ (time >>> 32));
+    }
+
     public void setDuration(int duration) {
         this.duration = duration;
     }
