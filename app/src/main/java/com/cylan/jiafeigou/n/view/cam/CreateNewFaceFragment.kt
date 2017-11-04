@@ -28,6 +28,9 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         ToastUtil.showToast("语言包: face_id 不存在,创建失败了!")
     }
 
+    data class HH(var a: String, var b: String, var c: String)
+
+
     override fun onCreateNewFaceTimeout() {
         AppLogger.w("创建面孔超时了")
         ToastUtil.showToast("创建面孔超时了")

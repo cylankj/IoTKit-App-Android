@@ -373,7 +373,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                             ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
                             rbViewModeSwitchParent.setVisibility(VISIBLE);
+                            if (!isLand()) {
+                                ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+                            }
                         }
+
                     }).show();
         } else if ("0".equals(dpPrimary)) {
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
@@ -416,7 +420,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case R.id.rb_view_mode_circular:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Normal);
-                    ivModeXunHuan.setEnabled(enableAutoRotate = true);
+                    enableAutoRotate = isLand() && enableAutoRotate;
+                    ivModeXunHuan.setEnabled(enableAutoRotate);
+                    ((Panoramic360ViewRS) videoView).enableAutoRotation(enableAutoRotate);
                     AppLogger.d("正在切换到圆形视图");
                 }
                 break;

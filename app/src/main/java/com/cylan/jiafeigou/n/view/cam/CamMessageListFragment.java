@@ -1002,6 +1002,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (camMessageListAdapter.isEditMode()) {
                 AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
                 tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
+                        .findLastVisibleItemPosition();
+                camMessageListAdapter.reverseMode(false,lPos);
                 return true;//拦截掉
             }
         }
