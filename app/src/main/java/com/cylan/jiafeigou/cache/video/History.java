@@ -53,7 +53,7 @@ public class History {
     private final Object lock = new Object();
     private static final Gson GSON = new Gson();
 
-    private static final SimpleDateFormat SAFE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+    public static final SimpleDateFormat SAFE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
     private volatile static History history;
     private HashMap<String, ArrayList<Long>> dateListMap = new HashMap<>();
     private ConcurrentHashMap<String, ArrayList<HistoryFile>> historyMap;
@@ -131,6 +131,22 @@ public class History {
         }
     }
 
+    public ArrayList<HistoryFile> getHistoryFile(String date) {
+        ensureMap();
+        return historyMap.get(date);
+    }
+
+    public ArrayList<HistoryFile> getAllHistoryFile() {
+        ensureMap();
+        ArrayList<HistoryFile> files = new ArrayList<>();
+        Iterator<String> iterator = historyMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            String date = iterator.next();
+            files.addAll(historyMap.get(date));
+        }
+        return files;
+    }
+
     public ArrayList<Long> getDateList(String uuid) {
         synchronized (lock) {
             if (TextUtils.isEmpty(uuid)) {
@@ -160,6 +176,7 @@ public class History {
      * @return
      */
     private static String flatBitList(List<DpMsgDefine.Unit> unitList) {
+        PerformanceUtils.startTrace("flatBitList");
         LinkedList<DpMsgDefine.Unit> list = new LinkedList<>(unitList);
         Collections.reverse(list);
         //
@@ -167,6 +184,7 @@ public class History {
         for (DpMsgDefine.Unit unit : list) {
             builder.append(flatIntTo8bitStr(unit.video));
         }
+        PerformanceUtils.stopTrace("flatBitList");
         return builder.toString();
     }
 
@@ -251,7 +269,7 @@ public class History {
                 //一天的list
                 ArrayList<HistoryFile> list = squeeze(dateInInt, longLongBits);
                 final String dateInStr = SAFE_FORMAT.format(new Date(dateInInt * 1000L));
-                Log.d(TAG, "list Size:" + ListUtils.getSize(units));
+                Log.d(TAG, "list Size:" + ListUtils.getSize(units) + ",squeezeSize:" + ListUtils.getSize(list));
                 addDateList(dateInStr, list);
             }
             RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid)
@@ -292,51 +310,40 @@ public class History {
                     String uuid = historyVideo.list.get(0).peer;
                     ArrayList<Long> timeList = new ArrayList<>();
                     ArrayList<JFGVideo> list = historyVideo1.list;
-                    ArrayList<HistoryFile> historyFiles = new ArrayList<>(ListUtils.getSize(list));
                     for (JFGVideo video : list) {
+                        ensureMap();
+                        final String dateInStr = SAFE_FORMAT.format(new Date(video.beginTime * 1000L));
+                        ArrayList<HistoryFile> historyFiles = historyMap.get(dateInStr);
+                        if (historyFiles == null) {
+                            historyFiles = new ArrayList<>();
+                            historyMap.put(dateInStr, historyFiles);
+                        }
                         timeList.add(video.beginTime);
                         HistoryFile file = new HistoryFile();
                         file.duration = video.duration;
                         file.time = video.beginTime;
                         file.uuid = video.peer;
                         historyFiles.add(file);
+//                        Collections.reverse(historyFiles);//来个降序
                     }
                     list.clear();//需要清空
-                    Collections.reverse(historyFiles);//来个降序
                     Collections.reverse(timeList);
                     try {
                         long timeStart = timeList.get(0), timeEnd = timeList.get(ListUtils.getSize(timeList) - 1);
                         AppLogger.w(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
                                 uuid, timeStart, timeEnd, (System.currentTimeMillis() - time)));
-                        return Observable.just(new Helper(uuid, timeList, historyFiles));
+                        return Observable.just(new Helper(uuid, timeList));
                     } catch (Exception e) {
                         AppLogger.e("err: " + MiscUtils.getErr(e));
                         return Observable.just(new Helper());
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .filter(helper -> !TextUtils.isEmpty(helper.uuid) && ListUtils.getSize(helper.files) > 0)
-                .map(helper -> {
-                    long timeStart = helper.timeList.get(0);
-                    long timeEnd = helper.timeList.get(ListUtils.getSize(helper.timeList) - 1);
-                    BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(helper.uuid, Math.min(timeStart, timeEnd),
-                            Math.max(timeStart, timeEnd))
-                            .subscribeOn(Schedulers.io())
-                            .map(aBoolean -> {
-                                AppLogger.w("delete hisFile:" + aBoolean + ",hisFile:" + ListUtils.getSize(helper.files));
-                                BaseApplication.getAppComponent().getDBHelper().saveHistoryFile(helper.files)
-                                        .subscribe(ret -> {
-                                            AppLogger.w("save hisFile tx");
-                                            RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
-                                                    .setTimeList(helper.timeList));
-                                        }, AppLogger::e);
-                                return null;
-                            })
-                            .subscribe(ret -> AppLogger.w("save history good?"),
-                                    throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-                    return null;
-                })
-                .subscribe(ret -> {
+                .filter(helper -> historyMap != null && historyMap.size() > 0)
+                .subscribe(helper -> {
+                    AppLogger.d("录像回来了");
+                    RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
+                            .setTimeList(helper.timeList));
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
@@ -355,10 +362,10 @@ public class History {
         synchronized (lock) {
             DataExt.getInstance().clean();
             cleanCache();
-            BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(uuid, 0, Integer.MAX_VALUE)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(ret -> {
-                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+//            BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(uuid, 0, Integer.MAX_VALUE)
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe(ret -> {
+//                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         }
         return true;
     }
@@ -366,15 +373,13 @@ public class History {
     private static class Helper {
         private String uuid;
         private ArrayList<Long> timeList;
-        private ArrayList<HistoryFile> files;
 
         public Helper() {
 
         }
 
-        public Helper(String uuid, ArrayList<Long> timeList, ArrayList<HistoryFile> files) {
+        public Helper(String uuid, ArrayList<Long> timeList) {
             this.uuid = uuid;
-            this.files = files;
             this.timeList = timeList;
         }
     }
@@ -382,6 +387,7 @@ public class History {
     /**
      * 提取连续的 bit 1
      * 连个for 复杂度  O(n)
+     *
      * @param startTime:设备保证这是一天的 凌晨时间戳，单位：秒
      * @param result
      */

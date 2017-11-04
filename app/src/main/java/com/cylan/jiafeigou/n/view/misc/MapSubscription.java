@@ -165,4 +165,13 @@ public class MapSubscription implements Subscription {
         }
         return false;
     }
+
+    public Subscription getSub(String tag) {
+        if (!unsubscribed) {
+            synchronized (this) {
+                return subscriptions.get(tag);
+            }
+        }
+        return null;
+    }
 }
