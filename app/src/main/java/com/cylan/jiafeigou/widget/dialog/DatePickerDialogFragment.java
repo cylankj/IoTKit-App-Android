@@ -181,25 +181,25 @@ public class DatePickerDialogFragment extends BaseDialog {
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public void setDateList(ArrayList<Long> dateList) {
-        if (dateList == null || dateList.size() == 0) {
+        if (ListUtils.isEmpty(dateList)) {
             return;
         }
-        AppLogger.i("count:" + (dateList.size()));
-        long time = System.currentTimeMillis();
-        //去重
-        ArrayList<Long> tmpList = new ArrayList<>(dateList);
-        ArrayList<Long> removeList = new ArrayList<>();
-        HashMap<String, String> map = new HashMap<>();
-        for (Long ll : tmpList) {
-            final String date = simpleDateFormat.format(new Date(TimeUtils.wrapToLong(ll)));
-            if (!map.containsKey(date)) {
-                map.put(date, date);
-            } else {
-                removeList.add(ll);
-            }
-        }
-        tmpList.removeAll(removeList);
-        dateStartList = new ArrayList<>(new TreeSet<>(tmpList));
+//        AppLogger.i("count:" + (dateList.size()));
+//        long time = System.currentTimeMillis();
+//        //去重
+//        ArrayList<Long> tmpList = new ArrayList<>(dateList);
+//        ArrayList<Long> removeList = new ArrayList<>();
+//        HashMap<String, String> map = new HashMap<>();
+//        for (Long ll : tmpList) {
+//            final String date = simpleDateFormat.format(new Date(TimeUtils.wrapToLong(ll)));
+//            if (!map.containsKey(date)) {
+//                map.put(date, date);
+//            } else {
+//                removeList.add(ll);
+//            }
+//        }
+//        tmpList.removeAll(removeList);
+        dateStartList = new ArrayList<>(new TreeSet<>(dateList));
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         for (int i = 0; i < dateStartList.size(); i++) {
             Log.d("setDateList", "setDateList " + simpleDateFormat.format(new Date(TimeUtils.wrapToLong(dateStartList.get(i)))));

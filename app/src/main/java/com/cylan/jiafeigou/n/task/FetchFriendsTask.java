@@ -41,7 +41,7 @@ public class FetchFriendsTask implements Action1<Object> {
                             .setObject(fReqList));
                 }
             } catch (Exception e) {
-                AppLogger.e(e.getMessage());
+//                AppLogger.e(e.getMessage());
             }
             RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
             RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());

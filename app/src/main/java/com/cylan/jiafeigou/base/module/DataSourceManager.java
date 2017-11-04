@@ -591,6 +591,11 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
+    public void cacheHistoryDataList(byte[] rawV2Data) {
+        History.getHistory().cacheHistoryDataList(rawV2Data);
+    }
+
+    @Override
     public void clear() {
         getCacheInstance().removeAllStickyEvents();
         isOnline = false;

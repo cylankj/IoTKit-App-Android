@@ -516,7 +516,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                 }, throwable -> {
-                    if (throwable instanceof TimeoutException) {
+                    boolean timeout = throwable instanceof TimeoutException;
+                    if (timeout) {
                         btnLoadHistory.setEnabled(true);
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);
@@ -526,7 +527,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                         }
                     }
-                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable) + ",timeout?" + timeout);
                 });
         presenter.addSubscription("fetchHistoryBy", subscription);
     }

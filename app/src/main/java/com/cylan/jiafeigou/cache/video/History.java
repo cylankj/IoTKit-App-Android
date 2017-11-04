@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.video;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
@@ -8,39 +9,54 @@ import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
+import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.utils.TimeUtils.getSpecificDayEndTime;
+
 /**
  * 历史录像数据管理中心
- * Created by cylan-hunt on 16-12-6.
+ *
+ * @author cylan-hunt
+ * @date 16-12-6
  */
 
 public class History {
-
-    private volatile static History history;
-    /**
-     * 保存历史录像的日历
-     * uuid+day,Long
-     */
-    private HashMap<String, Long> dateMap = new HashMap<>();
+    private static final String TAG = "History";
     private final Object lock = new Object();
+    private static final Gson GSON = new Gson();
+
+    private static final SimpleDateFormat SAFE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+    private volatile static History history;
+    private HashMap<String, ArrayList<Long>> dateListMap = new HashMap<>();
+    private ConcurrentHashMap<String, ArrayList<HistoryFile>> historyMap;
 
     /**
      * 数据集,不实现Lru逻辑
@@ -53,6 +69,14 @@ public class History {
         return history;
     }
 
+    private void ensureMap() {
+        if (historyMap == null) {
+            historyMap = new ConcurrentHashMap<>();
+        }
+        if (dateListMap == null) {
+            dateListMap = new HashMap<>();
+        }
+    }
 
     private History() {
         RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
@@ -72,6 +96,15 @@ public class History {
                 .subscribe();
     }
 
+    private void queryHistory(String uuid, int startTime, int way, int count) {
+        try {
+            int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
+                    startTime, way, count);
+            AppLogger.d("ret:" + ret);
+        } catch (JfgException e) {
+        }
+    }
+
     /**
      * 非分享账号
      * 可以利用上 218这个消息,{@link com.cylan.jiafeigou.dp.DpMsgMap#ID_218_DEVICE_FORMAT_SDCARD}
@@ -85,11 +118,14 @@ public class History {
             AppLogger.w("go back:" + device);
             return false;
         }
+        cleanCache();
         try {
-            BaseApplication.getAppComponent().getCmd().getVideoList(device.uuid);
+//            BaseApplication.getAppComponent().getCmd().getVideoList(device.uuid);
+            //日期:1 分钟:0
+            queryHistory(device.uuid, (int) (System.currentTimeMillis() / 1000), 1, 365);
             AppLogger.w("getVideoList");
             return true;
-        } catch (JfgException e) {
+        } catch (Exception e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());
             return false;
         }
@@ -100,15 +136,72 @@ public class History {
             if (TextUtils.isEmpty(uuid)) {
                 return null;
             }
-            ArrayList<Long> longs = new ArrayList<>();
-            Iterator<String> key = dateMap.keySet().iterator();
-            while (key.hasNext()) {
-                String next = key.next();
-                if (next.startsWith(uuid)) {
-                    longs.add(dateMap.get(next));
-                }
-            }
-            return longs;
+            ensureMap();
+            return dateListMap.get(uuid);
+        }
+    }
+
+    private void fillDataList(String uuid, ArrayList<Integer> list) {
+        if (ListUtils.isEmpty(list)) {
+            return;
+        }
+        ensureMap();
+        ArrayList<Long> tmp = new ArrayList<>(list.size());
+        for (Integer integer : list) {
+            tmp.add(integer * 1000L);
+        }
+        dateListMap.put(uuid, tmp);
+    }
+
+    /**
+     * 转化出 180*8个字符的字符串。为了提取连续的1,从而压缩历史录像。
+     *
+     * @param unitList
+     * @return
+     */
+    private static String flatBitList(List<DpMsgDefine.Unit> unitList) {
+        LinkedList<DpMsgDefine.Unit> list = new LinkedList<>(unitList);
+        Collections.reverse(list);
+        //
+        StringBuilder builder = new StringBuilder();
+        for (DpMsgDefine.Unit unit : list) {
+            builder.append(flatIntTo8bitStr(unit.video));
+        }
+        return builder.toString();
+    }
+
+    private static String flatIntTo8bitStr(int data) {
+        return String.format("%8s", Integer.toBinaryString(data))
+                .replace(' ', '0');
+    }
+
+    private void queryListInDate(String uuid, Map<Integer, List<DpMsgDefine.Unit>> rsp) {
+        Set<Integer> dateSet = rsp == null ? null : rsp.keySet();
+        if (dateSet != null && dateSet.size() > 0) {
+            AppLogger.d("日期不为空:" + GSON.toJson(dateSet));
+        } else {
+            AppLogger.d("日期为空，需要告诉UI");
+            RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
+            return;
+        }
+        ArrayList<Integer> dateList = new ArrayList<>(dateSet);
+        final int cnt = ListUtils.getSize(dateList);
+        if (cnt == 0) {
+            //没有录像
+            return;
+        }
+        ArrayList<Integer> tmList = new ArrayList<>(dateList);
+        //来个降序吧
+        Collections.sort(tmList, (o1, o2) -> (o2 - o1));
+        fillDataList(uuid, tmList);
+
+        //注意啊，有一个落后设备只能 一次查3天。
+        final int total = 10;
+        final int qNum = cnt / total + (cnt % total == 0 ? 0 : 1);//查询次数
+        for (int i = 0; i < qNum; i++) {
+            final int startTime = tmList.get(i * total);
+            queryHistory(uuid, (int) (getSpecificDayEndTime(startTime * 1000L) / 1000),
+                    0, total);
         }
     }
 
@@ -118,6 +211,68 @@ public class History {
      *
      * @return
      */
+
+    public void cacheHistoryDataList(byte[] rawV2Data) {
+        if (rawV2Data == null || rawV2Data.length == 0) {
+            RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
+        }
+        DpMsgDefine.UniversalDataBaseRsp rsp = DpUtils.unpackDataWithoutThrow(rawV2Data,
+                DpMsgDefine.UniversalDataBaseRsp.class, null);
+        if (rsp == null) {
+            AppLogger.e("bytes is null");
+        } else {
+            if (rsp.way == 1) {
+                //日期参数回来
+                queryListInDate(rsp.caller, rsp.dataMap);
+            } else {
+                //按照分钟的查询回来
+                parseBit(rsp.caller, rsp.dataMap);
+            }
+        }
+        AppLogger.w("save hisFile tx:" + Arrays.toString(rawV2Data));
+    }
+
+    /**
+     * 已经默认设备 对数据做好了按天分类
+     *
+     * @param uuid
+     * @param dataMap
+     */
+    public void parseBit(String uuid, Map<Integer, List<DpMsgDefine.Unit>> dataMap) {
+        Set<Integer> dateSet = dataMap == null ? null : dataMap.keySet();
+        PerformanceUtils.startTrace("parseBit");
+        if (dateSet != null) {
+            Iterator<Integer> integerIterator = dateSet.iterator();
+            while (integerIterator.hasNext()) {
+                final Integer dateInInt = integerIterator.next();
+                List<DpMsgDefine.Unit> units = dataMap.get(dateInInt);
+                //把这些Units,展开成最多180*8个字符串，然后提取连续的1凑成一个HistoryFile
+                final String longLongBits = flatBitList(units);
+                //一天的list
+                ArrayList<HistoryFile> list = squeeze(dateInInt, longLongBits);
+                final String dateInStr = SAFE_FORMAT.format(new Date(dateInInt * 1000L));
+                Log.d(TAG, "list Size:" + ListUtils.getSize(units));
+                addDateList(dateInStr, list);
+            }
+            RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid)
+                    .setTimeList(dateListMap.get(uuid)));
+        }
+        PerformanceUtils.stopTrace("parseBit");
+    }
+
+    public void addDateList(final String date, ArrayList<HistoryFile> dateList) {
+        if (historyMap == null) {
+            historyMap = new ConcurrentHashMap<>();
+        }
+        ArrayList<HistoryFile> arrayList = historyMap.get(date);
+        if (arrayList == null) {
+            arrayList = new ArrayList<>();
+        }
+        arrayList.addAll(dateList);
+        arrayList = new ArrayList<>(new TreeSet<>(dateList));
+        Collections.sort(arrayList);
+        historyMap.put(date, arrayList);
+    }
 
     public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
         Observable.just(historyVideo)
@@ -145,10 +300,6 @@ public class History {
                         file.time = video.beginTime;
                         file.uuid = video.peer;
                         historyFiles.add(file);
-                        String dateInShort = uuid + TimeUtils.getDay(file.time * 1000L);
-                        if (!dateMap.containsKey(dateInShort)) {
-                            dateMap.put(dateInShort, file.time * 1000L);
-                        }
                     }
                     list.clear();//需要清空
                     Collections.reverse(historyFiles);//来个降序
@@ -177,7 +328,7 @@ public class History {
                                         .subscribe(ret -> {
                                             AppLogger.w("save hisFile tx");
                                             RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
-                                                    .setFileList(helper.files).setTimeList(helper.timeList));
+                                                    .setTimeList(helper.timeList));
                                         }, AppLogger::e);
                                 return null;
                             })
@@ -189,6 +340,12 @@ public class History {
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
+    public void cleanCache() {
+        if (historyMap != null) {
+            historyMap.clear();
+        }
+    }
+
     public void clear() {
         history = null;
     }
@@ -197,18 +354,7 @@ public class History {
     public boolean clearHistoryFile(String uuid) {
         synchronized (lock) {
             DataExt.getInstance().clean();
-            Iterator<String> keySet = dateMap.keySet().iterator();
-            List<String> keyList = new ArrayList<>();
-            while (keySet.hasNext()) {
-                String key = keySet.next();
-                if (key != null && key.startsWith(uuid)) {
-                    keyList.add(key);
-                }
-            }
-            for (String key : keyList) {
-                dateMap.remove(key);
-            }
-
+            cleanCache();
             BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(uuid, 0, Integer.MAX_VALUE)
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
@@ -231,5 +377,35 @@ public class History {
             this.files = files;
             this.timeList = timeList;
         }
+    }
+
+    /**
+     * 提取连续的 bit 1
+     * 连个for 复杂度  O(n)
+     * @param startTime:设备保证这是一天的 凌晨时间戳，单位：秒
+     * @param result
+     */
+    private ArrayList<HistoryFile> squeeze(long startTime, final String result) {
+        ArrayList<HistoryFile> list = new ArrayList<>();
+        final int len = result.length();
+        Log.d(TAG, "squeeze,len: " + len);
+        for (int i = 0; i < len; i++) {
+            if (result.charAt(i) == '1') {
+                int end = i;
+                for (int j = i; j < len; j++) {
+                    if (result.charAt(j) == '1') {
+                        end = j;
+                    } else {
+                        break;
+                    }
+                }
+                HistoryFile file = new HistoryFile();
+                file.time = startTime + i * 60;
+                file.duration = (end - i + 1) * 60;
+                list.add(file);
+                i = end;
+            }
+        }
+        return list;
     }
 }

@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.R;
  */
 
 public class EViewPager extends ViewPager {
-    private boolean isPagingEnabled = true;
     private boolean isNeedWrap = false;
     public EnableScrollListener enableScrollListener;
 
@@ -93,21 +92,29 @@ public class EViewPager extends ViewPager {
 
 
     public void setLocked(boolean isLocked) {
-        setPagingEnabled(isLocked);
+        if (isLocked) {
+            setEnabled(false);
+        } else {
+            setEnabled(true);
+        }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return !isEnabled() || super.onTouchEvent(event);
+    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEventCompat.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                if (isPagingEnabled && isConsumedOutside(event)) {
+                if (isConsumedOutside(event)) {
                     return false;
                 }
-                return handleIntercept(event);
+                return isEnabled() && handleIntercept(event);
             }
             default:
-                return handleIntercept(event);
+                return isEnabled() && handleIntercept(event);
         }
     }
 
@@ -128,7 +135,7 @@ public class EViewPager extends ViewPager {
      * @param enable: false to disable scroll
      */
     public void setPagingEnabled(boolean enable) {
-        this.isPagingEnabled = enable;
+        setLocked(enable);
     }
 
 

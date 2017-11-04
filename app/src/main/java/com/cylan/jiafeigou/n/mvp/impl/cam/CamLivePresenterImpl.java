@@ -351,7 +351,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
+//                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .timeout(30, TimeUnit.SECONDS)
                         .flatMap(rsp -> makeTimeDelayForList()))
                 .delay(200, TimeUnit.MILLISECONDS)

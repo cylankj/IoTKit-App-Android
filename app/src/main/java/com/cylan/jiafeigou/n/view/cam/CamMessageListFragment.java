@@ -272,7 +272,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
             aplCamMessageAppbar.setExpanded(true, false);
 
-            if (visitorFragment != null) return;//do nothing
+            if (visitorFragment != null) {
+                return;//do nothing
+            }
 
             visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
             visitorFragment.setItemClickListener(new VisitorListFragmentV2.ItemClickListener() {

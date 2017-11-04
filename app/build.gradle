@@ -74,6 +74,7 @@ android {
         jni.srcDirs = [] //disable automatic ndk-build call
     }
     lintOptions {
+        tasks.lint.enabled = false
         abortOnError false
         disable 'RestrictedApi'
     }
@@ -468,3 +469,11 @@ android.variantFilter { variant ->
 /////////////////////////////////////////////////////
 //谷歌推送
 //apply plugin: 'com.google.gms.google-services'
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        // ...
+        suppressWarnings = true
+        kotlinOptions.suppressWarnings = true
+    }
+}
