@@ -169,7 +169,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         //进入登陆页 login page
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.welcome_frame_container, BeforeLoginFragment.newInstance(null))
-                .addToBackStack(BeforeLoginFragment.class.getSimpleName())
+//                .addToBackStack(BeforeLoginFragment.class.getSimpleName())
                 .commitAllowingStateLoss();
     }
 

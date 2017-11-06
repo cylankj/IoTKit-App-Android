@@ -216,11 +216,14 @@ public class History {
         final int total = 2;
         final int qNum = cnt / total + (cnt % total == 0 ? 0 : 1);//查询次数
         rspIndexMap.put(uuid, qNum != 0);
-        for (int i = 0; i < qNum; i++) {
-            final int startTime = tmList.get(i * total);
-            queryHistory(uuid, (int) (getSpecificDayEndTime(startTime * 1000L) / 1000),
-                    0, total);
-        }
+//        for (int i = 0; i < qNum; i++) {
+//            final int startTime = tmList.get(i * total);
+//            queryHistory(uuid, (int) (getSpecificDayEndTime(startTime * 1000L) / 1000),
+//                    0, total);
+//        }
+        AppLogger.d("不能循环，把所有的录像分几次查回来，设备内存不足，需要等待一次响应再去查下一天的");
+        queryHistory(uuid, (int) (getSpecificDayEndTime(tmList.get(0) * 1000L) / 1000),
+                0, total);
     }
 
     /**
@@ -286,7 +289,7 @@ public class History {
                 }
                 Boolean sent = rspIndexMap.get(uuid);
                 if (sent != null && sent && maxTime != -1) {
-                    rspIndexMap.put(uuid, true);
+                    rspIndexMap.put(uuid, false);
                     RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid)
                             .setTimeStart(maxTime));
                 }
@@ -349,7 +352,7 @@ public class History {
                         long timeStart = timeList.get(0), timeEnd = timeList.get(ListUtils.getSize(timeList) - 1);
                         AppLogger.w(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
                                 uuid, timeStart, timeEnd, (System.currentTimeMillis() - time)));
-                        return Observable.just(new Helper(uuid, timeList));
+                        return Observable.just(new Helper(uuid, timeStart));
                     } catch (Exception e) {
                         AppLogger.e("err: " + MiscUtils.getErr(e));
                         return Observable.just(new Helper());
@@ -359,7 +362,8 @@ public class History {
                 .filter(helper -> historyMap != null && historyMap.size() > 0)
                 .subscribe(helper -> {
                     AppLogger.d("录像回来了");
-                    RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid));
+                    RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
+                            .setTimeStart(helper.timeStart));
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
@@ -377,7 +381,7 @@ public class History {
     }
 
 
-    public boolean clearHistoryFile(String uuid) {
+    public void clearHistoryFile(String uuid) {
         synchronized (lock) {
             DataExt.getInstance().clean();
             cleanCache();
@@ -386,20 +390,19 @@ public class History {
 //                    .subscribe(ret -> {
 //                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         }
-        return true;
     }
 
     private static class Helper {
         private String uuid;
-        private ArrayList<Long> timeList;
+        private long timeStart;
 
         public Helper() {
 
         }
 
-        public Helper(String uuid, ArrayList<Long> timeList) {
+        public Helper(String uuid, long timeStart) {
             this.uuid = uuid;
-            this.timeList = timeList;
+            this.timeStart = timeStart;
         }
     }
 

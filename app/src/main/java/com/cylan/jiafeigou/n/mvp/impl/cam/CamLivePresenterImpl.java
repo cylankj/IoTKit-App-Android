@@ -255,6 +255,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
                     if (!ListUtils.isEmpty(historyFiles)) {
                         DataExt.getInstance().flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
+                    } else {
+                        AppLogger.d("没有这一天的录像，要去查");
                     }
                     //本地没有啊,需要从服务器获取.
                     if (ListUtils.isEmpty(historyFiles)) {
@@ -358,7 +360,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     //放在这里不好,有 bug 单:#116924
                     //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
                     // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
-//                    startPlayHistory(historyDataProvider.getFlattenMinTime());
+                    startPlayHistory(DataExt.getInstance().getFlattenMinTime());
                 }, AppLogger::e);
         addSubscription(subscription, "makeTimeDelayForList");
     }

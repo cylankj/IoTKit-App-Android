@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -18,14 +17,13 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- *
  * @author cylan-hunt
  * @date 16-12-19
  */
 
 public class DataExt implements IData {
     private static DataExt instance;
-//    private SimpleDateFormat dateFormat;
+    //    private SimpleDateFormat dateFormat;
     private static final Object lock = new Object();
 
     public static DataExt getInstance() {
@@ -42,13 +40,14 @@ public class DataExt implements IData {
     private DataExt() {
     }
 
-    private static boolean DEBUG = BuildConfig.DEBUG;
-    private static final String TAG = "DataExt";
     private int index = 0;
+    private static final String TAG = "DataExt";
+    private static boolean DEBUG = BuildConfig.DEBUG;
     /**
      * s为单位
      */
-    private ArrayList<Long> flattenDataList = new ArrayList<>();
+//    private ArrayList<Long> flattenDataList = new ArrayList<>();
+    private long[] flattenDataList = new long[]{};
     private ArrayList<HistoryFile> rawList = new ArrayList<>();
     private Map<Long, Integer> timeWithType = new HashMap<>();
 
@@ -59,7 +58,7 @@ public class DataExt implements IData {
     public void flattenData(ArrayList<HistoryFile> list, TimeZone zone) {
         synchronized (lock) {
             this.rawList = new ArrayList<>(list);
-            flattenDataList.clear();
+            flattenDataList = null;
             int size = list.size();
             if (size > 0) {
                 //需要判断顺序.....
@@ -69,15 +68,18 @@ public class DataExt implements IData {
                 long timeMax = getTenMinuteByTimeRight((list.get(maxIndex).time + list.get(maxIndex).duration) * 1000L);
                 long timeMin = getTenMinuteByTimeLeft((list.get(minIndex).time) * 1000L);
                 size = 0;
+                int count = Math.max(1, (int) ((timeMax - timeMin) / (10 * 60 * 1000L)));
+                flattenDataList = new long[count];
                 Log.d(TAG, String.format(Locale.getDefault(), "timeMax:%s,timeMin:%s", timeMax, timeMin));
-                for (long time = timeMax; time >= timeMin; ) {
-                    flattenDataList.add(time);
-                    fillMap(time);
-                    if (false) {
-                        Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(time));
+                try {
+                    for (long time = timeMax; time >= timeMin; ) {
+                        flattenDataList[size] = time;
+                        fillMap(time);
+                        size++;
+                        time -= 10 * 60 * 1000L;
                     }
-                    size++;
-                    time -= 10 * 60 * 1000L;
+                } catch (Exception e) {
+                    Log.e(TAG, "err:" + e.getLocalizedMessage());
                 }
             }
         }
@@ -136,8 +138,8 @@ public class DataExt implements IData {
             if (DEBUG) {
                 Log.d(TAG, String.format("getData:%s,%s", end, start));
             }
-            if (start < 0 || start > end || end > flattenDataList.size()) {
-                end = flattenDataList.size() - start;
+            if (start < 0 || start > end || end > flattenDataList.length) {
+                end = flattenDataList.length - start;
                 if (end <= 0) {
                     return null;
                 }
@@ -146,9 +148,10 @@ public class DataExt implements IData {
                 return null;
             }
             long[] data = new long[end - start];
-            for (int i = start; i < end; i++) {
-                data[i - start] = flattenDataList.get(i);
-            }
+            System.arraycopy(flattenDataList, start, data, 0, end - start);
+//            for (int i = start; i < end; i++) {
+//                data[i - start] = flattenDataList[i];
+//            }
             return data;
         }
     }
@@ -157,7 +160,7 @@ public class DataExt implements IData {
     public long getFlattenMaxTime() {
         synchronized (lock) {
             int size = getDataCount();
-            return size > 0 ? flattenDataList.get(0) : 0;
+            return size > 0 ? flattenDataList[0] : 0;
         }
     }
 
@@ -165,14 +168,14 @@ public class DataExt implements IData {
     public long getFlattenMinTime() {
         synchronized (lock) {
             int size = getDataCount();
-            return size > 0 ? flattenDataList.get(size - 1) : 0;
+            return size > 0 ? flattenDataList[size - 1] : 0;
         }
     }
 
     @Override
     public int getDataCount() {
         synchronized (lock) {
-            return ListUtils.getSize(flattenDataList);
+            return flattenDataList == null ? 0 : flattenDataList.length;
         }
     }
 
@@ -339,7 +342,7 @@ public class DataExt implements IData {
         dateFormatMap.clear();
         timeWithType.clear();
         rawList.clear();
-        flattenDataList.clear();
+        flattenDataList = null;
     }
 
     @Override
