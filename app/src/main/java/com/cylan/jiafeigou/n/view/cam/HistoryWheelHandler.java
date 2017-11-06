@@ -3,26 +3,35 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
+import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -109,6 +118,26 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
      * 选择一天,load所有的数据,但是需要移动的这一天的开始位置.
      */
     private void playPreciseByTime(long timeStart) {
+        final String date = History.parseTime2Date(TimeUtils.wrapToLong(timeStart));
+        ArrayList<HistoryFile> hList = History.getHistory().getHistoryFile(date);
+        if (ListUtils.isEmpty(hList)) {
+            AppLogger.d("没有这天的数据啊，查");
+            Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+                    .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+                    .timeout(30, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.computation())
+                    .subscribe(rsp -> {
+                        ArrayList<HistoryFile> files = History.getHistory().getHistoryFile(date);
+                        DataExt.getInstance().flattenData(files, JFGRules.getDeviceTimezone(presenter.getDevice()));
+                        playByTime(timeStart);
+                    }, throwable -> AppLogger.e("失败了?" + MiscUtils.getErr(throwable)));
+            presenter.addSubscription("playPreciseByTime", subscription);
+            return;
+        }
+        playByTime(timeStart);
+    }
+
+    private void playByTime(long timeStart) {
         presenter.assembleTheDay(timeStart)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

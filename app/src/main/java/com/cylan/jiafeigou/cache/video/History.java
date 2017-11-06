@@ -102,7 +102,7 @@ public class History {
                 .subscribe();
     }
 
-    private void queryHistory(String uuid, int startTime, int way, int count) {
+    public void queryHistory(String uuid, int startTime, int way, int count) {
         try {
             int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
                     startTime, way, count);
