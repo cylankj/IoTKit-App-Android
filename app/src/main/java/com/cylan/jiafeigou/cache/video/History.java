@@ -58,6 +58,8 @@ public class History {
     private HashMap<String, ArrayList<Long>> dateListMap = new HashMap<>();
     private ConcurrentHashMap<String, ArrayList<HistoryFile>> historyMap;
 
+    private HashMap<String, Boolean> rspIndexMap = new HashMap<>();
+
     /**
      * 数据集,不实现Lru逻辑
      */
@@ -78,6 +80,10 @@ public class History {
         }
     }
 
+    public synchronized static String parseTime2Date(long time) {
+        return SAFE_FORMAT.format(new Date(time));
+    }
+
     private History() {
         RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
                 .subscribeOn(Schedulers.io())
@@ -96,11 +102,11 @@ public class History {
                 .subscribe();
     }
 
-    private void queryHistory(String uuid, int startTime, int way, int count) {
+    public void queryHistory(String uuid, int startTime, int way, int count) {
         try {
             int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
                     startTime, way, count);
-            AppLogger.d("ret:" + ret);
+            AppLogger.d(String.format("ret:%s,uuid:%s,startTime:%s,way:%s,count:%s", ret, uuid, startTime, way, count));
         } catch (JfgException e) {
         }
     }
@@ -120,8 +126,7 @@ public class History {
         }
         cleanCache();
         try {
-//            BaseApplication.getAppComponent().getCmd().getVideoList(device.uuid);
-            //日期:1 分钟:0
+            //日期:1 分钟:0   getVideoList(device.uuid); 不用了
             queryHistory(device.uuid, (int) (System.currentTimeMillis() / 1000), 1, 365);
             AppLogger.w("getVideoList");
             return true;
@@ -193,34 +198,32 @@ public class History {
                 .replace(' ', '0');
     }
 
-    private void queryListInDate(String uuid, Map<Integer, List<DpMsgDefine.Unit>> rsp) {
-        Set<Integer> dateSet = rsp == null ? null : rsp.keySet();
-        if (dateSet != null && dateSet.size() > 0) {
-            AppLogger.d("日期不为空:" + GSON.toJson(dateSet));
+    private void fillListInDate(String uuid, Map<Integer, List<DpMsgDefine.Unit>> rspMap) {
+        final int cnt = rspMap == null ? 0 : rspMap.size();
+        if (cnt > 0) {
+            AppLogger.d("日期不为空:" + GSON.toJson(rspMap));
         } else {
             AppLogger.d("日期为空，需要告诉UI");
             RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
             return;
         }
-        ArrayList<Integer> dateList = new ArrayList<>(dateSet);
-        final int cnt = ListUtils.getSize(dateList);
-        if (cnt == 0) {
-            //没有录像
-            return;
-        }
-        ArrayList<Integer> tmList = new ArrayList<>(dateList);
+        ArrayList<Integer> tmList = new ArrayList<>(rspMap.keySet());
         //来个降序吧
         Collections.sort(tmList, (o1, o2) -> (o2 - o1));
         fillDataList(uuid, tmList);
 
-        //注意啊，有一个落后设备只能 一次查3天。
-        final int total = 10;
+        //注意啊，有一个落后设备只能 一次查2天。
+        final int total = 2;
         final int qNum = cnt / total + (cnt % total == 0 ? 0 : 1);//查询次数
-        for (int i = 0; i < qNum; i++) {
-            final int startTime = tmList.get(i * total);
-            queryHistory(uuid, (int) (getSpecificDayEndTime(startTime * 1000L) / 1000),
-                    0, total);
-        }
+        rspIndexMap.put(uuid, qNum != 0);
+//        for (int i = 0; i < qNum; i++) {
+//            final int startTime = tmList.get(i * total);
+//            queryHistory(uuid, (int) (getSpecificDayEndTime(startTime * 1000L) / 1000),
+//                    0, total);
+//        }
+        AppLogger.d("不能循环，把所有的录像分几次查回来，设备内存不足，需要等待一次响应再去查下一天的");
+        queryHistory(uuid, (int) (getSpecificDayEndTime(tmList.get(0) * 1000L) / 1000),
+                0, total);
     }
 
     /**
@@ -233,15 +236,20 @@ public class History {
     public void cacheHistoryDataList(byte[] rawV2Data) {
         if (rawV2Data == null || rawV2Data.length == 0) {
             RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
+            return;
         }
         DpMsgDefine.UniversalDataBaseRsp rsp = DpUtils.unpackDataWithoutThrow(rawV2Data,
                 DpMsgDefine.UniversalDataBaseRsp.class, null);
         if (rsp == null) {
             AppLogger.e("bytes is null");
         } else {
+            if (rsp.dataMap == null || rsp.dataMap.size() == 0) {
+                RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
+                return;
+            }
             if (rsp.way == 1) {
-                //日期参数回来
-                queryListInDate(rsp.caller, rsp.dataMap);
+                //日期参数回来,有些设备坑了，一次只能返回两天。所以只能动态加载了。
+                fillListInDate(rsp.caller, rsp.dataMap);
             } else {
                 //按照分钟的查询回来
                 parseBit(rsp.caller, rsp.dataMap);
@@ -257,25 +265,37 @@ public class History {
      * @param dataMap
      */
     public void parseBit(String uuid, Map<Integer, List<DpMsgDefine.Unit>> dataMap) {
-        Set<Integer> dateSet = dataMap == null ? null : dataMap.keySet();
-        PerformanceUtils.startTrace("parseBit");
-        if (dateSet != null) {
-            Iterator<Integer> integerIterator = dateSet.iterator();
-            while (integerIterator.hasNext()) {
-                final Integer dateInInt = integerIterator.next();
-                List<DpMsgDefine.Unit> units = dataMap.get(dateInInt);
-                //把这些Units,展开成最多180*8个字符串，然后提取连续的1凑成一个HistoryFile
-                final String longLongBits = flatBitList(units);
-                //一天的list
-                ArrayList<HistoryFile> list = squeeze(dateInInt, longLongBits);
-                final String dateInStr = SAFE_FORMAT.format(new Date(dateInInt * 1000L));
-                Log.d(TAG, "list Size:" + ListUtils.getSize(units) + ",squeezeSize:" + ListUtils.getSize(list));
-                addDateList(dateInStr, list);
+        synchronized (lock) {
+            Set<Integer> dateSet = dataMap == null ? null : dataMap.keySet();
+            PerformanceUtils.startTrace("parseBit");
+            if (dateSet != null) {
+                long maxTime = -1;
+                for (Integer dateInInt : dateSet) {
+                    if (dateInInt > maxTime) {
+                        maxTime = dateInInt;
+                    }
+                    List<DpMsgDefine.Unit> units = dataMap.get(dateInInt);
+                    //把这些Units,展开成最多180*8个字符串，然后提取连续的1凑成一个HistoryFile
+                    final String longLongBits = flatBitList(units);
+                    //一天的list
+                    ArrayList<HistoryFile> list = squeeze(dateInInt, longLongBits);
+                    final String dateInStr = parseTime2Date(dateInInt * 1000L);
+                    AppLogger.d("list Size:" + ListUtils.getSize(units) + ",squeezeSize:" + ListUtils.getSize(list));
+                    if (ListUtils.getSize(list) != 0) {
+                        addDateList(dateInStr, list);
+                    } else {
+                        AppLogger.e("设备端出锅 发来空列表");
+                    }
+                }
+                Boolean sent = rspIndexMap.get(uuid);
+                if (sent != null && sent && maxTime != -1) {
+                    rspIndexMap.put(uuid, false);
+                    RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid)
+                            .setTimeStart(maxTime));
+                }
             }
-            RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid)
-                    .setTimeList(dateListMap.get(uuid)));
+            PerformanceUtils.stopTrace("parseBit");
         }
-        PerformanceUtils.stopTrace("parseBit");
     }
 
     public void addDateList(final String date, ArrayList<HistoryFile> dateList) {
@@ -312,7 +332,7 @@ public class History {
                     ArrayList<JFGVideo> list = historyVideo1.list;
                     for (JFGVideo video : list) {
                         ensureMap();
-                        final String dateInStr = SAFE_FORMAT.format(new Date(video.beginTime * 1000L));
+                        final String dateInStr = parseTime2Date(video.beginTime * 1000L);
                         ArrayList<HistoryFile> historyFiles = historyMap.get(dateInStr);
                         if (historyFiles == null) {
                             historyFiles = new ArrayList<>();
@@ -332,7 +352,7 @@ public class History {
                         long timeStart = timeList.get(0), timeEnd = timeList.get(ListUtils.getSize(timeList) - 1);
                         AppLogger.w(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
                                 uuid, timeStart, timeEnd, (System.currentTimeMillis() - time)));
-                        return Observable.just(new Helper(uuid, timeList));
+                        return Observable.just(new Helper(uuid, timeStart));
                     } catch (Exception e) {
                         AppLogger.e("err: " + MiscUtils.getErr(e));
                         return Observable.just(new Helper());
@@ -343,13 +363,16 @@ public class History {
                 .subscribe(helper -> {
                     AppLogger.d("录像回来了");
                     RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
-                            .setTimeList(helper.timeList));
+                            .setTimeStart(helper.timeStart));
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
     public void cleanCache() {
         if (historyMap != null) {
             historyMap.clear();
+        }
+        if (dateListMap != null) {
+            dateListMap.clear();
         }
     }
 
@@ -358,7 +381,7 @@ public class History {
     }
 
 
-    public boolean clearHistoryFile(String uuid) {
+    public void clearHistoryFile(String uuid) {
         synchronized (lock) {
             DataExt.getInstance().clean();
             cleanCache();
@@ -367,20 +390,19 @@ public class History {
 //                    .subscribe(ret -> {
 //                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         }
-        return true;
     }
 
     private static class Helper {
         private String uuid;
-        private ArrayList<Long> timeList;
+        private long timeStart;
 
         public Helper() {
 
         }
 
-        public Helper(String uuid, ArrayList<Long> timeList) {
+        public Helper(String uuid, long timeStart) {
             this.uuid = uuid;
-            this.timeList = timeList;
+            this.timeStart = timeStart;
         }
     }
 

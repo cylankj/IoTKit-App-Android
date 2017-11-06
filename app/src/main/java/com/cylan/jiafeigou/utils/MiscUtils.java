@@ -500,13 +500,13 @@ public class MiscUtils {
         }
     }
 
-    public static List<JFGDPMsg> getCamDateVersionList(long startTime, int days) {
+    public static ArrayList<JFGDPMsg> getCamDateVersionList(long startTime, int days) {
         ArrayList<JFGDPMsg> list = new ArrayList<>();
         for (int i = 0; i < days; i++) {
-            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222));
-            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505));
-            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512));
-            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 401));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222L));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505L));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512L));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 401L));
         }
         return list;
     }
