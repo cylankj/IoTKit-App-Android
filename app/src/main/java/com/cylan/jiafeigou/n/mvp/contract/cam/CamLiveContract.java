@@ -228,7 +228,7 @@ public interface CamLiveContract {
         <T extends DataPoint> void updateInfoReq(T value, long id);
 
 
-        Observable<IData> assembleTheDay();
+        Observable<IData> assembleTheDay(long timeStart);
 
         LiveStream getLiveStream();
 

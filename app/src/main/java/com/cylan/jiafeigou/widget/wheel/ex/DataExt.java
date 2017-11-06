@@ -18,12 +18,14 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * Created by cylan-hunt on 16-12-19.
+ *
+ * @author cylan-hunt
+ * @date 16-12-19
  */
 
 public class DataExt implements IData {
     private static DataExt instance;
-    private SimpleDateFormat dateFormat;
+//    private SimpleDateFormat dateFormat;
     private static final Object lock = new Object();
 
     public static DataExt getInstance() {
@@ -52,21 +54,14 @@ public class DataExt implements IData {
 
     private Map<Long, String> dateFormatMap = new HashMap<>();
 
-    private void initDateFormat(TimeZone zone) {
-        synchronized (lock) {
-            dateFormat = new SimpleDateFormat("HH:mm", Locale.UK);
-            dateFormat.setTimeZone(zone);
-        }
-    }
 
     @Override
     public void flattenData(ArrayList<HistoryFile> list, TimeZone zone) {
         synchronized (lock) {
-            this.rawList = list;
+            this.rawList = new ArrayList<>(list);
             flattenDataList.clear();
             int size = list.size();
             if (size > 0) {
-                initDateFormat(zone);
                 //需要判断顺序.....
                 AppLogger.e("需要判断顺序:" + zone.getDisplayName());
                 int maxIndex = list.get(0).time >= list.get(list.size() - 1).time ? 0 : list.size() - 1;
@@ -142,7 +137,6 @@ public class DataExt implements IData {
                 Log.d(TAG, String.format("getData:%s,%s", end, start));
             }
             if (start < 0 || start > end || end > flattenDataList.size()) {
-//            System.out.println("出界: " + initSubscription);
                 end = flattenDataList.size() - start;
                 if (end <= 0) {
                     return null;

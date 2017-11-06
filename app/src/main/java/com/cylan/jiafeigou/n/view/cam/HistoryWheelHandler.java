@@ -67,53 +67,14 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     public void showDatePicker(boolean isLand) {
-//        if (isLand) {
-//            if (landDateListContainer.getVisibility() == View.GONE
-//                    || landDateListContainer.getTranslationX() == landDateListContainer.getWidth()) {
-//                AnimatorUtils.slideInRight(landDateListContainer);
-//                landDateListContainer.removeCallbacks(containerHide);
-//                landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
-//            } else if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == 0)
-//                AnimatorUtils.slideOutRight(landDateListContainer);
-//            showLandDatePicker();
-//        } else {
         showPortDatePicker();
-//        }
     }
 
-//    private void showLandDatePicker() {
-//        if (recyclerView.getAdapter() == null || recyclerView.getAdapter().getItemCount() == 0) {
-//            final ArrayList<Long> dateStartList = presenter.getFlattenDateList();
-//            Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
-//            AppLogger.d("sort: " + dateStartList);
-//            recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
-//            recyclerView.setAdapter(new CamLandHistoryDateAdapter(context, null, R.layout.layout_cam_history_land_list));
-//            ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).addAll(dateStartList);
-//            ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setOnItemClickListener((View itemView, int viewType, int position) -> {
-//                long time = dateStartList.get(position);
-//                AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate(time));
-//                playPreciseByTime(TimeUtils.getSpecificDayStartTime(time));
-//                landDateListContainer.removeCallbacks(containerHide);
-//                landDateListContainer.post(containerHide);//选中立马隐藏
-//                ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusPos(position);
-//            });
-//            ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusTime(getWheelCurrentFocusTime());
-//            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                @Override
-//                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                    landDateListContainer.removeCallbacks(containerHide);
-//                    landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
-//                }
-//            });
-//        }
-//    }
 
     private void showPortDatePicker() {
-//        if (datePickerRef == null || datePickerRef.get() == null) {
         Bundle bundle = new Bundle();
         bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
         DatePickerDialogFragment fragment = DatePickerDialogFragment.newInstance(bundle);
-//            datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
         fragment.setAction((int id, Object value) -> {
             if (value != null && value instanceof Long) {
                 IData data = presenter.getHistoryDataProvider();
@@ -132,7 +93,6 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 playPreciseByTime((Long) value);
             }
         });
-//        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         fragment.setTimeZone(JFGRules.getDeviceTimezone(device));
         fragment.setTimeFocus(getWheelCurrentFocusTime());
@@ -149,30 +109,33 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
      * 选择一天,load所有的数据,但是需要移动的这一天的开始位置.
      */
     private void playPreciseByTime(long timeStart) {
-//        final long start = TimeUtils.getSpecificDayStartTime(timeStart);
-        presenter.assembleTheDay()
+        presenter.assembleTheDay(timeStart)
                 .subscribeOn(Schedulers.io())
-                .filter(iData -> iData != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
                 .subscribe(iData -> {
                     setupHistoryData(iData);
                     HistoryFile historyFile = iData.getMinHistoryFileByStartTime(timeStart);//最小时间.
                     if (historyFile != null) {
-                        setNav2Time(TimeUtils.wrapToLong(timeStart));
+                        //需要使用post，因为上面的setupHistoryData是post
+                        setNav2Time(TimeUtils.wrapToLong(timeStart), true);
                         presenter.startPlayHistory(TimeUtils.wrapToLong(timeStart));
                         AppLogger.d("找到历史录像?" + historyFile);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
+    public void setNav2Time(long time, boolean post) {
+        if (!post) {
+            setNav2Time(time);
+        } else {
+            superWheelExt.setPositionByTimePost(time, true);
+        }
+    }
+
     public void setNav2Time(long time) {
         superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time), false);
     }
-
-//    public void setNav2Time(long time, long delay) {
-//        superWheelExt.postDelayed(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time)), delay);
-//    }
 
     public boolean isBusy() {
         return superWheelExt.isBusy();
