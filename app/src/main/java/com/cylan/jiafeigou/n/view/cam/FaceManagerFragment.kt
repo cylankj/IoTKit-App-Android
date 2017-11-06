@@ -170,7 +170,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         view.findViewById(R.id.delete).setOnClickListener {
             AppLogger.w("面孔管理:删除")
             popupWindow.dismiss()
-            faceManagerItem.withSetSelected(true)
+            adapter.select(position)
             presenter.deleteFace(personId, listOf(faceManagerItem.faceInformation?.face_id ?: ""))
         }
 

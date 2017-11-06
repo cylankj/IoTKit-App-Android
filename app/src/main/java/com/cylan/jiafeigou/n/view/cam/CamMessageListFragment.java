@@ -500,16 +500,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         break;
                     case FaceItem.FACE_TYPE_ALL:
                         presenter.fetchMessageListByFaceId(time, asc, false);
-                        if (asc) {
-                            refreshFaceHeader();
-                        }
                         break;
                     default:
                         presenter.fetchMessageListByFaceId(time, asc, false);
-                        if (asc) {
-                            refreshFaceHeader();
-                        }
 
+                }
+                if (asc) {
+                    refreshFaceHeader();
                 }
             } else {
                 presenter.fetchMessageListByFaceId(time, asc, false);
