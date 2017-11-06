@@ -655,6 +655,7 @@
   <string name="SETTING">設定中&#8230;</string>
   <string name="SETTINGS">設定</string>
   <string name="SETTINGS_1">機能設定</string>
+  <string name="SETTINGS_FAILED">設定失敗しました</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">ホットスポットが接続されている</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">モバイルホットスポット</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">オフにすると微信のプッシュ通知を受信できなくなります。バインディングを解除したい場合、微信で「加菲狗官微服务」のアカウントのフォローを解除してください。</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">ニックネームを入力してください</string>
   <string name="USE_HELP">ヘルプ</string>
   <string name="Unconnect_Network">お使いの端末はモバイルネットワークまたはWiFiネットワークに接続されていません</string>
-  <string name="Unicam720_TIMEOUT_BANNER">接続が遅い、再試行してください</string>
+  <string name="Unicam720_TIMEOUT_BANNER">スピードくとも40kB/s</string>
   <string name="VALID_STORAGE">ストレージ容量</string>
   <string name="VIDEO_FirmwareUpdating">ファームウェアのアップデート&#8230;</string>
   <string name="VIDEO_REFRESHING">アップロード中、お待ちください</string>

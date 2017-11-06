@@ -655,6 +655,7 @@
   <string name="SETTING">Ajustando&#8230;</string>
   <string name="SETTINGS">Ajustes</string>
   <string name="SETTINGS_1">Ajustes</string>
+  <string name="SETTINGS_FAILED">ajustes fallaron</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot está conectado</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Punto de acceso móvil</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Al cerrar no podrá recibir mensajes de WeChat. Para desenlazar va a WeChat para dejar de seguir la cuenta de suscripción de Servicio Oficial de Clever Dog.</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Introduzca el mote</string>
   <string name="USE_HELP">Ayuda</string>
   <string name="Unconnect_Network">Su dispositivo no está conectado a una red móvil oa una red WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Conexión lenta, vuelva a intentarlo</string>
+  <string name="Unicam720_TIMEOUT_BANNER">La velocidad debe ser de 40kB/s al menos</string>
   <string name="VALID_STORAGE">Almacenamiento disponible</string>
   <string name="VIDEO_FirmwareUpdating">Actualización de firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Cargando, espere un momento</string>

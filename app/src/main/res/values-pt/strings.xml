@@ -655,6 +655,7 @@
   <string name="SETTING">Salvando ajustes&#8230;</string>
   <string name="SETTINGS">Ajustes</string>
   <string name="SETTINGS_1">Ajustes</string>
+  <string name="SETTINGS_FAILED">configurações falhou</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot está conectado</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Hotspot móvel</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Desligar não vai receber mais mensagens empurradas. Se quiser se desvincular, por favor vá ao Wechat e cancele o seguimento do número público\"加菲狗官微服务\".</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Digite um apelido</string>
   <string name="USE_HELP">Ajuda</string>
   <string name="Unconnect_Network">Seu dispositivo não está conectado a uma rede móvel ou a uma rede WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Pobre rede, a velocidade deve ser 40kb/s, pelo menos</string>
+  <string name="Unicam720_TIMEOUT_BANNER">A velocidade deve ser de 40kB/s pelo menos</string>
   <string name="VALID_STORAGE">Armazenamento</string>
   <string name="VIDEO_FirmwareUpdating">Atualização de Firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Carregando. Por favor aguarde&#8230;</string>

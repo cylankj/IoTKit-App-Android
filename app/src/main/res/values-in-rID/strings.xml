@@ -655,6 +655,7 @@
   <string name="SETTING">Pengaturan&#8230;</string>
   <string name="SETTINGS">Pengaturan</string>
   <string name="SETTINGS_1">Pengaturan</string>
+  <string name="SETTINGS_FAILED">Setelan gagal</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot terhubung</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Hotspot mobile</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Jika ditutup, maka tidak bisa menerima dorongan WeChat. Unbinding dengan unfollowing \"加菲狗官微服务\".</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Nama pengguna</string>
   <string name="USE_HELP">Bantuan</string>
   <string name="Unconnect_Network">Perangkat Anda tidak terhubung ke jaringan selular atau jaringan WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Miskin jaringan, kecepatan harus 40kb/s setidaknya</string>
+  <string name="Unicam720_TIMEOUT_BANNER">Miskin jaringan, kecepatan minimal 40kB/s</string>
   <string name="VALID_STORAGE">Penyimpanan Valid</string>
   <string name="VIDEO_FirmwareUpdating">Firmware updating&#8230;</string>
   <string name="VIDEO_REFRESHING">Sedang memuat</string>

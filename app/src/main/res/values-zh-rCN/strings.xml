@@ -655,6 +655,7 @@
   <string name="SETTING">正在设置&#8230;</string>
   <string name="SETTINGS">设置</string>
   <string name="SETTINGS_1">功能设置</string>
+  <string name="SETTINGS_FAILED">设置失败</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">热点已连接</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">手机热点</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">关闭将无法接收微信推送。想取消绑定请前往微信取消关注“加菲狗官微服务”公众号。</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">请输入昵称</string>
   <string name="USE_HELP">使用帮助</string>
   <string name="Unconnect_Network">您的设备未连接移动网络，或WiFi网络</string>
-  <string name="Unicam720_TIMEOUT_BANNER">网络较差，请确保上传速度高于40kb/s</string>
+  <string name="Unicam720_TIMEOUT_BANNER">网络较差，上传速度需高于40kB/s</string>
   <string name="VALID_STORAGE">存储空间</string>
   <string name="VIDEO_FirmwareUpdating">固件升级中&#8230;</string>
   <string name="VIDEO_REFRESHING">正在加载，请稍后</string>

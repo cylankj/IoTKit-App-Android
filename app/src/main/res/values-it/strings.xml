@@ -655,6 +655,7 @@
   <string name="SETTING">Impostazioni&#8230;</string>
   <string name="SETTINGS">Impostazioni</string>
   <string name="SETTINGS_1">Impostazioni Funzioni</string>
+  <string name="SETTINGS_FAILED">Impostazioni non riuscite</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot è collegato</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Mobile Hotspot</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Non puoi ricevere il push di Wechat se chiudi. Se vuoi cancellare il collegamento, ti preghiamo di vai a Wechat per smettere di seguire l\'account ufficiale \"加菲狗官微服务\".</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Inserire Nome utente</string>
   <string name="USE_HELP">Aiuto</string>
   <string name="Unconnect_Network">Il tuo dispositivo non è connesso a una rete mobile oa una rete WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Scarsa rete, la velocità dovrebbe essere almeno 40kb/s</string>
+  <string name="Unicam720_TIMEOUT_BANNER">La velocità dovrebbe essere almeno 40kb/s</string>
   <string name="VALID_STORAGE">Memoria libera</string>
   <string name="VIDEO_FirmwareUpdating">Aggiornamento firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Sto caricando</string>

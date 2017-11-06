@@ -56,7 +56,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private boolean isSharedDevice = false;
     private DpMsgDefine.DPSdcardSummary summary;
     private boolean status;
-    private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
+    private Map<String, String> personMaps = new HashMap<>();
     //null 不过滤
     private String faceItemType = null;
 
@@ -205,7 +205,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         //设置删除可见性,共享设备不可删除消息
 //        Device device = DataSourceManager.getInstance().getDevice(uuid);
         //720 设备享有所有权限
-        holder.setVisibility(R.id.tv_cam_message_item_delete,View.INVISIBLE);
+        holder.setVisibility(R.id.tv_cam_message_item_delete, View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);
@@ -319,7 +319,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setVisibility(R.id.tv_jump_next, showHistoryButton(item) ? View.VISIBLE : View.GONE);
     }
 
-
     private View.OnClickListener onClickListener;
 
     public void setOnclickListener(View.OnClickListener onclickListener) {
@@ -340,9 +339,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-            if (bean.alarmMsg.face_id != null && bean.alarmMsg.humanNum > 0) {
-                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, faceInformationMap, null);
-                return tContent + (TextUtils.isEmpty(faceText) ? getContext().getString(R.string.MSG_WARNING) : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
+            if (bean.alarmMsg.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
+                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, personMaps, null);
+
+                return tContent + (TextUtils.isEmpty(faceText) ?
+                        getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
+                        : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
             } else if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
                 return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(bean.alarmMsg.objects);
 //                return tContent + "检测到" + JConstant.getAIText(bean.alarmMsg.objects);
@@ -479,16 +481,28 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         this.summary = summary;
     }
 
-    public void appendFaceInformation(Map<String, DpMsgDefine.FaceInformation> informationMap) {
-        faceInformationMap.putAll(informationMap);
-        notifyDataSetChanged();
-    }
-
 //    private List<CamMessageBean>
 
     public void filterByFaceItemType(String personId) {
         // TODO: 2017/10/14 null 全部
         this.faceItemType = personId;
+        notifyDataSetChanged();
+    }
+
+    public void onStrangerInformationReady(DpMsgDefine.StrangerVisitorList visitorList) {
+
+    }
+
+    public void onVisitorInformationReady(DpMsgDefine.VisitorList visitorList) {
+        if (visitorList != null && visitorList.dataList != null) {
+            for (DpMsgDefine.Visitor visitor : visitorList.dataList) {
+                if (visitor.detailList != null) {
+                    for (DpMsgDefine.VisitorDetail detail : visitor.detailList) {
+                        personMaps.put(detail.faceId, visitor.personName);
+                    }
+                }
+            }
+        }
         notifyDataSetChanged();
     }
 }

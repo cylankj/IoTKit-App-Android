@@ -4,6 +4,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.msgpack.MessagePack;
+import org.msgpack.type.Value;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class DpUtils {
             AppLogger.e("value is null: " + clazz);
             return null;
         }
+
         return mp.createBufferUnpacker(data).read(clazz);
     }
 
@@ -98,6 +100,24 @@ public class DpUtils {
             AppLogger.e("msgpack err: " + e.getLocalizedMessage());
             return null;
         }
+    }
+
+    public static Value unpack(byte[] bytes) {
+        try {
+            return mp.createBufferUnpacker(bytes).readValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T> T convert(Value value, Class<T> clazz) {
+        try {
+            return mp.convert(value, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

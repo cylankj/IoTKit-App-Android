@@ -655,6 +655,7 @@
   <string name="SETTING">Установка&#8230;</string>
   <string name="SETTINGS">Параметры</string>
   <string name="SETTINGS_1">Параметры</string>
+  <string name="SETTINGS_FAILED">Настройки не удалось</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Точка доступа подключена</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Мобильная точка доступа</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">WeChat сообщения не доставят при закрытии. Перейтите к WeChat и перестаньте следить за официальным аккаунтом \"加菲狗官微服务\" если хотите отменить привязку.</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Имя пользователя</string>
   <string name="USE_HELP">Помощь</string>
   <string name="Unconnect_Network">Ваше устройство не подключено к мобильной сети или сети WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Плохая сеть, скорость должна быть не менее 40 кб/с</string>
+  <string name="Unicam720_TIMEOUT_BANNER">Cкорость должна быть не менее 40кб/с</string>
   <string name="VALID_STORAGE">Объём памяти</string>
   <string name="VIDEO_FirmwareUpdating">Обновление прошивки&#8230;</string>
   <string name="VIDEO_REFRESHING">Идет загрузка, пожалуйста подождите</string>

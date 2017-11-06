@@ -655,6 +655,7 @@
   <string name="SETTING">Ayarlanıyor&#8230;</string>
   <string name="SETTINGS">Ayarlamalar</string>
   <string name="SETTINGS_1">Ayarlamalar</string>
+  <string name="SETTINGS_FAILED">Ayarlar başarısız</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot bağlı</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Mobil Erişim Noktası</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Kapanırsa, WeChat itilmesini kabul edemezsiniz. \"加菲狗官微服务\" nı takip etmeden kaldırılmasını.</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Kullanıcı adı</string>
   <string name="USE_HELP">Yardım</string>
   <string name="Unconnect_Network">Cihazınız bir mobil şebekeye veya bir Kablosuz ağa bağlı değil</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Kötü şebeke, hız en az 40kb/s olmalıdır</string>
+  <string name="Unicam720_TIMEOUT_BANNER">Hız en az 40kB/s olmalıdır</string>
   <string name="VALID_STORAGE">Geçerli depolama</string>
   <string name="VIDEO_FirmwareUpdating">Firmware güncellemesi&#8230;</string>
   <string name="VIDEO_REFRESHING">YÜKLENİYOR</string>

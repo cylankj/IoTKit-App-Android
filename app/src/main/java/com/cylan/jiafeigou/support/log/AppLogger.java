@@ -282,10 +282,10 @@ public class AppLogger {
     private static final String content = "%s-%s(L:%s):%s";
 
     /**
-     * Building Message
+     * Building DpMessage
      *
      * @param msg The message you would like logged.
-     * @return Message String
+     * @return DpMessage String
      */
     protected static String buildMessage(String msg, Object... args) {
         StackTraceElement caller = new Throwable().fillInStackTrace()

@@ -197,16 +197,16 @@ public class JConstant {
     public static final String ROBOT_SERVICES_KEY = "ROBOT_SERVICES_KEY";
     public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
 
-    public static String getFaceText(String[] face_id, Map<String, DpMsgDefine.FaceInformation> faceMap, String defaultText) {
+    public static String getFaceText(String[] face_id, Map<String, String> faceMap, String defaultText) {
         if (face_id == null || faceMap == null || faceMap.size() == 0) {
             return defaultText;
         }
-        DpMsgDefine.FaceInformation information;
+        String information;
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < face_id.length; i++) {
             information = faceMap.get(face_id[i]);
             if (information != null) {
-                result.append(information.face_name);
+                result.append(information);
                 if (i != face_id.length - 1) {
                     result.append(", ");
                 }

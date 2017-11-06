@@ -655,6 +655,7 @@
   <string name="SETTING">Đang cài đặt&#8230;</string>
   <string name="SETTINGS">Cài đặt</string>
   <string name="SETTINGS_1">Cài đặt</string>
+  <string name="SETTINGS_FAILED">Cài đặt thất bại</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot được kết nối</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Điểm nóng Mobile</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Nếu đóng cửa, nó không thể nhận được WeChat đẩy. Hủy bỏ nó bằng cách hủy theo dõi \"加菲狗官微服务\".</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Tên người dùng</string>
   <string name="USE_HELP">Trợ giúp</string>
   <string name="Unconnect_Network">Thiết bị của bạn không được kết nối với mạng di động hoặc mạng WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Mạng kém, tốc độ phải là 40kb/s ít nhất</string>
+  <string name="Unicam720_TIMEOUT_BANNER">Tốc độ nên ít nhất 40kB/s</string>
   <string name="VALID_STORAGE">Có bộ nhớ lưu trữ</string>
   <string name="VIDEO_FirmwareUpdating">Cập nhật firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">ĐANG TẢI</string>

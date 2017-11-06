@@ -655,6 +655,7 @@
   <string name="SETTING">Installation&#8230;</string>
   <string name="SETTINGS">Réglages</string>
   <string name="SETTINGS_1">Réglages</string>
+  <string name="SETTINGS_FAILED">paramètres échoué</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot est connecté</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Point d\'accès pour mobiles</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Vous ne pouvez recevoir plus les messages poussés de Wechat si vous le fermez.Si vous voulez annuler la liaison, veuillez annuler tout à bord \"加菲狗官微服务\".</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Saisir un pseudo</string>
   <string name="USE_HELP">Aide</string>
   <string name="Unconnect_Network">Votre appareil n\'est pas connecté à un réseau mobile ou à un réseau WiFi</string>
-  <string name="Unicam720_TIMEOUT_BANNER">réseau médiocre, la vitesse doit être 40kb/s au moins</string>
+  <string name="Unicam720_TIMEOUT_BANNER">La vitesse doit être 40kB/s au moins</string>
   <string name="VALID_STORAGE">Stockage disponible</string>
   <string name="VIDEO_FirmwareUpdating">Mise à jour du firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Chargement</string>

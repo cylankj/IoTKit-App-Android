@@ -655,6 +655,7 @@
   <string name="SETTING">In Einstellung&#8230;</string>
   <string name="SETTINGS">Einstellung</string>
   <string name="SETTINGS_1">Funktionseinstellung</string>
+  <string name="SETTINGS_FAILED">Einstellungen fehlgeschlagen</string>
   <string name="SETTINGS_HOTSPOT_CONNECTED">Hotspot ist verbunden</string>
   <string name="SETTINGS_MOBILE_HOTSPOT">Mobiler Hotspot</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Nach dem Deaktivieren werden Sie die Wechat-Benachrichtigung nicht mehr erhalten. Möchten Sie die Verbindung trennen, bitte gehen Sie zu Wechat und das offizielle Konto \"加菲狗官微服务\" nicht mehr folgen.</string>
@@ -1070,7 +1071,7 @@
   <string name="USER_NAME">Benutzernamen bitte eingeben</string>
   <string name="USE_HELP">Verwenden der Hilfe</string>
   <string name="Unconnect_Network">Ihr Gerät ist nicht mit einem Mobilfunknetz oder einem WiFi-Netzwerk verbunden</string>
-  <string name="Unicam720_TIMEOUT_BANNER">Langsame Verbindung, bitte wiederholen</string>
+  <string name="Unicam720_TIMEOUT_BANNER">Geschwindigkeit sollte 40kB/s zumindest</string>
   <string name="VALID_STORAGE">Speicher</string>
   <string name="VIDEO_FirmwareUpdating">Firmware Updating&#8230;</string>
   <string name="VIDEO_REFRESHING">Wird geladen, einen Moment bitte</string>

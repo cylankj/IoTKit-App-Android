@@ -30,11 +30,11 @@ import kotlinx.android.synthetic.main.fragment_facelist.*
  */
 class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListContact.View {
     override fun onMoveFaceError() {
-        ToastUtil.showToast("语言包:移动面孔失败")
+        ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
     }
 
     override fun onAuthorizationError() {
-        ToastUtil.showToast("语言包:授权失败!")
+        ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
     }
 
     private var faceId: String? = null
@@ -62,7 +62,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     override fun onMoveFaceToPersonSuccess(personId: String) {
         AppLogger.w("移动面孔成功了")
-        ToastUtil.showToast("语言包:移动面孔成功了!")
+        ToastUtil.showToast(getString(R.string.PWD_OK_2))
         fragmentManager.popBackStack()
 
         if (targetFragment != null) {

@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_face_create.*
 class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), CreateFaceContact.View {
     override fun onFaceNotExistError() {
         AppLogger.w("face_id 不存在 ,创建失败了")
-        ToastUtil.showToast("语言包: face_id 不存在,创建失败了!")
+        ToastUtil.showToast(getString(R.string.LIVE_CREATE_FAIL_TIPS))
     }
 
     data class HH(var a: String, var b: String, var c: String)
@@ -33,7 +33,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun onCreateNewFaceTimeout() {
         AppLogger.w("创建面孔超时了")
-        ToastUtil.showToast("创建面孔超时了")
+        ToastUtil.showToast(getString(R.string.LIVE_CREATE_FAIL_TIPS))
     }
 
     override fun onCreateNewFaceSuccess(personId: String) {
@@ -46,7 +46,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun onCreateNewFaceError(ret: Int) {
         AppLogger.w("创建面孔失败了")
-        ToastUtil.showToast("语言包:创建失败了")
+        ToastUtil.showToast(getString(R.string.LIVE_CREATE_FAIL_TIPS))
     }
 
     private var strangerVisitor: DpMsgDefine.StrangerVisitor? = null

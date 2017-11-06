@@ -11,6 +11,7 @@ import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
+import org.msgpack.type.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.TimeZone;
  * @Deprecated msgPack 将升级到0.8 版本,不以反射的方式来解析了,将会通过静态方法的方式
  */
 public class DpMsgDefine {
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"standby", "alarmEnable", "led", "autoRecord"})
     public static final class DPStandby extends BaseDataPoint {
@@ -93,7 +94,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"net", "ssid"})
     public static final class DPNet extends BaseDataPoint {
@@ -187,7 +188,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"timezone", "offset"})
     public static final class DPTimeZone extends BaseDataPoint {
@@ -240,7 +241,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"isBind", "account", "oldAccount"})
     public static final class DPBindLog extends BaseDataPoint {
@@ -298,7 +299,7 @@ public class DpMsgDefine {
     }
 
     //系统消息使用
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"hasSdcard", "errCode"})
     public static final class DPSdcardSummary extends BaseDataPoint implements Parcelable {
@@ -378,7 +379,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"total", "used", "err", "hasSdcard"})
     public static final class DPSdStatus extends BaseDataPoint implements Parcelable {
@@ -439,7 +440,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     public static final class DPSdStatusInt extends BaseDataPoint implements Parcelable {
         @Index(0)
@@ -499,7 +500,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"timeStart", "timeEnd"})
     public static final class DPAlarmInfo extends BaseDataPoint implements Parcelable {
@@ -561,7 +562,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"time", "isRecording", "fileIndex", "ossType", "tly", "objects"})
     public static final class DPAlarm extends BaseDataPoint implements Parcelable {//505 报警消息
@@ -680,7 +681,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message//504
+    @org.msgpack.annotation.Message//504
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"notification", "duration"})
     public static final class DPNotificationInfo extends BaseDataPoint implements Parcelable {
@@ -759,7 +760,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"timeStart", "timePeriod", "timeDuration", "status"})
     public static final class DPTimeLapse extends BaseDataPoint implements Parcelable {
@@ -823,7 +824,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"x", "y", "r"})
     public static final class DPCamCoord extends BaseDataPoint implements Parcelable {
@@ -882,7 +883,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"isOK", "time", "duration", "type", "isRecording", "fileIndex"})
     public static final class DPBellCallRecord extends BaseDataPoint implements Parcelable {
@@ -1028,7 +1029,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"cid", "time", "msgType", "fileName", "place"})
     public static final class DPWonderItem extends BaseDataPoint implements Parcelable {
@@ -1136,7 +1137,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"cid", "isDone", "account", "sn", "pid"})
     public static final class DPMineMesg {
@@ -1166,7 +1167,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"title", "content"})
     public static final class DPSystemMesg {
@@ -1184,7 +1185,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"id", "time", "count"})
     public static final class DPUnreadCount {
@@ -1215,7 +1216,7 @@ public class DpMsgDefine {
     /**
      * 历史录像日历列表请求
      */
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"beginTime", "limit", "asc"})
     public static final class V3DateListReq {
@@ -1239,7 +1240,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"cid", "time", "msgType", "regionType", "fileName", "desc", "url"})
     public static class DPShareItem extends BaseDataPoint {
@@ -1313,7 +1314,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"upgrade"})
     public static class DPBaseUpgradeStatus extends BaseDataPoint {
@@ -1352,7 +1353,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY, with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY})
     @JsonPropertyOrder(value = {"recordEnable"})
     public static class DPAutoRecordWatcher extends BaseDataPoint {
@@ -1395,7 +1396,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"x", "y", "r", "w", "h"})
     public static class DpCoordinate extends BaseDataPoint {
@@ -1450,7 +1451,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder(value = {"enable", "startTime", "endTime"})
     public static final class BellDeepSleep extends BaseDataPoint {
@@ -1497,7 +1498,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DPCameraLiveRtmpCtrl extends BaseDataPoint {
         @Index(0)
         public String url;
@@ -1555,7 +1556,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DPCameraLiveRtmpStatus extends BaseDataPoint {
         @Index(0)
         public int liveType;//直播类型：1 facebook; 2 youtube; 3 weibo; 4 rtmp
@@ -1619,7 +1620,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DPAIService {
         @Index(0)
         public String vid;
@@ -1629,7 +1630,7 @@ public class DpMsgDefine {
         public String service_key_seceret;
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DPOssRegion {
 
         @Index(0)
@@ -1639,7 +1640,7 @@ public class DpMsgDefine {
         public int regionType;
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DPOssService {
         @Index(0)
         public String vid;
@@ -1794,7 +1795,7 @@ public class DpMsgDefine {
     }
 
     //rsp=msgpack(total, [[object_type, person_id, person_name, last_time, [face_id1, face_id2, ...]], [object_type, person_id, person_name, last_time, [face_id1, face_id2, ...]], ...])
-    @Message
+    @org.msgpack.annotation.Message
     public static class VisitorList implements Parcelable {
 
         @Index(0)
@@ -1842,7 +1843,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class VisitorDetail implements Parcelable {
         @Index(0)
         public String faceId;
@@ -1894,7 +1895,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class Visitor implements Parcelable {
 
         @Index(0)
@@ -1976,7 +1977,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class ReqContent implements Parcelable {
         @Index(0)
         public String uuid;
@@ -2028,7 +2029,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class StrangerVisitor implements Parcelable {
         @Index(0)
         public String faceId;
@@ -2105,7 +2106,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class StrangerVisitorList implements Parcelable {
         @Index(0)
         public int total;
@@ -2153,7 +2154,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class FetchMsgListRsp implements Parcelable {
         //rsp=msgpack(cid, type, id, timeMsec, [505?, 505?, ...])
         @Index(0)
@@ -2214,7 +2215,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DPHeader implements Parcelable {
         @Index(0)
         public int msgId;
@@ -2266,7 +2267,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class FetchMsgListReq {
         //req=msgpack(cid, type, id, timeMsec)
         @Index(0)
@@ -2289,7 +2290,7 @@ public class DpMsgDefine {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class VisitsTimesRsp implements Parcelable {
         @Index(0)
         public String cid;
@@ -2346,7 +2347,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class VisitsTimesReq implements Parcelable {
 
         @Index(0)
@@ -2399,7 +2400,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class DelVisitorReq {
         @Index(0)
         public String cid;
@@ -2419,7 +2420,7 @@ public class DpMsgDefine {
         public int delMsg;
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class Unit implements Parcelable {
         @Index(0)
         public short video;
@@ -2468,7 +2469,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class UniversalDataBaseRsp implements Parcelable {
         @Index(0)
         public int id;
@@ -2545,7 +2546,7 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class AcquaintanceItem {
         @Index(0)
         public String face_id;
@@ -2556,7 +2557,7 @@ public class DpMsgDefine {
     }
 
     //rsp=msgpack(cid, person_id, [[face_id1, image_url1, oss_type1],  [face_id2, image_url2, oss_type2], ...])
-    @Message
+    @org.msgpack.annotation.Message
     public static class AcquaintanceListRsp {
         @Index(0)
         public String cid;
@@ -2567,7 +2568,7 @@ public class DpMsgDefine {
     }
 
     //req=msgpack(cid, person_id)
-    @Message
+    @org.msgpack.annotation.Message
     public static class AcquaintanceListReq {
         @Index(0)
         public String cid;
@@ -2578,5 +2579,52 @@ public class DpMsgDefine {
             this.cid = cid;
             this.person_id = person_id;
         }
+    }
+
+    @Message
+    public static class DpMessage implements Parcelable {
+        @Index(0)
+        public int msgId;
+        @Index(1)
+        public long version;
+        @Index(2)
+        public Value value;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.msgId);
+            dest.writeLong(this.version);
+            byte[] bytes = DpUtils.pack(value);
+            dest.writeInt(bytes == null ? 0 : bytes.length);
+            dest.writeByteArray(bytes);
+        }
+
+        public DpMessage() {
+        }
+
+        protected DpMessage(Parcel in) {
+            this.msgId = in.readInt();
+            this.version = in.readLong();
+            byte[] bytes = new byte[in.readInt()];
+            in.readByteArray(bytes);
+            this.value = DpUtils.unpack(bytes);
+        }
+
+        public static final Parcelable.Creator<DpMessage> CREATOR = new Parcelable.Creator<DpMessage>() {
+            @Override
+            public DpMessage createFromParcel(Parcel source) {
+                return new DpMessage(source);
+            }
+
+            @Override
+            public DpMessage[] newArray(int size) {
+                return new DpMessage[size];
+            }
+        };
     }
 }

@@ -69,7 +69,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_ACCOUNT, account)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_NAME, faceName)
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_NAME, faceName)
                             .params(JConstant.RobotCloudApi.ACCESS_TOKEN, accessToken)
                             .execute()
 

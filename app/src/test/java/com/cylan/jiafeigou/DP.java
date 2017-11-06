@@ -34,7 +34,6 @@ import com.lzy.okgo.cache.CacheMode;
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
-import org.msgpack.annotation.Message;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -70,7 +69,7 @@ public class DP {
         }
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     static class T {
         @Index(0)
         public int ret;//       错误码
@@ -132,7 +131,7 @@ public class DP {
         Thread.sleep(100000000);
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     static class MsgForwardT {
         @Index(0)
         public int mId;
@@ -191,7 +190,7 @@ public class DP {
         //   LocalUdpMsg{ip='192.168.103.166', port=10008, data=[-109, -83, 100, 111, 111, 114, 98, 101, 108, 108, 95, 114, 105, 110, 103, -84, 53, 48, 48, 48, 48, 48, 48, 48, 49, 50, 57, 56, -96]}
     }
 
-    @Message
+    @org.msgpack.annotation.Message
     public static class bellRing {
         @Index(0)
         public String cmd;
@@ -508,6 +507,32 @@ public class DP {
         byte[] bytes = new byte[]{-107, -84, 50, 57, 48, 49, 48, 48, 48, 48, 48, 48, 48, 51, 2, -38, 0, 32, 50, 48, 49, 55, 49, 48, 51, 49, 49, 55, 49, 55, 49, 53, 118, 76, 54, 80, 103, 80, 77, 55, 49, 120, 120, 118, 120, 100, 69, 106, 80, 98, 0, -111, -109, -51, 1, -7, -49, 0, 0, 1, 95, 96, -33, 85, 80, -38, 0, 49, -104, -50, 89, -13, -17, 114, 0, 0, 1, -95, 48, -112, 0, -111, -38, 0, 32, 50, 48, 49, 55, 49, 48, 50, 56, 49, 48, 52, 54, 49, 48, 76, 116, 76, 80, 87, 97, 115, 113, 57, 113, 79, 97, 71, 104, 49, 113, 98, 110
         };
         System.out.println(new MessagePack().read(bytes));
+    }
+
+    @Test
+    public void valueTest() throws Exception {
+        MessagePack pack = new MessagePack();
+        DpMsgDefine.DPAlarm dpAlarm = new DpMsgDefine.DPAlarm();
+        dpAlarm.humanNum = 0;
+        dpAlarm.version = 39393;
+        dpAlarm.face_id = new String[]{"ewghoegheogh"};
+        dpAlarm.msgId = 505;
+        dpAlarm.isRecording = 1;
+        dpAlarm.fileIndex = 2;
+        dpAlarm.objects = new int[]{1, 3};
+        dpAlarm.ossType = 2;
+        dpAlarm.time = 368362486;
+        dpAlarm.tly = "1";
+        DpMsgDefine.DpMessage messageHeader = new DpMsgDefine.DpMessage();
+        messageHeader.msgId = 505;
+        messageHeader.version = 47497969;
+        messageHeader.value = pack.read(pack.write(dpAlarm));
+        byte[] bytes = pack.write(messageHeader);
+        DpMsgDefine.DpMessage read = pack.createBufferUnpacker(bytes).read(DpMsgDefine.DpMessage.class);
+        System.out.println("SSSSSSSs");
+
+//        System.out.println(value);
+
     }
 
 }

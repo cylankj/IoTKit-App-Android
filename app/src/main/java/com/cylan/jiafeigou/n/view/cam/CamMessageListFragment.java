@@ -290,14 +290,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             });
             visitorFragment.setVisitorReadyListener(new VisitorListFragmentV2.VisitorReadyListener() {
                 @Override
-                public void onStrangerVisitorReady() {
+                public void onStrangerVisitorReady(@org.jetbrains.annotations.Nullable DpMsgDefine.StrangerVisitorList visitorList) {
                     layoutBarMenu(BAR_TYPE_STRANGER);
+                    camMessageListAdapter.onStrangerInformationReady(visitorList);
                     presenter.fetchVisitorMessageList(1, "", 0, true);
                 }
 
                 @Override
-                public void onVisitorReady() {
-
+                public void onVisitorReady(@org.jetbrains.annotations.Nullable DpMsgDefine.VisitorList visitorList) {
+                    camMessageListAdapter.onVisitorInformationReady(visitorList);
                 }
             });
             //显示 所有面孔列表
@@ -354,6 +355,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             visitorFragment.exitStranger();
         }
         presenter.fetchVisitorMessageList(3, "", 0, true);
+        exitEditMode();
         AppLogger.d("还需要重新选中All");
     }
 
@@ -365,7 +367,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         int faceType = faceItem.getFaceType();
         this.pageType = faceType;
         camMessageListAdapter.clear();
-
+        lLayoutNoMessage.setVisibility(View.VISIBLE);
         if (faceType == FaceItem.FACE_TYPE_STRANGER) {
             // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
             this.personId = "";
@@ -497,9 +499,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         presenter.fetchVisitorMessageList(1, personId, time, asc);
                         break;
                     case FaceItem.FACE_TYPE_ALL:
-                        presenter.fetchVisitorMessageList(3, personId, time, asc);
-                        refreshFaceHeader();
+                        presenter.fetchMessageListByFaceId(time, asc, false);
+                        if (asc) {
+                            refreshFaceHeader();
+                        }
                         break;
+                    default:
+                        presenter.fetchMessageListByFaceId(time, asc, false);
+                        if (asc) {
+                            refreshFaceHeader();
+                        }
+
                 }
             } else {
                 presenter.fetchMessageListByFaceId(time, asc, false);
@@ -976,6 +986,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             arrow.setTag("arrow_up");
             if (JFGRules.isFaceFragment(getDevice().pid)) {
                 aplCamMessageAppbar.setExpanded(false, true);
+
             }
 
         } else {
@@ -983,6 +994,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             arrow.setTag("arrow_down");
             if (JFGRules.isFaceFragment(getDevice().pid)) {
                 aplCamMessageAppbar.setExpanded(true, true);
+                layoutManager.scrollToPosition(0);
             }
         }
     }
@@ -999,15 +1011,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public boolean performBackIntercept(boolean willExit) {
         if (isUserVisible() && isResumed()) {
-            if (camMessageListAdapter.isEditMode()) {
-                AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-                tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-                final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
-                        .findLastVisibleItemPosition();
-                camMessageListAdapter.reverseMode(false,lPos);
-                return true;//拦截掉
-            }
+            return exitEditMode();
         }
         return super.performBackIntercept(willExit);
+    }
+
+    private boolean exitEditMode() {
+        if (camMessageListAdapter.isEditMode()) {
+            AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+            tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+            final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
+                    .findLastVisibleItemPosition();
+            camMessageListAdapter.reverseMode(false, lPos);
+            return true;//拦截掉
+        }
+        return false;
     }
 }

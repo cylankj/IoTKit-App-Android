@@ -151,23 +151,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         //1.timeStart==0->服务器，本地
         //服务器：1.日历。2.偏移到最靠近有数据的一天。开始查。以后，点击开始查。
         //本地，查出日历。
-        if (asc && JFGRules.isFaceFragment(getDevice().pid)) {
-            // TODO: 2017/10/13 说明是刷新操作 ,则请求面孔信息
-//            Subscription subscription = loadAllVisitorList()
-//                    .filter(r -> mView != null)
-//                    .subscribe(bytes -> {
-//                        AppLogger.d("getDataByte:" + bytes);
-//                        if (bytes == null || bytes.total == 0) {
-//                            //空列表
-//                        } else {
-////                            mView.onVisitorListReady(bytes);
-//                        }
-//                    }, throwable -> AppLogger.d("data:" + throwable));
-//            addSubscription(subscription, "loadAllVisitorList");
-        }
         if (timeStart == 0 && !JFGRules.isFaceFragment(getDevice().pid)) {
             loadDataListFirst();
-            return;
         }
 
         Subscription subscription = getMessageListQuery(timeStart, false)

@@ -28,7 +28,7 @@ public class GcmService extends GcmListenerService {
         String message = data.getString("message");
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         Log.d(TAG, "From: " + from + ",login?" + (sourceManager == null));
-        Log.d(TAG, "Message: " + message);
+        Log.d(TAG, "DpMessage: " + message);
         if (from.startsWith("/topics/")) {
             // message received from some topic.
         } else {

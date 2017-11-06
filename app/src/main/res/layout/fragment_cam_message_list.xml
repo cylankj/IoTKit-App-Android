@@ -113,8 +113,8 @@
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/lLayout_no_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_behavior="com.cylan.jiafeigou.widget.AlwaysCenterBehavior">
 
             <TextView

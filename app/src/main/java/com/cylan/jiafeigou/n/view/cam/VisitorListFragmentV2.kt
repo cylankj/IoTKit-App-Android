@@ -76,8 +76,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     var visitorReadyListener: VisitorReadyListener? = null
 
     interface VisitorReadyListener {
-        fun onStrangerVisitorReady()
-        fun onVisitorReady()
+        fun onStrangerVisitorReady(visitorList: DpMsgDefine.StrangerVisitorList?)
+        fun onVisitorReady(visitorList: DpMsgDefine.VisitorList?)
     }
 
     lateinit var faceAdapter: FaceAdapter
@@ -206,7 +206,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
         cam_message_indicator_holder.visibility = View.VISIBLE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
-        visitorReadyListener?.onVisitorReady()
+        visitorReadyListener?.onVisitorReady(visitorList)
     }
 
     open fun exitStranger() {
@@ -235,7 +235,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        vp_default.swapAdapter(strangerAdapter, true)
         cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
-        visitorReadyListener?.onStrangerVisitorReady()
+        visitorReadyListener?.onStrangerVisitorReady(visitorList)
     }
 
     open fun refreshContent() {

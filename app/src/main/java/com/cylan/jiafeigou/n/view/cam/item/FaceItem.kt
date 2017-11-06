@@ -105,17 +105,8 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showHint(markHint)
             }
             FACE_TYPE_STRANGER -> {
-                //todo 多图片合成
-                //http://img.taopic.com/uploads/allimg/120727/201995-120HG1030762.jpg
-//                Glide.with(holder.itemView.context)
-//                        .load(MiscUtils.getCamWarnUrl(uuid, message, 1))
-//                        .placeholder(R.drawable.news_icon_stranger)
-//                        .error(R.drawable.news_icon_stranger)
-////                        .bitmapTransform(AvatarTransform(holder.itemView.context, message!!.alarmMsg!!.face_id))
-//                        .into(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
-//                holder.icon.isDisableCircularTransformation = true
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(true)
                 holder.icon.setImageResource(R.drawable.news_icon_stranger)
