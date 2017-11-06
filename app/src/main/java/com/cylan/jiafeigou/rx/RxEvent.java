@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
-import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -432,12 +431,14 @@ public class RxEvent {
      */
     public static final class JFGHistoryVideoParseRsp {
         public String uuid;
+        public long timeStart;
 
         public JFGHistoryVideoParseRsp(String uuid) {
             this.uuid = uuid;
         }
 
-        public JFGHistoryVideoParseRsp setTimeList(ArrayList<Long> dateList) {
+        public JFGHistoryVideoParseRsp setTimeStart(long time) {
+            this.timeStart = time;
             return this;
         }
     }
@@ -1408,7 +1409,6 @@ public class RxEvent {
     }
 
     public static class ActivityStartEvent {
-
 
 
     }

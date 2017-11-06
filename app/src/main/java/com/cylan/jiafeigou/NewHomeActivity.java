@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -44,6 +45,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 @Badge(parentTag = "NewHomeActivity")
@@ -73,7 +76,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     private SharedElementCallBackListener sharedElementCallBackListener;
 
-    private Subscription subscribe;
     private HomePageListFragmentExt homePageListFragmentExt;
     private HomeWonderfulFragmentExt homeWonderfulFragmentExt;
     private HomeMineFragment homeMineFragment;
@@ -87,6 +89,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
+        presenter = new NewHomeActivityPresenterImpl(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             initSharedElementCallback();
 //            setExitSharedElementCallback(mCallback);
@@ -94,20 +97,19 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         initBottomMenu();
         initMainContentAdapter();
         initShowWonderPageSub();
-        presenter = new NewHomeActivityPresenterImpl(this);
         AfterLoginService.resumeTryCheckVersion();
 
         showHomeFragment(0);
     }
 
     private void initShowWonderPageSub() {
-        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     showHomeFragment(1);
-//                    vpHomeContent.setCurrentItem(1);
                 }, e -> AppLogger.d(e.getMessage()));
+        presenter.addSubscription("initShowWonderPageSub", subscribe);
     }
 
     @Override
@@ -146,15 +148,32 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             startActivity(intent);
             return;
         }
-        RxBus.getCacheInstance().toObservableSticky(RxEvent.NeedUpdateGooglePlayService.class)
+        Subscription subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.NeedUpdateGooglePlayService.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-                    int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-                    apiAvailability.getErrorDialog(this, resultCode, 9000).show();
-                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.NeedUpdateGooglePlayService.class);
-                    PreferencesUtils.putLong(JConstant.SHOW_GCM_DIALOG, System.currentTimeMillis());
-                }, AppLogger::e);
+                .subscribe(new Action(this), AppLogger::e);
+        presenter.addSubscription("NeedUpdateGooglePlayService", subscription);
+    }
+
+    private static class Action implements Action1<RxEvent.NeedUpdateGooglePlayService> {
+
+        private WeakReference<NewHomeActivity> weakReference;
+
+        private Action(NewHomeActivity activity) {
+            weakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void call(RxEvent.NeedUpdateGooglePlayService o) {
+            if (weakReference.get() == null) {
+                return;
+            }
+            Activity activity = weakReference.get();
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+            int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
+            apiAvailability.getErrorDialog(activity, resultCode, 9000).show();
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.NeedUpdateGooglePlayService.class);
+            PreferencesUtils.putLong(JConstant.SHOW_GCM_DIALOG, System.currentTimeMillis());
+        }
     }
 
     @Override
@@ -173,10 +192,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (subscribe != null && !subscribe.isUnsubscribed()) {
-            subscribe.unsubscribe();
-            subscribe = null;
-        }
         homeWonderfulFragmentExt = null;
         homePageListFragmentExt = null;
         homeMineFragment = null;

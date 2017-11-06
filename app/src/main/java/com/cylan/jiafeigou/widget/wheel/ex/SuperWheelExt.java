@@ -436,6 +436,14 @@ public class SuperWheelExt extends View {
         }
     }
 
+    public void setPositionByTimePost(long timeTarget, boolean post) {
+        if (post) {
+            post(() -> setPositionByTime(timeTarget, false));
+        } else {
+            setPositionByTime(timeTarget, false);
+        }
+    }
+
     /**
      * 通过时间来定位
      *

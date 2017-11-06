@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -87,7 +88,6 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
 
-    private IData historyDataProvider;
     /**
      * 只有从Idle->playing,err->playing才会设置.
      */
@@ -105,9 +105,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
         feedRtcp.setMonitorListener(this);
-        if (historyDataProvider != null) {
-            historyDataProvider.clean();
-        }
+        DataExt.getInstance().clean();
         //清了吧.不需要缓存.
         History.getHistory().clearHistoryFile(uuid);
     }
@@ -249,22 +247,22 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
 
     @Override
-    public Observable<IData> assembleTheDay() {
-        AppLogger.d("historyFile:timeEnd?" + 0);
-        return Observable.just(History.getHistory().getAllHistoryFile())
+    public Observable<IData> assembleTheDay(long timeStart) {
+        final String date = History.parseTime2Date(TimeUtils.wrapToLong(timeStart));
+        AppLogger.d("historyFile:timeEnd?" + date);
+        return Observable.just(History.getHistory().getHistoryFile(date))
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
                     if (!ListUtils.isEmpty(historyFiles)) {
-                        if (historyDataProvider == null) {
-                            historyDataProvider = DataExt.getInstance();
-                        }
-                        historyDataProvider.flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
+                        DataExt.getInstance().flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
+                    } else {
+                        AppLogger.d("没有这一天的录像，要去查");
                     }
                     //本地没有啊,需要从服务器获取.
                     if (ListUtils.isEmpty(historyFiles)) {
                         fetchHistoryDataList();
                     }
-                    return Observable.just(historyDataProvider);
+                    return Observable.just(DataExt.getInstance());
                 });
     }
 
@@ -302,26 +300,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         getHotSeatStateMaintainer().restore();
     }
 
-    public void drawTheDay() {
-        if (historyDataProvider == null) {
-            historyDataProvider = DataExt.getInstance();
-        }
-        Subscription subscription = assembleTheDay()
-                .subscribeOn(Schedulers.io())
-                .delay(1, TimeUnit.SECONDS)
-                .filter(ret -> ret != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    mView.onHistoryDataRsp(historyDataProvider);
-                    AppLogger.d("历史录像wheel准备好,断开直播");
-                    //放在这里不好,有 bug 单:#116924
-                    //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
-                    // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
-
-//                    startPlayHistory(historyDataProvider.getFlattenMinTime());
-                }, AppLogger::e);
-        addSubscription(subscription, "hisFlat");
-    }
 
     @Override
     public boolean fetchHistoryDataList() {
@@ -332,11 +310,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.d("获取历史录像,先断开直播,或者历史录像");
         }
         if (ListUtils.isEmpty(History.getHistory().getDateList(uuid))) {
-            if (historyDataProvider != null) {
-                historyDataProvider.clean();
-            }
+            DataExt.getInstance().clean();
         }
-        if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
+        if (DataExt.getInstance().getDataCount() > 0) {
             AppLogger.d("有历史录像了.");
             RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
             return false;
@@ -346,23 +322,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.d("这次 请求还没结束");
             return false;
         }
+        makeTimeDelayForList();
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
-                .subscribeOn(Schedulers.io())
-                .filter(ret -> {
-                    AppLogger.d("get history?" + ret);
-                    return ret;
-                })
-                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-                        .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-//                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
-                        .timeout(30, TimeUnit.SECONDS)
-                        .flatMap(rsp -> makeTimeDelayForList()))
-                .delay(200, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    mView.onHistoryLoadFinished();
-                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
-                }, AppLogger::e);
+                .subscribe();
         unSubscribe("getHistoryList");
         addSubscription(subscription, "getHistoryList");
         return true;
@@ -373,16 +335,34 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * <p>
      * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
      */
-    private Observable<Boolean> makeTimeDelayForList() {
-        drawTheDay();
-        return Observable.just("")
-                .subscribeOn(Schedulers.io())
-                .flatMap(list -> {
+    private void makeTimeDelayForList() {
+        AppLogger.d("注册 录像等待结果？");
+        Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+                .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+                .timeout(30, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.computation())
+                .map((Func1<RxEvent.JFGHistoryVideoParseRsp, Observable<?>>) rsp -> {
+                    final String date = History.parseTime2Date(TimeUtils.wrapToLong(rsp.timeStart));
+                    ArrayList<HistoryFile> files = History.getHistory().getHistoryFile(date);
+                    DataExt.getInstance().flattenData(files, JFGRules.getDeviceTimezone(getDevice()));
+                    AppLogger.d("格式化数据");
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
                     //更新日历
                     ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
                     AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-                    return Observable.just(true);
-                });
+                    mView.onHistoryDataRsp(DataExt.getInstance());
+                    mView.onHistoryLoadFinished();
+                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
+                    AppLogger.d("历史录像wheel准备好,断开直播");
+                    //放在这里不好,有 bug 单:#116924
+                    //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
+                    // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
+                    startPlayHistory(DataExt.getInstance().getFlattenMinTime());
+                }, AppLogger::e);
+        addSubscription(subscription, "makeTimeDelayForList");
     }
 
     @Override
@@ -706,7 +686,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         addSubscription(beforePlayObservable(s -> {
             try {
-                int ret;
+                int ret = 0;
                 getLiveStream().time = time;
                 getHotSeatStateMaintainer().saveRestore();
                 if (getLiveStream().playState != PLAY_STATE_PLAYING) {
@@ -715,13 +695,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
 
 
-                ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
+//                ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
 
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BellPuller.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
                 AppLogger.i("play history video: " + uuid + " time:" + JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time)) + " ret:" + ret);
-            } catch (JfgException e) {
+            } catch (Exception e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
             return null;
@@ -861,7 +841,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public IData getHistoryDataProvider() {
-        return historyDataProvider;
+        return DataExt.getInstance();
     }
 
     @Override
@@ -873,7 +853,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && TextUtils.isEmpty(device.shareAccount)
                 && sdStatus.hasSdcard && sdStatus.err == 0
-                && historyDataProvider != null && historyDataProvider.getDataCount() > 0;
+                && DataExt.getInstance().getDataCount() > 0;
         AppLogger.i("show: " + show);
         return show;
     }
@@ -917,9 +897,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(msg -> msg.id == 218)
                 .map(msg -> {
                     if (msg.ret == 0) {
-                        if (historyDataProvider != null) {
-                            historyDataProvider.clean();
-                        }
+                        DataExt.getInstance().clean();
                         History.getHistory().clearHistoryFile(uuid);
                         AppLogger.d("清空历史录像");
                     }
