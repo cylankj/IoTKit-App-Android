@@ -693,14 +693,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
 //                    AppLogger.i(" stop video .first......");
                 }
-
-
-//                ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
-
+                ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BellPuller.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i("play history video: " + uuid + " time:" + JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time)) + " ret:" + ret);
+                AppLogger.i("play history video: " + uuid + " time:" + History.parseTime2Date(TimeUtils.wrapToLong(time)) + " ret:" + ret);
             } catch (Exception e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
