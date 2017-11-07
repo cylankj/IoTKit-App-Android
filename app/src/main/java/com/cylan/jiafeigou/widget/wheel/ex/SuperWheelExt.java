@@ -16,7 +16,7 @@ import android.view.View;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
-import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.cache.video.History;
 
 import java.util.ArrayList;
 
@@ -470,7 +470,7 @@ public class SuperWheelExt extends View {
         }
         this.nextTarget = Math.max(currentTarget, nextTarget);
         if (DEBUG) {
-            Log.d(TAG, "current:" + currentTarget + ":" + TimeUtils.getTimeSpecial(currentTarget) + ",next:" + nextTarget + ":" + TimeUtils.getTimeSpecial(nextTarget));
+            Log.d(TAG, "current:" + currentTarget + ":" + History.date2String(currentTarget) + ",next:" + nextTarget + ":" + History.date2String(nextTarget));
         }
     }
 

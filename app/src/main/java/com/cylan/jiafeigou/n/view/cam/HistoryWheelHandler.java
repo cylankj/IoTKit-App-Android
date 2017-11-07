@@ -39,6 +39,8 @@ import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
+//import com.cylan.jiafeigou.utils.TimeUtils;
+
 
 /**
  * Created by hds on 17-4-26.
@@ -95,7 +97,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                     return;
                 }
 
-                AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
+                AppLogger.d("msgTime pick: " + History.date2String((Long) value) + "," + value);
                 if (datePickerListener != null) {
                     datePickerListener.onPickDate((Long) value, STATE_FINISH);
                 }
@@ -182,16 +184,16 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 
         switch (state) {
             case STATE_DRAGGING:
-                Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time) + ",time:" + time);
+                Log.d("onTimeUpdate", "STATE_DRAGGING :" + History.date2String(time) + ",time:" + time);
 //                if (datePickerListener != null)
 //                    datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
 //                superWheelExt.removeCallbacks(dragRunnable);
                 break;
             case STATE_ADSORB:
-                Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time) + ",time:" + time);
+                Log.d("onTimeUpdate", "STATE_ADSORB :" + History.date2String(time) + ",time:" + time);
                 break;
             case STATE_FINISH:
-                Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time) + ",time:" + time);
+                Log.d("onTimeUpdate", "STATE_FINISH :" + History.date2String(time) + ",time:" + time);
 //                tmpTime = time;
 //                superWheelExt.removeCallbacks(dragRunnable);
 //                superWheelExt.postDelayed(dragRunnable, 700);
@@ -199,7 +201,9 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 if (datePickerListener != null) {
                     datePickerListener.onPickDate(time / 1000, STATE_FINISH);
                 }
-                AppLogger.d("拖动停止了:" + time + "," + TimeUtils.getTimeSpecial(time));
+                AppLogger.d("拖动停止了:" + time + "," + History.date2String(time));
+                break;
+            default:
                 break;
         }
     }

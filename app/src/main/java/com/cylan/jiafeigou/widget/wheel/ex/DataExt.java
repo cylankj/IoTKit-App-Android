@@ -4,13 +4,12 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -94,7 +93,7 @@ public class DataExt implements IData {
         synchronized (lock) {
             if (time / 1000L % 3600 == 0) {
                 timeWithType.put(time, 1);
-                dateFormatMap.put(time, TimeUtils.getHistoryTime(time));
+                dateFormatMap.put(time, History.parseTime2Date(time));
             }
         }
     }
@@ -302,7 +301,7 @@ public class DataExt implements IData {
                 return false;//超出范围
             }
             if (DEBUG) {
-                Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
+                Log.d(TAG, "index: " + i + " " + History.date2String(time));
             }
             v = rawList.get(i);
             return v.time * 1000L <= time && (v.time + v.duration) * 1000L >= time;

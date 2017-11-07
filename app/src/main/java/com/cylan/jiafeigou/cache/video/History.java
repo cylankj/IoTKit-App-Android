@@ -54,6 +54,7 @@ public class History {
     private static final Gson GSON = new Gson();
 
     public static final SimpleDateFormat SAFE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+    public static final SimpleDateFormat SAFE_FORMAT_0 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.UK);
     private volatile static History history;
     private HashMap<String, ArrayList<Long>> dateListMap = new HashMap<>();
     private ConcurrentHashMap<String, ArrayList<HistoryFile>> historyMap;
@@ -82,6 +83,10 @@ public class History {
 
     public synchronized static String parseTime2Date(long time) {
         return SAFE_FORMAT.format(new Date(time));
+    }
+
+    public synchronized static String date2String(long time) {
+        return SAFE_FORMAT_0.format(new Date(time));
     }
 
     private History() {
