@@ -534,7 +534,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         if (list != null) {
             addAll(list);
         }
-        return !list.isEmpty();
+        return list != null && !list.isEmpty();
     }
 
     public Map<String, List<CamMessageBean>> getCachedItems() {
