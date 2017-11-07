@@ -44,7 +44,8 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onAuthorizationError() {
         AppLogger.w("获取面孔失败:授权失败")
-        ToastUtil.showToast("语言包: 授权失败")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
+//        ToastUtil.showToast("语言包: 授权失败")
     }
 
     override fun onDeleteFaceError() {
@@ -53,6 +54,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
     }
 
     override fun onDeleteFaceSuccess() {
+        ToastUtil.showToast(getString(R.string.DELETED_SUC))
         adapter.deleteAllSelectedItems()
         adapter.notifyDataSetChanged()
         empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
@@ -170,7 +172,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         view.findViewById(R.id.delete).setOnClickListener {
             AppLogger.w("面孔管理:删除")
             popupWindow.dismiss()
-            faceManagerItem.withSetSelected(true)
+            adapter.select(position)
             presenter.deleteFace(personId, listOf(faceManagerItem.faceInformation?.face_id ?: ""))
         }
 

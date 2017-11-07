@@ -64,7 +64,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SN, uuid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_ID, personId)
                             .params(JConstant.RobotCloudApi.ACCESS_TOKEN, sessionId)
-                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, listOf.toString())
+                            .params(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ID, listOf.joinToString(","))
                             .execute()
 
 
