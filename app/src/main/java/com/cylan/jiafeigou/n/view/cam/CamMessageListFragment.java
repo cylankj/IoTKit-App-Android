@@ -711,10 +711,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (count == 0) {
             AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
+            makeSureRemoveFoot();
             return;
         }
         lLayoutNoMessage.post(() -> {
-            makeSureRemoveFoot();
+
             camMessageListAdapter.appendVisitorList(personId, beanArrayList);
             int itemPosition = layoutManager.findFirstVisibleItemPosition();
             setCurrentPosition(Math.max(0, itemPosition));
@@ -737,6 +738,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (count == 0) {
             AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
+            makeSureRemoveFoot();
             return;
         }
         camMessageListAdapter.clear();

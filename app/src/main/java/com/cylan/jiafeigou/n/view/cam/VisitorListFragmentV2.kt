@@ -99,10 +99,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         val valueItem1 = boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash()]
         valueItem?.value?.apply {
             val item = Gson().fromJson<List<FaceItem>>(this, object : TypeToken<List<FaceItem>>() {}.type)
+            item.forEach { it.withSetSelected(false) }
             onVisitorListReady(item.toMutableList())
         }
         valueItem1?.value?.apply {
             val item1 = Gson().fromJson<List<FaceItem>>(this, object : TypeToken<List<FaceItem>>() {}.type)
+            item1.forEach { it.withSetSelected(false) }
             strangerAdapter.populateItems(item1)
 
         }
