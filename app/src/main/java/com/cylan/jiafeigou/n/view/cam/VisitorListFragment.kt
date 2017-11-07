@@ -95,8 +95,8 @@
 //        ensurePreloadHeaderItem()
 //    }
 //
-//    override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
-//        onVisitorListCallback.onVisitorListReady(visitorList)
+//    override fun onStrangerVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
+//        onVisitorListCallback.onStrangerVisitorListReady(visitorList)
 //        AppLogger.d("数据回来了")
 //        assembleFaceList(visitorList!!.dataList, 0)
 //    }
@@ -273,7 +273,7 @@
 //         */
 //        fun onItemClick(type: FaceItem?, gPosition: Int, dataList: ArrayList<String>?)
 //
-//        fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
+//        fun onStrangerVisitorListReady(visitorList: DpMsgDefine.VisitorList?)
 //        fun onPageScroll(currentItem: Int, total: Int)
 //    }
 //

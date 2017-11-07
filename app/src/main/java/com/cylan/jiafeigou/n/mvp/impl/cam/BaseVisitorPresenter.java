@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.misc.VisitorLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
+import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -26,6 +27,8 @@ import com.lzy.okgo.request.PostRequest;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
@@ -52,6 +55,20 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     public void fetchVisitorList() {
         Subscription subscription = VisitorLoader.loadAllVisitorList(uuid)
                 .subscribeOn(Schedulers.io())
+                .map(ret -> {
+                    List<FaceItem> result = new ArrayList<>();
+                    if (ret != null && ret.dataList != null) {
+                        FaceItem item;
+                        for (DpMsgDefine.Visitor visitor : ret.dataList) {
+                            item = new FaceItem();
+                            item.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE);
+                            item.withVisitor(visitor);
+                            item.withUuid(uuid);
+                            result.add(item);
+                        }
+                    }
+                    return result;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
                 .timeout(10, TimeUnit.SECONDS)
@@ -64,6 +81,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         super.start();
     }
 
+
     private static final String FETCH_VISITOR_LIST = "fetchVisitorList";
     private static final String FETCH_STRANGER_VISITOR_LIST = "fetchStrangerVisitorList";
 
@@ -74,9 +92,24 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 //        }
         Subscription subscription = VisitorLoader.loadAllStrangerList(uuid)
                 .subscribeOn(Schedulers.io())
+                .map(ret -> {
+                    List<FaceItem> result = new ArrayList<>();
+                    if (ret != null && ret.strangerVisitors != null) {
+                        FaceItem item;
+                        for (DpMsgDefine.StrangerVisitor strangerVisitor : ret.strangerVisitors) {
+                            item = new FaceItem();
+                            item.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB);
+                            item.withStrangerVisitor(strangerVisitor);
+                            item.withSetSelected(false);
+                            item.withUuid(uuid);
+                            result.add(item);
+                        }
+                    }
+                    return result;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
-                .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
+                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList), AppLogger::e);
         addSubscription(subscription, FETCH_STRANGER_VISITOR_LIST);
     }
 

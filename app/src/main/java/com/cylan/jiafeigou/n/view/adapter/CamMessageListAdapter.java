@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -57,6 +58,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private DpMsgDefine.DPSdcardSummary summary;
     private boolean status;
     private Map<String, String> personMaps = new HashMap<>();
+    private Map<String, List<CamMessageBean>> visitorMaps = new HashMap<>();
     //null 不过滤
     private String faceItemType = null;
 
@@ -489,14 +491,15 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         notifyDataSetChanged();
     }
 
-    public void onStrangerInformationReady(DpMsgDefine.StrangerVisitorList visitorList) {
+    public void onStrangerInformationReady(List<FaceItem> visitorList) {
 
     }
 
-    public void onVisitorInformationReady(DpMsgDefine.VisitorList visitorList) {
-        if (visitorList != null && visitorList.dataList != null) {
-            for (DpMsgDefine.Visitor visitor : visitorList.dataList) {
-                if (visitor.detailList != null) {
+    public void onVisitorInformationReady(List<FaceItem> visitorList) {
+        if (visitorList != null) {
+            for (FaceItem faceItem : visitorList) {
+                DpMsgDefine.Visitor visitor = faceItem.getVisitor();
+                if (visitor != null && visitor.detailList != null) {
                     for (DpMsgDefine.VisitorDetail detail : visitor.detailList) {
                         personMaps.put(detail.faceId, visitor.personName);
                     }
@@ -504,5 +507,41 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             }
         }
         notifyDataSetChanged();
+    }
+
+    public void appendVisitorList(String personId, ArrayList<CamMessageBean> beanArrayList) {
+        if (beanArrayList == null) return;
+        List<CamMessageBean> beans = visitorMaps.get(personId);
+        if (beans != null) {
+            beans.addAll(beanArrayList);
+        } else {
+            visitorMaps.put(personId, new ArrayList<>(beanArrayList));
+        }
+        addAll(beanArrayList);
+    }
+
+    public void insertVisitorList(String personId, ArrayList<CamMessageBean> beans) {
+        if (beans == null) return;
+        visitorMaps.remove(personId);
+        visitorMaps.put(personId, new ArrayList<>(beans));
+        clear();
+        addAll(beans);
+    }
+
+    public boolean showCachedVisitorList(String personId) {
+        List<CamMessageBean> list = visitorMaps.get(personId);
+        clear();
+        if (list != null) {
+            addAll(list);
+        }
+        return !list.isEmpty();
+    }
+
+    public Map<String, List<CamMessageBean>> getCachedItems() {
+        return visitorMaps;
+    }
+
+    public void restoreCachedItems(Map<String, List<CamMessageBean>> json) {
+        this.visitorMaps.putAll(json);
     }
 }

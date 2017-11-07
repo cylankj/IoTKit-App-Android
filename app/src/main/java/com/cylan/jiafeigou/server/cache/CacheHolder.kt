@@ -16,7 +16,6 @@ import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.converter.PropertyConverter
-import io.objectbox.query.Query
 import org.greenrobot.essentials.hash.FNV64
 import org.msgpack.jackson.dataformat.MessagePackFactory
 import java.nio.charset.Charset
@@ -72,6 +71,9 @@ var objectMapper: ThreadLocal<ObjectMapper> = object : ThreadLocal<ObjectMapper>
     override fun initialValue() = ObjectMapper(MessagePackFactory())
 
 }
+
+@Entity
+data class KeyValueStringItem(@Id(assignable = true) var key: Long, var value: String)
 
 @Entity
 @JsonFormat(shape = JsonFormat.Shape.ARRAY)
@@ -302,7 +304,7 @@ data class Device(@Id(assignable = true) var uuid: Long,
 data class Account(@Id(assignable = true) var hash: Long,
                    var account: String,
                    var password: String,
-                   var loginType:Int
+                   var loginType: Int
 )
 
 fun <V : Any> cast(propertyItem: PropertyItem?, defaultValue: V): V {

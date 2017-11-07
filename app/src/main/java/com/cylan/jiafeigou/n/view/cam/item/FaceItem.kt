@@ -26,7 +26,6 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         return (other.version - this.version).toInt()
     }
 
-
     var uuid: String? = null
 
     var version: Long = 0
@@ -36,7 +35,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 
     var strangerVisitor: DpMsgDefine.StrangerVisitor? = null//定义为陌生人
 
-    private var faceType: Int = 0 //熟人或者陌生人
+    var itemType: Int = 0 //熟人或者陌生人
 
     var markHint: Boolean = false//红点标记
 
@@ -54,12 +53,12 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     }
 
     fun withFaceType(faceType: Int): FaceItem {
-        this.faceType = faceType
+        this.itemType = faceType
         return this
     }
 
     fun getFaceType(): Int {
-        return faceType
+        return itemType
     }
 
     fun withUuid(uuid: String): FaceItem {
@@ -94,7 +93,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     override fun bindView(holder: FaceItemViewHolder, payloads: MutableList<Any>?) {
         super.bindView(holder, payloads)
         //todo 全部是默认图,陌生人是组合图片,需要特殊处理
-        when (faceType) {
+        when (itemType) {
             FACE_TYPE_ALL -> {
                 holder.itemView.visibility = View.VISIBLE
                 //todo UI图导入
@@ -178,7 +177,6 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         if (!super.equals(other)) return false
 
         other as FaceItem
-
         if (visitor != other.visitor) return false
         if (strangerVisitor != other.strangerVisitor) return false
 

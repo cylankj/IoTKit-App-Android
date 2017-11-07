@@ -22,19 +22,24 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.base.IBaseFragment
 import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract
 import com.cylan.jiafeigou.n.mvp.impl.cam.BaseVisitorPresenter
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem
+import com.cylan.jiafeigou.server.cache.KeyValueStringItem
+import com.cylan.jiafeigou.server.cache.longHash
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import com.cylan.jiafeigou.widget.page.EViewPager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import io.objectbox.kotlin.boxFor
 import kotlinx.android.synthetic.main.fragment_visitor_list.*
-import java.util.*
 
 
 /**
@@ -76,8 +81,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     var visitorReadyListener: VisitorReadyListener? = null
 
     interface VisitorReadyListener {
-        fun onStrangerVisitorReady(visitorList: DpMsgDefine.StrangerVisitorList?)
-        fun onVisitorReady(visitorList: DpMsgDefine.VisitorList?)
+        fun onStrangerVisitorReady(visitorList: MutableList<FaceItem>)
+        fun onVisitorReady(visitorList: MutableList<FaceItem>)
     }
 
     lateinit var faceAdapter: FaceAdapter
@@ -87,6 +92,31 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         presenter = BaseVisitorPresenter(this)
     }
 
+    override fun onStart() {
+        super.onStart()
+        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
+        val valueItem = boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash()]
+        val valueItem1 = boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash()]
+        valueItem?.value?.apply {
+            val item = Gson().fromJson<List<FaceItem>>(this, object : TypeToken<List<FaceItem>>() {}.type)
+            onVisitorListReady(item.toMutableList())
+        }
+        valueItem1?.value?.apply {
+            val item1 = Gson().fromJson<List<FaceItem>>(this, object : TypeToken<List<FaceItem>>() {}.type)
+            strangerAdapter.populateItems(item1)
+
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
+        val gson = Gson()
+        faceAdapter.dataItems.drop(2).apply {
+            boxFor.put(KeyValueStringItem("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash(), gson.toJson(this)))
+        }
+        boxFor.put(KeyValueStringItem("${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash(), gson.toJson(strangerAdapter.dataItems)))
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -192,18 +222,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
     }
 
-    override fun onVisitorListReady(visitorList: DpMsgDefine.VisitorList?) {
+    override fun onVisitorListReady(visitorList: MutableList<FaceItem>) {
         if (!(vp_default.adapter as FaceAdapter).isNormalVisitor) {
             vp_default.adapter = faceAdapter
         }
-        visitorList?.dataList?.map {
-            val allFace = FaceItem()
-            allFace.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE)
-            allFace.withVisitor(it)
-            allFace.withUuid(uuid)
-        }?.apply {
-            faceAdapter.populateItems(this)
-        }
+
+        faceAdapter.populateItems(visitorList)
         cam_message_indicator_holder.visibility = View.VISIBLE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
         visitorReadyListener?.onVisitorReady(visitorList)
@@ -216,22 +240,22 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         presenter.fetchVisitorList()
     }
 
-    override fun onVisitorListReady(visitorList: DpMsgDefine.StrangerVisitorList?) {
+    override fun onStrangerVisitorListReady(visitorList: MutableList<FaceItem>) {
         AppLogger.d("陌生人列表")
-        val listCnt = ListUtils.getSize(visitorList?.strangerVisitors)
-        var list = ArrayList<FaceItem>()
-        for (i in 0 until listCnt) {
-            val strangerFace = FaceItem()
-            strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
-            strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
-            strangerFace.withSetSelected(false)
-            strangerFace.withUuid(uuid)
-            list.add(strangerFace)
-        }
+//        val listCnt = ListUtils.getSize(visitorList?.strangerVisitors)
+//        var list = ArrayList<FaceItem>()
+//        for (i in 0 until listCnt) {
+//            val strangerFace = FaceItem()
+//            strangerFace.withFaceType(FaceItem.FACE_TYPE_STRANGER_SUB)
+//            strangerFace.withStrangerVisitor(visitorList!!.strangerVisitors[i])
+//            strangerFace.withSetSelected(false)
+//            strangerFace.withUuid(uuid)
+//            list.add(strangerFace)
+//        }
         if ((vp_default.adapter as FaceAdapter).isNormalVisitor) {
             vp_default.adapter = strangerAdapter
         }
-        strangerAdapter.populateItems(list)
+        strangerAdapter.populateItems(visitorList)
 //        vp_default.swapAdapter(strangerAdapter, true)
         cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
@@ -263,7 +287,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //         */
 //        fun onItemClick(item: FaceItem)
 //
-//        fun onVisitorListReady()
+//        fun onStrangerVisitorListReady()
 //        fun onPageScroll(currentItem: Int, total: Int)
 //
 //        fun onVisitorTimes(times: Int)
