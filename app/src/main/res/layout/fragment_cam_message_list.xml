@@ -82,14 +82,14 @@
 
                     <ImageView
                         android:id="@+id/iv_cam_message_arrow"
-                        android:layout_width="@dimen/y26"
-                        android:layout_height="@dimen/y26"
+                        android:layout_width="@dimen/y42"
+                        android:layout_height="@dimen/y42"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/y12"
                         android:clickable="true"
                         android:focusable="true"
+                        android:padding="@dimen/y8"
                         android:src="@drawable/btn_unfolded"
                         android:tag="arrow_up" />
 

@@ -657,6 +657,9 @@ public class DpMsgDefine {
             dest.writeInt(this.fileIndex);
             dest.writeInt(this.ossType);
             dest.writeString(this.tly);
+            dest.writeIntArray(this.objects);
+            dest.writeInt(this.humanNum);
+            dest.writeStringArray(this.face_id);
         }
 
         protected DPAlarm(Parcel in) {
@@ -666,6 +669,9 @@ public class DpMsgDefine {
             this.fileIndex = in.readInt();
             this.ossType = in.readInt();
             this.tly = in.readString();
+            this.objects = in.createIntArray();
+            this.humanNum = in.readInt();
+            this.face_id = in.createStringArray();
         }
 
         public static final Creator<DPAlarm> CREATOR = new Creator<DPAlarm>() {

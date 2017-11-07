@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -52,6 +51,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
@@ -257,6 +257,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
+
                 MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1).fetch(file -> {
                     ShareManager.byImg(CamMediaActivity.this)
                             .withImg(file)

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou;
 import android.text.TextUtils;
 
 import com.alibaba.sdk.android.oss.common.auth.HmacSHA1Signature;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -533,6 +534,12 @@ public class DP {
 
 //        System.out.println(value);
 
+    }
+
+    @Test
+    public void testCacheKey() throws Exception {
+        GlideUrl glideUrl = new GlideUrl("http:www.baidu.com?key=uiuouo&uid=eotyowtyoey");
+        System.out.println(glideUrl.getCacheKey());
     }
 
 }

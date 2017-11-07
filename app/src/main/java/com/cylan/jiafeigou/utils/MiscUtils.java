@@ -173,7 +173,11 @@ public class MiscUtils {
     public static CamWarnGlideURL getCamWarnUrl(String cid, CamMessageBean bean, int index) {
         CamWarnGlideURL result = null;
         if (bean.alarmMsg != null) {
-            result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.ossType);
+            if (bean.alarmMsg.face_id != null && bean.alarmMsg.face_id.length > 0) {
+                result = new CamWarnGlideURL(cid, bean.alarmMsg.ossType, String.valueOf(bean.alarmMsg.time));
+            } else {
+                result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.ossType);
+            }
         } else if (bean.bellCallRecord != null) {
             if (bean.bellCallRecord.fileIndex == -1) {
                 //旧版本门铃呼叫记录,不带index

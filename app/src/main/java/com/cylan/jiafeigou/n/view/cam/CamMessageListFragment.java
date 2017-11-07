@@ -350,11 +350,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @OnClick(R.id.iv_back)
     public void clickStrangerBack() {
         AppLogger.w("clickStrangerBack");
+        this.pageType = FaceItem.FACE_TYPE_ALL;
         layoutBarMenu(BAR_TYPE_FACE_COMMON);
         if (visitorFragment != null) {
             visitorFragment.exitStranger();
         }
-        presenter.fetchVisitorMessageList(3, "", 0, true);
+        presenter.fetchMessageListByFaceId(0, true, true);
         exitEditMode();
         AppLogger.d("还需要重新选中All");
     }

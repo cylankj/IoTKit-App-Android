@@ -24,11 +24,11 @@ import java.util.Locale;
  */
 
 public class JFGGlideURL extends GlideUrl {
-    private String vid;
-    private String cid;
-    private String timestamp;
-    private boolean V2 = true;//2.0版本
-    private int regionType;
+    protected String vid;
+    protected String cid;
+    protected String timestamp;
+    protected boolean V2 = true;//2.0版本
+    protected int regionType;
 
 
     public JFGGlideURL(String cid, String fileName, int type) {

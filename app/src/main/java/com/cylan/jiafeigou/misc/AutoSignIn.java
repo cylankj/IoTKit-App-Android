@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -126,6 +127,7 @@ public class AutoSignIn {
                             }
                             if (signType.type == 1) {
                                 clear_2x();
+                                Log.d(TAG, "will auto login:");
                                 BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, true);
                             } else if (signType.type >= 3) {
                                 clear_2x();
@@ -142,18 +144,20 @@ public class AutoSignIn {
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                     }
                     PerformanceUtils.stopTrace("autoLogin");
-                    if (!BaseApplication.isOnline() && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
+                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1 && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
+                        Log.d(TAG, "无网络连接,将进行离线登录");
                         BaseApplication.getAppComponent().getSourceManager().initFromDB();
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));
                     }
                     return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
                 })
                 .observeOn(Schedulers.io())
-                .timeout(5, TimeUnit.SECONDS, Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true))
+                .timeout(10, TimeUnit.SECONDS, Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true))
                         .map(hasPswError -> {
                             if (hasPswError) {
                                 return new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass);
                             } else {
+                                Log.d(TAG, "   BaseApplication.getAppComponent().getSourceManager().initFromDB();");
                                 BaseApplication.getAppComponent().getSourceManager().initFromDB();
                                 return new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN);
                             }
