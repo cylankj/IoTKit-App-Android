@@ -195,6 +195,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         boolean showDivider = !sameDay && faceFragment;
         holder.setVisibility(R.id.message_time_divider, showDivider ? View.VISIBLE : View.GONE);
+        String content = TimeUtils.getSpecifiedDate(item.version);
+        holder.setText(R.id.time_divider, content);
 //        holder.setVisibility(R.id.watcher_text, showDivider ? View.VISIBLE : View.GONE);
 //        if (showDivider) {
 //            String content = TimeUtils.getTimeSpecial(item.version);

@@ -68,7 +68,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -133,8 +132,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
     private LinearLayoutManager layoutManager;
-    private Map<String, DpMsgDefine.FaceInformation> faceInformationMap = new HashMap<>();
-
     private VisitorListFragmentV2 visitorFragment;
 
     private boolean hasFaceHeader = false;
@@ -175,7 +172,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         if (mockView != null) {
             this.tvCamMessageListEdit.setVisibility(View.INVISIBLE);
             this.tvCamMessageListEdit = mockView;
@@ -202,16 +198,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int visibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+                int visibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                 if (visibleItemPosition >= 0) {
                     List<CamMessageBean> beanList = camMessageListAdapter.getList();
                     if (visibleItemPosition < beanList.size()) {
                         CamMessageBean bean = beanList.get(visibleItemPosition);
-                        if (visibleItemPosition - 1 >= 0) {
-                            CamMessageBean bean1 = camMessageListAdapter.getList().get(visibleItemPosition - 1);
-                            if (!TimeUtils.isSameDay(bean1.version, bean.version)) {
-                                setCurrentPosition(visibleItemPosition);
-                            }
+                        if (visibleItemPosition >= 0) {
+                            setCurrentPosition(visibleItemPosition);
                         }
                     }
 
@@ -243,6 +236,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
         hasFaceHeader = JFGRules.isFaceFragment(getDevice().pid);
         initFaceHeader();
+
     }
 
     private void refreshFaceHeader() {
@@ -294,15 +288,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
         } else {
 //            ViewUtils.setDrawablePadding(tvCamMessageListDate, R.drawable.wonderful_arrow_down, 2);
+
             arrow.setVisibility(View.GONE);
             aplCamMessageAppbar.setExpanded(false);
             layoutBarMenu(BAR_TYPE_NORMAL);
+            rLayoutCamMessageListTop.setVisibility(View.GONE);
         }
-//        srLayoutCamListRefresh.setOnChildScrollUpCallback((parent, child) -> aplCamMessageAppbar.canScrollVertically(-1));
     }
 
     private void layoutBarMenu(int barType) {
-        rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
+
         camMessageListAdapter.clear();
         if (barType == BAR_TYPE_FACE_COMMON) {
             barBack.setVisibility(View.GONE);
@@ -313,6 +308,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
                 tvCamMessageListEdit.setLayoutParams(layoutParams);
             }
+            rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
         } else if (barType == BAR_TYPE_NORMAL) {
             barBack.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams;
@@ -322,6 +318,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
                 tvCamMessageListEdit.setLayoutParams(layoutParams);
             }
+            rLayoutCamMessageListTop.setVisibility(View.GONE);
         } else if (barType == BAR_TYPE_STRANGER) {
             barBack.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams layoutParams;
@@ -331,6 +328,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
                 tvCamMessageListEdit.setLayoutParams(layoutParams);
             }
+            rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
         }
     }
 
@@ -483,23 +481,24 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         if (presenter != null) {
             if (hasFaceHeader) {
+                boolean success;
                 switch (pageType) {
                     case FaceItem.FACE_TYPE_STRANGER:
-                        if (camMessageListAdapter.showCachedVisitorList("stranger")) {
-                            lLayoutNoMessage.setVisibility(View.INVISIBLE);
-                        }
+                        success = camMessageListAdapter.showCachedVisitorList("stranger");
+                        lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                        tvCamMessageListEdit.setEnabled(success);
                         presenter.fetchVisitorMessageList(1, "", time, asc);
                         break;
                     case FaceItem.FACE_TYPE_ACQUAINTANCE:
-                        if (camMessageListAdapter.showCachedVisitorList(personId)) {
-                            lLayoutNoMessage.setVisibility(View.INVISIBLE);
-                        }
+                        success = camMessageListAdapter.showCachedVisitorList(personId);
+                        lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                        tvCamMessageListEdit.setEnabled(success);
                         presenter.fetchVisitorMessageList(2, personId, time, asc);
                         break;
                     case FaceItem.FACE_TYPE_STRANGER_SUB:
-                        if (camMessageListAdapter.showCachedVisitorList(personId)) {
-                            lLayoutNoMessage.setVisibility(View.INVISIBLE);
-                        }
+                        success = camMessageListAdapter.showCachedVisitorList(personId);
+                        lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                        tvCamMessageListEdit.setEnabled(success);
                         presenter.fetchVisitorMessageList(1, personId, time, asc);
                         break;
                     case FaceItem.FACE_TYPE_ALL:
@@ -510,6 +509,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
                 }
             } else {
+                lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
                 presenter.fetchMessageListByFaceId(time, asc, false);
             }
         }
@@ -553,7 +553,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (presenter != null) {
                 presenter.fetchMessageListByFaceId(TimeUtils.getSpecificDayEndTime(time), false, false);
             }
-            camMessageListAdapter.clear();
+//            camMessageListAdapter.clear();
             LoadingDialog.showLoading(getActivity());
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
@@ -573,12 +573,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         LoadingDialog.dismissLoading();
-        final int count = beanArrayList == null ? 0 : beanArrayList.size();
-        if (count == 0) {
-            AppLogger.w("没有数据");
-            ToastUtil.showToast(getString(R.string.Loaded));
-            return;
-        }
         lLayoutNoMessage.post(() -> {
             makeSureRemoveFoot();
             camMessageListAdapter.addAll(beanArrayList);
@@ -589,6 +583,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean reset = tvCamMessageListDate.getTag() == null ||
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
+            final int count = beanArrayList == null ? 0 : beanArrayList.size();
+            if (count == 0) {
+                ToastUtil.showToast(getString(R.string.Loaded));
+            }
         });
     }
 
@@ -708,13 +706,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         LoadingDialog.dismissLoading();
-        final int count = beanArrayList == null ? 0 : beanArrayList.size();
-        if (count == 0) {
-            AppLogger.w("没有数据");
-            ToastUtil.showToast(getString(R.string.Loaded));
-            makeSureRemoveFoot();
-            return;
-        }
+
         lLayoutNoMessage.post(() -> {
 
             camMessageListAdapter.appendVisitorList(personId, beanArrayList);
@@ -725,23 +717,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean reset = tvCamMessageListDate.getTag() == null ||
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
+            final int count = beanArrayList == null ? 0 : beanArrayList.size();
+            if (count == 0) {
+                AppLogger.w("没有数据");
+                ToastUtil.showToast(getString(R.string.Loaded));
+            }
         });
     }
 
     @Override
     public void onVisitorListInsert(ArrayList<CamMessageBean> beans) {
-
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         LoadingDialog.dismissLoading();
-        final int count = beans == null ? 0 : beans.size();
-        if (count == 0) {
-            AppLogger.w("没有数据");
-            ToastUtil.showToast(getString(R.string.Loaded));
-            makeSureRemoveFoot();
-            return;
-        }
         camMessageListAdapter.clear();
         camMessageListAdapter.insertVisitorList(personId, beans);
         int itemPosition = layoutManager.findFirstVisibleItemPosition();
@@ -749,6 +738,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
         tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0);
+        final int count = beans == null ? 0 : beans.size();
+        if (count == 0) {
+            AppLogger.w("没有数据");
+            ToastUtil.showToast(getString(R.string.Loaded));
+            makeSureRemoveFoot();
+        }
     }
 
     @Override
@@ -810,6 +805,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
                 } else {
                     AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                }
+                if (visitorFragment != null) {
+                    visitorFragment.disable(toEdit);
                 }
                 ((TextView) view).setText(getString(toEdit ? R.string.CANCEL
                         : R.string.EDIT_THEME));
@@ -1041,6 +1039,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
                     .findLastVisibleItemPosition();
             camMessageListAdapter.reverseMode(false, lPos);
+            if (visitorFragment != null) {
+                visitorFragment.disable(false);
+            }
             return true;//拦截掉
         }
         return false;

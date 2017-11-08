@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 
 import java.util.List;
@@ -32,19 +35,10 @@ public class AlwaysCenterBehavior extends CoordinatorLayout.Behavior {
     public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
         List<View> dependencies = parent.getDependencies(child);
         View dependency = dependencies.get(0);
-
-        int parentMeasuredHeight = parent.getMeasuredHeight();
-        int parentMeasuredWidth = parent.getMeasuredWidth();
-        int childMeasuredWidth = child.getMeasuredWidth();
-        int childMeasuredHeight = child.getMeasuredHeight();
-        int dependencyMeasuredWidth = dependency.getMeasuredWidth();
-        int dependencyMeasuredHeight = dependency.getMeasuredHeight();
-
-        int left = (parentMeasuredWidth - childMeasuredWidth) / 2;
-        int top = (parentMeasuredHeight - dependencyMeasuredHeight - childMeasuredHeight) / 2 + dependencyMeasuredHeight;
-        int right = parentMeasuredWidth - (parentMeasuredWidth - childMeasuredWidth) / 2;
-        int bottom = parentMeasuredHeight - (parentMeasuredHeight - dependencyMeasuredHeight - childMeasuredHeight) / 2;
-        child.layout(left, top, right, bottom);
+        final Rect container = new Rect(0, dependency.getMeasuredHeight(), parent.getMeasuredWidth(), parent.getMeasuredHeight());
+        final Rect outRect = new Rect();
+        GravityCompat.apply(Gravity.CENTER, child.getMeasuredWidth(), child.getMeasuredHeight(), container, outRect, layoutDirection);
+        child.layout(outRect.left, outRect.top, outRect.right, outRect.bottom);
         offset = 0;
         offsetViewNeeded(child, dependency);
         return true;
@@ -65,6 +59,11 @@ public class AlwaysCenterBehavior extends CoordinatorLayout.Behavior {
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
         offsetViewNeeded(child, dependency);
-        return false;
+        return true;
+    }
+
+    @Override
+    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child, View directTargetChild, View target, int nestedScrollAxes) {
+        return super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
     }
 }

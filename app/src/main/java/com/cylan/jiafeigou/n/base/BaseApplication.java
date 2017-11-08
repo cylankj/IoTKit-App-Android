@@ -88,10 +88,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onCreate() {
+        if (TextUtils.equals(ProcessUtils.myProcessName(this), getPackageName())) {
+            injectIfNecessary();
+        }
         super.onCreate();
-        injectIfNecessary();
         //这是主进程
-
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             //设计师不需要这个固定通知栏.20170531
 //            startService(new Intent(this, WakeupService.class));
