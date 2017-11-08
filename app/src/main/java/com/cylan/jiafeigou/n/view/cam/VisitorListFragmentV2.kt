@@ -157,6 +157,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     FaceItem.FACE_TYPE_STRANGER -> {
                         cam_message_indicator_watcher_text.visibility = View.GONE
                         presenter.fetchStrangerVisitorList()
+                        vp_default.adapter = strangerAdapter
                     }
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                         val adapter = vp_default.adapter as FaceAdapter?
@@ -246,6 +247,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             vp_default.adapter = strangerAdapter
         }
         strangerAdapter.populateItems(visitorList)
+        strangerAdapter.updateClickItem(0)
 //        vp_default.swapAdapter(strangerAdapter, true)
         cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())

@@ -216,7 +216,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                                 endlessLoading = true;
                                 mIsLastLoadFinish = false;
                                 Log.d("tag", "tag.....load more");
-                                startRequest(false);
+                                startRequest(false, true);
                             }
                         }
                     }
@@ -271,9 +271,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             visitorFragment.setVisitorReadyListener(new VisitorListFragmentV2.VisitorReadyListener() {
                 @Override
                 public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
-                    layoutBarMenu(BAR_TYPE_STRANGER);
+
                     camMessageListAdapter.onStrangerInformationReady(visitorList);
-                    startRequest(true);
+                    if (visitorList != null && visitorList.size() > 0) {
+                        FaceItem faceItem = visitorList.get(0);
+                        personId = faceItem.getStrangerVisitor().faceId;
+                        startRequest(true, true);
+                    }
 
                 }
 
@@ -355,9 +359,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.clear();
         lLayoutNoMessage.setVisibility(View.VISIBLE);
         if (faceType == FaceItem.FACE_TYPE_STRANGER) {
-            // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
-            this.personId = " ";
-            startRequest(true);
+//            // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
+//            this.personId = " ";
+//            startRequest(true, false);
+            layoutBarMenu(BAR_TYPE_STRANGER);
 
         } else if (faceType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
             // TODO: 2017/10/10 点击的是熟人,但具体是哪个人还不知道
@@ -365,20 +370,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             DpMsgDefine.Visitor visitor = faceItem.getVisitor();
             if (visitor != null) {
                 this.personId = visitor.personId;
-                startRequest(true);
+                startRequest(true, false);
             } else {
                 AppLogger.w("personid is null");
             }
         } else if (faceType == FaceItem.FACE_TYPE_ALL) {
             // TODO: 2017/10/10 点击的是全部 ,需要刷新所有
             layoutBarMenu(BAR_TYPE_FACE_COMMON);
-            startRequest(true);
+            startRequest(true, false);
         } else if (faceType == FaceItem.FACE_TYPE_STRANGER_SUB) {
             DpMsgDefine.StrangerVisitor visitor = faceItem.getStrangerVisitor();
             this.personId = visitor.faceId;
             layoutBarMenu(BAR_TYPE_STRANGER);
             if (visitor != null) {
-                startRequest(true);
+                startRequest(true, false);
             } else {
                 AppLogger.w("personid is null");
             }
@@ -435,7 +440,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             needRefresh = true;
         }
         if (needRefresh) {
-            startRequest(true);
+            startRequest(true, true);
 
         }
 
@@ -455,19 +460,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
         if (isVisibleToUser && presenter != null && getActivity() != null && isResumed()) {
 //            if (camMessageListAdapter.getCount() == 0)
-            startRequest(true);//需要每次刷新,而不是第一次刷新
+            startRequest(true, true);//需要每次刷新,而不是第一次刷新
             ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         }
     }
 
     /**
-     * @param asc：true:向前，false:向后(loadMore)
+     * @param asc         ：true:向前，false:向后(loadMore)
+     * @param showRefresh
      */
-    private void startRequest(boolean asc) {
+    private void startRequest(boolean asc, boolean showRefresh) {
         long time = 0;
-        if (asc) {
-            srLayoutCamListRefresh.setRefreshing(true);
+        if (asc) {//移动带 onRefresh 中
+            srLayoutCamListRefresh.setRefreshing(showRefresh);
             if (camMessageListAdapter.getCount() > 0) {
                 time = camMessageListAdapter.getItem(0).version;
             }
@@ -502,6 +508,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         presenter.fetchVisitorMessageList(1, personId, time, asc);
                         break;
                     case FaceItem.FACE_TYPE_ALL:
+                        if (showRefresh) {
+                            refreshFaceHeader();
+                        }
                         presenter.fetchMessageListByFaceId(time, asc, false);
                         break;
                     default:
@@ -553,7 +562,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (presenter != null) {
                 presenter.fetchMessageListByFaceId(TimeUtils.getSpecificDayEndTime(time), false, false);
             }
-//            camMessageListAdapter.clear();
             LoadingDialog.showLoading(getActivity());
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
@@ -754,8 +762,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             return;
         }
 //        srLayoutCamListRefresh.setRefreshing(true);
-        refreshFaceHeader();
-        startRequest(true);
+        startRequest(true, true);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
