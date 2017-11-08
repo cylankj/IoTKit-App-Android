@@ -293,7 +293,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
 
         } else {
-            ViewUtils.setDrawablePadding(tvCamMessageListDate, R.drawable.wonderful_arrow_down, 2);
+//            ViewUtils.setDrawablePadding(tvCamMessageListDate, R.drawable.wonderful_arrow_down, 2);
             arrow.setVisibility(View.GONE);
             aplCamMessageAppbar.setExpanded(false);
             layoutBarMenu(BAR_TYPE_NORMAL);
@@ -558,6 +558,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
+            ViewUtils.setDrawablePadding(tvCamMessageListDate, R.drawable.wonderful_arrow_down, 2);
             boolean reset = tvCamMessageListDate.getTag() == null ||
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
