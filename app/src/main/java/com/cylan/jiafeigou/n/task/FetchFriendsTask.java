@@ -66,7 +66,7 @@ public class FetchFriendsTask implements Action1<Object> {
                 .flatMap(s -> {
                     BaseApplication.getAppComponent().getCmd().getFriendList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class);
-                });
+                }).first();
     }
 
     /**
@@ -80,6 +80,6 @@ public class FetchFriendsTask implements Action1<Object> {
                 .flatMap(s -> {
                     BaseApplication.getAppComponent().getCmd().getFriendRequestList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class);
-                });
+                }).first();
     }
 }

@@ -189,7 +189,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
-        if (lifecycleAdapter!=null){
+        if (lifecycleAdapter != null) {
             lifecycleAdapter.destroy();
         }
         super.onDestroy();
@@ -239,9 +239,12 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         }
         if (getTargetFragment() != null) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, resultData);
-        } else if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).onActivityResult(getTargetRequestCode(), resultCode, resultData);
         }
+//        else if (getActivity() instanceof BaseActivity) {
+//            if (getTargetRequestCode() != 0) {
+//                ((BaseActivity) getActivity()).onActivityResult(getTargetRequestCode(), resultCode, resultData);
+//            }
+//        }
     }
 
     @Override
