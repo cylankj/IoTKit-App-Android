@@ -515,7 +515,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onRefreshFinish() {
-
+        mItemAdapter.notifyDataSetChanged();
         srLayoutMainContentHolder.postDelayed(() -> {
             if (srLayoutMainContentHolder.isRefreshing()) {
                 srLayoutMainContentHolder.setRefreshing(false);

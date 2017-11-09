@@ -586,6 +586,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 presenter.saveAndShareBitmap(bitmap);
             }
         });
+        //issue: 过早 add 进去会导致黑块!!!!!
         liveViewWithThumbnail.setLiveView(videoView);
         updateLiveViewMode(device.$(509, "1"));
         initSightSetting(presenter);

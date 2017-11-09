@@ -272,6 +272,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             vpCameraLive.setAdapter(simpleAdapterPager);
         }
         vpCameraLive.setPagingScrollListener(event -> {
+
+            //横屏强制禁止滑动
+
             final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), vpCameraLive.getCurrentItem());
             if (vpCameraLive.getCurrentItem() == 0) {
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);

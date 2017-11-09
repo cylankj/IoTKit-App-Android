@@ -58,6 +58,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         adapter.deleteAllSelectedItems()
         adapter.notifyDataSetChanged()
         empty_view.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+        setEditMode(false)
     }
 
     override fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>) {

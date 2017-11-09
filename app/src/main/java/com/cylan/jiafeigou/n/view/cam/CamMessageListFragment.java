@@ -273,10 +273,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
 
                     camMessageListAdapter.onStrangerInformationReady(visitorList);
-                    if (visitorList != null && visitorList.size() > 0) {
+                    if (visitorList.size() > 0) {
                         FaceItem faceItem = visitorList.get(0);
-                        personId = faceItem.getStrangerVisitor().faceId;
-                        startRequest(true, true);
+                        if (faceItem.getStrangerVisitor() != null) {
+                            personId = faceItem.getStrangerVisitor().faceId;
+                            startRequest(true, true);
+                        }
                     }
 
                 }
@@ -557,6 +559,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap) {
         fLayoutCamMessageListTimeline.init(dateMap);
+        boolean reset = tvCamMessageListDate.getTag() == null ||
+                ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
         fLayoutCamMessageListTimeline.setListener(time -> {
             AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
             if (presenter != null) {
@@ -565,13 +569,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             LoadingDialog.showLoading(getActivity());
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
+
             tvCamMessageListDate.setText(content);
-            ViewUtils.setDrawablePadding(tvCamMessageListDate, R.drawable.wonderful_arrow_down, 2);
-            boolean reset = tvCamMessageListDate.getTag() == null ||
-                    ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
         });
 
+        ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_down : R.drawable.wonderful_arrow_up, 2);
         LoadingDialog.dismissLoading();
     }
 
@@ -693,7 +696,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         boolean reset = tvCamMessageListDate.getTag() == null ||
                 ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
-
+        ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_down : R.drawable.wonderful_arrow_up, 2);
         tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
     }
 

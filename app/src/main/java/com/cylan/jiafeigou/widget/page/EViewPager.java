@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.R;
 public class EViewPager extends ViewPager {
     private boolean isNeedWrap = false;
     public EnableScrollListener enableScrollListener;
+    private boolean isPageScrollEnable = true;
 
     public EViewPager(Context context) {
         super(context);
@@ -92,11 +93,7 @@ public class EViewPager extends ViewPager {
 
 
     public void setLocked(boolean isLocked) {
-        if (isLocked) {
-            setEnabled(false);
-        } else {
-            setEnabled(true);
-        }
+        this.isPageScrollEnable = !isLocked;
     }
 
     @Override
@@ -111,10 +108,10 @@ public class EViewPager extends ViewPager {
                 if (isConsumedOutside(event)) {
                     return false;
                 }
-                return isEnabled() && handleIntercept(event);
+                return isPageScrollEnable && handleIntercept(event);
             }
             default:
-                return isEnabled() && handleIntercept(event);
+                return isPageScrollEnable && handleIntercept(event);
         }
     }
 

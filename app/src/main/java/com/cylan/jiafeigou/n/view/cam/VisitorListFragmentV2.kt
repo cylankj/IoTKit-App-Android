@@ -162,14 +162,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                         val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
-                        AppLogger.d("主列表的 faceId?personId")
+                        AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
                         presenter.fetchVisitsCount(faceId!!)
                     }
                     FaceItem.FACE_TYPE_STRANGER_SUB -> {
                         val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
-                        AppLogger.d("主列表的 faceId?personId")
+                        AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
                         presenter.fetchVisitsCount(faceId!!)
                     }
