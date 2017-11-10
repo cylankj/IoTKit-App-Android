@@ -4,10 +4,7 @@ import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -15,8 +12,6 @@ import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.WonderGlideURL;
-import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 
 import java.util.List;
 
@@ -78,17 +73,18 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
             holder.setText(R.id.tv_wonderful_item_device_name, bean.place);
             holder.setVisibility(R.id.tv_wonderful_item_device_name, View.VISIBLE);
         }
-        if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_PIC) {
-            Glide.with(getContext()).load(new WonderGlideURL(bean))
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
-        } else if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_VIDEO) {
-            Glide.with(getContext()).load(new WonderGlideVideoThumbURL(bean))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
-        }
+        // TODO: 2017/11/10 GLIDE
+//        if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_PIC) {
+//            Glide.with(getContext()).load(new WonderGlideURL(bean))
+//                    .placeholder(R.drawable.wonderful_pic_place_holder)
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
+//        } else if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_VIDEO) {
+//            Glide.with(getContext()).load(new WonderGlideVideoThumbURL(bean))
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .placeholder(R.drawable.wonderful_pic_place_holder)
+//                    .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
+//        }
     }
 
 

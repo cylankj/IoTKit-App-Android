@@ -1,16 +1,11 @@
 package com.cylan.jiafeigou.ads;
 
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
@@ -21,7 +16,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -117,40 +111,41 @@ public class AdsStrategy {
         if (description == null || TextUtils.isEmpty(description.url)) {
             return;
         }
-        Glide.with(ContextUtils.getContext())
-                .load(description.url)
-                //加上签名
-//                .signature(new StringSignature(String.valueOf(description.expireTime)))
-                .into(new SimpleTarget<GlideDrawable>() {
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.w("广告下载失败: " + MiscUtils.getErr(e));
-                        //表示找不到.
-                    }
-
-                    @Override
-                    public void onDestroy() {
-                        super.onDestroy();
-                    }
-
-                    @Override
-                    public void onLoadCleared(Drawable placeholder) {
-                        super.onLoadCleared(placeholder);
-                    }
-
-                    @Override
-                    public void onStop() {
-                        super.onStop();
-                    }
-
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        //下载成功,才发出
-                        AppLogger.w("广告下载成功: ");
-                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), new Gson().toJson(description));
-                    }
-                });
+        // TODO: 2017/11/10 GLIDE
+//        Glide.with(ContextUtils.getContext())
+//                .load(description.url)
+//                //加上签名
+////                .signature(new StringSignature(String.valueOf(description.expireTime)))
+//                .into(new SimpleTarget<GlideDrawable>() {
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        AppLogger.w("广告下载失败: " + MiscUtils.getErr(e));
+//                        //表示找不到.
+//                    }
+//
+//                    @Override
+//                    public void onDestroy() {
+//                        super.onDestroy();
+//                    }
+//
+//                    @Override
+//                    public void onLoadCleared(Drawable placeholder) {
+//                        super.onLoadCleared(placeholder);
+//                    }
+//
+//                    @Override
+//                    public void onStop() {
+//                        super.onStop();
+//                    }
+//
+//                    @Override
+//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                        //下载成功,才发出
+//                        AppLogger.w("广告下载成功: ");
+//                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), new Gson().toJson(description));
+//                    }
+//                });
     }
 
     private AdsDescription convert(RxEvent.AdsRsp adsRsp) {

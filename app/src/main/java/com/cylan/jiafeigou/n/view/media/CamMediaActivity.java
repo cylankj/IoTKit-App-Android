@@ -3,13 +3,13 @@ package com.cylan.jiafeigou.n.view.media;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,11 +21,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -42,7 +43,6 @@ import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -55,6 +55,9 @@ import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+
+import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -162,35 +165,27 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                CamWarnGlideURL url = MiscUtils.getCamWarnUrl(uuid, camMessageBean, i + 1);
-                Glide.with(this)
+//                CamWarnGlideURL url = MiscUtils.getCamWarnUrl(uuid, camMessageBean, i + 1);
+                String url = MiscUtils.getCamWarnUrlV2(uuid, camMessageBean, i + 1);
+                GlideApp.with(this)
                         .load(url)
-                        .asBitmap()
+                        .dontAnimate()
                         .skipMemoryCache(true)
                         .format(DecodeFormat.DEFAULT)
-                        .listener(new RequestListener<CamWarnGlideURL, Bitmap>() {
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onException(Exception e, CamWarnGlideURL model, Target<Bitmap> target, boolean isFirstResource) {
-                                AppLogger.e("load failed: " + model.getTime() + "," + model.getIndex());
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                AppLogger.e("load failed: " + model);
                                 return false;
                             }
 
                             @Override
-                            public boolean onResourceReady(Bitmap resource, CamWarnGlideURL model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 return false;
                             }
                         })
-                        .into(new SimpleTarget<Bitmap>(150, 150) {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                                ((RoundedImageView) v).setImageBitmap(resource);
-                            }
+                        .into((RoundedImageView) v);
 
-                            @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                AppLogger.e(MiscUtils.getErr(e));
-                            }
-                        });
             }
         } else {
             //normal view
@@ -258,15 +253,20 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
 
-                MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1).fetch(file -> {
+                String camWarnUrl = MiscUtils.getCamWarnUrlV2(uuid, camMessageBean, currentIndex + 1);
+                FutureTarget<File> submit = GlideApp.with(this)
+                        .downloadOnly()
+                        .load(camWarnUrl)
+                        .onlyRetrieveFromCache(true)
+                        .submit();
+                try {
+                    File file = submit.get(2, TimeUnit.SECONDS);
                     ShareManager.byImg(CamMediaActivity.this)
-                            .withImg(file)
+                            .withImg(file.getAbsolutePath())
                             .share();
-//                    Intent intent = new Intent(this, ShareMediaActivity.class);
-//                    intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-//                    intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
-//                    startActivity(intent);
-                });
+                } catch (Exception e) {
+                    AppLogger.e(MiscUtils.getErr(e));
+                }
                 break;
             case R.id.imgV_big_pic_collect:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {

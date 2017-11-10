@@ -8,11 +8,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -107,7 +107,7 @@ public class FriendContextItem extends AbstractItem<FriendContextItem, FriendCon
         holder.accept.setVisibility(childType == 0 ? View.VISIBLE : View.GONE);
         holder.username.setText(username);
         holder.message.setText(message);
-        Glide.with(holder.itemView.getContext())
+        GlideApp.with(holder.itemView.getContext())
                 .load(new JFGAccountURL(account))
                 .placeholder(R.drawable.img_me_list_head)
                 .error(R.drawable.img_me_list_head)

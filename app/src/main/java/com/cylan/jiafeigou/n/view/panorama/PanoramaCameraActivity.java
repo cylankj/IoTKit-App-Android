@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -38,9 +39,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
@@ -59,6 +59,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
@@ -355,21 +356,21 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onShowPreviewPicture(String picture) {
         bottomPanelAlbumItem.showHint(true);
         if (!TextUtils.isEmpty(picture)) {
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(picture)
-                    .animate(view -> {
-                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0.7f, 1.2f, 1.0f);
-                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0.7f, 1.2f, 1.0f);
+                    .transition(GenericTransitionOptions.with(view -> {
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleX", 0.7f, 1.2f, 1.0f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleY", 0.7f, 1.2f, 1.0f);
                         AnimatorSet set = new AnimatorSet();
                         set.playTogether(scaleX, scaleY);
                         set.setDuration(300);
                         set.start();
-                    })
+                    }))
                     .error(R.drawable.camera720_icon_album_selector)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new ImageViewTarget<GlideDrawable>(bottomPanelAlbumItem) {
+                    .into(new ImageViewTarget<Drawable>(bottomPanelAlbumItem) {
                         @Override
-                        protected void setResource(GlideDrawable resource) {
+                        protected void setResource(@Nullable Drawable resource) {
                             view.setImageDrawable(resource);
                             view.setAlpha(view.isEnabled() ? 1 : 0.3f);
                         }

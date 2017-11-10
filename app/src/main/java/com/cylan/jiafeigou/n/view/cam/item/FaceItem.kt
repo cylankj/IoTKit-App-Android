@@ -7,10 +7,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
 import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.cylan.jiafeigou.utils.ListUtils
@@ -125,7 +125,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 } else {
                     null
                 }
-                Glide.with(holder.itemView.context)
+                GlideApp.with(holder.itemView.context)
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.icon_mine_head_normal)
@@ -140,7 +140,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
                 holder.strangerIcon.visibility = View.VISIBLE
-                Glide.with(holder.itemView.context)
+                GlideApp.with(holder.itemView.context)
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.icon_mine_head_normal)

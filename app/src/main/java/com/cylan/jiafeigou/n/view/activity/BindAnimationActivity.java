@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.bind.BindGuideActivity;
@@ -37,9 +35,10 @@ public class BindAnimationActivity extends BaseBindActivity {
         setContentView(R.layout.activity_bind_animation);
         ButterKnife.bind(this);
         int gifId = getIntent().getIntExtra(JConstant.KEY_ANIM_GIF, -1);
-        GlideDrawableImageViewTarget imageViewTarget =
-                new GlideDrawableImageViewTarget(imvGifContainer);
-        Glide.with(this).load(gifId).into(imageViewTarget);
+        // TODO: 2017/11/10 GLIDE
+//        GlideDrawableImageViewTarget imageViewTarget =
+//                new GlideDrawableImageViewTarget(imvGifContainer);
+//        Glide.with(this).load(gifId).into(imageViewTarget);
         customToolbar.setBackAction(v -> finishExt());
         tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));
         tvSubTitle.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_SUB_TITLE));

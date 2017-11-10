@@ -16,10 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
@@ -28,6 +27,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -307,21 +307,20 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (TextUtils.isEmpty(url)) {
             return;//空 不需要加载
         }
-        Glide.with(this).load(url)
+        GlideApp.with(this)
                 .asBitmap()
+                .load(url)
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
+                .signature(new ObjectKey(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new ImageViewTarget<Bitmap>(ivHomeMinePortrait) {
+                .into(new BitmapImageViewTarget(ivHomeMinePortrait) {
                     @Override
                     protected void setResource(Bitmap resource) {
-                        view.setImageBitmap(resource);
-                        presenter.portraitBlur(Bitmap.createBitmap(resource));
+                        super.setResource(resource);
+                        presenter.portraitBlur(resource);
                     }
                 });
-//        }
-//                .into(mySimpleTarget);
     }
 
     private boolean needStartLoginFragment() {

@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
-import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,12 +26,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.FutureTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
 import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
@@ -43,6 +40,7 @@ import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -52,6 +50,7 @@ import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.umeng.socialize.UMShareAPI;
 
 import java.io.File;
@@ -61,6 +60,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -638,43 +638,45 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-
-        Glide.with(this).load(new WonderGlideURL(mCurrentMediaBean))
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
-                        FileUtils.copyFile(resource, mDownloadFile);
-                        MediaScannerConnection.scanFile(MediaActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, (path, uri) -> {
-                                    AppLogger.d("保存到相册成功了:" + path + ":" + uri.toString());
-                                }
-                        );
-                        mDownloadFile = null;
+        FutureTarget<File> submit = GlideApp.with(this)
+                .downloadOnly()
+                .onlyRetrieveFromCache(true)
+                .load(new WonderGlideURL(mCurrentMediaBean))
+                .submit();
+        try {
+            File file = submit.get(2, TimeUnit.SECONDS);
+            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+            FileUtils.copyFile(file, mDownloadFile);
+            MediaScannerConnection.scanFile(MediaActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, (path, uri) -> {
+                        AppLogger.d("保存到相册成功了:" + path + ":" + uri.toString());
                     }
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        mDownloadFile = null;
-                    }
-                });
+            );
+            mDownloadFile = null;
+        } catch (Exception e) {
+            AppLogger.e(MiscUtils.getErr(e));
+            mDownloadFile = null;
+        }
     }
 
     @OnClick({R.id.act_media_header_opt_share, R.id.act_media_picture_opt_share})
     public void share() {
         if (NetUtils.isNetworkAvailable(this)) {
-            new WonderGlideURL(mCurrentMediaBean).fetchFile(file -> {
+            WonderGlideURL glideURL = new WonderGlideURL(mCurrentMediaBean);
+
+            FutureTarget<File> submit = GlideApp.with(this)
+                    .downloadOnly()
+                    .load(glideURL)
+                    .onlyRetrieveFromCache(true)
+                    .submit();
+
+            try {
+                File file = submit.get(2, TimeUnit.SECONDS);
                 ShareManager.byImg(MediaActivity.this)
-                        .withImg(file)
+                        .withImg(file.getAbsolutePath())
                         .share();
-//                Intent intent = new Intent(this, ShareMediaActivity.class);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
-//                startActivity(intent);
-            });
+            } catch (Exception e) {
+                AppLogger.e(MiscUtils.getErr(e));
+            }
         } else {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         }

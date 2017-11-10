@@ -28,17 +28,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -71,6 +72,7 @@ import com.lzy.okserver.listener.DownloadListener;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -138,6 +140,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private boolean looper = true;
     private boolean isPlay = false;
     private CamMessageBean bean;
+    private DpMsgDefine.DPAlarm dpAlarm;
 
     private DetailDataAdapter adapter;
     private Subscription subscribe;
@@ -152,14 +155,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     public static Intent getIntentFromMessage(Context context, String uuid, CamMessageBean bean, int position, int index) {
         PanoramaAlbumContact.PanoramaItem item = null;
-        if (bean.alarmMsg != null) {
-            bean.alarmMsg.isRecording = 0;//全部当成图片处理
-            if (bean.alarmMsg.isRecording == 1) {
+        DpMsgDefine.DPAlarm dpAlarm = null;
+        if (bean.message != null && bean.message.getMsgId() == 505) {
+            dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+        }
+        if (dpAlarm != null) {
+            dpAlarm.isRecording = 0;//全部当成图片处理
+            if (dpAlarm.isRecording == 1) {
                 // TODO: 2017/8/10 视频
-                item = new PanoramaAlbumContact.PanoramaItem(bean.alarmMsg.time + "_8.mp4");
+                item = new PanoramaAlbumContact.PanoramaItem(dpAlarm.time + "_8.mp4");
             } else {
                 // TODO: 2017/8/10 图片
-                item = new PanoramaAlbumContact.PanoramaItem(bean.alarmMsg.time + ".jpg");
+                item = new PanoramaAlbumContact.PanoramaItem(dpAlarm.time + ".jpg");
             }
         }
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -167,6 +174,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         intent.putExtra("panorama_mode", 3);
         intent.putExtra("panorama_item", item);
         intent.putExtra("cam_bean", bean);
+        intent.putExtra("alarm", dpAlarm);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         return intent;
     }
@@ -207,6 +215,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramaItem = getIntent().getParcelableExtra("panorama_item");
         mode = getIntent().getIntExtra("panorama_mode", 2);
         this.bean = getIntent().getParcelableExtra("cam_bean");
+        this.dpAlarm = getIntent().getParcelableExtra("alarm");
         topBack.setText(TimeUtils.get1224(panoramaItem.time * 1000L));
         initPanoramaView();
         myOrientoinListener = new MyEventListener(this);
@@ -366,7 +375,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
         LoadingDialog.dismissLoading();
-        if (bean != null && bean.alarmMsg != null) {
+
+        if (dpAlarm != null) {
 //            downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
         } else {
             downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
@@ -387,31 +397,32 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(downloadInfo.getTargetPath()));
                     refreshControllerView(true);
                 } else if (bean != null) {
-                    Glide.with(this)
-                            .load(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex))
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .skipMemoryCache(true)
-                            .into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    refreshControllerView(true);
-                                    panoramicView720Ext.loadImage(resource);
-                                    LoadingDialog.dismissLoading();
-                                }
-
-                                @Override
-                                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                    super.onLoadFailed(e, errorDrawable);
-                                    LoadingDialog.dismissLoading();
-                                }
-
-                                @Override
-                                public void onStart() {
-                                    super.onStart();
-                                    LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
-                                }
-                            });
+                    // TODO: 2017/11/10 GLIDE
+//                    Glide.with(this)
+//                            .load(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex))
+//                            .asBitmap()
+//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                            .skipMemoryCache(true)
+//                            .into(new SimpleTarget<Bitmap>() {
+//                                @Override
+//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                    refreshControllerView(true);
+//                                    panoramicView720Ext.loadImage(resource);
+//                                    LoadingDialog.dismissLoading();
+//                                }
+//
+//                                @Override
+//                                public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                                    super.onLoadFailed(e, errorDrawable);
+//                                    LoadingDialog.dismissLoading();
+//                                }
+//
+//                                @Override
+//                                public void onStart() {
+//                                    super.onStart();
+//                                    LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
+//                                }
+//                            });
                 } else {
                     if (subscribe != null && !subscribe.isUnsubscribed()) {
                         subscribe.unsubscribe();
@@ -419,30 +430,31 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     subscribe = getConnection().subscribe(ret -> {
                         String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                         if (!TextUtils.isEmpty(deviceIp) && bean == null) {
-                            Glide.with(this)
-                                    .load(deviceIp + "/images/" + panoramaItem.fileName)
-                                    .thumbnail(Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb"))
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .into(new SimpleTarget<GlideDrawable>() {
-                                        @Override
-                                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                                            refreshControllerView(true);
-                                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
-                                            LoadingDialog.dismissLoading();
-                                        }
-
-                                        @Override
-                                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                            super.onLoadFailed(e, errorDrawable);
-                                            LoadingDialog.dismissLoading();
-                                        }
-
-                                        @Override
-                                        public void onStart() {
-                                            super.onStart();
-                                            LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
-                                        }
-                                    });
+                            // TODO: 2017/11/10 GLIDE
+//                            Glide.with(this)
+//                                    .load(deviceIp + "/images/" + panoramaItem.fileName)
+//                                    .thumbnail(Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb"))
+//                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                    .into(new SimpleTarget<GlideDrawable>() {
+//                                        @Override
+//                                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                                            refreshControllerView(true);
+//                                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
+//                                            LoadingDialog.dismissLoading();
+//                                        }
+//
+//                                        @Override
+//                                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                                            super.onLoadFailed(e, errorDrawable);
+//                                            LoadingDialog.dismissLoading();
+//                                        }
+//
+//                                        @Override
+//                                        public void onStart() {
+//                                            super.onStart();
+//                                            LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
+//                                        }
+//                                    });
                         }
 
                     }, e -> {
@@ -655,21 +667,26 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
         if (!NetUtils.isNetworkAvailable(this)) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
-        } else if (bean != null && bean.alarmMsg.isRecording == 0) {
+        } else if (dpAlarm != null && dpAlarm.isRecording == 0) {
             releasePlayer();
-            Glide.with(this)
-                    .load(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex))
-                    .downloadOnly(new SimpleTarget<File>() {
-                        @Override
-                        public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                            ShareManager.byH5(PanoramaDetailActivity.this)
-                                    .withFile(resource.getAbsolutePath())
-                                    .withItem(panoramaItem)
-                                    .withThumb(resource.getAbsolutePath())
-                                    .withUuid(uuid)
-                                    .share();
-                        }
-                    });
+            FutureTarget<File> submit = GlideApp.with(this)
+                    .downloadOnly()
+                    .onlyRetrieveFromCache(true)
+                    .load(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex))
+                    .submit();
+
+            try {
+                File file = submit.get(2, TimeUnit.SECONDS);
+                ShareManager.byH5(PanoramaDetailActivity.this)
+                        .withFile(file.getAbsolutePath())
+                        .withItem(panoramaItem)
+                        .withThumb(file.getAbsolutePath())
+                        .withUuid(uuid)
+                        .share();
+            } catch (Exception e) {
+                MiscUtils.getErr(e);
+            }
+
         } else if (panoramaItem.duration > 8) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.Tap1_Share_NoLonger8STips)
@@ -691,14 +708,23 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         } else {
             releasePlayer();
-            new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
+            try {
+                FutureTarget<File> submit = GlideApp.with(this)
+                        .downloadOnly()
+                        .onlyRetrieveFromCache(true)
+                        .load(new PanoramaThumbURL(uuid, panoramaItem.fileName))
+                        .submit();
+                File file = submit.get(2, TimeUnit.SECONDS);
                 ShareManager.byH5(PanoramaDetailActivity.this)
                         .withFile(downloadInfo.getTargetPath())
                         .withItem(panoramaItem)
-                        .withThumb(filePath)
+                        .withThumb(file.getAbsolutePath())
                         .withUuid(uuid)
                         .share();
-            });
+            } catch (Exception e) {
+                AppLogger.e(MiscUtils.getErr(e));
+            }
+
         }
     }
 
@@ -724,9 +750,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                             .setPositiveButton(R.string.OK, (dialog, which) -> {
                                 downloadInfo.setListener(null);
                                 DownloadManager.getInstance().stopTask(downloadInfo.getTaskKey());
-                                download.setText(bean != null && bean.alarmMsg != null ? R.string.Tap1_Album_Download : R.string.SAVE_PHONE);
+                                download.setText(dpAlarm != null ? R.string.Tap1_Album_Download : R.string.SAVE_PHONE);
                                 download.setEnabled(true);
-                                if (bean != null && bean.alarmMsg != null && morePopMenu != null && morePopMenu.isShowing()) {
+                                if (dpAlarm != null && morePopMenu != null && morePopMenu.isShowing()) {
                                     morePopMenu.dismiss();
                                 }
                             })
@@ -754,11 +780,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 //                download.setEnabled(!presenter.isSaved(bean.alarmMsg.time + ".png"));
 //            } else
             if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
-                download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
+                download.setText(dpAlarm != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
                 download.setEnabled(true);
             } else if (downloadInfo.getState() == DownloadManager.FINISH) {
-                download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Downloaded);
-                download.setEnabled(bean != null && bean.alarmMsg != null);
+                download.setText(dpAlarm != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Downloaded);
+                download.setEnabled(dpAlarm != null);
             } else {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");
                 downloadInfo.setListener(listener);
@@ -769,7 +795,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void processSave() {
         if (presenter != null) {
-            presenter.saveImage(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex), bean.alarmMsg.time + ".png");
+            presenter.saveImage(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex), (dpAlarm == null ? 0 : dpAlarm.time) + ".png");
         }
     }
 
@@ -781,7 +807,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     if (deleted != null) {
                         deleted.setEnabled(false);
                     }
-                    presenter.delete(panoramaItem, mode, bean == null || bean.alarmMsg == null ? 0 : bean.alarmMsg.version);
+                    presenter.delete(panoramaItem, mode, dpAlarm == null ? 0 : dpAlarm.version);
                 })
                 .show();
         AppLogger.w("将进行删除");
@@ -835,9 +861,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 morePopMenu.dismiss();
             }
             String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
-            if (bean.alarmMsg.isRecording == 0) {
+            if (dpAlarm != null && dpAlarm.isRecording == 0) {
                 try {
-                    String toString = MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex).toURL().toString();
+                    String toString = MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm.fileIndex).toURL().toString();
                     String taskKey = PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName);
                     GetRequest request = OkGo.get(toString);
                     DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
@@ -912,25 +938,28 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private void loadPreview() {
         String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
         if (!TextUtils.isEmpty(deviceIp) && bean == null) {
-            Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb")
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
-//                            refreshControllerView(true);
-                        }
-                    });
-        } else if (bean != null) {
-            Glide.with(this)
-                    .load(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex))
+            GlideApp.with(this)
                     .asBitmap()
+                    .load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb")
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .skipMemoryCache(true)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                            refreshControllerView(true);
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(resource));
+                            refreshControllerView(true);
+                        }
+                    });
+        } else if (bean != null) {
+            GlideApp.with(this)
+                    .asBitmap()
+                    .load(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            refreshControllerView(true);
                             panoramicView720Ext.loadImage(resource);
                         }
                     });

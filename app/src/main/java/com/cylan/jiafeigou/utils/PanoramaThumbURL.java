@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.DeviceInformation;
 
@@ -39,18 +39,5 @@ public class PanoramaThumbURL extends GlideUrl {
             return new URL("http://" + information.ip + "/thumb/" + fileName.split("\\.")[0] + ".thumb");
         }
         return new URL("http://www.cylan.com.cn");
-    }
-
-    public void fetchFile(WonderGlideURL.FileInterface fileInterface) {
-        Glide.with(ContextUtils.getContext())
-                .load(this)
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        if (fileInterface != null) {
-                            fileInterface.onResourceReady(resource.getAbsolutePath());
-                        }
-                    }
-                });
     }
 }

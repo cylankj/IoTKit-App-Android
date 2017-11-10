@@ -25,7 +25,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -41,6 +40,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
@@ -441,9 +441,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
-        Glide.with(this)
-                .load(new JFGGlideURL(uuid, item.timeInLong / 1000 + ".jpg", item.type))
+        GlideApp.with(this)
                 .asBitmap()
+                .load(new JFGGlideURL(uuid, item.timeInLong / 1000 + ".jpg", item.type))
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

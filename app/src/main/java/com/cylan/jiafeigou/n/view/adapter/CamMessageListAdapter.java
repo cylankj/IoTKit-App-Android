@@ -7,11 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -19,21 +15,19 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -59,9 +53,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private boolean status;
     private Map<String, String> personMaps = new HashMap<>();
     private Map<String, List<CamMessageBean>> visitorMaps = new HashMap<>();
-    //null 不过滤
-    private String faceItemType = null;
-
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -191,11 +182,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         boolean sameDay = true;
         if (layoutPosition > 0) {
             CamMessageBean bean = getItem(layoutPosition - 1);
-            sameDay = TimeUtils.isSameDay(bean.version, item.version);
+            sameDay = TimeUtils.isSameDay(bean.message.version, item.message.version);
         }
         boolean showDivider = !sameDay && faceFragment;
         holder.setVisibility(R.id.message_time_divider, showDivider ? View.VISIBLE : View.GONE);
-        String content = TimeUtils.getSpecifiedDate(item.version);
+        String content = TimeUtils.getSpecifiedDate(item.message.version);
         holder.setText(R.id.time_divider, content);
 //        holder.setVisibility(R.id.watcher_text, showDivider ? View.VISIBLE : View.GONE);
 //        if (showDivider) {
@@ -229,20 +220,25 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean showHistoryButton(CamMessageBean bean) {
-        if (isSharedDevice || !hasSdcard()) {
+        if (isSharedDevice || !hasSdcard() || bean == null) {
             return false;
         }
-        if (bean != null && bean.bellCallRecord != null) {
-            return bean.bellCallRecord.isRecording == 1;
-        } else if (bean != null && bean.alarmMsg != null) {
-            Device device = DataSourceManager.getInstance().getDevice(uuid);
-            boolean pan720 = JFGRules.isPan720(device.pid);
-            if (pan720) {
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                return dpBellCallRecord.isRecording == 1;
+            }
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
+                boolean pan720 = JFGRules.isPan720(device.pid);
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                if (pan720) {
 //                return bean.alarmMsg.isRecording == 1;//全部当成图片处理,
-                // TODO: 2017/8/4 当前查看视频不知道怎么处理
-                return false;
-            } else {
-                return bean.alarmMsg.isRecording == 1 && (System.currentTimeMillis() - bean.alarmMsg.version) >= 30 * 60 * 1000L;
+                    // TODO: 2017/8/4 当前查看视频不知道怎么处理
+                    return false;
+                } else {
+                    return dpAlarm.isRecording == 1 && (System.currentTimeMillis() - dpAlarm.version) >= 30 * 60 * 1000L;
+                }
             }
         }
         return false;
@@ -253,17 +249,23 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         // TODO: 2017/8/16  不光要看 hasSDCard 还要看 err 是否为0 #118051
         // TODO: 2017/8/16 Android（1.1.0.534）720设备 报警中心界面 提示"检车到新的Micro SD卡，需要先初始化才能存储视频" 右下角没有查看详情 按钮
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        boolean hasSdcard = false;
+//        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+        boolean hasSdcard;
         int err = -1;
-        if (item.sdcardSummary != null) {
-            hasSdcard = item.sdcardSummary.hasSdcard;
-            err = item.sdcardSummary.errCode;
-        } else if (status != null) {
-            hasSdcard = status.hasSdcard;
-            err = status.err;
+        switch ((int) item.message.getMsgId()) {
+            case DpMsgMap.ID_222_SDCARD_SUMMARY: {
+                DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) item.message;
+                hasSdcard = sdcardSummary.hasSdcard;
+                err = sdcardSummary.errCode;
+            }
+            break;
+            default: {
+//                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+                hasSdcard = status.hasSdcard;
+                err = status.err;
+            }
         }
-
         return hasSdcard && err != 0 && (!isSharedDevice || JFGRules.isPan720(device.pid));
     }
 
@@ -299,27 +301,35 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private void handlePicsLayout(SuperViewHolder holder,
                                   CamMessageBean item) {
         int count = 0;
-        if (item.alarmMsg != null) {
-            count = item.alarmMsg.fileIndex < 1 ? 1 : MiscUtils.getCount(item.alarmMsg.fileIndex);
-        } else if (item.bellCallRecord != null && item.bellCallRecord.fileIndex != -1) {
-            count = item.bellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(item.bellCallRecord.fileIndex);
+
+        switch ((int) item.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) item.message;
+                count = dpAlarm.fileIndex < 1 ? 1 : MiscUtils.getCount(dpAlarm.fileIndex);
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) item.message;
+                count = dpBellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(dpBellCallRecord.fileIndex);
+            }
+            break;
         }
+
         count = Math.max(count, 1);//最小为1
         for (int index = 1; index <= count; index++) {
             int id = index == 1 ? R.id.imgV_cam_message_pic0
                     : index == 2 ? R.id.imgV_cam_message_pic1 :
                     R.id.imgV_cam_message_pic2;
-            Glide.with(getContext())
-                    .load(MiscUtils.getCamWarnUrl(uuid, item, index))
+            GlideApp.with(getContext())
+                    .load(MiscUtils.getCamWarnUrlV2(uuid, item, index))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
-                    .listener(loadListener)
                     .into((ImageView) holder.getView(id));
             holder.setOnClickListener(id, onClickListener);
         }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
-        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
+        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.message.version));
         holder.setVisibility(R.id.tv_jump_next, showHistoryButton(item) ? View.VISIBLE : View.GONE);
     }
 
@@ -336,28 +346,32 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private String getFinalTimeContent(CamMessageBean bean) {
-        long id = bean.id;
-        String tContent = TimeUtils.getHH_MM(bean.version) + " ";
-        if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
+        String tContent = TimeUtils.getHH_MM(bean.message.getVersion()) + " ";
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
             /*现在人形检测也是用的这个消息,增加了扩展字段,有人形的提示和无人形的提示有区别
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-            if (bean.alarmMsg.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
-                String faceText = JConstant.getFaceText(bean.alarmMsg.face_id, personMaps, null);
+                if (dpAlarm.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
+                    String faceText = JConstant.getFaceText(dpAlarm.face_id, personMaps, null);
 
-                return tContent + (TextUtils.isEmpty(faceText) ?
-                        getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
-                        : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
-            } else if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
-                return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(bean.alarmMsg.objects);
+                    return tContent + (TextUtils.isEmpty(faceText) ?
+                            getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
+                            : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
+                } else if (dpAlarm.objects != null && dpAlarm.objects.length > 0) {//有检测数据
+                    return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(dpAlarm.objects);
 //                return tContent + "检测到" + JConstant.getAIText(bean.alarmMsg.objects);
-            } else {//无检测数据
-                return tContent + getContext().getString(R.string.MSG_WARNING);
+                } else {//无检测数据
+                    return tContent + getContext().getString(R.string.MSG_WARNING);
+                }
             }
 
-        } else if (id == DpMsgMap.ID_401_BELL_CALL_STATE) {
-            return tContent + (bean.bellCallRecord.isOK == 1 ? getContext().getString(R.string.DOOR_CALL) : getContext().getString(R.string.DOOR_UNCALL));
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                return tContent + (dpBellCallRecord.isOK == 1 ? getContext().getString(R.string.DOOR_CALL) : getContext().getString(R.string.DOOR_UNCALL));
+            }
         }
         return tContent;
     }
@@ -370,10 +384,14 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private String getFinalTimeContentSD(CamMessageBean bean) {
-        long id = bean.id;
-        String tContent = TimeUtils.getHH_MM(bean.version) + " ";
-        if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG || id == DpMsgMap.ID_401_BELL_CALL_STATE) {
-            return tContent + getContext().getString(R.string.MSG_WARNING);
+        String tContent = TimeUtils.getHH_MM(bean.message.getVersion()) + " ";
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+
+            }
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                return tContent + getContext().getString(R.string.MSG_WARNING);
+            }
         }
         return tContent;
     }
@@ -387,20 +405,21 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private String getFinalSdcardContent(CamMessageBean bean) {
-        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.sdcardSummary == null) {
-            return "";
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_222_SDCARD_SUMMARY: {
+                DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) bean.message;
+                if (!sdcardSummary.hasSdcard) {
+                    return getContext().getString(R.string.MSG_SD_OFF);
+                }
+                switch (sdcardSummary.errCode) {
+                    case 0:
+                        return getContext().getString(R.string.MSG_SD_ON);
+                    default:
+                        return getContext().getString(R.string.MSG_SD_ON_1);
+                }
+            }
         }
-        DpMsgDefine.DPSdcardSummary sdStatus = bean.sdcardSummary;
-        if (!sdStatus.hasSdcard) {
-            return getContext().getString(R.string.MSG_SD_OFF);
-        }
-        switch (sdStatus.errCode) {
-            case 0:
-                return getContext().getString(R.string.MSG_SD_ON);
-            default:
-                return getContext().getString(R.string.MSG_SD_ON_1);
-        }
-
+        return "";
     }
 
     @Override
@@ -413,32 +432,34 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
-                if (camMessageBean.bellCallRecord != null) {
-                    final int count = camMessageBean.bellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(camMessageBean.bellCallRecord.fileIndex);
-                    if (count == 1) {
-                        return CamMessageBean.ViewType.ONE_PIC;
+                int count = 0;
+                switch ((int) camMessageBean.message.getMsgId()) {
+                    case DpMsgMap.ID_222_SDCARD_SUMMARY: {
+                        return CamMessageBean.ViewType.TEXT;
                     }
-                    if (count == 2) {
-                        return CamMessageBean.ViewType.TWO_PIC;
+                    case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                        DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) camMessageBean.message;
+                        count = dpBellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(dpBellCallRecord.fileIndex);
                     }
-                    if (count == 3) {
-                        return CamMessageBean.ViewType.THREE_PIC;
+                    break;
+                    case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                        DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) camMessageBean.message;
+                        count = dpAlarm.fileIndex < 1 ? 1 : MiscUtils.getCount(dpAlarm.fileIndex);
                     }
+                    break;
+                    default: {
+                        return camMessageBean.viewType;
+                    }
+
                 }
-                if (camMessageBean.alarmMsg != null) {
-                    final int count = camMessageBean.alarmMsg.fileIndex < 1 ? 1 : MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex);
-                    if (count == 1) {
-                        return CamMessageBean.ViewType.ONE_PIC;
-                    }
-                    if (count == 2) {
-                        return CamMessageBean.ViewType.TWO_PIC;
-                    }
-                    if (count == 3) {
-                        return CamMessageBean.ViewType.THREE_PIC;
-                    }
+                if (count == 1) {
+                    return CamMessageBean.ViewType.ONE_PIC;
                 }
-                if (camMessageBean.sdcardSummary != null) {
-                    return CamMessageBean.ViewType.TEXT;
+                if (count == 2) {
+                    return CamMessageBean.ViewType.TWO_PIC;
+                }
+                if (count == 3) {
+                    return CamMessageBean.ViewType.THREE_PIC;
                 }
                 return camMessageBean.viewType;
             }
@@ -467,19 +488,18 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         int count = getCount();
         return count > 0 && getItem(count - 1).viewType == CamMessageBean.ViewType.FOOT;
     }
-
-    private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {
-        @Override
-        public boolean onException(Exception e, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
-            AppLogger.e(String.format(Locale.getDefault(), "uuid:%s,UriErr:%s,index:%s,e:%s", uuid, model.getTime(), model.getIndex(), MiscUtils.getErr(e)));
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            return false;
-        }
-    };
+//    private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {
+//        @Override
+//        public boolean onException(Exception e, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
+//            AppLogger.e(String.format(Locale.getDefault(), "uuid:%s,UriErr:%s,index:%s,e:%s", uuid, model.getTime(), model.getIndex(), MiscUtils.getErr(e)));
+//            return false;
+//        }
+//
+//        @Override
+//        public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//            return false;
+//        }
+//    };
 
     public void setCurrentSDcardSummary(DpMsgDefine.DPSdcardSummary summary) {
         this.summary = summary;
@@ -487,11 +507,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
 //    private List<CamMessageBean>
 
-    public void filterByFaceItemType(String personId) {
-        // TODO: 2017/10/14 null 全部
-        this.faceItemType = personId;
-        notifyDataSetChanged();
-    }
+//    public void filterByFaceItemType(String personId) {
+//        // TODO: 2017/10/14 null 全部
+//        this.faceItemType = personId;
+//        notifyDataSetChanged();
+//    }
 
     public void onStrangerInformationReady(List<FaceItem> visitorList) {
 

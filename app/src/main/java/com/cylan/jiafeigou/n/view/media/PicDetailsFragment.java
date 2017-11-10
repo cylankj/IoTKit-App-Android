@@ -16,10 +16,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -109,12 +105,13 @@ public class PicDetailsFragment extends LazyFragment {
      * 加载资源
      */
     protected void loadMedia(final String mediaUrl) {
-        Glide.with(this)
-                .load(mediaUrl)
-                .listener(requestListener)
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-//                .fitCenter()
-                .into(detailsAlbumImage);
+        // TODO: 2017/11/10 GLIDE
+//        Glide.with(this)
+//                .load(mediaUrl)
+//                .listener(requestListener)
+//                .placeholder(R.drawable.wonderful_pic_place_holder)
+////                .fitCenter()
+//                .into(detailsAlbumImage);
     }
 
     @Override
@@ -145,20 +142,20 @@ public class PicDetailsFragment extends LazyFragment {
         }
     }
 
-
-    private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            startPostponedEnterTransition();
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            startPostponedEnterTransition();
-            return false;
-        }
-    };
+//todo GLIDE
+//    private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
+//        @Override
+//        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//            startPostponedEnterTransition();
+//            return false;
+//        }
+//
+//        @Override
+//        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//            startPostponedEnterTransition();
+//            return false;
+//        }
+//    };
 
     /**
      * Returns the shared element that should be transitioned back to the previous Activity,

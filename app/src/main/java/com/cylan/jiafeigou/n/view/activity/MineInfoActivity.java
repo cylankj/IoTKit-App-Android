@@ -17,16 +17,13 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineInfoBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
@@ -43,7 +40,6 @@ import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
@@ -274,20 +270,8 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         if (jfgAccount != null) {
             url = isDefaultPhoto(jfgAccount.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl();
         }
-        Glide.with(this).load(url)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        AppLogger.e("mineInfo:" + MiscUtils.getErr(e));
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        AppLogger.e("mineInfo:success");
-                        return false;
-                    }
-                })
+        GlideApp.with(this)
+                .load(url)
                 .into(homeMineInfoBinding.userImageHead);
         if (!TextUtils.isEmpty(account.getPhone())) {
             homeMineInfoBinding.tvMyId.setSubTitle(account.getPhone());

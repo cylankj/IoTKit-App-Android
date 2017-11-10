@@ -6,10 +6,10 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.RadioButton
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.support.photoselect.CircleImageView
 import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.github.promeg.pinyinhelper.Pinyin
@@ -53,8 +53,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
         //imageUrl 怎么定义的一个 visitor 下有多个人脸
         var personName: String = visitor?.personName ?: "小明啊"
         val visitorDetail = visitor?.detailList?.getOrNull(0)
-        Glide
-                .with(holder.itemView.context)
+        GlideApp.with(holder.itemView.context)
                 .load(JFGFaceGlideURL("", visitorDetail?.imgUrl ?: "", visitorDetail?.ossType ?: 0, false))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.icon_mine_head_normal)

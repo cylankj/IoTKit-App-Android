@@ -2,12 +2,10 @@ package com.cylan.jiafeigou.n.view.adapter.item;
 
 import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.ItemShareContentBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
@@ -45,10 +43,11 @@ public class ShareContentItem extends AbstractItem<ShareContentItem, AbstractBin
         viewDataBinding.setSharedContentItem(this);
         viewDataBinding.setShareDate(TimeUtils.getYMDHM(shareItem.time * 1000L));
         viewDataBinding.ShareContentCheckBox.setChecked(isSelected());
-        Glide.with(viewDataBinding.sharedContentIcon.getContext())
-                .load(new WonderGlideURL(shareItem.toWonderItem()))
-                .placeholder(shareItem.msgType == 0 ? R.drawable.bg_default_photo : R.drawable.bg_default_video)
-                .error(shareItem.msgType == 0 ? R.drawable.bg_default_photo : R.drawable.bg_default_video)
-                .into(viewDataBinding.sharedContentIcon);
+        // TODO: 2017/11/10 GLIDE
+//        Glide.with(viewDataBinding.sharedContentIcon.getContext())
+//                .load(new WonderGlideURL(shareItem.toWonderItem()))
+//                .placeholder(shareItem.msgType == 0 ? R.drawable.bg_default_photo : R.drawable.bg_default_video)
+//                .error(shareItem.msgType == 0 ? R.drawable.bg_default_photo : R.drawable.bg_default_video)
+//                .into(viewDataBinding.sharedContentIcon);
     }
 }

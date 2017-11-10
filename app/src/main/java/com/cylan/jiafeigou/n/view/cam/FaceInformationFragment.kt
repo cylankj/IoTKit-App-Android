@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import butterknife.OnClick
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.view.JFGPresenter
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.JFGFaceGlideURL
@@ -45,7 +45,7 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
         setting_item_face_name.subTitle = faceName
         face_name.text = faceName
         val visitorDetail = visitor?.detailList?.getOrNull(0)
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(JFGFaceGlideURL("", visitorDetail?.imgUrl, visitorDetail?.ossType ?: 0, false))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)

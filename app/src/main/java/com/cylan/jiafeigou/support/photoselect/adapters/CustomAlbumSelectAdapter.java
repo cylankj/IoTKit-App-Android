@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.photoselect.models.Album;
 
 import java.lang.ref.WeakReference;
@@ -42,7 +42,7 @@ public class CustomAlbumSelectAdapter extends CustomGenericAdapter<Album> {
         viewHolder.imageView.get().getLayoutParams().height = size;
 
         viewHolder.textView.get().setText(arrayList.get(position).name);
-        Glide.with(context)
+        GlideApp.with(context)
                 .load(arrayList.get(position).cover)
                 .placeholder(R.drawable.image_placeholder).centerCrop().into(viewHolder.imageView.get());
 

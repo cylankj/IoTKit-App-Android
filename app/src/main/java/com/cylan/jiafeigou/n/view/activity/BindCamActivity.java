@@ -6,10 +6,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.view.bind.BindGuideActivity;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -41,10 +40,7 @@ public class BindCamActivity extends BaseBindActivity {
         tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));
         tvSubTitle.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_SUB_TITLE));
         tvBindCameraTip.setText(getIntent().getStringExtra(JConstant.KEY_NEXT_STEP));
-        int gifId = getIntent().getIntExtra(JConstant.KEY_ANIM_GIF, -1);
-        GlideDrawableImageViewTarget imageViewTarget =
-                new GlideDrawableImageViewTarget(imvAnima);
-        Glide.with(this).load(R.raw.add_cam).into(imageViewTarget);
+        GlideApp.with(this).load(R.raw.add_cam).into(imvAnima);
     }
 
     @Override

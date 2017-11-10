@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -14,17 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -32,8 +25,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic720View;
-
-import java.io.File;
 
 import javax.inject.Inject;
 
@@ -100,21 +91,22 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
         ((ViewGroup) view).addView(panoramic720View, 0, lp);
         PAlbumBean bean = getArguments().getParcelable("item_url");
         customToolbar.setToolbarLeftTitle(TimeUtils.getTimeSpecial(bean.getDownloadFile().getTime() * 1000L));
-        Glide.with(this)
-                .load(Uri.fromFile(new File(JConstant.PAN_PATH + File.separator + uuid + File.separator + bean.getDownloadFile().fileName)))
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        panoramic720View.configV720();
-                        panoramic720View.loadImage(resource);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.e("err: " + e);
-                    }
-                });
+        // TODO: 2017/11/10 GLIDE
+//        Glide.with(this)
+//                .load(Uri.fromFile(new File(JConstant.PAN_PATH + File.separator + uuid + File.separator + bean.getDownloadFile().fileName)))
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        panoramic720View.configV720();
+//                        panoramic720View.loadImage(resource);
+//                    }
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        AppLogger.e("err: " + e);
+//                    }
+//                });
     }
 
     @Override

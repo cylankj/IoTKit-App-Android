@@ -1,33 +1,26 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,51 +84,26 @@ public class MyQRCodeDialog extends BaseDialog {
     }
 
     private void initView() {
-        MyViewTarget myViewTarget = new MyViewTarget(ivUserIcon, getResources());
         if (isopenlogin) {
             Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
             tvUserAlias.setText(account == null ? "" : account.getAlias() == null ? account.getAccount() : account.getAlias());
-            Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
-                    .asBitmap()
-                    .centerCrop()
+            GlideApp.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
+                    .circleCrop()
                     .placeholder(R.drawable.icon_mine_head_normal)
                     .error(R.drawable.icon_mine_head_normal)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(myViewTarget);
+                    .into(ivUserIcon);
             return;
         }
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         tvUserAlias.setText(jfgAccount.getAlias());
-        Glide.with(getContext()).load(jfgAccount.getPhotoUrl())
-                .asBitmap()
-                .centerCrop()
+        GlideApp.with(getContext()).load(jfgAccount.getPhotoUrl())
+                .circleCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(myViewTarget);
+                .into(ivUserIcon);
     }
-
-
-    private static class MyViewTarget extends BitmapImageViewTarget {
-        private WeakReference<Resources> resourcesWeakReference;
-        private WeakReference<ImageView> imageViewWeakReference;
-
-        public MyViewTarget(ImageView view, Resources resources) {
-            super(view);
-            resourcesWeakReference = new WeakReference<Resources>(resources);
-            imageViewWeakReference = new WeakReference<ImageView>(view);
-        }
-
-        @Override
-        protected void setResource(Bitmap resource) {
-            super.setResource(resource);
-            RoundedBitmapDrawable circularBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
-            circularBitmapDrawable.setCircular(true);
-            imageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
-        }
-    }
-
 
     @OnClick(R.id.iv_close_dialog)
     public void onClick() {

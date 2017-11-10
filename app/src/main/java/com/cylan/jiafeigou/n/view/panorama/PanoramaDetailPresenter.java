@@ -1,14 +1,8 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
@@ -181,22 +175,23 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 
     @Override
     public void saveImage(CamWarnGlideURL glideURL, String fileName) {
-        Glide.with(mView.activity())//注意contxt
-                .load(glideURL)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Log.d(TAG, "onResourceReady:" + (resource == null));
-                        save(resource, fileName);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        MiscUtils.getErr(e);
-                    }
-                });
+        // TODO: 2017/11/10 GLIDE
+//        Glide.with(mView.activity())//注意contxt
+//                .load(glideURL)
+//                .asBitmap()
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        Log.d(TAG, "onResourceReady:" + (resource == null));
+//                        save(resource, fileName);
+//                    }
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        MiscUtils.getErr(e);
+//                    }
+//                });
     }
 
     private void save(Bitmap bitmap, String fileName) {

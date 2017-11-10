@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.toolsfinal.io.Charsets;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
@@ -52,8 +51,6 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.internal.http.RealResponseBody;
-import okio.Buffer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -193,7 +190,9 @@ public abstract class CommonModule {
                     Response proceed = chain.proceed(request);
                     String string = proceed.body().string();
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-                    return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
+                    // TODO: 2017/11/10 GLIDE
+                    return null;
+//                    return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
                 })
                 .connectTimeout(120, TimeUnit.SECONDS)//sd 卡格式化需要120 秒的超时
                 .readTimeout(120, TimeUnit.SECONDS)

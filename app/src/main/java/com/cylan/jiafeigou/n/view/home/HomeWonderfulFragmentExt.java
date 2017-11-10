@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.FutureTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -31,12 +32,14 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -46,10 +49,12 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -384,15 +389,19 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 //            fragment.setVideoURL(bean.fileName);
 //        }
 //        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
-        new WonderGlideURL(bean).fetchFile(filePath -> {
+        FutureTarget<File> submit = GlideApp.with(this)
+                .downloadOnly()
+                .onlyRetrieveFromCache(true)
+                .load(new WonderGlideURL(bean))
+                .submit();
+        try {
+            File file = submit.get(2, TimeUnit.SECONDS);
             ShareManager.byImg(getActivity())
-                    .withImg(filePath)
+                    .withImg(file.getAbsolutePath())
                     .share();
-//            Intent intent = new Intent(getActivity(), ShareMediaActivity.class);
-//            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, filePath);
-//            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-//            startActivity(intent);
-        });
+        } catch (Exception e) {
+            AppLogger.e(MiscUtils.getErr(e));
+        }
     }
 
     private void onDeleteWonderfulContent(DPWonderItem bean, int position) {
