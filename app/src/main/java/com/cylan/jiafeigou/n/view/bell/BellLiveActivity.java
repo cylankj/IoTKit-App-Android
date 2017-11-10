@@ -28,6 +28,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -41,6 +44,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
@@ -54,6 +58,7 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
@@ -525,15 +530,14 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 if (bitmap != null) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    // TODO: 2017/11/10 GLIDE
-//                    Glide.with(this)
-//                            .load(stream.toByteArray())
-//                            .placeholder(R.drawable.wonderful_pic_place_holder)
-//                            .override((int) getResources().getDimension(R.dimen.x44),
-//                                    (int) getResources().getDimension(R.dimen.x30))
-//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                            .bitmapTransform(new RoundedCornersTransformation(this, 10, 2))
-//                            .into(view);
+                    GlideApp.with(this)
+                            .load(stream.toByteArray())
+                            .placeholder(R.drawable.wonderful_pic_place_holder)
+                            .override((int) getResources().getDimension(R.dimen.x44),
+                                    (int) getResources().getDimension(R.dimen.x30))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .transform(new RoundedCornersTransformation(this, 10, 2))
+                            .into(view);
                 }
             }, v -> {
                 roundCardPopup.dismiss();
@@ -710,18 +714,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         // TODO: 2017/11/10 GLIDE
-//        Glide.with(this).load(URL)
-//                .asBitmap()
-//                .placeholder(R.drawable.default_diagram_mask)
-//                .error(R.drawable.default_diagram_mask)
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .skipMemoryCache(true)
-//                .into(new SimpleTarget<Bitmap>() {
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//
-//                    }
-//                });
+        GlideApp.with(this)
+                .asBitmap()
+                .load(URL)
+                .placeholder(R.drawable.default_diagram_mask)
+                .error(R.drawable.default_diagram_mask)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(true)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+
+                    }
+                });
     }
 
 

@@ -21,9 +21,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic360View;
@@ -126,19 +129,14 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             return;
         }
         //todo GLIDE
-//        Glide.with(context)
-//                .load(glideUrl)
-//                .apply(RequestOptions.placeholderOf(R.drawable.default_diagram_mask))
-//                .apply(RequestOptions.signatureOf(new ObjectKey(token)))
-//                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-//                .apply(RequestOptions.skipMemoryCacheOf(true))
-//                .into(new SimpleTarget<Drawable>() {
-//                    @Override
-//                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-//
-//                    }
-//                })
-//                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
+        GlideApp.with(context)
+                .asBitmap()
+                .load(glideUrl)
+                .placeholder(R.drawable.default_diagram_mask)
+                .signature(new ObjectKey(token))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(true)
+                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
     }
 
 

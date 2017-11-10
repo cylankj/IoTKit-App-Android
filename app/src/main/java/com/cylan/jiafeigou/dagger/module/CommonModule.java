@@ -39,6 +39,7 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -51,6 +52,9 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okhttp3.internal.http.RealResponseBody;
+import okio.Buffer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -188,11 +192,10 @@ public abstract class CommonModule {
                     }
                     AppLogger.e("http请求为:" + request.toString());
                     Response proceed = chain.proceed(request);
-                    String string = proceed.body().string();
+                    ResponseBody body = proceed.body();
+                    String string = body.string();
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-                    // TODO: 2017/11/10 GLIDE
-                    return null;
-//                    return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
+                    return proceed.newBuilder().body(new RealResponseBody(body.contentType().toString(),body.contentLength(), new Buffer().writeString(string, Charset.forName("UTF-8")))).build();
                 })
                 .connectTimeout(120, TimeUnit.SECONDS)//sd 卡格式化需要120 秒的超时
                 .readTimeout(120, TimeUnit.SECONDS)

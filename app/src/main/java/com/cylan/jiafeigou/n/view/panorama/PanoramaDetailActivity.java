@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -397,32 +399,31 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(downloadInfo.getTargetPath()));
                     refreshControllerView(true);
                 } else if (bean != null) {
-                    // TODO: 2017/11/10 GLIDE
-//                    Glide.with(this)
-//                            .load(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex))
-//                            .asBitmap()
-//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                            .skipMemoryCache(true)
-//                            .into(new SimpleTarget<Bitmap>() {
-//                                @Override
-//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                                    refreshControllerView(true);
-//                                    panoramicView720Ext.loadImage(resource);
-//                                    LoadingDialog.dismissLoading();
-//                                }
-//
-//                                @Override
-//                                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                                    super.onLoadFailed(e, errorDrawable);
-//                                    LoadingDialog.dismissLoading();
-//                                }
-//
-//                                @Override
-//                                public void onStart() {
-//                                    super.onStart();
-//                                    LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
-//                                }
-//                            });
+                    GlideApp.with(this)
+                            .asBitmap()
+                            .load(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .skipMemoryCache(true)
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                    refreshControllerView(true);
+                                    panoramicView720Ext.loadImage(resource);
+                                    LoadingDialog.dismissLoading();
+                                }
+
+                                @Override
+                                public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                    super.onLoadFailed(errorDrawable);
+                                    LoadingDialog.dismissLoading();
+                                }
+
+                                @Override
+                                public void onLoadStarted(@Nullable Drawable placeholder) {
+                                    super.onLoadStarted(placeholder);
+                                    LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
+                                }
+                            });
                 } else {
                     if (subscribe != null && !subscribe.isUnsubscribed()) {
                         subscribe.unsubscribe();
@@ -431,30 +432,31 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                         String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                         if (!TextUtils.isEmpty(deviceIp) && bean == null) {
                             // TODO: 2017/11/10 GLIDE
-//                            Glide.with(this)
-//                                    .load(deviceIp + "/images/" + panoramaItem.fileName)
-//                                    .thumbnail(Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb"))
-//                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                    .into(new SimpleTarget<GlideDrawable>() {
-//                                        @Override
-//                                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                                            refreshControllerView(true);
-//                                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
-//                                            LoadingDialog.dismissLoading();
-//                                        }
-//
-//                                        @Override
-//                                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                                            super.onLoadFailed(e, errorDrawable);
-//                                            LoadingDialog.dismissLoading();
-//                                        }
-//
-//                                        @Override
-//                                        public void onStart() {
-//                                            super.onStart();
-//                                            LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
-//                                        }
-//                                    });
+                            GlideApp.with(this)
+                                    .load(deviceIp + "/images/" + panoramaItem.fileName)
+                                    .thumbnail(Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb"))
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(new SimpleTarget<Drawable>() {
+                                        @Override
+                                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                            refreshControllerView(true);
+                                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
+                                            LoadingDialog.dismissLoading();
+                                        }
+
+                                        @Override
+                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                            super.onLoadFailed(errorDrawable);
+                                            LoadingDialog.dismissLoading();
+                                        }
+
+                                        @Override
+                                        public void onLoadStarted(@Nullable Drawable placeholder) {
+                                            super.onLoadStarted(placeholder);
+                                            LoadingDialog.showLoading(PanoramaDetailActivity.this, getString(R.string.LOADING), false, null);
+                                        }
+                                    });
+
                         }
 
                     }, e -> {

@@ -2,9 +2,12 @@ package com.cylan.jiafeigou.n.view.adapter.item;
 
 import android.view.View;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineShareToFriendItemsBinding;
+import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
@@ -49,11 +52,10 @@ public class ShareFriendItem extends AbstractItem<ShareFriendItem, AbstractBindi
         dataBinding.tvFriendAccount.setText(friendAccount.account);
         dataBinding.checkboxIsShareCheck.setChecked(isSelected());
         //头像
-        // TODO: 2017/11/10 GLIDE
-//        Glide.with(dataBinding.ivUserhead.getContext()).load(new JFGAccountURL(friendAccount.account))
-//                .error(R.drawable.icon_mine_head_normal)
-//                .placeholder(R.drawable.icon_mine_head_normal)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .into(dataBinding.ivUserhead);
+        GlideApp.with(dataBinding.ivUserhead.getContext()).load(new JFGAccountURL(friendAccount.account))
+                .error(R.drawable.icon_mine_head_normal)
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(dataBinding.ivUserhead);
     }
 }

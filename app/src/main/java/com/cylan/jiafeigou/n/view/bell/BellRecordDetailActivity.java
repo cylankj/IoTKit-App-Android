@@ -2,7 +2,10 @@ package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,6 +16,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
@@ -39,6 +44,7 @@ import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -349,26 +355,23 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-        // TODO: 2017/11/10 GLIDE
-//        Glide.with(this).load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type)).
-//                downloadOnly(new SimpleTarget<File>() {
-//                    @Override
-//                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-//                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
-//                        FileUtils.copyFile(resource, mDownloadFile);
-//                        MediaScannerConnection.scanFile(BellRecordDetailActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, null);
-//                        mDownloadFile = null;
-//                    }
-//
-//                    @Override
-//                    public void onLoadStarted(Drawable placeholder) {
-//                    }
-//
-//                    @Override
-//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                        mDownloadFile = null;
-//                    }
-//                });
+        GlideApp.with(this)
+                .downloadOnly()
+                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type)).
+                into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+                        FileUtils.copyFile(resource, mDownloadFile);
+                        MediaScannerConnection.scanFile(BellRecordDetailActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, null);
+                        mDownloadFile = null;
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        mDownloadFile = null;
+                    }
+                });
     }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)

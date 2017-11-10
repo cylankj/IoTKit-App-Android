@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.ads;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -9,6 +11,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -16,13 +20,17 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,29 +93,28 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
         customToolbar.setBackAction(v -> onClick());
         customToolbar.getTvToolbarRight().setOnClickListener(v -> {
             AppLogger.d("分享");
-            // TODO: 2017/11/10 GLIDE
-//            Glide.with(this)
-//                    .load(description.url)
-//                    .downloadOnly(new SimpleTarget<File>() {
-//                        @Override
-//                        public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-//                            ShareManager.byWeb(AdsDetailActivity.this)
-//                                    .withUrl(description.tagUrl)
-//                                    .withDescription(description.url)
-//                                    .withThumb(resource.getAbsolutePath())
-//                                    .share();
-//                        }
-//
-//                        @Override
-//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                            super.onLoadFailed(e, errorDrawable);
-//                            ShareManager.byWeb(AdsDetailActivity.this)
-//                                    .withUrl(description.tagUrl)
-//                                    .withDescription(description.url)
-//                                    .share();
-//                        }
-//                    });
+            GlideApp.with(this)
+                    .downloadOnly()
+                    .load(description.url)
+                    .onlyRetrieveFromCache(true)
+                    .into(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                            ShareManager.byWeb(AdsDetailActivity.this)
+                                    .withUrl(description.tagUrl)
+                                    .withDescription(description.url)
+                                    .withThumb(resource.getAbsolutePath())
+                                    .share();
+                        }
 
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            ShareManager.byWeb(AdsDetailActivity.this)
+                                    .withUrl(description.tagUrl)
+                                    .withDescription(description.url)
+                                    .share();
+                        }
+                    });
             if (customToolbar.getTvToolbarRight() != null) {
                 ViewUtils.setDrawablePadding(customToolbar.getTvToolbarRight(), R.drawable.details_icon_share, 0);
             }

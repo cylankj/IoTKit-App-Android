@@ -1,16 +1,22 @@
 package com.cylan.jiafeigou.ads;
 
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -20,6 +26,7 @@ import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -111,41 +118,23 @@ public class AdsStrategy {
         if (description == null || TextUtils.isEmpty(description.url)) {
             return;
         }
-        // TODO: 2017/11/10 GLIDE
-//        Glide.with(ContextUtils.getContext())
-//                .load(description.url)
-//                //加上签名
-////                .signature(new StringSignature(String.valueOf(description.expireTime)))
-//                .into(new SimpleTarget<GlideDrawable>() {
-//
-//                    @Override
-//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                        AppLogger.w("广告下载失败: " + MiscUtils.getErr(e));
-//                        //表示找不到.
-//                    }
-//
-//                    @Override
-//                    public void onDestroy() {
-//                        super.onDestroy();
-//                    }
-//
-//                    @Override
-//                    public void onLoadCleared(Drawable placeholder) {
-//                        super.onLoadCleared(placeholder);
-//                    }
-//
-//                    @Override
-//                    public void onStop() {
-//                        super.onStop();
-//                    }
-//
-//                    @Override
-//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                        //下载成功,才发出
-//                        AppLogger.w("广告下载成功: ");
-//                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), new Gson().toJson(description));
-//                    }
-//                });
+        GlideApp.with(ContextUtils.getContext())
+                .downloadOnly()
+                .load(description.url)
+                .signature(new ObjectKey(String.valueOf(description.expireTime)))
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        AppLogger.w("广告下载成功: ");
+                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), new Gson().toJson(description));
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        AppLogger.w("广告下载失败://表示找不到. " );
+                        //表示找不到.
+                    }
+                });
     }
 
     private AdsDescription convert(RxEvent.AdsRsp adsRsp) {

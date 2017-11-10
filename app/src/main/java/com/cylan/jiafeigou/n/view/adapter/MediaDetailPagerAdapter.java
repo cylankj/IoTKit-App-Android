@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.view.TextureView;
@@ -7,10 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
+import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
 import java.util.List;
@@ -58,90 +70,90 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             contentView.setTag(holder);
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
             // TODO: 2017/11/10 GLIDE
-//            Glide.with(container.getContext())
-//                    .load(new WonderGlideVideoThumbURL(bean))
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .placeholder(R.drawable.wonderful_pic_place_holder)
-//                    .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-//                    .into(new SimpleTarget<GlideDrawable>() {
-//                        @Override
-//                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                            if (photoView == null) {
-//                                return;
-//                            }
-//                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
-//                            if (lp == null) {
-//                                return;
-//                            }
-//                            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                            photoView.setLayoutParams(lp);
-//                            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-//                            photoView.setImageDrawable(resource);
-//                        }
-//
-//                        @Override
-//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                            //破图的位置,属性不一样.
-//                            if (photoView == null) {
-//                                return;
-//                            }
-//                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
-//                            if (lp == null) {
-//                                return;
-//                            }
-//                            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                            photoView.setLayoutParams(lp);
-//                            photoView.setScaleType(ImageView.ScaleType.CENTER);
-//                            photoView.setImageDrawable(errorDrawable);
-//                        }
-//                    });
+            GlideApp.with(container.getContext())
+                    .load(new WonderGlideVideoThumbURL(bean))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                            if (photoView == null) {
+                                return;
+                            }
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) {
+                                return;
+                            }
+                            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                            photoView.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            //破图的位置,属性不一样.
+                            if (photoView == null) {
+                                return;
+                            }
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) {
+                                return;
+                            }
+                            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.CENTER);
+                            photoView.setImageDrawable(errorDrawable);
+                        }
+                    });
+
         } else {
             photoView = new PhotoView(container.getContext());
             contentView = photoView;
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
             ((PhotoView) photoView).setOnPhotoTapListener(mPhotoTapListener);
-            // TODO: 2017/11/10 GLIDE
-//            Glide.with(container.getContext())
-//                    .load(new WonderGlideURL(bean))
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .placeholder(R.drawable.wonderful_pic_place_holder)
-//                    .error(R.drawable.broken_image)
-//                    .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-//                    .into(new SimpleTarget<GlideDrawable>() {
-//                        @Override
-//                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                            if (photoView == null) {
-//                                return;
-//                            }
-//                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
-//                            if (lp == null) {
-//                                return;
-//                            }
-//                            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                            photoView.setLayoutParams(lp);
-//                            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-//                            photoView.setImageDrawable(resource);
-//                        }
-//
-//                        @Override
-//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                            if (photoView == null) {
-//                                return;
-//                            }
-//                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
-//                            if (lp == null) {
-//                                return;
-//                            }
-//                            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                            photoView.setLayoutParams(lp);
-//                            photoView.setScaleType(ImageView.ScaleType.CENTER);
-//                            photoView.setImageDrawable(errorDrawable);
-//                        }
-//                    });
+            GlideApp.with(container.getContext())
+                    .load(new WonderGlideURL(bean))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .error(R.drawable.broken_image)
+                    .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                            if (photoView == null) {
+                                return;
+                            }
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) {
+                                return;
+                            }
+                            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                            photoView.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            if (photoView == null) {
+                                return;
+                            }
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) {
+                                return;
+                            }
+                            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.CENTER);
+                            photoView.setImageDrawable(errorDrawable);
+                        }
+                    });
         }
         container.addView(contentView);
         return contentView;
@@ -156,26 +168,27 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
-// TODO: 2017/11/10 GLIDE 
-//    private RequestListener<GlideUrl, GlideDrawable> mListener = new RequestListener<GlideUrl, GlideDrawable>() {
-//        @Override
-//        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
-//            if (mFirstLoad && mReadToShow != null) {
-//                mReadToShow.onReady();
-//            }
-//            mFirstLoad = false;
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//            if (mFirstLoad && mReadToShow != null) {
-//                mReadToShow.onReady();
-//            }
-//            mFirstLoad = false;
-//            return false;
-//        }
-//    };
+
+
+    private RequestListener<Drawable> mListener = new RequestListener<Drawable>() {
+        @Override
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            if (mFirstLoad && mReadToShow != null) {
+                mReadToShow.onReady();
+            }
+            mFirstLoad = false;
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            if (mFirstLoad && mReadToShow != null) {
+                mReadToShow.onReady();
+            }
+            mFirstLoad = false;
+            return false;
+        }
+    };
 
     public void setOnInitFinishListener(OnReadToShow listener) {
         mReadToShow = listener;
