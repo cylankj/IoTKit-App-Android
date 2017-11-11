@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.UiThread;
 
@@ -16,15 +15,6 @@ import rx.Subscription;
 public interface HomeMineContract {
 
     interface View extends BaseFragmentView {
-        /**
-         * @param url: 返回url,可以使用`glide`或者`uil`直接加载
-         */
-        @UiThread
-        void onPortraitUpdate(String url);
-
-        void onBlur(Drawable drawable);
-
-
         /**
          * 设置昵称
          *
@@ -47,14 +37,6 @@ public interface HomeMineContract {
     }
 
     interface Presenter extends BasePresenter {
-
-
-        /**
-         * 设置头像的背景
-         *
-         * @param bitmap
-         */
-        void portraitBlur(Bitmap bitmap);
 
         /**
          * 产生随机的昵称

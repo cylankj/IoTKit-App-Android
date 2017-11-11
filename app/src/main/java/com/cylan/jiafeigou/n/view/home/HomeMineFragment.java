@@ -1,14 +1,20 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptIntrinsicBlur;
+import android.support.v8.renderscript.Type;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +23,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
@@ -53,13 +62,13 @@ import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.reflect.Field;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
@@ -127,14 +136,25 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         //查询好友列表.
         presenter.fetchNewInfo();
         boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
+        Account account = DataSourceManager.getInstance().getAccount();
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
-            Schedulers.io().createWorker().schedule(() -> {
-                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-                presenter.portraitBlur(bm);
-            });
-        }
+            GlideApp.with(this)
+                    .load(R.drawable.me_bg_top_image)
+                    .error(R.drawable.me_bg_top_image)
+                    .transform(new BlurTransFormation(getContext(), "home_mine_default_background"))
 
+                    .into(new ImageViewTarget<Drawable>(rLayoutHomeMineTop) {
+                        @Override
+                        protected void setResource(@Nullable Drawable resource) {
+                            view.setBackground(resource);
+                        }
+
+                        @Override
+                        public void setDrawable(Drawable drawable) {
+                            view.setBackground(drawable);
+                        }
+                    });
+        }
         updateHint();
         homeMineItemHelp.showHint(needShowHelp);
     }
@@ -248,16 +268,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .commit();
     }
 
-
-    @Override
-    public void onPortraitUpdate(String url) {
-    }
-
-    @Override
-    public void onBlur(Drawable drawable) {
-        rLayoutHomeMineTop.setBackground(drawable);
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -300,7 +310,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserImageHeadByUrl(String url) {
         AppLogger.w("user_img:" + url);
-//        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getContext().getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, presenter);
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
 //        if (account != null) {
         url = isDefaultPhoto(url) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : url;
@@ -308,17 +317,79 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;//空 不需要加载
         }
         GlideApp.with(this)
-                .asBitmap()
                 .load(url)
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .signature(new ObjectKey(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new BitmapImageViewTarget(ivHomeMinePortrait) {
+                .into(ivHomeMinePortrait);
+        portraitBlur(url);
+//        GlideApp.with(this)
+//                .asBitmap()
+//                .load(url)
+//                .error(R.drawable.icon_mine_head_normal)
+//                .placeholder(R.drawable.icon_mine_head_normal)
+//                .signature(new ObjectKey(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .into(new BitmapImageViewTarget(ivHomeMinePortrait) {
+//                    @Override
+//                    protected void setResource(Bitmap resource) {
+//                        super.setResource(resource);
+//                        presenter.portraitBlur(resource);
+//                    }
+//                });
+    }
+
+    private class BlurTransFormation extends BitmapTransformation {
+        private Context context;
+        private final String key;
+
+        public BlurTransFormation(Context context, String key) {
+            this.context = context;
+            this.key = key;
+        }
+
+        @Override
+        protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+            RenderScript renderScript = RenderScript.create(context);
+            Allocation allocation = Allocation.createFromBitmap(renderScript, toTransform);
+            Type type = allocation.getType();
+            Allocation outAllocation = Allocation.createTyped(renderScript, type);
+            ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+            intrinsicBlur.setInput(allocation);
+            intrinsicBlur.setRadius(20);
+            intrinsicBlur.forEach(outAllocation);
+            outAllocation.copyTo(toTransform);
+            allocation.destroy();
+            outAllocation.destroy();
+            intrinsicBlur.destroy();
+            type.destroy();
+            renderScript.destroy();
+            return toTransform;
+        }
+
+        @Override
+        public void updateDiskCacheKey(MessageDigest messageDigest) {
+            messageDigest.update(key.getBytes());
+
+        }
+    }
+
+    private void portraitBlur(String url) {
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        GlideApp.with(this)
+                .load(url)
+                .error(R.drawable.me_bg_top_image)
+                .transform(new BlurTransFormation(getContext(), TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
+                .into(new ImageViewTarget<Drawable>(rLayoutHomeMineTop) {
                     @Override
-                    protected void setResource(Bitmap resource) {
-                        super.setResource(resource);
-                        presenter.portraitBlur(resource);
+                    protected void setResource(@Nullable Drawable resource) {
+                        view.setBackground(resource);
+                    }
+
+                    @Override
+                    public void setDrawable(Drawable drawable) {
+                        view.setBackground(drawable);
                     }
                 });
     }
