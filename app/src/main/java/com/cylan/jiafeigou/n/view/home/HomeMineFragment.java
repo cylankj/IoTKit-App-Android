@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -61,7 +60,6 @@ import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
-import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -118,25 +116,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     protected void lazyLoad() {
         super.lazyLoad();
-        if (isPrepared) {
-            presenter.fetchNewInfo();
-        }
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewMarginStatusBar(tvHomeMineMsgCount);
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //查询好友列表.
         presenter.fetchNewInfo();
         boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
-        Account account = DataSourceManager.getInstance().getAccount();
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             GlideApp.with(this)
                     .load(R.drawable.me_bg_top_image)
@@ -159,6 +140,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         homeMineItemHelp.showHint(needShowHelp);
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(tvHomeMineMsgCount);
+    }
 
     /**
      * 点击个人头像
@@ -267,27 +253,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .addToBackStack("HomeMineFragment")
                 .commit();
     }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && isAdded()) {
-//            if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//                //访客状态
-//                Observable.just("go")
-//                        .subscribeOn(Schedulers.io())
-//                        .subscribe(ret -> {
-//                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-//                            presenter.portraitBlur(bm);
-//                        }, AppLogger::e);
-//            }
-//            lazyLoad();
-//            //查询好友列表.
-//            updateHint();
-//        }
-    }
-
-
     /**
      * 设置昵称
      *
@@ -311,7 +276,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void setUserImageHeadByUrl(String url) {
         AppLogger.w("user_img:" + url);
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-//        if (account != null) {
         url = isDefaultPhoto(url) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : url;
         if (TextUtils.isEmpty(url)) {
             return;//空 不需要加载
@@ -324,20 +288,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(ivHomeMinePortrait);
         portraitBlur(url);
-//        GlideApp.with(this)
-//                .asBitmap()
-//                .load(url)
-//                .error(R.drawable.icon_mine_head_normal)
-//                .placeholder(R.drawable.icon_mine_head_normal)
-//                .signature(new ObjectKey(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .into(new BitmapImageViewTarget(ivHomeMinePortrait) {
-//                    @Override
-//                    protected void setResource(Bitmap resource) {
-//                        super.setResource(resource);
-//                        presenter.portraitBlur(resource);
-//                    }
-//                });
     }
 
     private class BlurTransFormation extends BitmapTransformation {
@@ -573,8 +523,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
-//        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 10000:
@@ -586,22 +534,4 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             }
         }
     }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        try {
-            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-            childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
-        } catch (NoSuchFieldException e) {
-            AppLogger.e("onDetach:" + e.getLocalizedMessage());
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            AppLogger.e("onDetach:" + e.getLocalizedMessage());
-            throw new RuntimeException(e);
-        }
-    }
-
 }

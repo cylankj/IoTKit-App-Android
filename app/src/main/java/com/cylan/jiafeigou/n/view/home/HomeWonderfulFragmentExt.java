@@ -74,8 +74,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     RecyclerView rVDevicesList;
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
-    //    @BindView(R.msgId.fLayoutHomeWonderfulHeaderContainer)
-//    FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.rl_top_head_wonder)
     RelativeLayout rlTopHeadWonder;
     @BindView(R.id.img_wonderful_title_cover)
@@ -91,9 +89,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     Unbinder unbinder;
-//    @BindView(R.msgId.fragment_wonderful_guide)
-//    ViewGroup mWonderfulGuideContainer;
-
     private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
 
     @BindView(R.id.tv_sec_title_head_wonder)
@@ -130,13 +125,22 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         initSomeViewMargin();
     }
 
-    private Runnable autoLoading = () -> presenter.startRefresh();
+    private Runnable autoLoading = () -> {
+        if (srLayoutMainContentHolder != null) {
+            srLayoutMainContentHolder.setRefreshing(true);
+            presenter.startRefresh();
+        }
+    };
 
     @Override
     public void onStart() {
         super.onStart();
-        srLayoutMainContentHolder.setRefreshing(true);
-        presenter.startRefresh();
+        delayLoading();
+    }
+
+    private void delayLoading() {
+        srLayoutMainContentHolder.removeCallbacks(autoLoading);
+        srLayoutMainContentHolder.postDelayed(autoLoading, 500);
     }
 
     private SimpleDialogFragment initDeleteDialog() {
@@ -248,6 +252,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
+
         }
     }
 
@@ -364,6 +369,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         } else {
             srLayoutMainContentHolder.setRefreshing(false);
         }
+    }
+
+    @Override
+    protected void lazyLoad() {
+        super.lazyLoad();
+        delayLoading();
     }
 
     private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {
