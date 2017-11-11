@@ -186,16 +186,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription robotDeviceDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .subscribeOn(Schedulers.io())
                 .debounce(3, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msg -> subUuidList(), AppLogger::e);
     }
 
     private Subscription internalUpdateUuidList() {
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
-                .observeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .debounce(5, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     subUuidList();
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

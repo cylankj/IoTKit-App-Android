@@ -2,14 +2,10 @@ package com.cylan.jiafeigou.utils;
 
 import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.DeviceInformation;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,11 +29,16 @@ public class PanoramaThumbURL extends GlideUrl {
     }
 
     @Override
-    public URL toURL() throws MalformedURLException {
+    public String toStringUrl() {
         DeviceInformation information = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
         if (information != null && !TextUtils.isEmpty(information.ip)) {
-            return new URL("http://" + information.ip + "/thumb/" + fileName.split("\\.")[0] + ".thumb");
+            return "http://" + information.ip + "/thumb/" + fileName.split("\\.")[0] + ".thumb";
         }
-        return new URL("http://www.cylan.com.cn");
+        return "http://www.cylan.com.cn";
+    }
+
+    @Override
+    public URL toURL() throws MalformedURLException {
+        return new URL(toStringUrl());
     }
 }

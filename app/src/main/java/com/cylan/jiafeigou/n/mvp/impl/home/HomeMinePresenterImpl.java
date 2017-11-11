@@ -5,7 +5,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 
-import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
@@ -25,13 +26,11 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -162,36 +161,39 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     if (isOpenLogin) {
                         String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
                         if (!TextUtils.isEmpty(photoUrl)) {//设置第三方登录图像
-                            FutureTarget<File> submit = GlideApp.with(getView().getContext())
+                            GlideApp.with(getView().getContext())
                                     .downloadOnly()
                                     .load(photoUrl)
-                                    .submit();
-                            try {
-                                File resource = submit.get(30, TimeUnit.SECONDS);
-                                String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
-                                if (TextUtils.isEmpty(alias)) {
-                                    boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
-                                    if (isEmail) {
-                                        String[] split = accountArrived.jfgAccount.getAccount().split("@");
-                                        alias = split[0];
-                                    }
-                                }
-                                BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
-                                AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
-                                if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
-                                    accountArrived.jfgAccount.setAlias(alias);
-                                    try {
-                                        AppLogger.d("正在设置第三方登录昵称" + alias);
-                                        accountArrived.jfgAccount.resetFlag();
-                                        accountArrived.jfgAccount.setPhoto(true);
-                                        BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
-                                    } catch (JfgException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            } catch (Exception e) {
-                                AppLogger.e(MiscUtils.getErr(e));
-                            }
+                                    .into(new SimpleTarget<File>() {
+                                        @Override
+                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                            try {
+                                                String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
+                                                if (TextUtils.isEmpty(alias)) {
+                                                    boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
+                                                    if (isEmail) {
+                                                        String[] split = accountArrived.jfgAccount.getAccount().split("@");
+                                                        alias = split[0];
+                                                    }
+                                                }
+                                                BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
+                                                AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
+                                                if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
+                                                    accountArrived.jfgAccount.setAlias(alias);
+                                                    try {
+                                                        AppLogger.d("正在设置第三方登录昵称" + alias);
+                                                        accountArrived.jfgAccount.resetFlag();
+                                                        accountArrived.jfgAccount.setPhoto(true);
+                                                        BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
+                                                    } catch (JfgException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            } catch (Exception e) {
+
+                                            }
+                                        }
+                                    });
                         }
                     }
                     return accountArrived;

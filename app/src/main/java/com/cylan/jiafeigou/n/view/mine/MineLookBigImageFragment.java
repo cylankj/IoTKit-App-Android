@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineLookBigImageBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -70,18 +72,15 @@ public class MineLookBigImageFragment extends IBaseFragment implements MineLookB
                     dialog.dismiss();
                     ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
                     String account = friendContextItem.friendRequest == null ? friendContextItem.friendAccount.account : friendContextItem.friendRequest.account;
-                    FutureTarget<File> submit = GlideApp.with(MineLookBigImageFragment.this)
+                 GlideApp.with(MineLookBigImageFragment.this)
                             .downloadOnly()
                             .load(new JFGAccountURL(account))
-                            .submit();
-                    Schedulers.io().createWorker().schedule(() -> {
-                        try {
-                            File file = submit.get(10, TimeUnit.SECONDS);
-                            FileUtils.copyFile(file, new File(JConstant.MEDIA_PATH + account + ".jpg"));
-                        }catch (Exception e){
-                            AppLogger.e(MiscUtils.getErr(e));
-                        }
-                    });
+                            .into(new SimpleTarget<File>() {
+                                @Override
+                                public void onResourceReady(File resource, Transition<? super File> transition) {
+                                    FileUtils.copyFile(resource, new File(JConstant.MEDIA_PATH + account + ".jpg"));
+                                }
+                            });
                 }, getString(R.string.CANCEL), null, false);
         return true;
     }

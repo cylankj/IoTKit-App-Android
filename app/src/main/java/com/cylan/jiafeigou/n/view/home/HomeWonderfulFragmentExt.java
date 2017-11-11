@@ -24,7 +24,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -39,7 +40,6 @@ import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -54,7 +54,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -389,19 +388,19 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 //            fragment.setVideoURL(bean.fileName);
 //        }
 //        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
-        FutureTarget<File> submit = GlideApp.with(this)
+        GlideApp.with(this)
                 .downloadOnly()
                 .onlyRetrieveFromCache(true)
                 .load(new WonderGlideURL(bean))
-                .submit();
-        try {
-            File file = submit.get(2, TimeUnit.SECONDS);
-            ShareManager.byImg(getActivity())
-                    .withImg(file.getAbsolutePath())
-                    .share();
-        } catch (Exception e) {
-            AppLogger.e(MiscUtils.getErr(e));
-        }
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        ShareManager.byImg(getActivity())
+                                .withImg(resource.getAbsolutePath())
+                                .share();
+                    }
+                });
+
     }
 
     private void onDeleteWonderfulContent(DPWonderItem bean, int position) {

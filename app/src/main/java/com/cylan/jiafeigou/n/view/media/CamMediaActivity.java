@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -24,9 +23,10 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -57,7 +58,6 @@ import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,8 +165,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-//                CamWarnGlideURL url = MiscUtils.getCamWarnUrl(uuid, camMessageBean, i + 1);
-                String url = MiscUtils.getCamWarnUrlV2(uuid, camMessageBean, i + 1);
+                CamWarnGlideURL url = MiscUtils.getCamWarnUrl(uuid, camMessageBean, i + 1);
                 GlideApp.with(this)
                         .load(url)
                         .dontAnimate()
@@ -253,20 +252,19 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
 
-                String camWarnUrl = MiscUtils.getCamWarnUrlV2(uuid, camMessageBean, currentIndex + 1);
-                FutureTarget<File> submit = GlideApp.with(this)
+                CamWarnGlideURL camWarnUrl = MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1);
+                GlideApp.with(this)
                         .downloadOnly()
                         .load(camWarnUrl)
                         .onlyRetrieveFromCache(true)
-                        .submit();
-                try {
-                    File file = submit.get(2, TimeUnit.SECONDS);
-                    ShareManager.byImg(CamMediaActivity.this)
-                            .withImg(file.getAbsolutePath())
-                            .share();
-                } catch (Exception e) {
-                    AppLogger.e(MiscUtils.getErr(e));
-                }
+                        .into(new SimpleTarget<File>() {
+                            @Override
+                            public void onResourceReady(File resource, Transition<? super File> transition) {
+                                ShareManager.byImg(CamMediaActivity.this)
+                                        .withImg(resource.getAbsolutePath())
+                                        .share();
+                            }
+                        });
                 break;
             case R.id.imgV_big_pic_collect:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
@@ -344,14 +342,20 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     private class CustomAdapter extends FragmentPagerAdapter {
         private NormalMediaFragment.CallBack callBack;
         private CamMessageBean camMessageBean;
+        private int pageCount;
 
         public void setCamMessageBean(CamMessageBean camMessageBean) {
             this.camMessageBean = camMessageBean;
+            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
+                pageCount = 1;
+            }
+            pageCount = MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean));
         }
 
 
         public CustomAdapter(FragmentManager fm) {
             super(fm);
+            //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
         }
 
         @Override
@@ -374,16 +378,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
         @Override
         public int getCount() {
-            //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
-            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
-                return 1;
-            }
-            return MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean));
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            //do nothing
+            return pageCount;
         }
 
         private void setCallback(IBaseFragment.CallBack callback) {

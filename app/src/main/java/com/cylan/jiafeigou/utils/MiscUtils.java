@@ -21,7 +21,6 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -31,11 +30,11 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.SchemeResolver;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
-import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.android.gms.common.ConnectionResult;
@@ -226,12 +225,9 @@ public class MiscUtils {
             case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
                 DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
                 if (dpAlarm.face_id != null && dpAlarm.face_id.length > 0) {
-                    String account = DataSourceManager.getInstance().getAccount().getAccount();
                     result = new CamWarnGlideURL(cid, dpAlarm.ossType, String.valueOf(dpAlarm.time));
-                    String format = String.format("cylan:///long/%s/%s/AI/%s/%s?regionType=%s", OptionsImpl.getVid(), account, cid, dpAlarm.time + ".jpg", dpAlarm.ossType);
                 } else {
                     result = new CamWarnGlideURL(cid, dpAlarm.time + "_" + index + ".jpg", dpAlarm.time, index, dpAlarm.ossType);
-                    String format = String.format("cylan:///cid/%s/%s/%s?regionType=%s", OptionsImpl.getVid(), cid, dpAlarm.time + "_" + index + ".jpg", dpAlarm.ossType);
                 }
             }
             break;
@@ -241,17 +237,8 @@ public class MiscUtils {
                 if (dpBellCallRecord.fileIndex == -1) {
                     //旧版本门铃呼叫记录,不带index
                     result = new CamWarnGlideURL(cid, dpBellCallRecord.time + ".jpg", dpBellCallRecord.type);
-                    name = dpBellCallRecord.time + ".jpg";
                 } else {
                     result = new CamWarnGlideURL(cid, dpBellCallRecord.time + "_" + index + ".jpg", dpBellCallRecord.time, index, dpBellCallRecord.type);
-                    name = dpBellCallRecord.time + "_" + index + ".jpg";
-                }
-                Device device = DataSourceManager.getInstance().getDevice(cid);
-                if (TextUtils.isEmpty(device.vid)) {
-                    //v2
-                    String format = String.format("cylan:///%s/%s?regionType=%s", cid, name, dpBellCallRecord.type);
-                } else {
-                    String format = String.format("cylan:///%s/%s/%s?regionType=%s", device.vid, cid, name, dpBellCallRecord.type);
                 }
             }
             break;
@@ -259,66 +246,14 @@ public class MiscUtils {
                 result = new CamWarnGlideURL("", "", 0);
             }
         }
+        AppLogger.w("getCamWarnUrl:" + result.toStringUrl());
         return result;
     }
 
     public static String getCamWarnUrlV2(String cid, CamMessageBean bean, int index) {
-        CamWarnGlideURL result;
         if (bean == null) return null;
-        switch ((int) bean.message.getMsgId()) {
-            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
-                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
-                if (dpAlarm.face_id != null && dpAlarm.face_id.length > 0) {
-                    String account = DataSourceManager.getInstance().getAccount().getAccount();
-                    result = new CamWarnGlideURL(cid, dpAlarm.ossType, String.valueOf(dpAlarm.time));
-                    String format = String.format("cylan:///long/%s/%s/AI/%s/%s?regionType=%s", OptionsImpl.getVid(), account, cid, dpAlarm.time + ".jpg", dpAlarm.ossType);
-                    return format;
-                } else {
-                    Device device = DataSourceManager.getInstance().getDevice(cid);
-                    String name = dpAlarm.time + "_" + index + ".jpg";
-                    if (TextUtils.isEmpty(device.vid)) {
-                        //v2
-                        String format = String.format("cylan:///%s/%s?regionType=%s", cid, name, dpAlarm.ossType);
-                        return format;
-                    } else {
-                        String format = String.format("cylan:///cid/%s/%s/%s?regionType=%s", device.vid, cid, name, dpAlarm.ossType);
-                        return format;
-                    }
-
-//                    result = new CamWarnGlideURL(cid, dpAlarm.time + "_" + index + ".jpg", dpAlarm.time, index, dpAlarm.ossType);
-//                    String format = String.format("cylan:///cid/%s/%s/%s?regionType=%s", OptionsImpl.getVid(), cid, dpAlarm.time + "_" + index + ".jpg", dpAlarm.ossType);
-//                    return format;
-                }
-            }
-//            break;
-            case DpMsgMap.ID_401_BELL_CALL_STATE: {
-                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
-                String name;
-                if (dpBellCallRecord.fileIndex == -1) {
-                    //旧版本门铃呼叫记录,不带index
-                    result = new CamWarnGlideURL(cid, dpBellCallRecord.time + ".jpg", dpBellCallRecord.type);
-                    name = dpBellCallRecord.time + ".jpg";
-                } else {
-                    result = new CamWarnGlideURL(cid, dpBellCallRecord.time + "_" + index + ".jpg", dpBellCallRecord.time, index, dpBellCallRecord.type);
-                    name = dpBellCallRecord.time + "_" + index + ".jpg";
-                }
-                Device device = DataSourceManager.getInstance().getDevice(cid);
-                if (TextUtils.isEmpty(device.vid)) {
-                    //v2
-                    String format = String.format("cylan:///%s/%s?regionType=%s", cid, name, dpBellCallRecord.type);
-                    return format;
-                } else {
-                    String format = String.format("cylan:///cid/%s/%s/%s?regionType=%s", device.vid, cid, name, dpBellCallRecord.type);
-                    return format;
-                }
-            }
-//            break;
-            default: {
-                result = new CamWarnGlideURL("", "", 0);
-            }
-        }
-        return "";
-//        return result;
+        SchemeResolver schemeResolver = SchemeResolver.INSTANCE;
+        return schemeResolver.index(schemeResolver.parse(cid, bean.message), index);
     }
 
     @SuppressWarnings("unchecked")
@@ -722,7 +657,10 @@ public class MiscUtils {
 
             }
         }
-        return Math.max(index, 1);
+        if (index < 0) {
+            index = 1;
+        }
+        return index;
     }
 
     public static long getVersion(CamMessageBean camMessageBean) {

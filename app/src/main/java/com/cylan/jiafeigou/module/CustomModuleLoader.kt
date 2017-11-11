@@ -14,12 +14,13 @@ import java.io.InputStream
 class CustomModuleLoader(private var loader: ModelLoader<GlideUrl, InputStream>) : ModelLoader<String, InputStream> {
     private val TAG = CustomModuleLoader::class.java.name
     override fun handles(model: String): Boolean {
-        return SchemeResolver.accept(model)
+        val accept = SchemeResolver.accept(model)
+        AppLogger.w("CustomModuleLoader:is accept:$accept,for schema:$model")
+        return accept;
     }
 
     override fun buildLoadData(model: String, width: Int, height: Int, options: Options?): ModelLoader.LoadData<InputStream>? {
         val glideUrl = SchemeResolver.build(model)
-        AppLogger.e(glideUrl.toStringUrl())
         return loader.buildLoadData(glideUrl, width, height, options)
     }
 

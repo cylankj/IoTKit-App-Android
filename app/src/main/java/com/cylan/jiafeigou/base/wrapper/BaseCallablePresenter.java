@@ -172,7 +172,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             return false;
                         }
                     })
-
                     .submit();
         }
     }

@@ -41,7 +41,7 @@ public class WonderGlideURL extends GlideUrl {
     }
 
     @Override
-    public URL toURL() throws MalformedURLException {
+    public String toStringUrl() {
         String url = "";
         try {
             String u = String.format(Locale.getDefault(), "/long/%s/%s/wonder/%s/%s",
@@ -50,6 +50,11 @@ public class WonderGlideURL extends GlideUrl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new URL(url);
+        return url;
+    }
+
+    @Override
+    public URL toURL() throws MalformedURLException {
+        return new URL(toStringUrl());
     }
 }

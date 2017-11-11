@@ -31,7 +31,6 @@ import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
@@ -74,7 +73,6 @@ import com.lzy.okserver.listener.DownloadListener;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -671,23 +669,21 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         } else if (dpAlarm != null && dpAlarm.isRecording == 0) {
             releasePlayer();
-            FutureTarget<File> submit = GlideApp.with(this)
+            GlideApp.with(this)
                     .downloadOnly()
                     .onlyRetrieveFromCache(true)
                     .load(MiscUtils.getCamWarnUrl(uuid, bean, dpAlarm == null ? 0 : dpAlarm.fileIndex))
-                    .submit();
-
-            try {
-                File file = submit.get(2, TimeUnit.SECONDS);
-                ShareManager.byH5(PanoramaDetailActivity.this)
-                        .withFile(file.getAbsolutePath())
-                        .withItem(panoramaItem)
-                        .withThumb(file.getAbsolutePath())
-                        .withUuid(uuid)
-                        .share();
-            } catch (Exception e) {
-                MiscUtils.getErr(e);
-            }
+                    .into(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                            ShareManager.byH5(PanoramaDetailActivity.this)
+                                    .withFile(resource.getAbsolutePath())
+                                    .withItem(panoramaItem)
+                                    .withThumb(resource.getAbsolutePath())
+                                    .withUuid(uuid)
+                                    .share();
+                        }
+                    });
 
         } else if (panoramaItem.duration > 8) {
             new AlertDialog.Builder(this)
@@ -710,23 +706,21 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         } else {
             releasePlayer();
-            try {
-                FutureTarget<File> submit = GlideApp.with(this)
-                        .downloadOnly()
-                        .onlyRetrieveFromCache(true)
-                        .load(new PanoramaThumbURL(uuid, panoramaItem.fileName))
-                        .submit();
-                File file = submit.get(2, TimeUnit.SECONDS);
-                ShareManager.byH5(PanoramaDetailActivity.this)
-                        .withFile(downloadInfo.getTargetPath())
-                        .withItem(panoramaItem)
-                        .withThumb(file.getAbsolutePath())
-                        .withUuid(uuid)
-                        .share();
-            } catch (Exception e) {
-                AppLogger.e(MiscUtils.getErr(e));
-            }
-
+            GlideApp.with(this)
+                    .downloadOnly()
+                    .onlyRetrieveFromCache(true)
+                    .load(new PanoramaThumbURL(uuid, panoramaItem.fileName))
+                    .into(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                            ShareManager.byH5(PanoramaDetailActivity.this)
+                                    .withFile(downloadInfo.getTargetPath())
+                                    .withItem(panoramaItem)
+                                    .withThumb(resource.getAbsolutePath())
+                                    .withUuid(uuid)
+                                    .share();
+                        }
+                    });
         }
     }
 

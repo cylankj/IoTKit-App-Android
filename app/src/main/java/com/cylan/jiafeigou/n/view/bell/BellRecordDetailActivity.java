@@ -46,7 +46,6 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -54,7 +53,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -203,19 +201,19 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_share)
     public void share() {
-        try {
-            FutureTarget<File> submit = GlideApp.with(this)
-                    .downloadOnly()
-                    .onlyRetrieveFromCache(true)
-                    .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
-                    .submit();
-            File file = submit.get(2, TimeUnit.SECONDS);
-            ShareManager.byImg(BellRecordDetailActivity.this)
-                    .withImg(file.getAbsolutePath())
-                    .share();
-        } catch (Exception e) {
-            AppLogger.e(MiscUtils.getErr(e));
-        }
+        GlideApp.with(this)
+                .downloadOnly()
+                .onlyRetrieveFromCache(true)
+                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        ShareManager.byImg(BellRecordDetailActivity.this)
+                                .withImg(resource.getAbsolutePath())
+                                .share();
+                    }
+                });
+
     }
 
     @OnClick(R.id.act_bell_picture_opt_collection)

@@ -111,10 +111,10 @@ public class NormalMediaFragment extends IBaseFragment {
 
     private void loadBitmap(CamMessageBean bean, int index, String uuid) {
         GlideApp.with(this)
-                .load(MiscUtils.getCamWarnUrl(uuid, bean, index + 1))
-                .dontAnimate()
-                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .load(MiscUtils.getCamWarnUrlV2(uuid, bean, index + 1))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .dontAnimate()
                 .into(imgVShowPic);
     }
 

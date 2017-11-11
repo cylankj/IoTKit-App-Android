@@ -38,9 +38,8 @@ public class JFGFaceGlideURL extends GlideUrl {
         return OptionsImpl.getServer() + faceId + regionType;
     }
 
-
     @Override
-    public URL toURL() throws MalformedURLException {
+    public String toStringUrl() {
         try {
             String urlV2;
             if (stranger) {
@@ -50,10 +49,15 @@ public class JFGFaceGlideURL extends GlideUrl {
 //                urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
                 urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, faceId);
             }
-            return new URL(urlV2);
+            return urlV2;
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
-            return new URL(faceId);
+            return faceId;
         }
+    }
+
+    @Override
+    public URL toURL() throws MalformedURLException {
+        return new URL(toStringUrl());
     }
 }

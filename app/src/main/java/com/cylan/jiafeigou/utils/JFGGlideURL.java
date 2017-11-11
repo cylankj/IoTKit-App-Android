@@ -47,9 +47,8 @@ public class JFGGlideURL extends GlideUrl {
         return OptionsImpl.getServer() + vid + "-" + cid + "-" + timestamp + "-" + V2 + "-" + regionType;
     }
 
-
     @Override
-    public URL toURL() throws MalformedURLException {
+    public String toStringUrl() {
         try {
             String urlV2;
             if (V2) {
@@ -60,10 +59,16 @@ public class JFGGlideURL extends GlideUrl {
                 urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
             }
             AppLogger.d("图片 URLV2:" + V2 + ",regionType:" + regionType + "," + urlV2);
-            return new URL(urlV2);
+            return urlV2;
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
-            return new URL("");
+            return "";
         }
+    }
+
+    @Override
+    public URL toURL() throws MalformedURLException {
+        //OKHttp 的 dataFetcher 通过 toStringUrl 读取网址, Glide 默认的HttpURL dataFetcher 通过 toURL 读取网址
+        return new URL(toStringUrl());
     }
 }
