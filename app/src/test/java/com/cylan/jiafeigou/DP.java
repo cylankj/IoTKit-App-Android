@@ -11,6 +11,11 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.module.SubscriptionManager;
+import com.cylan.jiafeigou.module.message.DPList;
+import com.cylan.jiafeigou.module.message.DPMessage;
+import com.cylan.jiafeigou.module.message.MIDHeader;
+import com.cylan.jiafeigou.module.request.RobotGetDataRequest;
+import com.cylan.jiafeigou.module.request.RobotGetDataResponse;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
@@ -38,6 +43,11 @@ import org.msgpack.annotation.Index;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
+import org.msgpack.packer.BufferPacker;
+import org.msgpack.packer.Packer;
+import org.msgpack.template.AbstractTemplate;
+import org.msgpack.unpacker.BufferUnpacker;
+import org.msgpack.unpacker.Unpacker;
 
 import java.io.File;
 import java.io.IOException;
@@ -542,6 +552,86 @@ public class DP {
         System.out.println(glideUrl.getCacheKey());
     }
 
+    @Test
+    public void testH() throws Exception {
+        MessagePack pack = new MessagePack();
+        BufferPacker bufferPacker = pack.createBufferPacker();
+        bufferPacker.writeArrayBegin(5);
+        bufferPacker.write(888);
+        bufferPacker.write("aaa");
+        bufferPacker.write("bbb");
+        bufferPacker.write(9999L);
+        bufferPacker.write("ccc");
+        bufferPacker.write("ddddd");
+        bufferPacker.writeArrayEnd();
+        byte[] bytes = bufferPacker.toByteArray();
+        BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
+        MIDHeader read = unpacker.read(MIDHeader.class);
+        System.out.println(read);
+    }
 
+    @Test
+    public void testMap() throws Exception {
+        MessagePack pack = new MessagePack();
+        BufferPacker packer = pack.createBufferPacker();
+        HashMap<Integer, DPList> hashMap = new HashMap<>();
+        for (int i = 0; i < 3; i++) {
+            DPList list = new DPList();
+            for (int i1 = 0; i1 < 3; i1++) {
+                list.add(new DPMessage(3, 88, new byte[]{8, 8, 8, 8}));
+            }
+            hashMap.put(i, list);
+        }
+        RobotGetDataResponse response = new RobotGetDataResponse(hashMap);
+        packer.write(response);
+        byte[] bytes = packer.toByteArray();
+        response.rawBytes = bytes;
+        BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
+        DpUtils.mp.register(DPList.class,new MyListTemplate());
+        RobotGetDataResponse convert = new RobotGetDataRequest().convert(response);
+        System.out.println(convert);
+
+    }
+
+    @Test
+    public void testG() {
+        new C().go();
+    }
+
+    abstract class G<T> {
+
+        public void go() {
+            getClass().getTypeParameters();
+        }
+    }
+
+    class C extends G<String> {
+
+    }
+
+    class MyListTemplate extends AbstractTemplate<DPList> {
+
+        @Override
+        public void write(Packer packer, DPList dpMessages, boolean b) throws IOException {
+
+        }
+
+        @Override
+        public DPList read(Unpacker unpacker, DPList dpMessages, boolean b) throws IOException {
+            int count = unpacker.readArrayBegin();
+            DPList result = new DPList();
+            for (int i = 0; i < count; i++) {
+                unpacker.readArrayBegin();
+                int msgId = unpacker.readInt();
+                long version = unpacker.readLong();
+                byte[] bytes = unpacker.readByteArray();
+                unpacker.readArrayEnd();
+                DPMessage dpMessage = new DPMessage(msgId, version, bytes);
+                result.add(dpMessage);
+            }
+            unpacker.readArrayEnd();
+            return result;
+        }
+    }
 
 }

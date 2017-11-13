@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 
 public class DpUtils {
-    private static MessagePack mp = new MessagePack();
+   public static MessagePack mp = new MessagePack();
 
     /**
      * @param data
