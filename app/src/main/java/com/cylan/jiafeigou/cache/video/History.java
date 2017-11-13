@@ -179,6 +179,21 @@ public class History {
         dateListMap.put(uuid, tmp);
     }
 
+    public static String reverse(String input) {
+        char[] in = input.toCharArray();
+        int begin = 0;
+        int end = in.length - 1;
+        char temp;
+        while (end > begin) {
+            temp = in[begin];
+            in[begin] = in[end];
+            in[end] = temp;
+            end--;
+            begin++;
+        }
+        return new String(in);
+    }
+
     /**
      * 转化出 180*8个字符的字符串。为了提取连续的1,从而压缩历史录像。
      *
@@ -192,7 +207,7 @@ public class History {
         //
         StringBuilder builder = new StringBuilder();
         for (DpMsgDefine.Unit unit : list) {
-            builder.append(flatIntTo8bitStr(unit.video));
+            builder.append(reverse(flatIntTo8bitStr(unit.video)));
         }
         PerformanceUtils.stopTrace("flatBitList");
         return builder.toString();
