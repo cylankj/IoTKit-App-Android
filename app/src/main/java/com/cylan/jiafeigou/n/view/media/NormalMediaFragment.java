@@ -13,15 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -85,6 +84,7 @@ public class NormalMediaFragment extends IBaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         if (TextUtils.isEmpty(uuid)) {
             if (BuildConfig.DEBUG) {
@@ -110,11 +110,11 @@ public class NormalMediaFragment extends IBaseFragment {
     }
 
     private void loadBitmap(CamMessageBean bean, int index, String uuid) {
-        Glide.with(ContextUtils.getContext())
-                .load(MiscUtils.getCamWarnUrl(uuid, bean, index + 1))
-                .asBitmap()
-                .placeholder(R.drawable.wonderful_pic_place_holder)
+        GlideApp.with(this)
+                .load(MiscUtils.getCamWarnUrlV2(uuid, bean, index + 1))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .dontAnimate()
                 .into(imgVShowPic);
     }
 

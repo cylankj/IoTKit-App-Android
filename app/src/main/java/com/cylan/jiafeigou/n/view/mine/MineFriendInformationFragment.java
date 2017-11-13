@@ -10,18 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendDetailBinding;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendInformationContact;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendInformationPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -110,7 +109,7 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
         friendDetailBinding.setIsFriend(isFriend);
         friendDetailBinding.setAlias(alias);
         friendDetailBinding.setAccount(nick);
-        Glide.with(this).load(new JFGAccountURL(account))
+        GlideApp.with(this).load(new JFGAccountURL(account))
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

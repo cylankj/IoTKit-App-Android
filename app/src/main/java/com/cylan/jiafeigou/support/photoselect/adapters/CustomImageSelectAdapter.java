@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.photoselect.models.Image;
 
 import java.util.ArrayList;
@@ -51,8 +51,7 @@ public class CustomImageSelectAdapter extends CustomGenericAdapter<Image> {
             viewHolder.view.setAlpha(0.0f);
             ((FrameLayout) convertView).setForeground(null);
         }
-
-        Glide.with(context)
+        GlideApp.with(context)
                 .load(arrayList.get(position).path)
                 .placeholder(R.drawable.image_placeholder).into(viewHolder.imageView);
 

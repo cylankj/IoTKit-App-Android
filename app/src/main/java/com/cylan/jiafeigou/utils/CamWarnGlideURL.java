@@ -33,26 +33,26 @@ public class CamWarnGlideURL extends JFGGlideURL {
     }
 
     @Override
-    public URL toURL() throws MalformedURLException {
+    public String toStringUrl() {
         if (isface) {
             try {
                 String urlV2;
-//                if (stranger) {
-////                urlV2 = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
-//                    urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, faceId);
-//                } else {
                 Account account = DataSourceManager.getInstance().getAccount();
                 String acc = account == null ? "" : account.getAccount();
 
                 urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, acc, cid, timestamp);
                 urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
-//                }
-                return new URL(urlV2);
+                return urlV2;
             } catch (Exception e) {
                 AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
             }
         }
-        return super.toURL();
+        return super.toStringUrl();
+    }
+
+    @Override
+    public URL toURL() throws MalformedURLException {
+        return new URL(toStringUrl());
     }
 
     public int getTime() {

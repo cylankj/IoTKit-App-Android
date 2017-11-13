@@ -26,6 +26,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.internal.http.RealResponseBody;
 import okio.Buffer;
 import retrofit2.Retrofit;
@@ -63,9 +64,10 @@ public class BasePanoramaApiHelper {
                     }
                     AppLogger.e("http请求为:" + request.toString());
                     Response proceed = chain.proceed(request);
-                    String string = proceed.body().string();
+                    ResponseBody body = proceed.body();
+                    String string = body.string();
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-                    return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
+                   return proceed.newBuilder().body(new RealResponseBody(body.contentType().toString(),body.contentLength(), new Buffer().writeString(string, Charsets.UTF_8))).build();
                 })
                 .connectTimeout(120, TimeUnit.SECONDS)//这里设置的长一点,在距离的 API 里再设置超时时间
                 .readTimeout(120, TimeUnit.SECONDS)

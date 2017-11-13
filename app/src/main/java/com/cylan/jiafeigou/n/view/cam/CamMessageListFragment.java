@@ -408,7 +408,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = CamMessageBean.ViewType.FOOT;
         if (camMessageListAdapter.getCount() > 0) {
-            bean.version = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version + 1;
+//            bean.version = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version + 1;
         }
         rvCamMessageList.post(() -> camMessageListAdapter.add(bean));
     }
@@ -477,14 +477,14 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (asc) {//移动带 onRefresh 中
             srLayoutCamListRefresh.setRefreshing(showRefresh);
             if (camMessageListAdapter.getCount() > 0) {
-                time = camMessageListAdapter.getItem(0).version;
+                time = camMessageListAdapter.getItem(0).message.getVersion();
             }
         } else {
             if (!camMessageListAdapter.hasFooter()) {
                 setupFootView();
             }
-            if (camMessageListAdapter.getCount() > 0) {
-                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version;
+            if (camMessageListAdapter.getCount() > 1) {
+                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 2).message.getVersion();
             }
         }
         if (presenter != null) {
@@ -548,7 +548,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (camMessageListAdapter.getCount() == 0) {
                     return;
                 }
-                long time = camMessageListAdapter.getList().get(position).version;
+                long time = camMessageListAdapter.getList().get(position).message.getVersion();
+                if (time == 0) time = System.currentTimeMillis();
                 boolean isToday = TimeUtils.isToday(time);
                 String content = String.format(TimeUtils.getSpecifiedDate(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
                 tvCamMessageListDate.setText(content);
@@ -934,7 +935,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         return;
                     }
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
-                    boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null || bean.bellCallRecord != null;
+                    boolean jumpNext = bean != null && bean.message != null && (bean.message.getMsgId() == DpMsgMap.ID_505_CAMERA_ALARM_MSG || bean.message.getMsgId() == DpMsgMap.ID_401_BELL_CALL_STATE);
                     if (jumpNext) {
                         if (JFGRules.isPan720(getDevice().pid)) {
                             startActivity(getIntent(position, 0));
@@ -982,9 +983,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             intent = new Intent(getActivity(), CamMediaActivity.class);
             intent.putExtra(KEY_INDEX, index);
             intent.putExtra(KEY_BUNDLE, item);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, item.bellCallRecord != null);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
+            Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position));
         }
 
         return intent;

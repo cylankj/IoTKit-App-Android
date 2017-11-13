@@ -12,6 +12,7 @@ import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,12 +28,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
 import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
@@ -52,6 +51,7 @@ import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.umeng.socialize.UMShareAPI;
 
 import java.io.File;
@@ -638,11 +638,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-
-        Glide.with(this).load(new WonderGlideURL(mCurrentMediaBean))
-                .downloadOnly(new SimpleTarget<File>() {
+        GlideApp.with(this)
+                .downloadOnly()
+                .onlyRetrieveFromCache(true)
+                .load(new WonderGlideURL(mCurrentMediaBean))
+                .into(new SimpleTarget<File>() {
                     @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                    public void onResourceReady(File resource, com.bumptech.glide.request.transition.Transition<? super File> transition) {
                         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
                         MediaScannerConnection.scanFile(MediaActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, (path, uri) -> {
@@ -653,11 +655,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     }
 
                     @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
                         mDownloadFile = null;
                     }
                 });
@@ -666,15 +665,21 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @OnClick({R.id.act_media_header_opt_share, R.id.act_media_picture_opt_share})
     public void share() {
         if (NetUtils.isNetworkAvailable(this)) {
-            new WonderGlideURL(mCurrentMediaBean).fetchFile(file -> {
-                ShareManager.byImg(MediaActivity.this)
-                        .withImg(file)
-                        .share();
-//                Intent intent = new Intent(this, ShareMediaActivity.class);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
-//                startActivity(intent);
-            });
+            WonderGlideURL glideURL = new WonderGlideURL(mCurrentMediaBean);
+
+            GlideApp.with(this)
+                    .downloadOnly()
+                    .load(glideURL)
+                    .onlyRetrieveFromCache(true)
+                    .into(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, com.bumptech.glide.request.transition.Transition<? super File> transition) {
+                            ShareManager.byImg(MediaActivity.this)
+                                    .withImg(resource.getAbsolutePath())
+                                    .share();
+                        }
+                    });
+
         } else {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         }

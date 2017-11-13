@@ -7,10 +7,10 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.utils.JFGFaceGlideURL
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
@@ -42,7 +42,7 @@ class FaceManagerItem : AbstractItem<FaceManagerItem, FaceManagerItem.FaceManage
 
     override fun bindView(holder: FaceManagerViewHolder, payloads: MutableList<Any>?) {
         super.bindView(holder, payloads)
-        Glide.with(holder.itemView.context)
+        GlideApp.with(holder.itemView.context)
                 .load(JFGFaceGlideURL("", faceInformation?.image_url, faceInformation?.oss_type ?: 0, false))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.color.color_E8EAEC)

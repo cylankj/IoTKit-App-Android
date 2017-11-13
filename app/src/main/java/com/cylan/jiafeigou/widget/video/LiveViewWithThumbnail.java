@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -20,27 +21,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
 
 import org.webrtc.videoengine.ViEAndroidGLES20;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 17-3-13.
@@ -132,13 +128,14 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (glideUrl == null || TextUtils.isEmpty(glideUrl.toString())) {
             return;
         }
-        Glide.with(context)
-                .load(glideUrl)
+        //todo GLIDE
+        GlideApp.with(context)
                 .asBitmap()
+                .load(glideUrl)
                 .placeholder(R.drawable.default_diagram_mask)
-                .signature(new StringSignature(token))
+                .signature(new ObjectKey(token))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(!isNormalView)//坑, VideoView 内部会回收 bitmap ,所以内存缓存就不可用了,这样每次都要创建新的 bitmap 了
+                .skipMemoryCache(true)
                 .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
     }
 
@@ -156,22 +153,23 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
-        subscription = Observable.just(bitmap)
-                .subscribeOn(Schedulers.io())
-                .map(bMap -> {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    return stream.toByteArray();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bytes -> Glide.with(context)
-                                .load(bytes)
-                                .asBitmap()
-                                .signature(new StringSignature(token))
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .skipMemoryCache(!isNormalView)
-                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
-                        MiscUtils::getErr);
+        //todo GLIDE
+//        subscription = Observable.just(bitmap)
+//                .subscribeOn(Schedulers.io())
+//                .map(bMap -> {
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                    return stream.toByteArray();
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(bytes -> Glide.with(context)
+//                                .load(bytes)
+//                                .asBitmap()
+//                                .signature(new StringSignature(token))
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .skipMemoryCache(!isNormalView)
+//                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
+//                        MiscUtils::getErr);
     }
 
 
@@ -312,7 +310,18 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
 
         @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+        public void onDestroy() {
+            AppLogger.w("加载预览图 is onDestroy");
+        }
+
+        @Override
+        public void onStop() {
+            super.onStop();
+            AppLogger.w("加载预览图 is stop");
+        }
+
+        @Override
+        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
             if (resource != null && !resource.isRecycled()) {
                 if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
                     return;
@@ -345,8 +354,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
 
         @Override
-        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            AppLogger.w("加载预览图失败 is onLoadFailed: " + MiscUtils.getErr(e));
+        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+            super.onLoadFailed(errorDrawable);
             if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
                 return;
             }
@@ -357,17 +366,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             imageViewRef.get().setImageBitmap(BitmapFactory.decodeResource(videoViewWeakReference.get().getContext().getResources(),
                     R.drawable.default_diagram_mask));
             AppLogger.w("开始加载全景预览图");
-        }
-
-        @Override
-        public void onDestroy() {
-            AppLogger.w("加载预览图 is onDestroy");
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            AppLogger.w("加载预览图 is stop");
         }
 
         @Override

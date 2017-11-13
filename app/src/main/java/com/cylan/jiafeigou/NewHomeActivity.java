@@ -12,12 +12,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.SharedElementCallback;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -37,12 +35,12 @@ import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.HintRadioButton;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.lang.ref.WeakReference;
@@ -60,7 +58,7 @@ import rx.schedulers.Schedulers;
 public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.Presenter> implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
-    FrameLayout vpHomeContent;
+    EViewPager vpHomeContent;
     @BindView(R.id.rgLayout_home_bottom_menu)
     RadioGroup rgLayoutHomeBottomMenu;
 
@@ -75,10 +73,10 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     HintRadioButton btnHomeMine;
 
     private SharedElementCallBackListener sharedElementCallBackListener;
-
-    private HomePageListFragmentExt homePageListFragmentExt;
-    private HomeWonderfulFragmentExt homeWonderfulFragmentExt;
-    private HomeMineFragment homeMineFragment;
+    //
+//    private HomePageListFragmentExt homePageListFragmentExt;
+//    private HomeWonderfulFragmentExt homeWonderfulFragmentExt;
+//    private HomeMineFragment homeMineFragment;
     private int index = -1;
 
     @Override
@@ -99,7 +97,8 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         initShowWonderPageSub();
         AfterLoginService.resumeTryCheckVersion();
 
-        showHomeFragment(0);
+//        showHomeFragment(0);
+        vpHomeContent.setCurrentItem(0);
     }
 
     private void initShowWonderPageSub() {
@@ -107,7 +106,8 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
-                    showHomeFragment(1);
+//                    showHomeFragment(1);
+                    vpHomeContent.setCurrentItem(1);
                 }, e -> AppLogger.d(e.getMessage()));
         presenter.addSubscription("initShowWonderPageSub", subscribe);
     }
@@ -124,11 +124,11 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             ToastUtil.showToast(intent.getStringExtra("NewHomeActivity_intent"));
         }
         if (intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_WONDER)) {
-//            int cIndex = vpHomeContent.getCurrentItem();
-//            if (cIndex != 1) {
-//                vpHomeContent.setCurrentItem(1);
-//        }
-            showHomeFragment(1);
+            int cIndex = vpHomeContent.getCurrentItem();
+            if (cIndex != 1) {
+                vpHomeContent.setCurrentItem(1);
+            }
+//            showHomeFragment(1);
         }
     }
 
@@ -184,17 +184,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     public void showHomeListFragment() {
-//        if (vpHomeContent != null)
-//            vpHomeContent.setCurrentItem(0);
-        showHomeFragment(0);
+        if (vpHomeContent != null)
+            vpHomeContent.setCurrentItem(0);
+//        showHomeFragment(0);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        homeWonderfulFragmentExt = null;
-        homePageListFragmentExt = null;
-        homeMineFragment = null;
     }
 
     @Override
@@ -207,74 +204,45 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void initMainContentAdapter() {
-//        HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
-//
-//        vpHomeContent.setPagingEnabled(true);
-//        vpHomeContent.setAdapter(viewAdapter);
-//        vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                final int id = position == 0 ? R.id.btn_home_list
-//                        : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
-//                rgLayoutHomeBottomMenu.check(id);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//                if (state == ViewPager.SCROLL_STATE_IDLE) {
-//                    final int index = vpHomeContent.getCurrentItem();
-//                    if (index == 0 || index == 2) {
-//                        if (RxBus.getCacheInstance().hasObservers())
-//                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled(index));
-//                    }
-//                }
-//            }
-//        });
-    }
+        HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
 
-    private void showHomeFragment(int index) {
-        if (this.index == index) {
-            return;
-        }
-        switch (this.index = index) {
-            case 0: {
-                if (homePageListFragmentExt == null) {
-                    homePageListFragmentExt = HomePageListFragmentExt.newInstance(new Bundle());
-                }
-                ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homePageListFragmentExt);
+        vpHomeContent.setPagingEnabled(true);
+        vpHomeContent.setAdapter(viewAdapter);
+        vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                final int id = position == 0 ? R.id.btn_home_list
+                        : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
+                rgLayoutHomeBottomMenu.check(id);
             }
-            break;
-            case 1: {
-                if (homeWonderfulFragmentExt == null) {
-                    homeWonderfulFragmentExt = HomeWonderfulFragmentExt.newInstance(new Bundle());
-                    sharedElementCallBackListener = homeWonderfulFragmentExt;
-                    onActivityReenterListener = homeWonderfulFragmentExt;
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    final int index = vpHomeContent.getCurrentItem();
+                    if (index == 0 || index == 2) {
+                        if (RxBus.getCacheInstance().hasObservers())
+                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled(index));
+                    }
                 }
-                ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homeWonderfulFragmentExt);
             }
-            break;
-            case 2: {
-                if (homeMineFragment == null) {
-                    homeMineFragment = HomeMineFragment.newInstance(new Bundle());
-                }
-                ActivityUtils.replaceFragmentNoAnimation(R.id.vp_home_content, getSupportFragmentManager(), homeMineFragment);
-            }
-            break;
-            default:
-        }
+        });
     }
 
     private void initBottomMenu() {
         rgLayoutHomeBottomMenu.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.btn_home_list:
-                    showHomeFragment(0);
+//                    showHomeFragment(0);
+                    vpHomeContent.setCurrentItem(0);
                     break;
                 case R.id.btn_home_wonderful:
-                    showHomeFragment(1);
+//                    showHomeFragment(1);
+                    vpHomeContent.setCurrentItem(1);
                     break;
                 case R.id.btn_home_mine:
-                    showHomeFragment(2);
+//                    showHomeFragment(2);
+                    vpHomeContent.setCurrentItem(2);
                     break;
                 default:
             }
@@ -283,9 +251,9 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         findViewById(R.id.btn_home_mine)
                 .setOnClickListener(v -> {
                     rgLayoutHomeBottomMenu.check(R.id.btn_home_mine);
-//                    if (vpHomeContent.getCurrentItem() != 2) {
-//                        vpHomeContent.setCurrentItem(2);
-//                    }
+                    if (vpHomeContent.getCurrentItem() != 2) {
+                        vpHomeContent.setCurrentItem(2);
+                    }
                 });
     }
 
@@ -355,12 +323,61 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         });
     }
 
-    //    private SharedElementCallBackListener sharedElementCallBackListener;
     private OnActivityReenterListener onActivityReenterListener;
 
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
+    }
+
+    /**
+     * 主页的三个页面
+     */
+    class HomeViewAdapter extends FragmentPagerAdapter {
+        private static final int INDEX_0 = 0;
+        private static final int INDEX_1 = 1;
+        private static final int INDEX_2 = 2;
+
+        public HomeViewAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case INDEX_0: {
+                    return HomePageListFragmentExt.newInstance(new Bundle());
+                }
+                case INDEX_1: {
+                    final int bottomMenuContainerId = R.id.fLayout_new_home_bottom_menu;
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(JConstant.KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID,
+                            bottomMenuContainerId);
+                    HomeWonderfulFragmentExt fragment = HomeWonderfulFragmentExt.newInstance(bundle);
+                    sharedElementCallBackListener = fragment;
+                    onActivityReenterListener = fragment;
+                    return fragment;
+                }
+                case INDEX_2:
+                    HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
+                    return fragment;
+            }
+            return HomePageListFragmentExt.newInstance(new Bundle());
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+
+        //不回收可能导致内存泄漏
+//        @Override
+//public void destroyItem(ViewGroup container, int position, Object object) {
+//            //super.destroyItem(container, position, object);
+//            //复写这个函数,以免回收fragment.
+//        }
+
     }
 
 }

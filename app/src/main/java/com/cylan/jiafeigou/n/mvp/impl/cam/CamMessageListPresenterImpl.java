@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
+import com.cylan.jiafeigou.dp.BaseDataPoint;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -167,17 +168,18 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     ArrayList<CamMessageBean> list = new ArrayList<>();
                     for (DataPoint dataPoint : result) {
                         CamMessageBean bean = new CamMessageBean();
-                        bean.id = dataPoint.getMsgId();
-                        bean.version = dataPoint.getVersion();
-                        if (bean.id == 222) {
-                            bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
-                        }
-                        if (bean.id == 512 || bean.id == 505) {
-                            bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
-                        }
-                        if (bean.id == 401) {
-                            bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
-                        }
+//                        bean.id = dataPoint.getMsgId();
+//                        bean.version = dataPoint.getVersion();
+//                        if (bean.id == 222) {
+//                            bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
+//                        }
+//                        if (bean.id == 512 || bean.id == 505) {
+//                            bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
+//                        }
+//                        if (bean.id == 401) {
+//                            bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
+//                        }
+                        bean.message = (BaseDataPoint) dataPoint;
                         if (!list.contains(bean))//防止重复
                         {
                             list.add(bean);
@@ -189,6 +191,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .flatMap(camList -> {
                     //需要和列表里面的items 融合
                     ArrayList<CamMessageBean> list = new ArrayList<>(mView.getList());
+                    if (list.size() > 0) {
+                        boolean isFooter = list.get(list.size() - 1).viewType == CamMessageBean.ViewType.FOOT;
+                        if (isFooter) {
+                            list.remove(list.size() - 1);
+                        }
+                    }
                     camList.removeAll(list);//camList是降序
                     AppLogger.d("uiList: " + ListUtils.getSize(list) + ",newList: " + ListUtils.getSize(camList));
                     if (camList.size() > 0) {
@@ -196,7 +204,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         if (ListUtils.getSize(list) == 0) {//已有的列表为空,直接append
                             return Observable.just(new Pair<>(camList, true));
                         }
-                        if (camList.get(camList.size() - 1).version >= list.get(0).version) {
+                        if (camList.get(camList.size() - 1).message.version >= list.get(0).message.version) {
                             return Observable.just(new Pair<>(camList, false));//insert(0)
                         }
                         return Observable.just(new Pair<>(camList, true));//append
@@ -233,13 +241,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         for (CamMessageBean bean : beanList) {
             DPEntity dpEntity = new DPEntity();
             dpEntity.setUuid(uuid);
-            dpEntity.set_id(bean.id);
             dpEntity.setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount());
-            dpEntity.setMsgId((int) bean.id);
-            dpEntity.setVersion(bean.version);
+            dpEntity.setMsgId((int) bean.message.msgId);
+            dpEntity.setVersion(bean.message.version);
             dpEntity.setAction(DBAction.DELETED);
             entities.add(dpEntity);
-            Log.d(TAG, "删除:" + bean.id + ",version:" + bean.version);
+            Log.d(TAG, "删除:" + bean.message);
         }
         return entities;
     }
@@ -410,9 +417,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                                 bean = new CamMessageBean();
                                 DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
                                 if (dpAlarm != null) {
-                                    bean.version = header.version;
-                                    bean.id = header.msgId;
-                                    bean.alarmMsg = dpAlarm;
+                                    dpAlarm.version = header.version;
+                                    dpAlarm.msgId = header.msgId;
+                                    bean.message = dpAlarm;
                                 }
                                 list.add(bean);
                             } else if (header.msgId == 201) {

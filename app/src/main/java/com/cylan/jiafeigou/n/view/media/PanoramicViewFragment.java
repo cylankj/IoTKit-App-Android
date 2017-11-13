@@ -13,21 +13,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
@@ -95,6 +96,7 @@ public class PanoramicViewFragment extends IBaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         final int screenWidth = DensityUtils.getScreenWidth();
         ViewGroup.LayoutParams lp = mPanoramicContainer.getLayoutParams();
         lp.height = screenWidth;
@@ -166,29 +168,27 @@ public class PanoramicViewFragment extends IBaseFragment {
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
-        try {
             if (target != null) {
-                Glide.clear(target);
+                GlideApp.with(this).clear(target);
             }
-        } catch (Exception e) {
 
-        }
         //填满
-        Glide.with(ContextUtils.getContext())
-                .load(MiscUtils.getCamWarnUrl(uuid, camMessageBean, index + 1))
+        GlideApp.with(this)
                 .asBitmap()
+                .load(MiscUtils.getCamWarnUrl(uuid, camMessageBean, index + 1))
                 //解决黑屏问题
-                .signature(new StringSignature(System.currentTimeMillis() + ""))
+                .signature(new ObjectKey(System.currentTimeMillis() + ""))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onLoadStarted(Drawable placeholder) {
+                    public void onLoadStarted(@Nullable Drawable placeholder) {
+                        super.onLoadStarted(placeholder);
                         showLoading(true);
                     }
 
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                         try {
                             if (resource != null && !resource.isRecycled()) {
                                 panoramicView.loadImage(resource);
@@ -200,13 +200,6 @@ public class PanoramicViewFragment extends IBaseFragment {
                         }
                         showLoading(false);
                     }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.e(MiscUtils.getErr(e));
-                        loadBitmap(lastLoadIndex);
-                        showLoading(false);
-                    }
                 });
     }
 
@@ -216,13 +209,17 @@ public class PanoramicViewFragment extends IBaseFragment {
 
         // TODO: 2017/9/1 哪些设备需要平视,哪些设备需要俯视
 
-        boolean hasViewAngle = JFGRules.hasViewAngle(device.pid);
-        String mode = camMessageBean.alarmMsg != null ? camMessageBean.alarmMsg.tly : hasViewAngle ? "0" : "1";
-
-
-//        String mode = camMessageBean.alarmMsg == null ? "0" : camMessageBean.alarmMsg.tly;
-
-
+        String mode;
+        switch ((int) camMessageBean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) camMessageBean.message;
+                mode = dpAlarm.tly;
+            }
+            break;
+            default: {
+                mode = JFGRules.hasViewAngle(device.pid) ? "0" : "1";
+            }
+        }
         Log.d("loadBitmap", "loadBitmap: " + mode);
         if (subscription != null) {
             subscription.unsubscribe();

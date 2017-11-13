@@ -259,10 +259,13 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        //刷新账号
-        JfgAppCmd.getInstance().getAccount();
+    public void onResume() {
+        super.onResume();
+        svSoundContainer.postDelayed(() -> {
+            //刷新账号
+            //需要等动画完成,否则 homeMine 会有闪烁
+            JfgAppCmd.getInstance().getAccount();
+        },1000);
     }
 
     private void initSwitchBtnListener() {

@@ -3,17 +3,17 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -137,25 +137,26 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
 //                        }
 //                    });
 //        } else {
-            Glide.with(getContext())
-                    .load(new PanoramaThumbURL(uuid, item.fileName))
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .error(R.drawable.wonderful_pic_place_holder)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
-                        @Override
-                        protected void setResource(GlideDrawable resource) {
-                            view.setImageDrawable(resource);
-                            holder.setBackgroundResource(R.id.rl_album_bottom_shape, R.drawable.bottom_black_top_white_color);
-                        }
+        GlideApp.with(getContext())
+                .load(new PanoramaThumbURL(uuid, item.fileName))
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .error(R.drawable.wonderful_pic_place_holder)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new ImageViewTarget<Drawable>(holder.getView(R.id.img_album_content)) {
+                    @Override
+                    protected void setResource(@Nullable Drawable resource) {
+                        view.setImageDrawable(resource);
+                        holder.setBackgroundResource(R.id.rl_album_bottom_shape, R.drawable.bottom_black_top_white_color);
+                    }
 
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            holder.setBackgroundResource(R.id.rl_album_bottom_shape, android.R.color.transparent);
-                        }
-                    });
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
+                        holder.setBackgroundResource(R.id.rl_album_bottom_shape, android.R.color.transparent);
+                    }
+                });
+
 //        }
         TextView view = holder.getView(R.id.tv_album_download_progress);
 

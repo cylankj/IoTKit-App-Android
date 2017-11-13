@@ -15,11 +15,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -69,8 +68,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         String content = getIntent().getStringExtra(JConstant.KEY_SSID_PREFIX);
         tvGuideMainContent.setText(getString(R.string.WIFI_SET_VER, content));
         tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
-        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(imvBindGuide);
-        Glide.with(this).load(bind_guide_res).into(imageViewTarget);
+        GlideApp.with(this).load(bind_guide_res).into(imvBindGuide);
         customToolbar.setBackAction((View v) -> finishExt());
     }
 

@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import butterknife.OnClick
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.IMEUtils
 import com.cylan.jiafeigou.utils.JFGFaceGlideURL
@@ -63,8 +63,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         super.initViewAndListener()
         strangerVisitor = arguments.getParcelable("strangerVisitor")
         faceId = strangerVisitor?.faceId ?: ""
-
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(JFGFaceGlideURL("", strangerVisitor?.image_url, strangerVisitor?.ossType ?: 0, true))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.icon_mine_head_normal)

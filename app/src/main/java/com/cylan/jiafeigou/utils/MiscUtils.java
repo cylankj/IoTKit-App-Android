@@ -28,7 +28,9 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.SchemeResolver;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -149,47 +151,109 @@ public class MiscUtils {
 
     public static String getFileName(CamMessageBean bean, int index) {
         String fileName = null;
-        if (bean.alarmMsg != null) {
-            fileName = bean.alarmMsg.version / 1000 + "_" + index + ".jpg";
-        } else if (bean.bellCallRecord != null) {
-            if (bean.bellCallRecord.fileIndex == 0) {
-                //旧版本门铃呼叫记录,不带index
-                fileName = bean.bellCallRecord.time + ".jpg";
-            } else {
-                fileName = bean.bellCallRecord.time + "_" + index + ".jpg";
+        if (bean == null) return null;
+
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                fileName = dpAlarm.version / 1000 + "_" + index + ".jpg";
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                if (dpBellCallRecord.fileIndex == 0) {
+                    //旧版本门铃呼叫记录,不带index
+                    fileName = dpBellCallRecord.time + ".jpg";
+                } else {
+                    fileName = dpBellCallRecord.time + "_" + index + ".jpg";
+                }
+            }
+            break;
+            default: {
+
             }
         }
         return fileName;
     }
 
     public static int getFileTime(CamMessageBean bean) {
-        return bean.alarmMsg != null ? bean.alarmMsg.time : bean.bellCallRecord != null ? bean.bellCallRecord.time : 0;
+        if (bean == null) return 0;
+        int time;
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                time = dpAlarm.time;
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                time = dpBellCallRecord.time;
+            }
+            break;
+            default: {
+                time = 0;
+            }
+        }
+        return time;
     }
 
     public static int getFileType(CamMessageBean bean) {
-        return bean.alarmMsg != null ? bean.alarmMsg.ossType : bean.bellCallRecord != null ? bean.bellCallRecord.type : 0;
+        if (bean == null) return 0;
+        int fileType = 0;
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                fileType = dpAlarm.ossType;
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                fileType = dpBellCallRecord.type;
+            }
+            break;
+            default: {
+
+            }
+        }
+        return fileType;
     }
 
     public static CamWarnGlideURL getCamWarnUrl(String cid, CamMessageBean bean, int index) {
-        CamWarnGlideURL result = null;
-        if (bean.alarmMsg != null) {
-            if (bean.alarmMsg.face_id != null && bean.alarmMsg.face_id.length > 0) {
-                result = new CamWarnGlideURL(cid, bean.alarmMsg.ossType, String.valueOf(bean.alarmMsg.time));
-            } else {
-                result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.ossType);
+        CamWarnGlideURL result;
+        if (bean == null) return null;
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                if (dpAlarm.face_id != null && dpAlarm.face_id.length > 0) {
+                    result = new CamWarnGlideURL(cid, dpAlarm.ossType, String.valueOf(dpAlarm.time));
+                } else {
+                    result = new CamWarnGlideURL(cid, dpAlarm.time + "_" + index + ".jpg", dpAlarm.time, index, dpAlarm.ossType);
+                }
             }
-        } else if (bean.bellCallRecord != null) {
-            if (bean.bellCallRecord.fileIndex == -1) {
-                //旧版本门铃呼叫记录,不带index
-                result = new CamWarnGlideURL(cid, bean.bellCallRecord.time + ".jpg", bean.bellCallRecord.type);
-            } else {
-                result = new CamWarnGlideURL(cid, bean.bellCallRecord.time + "_" + index + ".jpg", bean.bellCallRecord.time, index, bean.bellCallRecord.type);
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                String name;
+                if (dpBellCallRecord.fileIndex == -1) {
+                    //旧版本门铃呼叫记录,不带index
+                    result = new CamWarnGlideURL(cid, dpBellCallRecord.time + ".jpg", dpBellCallRecord.type);
+                } else {
+                    result = new CamWarnGlideURL(cid, dpBellCallRecord.time + "_" + index + ".jpg", dpBellCallRecord.time, index, dpBellCallRecord.type);
+                }
+            }
+            break;
+            default: {
+                result = new CamWarnGlideURL("", "", 0);
             }
         }
-        if (result == null) {
-            result = new CamWarnGlideURL("", "", 0);
-        }
+        AppLogger.w("getCamWarnUrl:" + result.toStringUrl());
         return result;
+    }
+
+    public static String getCamWarnUrlV2(String cid, CamMessageBean bean, int index) {
+        if (bean == null) return null;
+        SchemeResolver schemeResolver = SchemeResolver.INSTANCE;
+        return schemeResolver.index(schemeResolver.parse(cid, bean.message), index);
     }
 
     @SuppressWarnings("unchecked")
@@ -577,10 +641,21 @@ public class MiscUtils {
 
     public static int getFileIndex(CamMessageBean camMessageBean) {
         int index = 1;
-        if (camMessageBean.alarmMsg != null) {
-            index = camMessageBean.alarmMsg.fileIndex;
-        } else if (camMessageBean.bellCallRecord != null && camMessageBean.bellCallRecord.fileIndex != 0) {
-            index = camMessageBean.bellCallRecord.fileIndex;
+        if (camMessageBean == null) return index;
+        switch ((int) camMessageBean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) camMessageBean.message;
+                index = dpAlarm.fileIndex;
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) camMessageBean.message;
+                index = dpBellCallRecord.fileIndex;
+            }
+            break;
+            default: {
+
+            }
         }
         if (index < 0) {
             index = 1;
@@ -589,18 +664,46 @@ public class MiscUtils {
     }
 
     public static long getVersion(CamMessageBean camMessageBean) {
-        return camMessageBean.alarmMsg != null ? camMessageBean.alarmMsg.version : camMessageBean.bellCallRecord != null ? camMessageBean.bellCallRecord.version : 0;
+        if (camMessageBean == null) return 0;
+        long version = 0;
+        switch ((int) camMessageBean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) camMessageBean.message;
+                version = dpAlarm.version;
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) camMessageBean.message;
+                version = dpBellCallRecord.version;
+            }
+            break;
+            default: {
+
+            }
+        }
+        return version;
     }
 
     public static long getFinalVersion(CamMessageBean bean, int index) {
         long finalVersion = 0;
-        if (bean.alarmMsg != null) {
-            finalVersion = (bean.alarmMsg.time + index) * 1000L;
-        } else if (bean.bellCallRecord != null) {
-            if (bean.bellCallRecord.fileIndex == 0) {
-                finalVersion = bean.bellCallRecord.time * 1000L;
-            } else {
-                finalVersion = (bean.bellCallRecord.time + index) * 1000L;
+        if (bean == null) return finalVersion;
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                finalVersion = (dpAlarm.time + index) * 1000L;
+            }
+            break;
+            case DpMsgMap.ID_401_BELL_CALL_STATE: {
+                DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
+                if (dpBellCallRecord.fileIndex == 0) {
+                    finalVersion = dpBellCallRecord.time * 1000L;
+                } else {
+                    finalVersion = (dpBellCallRecord.time + index) * 1000L;
+                }
+            }
+            break;
+            default: {
+
             }
         }
         return finalVersion;

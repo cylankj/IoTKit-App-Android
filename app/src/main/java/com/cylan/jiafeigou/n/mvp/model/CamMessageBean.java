@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
-import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.BaseDataPoint;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,14 +20,34 @@ import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.TWO_PIC;
  */
 public class CamMessageBean implements Parcelable {
 
-    /**
-     * 直接类型，不需要转型。
-     */
-    public DpMsgDefine.DPAlarm alarmMsg;
-    public DpMsgDefine.DPSdcardSummary sdcardSummary; //204消息
-    public DpMsgDefine.DPBellCallRecord bellCallRecord;//401消息
-    public long id = 0;
-    public long version;
+//    /**
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CamMessageBean)) return false;
+
+        CamMessageBean that = (CamMessageBean) o;
+
+        if (viewType != that.viewType) return false;
+        return message.equals(that.message);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = message.hashCode();
+        result = 31 * result + viewType;
+        return result;
+    }
+
+    //     * 直接类型，不需要转型。
+//     */
+//    public DpMsgDefine.DPAlarm alarmMsg;
+//    public DpMsgDefine.DPSdcardSummary sdcardSummary; //204消息
+//    public DpMsgDefine.DPBellCallRecord bellCallRecord;//401消息
+    public BaseDataPoint message = EMPTY;
+    private static final BaseDataPoint EMPTY = new BaseDataPoint() {
+    };
     public @ViewType
     int viewType = ONE_PIC;
 
@@ -48,39 +68,10 @@ public class CamMessageBean implements Parcelable {
         int THREE_PIC = 500;
     }
 
-    @Override
-    public String toString() {
-        return "CamMessageBean{" +
-                "msgId=" + id +
-                ", alarmMsgs=" + alarmMsg +
-                ", sdcardSummary=" + sdcardSummary +
-                ", startversion=" + version +
-                '}';
+
+    public CamMessageBean() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        CamMessageBean that = (CamMessageBean) o;
-        if (id != that.id) {
-            return false;
-        }
-        return version == that.version;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (version ^ (version >>> 32));
-        return result;
-    }
 
     @Override
     public int describeContents() {
@@ -89,23 +80,12 @@ public class CamMessageBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.alarmMsg, flags);
-        dest.writeParcelable(this.sdcardSummary, flags);
-        dest.writeParcelable(this.bellCallRecord, flags);
-        dest.writeLong(this.id);
-        dest.writeLong(this.version);
+        dest.writeParcelable(this.message, flags);
         dest.writeInt(this.viewType);
     }
 
-    public CamMessageBean() {
-    }
-
     protected CamMessageBean(Parcel in) {
-        this.alarmMsg = in.readParcelable(DpMsgDefine.DPAlarm.class.getClassLoader());
-        this.sdcardSummary = in.readParcelable(DpMsgDefine.DPSdcardSummary.class.getClassLoader());
-        this.bellCallRecord = in.readParcelable(DpMsgDefine.DPBellCallRecord.class.getClassLoader());
-        this.id = in.readLong();
-        this.version = in.readLong();
+        this.message = in.readParcelable(BaseDataPoint.class.getClassLoader());
         this.viewType = in.readInt();
     }
 

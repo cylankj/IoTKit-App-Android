@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -11,15 +12,15 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.databinding.FragmentShareContentH5DetailBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
@@ -111,11 +112,12 @@ public class ShareContentWebH5Activity extends BaseActivity {
 
     private void share(View view) {
         AppLogger.e("share");
-        Glide.with(this)
+        GlideApp.with(this)
+                .downloadOnly()
                 .load(new WonderGlideURL(shareItem.toWonderItem()))
-                .downloadOnly(new SimpleTarget<File>() {
+                .into(new SimpleTarget<File>() {
                     @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
                         ShareManager.byWeb(ShareContentWebH5Activity.this)
                                 .withUrl(shareItem.url)
                                 .withThumb(resource.getAbsolutePath())
@@ -123,8 +125,8 @@ public class ShareContentWebH5Activity extends BaseActivity {
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
                         ShareManager.byWeb(ShareContentWebH5Activity.this)
                                 .withUrl(shareItem.url)
                                 .share();

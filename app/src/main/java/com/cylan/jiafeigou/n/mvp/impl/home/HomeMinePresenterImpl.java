@@ -1,18 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
@@ -23,9 +19,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
-import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -60,24 +53,6 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         super.stop();
     }
 
-    @Override
-    public void portraitBlur(Bitmap bitmap) {
-        //使用默认的图片
-        AppLogger.w("需要在io线程操作.");
-        Observable.just(bitmap)
-                .subscribeOn(Schedulers.io())
-                .map(b -> {
-                    if (b == null) {
-                        b = BitmapFactory.decodeResource(mView.getContext().getResources(), R.drawable.me_bg_top_image);
-                    }
-                    Bitmap result = BitmapUtils.zoomBitmap(b, 160, 160);
-                    Bitmap blur = FastBlurUtil.blur(result, 20, 2);
-                    return new BitmapDrawable(ContextUtils.getContext().getResources(), blur);
-                })
-                .filter(result -> check())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> getView().onBlur(result), AppLogger::e);
-    }
 
     @Override
     public String createRandomName() {
@@ -161,42 +136,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     if (isOpenLogin) {
                         String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
                         if (!TextUtils.isEmpty(photoUrl)) {//设置第三方登录图像
-                            AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                                Glide
-                                        .with(getView().getContext()).load(photoUrl)
-                                        .downloadOnly(new SimpleTarget<File>() {
-                                            @Override
-                                            public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                                                Schedulers.io().createWorker().schedule(() -> {
-                                                    try {
-                                                        String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
-                                                        if (TextUtils.isEmpty(alias)) {
-                                                            boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
-                                                            if (isEmail) {
-                                                                String[] split = accountArrived.jfgAccount.getAccount().split("@");
-                                                                alias = split[0];
-                                                            }
-                                                        }
-                                                        BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
-                                                        AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
-                                                        if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
-                                                            accountArrived.jfgAccount.setAlias(alias);
-                                                            try {
-                                                                AppLogger.d("正在设置第三方登录昵称" + alias);
-                                                                accountArrived.jfgAccount.resetFlag();
-                                                                accountArrived.jfgAccount.setPhoto(true);
-                                                                BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
-                                                            } catch (JfgException e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-                                                    } catch (JfgException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                });
-                                            }
-                                        });
-                            });
+                            uploadOpenLoginIcon(accountArrived, photoUrl);
                         }
                     }
                     return accountArrived;
@@ -214,6 +154,42 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     }
                 }, e -> {
                     AppLogger.e(e.getMessage());
+                });
+    }
+
+    private void uploadOpenLoginIcon(RxEvent.AccountArrived accountArrived, String photoUrl) {
+        GlideApp.with(getView().getContext())
+                .downloadOnly()
+                .load(photoUrl)
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        try {
+                            String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
+                            if (TextUtils.isEmpty(alias)) {
+                                boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
+                                if (isEmail) {
+                                    String[] split = accountArrived.jfgAccount.getAccount().split("@");
+                                    alias = split[0];
+                                }
+                            }
+                            BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
+                            AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
+                            if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
+                                accountArrived.jfgAccount.setAlias(alias);
+                                try {
+                                    AppLogger.d("正在设置第三方登录昵称" + alias);
+                                    accountArrived.jfgAccount.resetFlag();
+                                    accountArrived.jfgAccount.setPhoto(true);
+                                    BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
+                                } catch (JfgException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } catch (Exception e) {
+                          e.printStackTrace();
+                        }
+                    }
                 });
     }
 

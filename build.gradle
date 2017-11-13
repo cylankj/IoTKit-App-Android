@@ -75,7 +75,7 @@ ext {
     rxAndroid = 'io.reactivex:rxandroid:1.2.1'
     butterknife = 'com.jakewharton:butterknife:8.4.0'
     butterknifeApt = 'com.jakewharton:butterknife-compiler:8.4.0'
-    glide = 'com.github.bumptech.glide:glide:3.7.0'
+    glide = 'com.github.bumptech.glide:glide:4.3.1'
     permis = 'com.github.hotchemi:permissionsdispatcher:2.3.1'
     permisApt = 'com.github.hotchemi:permissionsdispatcher-processor:2.3.1'
     buglySdk = 'com.tencent.bugly:crashreport:2.6.0'

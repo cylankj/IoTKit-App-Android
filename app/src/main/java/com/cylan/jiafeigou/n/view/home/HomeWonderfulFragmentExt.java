@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -31,6 +33,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
@@ -46,6 +49,7 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +74,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     RecyclerView rVDevicesList;
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
-    //    @BindView(R.msgId.fLayoutHomeWonderfulHeaderContainer)
-//    FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.rl_top_head_wonder)
     RelativeLayout rlTopHeadWonder;
     @BindView(R.id.img_wonderful_title_cover)
@@ -87,9 +89,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     Unbinder unbinder;
-//    @BindView(R.msgId.fragment_wonderful_guide)
-//    ViewGroup mWonderfulGuideContainer;
-
     private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
 
     @BindView(R.id.tv_sec_title_head_wonder)
@@ -126,13 +125,22 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         initSomeViewMargin();
     }
 
-    private Runnable autoLoading = () -> presenter.startRefresh();
+    private Runnable autoLoading = () -> {
+        if (srLayoutMainContentHolder != null) {
+            srLayoutMainContentHolder.setRefreshing(true);
+            presenter.startRefresh();
+        }
+    };
 
     @Override
     public void onStart() {
         super.onStart();
-        srLayoutMainContentHolder.setRefreshing(true);
-        presenter.startRefresh();
+        delayLoading();
+    }
+
+    private void delayLoading() {
+        srLayoutMainContentHolder.removeCallbacks(autoLoading);
+        srLayoutMainContentHolder.postDelayed(autoLoading, 500);
     }
 
     private SimpleDialogFragment initDeleteDialog() {
@@ -244,6 +252,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
+
         }
     }
 
@@ -362,6 +371,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
     }
 
+    @Override
+    protected void lazyLoad() {
+        super.lazyLoad();
+        delayLoading();
+    }
+
     private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {
         final Intent intent = new Intent(getActivity(), MediaActivity.class);
         // Pass data object in the bundle and populate details activity.
@@ -384,15 +399,19 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 //            fragment.setVideoURL(bean.fileName);
 //        }
 //        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
-        new WonderGlideURL(bean).fetchFile(filePath -> {
-            ShareManager.byImg(getActivity())
-                    .withImg(filePath)
-                    .share();
-//            Intent intent = new Intent(getActivity(), ShareMediaActivity.class);
-//            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, filePath);
-//            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-//            startActivity(intent);
-        });
+        GlideApp.with(this)
+                .downloadOnly()
+                .onlyRetrieveFromCache(true)
+                .load(new WonderGlideURL(bean))
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        ShareManager.byImg(getActivity())
+                                .withImg(resource.getAbsolutePath())
+                                .share();
+                    }
+                });
+
     }
 
     private void onDeleteWonderfulContent(DPWonderItem bean, int position) {

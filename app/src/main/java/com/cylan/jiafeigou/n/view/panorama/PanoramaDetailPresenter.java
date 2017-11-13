@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
@@ -20,6 +18,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -181,22 +180,18 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 
     @Override
     public void saveImage(CamWarnGlideURL glideURL, String fileName) {
-        Glide.with(mView.activity())//注意contxt
-                .load(glideURL)
+        GlideApp.with(mView.activity())//注意contxt
                 .asBitmap()
+                .load(glideURL)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Log.d(TAG, "onResourceReady:" + (resource == null));
-                        save(resource, fileName);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        MiscUtils.getErr(e);
-                    }
-                });
+        .into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                Log.d(TAG, "onResourceReady:" + (resource == null));
+                save(resource, fileName);
+            }
+        })
+        ;
     }
 
     private void save(Bitmap bitmap, String fileName) {

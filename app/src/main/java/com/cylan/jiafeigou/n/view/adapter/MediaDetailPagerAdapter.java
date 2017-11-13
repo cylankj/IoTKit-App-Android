@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.view.TextureView;
@@ -8,16 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
@@ -68,14 +69,15 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             photoView = holder.mPhotoView;
             contentView.setTag(holder);
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
-            Glide.with(container.getContext())
+            // TODO: 2017/11/10 GLIDE
+            GlideApp.with(container.getContext())
                     .load(new WonderGlideVideoThumbURL(bean))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-                    .into(new SimpleTarget<GlideDrawable>() {
+                    .into(new SimpleTarget<Drawable>() {
                         @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                             if (photoView == null) {
                                 return;
                             }
@@ -91,7 +93,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
                             //破图的位置,属性不一样.
                             if (photoView == null) {
                                 return;
@@ -107,20 +109,21 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                             photoView.setImageDrawable(errorDrawable);
                         }
                     });
+
         } else {
             photoView = new PhotoView(container.getContext());
             contentView = photoView;
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
             ((PhotoView) photoView).setOnPhotoTapListener(mPhotoTapListener);
-            Glide.with(container.getContext())
+            GlideApp.with(container.getContext())
                     .load(new WonderGlideURL(bean))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .error(R.drawable.broken_image)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-                    .into(new SimpleTarget<GlideDrawable>() {
+                    .into(new SimpleTarget<Drawable>() {
                         @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                             if (photoView == null) {
                                 return;
                             }
@@ -136,7 +139,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
                             if (photoView == null) {
                                 return;
                             }
@@ -166,9 +169,10 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         return POSITION_NONE;
     }
 
-    private RequestListener<GlideUrl, GlideDrawable> mListener = new RequestListener<GlideUrl, GlideDrawable>() {
+
+    private RequestListener<Drawable> mListener = new RequestListener<Drawable>() {
         @Override
-        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
             if (mFirstLoad && mReadToShow != null) {
                 mReadToShow.onReady();
             }
@@ -177,7 +181,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         }
 
         @Override
-        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
             if (mFirstLoad && mReadToShow != null) {
                 mReadToShow.onReady();
             }

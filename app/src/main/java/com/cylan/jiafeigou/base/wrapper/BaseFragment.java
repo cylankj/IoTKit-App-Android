@@ -170,7 +170,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @CallSuper
     protected void onVisible() {
-        lazyLoad();
+        if (isPrepared) {
+            lazyLoad();
+        }
     }
 
     @CallSuper
@@ -252,13 +254,12 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         isPrepared = true;
-//        if (unbinder != null) {
-//            unbinder.unbind();
-//        }
         injectButterKinfe(view);
         initViewAndListener();
-        lazyLoad();
         lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);
+        if (isVisible) {
+            lazyLoad();
+        }
     }
 
     @Override

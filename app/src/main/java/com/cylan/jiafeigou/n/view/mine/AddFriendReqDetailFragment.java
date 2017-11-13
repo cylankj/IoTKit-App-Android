@@ -1,12 +1,8 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsReqDetailPresenterImp;
@@ -29,8 +24,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,35 +106,12 @@ public class AddFriendReqDetailFragment extends IBaseFragment<MineFriendAddReqDe
         showOrHideReqMesg(isFrom);
 
         //显示头像
-        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead, getContext().getResources());
-        Glide.with(getContext()).load(addRequestItems.iconUrl)
-                .asBitmap()
-                .centerCrop()
+        GlideApp.with(getContext()).load(addRequestItems.iconUrl)
+                .circleCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_mine_head_normal)
-                .into(myImageTarget);
-    }
-
-    private static class MyImageTarget extends BitmapImageViewTarget {
-
-        public final WeakReference<Resources> resourcesWeakReference;
-        public final WeakReference<ImageView> roundedImageViewWeakReference;
-
-        public MyImageTarget(ImageView view, Resources resources) {
-            super(view);
-            resourcesWeakReference = new WeakReference<Resources>(resources);
-            roundedImageViewWeakReference = new WeakReference<ImageView>(view);
-        }
-
-        @Override
-        protected void setResource(Bitmap resource) {
-            super.setResource(resource);
-            RoundedBitmapDrawable circularBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
-            circularBitmapDrawable.setCircular(true);
-            roundedImageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
-        }
+                .into(ivDetailUserHead);
     }
 
     /**

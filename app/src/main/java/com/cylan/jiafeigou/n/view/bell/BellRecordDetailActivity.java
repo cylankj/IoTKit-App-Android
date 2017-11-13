@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,11 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
@@ -35,6 +34,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -122,31 +122,31 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 slide();
             }
         });
-
-        Glide.with(this)
-                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-                .error(R.drawable.broken_image)
-                .into(new ImageViewTarget<GlideDrawable>(mPictureDetail) {
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        view.setScaleType(ImageView.ScaleType.CENTER);
-                        view.setImageDrawable(placeholder);
-                    }
-
-                    @Override
-                    protected void setResource(GlideDrawable resource) {
-                        view.setImageDrawable(resource);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        ToastUtil.showNegativeToast("图片加载失败");
-                        canCollect = false;
-                    }
-                });
+        // TODO: 2017/11/10 GLIDE
+//        Glide.with(this)
+//                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
+//                .placeholder(R.drawable.wonderful_pic_place_holder)
+//                .error(R.drawable.broken_image)
+//                .into(new ImageViewTarget<GlideDrawable>(mPictureDetail) {
+//
+//                    @Override
+//                    public void onLoadStarted(Drawable placeholder) {
+//                        view.setScaleType(ImageView.ScaleType.CENTER);
+//                        view.setImageDrawable(placeholder);
+//                    }
+//
+//                    @Override
+//                    protected void setResource(GlideDrawable resource) {
+//                        view.setImageDrawable(resource);
+//                    }
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        super.onLoadFailed(e, errorDrawable);
+//                        ToastUtil.showNegativeToast("图片加载失败");
+//                        canCollect = false;
+//                    }
+//                });
         mCollect.setEnabled(false);
         check().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -201,16 +201,19 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_share)
     public void share() {
-        new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type).fetch(localPath -> {
-            ShareManager.byImg(BellRecordDetailActivity.this)
-                    .withImg(localPath)
-                    .share();
-//
-//            Intent intent = new Intent(this, ShareMediaActivity.class);
-//            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-//            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, localPath);
-//            startActivity(intent);
-        });
+        GlideApp.with(this)
+                .downloadOnly()
+                .onlyRetrieveFromCache(true)
+                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        ShareManager.byImg(BellRecordDetailActivity.this)
+                                .withImg(resource.getAbsolutePath())
+                                .share();
+                    }
+                });
+
     }
 
     @OnClick(R.id.act_bell_picture_opt_collection)
@@ -350,10 +353,12 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-        Glide.with(this).load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type)).
-                downloadOnly(new SimpleTarget<File>() {
+        GlideApp.with(this)
+                .downloadOnly()
+                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type)).
+                into(new SimpleTarget<File>() {
                     @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
                         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
                         MediaScannerConnection.scanFile(BellRecordDetailActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, null);
@@ -361,11 +366,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     }
 
                     @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
                         mDownloadFile = null;
                     }
                 });

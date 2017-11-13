@@ -5,10 +5,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -50,7 +50,7 @@ public class ShareToFriendsAdapter extends SuperAdapter<JFGFriendAccount> {
             }
         });
         //头像
-        Glide.with(getContext()).load(new JFGAccountURL(item.account))
+        GlideApp.with(getContext()).load(new JFGAccountURL(item.account))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

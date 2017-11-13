@@ -1,25 +1,19 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 
@@ -48,14 +42,13 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<FriendsReqBean> 
             holder.setText(R.id.tv_add_message, item.sayHi);
         }
         //头像
-        MyViewTarget myViewTarget = new MyViewTarget(holder.getView(R.id.iv_userhead), getContext().getResources());
-        Glide.with(getContext()).load(item.iconUrl)
-                .asBitmap().centerCrop()
+        GlideApp.with(getContext())
+                .load(item.iconUrl)
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .centerCrop()
+                .circleCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(myViewTarget);
+                .into((ImageView) holder.getView(R.id.iv_userhead));
         if (layoutPosition == getItemCount() - 1) {
             holder.setVisibility(R.id.view_line, View.INVISIBLE);
         }
@@ -90,25 +83,4 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<FriendsReqBean> 
             }
         };
     }
-
-    private static class MyViewTarget extends BitmapImageViewTarget {
-        private final WeakReference<Resources> resourcesWeakReference;
-        private final WeakReference<RoundedImageView> imageViewWeakReference;
-
-        public MyViewTarget(RoundedImageView view, Resources resources) {
-            super(view);
-            resourcesWeakReference = new WeakReference<Resources>(resources);
-            imageViewWeakReference = new WeakReference<RoundedImageView>(view);
-        }
-
-        @Override
-        protected void setResource(Bitmap resource) {
-            super.setResource(resource);
-            RoundedBitmapDrawable circularBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
-            circularBitmapDrawable.setCircular(true);
-            imageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
-        }
-    }
-
 }

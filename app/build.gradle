@@ -68,6 +68,8 @@ android {
             abiFilters 'armeabi-v7a'//, 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
         vectorDrawables.useSupportLibrary = true
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
     }
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
@@ -436,6 +438,8 @@ dependencies {
     // If you want to use Kotlin syntax
     compile 'com.trello:rxlifecycle-kotlin:1.0'
     compile 'com.trello:rxlifecycle-components:1.0'
+    kapt 'com.github.bumptech.glide:compiler:4.3.1'
+    compile 'com.github.bumptech.glide:okhttp3-integration:4.3.1'
 
 // If you want to use Kotlin syntax with Android Lifecycle
 //    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20171019.084208-15', ext: 'pom')

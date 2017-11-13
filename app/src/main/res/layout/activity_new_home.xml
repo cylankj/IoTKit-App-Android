@@ -7,17 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".NewHomeActivity">
 
-    <!--<com.cylan.jiafeigou.widget.CustomViewPager-->
-    <!--android:id="@+id/vp_home_content"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_above="@+id/fLayout_new_home_bottom_menu" />-->
-
-    <FrameLayout
+    <com.cylan.jiafeigou.widget.page.EViewPager
         android:id="@+id/vp_home_content"
-        android:layout_above="@+id/fLayout_new_home_bottom_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fLayout_new_home_bottom_menu" />
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/vp_home_content"-->
+    <!--android:layout_above="@+id/fLayout_new_home_bottom_menu"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 
 
     <FrameLayout

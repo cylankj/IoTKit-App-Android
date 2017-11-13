@@ -1,13 +1,17 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -64,19 +68,19 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
 //说明不是自己接听的
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
-                        .mergeWith(
-                                Observable.just(mHolderCaller = caller)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .filter(who -> !mIsInViewerMode)
-                                        .flatMap(who -> {
+                .mergeWith(
+                        Observable.just(mHolderCaller = caller)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .filter(who -> !mIsInViewerMode)
+                                .flatMap(who -> {
 //                                    switch (mView.onResolveViewLaunchType()) {
 //                                        case JConstant.VIEW_CALL_WAY_LISTEN:
-                                            if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
+                                    if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
-                                            } else if (mHolderCaller != null) {
-                                                mView.onListen();
-                                                AppLogger.d("收到门铃呼叫");
-                                            }
+                                    } else if (mHolderCaller != null) {
+                                        mView.onListen();
+                                        AppLogger.d("收到门铃呼叫");
+                                    }
 //                                            break;
 //                                        case JConstant.VIEW_CALL_WAY_VIEWER:
 //                                            mCaller = mHolderCaller;
@@ -84,9 +88,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 //                                            startViewer();
 //                                            break;
 //                                    }
-                                            return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
-                                        })
-                        )
+                                    return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
+                                })
+                )
                 .first()
                 .timeout(JFGRules.getCallTimeOut(sourceManager.getDevice(uuid)), TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,7 +124,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscribe =  load(BellPuller.getInstance().getUrl(uuid))
+        Subscription subscribe = load(BellPuller.getInstance().getUrl(uuid))
                 .subscribe(ret -> {
                 }, AppLogger::e);
         addDestroySubscription(subscribe);
@@ -151,23 +155,24 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     private void preload(String url) {
         if (mView != null && url != null) {
-            Glide.with(mView.activity()).load(url)
+            GlideApp.with(mView.activity())
                     .asBitmap()
-                    .listener(new RequestListener<String, Bitmap>() {
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<Bitmap>() {
                         @Override
-                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
                             RxBus.getCacheInstance().post(new Notify(true));
                             // TODO: 2017/8/29 门铃截图也需要保存起来
                             saveBitmap(resource);
                             return false;
                         }
                     })
-                    .preload();
+                    .submit();
         }
     }
 

@@ -1,17 +1,13 @@
 package com.cylan.jiafeigou.utils;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -45,7 +41,7 @@ public class WonderGlideURL extends GlideUrl {
     }
 
     @Override
-    public URL toURL() throws MalformedURLException {
+    public String toStringUrl() {
         String url = "";
         try {
             String u = String.format(Locale.getDefault(), "/long/%s/%s/wonder/%s/%s",
@@ -54,23 +50,11 @@ public class WonderGlideURL extends GlideUrl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new URL(url);
+        return url;
     }
 
-    public interface FileInterface {
-        void onResourceReady(String filePath);
-    }
-
-    public void fetchFile(FileInterface fileInterface) {
-        Glide.with(ContextUtils.getContext())
-                .load(this)
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        if (fileInterface != null) {
-                            fileInterface.onResourceReady(resource.getAbsolutePath());
-                        }
-                    }
-                });
+    @Override
+    public URL toURL() throws MalformedURLException {
+        return new URL(toStringUrl());
     }
 }
