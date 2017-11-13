@@ -229,7 +229,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         val faceType = currentItem?.getFaceType() ?: FaceItem.FACE_TYPE_EMPTY
         when (faceType) {
             FaceItem.FACE_TYPE_ACQUAINTANCE -> {
-                if (TextUtils.equals(faceId, currentItem?.visitor?.detailList?.get(0)?.faceId)) {
+                if (TextUtils.equals(faceId, currentItem?.visitor?.personId)) {
                     cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
                 }
             }
