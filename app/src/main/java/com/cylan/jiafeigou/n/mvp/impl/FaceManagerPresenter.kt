@@ -47,7 +47,8 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
                     val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API
+                    val serverRsp = OptionsImpl.getRobotServer(uuid, vid)
+                    var url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API
                     if (!url.startsWith("http://")) {
                         url = "http://" + url
                     }
@@ -149,7 +150,8 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                             subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                         } else {
                             val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timestamp)
-                            var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API
+                            val serverRsp = OptionsImpl.getRobotServer(uuid, vid)
+                            var url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API
                             if (!url.startsWith("http://")) {
                                 url = "http://" + url
                             }

@@ -2588,6 +2588,31 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static class GetRobotServerReq {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public String vid;
+
+        public GetRobotServerReq() {
+
+        }
+
+        public GetRobotServerReq(String cid, String vid) {
+            this.cid = cid;
+            this.vid = vid;
+        }
+    }
+
+    @Message
+    public static class GetRobotServerRsp {
+        @Index(0)
+        public String host;
+        @Index(1)
+        public int port;
+    }
+
+    @Message
     public static class DpMessage implements Parcelable {
         @Index(0)
         public int msgId;

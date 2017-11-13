@@ -20,7 +20,6 @@ import java.io.InputStream
 class GlideModule : AppGlideModule() {
 
     override fun applyOptions(context: Context?, builder: GlideBuilder) {
-        builder.setDefaultRequestOptions(RequestOptions.formatOf(DecodeFormat.PREFER_ARGB_8888))
         val downloadDirectoryPath = JConstant.ROOT_DIR + File.separator + "cache"
         val cacheSize = 100 * 1000 * 1000
         builder.setDiskCache(DiskLruCacheFactory(downloadDirectoryPath, cacheSize))

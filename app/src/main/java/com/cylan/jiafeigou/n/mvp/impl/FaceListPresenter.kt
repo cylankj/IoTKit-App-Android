@@ -59,7 +59,8 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
                     val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
+                    val serverRsp = OptionsImpl.getRobotServer(uuid, vid)
+                    var url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
                     if (!url.startsWith("http://")) {
                         url = "http://" + url
                     }
@@ -129,8 +130,9 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     }
                 }
                 ) { e ->
-                     mView.onMoveFaceError()
-                    AppLogger.e(MiscUtils.getErr(e)) }
+                    mView.onMoveFaceError()
+                    AppLogger.e(MiscUtils.getErr(e))
+                }
         addDestroySubscription(subscribe)
     }
 
@@ -147,7 +149,8 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
                     val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API
+                    val serverRsp = OptionsImpl.getRobotServer(uuid, vid)
+                    var url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API
                     if (!url.startsWith("http://")) {
                         url = "http://" + url
                     }

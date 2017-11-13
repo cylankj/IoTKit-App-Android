@@ -253,7 +253,17 @@ public class MiscUtils {
     public static String getCamWarnUrlV2(String cid, CamMessageBean bean, int index) {
         if (bean == null) return null;
         SchemeResolver schemeResolver = SchemeResolver.INSTANCE;
-        return schemeResolver.index(schemeResolver.parse(cid, bean.message), index);
+        String parse = schemeResolver.parse(cid, bean.message);
+        switch ((int) bean.message.getMsgId()) {
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
+                if (dpAlarm.face_id == null || dpAlarm.face_id.length == 0) {
+                    return schemeResolver.index(parse, index);
+                }
+            }
+            default:
+                return parse;
+        }
     }
 
     @SuppressWarnings("unchecked")

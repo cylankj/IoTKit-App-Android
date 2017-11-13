@@ -5,11 +5,23 @@ import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.mcxiaoke.packer.helper.PackerNg;
+
+import java.io.IOException;
+
+import rx.Observable;
+import rx.observables.BlockingObservable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hds on 17-3-30.
@@ -82,35 +94,56 @@ public class OptionsImpl {
      *
      * @return
      */
-    public static String getRobotServer() {
-        try {
-            if (!TextUtils.isEmpty(OptionsImpl.robotServer)) {
-                return OptionsImpl.robotServer.replace("_", ":");
-            }
-            String server = PreferencesUtils.getString(KEY_ROBOT_SERVER, "");
-            if (!TextUtils.isEmpty(server)) {
-                return OptionsImpl.robotServer = server.replace("_", ":");
-            }
-            // com.mcxiaoke.packer.helper.PackerNg
-            final String domain = PackerNg.getChannel(ContextUtils.getContext());
-            if (!TextUtils.isEmpty(domain)) {
-                OptionsImpl.robotServer = domain.trim();
-                Log.d(TAG, "get serverFrom ng: " + OptionsImpl.robotServer);
-                PreferencesUtils.putString(KEY_ROBOT_SERVER, OptionsImpl.robotServer);
-                return OptionsImpl.robotServer.replace("_", ":");
-            }
-            OptionsImpl.robotServer = server = PackageUtils.getMetaString(ContextUtils.getContext(), "robot_server").trim();
-            if (!BuildConfig.DEBUG) {
-                return server.replace("_", ":");
-            }
-            if (TextUtils.isEmpty(server)) {
-                server = "yf.robotscloud.com";
-            }
-            return server.replace("_", ":");
-        } catch (Exception e) {
-            Log.d("IOException", ":" + e.getLocalizedMessage());
-            return "yf.robotscloud.com";
-        }
+    public static DpMsgDefine.GetRobotServerRsp getRobotServer(String cid, String vid) {
+        BlockingObservable<DpMsgDefine.GetRobotServerRsp> toBlocking = Observable.just("")
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        return BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(12, DpUtils.pack(new DpMsgDefine.GetRobotServerReq(cid, vid)));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return -1L;
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).first(rsp -> rsp.seq == seq))
+                .map(rsp -> {
+                    try {
+                        return DpUtils.unpackData(rsp.data, DpMsgDefine.GetRobotServerRsp.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .toBlocking();
+          return toBlocking.first();
+//        try {
+//            if (!TextUtils.isEmpty(OptionsImpl.robotServer)) {
+//                return OptionsImpl.robotServer.replace("_", ":");
+//            }
+//            String server = PreferencesUtils.getString(KEY_ROBOT_SERVER, "");
+//            if (!TextUtils.isEmpty(server)) {
+//                return OptionsImpl.robotServer = server.replace("_", ":");
+//            }
+//            // com.mcxiaoke.packer.helper.PackerNg
+//            final String domain = PackerNg.getChannel(ContextUtils.getContext());
+//            if (!TextUtils.isEmpty(domain)) {
+//                OptionsImpl.robotServer = domain.trim();
+//                Log.d(TAG, "get serverFrom ng: " + OptionsImpl.robotServer);
+//                PreferencesUtils.putString(KEY_ROBOT_SERVER, OptionsImpl.robotServer);
+//                return OptionsImpl.robotServer.replace("_", ":");
+//            }
+//            OptionsImpl.robotServer = server = PackageUtils.getMetaString(ContextUtils.getContext(), "robot_server").trim();
+//            if (!BuildConfig.DEBUG) {
+//                return server.replace("_", ":");
+//            }
+//            if (TextUtils.isEmpty(server)) {
+//                server = "yf.robotscloud.com";
+//            }
+//            return server.replace("_", ":");
+//        } catch (Exception e) {
+//            Log.d("IOException", ":" + e.getLocalizedMessage());
+//            return "yf.robotscloud.com";
+//        }
     }
 
     public static String getVKey() {

@@ -13,7 +13,7 @@ import org.msgpack.annotation.Ignore;
  * Created by cylan-hunt on 16-12-2.
  */
 
-public abstract class BaseDataPoint implements Parcelable, DataPoint {
+public class BaseDataPoint implements Parcelable, DataPoint {
     @Ignore
     @JsonIgnore
     private static Gson mGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -24,6 +24,18 @@ public abstract class BaseDataPoint implements Parcelable, DataPoint {
     @Ignore
     @JsonIgnore
     public long version;
+
+    public static final Creator<BaseDataPoint> CREATOR = new Creator<BaseDataPoint>() {
+        @Override
+        public BaseDataPoint createFromParcel(Parcel in) {
+            return new BaseDataPoint(in);
+        }
+
+        @Override
+        public BaseDataPoint[] newArray(int size) {
+            return new BaseDataPoint[size];
+        }
+    };
 
     @Override
     public String toString() {

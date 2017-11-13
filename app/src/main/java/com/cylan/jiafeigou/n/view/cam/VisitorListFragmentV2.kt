@@ -11,6 +11,7 @@ import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -73,7 +74,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
 
     override fun onVisitsTimeRsp(faceId: String, cnt: Int) {
-        setFaceVisitsCounts(cnt)
+        setFaceVisitsCounts(faceId, cnt)
     }
 
     var itemClickListener: ItemClickListener? = null
@@ -88,6 +89,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     private lateinit var faceAdapter: FaceAdapter
     private lateinit var strangerAdapter: FaceAdapter
     private var isLoadCache = false
+    private var currentItem: FaceItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = BaseVisitorPresenter(this)
@@ -148,6 +150,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         val itemClickListener: ItemClickListener = object : ItemClickListener {
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
+                val adapter = vp_default.adapter as FaceAdapter?
+                val faceItem = adapter?.dataItems?.get(globalPosition)
+                currentItem = faceItem
                 (vp_default.adapter as FaceAdapter?)?.updateClickItem(globalPosition)
                 when (item.getFaceType()) {
                     FaceItem.FACE_TYPE_ALL -> {
@@ -164,14 +169,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                        presenter.fetchVisitsCount(faceId!!)
+                        presenter.fetchVisitsCount(faceId!!, 2)
                     }
                     FaceItem.FACE_TYPE_STRANGER_SUB -> {
                         val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                        presenter.fetchVisitsCount(faceId!!)
+                        presenter.fetchVisitsCount(faceId!!, 1)
                     }
                 }
             }
@@ -182,6 +187,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 if (adapter != null) {
                     adapter.updateClickItem(globalPosition)
                     val faceItem = adapter.dataItems[globalPosition]
+                    currentItem = faceItem
                     showHeaderFacePopMenu(faceItem, _p, _v, faceType)
                 }
             }
@@ -216,11 +222,23 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cam_message_indicator_page_text.visibility = if (total > 3) View.VISIBLE else View.GONE
     }
 
-    private fun setFaceVisitsCounts(count: Int) {
+    private fun setFaceVisitsCounts(faceId: String, count: Int) {
         if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
         }
-        cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
+        val faceType = currentItem?.getFaceType() ?: FaceItem.FACE_TYPE_EMPTY
+        when (faceType) {
+            FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                if (TextUtils.equals(faceId, currentItem?.visitor?.detailList?.get(0)?.faceId)) {
+                    cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
+                }
+            }
+            FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                if (TextUtils.equals(faceId, currentItem?.strangerVisitor?.faceId)) {
+                    cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
+                }
+            }
+        }
     }
 
     override fun onVisitorListReady(visitorList: MutableList<FaceItem>) {
@@ -255,7 +273,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     open fun refreshContent() {
-        val adapter = vp_default.adapter as FaceAdapter?
+        val adapter = vp_default?.adapter as FaceAdapter?
         if (adapter?.isNormalVisitor == true) {
             presenter.fetchVisitorList()
         } else {
@@ -328,7 +346,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 // TODO: 2017/10/16 为什么会出现这种情况?
             }
         }
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem, 0, 0, Gravity.START or Gravity.BOTTOM)
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem.findViewById(R.id.img_item_face_selection), 0, 0, Gravity.START or Gravity.BOTTOM)
     }
 
     private fun showDetectFaceAlert(strangerVisitor: DpMsgDefine.StrangerVisitor?) {
@@ -446,11 +464,11 @@ class ViewHolder(val itemview: View) {
         adapter.withAllowDeselection(false)
         rvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, v: View, parent: RecyclerView, state: RecyclerView.State?) {
-                if (parent.getChildLayoutPosition(v) % 3 == 1) {
-                    val pixelOffset = itemview.context.resources.getDimensionPixelOffset(R.dimen.y18)
-                    outRect.left = pixelOffset
-                    outRect.right = pixelOffset
-                }
+//                if (parent.getChildLayoutPosition(v) % 3 == 1) {
+//                    val pixelOffset = itemview.context.resources.getDimensionPixelOffset(R.dimen.y18)
+//                    outRect.left = pixelOffset
+//                    outRect.right = pixelOffset
+//                }
             }
         })
     }

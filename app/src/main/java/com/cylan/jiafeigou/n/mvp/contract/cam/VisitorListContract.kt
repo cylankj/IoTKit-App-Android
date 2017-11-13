@@ -21,7 +21,7 @@ interface VisitorListContract {
     interface Presenter : BasePresenter {
         fun fetchVisitorList()
         fun fetchStrangerVisitorList()
-        fun fetchVisitsCount(faceId: String)
+        fun fetchVisitsCount(faceId: String,type:Int)
         //    cid, type, id, delMsg
         fun deleteFace(type: Int, id: String, delMsg: Int)
     }

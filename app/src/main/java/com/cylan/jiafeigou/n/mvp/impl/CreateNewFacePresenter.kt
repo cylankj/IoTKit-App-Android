@@ -45,7 +45,8 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
             }
 
             val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
-            var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
+            val serverRsp = OptionsImpl.getRobotServer(uuid, vid)
+            var url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
             if (!url.startsWith("http://")) {
                 url = "http://" + url
             }

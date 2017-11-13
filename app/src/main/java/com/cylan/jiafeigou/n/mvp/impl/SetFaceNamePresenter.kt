@@ -53,7 +53,8 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
                     val sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API, seceret, timestamp)
-                    var url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
+                    val serverRsp = OptionsImpl.getRobotServer(uuid, vid)
+                    var url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_ADD_API
                     if (!url.startsWith("http://")) {
                         url = "http://" + url
                     }

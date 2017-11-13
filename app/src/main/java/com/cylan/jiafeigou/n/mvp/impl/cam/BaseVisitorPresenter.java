@@ -114,7 +114,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     }
 
     @Override
-    public void fetchVisitsCount(@NotNull String faceId) {
+    public void fetchVisitsCount(@NotNull String faceId, int type) {
         //msgType = 7
         //req=msgpack(cid, type, id)
         //rsp=msgpack(cid, type, id, count)
@@ -124,7 +124,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
             DpMsgDefine.VisitsTimesReq reqContent = new DpMsgDefine.VisitsTimesReq();
             reqContent.cid = uuid;
             reqContent.faceId = faceId;
-            reqContent.msgType = 7;
+            reqContent.msgType = type;
             final long seq = BaseApplication.getAppComponent()
                     .getCmd().sendUniservalDataSeq(7, DpUtils.pack(reqContent));
             Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
@@ -180,7 +180,8 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
                 } else {
                     String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API, seceret, timestamp);
-                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API;
+                    DpMsgDefine.GetRobotServerRsp serverRsp = OptionsImpl.getRobotServer(uuid, vid);
+                    String url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_DELETE_API;
                     if (!url.startsWith("http://")) {
                         url = "http://" + url;
                     }
@@ -230,7 +231,8 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
                 } else {
                     String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_DELETE_API, seceret, timestamp);
-                    String url = OptionsImpl.getRobotServer() + JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_DELETE_API;
+                    DpMsgDefine.GetRobotServerRsp serverRsp = OptionsImpl.getRobotServer(uuid, vid);
+                    String url = serverRsp.host + ":" + serverRsp.port + JConstant.RobotCloudApi.ROBOTSCLOUD_PERSON_DELETE_API;
                     if (!url.startsWith("http://")) {
                         url = "http://" + url;
                     }
