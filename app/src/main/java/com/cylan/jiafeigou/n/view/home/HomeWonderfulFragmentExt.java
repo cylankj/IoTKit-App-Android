@@ -85,7 +85,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout mWonderfulEmptyViewContainer;
     @BindView(R.id.fragment_wonderful_empty)
-    ViewGroup mWonderfulEmptyContainer;
+    TextView mWonderfulEmptyContainer;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     Unbinder unbinder;
