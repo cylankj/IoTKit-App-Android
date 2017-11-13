@@ -13,6 +13,7 @@
  */
 package com.cylan.jiafeigou.support.block;
 
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.Printer;
 
@@ -79,7 +80,8 @@ class LooperPrinter implements Printer {
             BlockCanaryCore.get().threadStackSampler.start();
         }
 
-        if (null != BlockCanaryCore.get().cpuSampler) {
+        //8.0
+        if (null != BlockCanaryCore.get().cpuSampler && Build.VERSION.SDK_INT < 26) {
             BlockCanaryCore.get().cpuSampler.start();
         }
     }
