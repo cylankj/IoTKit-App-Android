@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Elimina il viso?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Rimuova l\'icona</string>
   <string name="MESSAGES_DELETE_ICON_MES">Elimina icona e messaggi</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Eliminare l\'icona e tutti i messaggi correlati? Dopo l\'eliminazione, il messaggio in altre opzioni verrà eliminato</string>
-  <string name="MESSAGES_DELETE_POP">Eliminare il volto e tutti i messaggi correlati? Dopo l\'eliminazione, il messaggio in altre opzioni verrà eliminato</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Eliminare l\'icona e tutti i messaggi correlati?</string>
+  <string name="MESSAGES_DELETE_POP">Eliminare il volto e tutti i messaggi correlati?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identificare</string>
   <string name="MESSAGES_FACE_INFO">Informazioni sulla faccia</string>
   <string name="MESSAGES_FACE_MABAGE">Gestione del viso</string>

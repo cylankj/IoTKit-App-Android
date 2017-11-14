@@ -2613,6 +2613,32 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static class Rect4F {
+        @Index(0)
+        public float left;
+        @Index(1)
+        public float top;
+        @Index(2)
+        public float right;
+        @Index(3)
+        public float bottom;
+    }
+
+    @Message
+    public static class DPCameraWarnArea extends BaseDataPoint {
+//        enable   bool
+//        是否开启  rects
+//        array
+//        侦测区域，如:[[x1,y1,x2,y2],[x1,y1,x2,y2],...]
+
+        @Index(0)
+        public boolean enable;
+        @Index(1)
+        public List<Rect4F> rects;
+
+    }
+
+    @Message
     public static class DpMessage implements Parcelable {
         @Index(0)
         public int msgId;

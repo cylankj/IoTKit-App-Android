@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Удалить лицо?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Удалить значок</string>
   <string name="MESSAGES_DELETE_ICON_MES">Удалить значок и сообщения</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Удалить значок и все связанные с ним сообщения? После удаления сообщение в других вариантах также будет удалено</string>
-  <string name="MESSAGES_DELETE_POP">Удалить лицо и все связанные с ним сообщения? После удаления сообщение в других вариантах также будет удалено</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Удалить значок и все связанные с ним сообщения?</string>
+  <string name="MESSAGES_DELETE_POP">Удалить лицо и все связанные с ним сообщения?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Выявить</string>
   <string name="MESSAGES_FACE_INFO">Лицо информация</string>
   <string name="MESSAGES_FACE_MABAGE">управление Face</string>

@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">顔を削除しますか？</string>
   <string name="MESSAGES_DELETE_ICON_BTN">アイコンを削除</string>
   <string name="MESSAGES_DELETE_ICON_MES">アイコンとメッセージを削除する</string>
-  <string name="MESSAGES_DELETE_ICON_POP">アイコンと関連するすべてのメッセージを削除しますか？ 削除後、他のオプションの下のメッセージも削除されます</string>
-  <string name="MESSAGES_DELETE_POP">顔と関連するすべてのメッセージを削除しますか？ 削除後、他のオプションの下のメッセージも削除されます</string>
+  <string name="MESSAGES_DELETE_ICON_POP">アイコンと関連するすべてのメッセージを削除しますか？</string>
+  <string name="MESSAGES_DELETE_POP">顔と関連するすべてのメッセージを削除しますか？</string>
   <string name="MESSAGES_FACE_IDENTIFY">識別する</string>
   <string name="MESSAGES_FACE_INFO">顔情報</string>
   <string name="MESSAGES_FACE_MABAGE">顔管理</string>

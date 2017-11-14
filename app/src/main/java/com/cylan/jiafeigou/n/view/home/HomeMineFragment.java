@@ -311,7 +311,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             Allocation outAllocation = Allocation.createTyped(renderScript, type);
             ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
             intrinsicBlur.setInput(allocation);
-            intrinsicBlur.setRadius(20);
+            intrinsicBlur.setRadius(25);
             intrinsicBlur.forEach(outAllocation);
             outAllocation.copyTo(toTransform);
             allocation.destroy();

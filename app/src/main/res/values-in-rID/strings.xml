@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Hapus wajah?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Hapus ikon</string>
   <string name="MESSAGES_DELETE_ICON_MES">Hapus ikon dan pesan</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Hapus ikon dan semua pesan terkait? Setelah dihapus, pesan di bawah pilihan lain juga akan dihapus</string>
-  <string name="MESSAGES_DELETE_POP">Hapus wajah dan semua pesan terkait? Setelah dihapus, pesan di bawah pilihan lain juga akan dihapus</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Hapus ikon dan semua pesan terkait?</string>
+  <string name="MESSAGES_DELETE_POP">Hapus wajah dan semua pesan terkait?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Mengenali</string>
   <string name="MESSAGES_FACE_INFO">Informasi wajah</string>
   <string name="MESSAGES_FACE_MABAGE">Manajemen wajah</string>

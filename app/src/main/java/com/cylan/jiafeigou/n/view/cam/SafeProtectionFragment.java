@@ -95,6 +95,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView0 swMotionAI;
     @BindView(R.id.sw_motion_interval)
     SettingItemView0 swMotionInterval;
+    @BindView(R.id.sw_infrared_strengthen)
+    SettingItemView1 swInfraredStrengthen;
+    @BindView(R.id.sw_monitoring_area)
+    SettingItemView0 swMonitoringArea;
     //    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     //    private TimePickDialogFragment timePickDialogFragment;
 
@@ -136,6 +140,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
@@ -188,6 +193,24 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 updateDetails();
             }
         });
+        Boolean enableInfrared = device.$(DpMsgMap.ID_520_CAM_INFRARED, false);
+        swInfraredStrengthen.setChecked(enableInfrared);
+        swInfraredStrengthen.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
+                wFlag.value = true;
+                presenter.updateInfoReq(wFlag, DpMsgMap.ID_520_CAM_INFRARED);
+                updateDetails();
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+            } else {
+                DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
+                wFlag.value = false;
+                presenter.updateInfoReq(wFlag, DpMsgMap.ID_520_CAM_INFRARED);
+                updateDetails();
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+            }
+        });
+
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(AIRecognitionFragment.class.getSimpleName());
         swMotionAI.showRedHint(node != null && node.getNodeCount() > 0);
     }
@@ -203,10 +226,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean enableAI = property.hasProperty(device.pid, "AI_RECOGNITION");//todo 暂时还没有定义该字段
         boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
 
+        boolean hasFaceFeature = JFGRules.isFaceFragment(device.pid);
+
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
         }
+
 
         tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
         flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);
@@ -218,6 +244,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
         swMotionAI.setVisibility(enableAI && show ? View.VISIBLE : View.GONE);
         swMotionInterval.setVisibility(warmInterval && show ? View.VISIBLE : View.GONE);
+
+        swInfraredStrengthen.setVisibility(show && hasFaceFeature ? View.VISIBLE : View.GONE);
+        swMonitoringArea.setVisibility(show && hasFaceFeature ? View.VISIBLE : View.GONE);
     }
 
     @Override

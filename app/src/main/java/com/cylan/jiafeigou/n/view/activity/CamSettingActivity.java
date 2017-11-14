@@ -176,12 +176,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (http) {
             BaseDeviceInformationFetcher.getInstance().init(uuid);
         }
-
-
-//        observer = BaseApplication.getPropertyItemBox().query()
-//                .equal(PropertyItem_.uuid, Long.parseLong(uuid))
-//                .in(PropertyItem_.msgId, new int[]{})
-//                .build().subscribe().observer(this);
     }
 
     private void initProductLayout(Device device) {

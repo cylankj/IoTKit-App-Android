@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Apague o rosto?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Remover ícone</string>
   <string name="MESSAGES_DELETE_ICON_MES">Apagar ícone e mensagens</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Apague o ícone e todas as mensagens relacionadas? Depois de excluída, a mensagem em outras opções também será excluída</string>
-  <string name="MESSAGES_DELETE_POP">Apague o rosto e todas as mensagens relacionadas? Depois de excluída, a mensagem em outras opções também será excluída</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Apague o ícone e todas as mensagens relacionadas?</string>
+  <string name="MESSAGES_DELETE_POP">Apague o rosto e todas as mensagens relacionadas?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identificar</string>
   <string name="MESSAGES_FACE_INFO">Informação do rosto</string>
   <string name="MESSAGES_FACE_MABAGE">Gestão Face</string>

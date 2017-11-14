@@ -46,6 +46,12 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
         DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
     }
 
+    public void getSafeInformation() {
+//       Observable.create(new Observable.OnSubscribe<getd>() {
+//       })
+
+    }
+
     @Override
     public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Observable.just(value)

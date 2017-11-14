@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Löschen Sie das Gesicht?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Symbol entfernen</string>
   <string name="MESSAGES_DELETE_ICON_MES">Symbol und Nachrichten löschen</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Löschen Sie das Symbol und alle zugehörigen Nachrichten? Nach dem Löschen wird auch die Nachricht unter anderen Optionen gelöscht</string>
-  <string name="MESSAGES_DELETE_POP">Löschen Sie das Gesicht und alle zugehörigen Nachrichten? Nach dem Löschen wird auch die Nachricht unter anderen Optionen gelöscht</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Löschen Sie das Symbol und alle zugehörigen Nachrichten?</string>
+  <string name="MESSAGES_DELETE_POP">Löschen Sie das Gesicht und alle zugehörigen Nachrichten?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identifizieren</string>
   <string name="MESSAGES_FACE_INFO">Gesicht Informationen</string>
   <string name="MESSAGES_FACE_MABAGE">Gesicht Management</string>

@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">是否刪除面孔？</string>
   <string name="MESSAGES_DELETE_ICON_BTN">僅刪除圖標</string>
   <string name="MESSAGES_DELETE_ICON_MES">刪除圖標和消息</string>
-  <string name="MESSAGES_DELETE_ICON_POP">是否刪除該圖標及其所有消息？刪除消息後，其他篩選項下有該消息也將被刪除</string>
-  <string name="MESSAGES_DELETE_POP">是否刪除該面孔及其所有消息？刪除消息後，其他篩選項下有該消息也將被刪除</string>
+  <string name="MESSAGES_DELETE_ICON_POP">是否刪除該圖標及其所有消息？</string>
+  <string name="MESSAGES_DELETE_POP">是否刪除該面孔及其所有消息？</string>
   <string name="MESSAGES_FACE_IDENTIFY">識別</string>
   <string name="MESSAGES_FACE_INFO">面孔信息</string>
   <string name="MESSAGES_FACE_MABAGE">面孔管理</string>

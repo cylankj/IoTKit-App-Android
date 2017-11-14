@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Yüzü silinsin mi?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Simgesini kaldır</string>
   <string name="MESSAGES_DELETE_ICON_MES">Simgeyi ve mesajları sil</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Simgeyi ve ilgili tüm mesajları silinsin mi? Silindikten sonra, diğer seçeneklerin altındaki mesajlar da silinir</string>
-  <string name="MESSAGES_DELETE_POP">Yüzü ve ilgili tüm mesajları silinsin mi? Silindikten sonra, diğer seçeneklerin altındaki mesajlar da silinir</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Simgeyi ve ilgili tüm mesajları silinsin mi?</string>
+  <string name="MESSAGES_DELETE_POP">Yüzü ve ilgili tüm mesajları silinsin mi?</string>
   <string name="MESSAGES_FACE_IDENTIFY">belirlemek</string>
   <string name="MESSAGES_FACE_INFO">Yüz bilgilerini</string>
   <string name="MESSAGES_FACE_MABAGE">Yüz yönetimi</string>

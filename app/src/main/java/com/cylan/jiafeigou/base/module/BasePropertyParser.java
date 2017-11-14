@@ -53,6 +53,8 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_511_CAMERAWARNANDWONDER;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_512_CAMERA_ALARM_MSG_V3;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_514_CAM_WARNINTERVAL;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_515_CAM_ObjectDetect;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_519_CAM_WARNAREA;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_520_CAM_INFRARED;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_601_ACCOUNT_STATE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_701_SYS_PUSH_FLAG;
@@ -154,6 +156,9 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_202_MAC, new DPProperty(String.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_201_NET, new DPProperty(DpMsgDefine.DPNet.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(305, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_520_CAM_INFRARED, new DPProperty(boolean.class, DPProperty.LEVEL_DEFAULT, PROPERTY, CAMERA));
+        properties.put(ID_519_CAM_WARNAREA, new DPProperty(DpMsgDefine.DPCameraWarnArea.class, DPProperty.LEVEL_DEFAULT, PROPERTY, CAMERA));
+
     }
 
     @Override

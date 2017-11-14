@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Delete the face？</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Remove icon</string>
   <string name="MESSAGES_DELETE_ICON_MES">Delete icon and messages</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Delete the icon and all related messages? After deleted, the message under other options will also be deleted</string>
-  <string name="MESSAGES_DELETE_POP">Delete the face and all related messages? After deleted, the message under other options will also be deleted</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Delete the icon and all related messages?</string>
+  <string name="MESSAGES_DELETE_POP">Delete the face and all related messages?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identify</string>
   <string name="MESSAGES_FACE_INFO">Face information</string>
   <string name="MESSAGES_FACE_MABAGE">Face management</string>

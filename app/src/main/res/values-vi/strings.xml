@@ -404,8 +404,8 @@
   <string name="MESSAGES_DELETE_FCAE_POP">Xóa khuôn mặt?</string>
   <string name="MESSAGES_DELETE_ICON_BTN">Xóa biểu tượng</string>
   <string name="MESSAGES_DELETE_ICON_MES">Xóa biểu tượng và thư</string>
-  <string name="MESSAGES_DELETE_ICON_POP">Xóa biểu tượng và tất cả các thư liên quan? Sau khi xóa, thư theo các tùy chọn khác cũng sẽ bị xóa</string>
-  <string name="MESSAGES_DELETE_POP">Xóa khuôn mặt và tất cả các tin nhắn có liên quan? Sau khi xóa, thư theo các tùy chọn khác cũng sẽ bị xóa</string>
+  <string name="MESSAGES_DELETE_ICON_POP">Xóa biểu tượng và tất cả các thư liên quan?</string>
+  <string name="MESSAGES_DELETE_POP">Xóa khuôn mặt và tất cả các tin nhắn có liên quan?</string>
   <string name="MESSAGES_FACE_IDENTIFY">Nhận định</string>
   <string name="MESSAGES_FACE_INFO">Thông tin khuôn mặt</string>
   <string name="MESSAGES_FACE_MABAGE">Quản lý khuôn mặt</string>
