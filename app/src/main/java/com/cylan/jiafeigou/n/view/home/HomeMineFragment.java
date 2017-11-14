@@ -60,6 +60,7 @@ import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
+import java.lang.ref.WeakReference;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -253,6 +254,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .addToBackStack("HomeMineFragment")
                 .commit();
     }
+
     /**
      * 设置昵称
      *
@@ -290,17 +292,19 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         portraitBlur(url);
     }
 
-    private class BlurTransFormation extends BitmapTransformation {
-        private Context context;
+    private static class BlurTransFormation extends BitmapTransformation {
+        private WeakReference<Context> contextWeakReference;
         private final String key;
 
         public BlurTransFormation(Context context, String key) {
-            this.context = context;
+            this.contextWeakReference = new WeakReference<>(context);
             this.key = key;
         }
 
         @Override
         protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+            Context context = contextWeakReference.get();
+            if (context == null) return null;
             RenderScript renderScript = RenderScript.create(context);
             Allocation allocation = Allocation.createFromBitmap(renderScript, toTransform);
             Type type = allocation.getType();
