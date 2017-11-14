@@ -275,9 +275,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     open fun refreshContent() {
         val adapter = vp_default?.adapter as FaceAdapter?
         if (adapter?.isNormalVisitor == true) {
-            presenter.fetchVisitorList()
+            presenter?.fetchVisitorList()
         } else {
-            presenter.fetchStrangerVisitorList()
+            presenter?.fetchStrangerVisitorList()
         }
     }
 
@@ -346,7 +346,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 // TODO: 2017/10/16 为什么会出现这种情况?
             }
         }
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem.findViewById(R.id.img_item_face_selection), 0, 0, Gravity.START or Gravity.BOTTOM)
+//        popupWindow.showAsDropDown(faceItem.findViewById(R.id.img_item_face_selection))
+        PopupWindowCompat.showAsDropDown(popupWindow, faceItem.findViewById(R.id.img_item_face_selection), 0, 0, Gravity.BOTTOM or Gravity.START)
     }
 
     private fun showDetectFaceAlert(strangerVisitor: DpMsgDefine.StrangerVisitor?) {
@@ -436,21 +437,16 @@ class ViewHolder(val itemview: View) {
     val rvList: RecyclerView = itemview.findViewById(R.id.message_face_page_item) as RecyclerView
     val visitorAdapter = FaceFastItemAdapter()
     val adapter = FastAdapter<FaceItem>()
-    fun bindItem(pageIndex: Int, isNormalVisitor: Boolean, items: List<FaceItem>, itemClickListener: VisitorListFragmentV2.ItemClickListener) {
-        adapter.withOnClickListener { _, _, item, position ->
-            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
-            itemClickListener?.itemClick(visitorAdapter.getItem(position),
-                    globalPosition, position, pageIndex)
-            true
-        }
-        adapter.withOnLongClickListener { _v, _, _, _p ->
-            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + _p
-            if (globalPosition > 1 || !isNormalVisitor) {
-                itemClickListener?.itemLongClick(globalPosition, _p, _v, adapter.getItem(_p).getFaceType(), pageIndex)
-            }
-            true
-        }
+    var itemClickListener: VisitorListFragmentV2.ItemClickListener? = null
+    private var isNormalVisitor: Boolean = true
+    private var items: List<FaceItem>? = null
+    private var pageIndex: Int = 0
 
+    fun bindItem(pageIndex: Int, isNormalVisitor: Boolean, items: List<FaceItem>, itemClickListener: VisitorListFragmentV2.ItemClickListener) {
+        this.itemClickListener = itemClickListener
+        this.isNormalVisitor = isNormalVisitor
+        this.items = items
+        this.pageIndex = pageIndex
         visitorAdapter.setNewList(items)
         adapter.notifyDataSetChanged()
     }
@@ -471,6 +467,19 @@ class ViewHolder(val itemview: View) {
 //                }
             }
         })
+        adapter.withOnClickListener { _, _, item, position ->
+            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
+            itemClickListener?.itemClick(visitorAdapter.getItem(position),
+                    globalPosition, position, pageIndex)
+            true
+        }
+        adapter.withOnLongClickListener { _v, _, _, _p ->
+            val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + _p
+            if (globalPosition > 1 || !isNormalVisitor) {
+                itemClickListener?.itemLongClick(globalPosition, _p, _v, adapter.getItem(_p).getFaceType(), pageIndex)
+            }
+            true
+        }
     }
 }
 
