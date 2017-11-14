@@ -49,14 +49,16 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.bind.UdpConstant.BIND_TAG;
@@ -286,42 +288,57 @@ public class MiscUtils {
     public static Observable<List<TimeZoneBean>> loadTimeZoneList() {
         return Observable.just(R.xml.timezones)
                 .subscribeOn(Schedulers.computation())
-                .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
-                    @Override
-                    public Observable<List<TimeZoneBean>> call(Integer integer) {
-                        XmlResourceParser xrp = getContext().getResources().getXml(integer);
-                        List<TimeZoneBean> list = new ArrayList<>();
-                        try {
-                            final String tag = "timezone";
-                            while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
-                                if (xrp.getEventType() == XmlResourceParser.START_TAG) {
-                                    TimeZoneBean bean = new TimeZoneBean();
-                                    final String name = xrp.getName();
-                                    if (TextUtils.equals(name, tag)) {
-                                        final String timeGmtName = xrp.getAttributeValue(0);
-                                        bean.setGmt(timeGmtName);
-                                        final String timeIdName = xrp.getAttributeValue(1);
-                                        bean.setId(timeIdName);
-                                        String region = xrp.nextText().replace("\n", "");
-                                        bean.setName(region);
-                                        int factor = timeGmtName.contains("+") ? 1 : -1;
-                                        String digitGmt = BindUtils.getDigitsString(timeGmtName);
-                                        int offset = factor * Integer.parseInt(digitGmt.substring(0, 2)) * 3600 +
-                                                factor * (timeGmtName.contains(":30") ? 3600 / 2 : 0);
-                                        bean.setOffset(offset);
-                                        list.add(bean);
-                                    }
-                                }
-                                xrp.next();
-                            }
-                            Log.d(tag, "timezone: " + list);
-                        } catch (XmlPullParserException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                        }
-                        return Observable.just(list);
+                .flatMap(integer -> {
+                    String[] timeIds = TimeZone.getAvailableIDs();
+                    HashMap<String, String> map = new HashMap<>(timeIds.length);
+                    for (String ids : timeIds) {
+                        map.put(ids, ids);
                     }
+                    XmlResourceParser xrp = getContext().getResources().getXml(integer);
+                    List<TimeZoneBean> list = new ArrayList<>();
+                    try {
+                        final String tag = "timezone";
+                        while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
+                            if (xrp.getEventType() == XmlResourceParser.START_TAG) {
+                                TimeZoneBean bean = new TimeZoneBean();
+                                final String name = xrp.getName();
+                                if (TextUtils.equals(name, tag)) {
+                                    final String key = xrp.getAttributeValue(1);
+                                    bean.setId(key);
+                                    String region = xrp.nextText().replace("\n", "");
+                                    bean.setName(region);
+                                    TimeZone timeZone = TimeZone.getTimeZone(key);
+                                    bean.setOffset(timeZone.getRawOffset());
+                                    final String gmt = displayTimeZone(timeZone);
+                                    bean.setGmt(gmt);
+                                    list.add(bean);
+                                }
+                            }
+                            xrp.next();
+                        }
+                        Log.d(tag, "timezone: " + list);
+                    } catch (XmlPullParserException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                    }
+                    return Observable.just(list);
                 });
+    }
+
+    private static final String FORMAT_PH_P = "GMT +%02d:%02d";
+    private static final String FORMAT_PH_N = "GMT -%02d:%02d";
+
+    private static String displayTimeZone(TimeZone tz) {
+        long hours = TimeUnit.MILLISECONDS.toHours(tz.getRawOffset());
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(tz.getRawOffset())
+                - TimeUnit.HOURS.toMinutes(hours);
+        // avoid -4:-30 issue
+        minutes = Math.abs(minutes);
+        if (hours >= 0) {
+            return String.format(Locale.getDefault(), FORMAT_PH_P, hours, minutes);
+        } else {
+            return String.format(Locale.getDefault(), FORMAT_PH_N, hours, minutes);
+        }
     }
 
     public static <T> T getValue(Object o, T t) {
