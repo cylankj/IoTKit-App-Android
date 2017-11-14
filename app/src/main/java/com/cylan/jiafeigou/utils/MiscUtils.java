@@ -325,7 +325,8 @@ public class MiscUtils {
                 });
     }
 
-    private static final String FORMAT_PH = "GMT %02d:%02d";
+    private static final String FORMAT_PH_P = "GMT +%02d:%02d";
+    private static final String FORMAT_PH_N = "GMT -%02d:%02d";
 
     private static String displayTimeZone(TimeZone tz) {
         long hours = TimeUnit.MILLISECONDS.toHours(tz.getRawOffset());
@@ -333,10 +334,10 @@ public class MiscUtils {
                 - TimeUnit.HOURS.toMinutes(hours);
         // avoid -4:-30 issue
         minutes = Math.abs(minutes);
-        if (hours > 0) {
-            return String.format(Locale.getDefault(), FORMAT_PH, hours, minutes);
+        if (hours >= 0) {
+            return String.format(Locale.getDefault(), FORMAT_PH_P, hours, minutes);
         } else {
-            return String.format(Locale.getDefault(), FORMAT_PH, hours, minutes);
+            return String.format(Locale.getDefault(), FORMAT_PH_N, hours, minutes);
         }
     }
 
