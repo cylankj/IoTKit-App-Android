@@ -836,7 +836,7 @@ public class DataSourceManager implements JFGSourceManager {
                             BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                     .subscribe(ret -> {
                                         for (int i : msgIdList) {
-                                           device.updateProperty(i,null);
+                                            device.updateProperty(i, null);
                                         }
                                     }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
                         } catch (Exception e) {
@@ -932,25 +932,24 @@ public class DataSourceManager implements JFGSourceManager {
                         device = event.devices[i];
                         result.remove(device.uuid);
                     }
-                    AppLogger.w("已删除的设备数:" + result.size());
-                    for (String uuid : result) {
 
-                    }
+                    AppLogger.w("已删除的设备数:" + result.size());
                     return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
                     try {
-                        ArrayList<JFGDPMsg> parameters;
                         DBOption.DeviceOption option;
-                        mCachedDeviceMap.clear();
+//                        mCachedDeviceMap.clear();
                         rawDeviceOrder.clear();
                         ArrayList<String> uuidList = new ArrayList<>();
                         synchronized (DataSourceManager.class) {
-                            mCachedDeviceMap.clear();
+//                            mCachedDeviceMap.clear();
                             rawDeviceOrder.clear();
                             for (Device device : devices) {
                                 option = device.option(DBOption.DeviceOption.class);
-                                mCachedDeviceMap.put(device.getUuid(), device);
+                                if (mCachedDeviceMap.get(device.getUuid()) == null) {
+                                    mCachedDeviceMap.put(device.getUuid(), device);
+                                }
                                 rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
                                 if (!JFGRules.isShareDevice(device)) {
                                     uuidList.add(device.getUuid());

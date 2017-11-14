@@ -202,30 +202,18 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        Subscription subscribe = BaseApplication.getAppComponent().getSubscriptionManager()
-                .stop(this)
-                .observeOn(Schedulers.io())
-                .map(ret -> {
-
-                    AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
-                        if (state != LogState.STATE_ACCOUNT_ON) {
-                            getView().onLoginState(false);
-                        }
-                    });
-                    if (manually) {
-                        BaseApplication.getAppComponent().getCmd().refreshDevList();
-                    }
-                    return ret;
-                })
-                .delay(30, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    mView.onRefreshFinish();
-                }, e -> {
-                    AppLogger.e(MiscUtils.getErr(e));
-                });
-        addSubscription(subscribe);
+        Schedulers.io().createWorker().schedule(() -> {
+            if (manually) {
+                BaseApplication.getAppComponent().getCmd().refreshDevList();
+            }
+        });
+        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
+        if (state != LogState.STATE_ACCOUNT_ON) {
+            getView().onLoginState(false);
+        }
+        AndroidSchedulers.mainThread().createWorker().schedule(()->{
+            mView.onRefreshFinish();
+        },30,TimeUnit.SECONDS);
     }
 
     @Override
