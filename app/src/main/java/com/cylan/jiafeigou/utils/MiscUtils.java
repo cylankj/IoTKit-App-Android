@@ -325,7 +325,7 @@ public class MiscUtils {
                 });
     }
 
-    private static final String FORMAT_PH = "GMT+%d:%02d";
+    private static final String FORMAT_PH = "GMT %02d:%02d";
 
     private static String displayTimeZone(TimeZone tz) {
         long hours = TimeUnit.MILLISECONDS.toHours(tz.getRawOffset());
