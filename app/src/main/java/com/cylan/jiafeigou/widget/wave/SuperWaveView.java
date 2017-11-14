@@ -18,6 +18,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.cylan.jiafeigou.R;
 
+import java.lang.ref.WeakReference;
 import java.util.Random;
 
 /**
@@ -32,7 +33,7 @@ public class SuperWaveView extends View {
     /**
      * default 1
      */
-    private int waveCount = 1;
+    private static int waveCount = 1;
 
     private int waveColor;
 
@@ -46,7 +47,7 @@ public class SuperWaveView extends View {
 
     private WaveAnimation waveAnimation;
 
-    private float waveShiftRatio[];
+    private static float waveShiftRatio[];
 
     public SuperWaveView(Context context) {
         this(context, null);
@@ -206,7 +207,7 @@ public class SuperWaveView extends View {
 
     public void startAnimation() {
         if (waveAnimation == null) {
-            waveAnimation = new WaveAnimation();
+            waveAnimation = new WaveAnimation(this);
         }
         waveAnimation.start();
     }
@@ -218,12 +219,14 @@ public class SuperWaveView extends View {
 
     }
 
-    private class WaveAnimation {
+    private static class WaveAnimation {
 
         private final long[] duration = {15000, 30000, 35000};
         ValueAnimator[] valueAnimators;
+        private WeakReference<View> reference;
 
-        public WaveAnimation() {
+        public WaveAnimation(View view) {
+            reference = new WeakReference<View>(view);
             valueAnimators = new ValueAnimator[waveCount];
             for (int i = 0; i < waveCount; i++) {
                 initAnimation(i);
@@ -260,8 +263,9 @@ public class SuperWaveView extends View {
             valueAnimators[index].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+                    if (reference.get() == null) return;
                     waveShiftRatio[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
+                    reference.get().postInvalidate();
                 }
             });
         }
