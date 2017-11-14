@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -42,6 +43,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.umeng.socialize.utils.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -372,11 +374,12 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
 
         //不回收可能导致内存泄漏
-//        @Override
-//public void destroyItem(ViewGroup container, int position, Object object) {
-//            //super.destroyItem(container, position, object);
-//            //复写这个函数,以免回收fragment.
-//        }
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+            //复写这个函数,以免回收fragment.
+            AppLogger.d("回收:" + object);
+        }
 
     }
 

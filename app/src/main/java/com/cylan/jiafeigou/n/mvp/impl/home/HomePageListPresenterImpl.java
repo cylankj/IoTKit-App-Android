@@ -136,6 +136,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription devicesUpdate() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> subUuidList(), throwable -> {
                     addSubscription(devicesUpdate());
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
@@ -195,9 +196,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .debounce(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    subUuidList();
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                .subscribe(ret -> subUuidList(), AppLogger::e);
     }
 
 
