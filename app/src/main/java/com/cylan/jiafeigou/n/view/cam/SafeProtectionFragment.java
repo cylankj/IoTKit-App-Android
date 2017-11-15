@@ -227,6 +227,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
         boolean infrared_enhanced_recognition = property.hasProperty(device.pid, "INFRARED_ENHANCED_RECOGNITION");
         boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE_SETTING");
+        //先隐藏
+        detection_zone_setting = false;
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
