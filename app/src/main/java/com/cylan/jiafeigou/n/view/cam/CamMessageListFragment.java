@@ -445,16 +445,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             startRequest(true);
 
         }
-
-        Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
-        KeyValueStringItem stringItem = boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
-        if (stringItem != null) {
-            try {
-                Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(stringItem.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
-                });
-                camMessageListAdapter.restoreCachedItems(json);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (NetUtils.getNetType(getContext()) == -1) {
+            Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
+            KeyValueStringItem stringItem = boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
+            if (stringItem != null) {
+                try {
+                    Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(stringItem.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
+                    });
+                    camMessageListAdapter.restoreCachedItems(json);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

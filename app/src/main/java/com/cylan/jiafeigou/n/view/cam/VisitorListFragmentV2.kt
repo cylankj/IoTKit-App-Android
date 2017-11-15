@@ -1,21 +1,19 @@
 package com.cylan.jiafeigou.n.view.cam
 
 
+import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -96,9 +94,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         presenter = BaseVisitorPresenter(this)
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (!isLoadCache || NetUtils.getNetType(context) == -1) {
+    override fun onResume() {
+        super.onResume()
+        if (!isLoadCache && NetUtils.getNetType(context) == -1) {
             isLoadCache = true
             restoreCache()
         }
@@ -150,9 +148,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         vp_default.adapter = faceAdapter
         val itemClickListener: ItemClickListener = object : ItemClickListener {
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
-                itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
                 val adapter = vp_default.adapter as FaceAdapter?
                 val faceItem = adapter?.dataItems?.get(globalPosition)
+                if (currentItem == faceItem) return
+                itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
                 currentItem = faceItem
                 (vp_default.adapter as FaceAdapter?)?.updateClickItem(globalPosition)
                 when (item.getFaceType()) {
@@ -189,10 +188,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 itemClickListener?.itemLongClick(globalPosition, _p, _v, faceType, pageIndex)
                 val adapter = vp_default.adapter as FaceAdapter?
                 if (adapter != null) {
-                    adapter.updateClickItem(globalPosition)
                     val faceItem = adapter.dataItems[globalPosition]
                     currentItem = faceItem
                     showHeaderFacePopMenu(faceItem, _p, _v, faceType)
+                    adapter.updateClickItem(globalPosition)
                 }
             }
 
@@ -313,26 +312,22 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     private fun showHeaderFacePopMenu(item: FaceItem, position: Int, faceItem: View, faceType: Int) {
 //        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
-        val view = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
-
+        val contentView = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
         when (faceType) {
             FaceItem.FACE_TYPE_ACQUAINTANCE -> {
-                view.findViewById(R.id.detect).visibility = View.GONE
+                contentView.findViewById(R.id.detect).visibility = View.GONE
             }
             FaceItem.FACE_TYPE_STRANGER, FaceItem.FACE_TYPE_STRANGER_SUB -> {
-                view.findViewById(R.id.viewer).visibility = View.GONE
+                contentView.findViewById(R.id.viewer).visibility = View.GONE
             }
         }
 
 
-        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
+        val popupWindow = PopupWindow(context)
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
-
-        val contentView = popupWindow.contentView
-
+        popupWindow.contentView = contentView
         contentView.findViewById(R.id.delete).setOnClickListener { v ->
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔")
@@ -359,7 +354,26 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
         }
 //        popupWindow.showAsDropDown(faceItem.findViewById(R.id.img_item_face_selection))
-        PopupWindowCompat.showAsDropDown(popupWindow, faceItem.findViewById(R.id.img_item_face_selection), 0, 0, Gravity.BOTTOM or Gravity.START)
+        val anchor = faceItem.findViewById(R.id.img_item_face_selection)
+//        showAsDropDown(popupWindow, anchor, 0, 0)
+        popupWindow.showAsDropDown(anchor)
+    }
+
+    fun showAsDropDown(pw: PopupWindow, anchor: View, xoff: Int, yoff: Int) {
+        if (Build.VERSION.SDK_INT >= 24) {
+            var location = IntArray(2);
+            anchor.getLocationOnScreen(location);
+            // 7.1 版本处理
+            if (Build.VERSION.SDK_INT == 25) {
+                //【note!】Gets the screen height without the virtual key
+                var wm = pw.contentView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                var screenHeight = wm.defaultDisplay.height;
+                pw.height = screenHeight - location[1] - anchor.height - yoff;
+            }
+            pw.showAtLocation(anchor, Gravity.NO_GRAVITY, location[0] + xoff, location[1] + anchor.height + yoff);
+        } else {
+            pw.showAsDropDown(anchor, xoff, yoff);
+        }
     }
 
     private fun showDetectFaceAlert(strangerVisitor: DpMsgDefine.StrangerVisitor?) {
@@ -407,7 +421,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             val radioButtonId = radioGroup!!.checkedRadioButtonId
             if (radioButtonId == R.id.delete_only_face) {
                 AppLogger.w("only face")
-                //TODO
+//TODO
                 when (item.getFaceType()) {
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                         presenter.deleteFace(2, item.visitor?.personId!!, 0)
@@ -429,7 +443,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     }
                 }
             } else {
-                // 什么也没选
+// 什么也没选
             }
             dialog.dismiss()
         }
