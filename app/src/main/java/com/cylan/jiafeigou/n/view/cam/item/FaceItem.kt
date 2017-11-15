@@ -39,6 +39,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
 
     var markHint: Boolean = false//红点标记
 
+
     override fun getViewHolder(v: View): FaceItemViewHolder {
         return FaceItemViewHolder(v)
     }
@@ -76,14 +77,6 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         this.strangerVisitor = visitor
         version = visitor.lastTime
         return this
-    }
-
-    override fun withSetSelected(selected: Boolean): FaceItem {
-        if (selected) {
-
-        }
-        return super.withSetSelected(selected)
-
     }
 
     override fun getLayoutRes(): Int {

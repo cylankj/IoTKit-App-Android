@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -213,6 +214,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
 
             override fun onPageSelected(position: Int) {
+                vp_default.adapter.notifyDataSetChanged()
                 val itemSize = (vp_default.adapter as FaceAdapter).getItemSize()
                 setFaceHeaderPageIndicator(position, itemSize)
             }
@@ -356,7 +358,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        popupWindow.showAsDropDown(faceItem.findViewById(R.id.img_item_face_selection))
         val anchor = faceItem.findViewById(R.id.img_item_face_selection)
 //        showAsDropDown(popupWindow, anchor, 0, 0)
-        popupWindow.showAsDropDown(anchor)
+        PopupWindowCompat.showAsDropDown(popupWindow, anchor, 0, 0, Gravity.NO_GRAVITY)
     }
 
     fun showAsDropDown(pw: PopupWindow, anchor: View, xoff: Int, yoff: Int) {
@@ -504,7 +506,7 @@ class ViewHolder(val itemview: View) {
             if (globalPosition > 1 || !isNormalVisitor) {
                 itemClickListener?.itemLongClick(globalPosition, _p, _v, adapter.getItem(_p).getFaceType(), pageIndex)
             }
-            true
+            false
         }
     }
 }
@@ -593,6 +595,5 @@ class FaceAdapter(var isNormalVisitor: Boolean) : PagerAdapter() {
                 faceItem.withSetSelected(true)
             }
         }
-        notifyDataSetChanged()
     }
 }
