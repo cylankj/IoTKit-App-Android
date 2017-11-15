@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.n.view.cam
 
 
-import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
@@ -14,7 +12,10 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -214,7 +215,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
 
             override fun onPageSelected(position: Int) {
-                vp_default.adapter.notifyDataSetChanged()
                 val itemSize = (vp_default.adapter as FaceAdapter).getItemSize()
                 setFaceHeaderPageIndicator(position, itemSize)
             }
@@ -330,6 +330,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
         popupWindow.contentView = contentView
+        contentView.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED)
         contentView.findViewById(R.id.delete).setOnClickListener { v ->
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔")
@@ -358,24 +359,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        popupWindow.showAsDropDown(faceItem.findViewById(R.id.img_item_face_selection))
         val anchor = faceItem.findViewById(R.id.img_item_face_selection)
 //        showAsDropDown(popupWindow, anchor, 0, 0)
+        var position = IntArray(2)
+        anchor.getLocationOnScreen(position)
+        popupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, position[0], position[1] + anchor.measuredHeight)
         PopupWindowCompat.showAsDropDown(popupWindow, anchor, 0, 0, Gravity.NO_GRAVITY)
-    }
-
-    fun showAsDropDown(pw: PopupWindow, anchor: View, xoff: Int, yoff: Int) {
-        if (Build.VERSION.SDK_INT >= 24) {
-            var location = IntArray(2);
-            anchor.getLocationOnScreen(location);
-            // 7.1 版本处理
-            if (Build.VERSION.SDK_INT == 25) {
-                //【note!】Gets the screen height without the virtual key
-                var wm = pw.contentView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                var screenHeight = wm.defaultDisplay.height;
-                pw.height = screenHeight - location[1] - anchor.height - yoff;
-            }
-            pw.showAtLocation(anchor, Gravity.NO_GRAVITY, location[0] + xoff, location[1] + anchor.height + yoff);
-        } else {
-            pw.showAsDropDown(anchor, xoff, yoff);
-        }
     }
 
     private fun showDetectFaceAlert(strangerVisitor: DpMsgDefine.StrangerVisitor?) {
@@ -595,5 +582,6 @@ class FaceAdapter(var isNormalVisitor: Boolean) : PagerAdapter() {
                 faceItem.withSetSelected(true)
             }
         }
+        notifyDataSetChanged()
     }
 }
