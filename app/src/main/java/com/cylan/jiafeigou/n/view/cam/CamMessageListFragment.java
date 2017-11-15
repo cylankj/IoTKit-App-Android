@@ -277,7 +277,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         FaceItem faceItem = visitorList.get(0);
                         if (faceItem.getStrangerVisitor() != null) {
                             personId = faceItem.getStrangerVisitor().faceId;
-                            startRequest(true, true);
+                            startRequest(false, true);
                         }
                     }
 
@@ -362,7 +362,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         lLayoutNoMessage.setVisibility(View.VISIBLE);
         if (faceType == FaceItem.FACE_TYPE_STRANGER) {
 //            // TODO: 2017/10/10 点击了陌生人,需要刷新陌生人列表
-//            this.personId = " ";
 //            startRequest(true, false);
             layoutBarMenu(BAR_TYPE_STRANGER);
 
@@ -372,7 +371,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             DpMsgDefine.Visitor visitor = faceItem.getVisitor();
             if (visitor != null) {
                 this.personId = visitor.personId;
-                startRequest(true, false);
+                startRequest(false, false);
             } else {
                 AppLogger.w("personid is null");
             }
@@ -385,7 +384,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             this.personId = visitor.faceId;
             layoutBarMenu(BAR_TYPE_STRANGER);
             if (visitor != null) {
-                startRequest(true, false);
+                startRequest(false, false);
             } else {
                 AppLogger.w("personid is null");
             }
@@ -480,7 +479,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 time = camMessageListAdapter.getItem(0).message.getVersion();
             }
         } else {
-            if (!camMessageListAdapter.hasFooter()) {
+            if (!camMessageListAdapter.hasFooter() && camMessageListAdapter.getCount() > 0) {
                 setupFootView();
             }
             if (camMessageListAdapter.getCount() > 1) {
@@ -495,19 +494,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         success = camMessageListAdapter.showCachedVisitorList("stranger");
                         lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                         tvCamMessageListEdit.setEnabled(success);
-                        presenter.fetchVisitorMessageList(1, "", time, asc);
+                        presenter.fetchVisitorMessageList(1, "", time, showRefresh);
                         break;
                     case FaceItem.FACE_TYPE_ACQUAINTANCE:
                         success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                         tvCamMessageListEdit.setEnabled(success);
-                        presenter.fetchVisitorMessageList(2, personId, time, asc);
+                        presenter.fetchVisitorMessageList(2, personId, time, showRefresh);
                         break;
                     case FaceItem.FACE_TYPE_STRANGER_SUB:
                         success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                         tvCamMessageListEdit.setEnabled(success);
-                        presenter.fetchVisitorMessageList(1, personId, time, asc);
+                        presenter.fetchVisitorMessageList(1, personId, time, showRefresh);
                         break;
                     case FaceItem.FACE_TYPE_ALL:
                         if (showRefresh) {
@@ -596,7 +595,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
             final int count = beanArrayList == null ? 0 : beanArrayList.size();
-            if (count == 0) {
+            if (count == 0 && camMessageListAdapter.getCount() > 0) {
                 ToastUtil.showToast(getString(R.string.Loaded));
             }
         });
@@ -730,7 +729,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
             final int count = beanArrayList == null ? 0 : beanArrayList.size();
-            if (count == 0) {
+            if (count == 0&&camMessageListAdapter.getCount()>0) {
                 AppLogger.w("没有数据");
                 ToastUtil.showToast(getString(R.string.Loaded));
             }
@@ -751,7 +750,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         rLayoutCamMessageListTop.setVisibility(View.VISIBLE);
         tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0);
         final int count = beans == null ? 0 : beans.size();
-        if (count == 0) {
+        if (count == 0&&camMessageListAdapter.getCount()>0) {
             AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
             makeSureRemoveFoot();

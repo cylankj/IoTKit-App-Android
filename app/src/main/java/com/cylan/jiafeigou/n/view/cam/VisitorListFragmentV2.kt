@@ -270,6 +270,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
         visitorReadyListener?.onStrangerVisitorReady(visitorList)
+        if (strangerAdapter.dataItems.size > 0) {
+            currentItem = strangerAdapter.dataItems[0]
+            cam_message_indicator_watcher_text.visibility = View.VISIBLE
+            presenter.fetchVisitsCount(currentItem?.strangerVisitor?.faceId!!, 1)
+        }
     }
 
     open fun refreshContent() {
