@@ -502,7 +502,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 case FaceItem.FACE_TYPE_STRANGER_SUB:
                     srLayoutCamListRefresh.setRefreshing(false);
                     success = camMessageListAdapter.showCachedVisitorList(personId);
-                    lLayoutNoMessage.setVisibility(View.VISIBLE);
+                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                     tvCamMessageListEdit.setEnabled(success);
                     presenter.fetchVisitorMessageList(1, personId, time, refresh);
                     break;
