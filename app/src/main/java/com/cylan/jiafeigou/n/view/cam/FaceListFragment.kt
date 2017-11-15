@@ -77,7 +77,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     }
 
     override fun onFaceNotExistError() {
-        ToastUtil.showToast("语言包:面孔不存在,移动失败")
+        ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
     }
 
     override fun onFaceInformationReady(data: List<DpMsgDefine.FaceInformation>) {
@@ -133,15 +133,14 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         BaseApplication.getAppComponent().getCmd().sessionId
         custom_toolbar.setRightEnable(false)
         itemAdapter.withComparator { item1, item2 ->
-            val char1 = item1.visitor?.personName?.get(0) ?: '#'
-            val char2 = item2.visitor?.personName?.get(0) ?: '#'
-            val pinyin1 = Pinyin.toPinyin(if (Pinyin.isChinese(char1)) char1 else '#')
-            val pinyin2 = Pinyin.toPinyin(if (Pinyin.isChinese(char2)) char2 else '#')
-            val i = pinyin1.compareTo(pinyin2, true)
+            val char1 = getPinYinLatter(item1.visitor?.personName)
+            val char2 = getPinYinLatter(item2.visitor?.personName)
+            val i = char1.compareTo(char2, true)
+
             return@withComparator when {
                 i == 0 -> i
-                pinyin1 == "#" -> 1
-                pinyin2 == "#" -> -1
+                char1 == "#" -> 1
+                char2 == "#" -> -1
                 else -> i
             }
         }
@@ -180,6 +179,16 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     }
 
+    private fun getPinYinLatter(text: String?): String {
+        val char = text?.getOrNull(0) ?: '#'
+        val toPinyin = Pinyin.toPinyin(char)[0].toString()
+        return if ("[a-z,A-Z]".toRegex().matches(toPinyin)) {
+            toPinyin.toUpperCase()
+        } else {
+            "#"
+        }
+    }
+
     private fun moveFaceTo() {
         val selections = itemAdapter.fastAdapter.selectedItems
         if (selections != null && selections.size > 0) {
@@ -200,11 +209,6 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             AppLogger.w("Empty To Do")
         }
     }
-
-    val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷",
-            "!普鹤骞", "@田惠君", "%貊怀玉", "22潘鸿信", "&士春柔", "7979阙子璇", "3皇甫笑", "//妍李颖", "3896初殷浩旷"
-    )
-
 
     override fun onStart() {
         super.onStart()

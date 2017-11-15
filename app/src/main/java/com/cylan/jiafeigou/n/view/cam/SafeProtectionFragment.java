@@ -225,9 +225,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean warmsound = property.hasProperty(device.pid, "WARMSOUND");
         boolean enableAI = property.hasProperty(device.pid, "AI_RECOGNITION");//todo 暂时还没有定义该字段
         boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
-
-        boolean hasFaceFeature = JFGRules.isFaceFragment(device.pid);
-
+        boolean infrared_enhanced_recognition = property.hasProperty(device.pid, "INFRARED_ENHANCED_RECOGNITION");
+        boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE_SETTING");
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
@@ -245,8 +244,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         swMotionAI.setVisibility(enableAI && show ? View.VISIBLE : View.GONE);
         swMotionInterval.setVisibility(warmInterval && show ? View.VISIBLE : View.GONE);
 
-        swInfraredStrengthen.setVisibility(show && hasFaceFeature ? View.VISIBLE : View.GONE);
-        swMonitoringArea.setVisibility(show && hasFaceFeature ? View.VISIBLE : View.GONE);
+        swInfraredStrengthen.setVisibility(show && infrared_enhanced_recognition ? View.VISIBLE : View.GONE);
+        swMonitoringArea.setVisibility(show && detection_zone_setting ? View.VISIBLE : View.GONE);
     }
 
     @Override

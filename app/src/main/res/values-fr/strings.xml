@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Veuillez d\'abord obtenir la vidéo d\'historique</string>
   <string name="IGNORE">Ignorer</string>
   <string name="IMAGE_ERR">Échec du transfert, l\'image est trop grande</string>
+  <string name="INFRARED_IDENTIFY_SET">Identification infrarouge</string>
   <string name="INVALID_ACCOUNT">Compte inconnu</string>
   <string name="INVALID_CODE">Code de vérification faux</string>
   <string name="IN_APP_SOUND">Alerte sonore</string>

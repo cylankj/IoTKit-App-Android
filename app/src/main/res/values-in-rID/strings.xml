@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Silahkan dapatkan video sejarahnya terlebih dahulu</string>
   <string name="IGNORE">Mengabaikan</string>
   <string name="IMAGE_ERR">Upload gagal, gambar terlalu besar</string>
+  <string name="INFRARED_IDENTIFY_SET">Identifikasi infra merah</string>
   <string name="INVALID_ACCOUNT">Akun salah</string>
   <string name="INVALID_CODE">Kode salah</string>
   <string name="IN_APP_SOUND">Di - APP Notifikasi Suara</string>

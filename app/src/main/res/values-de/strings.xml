@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Bitte erhalte die Geschichte Video zuerst</string>
   <string name="IGNORE">Ignorieren</string>
   <string name="IMAGE_ERR">Bild zu groß, bitte neu auswählen</string>
+  <string name="INFRARED_IDENTIFY_SET">Infrarot-Identifizierung</string>
   <string name="INVALID_ACCOUNT">Dieser Account nicht registriert</string>
   <string name="INVALID_CODE">Spamschutzcode ist abgelaufen</string>
   <string name="IN_APP_SOUND">Töne</string>

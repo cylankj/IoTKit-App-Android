@@ -81,6 +81,7 @@ public final class DpMsgMap {
     public static final int ID_514_CAM_WARNINTERVAL = 514;
 
     public static final int ID_515_CAM_ObjectDetect = 515;
+    public static final int ID_518_CAM_SETFACEIDSTATUS=518;
     public static final int ID_519_CAM_WARNAREA=519;
     public static final int ID_520_CAM_INFRARED=520;
 

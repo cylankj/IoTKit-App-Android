@@ -2639,6 +2639,14 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static class DPSetFaceIdStatus extends BaseDataPoint {
+        @Index(0)
+        public String face_id;
+        @Index(1)
+        public boolean enable;
+    }
+
+    @Message
     public static class DpMessage implements Parcelable {
         @Index(0)
         public int msgId;

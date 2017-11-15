@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Please get the history video firstly</string>
   <string name="IGNORE">Ignore the unread</string>
   <string name="IMAGE_ERR">Upload to failed,the picture is too big</string>
+  <string name="INFRARED_IDENTIFY_SET">Infrared identification</string>
   <string name="INVALID_ACCOUNT">Invalid account</string>
   <string name="INVALID_CODE">Invalid code</string>
   <string name="IN_APP_SOUND">In-APP Alert Sound</string>

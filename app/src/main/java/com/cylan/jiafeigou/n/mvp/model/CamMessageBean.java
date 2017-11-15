@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
 import com.cylan.jiafeigou.dp.BaseDataPoint;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

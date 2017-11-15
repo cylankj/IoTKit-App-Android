@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Lütfen önce geçmişi video edin</string>
   <string name="IGNORE">Yoksay</string>
   <string name="IMAGE_ERR">Yükleme başarısız, resim çok büyük</string>
+  <string name="INFRARED_IDENTIFY_SET">Kızılötesi kimlik</string>
   <string name="INVALID_ACCOUNT">Geçersiz hesap</string>
   <string name="INVALID_CODE">Geçersiz kod</string>
   <string name="IN_APP_SOUND">UYG-içi Alarm sesi</string>

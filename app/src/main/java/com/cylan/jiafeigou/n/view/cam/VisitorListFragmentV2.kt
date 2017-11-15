@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.server.cache.longHash
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.ListUtils
+import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import com.cylan.jiafeigou.widget.page.EViewPager
 import com.google.gson.Gson
@@ -53,7 +54,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onDeleteFaceSuccess(type: Int, delMsg: Int) {
         AppLogger.w("删除面孔消息成功了")
-        ToastUtil.showToast("语言包:删除面孔成功了!")
+        ToastUtil.showToast(getString(R.string.DELETED_SUC))
         when (type) {
             1 -> {
                 //陌生人
@@ -97,7 +98,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onStart() {
         super.onStart()
-        if (!isLoadCache) {
+        if (!isLoadCache || NetUtils.getNetType(context) == -1) {
             isLoadCache = true
             restoreCache()
         }
@@ -119,8 +120,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         saveCache()
     }
 
@@ -161,6 +162,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     }
                     FaceItem.FACE_TYPE_STRANGER -> {
                         cam_message_indicator_watcher_text.visibility = View.GONE
+                        if (strangerAdapter?.dataItems?.size == 0) {
+                            cam_message_indicator_holder.visibility = View.GONE
+                        }
                         presenter.fetchStrangerVisitorList()
                         vp_default.adapter = strangerAdapter
                     }
@@ -218,11 +222,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     private fun setFaceHeaderPageIndicator(currentItem: Int, total: Int) {
+        cam_message_indicator_holder.visibility = View.VISIBLE
         cam_message_indicator_page_text.text = String.format("%s/%s", currentItem + 1, total / 6 + if (total % 6 == 0) 0 else 1)
         cam_message_indicator_page_text.visibility = if (total > 3) View.VISIBLE else View.GONE
     }
 
     private fun setFaceVisitsCounts(faceId: String, count: Int) {
+        cam_message_indicator_holder.visibility = View.VISIBLE
         if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
         }
@@ -257,6 +263,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         vp_default.adapter = faceAdapter
         faceAdapter.updateClickItem(0)
         presenter.fetchVisitorList()
+        cam_message_indicator_watcher_text.visibility = View.GONE
     }
 
     override fun onStrangerVisitorListReady(visitorList: MutableList<FaceItem>) {

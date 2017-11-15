@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,7 +13,7 @@ import org.msgpack.annotation.Ignore;
 /**
  * Created by cylan-hunt on 16-12-2.
  */
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
 public class BaseDataPoint implements Parcelable, DataPoint {
     @Ignore
     @JsonIgnore

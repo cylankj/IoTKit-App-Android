@@ -95,6 +95,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         //todo 全部是默认图,陌生人是组合图片,需要特殊处理
         when (itemType) {
             FACE_TYPE_ALL -> {
+                GlideApp.with(holder.itemView.context).clear(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 //todo UI图导入
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_ALL)
@@ -104,6 +105,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showHint(markHint)
             }
             FACE_TYPE_STRANGER -> {
+                GlideApp.with(holder.itemView.context).clear(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
                 holder.strangerIcon.visibility = View.GONE

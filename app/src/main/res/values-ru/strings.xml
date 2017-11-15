@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Сначала возьмите видео с историей</string>
   <string name="IGNORE">Игнорировать</string>
   <string name="IMAGE_ERR">Изображение слишком большое</string>
+  <string name="INFRARED_IDENTIFY_SET">ИК-распознавание</string>
   <string name="INVALID_ACCOUNT">Данный аккаунт еще не зарегистрирован</string>
   <string name="INVALID_CODE">Истек срок проверочного кода</string>
   <string name="IN_APP_SOUND">Звуковой сигнал</string>

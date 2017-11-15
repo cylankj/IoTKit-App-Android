@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -271,39 +272,50 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 
     @Override
     public void deleteFace(int type, String id, int delMsg) {
-        Observable<DpMsgDefine.ResponseHeader> faceByRobot = null;
+        String method = method();
+        Observable<RxEvent.UniversalDataRsp> deleteObserver = null;
         if (type == 1) {
-            faceByRobot = deleteFaceByRobot(id);
+            deleteObserver = Observable.zip(deleteFaceByDp(type, id, delMsg), deleteFaceByRobot(id), (universalDataRsp, responseHeader) -> {
+                Integer result = DpUtils.unpackDataWithoutThrow(universalDataRsp.data, int.class, -1);
+                if (result == 0 && responseHeader.ret == 0) {
+                    //删除成功了
+                    return universalDataRsp;
+                }
+                return null;
+            });
         } else if (type == 2) {
-            faceByRobot = deletePersonByRobot(id);
+            deleteObserver = Observable.zip(deleteFaceByDp(type, id, delMsg), deletePersonByRobot(id),
+                    (universalDataRsp, responseHeader) -> {
+                        Integer result = DpUtils.unpackDataWithoutThrow(universalDataRsp.data, int.class, -1);
+                        if (result == 0 && responseHeader.ret == 0) {
+                            //删除成功了
+                            return universalDataRsp;
+                        }
+                        return null;
+                    });
         }
 
-        Subscription subscribe = Observable.zip(deleteFaceByDp(type, id, delMsg), faceByRobot,
-                (universalDataRsp, responseHeader) -> {
-                    Integer result = DpUtils.unpackDataWithoutThrow(universalDataRsp.data, int.class, -1);
-                    if (result == 0 && responseHeader.ret == 0) {
-                        //删除成功了
-                        return universalDataRsp;
-                    }
-                    return null;
-                })
-                .subscribeOn(Schedulers.io())
-                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    if (rsp != null) {
-                        Integer result = DpUtils.unpackDataWithoutThrow(rsp.data, int.class, -1);
-                        if (result == 0) {
-                            mView.onDeleteFaceSuccess(type, delMsg);
+        if (deleteObserver != null) {
+            Subscription subscribe = deleteObserver
+                    .subscribeOn(Schedulers.io())
+                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(applyLoading(R.string.LOADING, method))
+                    .subscribe(rsp -> {
+                        if (rsp != null) {
+                            Integer result = DpUtils.unpackDataWithoutThrow(rsp.data, int.class, -1);
+                            if (result == 0) {
+                                mView.onDeleteFaceSuccess(type, delMsg);
+                            } else {
+                                mView.onDeleteFaceError();
+                            }
                         } else {
                             mView.onDeleteFaceError();
                         }
-                    } else {
-                        mView.onDeleteFaceError();
-                    }
-                }, throwable -> {
-                    AppLogger.e(MiscUtils.getErr(throwable));
-                });
-        addSubscription(getMethodName(), subscribe);
+                    }, throwable -> {
+                        AppLogger.e(MiscUtils.getErr(throwable));
+                    });
+            addSubscription(getMethodName(), subscribe);
+        }
     }
 }

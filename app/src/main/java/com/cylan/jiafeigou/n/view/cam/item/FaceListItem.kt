@@ -85,7 +85,7 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
     }
 
     private fun getPinYinLatter(text: String?): String {
-        val char = text?.get(0) ?: '#'
+        val char = text?.getOrNull(0) ?: '#'
         val toPinyin = Pinyin.toPinyin(char)[0].toString()
         return if ("[a-z,A-Z]".toRegex().matches(toPinyin)) {
             toPinyin.toUpperCase()

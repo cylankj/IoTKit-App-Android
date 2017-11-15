@@ -42,7 +42,7 @@
       "PID": "——",
       "PRODUCT": "WIFI一代摄像头（测试）",
       "PROTECTION": "1",
-      "STANDBY": " ",
+      "STANDBY": "",
       "VALUE": "WIFI_CAMERA2"
     },
     {
@@ -102,7 +102,7 @@
       "PID": "1091",
       "PRODUCT": "海思全景180°（960P）",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "180_CAMERA1",
       "VIEWANGLE": "0",
@@ -120,7 +120,7 @@
       "PID": "1301",
       "PRODUCT": "海思全景180°（RS）",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "180_CAMERA2",
       "VIEWANGLE": "0",
@@ -140,7 +140,7 @@
       "PID": "1302",
       "PRODUCT": "海思全景120°（RS）",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "120_CAMERA00"
     },
@@ -158,7 +158,7 @@
       "PID": "1406",
       "PRODUCT": "智能摄像头(户外版)",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "OUTDOOR_CAM",
       "WIREDMODE": "1"
@@ -168,6 +168,7 @@
       "AUTORECORD": "0",
       "CIDPREFIX": "2901",
       "CLARITYVERSION": "1.0.0",
+      "DETECTION_ZONE_SETTING": "1",
       "DEVICE": "DOG-10W",
       "HANGUP": "0",
       "INTERVAL_ALARM": "60",
@@ -175,9 +176,9 @@
       "NTSC": "0",
       "OS": "83",
       "PID": "1494",
-      "PRODUCT": "看家王AI摄像机 ·标准版",
+      "PRODUCT": "看家王AI摄像机·标准版",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "AI_CAMERA_NORMAL"
     },
@@ -186,6 +187,7 @@
       "AUTORECORD": "0",
       "CIDPREFIX": "2902",
       "CLARITYVERSION": "1.0.0",
+      "DETECTION_ZONE_SETTING": "1",
       "DEVICE": "DOG-11W",
       "HANGUP": "0",
       "INTERVAL_ALARM": "60",
@@ -193,9 +195,9 @@
       "NTSC": "0",
       "OS": "84",
       "PID": "1495",
-      "PRODUCT": "看家王AI摄像机 ·户外版",
+      "PRODUCT": "看家王AI摄像机·户外版",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "AI_CAMERA_OUTDOOR",
       "WIREDMODE": "1"
@@ -211,7 +213,7 @@
       "PID": "1089",
       "PRODUCT": "720°全景摄像头",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "VALUE": "720_CAMERA0"
     },
     {
@@ -224,9 +226,9 @@
       "NTSC": "0",
       "OS": "26",
       "PID": "1088",
-      "PRODUCT": "云摄像机 (8620G)",
+      "PRODUCT": "云摄像机(8620G)",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "HOUSE_CAMERA0"
     },
@@ -235,7 +237,7 @@
       "DEVICE": "DOG-ML",
       "OS": "6",
       "PID": "1093",
-      "PRODUCT": "门铃一代 (8610G)",
+      "PRODUCT": "门铃一代(8610G)",
       "VALUE": "BELL1"
     },
     {
@@ -243,7 +245,7 @@
       "DEVICE": "DOG-DB-V2",
       "OS": "25",
       "PID": "1094",
-      "PRODUCT": "门铃二代 (8620G)",
+      "PRODUCT": "门铃二代(8620G)",
       "VALUE": "BELL2"
     },
     {
@@ -258,7 +260,7 @@
       "PID": "1379",
       "PRODUCT": "门铃三代(有源门铃)",
       "PROTECTION": "0",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "VALUE": "BELL3"
     },
     {
@@ -302,7 +304,7 @@
       "INTERVAL_ALARM": "60",
       "OS": "17",
       "PID": "1158",
-      "PRODUCT": "乐视门铃方案摄像头 (8610G)",
+      "PRODUCT": "乐视门铃方案摄像头(8610G)",
       "PROTECTION": "1",
       "VALUE": "LE_CAM"
     },
@@ -320,7 +322,7 @@
       "DEVICE": "LS-ZNMY-V1",
       "OS": "27",
       "PID": "1160",
-      "PRODUCT": "乐视猫眼(智能猫眼) (8620G)",
+      "PRODUCT": "乐视猫眼(智能猫眼)(8620G)",
       "VALUE": "LE_BELL1",
       "VIDEO": "0"
     },
@@ -338,7 +340,7 @@
     {
       "AUTORECORD": "0",
       "CIDPREFIX": "6002",
-      "CLARITYVERSION": " 3.0.0",
+      "CLARITYVERSION": "3.0.0",
       "DEVICE": "DOG-4W",
       "INTERVAL_ALARM": "60",
       "LED": "1",
@@ -347,7 +349,7 @@
       "PID": "1375",
       "PRODUCT": "国科全景（莱克威尔）",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "GUO_CAMERA1",
       "VIEWANGLE": "0",
@@ -445,7 +447,7 @@
       "DEVICE": "DOG-BELL",
       "OS": "6",
       "PID": "——",
-      "PRODUCT": "翰祺旺门铃门锁 (8610G)",
+      "PRODUCT": "翰祺旺门铃门锁(8610G)",
       "VALUE": "HAN_BELL"
     },
     {
@@ -462,7 +464,7 @@
       "DEVICE": "DOG-BELL",
       "OS": "6",
       "PID": "——",
-      "PRODUCT": "金力通门铃 (8610G)",
+      "PRODUCT": "金力通门铃(8610G)",
       "VALUE": "JINLI_BELL"
     },
     {
@@ -470,7 +472,7 @@
       "DEVICE": "DOG-BELL",
       "OS": "22",
       "PID": "——",
-      "PRODUCT": "金鑫智慧科技智能猫眼 (8610G)",
+      "PRODUCT": "金鑫智慧科技智能猫眼(8610G)",
       "VALUE": "JINXIN_BELL"
     },
     {
@@ -487,7 +489,7 @@
       "DEVICE": "PSD-BELL",
       "OS": "24",
       "PID": "——",
-      "PRODUCT": "普顺达门铃 (8610G)",
+      "PRODUCT": "普顺达门铃(8610G)",
       "VALUE": "PU_BELL"
     },
     {
@@ -504,7 +506,7 @@
       "DEVICE": "ZNWS-BELL-LOCK",
       "OS": "28",
       "PID": "——",
-      "PRODUCT": "智能维识门锁 (8610G)",
+      "PRODUCT": "智能维识门锁(8610G)",
       "VALUE": "BELL_INTELLIGENT"
     },
     {
@@ -535,7 +537,7 @@
       "PID": "1346",
       "PRODUCT": "测试型号（海思鱼眼3518E）",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "TEST_CAMERA180",
       "VIEWANGLE": "0",
@@ -554,7 +556,7 @@
       "PID": "1347",
       "PRODUCT": "测试型号（海思非鱼眼3518E）",
       "PROTECTION": "1",
-      "SD/HD": "1.0",
+      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "TEST_CAMERA120"
     },
@@ -640,5 +642,5 @@
       1495
     ]
   },
-  "version": "20170929"
+  "version": "20171115"
 }

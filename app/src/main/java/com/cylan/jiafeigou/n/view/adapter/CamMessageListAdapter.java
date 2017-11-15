@@ -49,7 +49,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private Map<Integer, Integer> selectedMap = new HashMap<>();
 
     private boolean isSharedDevice = false;
-    private DpMsgDefine.DPSdcardSummary summary;
     private boolean status;
     private Map<String, String> personMaps = new HashMap<>();
     private Map<String, List<CamMessageBean>> visitorMaps = new HashMap<>();
@@ -284,7 +283,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     /**
-     * sd卡状态消息
+     * 文本状态消息
      *
      * @param holder
      * @param item
@@ -392,6 +391,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case DpMsgMap.ID_401_BELL_CALL_STATE: {
                 return tContent + getContext().getString(R.string.MSG_WARNING);
             }
+            case DpMsgMap.ID_518_CAM_SETFACEIDSTATUS:{
+                return tContent + getContext().getString(R.string.MSG_WARNING);
+            }
         }
         return tContent;
     }
@@ -435,6 +437,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 int count = 0;
                 switch ((int) camMessageBean.message.getMsgId()) {
                     case DpMsgMap.ID_222_SDCARD_SUMMARY: {
+                        return CamMessageBean.ViewType.TEXT;
+                    }
+                    case DpMsgMap.ID_518_CAM_SETFACEIDSTATUS: {
                         return CamMessageBean.ViewType.TEXT;
                     }
                     case DpMsgMap.ID_401_BELL_CALL_STATE: {
@@ -501,9 +506,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 //        }
 //    };
 
-    public void setCurrentSDcardSummary(DpMsgDefine.DPSdcardSummary summary) {
-        this.summary = summary;
-    }
 
 //    private List<CamMessageBean>
 

@@ -81,13 +81,14 @@
                 android:id="@+id/sw_infrared_strengthen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                hunt:sv_title="语言包:红外增强识别"
+                hunt:sv_title="@string/INFRARED_IDENTIFY_SET"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sw_monitoring_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 hunt:sv_sub_title="默认"
                 hunt:sv_switch_visibility="false"
                 hunt:sv_title="语言包:区域侦测设置"

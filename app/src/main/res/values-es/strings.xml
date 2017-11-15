@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Por favor, obtenga el video del historial en primer lugar</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">La foto es demasiado grande, no es bueno para la pruba, elija de nuevo por favor</string>
+  <string name="INFRARED_IDENTIFY_SET">Identificación infrarroja</string>
   <string name="INVALID_ACCOUNT">Esta cuenta no ha sido inscribida</string>
   <string name="INVALID_CODE">Código de prueba inválido</string>
   <string name="IN_APP_SOUND">Sonido</string>

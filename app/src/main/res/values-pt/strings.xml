@@ -307,6 +307,7 @@
   <string name="History_video_Firstly">Por favor, pegue o vídeo da história em primeiro lugar</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">Falha ao carregar. A imagem é muito grande</string>
+  <string name="INFRARED_IDENTIFY_SET">Identificação de infravermelho</string>
   <string name="INVALID_ACCOUNT">Conta não registrada</string>
   <string name="INVALID_CODE">Código de verificação expirou</string>
   <string name="IN_APP_SOUND">Som</string>

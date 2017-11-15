@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.BaseDataPoint;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -114,6 +115,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         //adapter for doorbell
         list.add(new DPEntity()
                 .setMsgId(401)
+                .setUuid(uuid)
+                .setAction(DBAction.CAM_MULTI_QUERY)
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
+                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+        list.add(new DPEntity()
+                .setMsgId(DpMsgMap.ID_518_CAM_SETFACEIDSTATUS)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
@@ -413,17 +420,50 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
                         CamMessageBean bean;
                         for (DpMsgDefine.DPHeader header : rrsp.dataList) {
-                            if (header.msgId == 505) {
+                            if (header.msgId == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
                                 bean = new CamMessageBean();
                                 DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
                                 if (dpAlarm != null) {
                                     dpAlarm.version = header.version;
                                     dpAlarm.msgId = header.msgId;
                                     bean.message = dpAlarm;
+                                    list.add(bean);
                                 }
-                                list.add(bean);
-                            } else if (header.msgId == 201) {
-
+                            } else if (header.msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                                bean = new CamMessageBean();
+                                DpMsgDefine.DPSdcardSummary sdcardSummary = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPSdcardSummary.class, null);
+                                if (sdcardSummary != null) {
+                                    sdcardSummary.version = header.version;
+                                    sdcardSummary.msgId = header.msgId;
+                                    bean.message = sdcardSummary;
+                                    list.add(bean);
+                                }
+                            } else if (header.msgId == DpMsgMap.ID_401_BELL_CALL_STATE) {
+                                bean = new CamMessageBean();
+                                DpMsgDefine.DPBellCallRecord bellCallRecord = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPBellCallRecord.class, null);
+                                if (bellCallRecord != null) {
+                                    bellCallRecord.msgId = header.msgId;
+                                    bellCallRecord.version = header.version;
+                                    list.add(bean);
+                                }
+                            } else if (header.msgId == DpMsgMap.ID_512_CAMERA_ALARM_MSG_V3) {
+                                bean = new CamMessageBean();
+                                DpMsgDefine.DPAlarm dpAlarm = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPAlarm.class, null);
+                                if (dpAlarm != null) {
+                                    dpAlarm.version = header.version;
+                                    dpAlarm.msgId = header.msgId;
+                                    bean.message = dpAlarm;
+                                    list.add(bean);
+                                }
+                            } else if (header.msgId == DpMsgMap.ID_518_CAM_SETFACEIDSTATUS) {
+                                bean = new CamMessageBean();
+                                DpMsgDefine.DPSetFaceIdStatus faceIdStatus = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPSetFaceIdStatus.class, null);
+                                if (faceIdStatus != null) {
+                                    faceIdStatus.version = header.version;
+                                    faceIdStatus.msgId = header.msgId;
+                                    bean.message = faceIdStatus;
+                                    list.add(bean);
+                                }
                             }
                         }
                     }
@@ -439,7 +479,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         mView.onVisitorListAppend(items);
                     }
                 }, e -> {
-
+                    e.printStackTrace();
                 });
         addSubscription(subscribe, "fetchMessageList_faceId");
     }

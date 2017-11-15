@@ -227,6 +227,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                                 visitorList.dataList
                             }
                 }
+                .first()
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
@@ -240,7 +241,8 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                         }
 
                     }
-
+                    it.printStackTrace()
+                    mView.onVisitorInformationReady(listOf())
                     AppLogger.e(MiscUtils.getErr(it))
                 })
         addDestroySubscription(subscribe)
