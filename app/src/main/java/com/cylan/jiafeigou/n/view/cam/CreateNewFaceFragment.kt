@@ -71,16 +71,19 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
                 .dontAnimate()
                 .into(picture)
         custom_toolbar.setRightAction {
+            val text = name.text.toString().trim()
             if (faceId == null) {
                 ToastUtil.showToast("语言包: face_id is null")
                 AppLogger.w("FaceId :$faceId ")
+            } else if (TextUtils.isEmpty(text)) {
+                ToastUtil.showToast("语言包:名称不能为空")
             } else {
                 IMEUtils.hide(activity)
-                presenter.createNewFace(faceId!!, name.text.toString().trim())
+                presenter.createNewFace(faceId!!, text)
             }
         }
         //默认不可点击,需要输入名称后才能点击
-        custom_toolbar.setRightEnable(false)
+        custom_toolbar.setRightEnable(!TextUtils.isEmpty(name.text.toString().trim()))
         custom_toolbar.setBackAction {
             sendResultIfNeed()
             fragmentManager.popBackStack()

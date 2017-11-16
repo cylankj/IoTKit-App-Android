@@ -52,6 +52,7 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
         personId = arguments.getString("person_id")
         oldName = arguments.getString("old_name")
         edit_face_name.setText(oldName)
+        custom_toolbar.setRightEnable(!TextUtils.isEmpty(edit_face_name.text.toString()))
         custom_toolbar.setRightAction { setFaceName() }
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
         edit_face_name.addTextChangedListener(object : TextWatcher {
@@ -73,12 +74,15 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
 
     private fun setFaceName() {
         AppLogger.w("正在修改面孔名称")
+        val newName = edit_face_name.text.toString().trim()
         if (NetUtils.getNetType(context) == -1) {
             AppLogger.w("无网络连接")
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1))
-        } else {
+        } else if (TextUtils.isEmpty(newName)) {
             //TODO 修改或者新建面孔名称
-            presenter.setFaceName(personId ?: "", edit_face_name.text.toString().trim())
+            ToastUtil.showToast("语言包:名称不能为空")
+        } else {
+            presenter.setFaceName(personId ?: "", newName)
         }
     }
 

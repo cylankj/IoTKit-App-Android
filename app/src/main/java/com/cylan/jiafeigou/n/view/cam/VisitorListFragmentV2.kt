@@ -263,6 +263,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceAdapter.updateClickItem(0)
         presenter.fetchVisitorList()
         cam_message_indicator_holder.visibility = View.VISIBLE
+        cam_message_indicator_watcher_text.text = ""
         cam_message_indicator_watcher_text.visibility = View.GONE
     }
 
