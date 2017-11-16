@@ -75,7 +75,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
 
-    override fun onVisitsTimeRsp(faceId: String, cnt: Int) {
+    override fun onVisitsTimeRsp(faceId: String, cnt: Int, type: Int) {
         setFaceVisitsCounts(faceId, cnt)
     }
 
@@ -144,7 +144,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 when (item.getFaceType()) {
                     FaceItem.FACE_TYPE_ALL -> {
                         presenter.fetchVisitorList()
-                        cam_message_indicator_watcher_text.visibility = View.GONE
+                        cam_message_indicator_watcher_text.visibility = View.VISIBLE
+                        presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
                     }
                     FaceItem.FACE_TYPE_STRANGER -> {
                         cam_message_indicator_watcher_text.visibility = View.GONE
@@ -156,13 +157,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                        presenter.fetchVisitsCount(faceId!!, 2)
+                        presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_ACQUAINTANCE)
                     }
                     FaceItem.FACE_TYPE_STRANGER_SUB -> {
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                        presenter.fetchVisitsCount(faceId!!, 1)
+                        presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_STRANGER)
                     }
                 }
             }
@@ -218,9 +219,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     private fun setFaceVisitsCounts(faceId: String, count: Int) {
         cam_message_indicator_holder.visibility = View.VISIBLE
-        if (cam_message_indicator_watcher_text.visibility != View.VISIBLE) {
-            cam_message_indicator_watcher_text.visibility = View.VISIBLE
-        }
+        cam_message_indicator_watcher_text.visibility = View.VISIBLE
         val faceType = currentItem?.getFaceType() ?: FaceItem.FACE_TYPE_EMPTY
         when (faceType) {
             FaceItem.FACE_TYPE_ACQUAINTANCE -> {
@@ -233,6 +232,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString())
                 }
             }
+            FaceItem.FACE_TYPE_ALL -> {
+                if (TextUtils.isEmpty(faceId)) {
+                    cam_message_indicator_watcher_text.text = String.format("今天来访%s人", count)
+                }
+            }
         }
     }
 
@@ -243,8 +247,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
         faceAdapter.populateItems(visitorList)
         faceAdapter.updateClickItem(0)
+        cam_message_indicator_watcher_text.visibility = View.VISIBLE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
-        currentItem = faceAdapter.dataItems[0]
+
+        val newPos = Math.min(vp_default.currentItem * 6, faceAdapter.dataItems.size - 1)
+        currentItem = faceAdapter.dataItems[newPos]
+        presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
         visitorListener?.onVisitorReady(visitorList)
         visitorListener?.onLoadItemInformation(currentItem!!)
     }
@@ -269,9 +277,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
         visitorListener?.onStrangerVisitorReady(visitorList)
         if (strangerAdapter.dataItems.size > 0) {
-            currentItem = strangerAdapter.dataItems[0]
+            val newPos = Math.min(vp_default.currentItem * 6, strangerAdapter.dataItems.size - 1)
+            currentItem = strangerAdapter.dataItems[newPos]
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
-            presenter.fetchVisitsCount(currentItem?.strangerVisitor?.faceId!!, 1)
+            presenter.fetchVisitsCount(currentItem?.strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
             visitorListener?.onLoadItemInformation(currentItem!!)
         }
     }
@@ -294,6 +303,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     companion object {
+        const val FILTER_TYPE_ALL = 5
+        const val FILTER_TYPE_STRANGER = 1
+        const val FILTER_TYPE_ACQUAINTANCE = 2
         fun newInstance(uuid: String): VisitorListFragmentV2 {
             val fragment = VisitorListFragmentV2()
             val args = Bundle()

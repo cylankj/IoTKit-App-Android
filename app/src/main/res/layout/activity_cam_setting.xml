@@ -191,6 +191,15 @@
                 hunt:sv_v_divider="true"
                 hunt:sv_v_image_show="true" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_door_look"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_image_src="@drawable/setting_icon_lock"
+                hunt:sv_title="语言包:修改开门密码"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="true" />
+
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_device_delay_capture"

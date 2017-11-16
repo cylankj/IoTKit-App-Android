@@ -206,7 +206,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     private void initMainContentAdapter() {
         HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
-        vpHomeContent.setPagingEnabled(true);
+        vpHomeContent.setLocked(true);
         vpHomeContent.setOffscreenPageLimit(3);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

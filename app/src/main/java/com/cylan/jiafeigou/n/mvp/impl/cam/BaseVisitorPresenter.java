@@ -26,8 +26,6 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.request.PostRequest;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -115,7 +113,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     }
 
     @Override
-    public void fetchVisitsCount(@NotNull String faceId, int type) {
+    public void fetchVisitsCount(String faceId, int type) {
         //msgType = 7
         //req=msgpack(cid, type, id)
         //rsp=msgpack(cid, type, id, count)
@@ -139,7 +137,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                             return;
                         }
                         AppLogger.w("获取未读数:" + rrsp.toString());
-                        mView.onVisitsTimeRsp(rrsp.faceFaceId, rrsp.count);
+                        mView.onVisitsTimeRsp(rrsp.faceFaceId, rrsp.count, type);
                     }, throwable -> {
 
                     });
