@@ -65,6 +65,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 presenter.fetchVisitorList()
             }
         }
+
     }
 
     override fun onDeleteFaceError() {
@@ -78,14 +79,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         setFaceVisitsCounts(faceId, cnt)
     }
 
-    var itemClickListener: ItemClickListener? = null
 
-    var visitorReadyListener: VisitorReadyListener? = null
-
-    interface VisitorReadyListener {
-        fun onStrangerVisitorReady(visitorList: MutableList<FaceItem>)
-        fun onVisitorReady(visitorList: MutableList<FaceItem>)
-    }
+    var visitorListener: VisitorListener? = null
 
     private lateinit var faceAdapter: FaceAdapter
     private lateinit var strangerAdapter: FaceAdapter
@@ -128,7 +123,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater!!.inflate(R.layout.fragment_visitor_list, container, false)
     }
 
@@ -144,7 +138,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 val adapter = vp_default.adapter as FaceAdapter?
                 val faceItem = adapter?.dataItems?.get(globalPosition)
-                itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
+                visitorListener?.onLoadItemInformation(item)
                 currentItem = faceItem
                 (vp_default.adapter as FaceAdapter?)?.updateClickItem(globalPosition)
                 when (item.getFaceType()) {
@@ -178,10 +172,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
 
             override fun itemLongClick(globalPosition: Int, _p: Int, _v: View, faceType: Int, pageIndex: Int) {
-                itemClickListener?.itemLongClick(globalPosition, _p, _v, faceType, pageIndex)
                 val adapter = vp_default.adapter as FaceAdapter?
                 if (adapter != null) {
                     val faceItem = adapter.dataItems[globalPosition]
+                    visitorListener?.onLoadItemInformation(faceItem)
                     currentItem = faceItem
                     showHeaderFacePopMenu(faceItem, _p, _v, faceType)
                     adapter.updateClickItem(globalPosition)
@@ -252,9 +246,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
 
         faceAdapter.populateItems(visitorList)
-
+        faceAdapter.updateClickItem(0)
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
-        visitorReadyListener?.onVisitorReady(visitorList)
+        currentItem = faceAdapter.dataItems[0]
+        visitorListener?.onVisitorReady(visitorList)
+        visitorListener?.onLoadItemInformation(currentItem!!)
     }
 
     open fun exitStranger() {
@@ -276,11 +272,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        vp_default.swapAdapter(strangerAdapter, true)
         cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
-        visitorReadyListener?.onStrangerVisitorReady(visitorList)
+        visitorListener?.onStrangerVisitorReady(visitorList)
         if (strangerAdapter.dataItems.size > 0) {
             currentItem = strangerAdapter.dataItems[0]
             cam_message_indicator_watcher_text.visibility = View.VISIBLE
             presenter.fetchVisitsCount(currentItem?.strangerVisitor?.faceId!!, 1)
+            visitorListener?.onLoadItemInformation(currentItem!!)
         }
     }
 
@@ -409,7 +406,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             val radioButtonId = radioGroup!!.checkedRadioButtonId
             if (radioButtonId == R.id.delete_only_face) {
                 AppLogger.w("only face")
-//TODO
                 when (item.getFaceType()) {
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                         presenter.deleteFace(2, item.visitor?.personId!!, 0)
@@ -444,6 +440,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         fun itemLongClick(globalPosition: Int, _p: Int, _v: View, faceType: Int, pageIndex: Int)
     }
 
+    interface VisitorListener {
+        fun onLoadItemInformation(item: FaceItem)
+        fun onStrangerVisitorReady(visitorList: MutableList<FaceItem>)
+        fun onVisitorReady(visitorList: MutableList<FaceItem>)
+    }
+
 }// Required empty public constructor
 
 class FaceFastItemAdapter : ItemAdapter<FaceItem>()
@@ -470,6 +472,7 @@ class ViewHolder(val itemview: View) {
         rvList.adapter = visitorAdapter.wrap(adapter)
         adapter.withSelectable(true)
         adapter.withMultiSelect(false)
+        adapter.withSelectOnLongClick(true)
         adapter.withSelectWithItemUpdate(true)
         adapter.withAllowDeselection(false)
         rvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -480,6 +483,7 @@ class ViewHolder(val itemview: View) {
 //                    outRect.right = pixelOffset
 //                }
             }
+
         })
         adapter.withOnClickListener { _, _, item, position ->
             val globalPosition = pageIndex * JConstant.FACE_CNT_IN_PAGE + position
