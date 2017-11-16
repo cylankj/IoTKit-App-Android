@@ -208,13 +208,10 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     if (robotoGetDataRsp != null && robotoGetDataRsp.map != null) {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
                             for (JFGDPMsg msg : entry.getValue()) {
-
-                                if (msg.version >= versionMin) {
-                                    if (!option.useMaxLimit || msg.version <= versionMax) {
-                                        // TODO: 2017/10/13 人脸识别不分天了,所以需要区别对待了
-                                        DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
-                                        result.add(point);
-                                    }
+                                if (!option.useMaxLimit || (msg.version >= versionMin && msg.version <= versionMax)) {
+                                    // TODO: 2017/10/13 人脸识别不分天了,所以需要区别对待了
+                                    DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                                    result.add(point);
                                 }
                             }
                         }

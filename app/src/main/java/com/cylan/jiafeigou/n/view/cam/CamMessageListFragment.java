@@ -242,7 +242,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void refreshFaceHeader() {
-        if (visitorFragment != null) {
+        if (visitorFragment == null) {
+            //init Fragment 并添加 Fragment 是异步的
+            initFaceHeader();
+
+        } else {
             visitorFragment.refreshContent();
         }
     }
@@ -698,6 +702,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
         ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_down : R.drawable.wonderful_arrow_up, 2);
         tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
+        if (visitorFragment != null) {
+            visitorFragment.disable(false);
+        }
     }
 
     @Override
@@ -1037,7 +1044,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public boolean performBackIntercept(boolean willExit) {
         if (isUserVisible() && isResumed()) {
-            return exitEditMode();
+            return exitEditMode() || exitDateSelectMode();
         }
         return super.performBackIntercept(willExit);
     }
@@ -1053,6 +1060,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 visitorFragment.disable(false);
             }
             return true;//拦截掉
+        }
+        return false;
+    }
+
+    private boolean exitDateSelectMode() {
+        boolean reset = tvCamMessageListDate.getTag() == null ||
+                ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
+        tvCamMessageListDate.setTag(reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down);
+        ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down, 2);
+        tvCamMessageListEdit.setEnabled(!reset);
+        if (!reset) {
+            AnimatorUtils.slideOut(fLayoutCamMessageListTimeline, false);
+            return true;
         }
         return false;
     }

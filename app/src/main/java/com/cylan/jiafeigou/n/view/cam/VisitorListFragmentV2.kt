@@ -96,14 +96,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         presenter = BaseVisitorPresenter(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!isLoadCache && NetUtils.getNetType(context) == -1) {
-            isLoadCache = true
-            restoreCache()
-        }
-    }
-
     private fun restoreCache() {
         val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
         val valueItem = boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash()]
@@ -152,7 +144,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             override fun itemClick(item: FaceItem, globalPosition: Int, position: Int, pageIndex: Int) {
                 val adapter = vp_default.adapter as FaceAdapter?
                 val faceItem = adapter?.dataItems?.get(globalPosition)
-                if (currentItem == faceItem) return
                 itemClickListener?.itemClick(item, globalPosition, position, pageIndex)
                 currentItem = faceItem
                 (vp_default.adapter as FaceAdapter?)?.updateClickItem(globalPosition)
@@ -220,10 +211,17 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
 
         })
+
+        if (!isLoadCache && NetUtils.getNetType(context) == -1) {
+            isLoadCache = true
+            restoreCache()
+        } else {
+            refreshContent()
+        }
     }
 
     private fun setFaceHeaderPageIndicator(currentItem: Int, total: Int) {
-        cam_message_indicator_holder.visibility = View.VISIBLE
+        cam_message_indicator_holder.visibility = if (total > 0) View.VISIBLE else View.GONE
         cam_message_indicator_page_text.text = String.format("%s/%s", currentItem + 1, total / 6 + if (total % 6 == 0) 0 else 1)
         cam_message_indicator_page_text.visibility = if (total > 3) View.VISIBLE else View.GONE
     }
@@ -254,7 +252,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
 
         faceAdapter.populateItems(visitorList)
-        cam_message_indicator_holder.visibility = View.VISIBLE
+
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
         visitorReadyListener?.onVisitorReady(visitorList)
     }
@@ -330,7 +328,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
         popupWindow.contentView = contentView
-        contentView.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED)
+        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         contentView.findViewById(R.id.delete).setOnClickListener { v ->
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔")

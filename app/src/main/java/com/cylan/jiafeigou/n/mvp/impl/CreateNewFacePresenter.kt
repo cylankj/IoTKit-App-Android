@@ -21,6 +21,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -78,6 +79,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
             subscriber.onCompleted()
         }
                 .subscribeOn(Schedulers.io())
+                .timeout(10,TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ response ->

@@ -12,9 +12,9 @@
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="0dp"
         android:layout_height="@dimen/y238"
-        android:background="@drawable/me_bg_top_image"
+
         android:scaleType="fitXY"
-        android:src="#40000000"
+        android:src="@drawable/me_bg_top_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

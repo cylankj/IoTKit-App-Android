@@ -162,8 +162,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         presenter.deleteFace(personId, adapter.selectedItems.map { it.faceInformation?.face_id ?: "" }.filter { !TextUtils.isEmpty(it) })
     }
 
-    val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷")
-
     private fun showFaceManagerPopMenu(position: Int, v: View?, faceManagerItem: FaceManagerItem) {
         val view = View.inflate(context, R.layout.layout_face_manager_pop_alert, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -183,9 +181,9 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
             val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid,
                     faceManagerItem.faceInformation?.face_id ?: "", FaceListFragment.TYPE_MOVE_TO)
             //TODO 监听 移动面孔的结果回调
-//            fragment.resultCallback={
-//
-//            }
+            fragment.resultCallback={id,_,_->
+                presenter.loadFaceByPersonIdByDP(personId ?: "")
+            }
             ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
         }
         PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)
