@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +14,8 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
+import android.support.v8.renderscript.ScriptIntrinsicResize;
+import android.support.v8.renderscript.Short4;
 import android.support.v8.renderscript.Type;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,9 +27,9 @@ import android.widget.TextView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.helper.ScriptC_tint;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -123,19 +125,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             GlideApp.with(this)
                     .load(R.drawable.me_bg_top_image)
                     .error(R.drawable.me_bg_top_image)
-                    .transform(new BlurTransFormation(getContext(), "home_mine_default_background"))
-
-                    .into(new ImageViewTarget<Drawable>(rLayoutHomeMineTop) {
-                        @Override
-                        protected void setResource(@Nullable Drawable resource) {
-                            view.setBackground(resource);
-                        }
-
-                        @Override
-                        public void setDrawable(Drawable drawable) {
-                            view.setBackground(drawable);
-                        }
-                    });
+                    .placeholder(R.drawable.me_bg_top_image)
+                    .transform(new BlurTransFormation(getContext(), "home_mine_default_background", 20, 0.5f, Color.parseColor("#40000000")))
+                    .into(rLayoutHomeMineTop);
         }
         updateHint();
         homeMineItemHelp.showHint(needShowHelp);
@@ -295,10 +287,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     private static class BlurTransFormation extends BitmapTransformation {
         private WeakReference<Context> contextWeakReference;
         private final String key;
+        private final int radius;
+        private final float scale;
+        private final int tintColor;
 
-        public BlurTransFormation(Context context, String key) {
+        public BlurTransFormation(Context context, String key, int radius, float scale, int color) {
             this.contextWeakReference = new WeakReference<>(context);
             this.key = key;
+            this.radius = radius;
+            this.scale = scale;
+            this.tintColor = color;
+        }
+
+        private static Short4 convertColor2Short4(int color) {
+            short b = (short) (color & 0xFF);
+            short g = (short) ((color >> 8) & 0xFF);
+            short r = (short) ((color >> 16) & 0xFF);
+            short a = (short) ((color >> 24) & 0xFF);
+            return new Short4(r, g, b, a);
         }
 
         @Override
@@ -306,20 +312,30 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             Context context = contextWeakReference.get();
             if (context == null) return null;
             RenderScript renderScript = RenderScript.create(context);
-            Allocation allocation = Allocation.createFromBitmap(renderScript, toTransform);
-            Type type = allocation.getType();
-            Allocation outAllocation = Allocation.createTyped(renderScript, type);
+            Allocation sourceAllocation = Allocation.createFromBitmap(renderScript, toTransform);
+            int width = (int) (toTransform.getWidth() * scale);
+            int height = (int) (toTransform.getHeight() * scale);
+            Type resizeType = Type.createXY(renderScript, sourceAllocation.getElement(), width, height);
+            Allocation tempAllocation1 = Allocation.createTyped(renderScript, resizeType);
+            Allocation tempAllocation2 = Allocation.createTyped(renderScript, resizeType);
+
+
+            ScriptIntrinsicResize intrinsicResize = ScriptIntrinsicResize.create(renderScript);
+            intrinsicResize.setInput(sourceAllocation);
+            intrinsicResize.forEach_bicubic(tempAllocation1);
+
             ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-            intrinsicBlur.setInput(allocation);
-            intrinsicBlur.setRadius(25);
-            intrinsicBlur.forEach(outAllocation);
-            outAllocation.copyTo(toTransform);
-            allocation.destroy();
-            outAllocation.destroy();
-            intrinsicBlur.destroy();
-            type.destroy();
+            intrinsicBlur.setInput(tempAllocation1);
+            intrinsicBlur.setRadius(radius);
+            intrinsicBlur.forEach(tempAllocation2);
+
+            ScriptC_tint scriptC_tint = new ScriptC_tint(renderScript);
+            scriptC_tint.set_maskColor(convertColor2Short4(tintColor));
+            scriptC_tint.forEach_mask(tempAllocation2, tempAllocation1);
+            Bitmap bitmap = pool.get(width, height, toTransform.getConfig());
+            tempAllocation1.copyTo(bitmap);
             renderScript.destroy();
-            return toTransform;
+            return bitmap;
         }
 
         @Override
@@ -334,18 +350,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         GlideApp.with(this)
                 .load(url)
                 .error(R.drawable.me_bg_top_image)
-                .transform(new BlurTransFormation(getContext(), TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
-                .into(new ImageViewTarget<Drawable>(rLayoutHomeMineTop) {
-                    @Override
-                    protected void setResource(@Nullable Drawable resource) {
-                        view.setBackground(resource);
-                    }
-
-                    @Override
-                    public void setDrawable(Drawable drawable) {
-                        view.setBackground(drawable);
-                    }
-                });
+                .placeholder(R.drawable.me_bg_top_image)
+                .transform(new BlurTransFormation(getContext(),
+                        TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken(),
+                        20, 0.5f, Color.parseColor("#40000000")))
+                .into(rLayoutHomeMineTop);
     }
 
     private boolean needStartLoginFragment() {

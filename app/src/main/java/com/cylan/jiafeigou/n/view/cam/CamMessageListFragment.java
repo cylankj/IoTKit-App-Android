@@ -159,6 +159,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         super.onCreate(savedInstanceState);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         presenter = new CamMessageListPresenterImpl(this, uuid);
+        hasFaceHeader = JFGRules.isFaceFragment(getDevice().pid);
     }
 
     @Override
@@ -236,13 +237,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         });
         camMessageListAdapter.setOnclickListener(this);
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
-        hasFaceHeader = JFGRules.isFaceFragment(getDevice().pid);
+
         initFaceHeader();
 
     }
 
     private void refreshFaceHeader() {
-        if (visitorFragment != null) {
+        if (visitorFragment == null) {
+            //init Fragment 并添加 Fragment 是异步的
+            initFaceHeader();
+
+        } else {
             visitorFragment.refreshContent();
         }
     }
@@ -259,30 +264,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
 
             visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
-            visitorFragment.setItemClickListener(new VisitorListFragmentV2.ItemClickListener() {
+            visitorFragment.setVisitorListener(new VisitorListFragmentV2.VisitorListener() {
                 @Override
-                public void itemClick(@NotNull FaceItem item, int globalPosition, int position, int pageIndex) {
+                public void onLoadItemInformation(@NotNull FaceItem item) {
                     changeContentByHeaderClick(item);
                 }
 
                 @Override
-                public void itemLongClick(int globalPosition, int _p, @NotNull View _v, int faceType, int pageIndex) {
-
-                }
-            });
-            visitorFragment.setVisitorReadyListener(new VisitorListFragmentV2.VisitorReadyListener() {
-                @Override
                 public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
                     camMessageListAdapter.onStrangerInformationReady(visitorList);
                     pageType = FaceItem.FACE_TYPE_STRANGER_SUB;
-                    if (visitorList.size() > 0) {
-                        FaceItem faceItem = visitorList.get(0);
-                        if (faceItem.getStrangerVisitor() != null) {
-                            personId = faceItem.getStrangerVisitor().faceId;
-                            startRequest(true);
-                        }
-                    }
-
                 }
 
                 @Override
@@ -290,6 +281,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     camMessageListAdapter.onVisitorInformationReady(visitorList);
                 }
             });
+
             //显示 所有面孔列表
             ActivityUtils.replaceFragment(getFragmentManager(),
                     visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
@@ -413,6 +405,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         rvCamMessageList.post(() -> camMessageListAdapter.add(bean));
     }
 
+    private void decideRefresh() {
+        if (hasFaceHeader) {
+            //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
+            //等 header 数据回来后会自动调用 startRequest 的
+            refreshFaceHeader();
+        } else {
+            startRequest(true);
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -442,8 +444,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             needRefresh = true;
         }
         if (needRefresh) {
-            startRequest(true);
-
+            decideRefresh();
         }
         if (NetUtils.getNetType(getContext()) == -1) {
             Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
@@ -467,7 +468,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
         if (isVisibleToUser && presenter != null && getActivity() != null && isResumed()) {
 //            if (camMessageListAdapter.getCount() == 0)
-            startRequest(true);//需要每次刷新,而不是第一次刷新
+            decideRefresh();//需要每次刷新,而不是第一次刷新
             ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         }
@@ -509,9 +510,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     break;
                 case FaceItem.FACE_TYPE_ALL:
                     srLayoutCamListRefresh.setRefreshing(refresh);
-                    if (refresh && hasFaceHeader) {
-                        refreshFaceHeader();
-                    }
                     lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
                     presenter.fetchMessageListByFaceId(time, false, refresh);
                     break;
@@ -698,6 +696,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
         ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_down : R.drawable.wonderful_arrow_up, 2);
         tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
+        if (visitorFragment != null) {
+            visitorFragment.disable(false);
+        }
     }
 
     @Override
@@ -765,8 +766,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-//        srLayoutCamListRefresh.setRefreshing(true);
-        startRequest(true);
+        decideRefresh();
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
@@ -1037,7 +1037,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public boolean performBackIntercept(boolean willExit) {
         if (isUserVisible() && isResumed()) {
-            return exitEditMode();
+            return exitEditMode() || exitDateSelectMode();
         }
         return super.performBackIntercept(willExit);
     }
@@ -1053,6 +1053,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 visitorFragment.disable(false);
             }
             return true;//拦截掉
+        }
+        return false;
+    }
+
+    private boolean exitDateSelectMode() {
+        boolean reset = tvCamMessageListDate.getTag() == null ||
+                ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
+        tvCamMessageListDate.setTag(reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down);
+        ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down, 2);
+        tvCamMessageListEdit.setEnabled(!reset);
+        if (!reset) {
+            AnimatorUtils.slideOut(fLayoutCamMessageListTimeline, false);
+            return true;
         }
         return false;
     }

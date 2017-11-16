@@ -43,7 +43,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.umeng.socialize.utils.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -207,8 +206,8 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     private void initMainContentAdapter() {
         HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
-
         vpHomeContent.setPagingEnabled(true);
+        vpHomeContent.setOffscreenPageLimit(3);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override

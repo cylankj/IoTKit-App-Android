@@ -71,9 +71,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
         }
 
-        if (resultCallback != null) {
-            resultCallback!!.invoke(personId, "todo:还不知道要传多少个参数", "todo:还不知道要传多少个参数")
-        }
+        resultCallback?.invoke(personId, "todo:还不知道要传多少个参数", "todo:还不知道要传多少个参数")
     }
 
     override fun onFaceNotExistError() {

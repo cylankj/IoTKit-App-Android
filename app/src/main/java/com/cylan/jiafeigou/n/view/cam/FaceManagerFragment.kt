@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
+    private var hasRequested: Boolean = false
     override fun onAcquaintanceReady(data: List<DpMsgDefine.AcquaintanceItem>) {
         var face: FaceManagerItem
         val items: MutableList<FaceManagerItem> = mutableListOf()
@@ -45,7 +46,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
     override fun onAuthorizationError() {
         AppLogger.w("获取面孔失败:授权失败")
         ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
-//        ToastUtil.showToast("语言包: 授权失败")
     }
 
     override fun onDeleteFaceError() {
@@ -78,7 +78,10 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun onStart() {
         super.onStart()
-        presenter.loadFaceByPersonIdByDP(personId ?: "")
+        if (!hasRequested) {
+            hasRequested = true
+            presenter.loadFaceByPersonIdByDP(personId ?: "")
+        }
     }
 
     override fun initViewAndListener() {
@@ -114,7 +117,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         }
 
         face_manager_items.adapter = adapter
-//        face_manager_items.addItemDecoration(GridItemDivider(resources.getDimensionPixelOffset(R.dimen.y5), 4))
 
         custom_toolbar.setRightAction {
             if (getString(R.string.EDIT_THEME) == custom_toolbar.tvToolbarRight.text) {
@@ -128,19 +130,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         /// 默认是不可点击的,等有数据后才能点击
 //        custom_toolbar.setRightEnable(false)
         custom_toolbar.setBackAction { fragmentManager.popBackStack() }
-
-//        //todo just for test
-//
-//        val items: MutableList<FaceManagerItem> = mutableListOf()
-//        words.forEach {
-//            val item = FaceManagerItem()
-//            val information = DpMsgDefine.FaceInformation()
-//            information.face_name = it
-//            item.withFaceInformation(information)
-//            items.add(item)
-//        }
-//        adapter.add(items)
-
     }
 
     @OnClick(R.id.tv_msg_full_select)
@@ -162,8 +151,6 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         presenter.deleteFace(personId, adapter.selectedItems.map { it.faceInformation?.face_id ?: "" }.filter { !TextUtils.isEmpty(it) })
     }
 
-    val words = arrayOf("普鹤骞", "田惠君", "貊怀玉", "潘鸿信", "士春柔", "阙子璇", "皇甫笑", "妍李颖", "初殷浩旷")
-
     private fun showFaceManagerPopMenu(position: Int, v: View?, faceManagerItem: FaceManagerItem) {
         val view = View.inflate(context, R.layout.layout_face_manager_pop_alert, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -183,9 +170,9 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
             val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid,
                     faceManagerItem.faceInformation?.face_id ?: "", FaceListFragment.TYPE_MOVE_TO)
             //TODO 监听 移动面孔的结果回调
-//            fragment.resultCallback={
-//
-//            }
+            fragment.resultCallback = { id, _, _ ->
+                presenter.loadFaceByPersonIdByDP(personId ?: "")
+            }
             ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
         }
         PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)

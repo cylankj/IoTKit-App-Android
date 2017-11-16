@@ -462,56 +462,13 @@ public class DP {
     @Test
     public void testMethodOverCall() throws Exception {
         CountDownLatch countDownLatch = new CountDownLatch(0);
-        Observable.create(s -> {
-            s.add(new SubscriptionManager.AbstractSubscription() {
-                @Override
-                protected void onUnsubscribe() {
-                    System.out.println("$$$$$$$$$$$$$4");
-                }
-            });
 
-//            s.onNext("AAA");
-            s.onNext("AAAAAAAAAA");
-        })
-                .flatMap(ret -> Observable.from(new String[]{"SSS", "DDDDD"}))
-                .flatMap(ret -> {
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return Observable.from(new String[]{"SSS", "DDDDD"});
-                })
-                .subscribe(ret -> {
-                    System.out.println("BBBBBBBBBBB");
-                }, e -> {
-                    countDownLatch.countDown();
-                    System.err.println(e);
-                }, () -> {
-                    countDownLatch.countDown();
-                    System.out.println("AAAAAAAAAA");
-                });
         countDownLatch.await();
     }
 
     SubscriptionManager manager = new SubscriptionManager();
 
-    public String mmm() {
-        manager.atomicMethod()
-                .subscribeOn(Schedulers.io())
-                .map(s -> {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                    }
-                    return s;
-                })
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .subscribe(System.out::println, System.err::println, () -> {
-                    System.out.println("completed");
-                });
-        return "";
-    }
+
 
     @Test
     public void testFetch() throws Exception {
