@@ -39,7 +39,7 @@ public class EViewPager extends ViewPager {
             int currentItem = ((ViewPager) v).getCurrentItem();
             int countItem = ((ViewPager) v).getAdapter().getCount();
             if ((currentItem == (countItem - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
-                return false;
+                return true;
             }
             return true;
         }
