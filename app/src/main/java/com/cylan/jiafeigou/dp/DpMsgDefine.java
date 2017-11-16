@@ -2647,6 +2647,27 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static class DPChangeLockPassword extends BaseDataPoint {
+        @Index(0)
+        public String oldPassWord;
+        @Index(1)
+        public String newPassWord;
+    }
+
+    @Message
+    public static class DPChangeLockStatusReq extends BaseDataPoint {
+        @Index(0)
+        public String password;
+        @Index(1)
+        public int status;
+    }
+
+    @Message
+    public static class DPChangeLockStatusRsp extends BaseDataPoint {
+
+    }
+
+    @Message
     public static class DpMessage implements Parcelable {
         @Index(0)
         public int msgId;

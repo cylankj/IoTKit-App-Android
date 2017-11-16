@@ -148,21 +148,17 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     }
                     FaceItem.FACE_TYPE_STRANGER -> {
                         cam_message_indicator_watcher_text.visibility = View.GONE
-                        if (strangerAdapter?.dataItems?.size == 0) {
-                            cam_message_indicator_holder.visibility = View.GONE
-                        }
-                        presenter.fetchStrangerVisitorList()
                         vp_default.adapter = strangerAdapter
+                        setFaceHeaderPageIndicator(vp_default.currentItem, strangerAdapter?.dataItems?.size)
+                        presenter.fetchStrangerVisitorList()
                     }
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
-                        val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
                         presenter.fetchVisitsCount(faceId!!, 2)
                     }
                     FaceItem.FACE_TYPE_STRANGER_SUB -> {
-                        val adapter = vp_default.adapter as FaceAdapter?
                         val faceId = if (adapter?.isNormalVisitor == true) item.visitor?.personId else item.strangerVisitor?.faceId
                         AppLogger.w("主列表的 faceId?personId")
                         cam_message_indicator_watcher_text.visibility = View.VISIBLE
@@ -270,7 +266,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         strangerAdapter.populateItems(visitorList)
         strangerAdapter.updateClickItem(0)
 //        vp_default.swapAdapter(strangerAdapter, true)
-        cam_message_indicator_holder.visibility = if (strangerAdapter.getItemSize() > 0) View.VISIBLE else View.GONE
         setFaceHeaderPageIndicator(vp_default.currentItem, (vp_default.adapter as FaceAdapter).getItemSize())
         visitorListener?.onStrangerVisitorReady(visitorList)
         if (strangerAdapter.dataItems.size > 0) {

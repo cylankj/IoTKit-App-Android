@@ -102,6 +102,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
             }
         }
                 .subscribeOn(Schedulers.io())
+                .timeout(10,TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ rsp ->

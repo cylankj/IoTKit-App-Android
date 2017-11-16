@@ -83,7 +83,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
             }
         }
                 .subscribeOn(Schedulers.io())
-                .timeout(30, TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({
@@ -193,6 +193,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     }
                 }
                         .subscribeOn(Schedulers.io())
+                        .timeout(10, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .compose(applyLoading(R.string.LOADING, method))
                         .subscribe({ rsp ->
@@ -215,7 +216,11 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                             }
                         }
 
-                        ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
+                        ) { e ->
+                            e.printStackTrace()
+                            AppLogger.e(MiscUtils.getErr(e))
+                            mView.onLoadFaceInformationError()
+                        }
         addDestroySubscription(subscribe)
     }
 }

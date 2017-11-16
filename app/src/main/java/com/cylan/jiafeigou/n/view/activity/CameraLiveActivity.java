@@ -157,7 +157,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 showSystemUI();
             }
             customToolbar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
-            vpCameraLive.setPagingEnabled(!isLandScape);
+            vpCameraLive.setLocked(isLandScape);
         });
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(visibility -> {
             Log.d("show", "show: " + visibility);

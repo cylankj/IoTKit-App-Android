@@ -406,7 +406,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void decideRefresh() {
-        if (hasFaceHeader) {
+        if (hasFaceHeader&&pageType==FaceItem.FACE_TYPE_ALL) {
             //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
@@ -1046,6 +1046,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (camMessageListAdapter.isEditMode()) {
             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
             tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+            tvMsgDelete.setEnabled(false);
             final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
                     .findLastVisibleItemPosition();
             camMessageListAdapter.reverseMode(false, lPos);

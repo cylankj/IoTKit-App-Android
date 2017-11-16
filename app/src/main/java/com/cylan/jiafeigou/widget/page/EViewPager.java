@@ -141,7 +141,7 @@ public class EViewPager extends ViewPager {
      * @param enable: false to disable scroll
      */
     public void setPagingEnabled(boolean enable) {
-        setLocked(enable);
+        setLocked(!enable);
     }
 
 

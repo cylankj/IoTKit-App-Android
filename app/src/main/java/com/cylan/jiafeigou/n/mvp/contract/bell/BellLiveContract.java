@@ -28,6 +28,8 @@ public interface BellLiveContract {
     interface Presenter extends CallablePresenter {
 
         void capture();
+
+
     }
 }
 

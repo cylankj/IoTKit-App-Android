@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.item.FaceListHeaderItem
 import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.FastAdapter
@@ -38,6 +39,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     }
 
     private var faceId: String? = null
+    private var hasRequested: Boolean = false
 
     override fun onVisitorInformationReady(visitors: List<DpMsgDefine.Visitor>?) {
         visitors?.map {
@@ -194,9 +196,14 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             when {
                 item.visitor?.personId == null -> {
                     AppLogger.w("PersonId is null")
+                    ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
                 }
                 faceId == null -> {
                     AppLogger.w("faceId is null")
+                    ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
+                }
+                NetUtils.getNetType(context) == -1 -> {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1))
                 }
                 else -> {
                     AppLogger.w("moveFaceToPerson with person id:${item.visitor?.personId},face id:$faceId")
@@ -211,7 +218,10 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     override fun onStart() {
         super.onStart()
 //        presenter.loadPersonItems(account!!, uuid)
-        presenter.loadPersonItem2()
+        if (!hasRequested) {
+            hasRequested = true
+            presenter.loadPersonItem2()
+        }
     }
 
     var resultCallback: ((a: Any, b: Any, c: Any) -> Unit)? = null

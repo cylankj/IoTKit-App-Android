@@ -29,6 +29,10 @@ import kotlinx.android.synthetic.main.fragment_face_manager.*
  * Created by yanzhendong on 2017/10/9.
  */
 class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceManagerContact.View {
+    override fun onLoadFaceInformationError() {
+        AppLogger.d("onLoadFaceInformationError")
+    }
+
     private var hasRequested: Boolean = false
     override fun onAcquaintanceReady(data: List<DpMsgDefine.AcquaintanceItem>) {
         var face: FaceManagerItem
