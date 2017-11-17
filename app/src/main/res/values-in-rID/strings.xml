@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">Silahkan dapatkan video sejarahnya terlebih dahulu</string>
   <string name="IGNORE">Mengabaikan</string>
   <string name="IMAGE_ERR">Upload gagal, gambar terlalu besar</string>
-  <string name="INFRARED_IDENTIFY_SET">Identifikasi infra merah</string>
   <string name="INVALID_ACCOUNT">Akun salah</string>
   <string name="INVALID_CODE">Kode salah</string>
   <string name="IN_APP_SOUND">Di - APP Notifikasi Suara</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Pindah ke wajah yang ada</string>
   <string name="MESSAGES_FACE_MOVE_BTN">pindah ke</string>
   <string name="MESSAGES_FACE_NONE">Tanpa muka</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">%s orang berkunjung hari ini</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Kunjungi %s kali dalam 30 hari</string>
   <string name="MESSAGES_FILTER_ALL">Semua</string>
   <string name="MESSAGES_FILTER_STRANGER">Orang asing</string>

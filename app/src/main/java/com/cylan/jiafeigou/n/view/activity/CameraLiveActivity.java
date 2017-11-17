@@ -75,6 +75,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
+        //just for test
+        hasNewMsg = true;
         initToolbar(hasNewMsg);
         initAdapter();
         if (hasNewMsg && vpCameraLive.getAdapter().getCount() > 1) {
@@ -409,9 +411,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
                 Device device = DataSourceManager.getInstance().getDevice(uuid);
 
-//                if (JFGRules.isFaceFragment(device.pid)) {
-//                    return FaceCameraMessageListFragment.Companion.newInstance(uuid);
-//                }
                 return CamMessageListFragment.newInstance(bundle);
             }
         }

@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">Por favor, pegue o vídeo da história em primeiro lugar</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">Falha ao carregar. A imagem é muito grande</string>
-  <string name="INFRARED_IDENTIFY_SET">Identificação de infravermelho</string>
   <string name="INVALID_ACCOUNT">Conta não registrada</string>
   <string name="INVALID_CODE">Código de verificação expirou</string>
   <string name="IN_APP_SOUND">Som</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Mover para um rosto existente</string>
   <string name="MESSAGES_FACE_MOVE_BTN">mover para</string>
   <string name="MESSAGES_FACE_NONE">Sem rosto</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">%s pessoas visitaram hoje</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Visite %s vezes dentro de 30 dias</string>
   <string name="MESSAGES_FILTER_ALL">Todos</string>
   <string name="MESSAGES_FILTER_STRANGER">Estranho</string>

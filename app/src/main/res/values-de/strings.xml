@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">Bitte erhalte die Geschichte Video zuerst</string>
   <string name="IGNORE">Ignorieren</string>
   <string name="IMAGE_ERR">Bild zu groß, bitte neu auswählen</string>
-  <string name="INFRARED_IDENTIFY_SET">Infrarot-Identifizierung</string>
   <string name="INVALID_ACCOUNT">Dieser Account nicht registriert</string>
   <string name="INVALID_CODE">Spamschutzcode ist abgelaufen</string>
   <string name="IN_APP_SOUND">Töne</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Gehen Sie zu einem bestehenden Gesicht</string>
   <string name="MESSAGES_FACE_MOVE_BTN">ziehen nach</string>
   <string name="MESSAGES_FACE_NONE">Kein Gesicht</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">%s Personen besucht heute</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Besuche %s mal innerhalb von 30 Tagen</string>
   <string name="MESSAGES_FILTER_ALL">Alle</string>
   <string name="MESSAGES_FILTER_STRANGER">Fremder</string>

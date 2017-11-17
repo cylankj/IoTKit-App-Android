@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">請先獲取歷史錄像</string>
   <string name="IGNORE">忽略未讀</string>
   <string name="IMAGE_ERR">圖片太大，請重新選擇</string>
-  <string name="INFRARED_IDENTIFY_SET">紅外增強識別</string>
   <string name="INVALID_ACCOUNT">此帳號尚未註冊</string>
   <string name="INVALID_CODE">驗證碼已過期</string>
   <string name="IN_APP_SOUND">警示聲音</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">移動到現有面孔</string>
   <string name="MESSAGES_FACE_MOVE_BTN">移動到</string>
   <string name="MESSAGES_FACE_NONE">暫無面孔</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">今日來訪 %s 人</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">最近30天來訪 %s 次</string>
   <string name="MESSAGES_FILTER_ALL">全部</string>
   <string name="MESSAGES_FILTER_STRANGER">陌生人</string>

@@ -20,12 +20,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -96,6 +99,7 @@ import java.util.concurrent.TimeoutException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -201,6 +205,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     LinearLayout ll_view_mode_container;
     @BindView(R.id.imgV_land_cam_switch_xunhuan)
     ImageView ivModeXunHuan;
+    @BindView(R.id.imgV_cam_door_look)
+    ImageView ivCamDoorLock;
     private boolean enableAutoRotate = true;
 
 
@@ -300,32 +306,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AppLogger.d("需要手动获取sd卡");
             getSdcardStatus();
         });
-//        LayoutTransition transition = new LayoutTransition();
-//
-//        //使用翻转进入的动画代替默认动画
-//        Animator appearAnim = ObjectAnimator
-//                .ofFloat(null, "translateY", 90f, 0)
-//                .setDuration(transition.getDuration(LayoutTransition.APPEARING));
-//        transition.setAnimator(LayoutTransition.APPEARING, appearAnim);
-//
-//        //使用翻转消失的动画代替默认动画
-//        Animator disappearAnim = ObjectAnimator.ofFloat(null, "translationY", 0,
-//                90f).setDuration(
-//                transition.getDuration(LayoutTransition.DISAPPEARING));
-//        transition.setAnimator(LayoutTransition.DISAPPEARING, disappearAnim);
-//
-////        //使用滑动动画代替默认布局改变的动画
-////        //这个动画会让视图滑动进入并短暂地缩小一半，具有平滑和缩放的效果
-////        PropertyValuesHolder pvhSlide = PropertyValuesHolder.ofFloat("y", 0, 1);
-////
-////
-////        //这里将上面三个动画综合
-////        Animator changingDisappearAnim = ObjectAnimator.ofPropertyValuesHolder(this, pvhSlide);
-////        changingDisappearAnim.setDuration(transition.getDuration(LayoutTransition.CHANGE_DISAPPEARING));
-////        transition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING,
-////                changingDisappearAnim);
-//
-//        ll_view_mode_container.setLayoutTransition(transition);
 
         ivModeXunHuan.setEnabled(false);
         ivViewModeSwitch.setEnabled(false);
@@ -638,7 +618,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
         imgVLandCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
-
+        ivCamDoorLock.setVisibility(JFGRules.hasDoorLock(device.pid) ? VISIBLE : GONE);
         AppLogger.w("需要重置清晰度");
     }
 
@@ -2036,6 +2016,46 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void setOrientationHandle(OrientationHandle handle) {
         this.orientationHandle = handle;
+    }
+
+    @OnClick(R.id.imgV_cam_door_look)
+    public void onDoorLockClick() {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_door_lock_alert, null);
+        AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(view).show();
+        View ok = view.findViewById(R.id.ok);
+        View cancel = view.findViewById(R.id.cancel);
+        EditText doorPassWord = (EditText) view.findViewById(R.id.edit_door_pass_word);
+        doorPassWord.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ok.setEnabled(!TextUtils.isEmpty(s));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        ok.setOnClickListener(v -> {
+            String password = doorPassWord.getText().toString().trim();
+            if (TextUtils.isEmpty(password)) {
+                ToastUtil.showToast("语言包:密码不能为空");
+            } else if (password.length() < 6) {
+                ToastUtil.showToast("语言包:请输入6~16位密码");
+            } else {
+                dialog.dismiss();
+                presenter.openDoorLock(password);
+            }
+        });
+        cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
     }
 
 }

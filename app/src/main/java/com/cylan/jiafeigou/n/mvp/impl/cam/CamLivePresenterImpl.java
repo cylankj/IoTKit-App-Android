@@ -37,6 +37,7 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
+import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
@@ -53,6 +54,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.JfgUtils;
@@ -328,6 +330,32 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         unSubscribe("getHistoryList");
         addSubscription(subscription, "getHistoryList");
         return true;
+    }
+
+    @Override
+    public void openDoorLock(String password) {
+        if (liveStream.playState != PLAY_STATE_PLAYING) {
+            //还没有开始直播,则需要开始直播
+            startPlay();
+        }
+        Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
+                .doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(), "开门中", false))
+                .doOnTerminate(LoadingDialog::dismissLoading)
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                    if (success == null) {
+                        mView.onOpenDoorError();
+                    } else if (success) {
+                        mView.onOpenDoorSuccess();
+                    } else {
+                        mView.onOpenDoorError();
+                    }
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e);
+                });
+        addSubscription(method(), subscribe);
     }
 
     /**

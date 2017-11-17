@@ -214,7 +214,6 @@ android {
                                     "TWITTER_APP_SECRET"   : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
                                     "FACEBOOK_APP_KEY"     : "444251309281886",
                                     'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
-
             ]
         }
         _doby {

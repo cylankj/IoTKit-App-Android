@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">まず歴史ビデオを入手してください</string>
   <string name="IGNORE">未読無視</string>
   <string name="IMAGE_ERR">選択した画像のサイズが大きすぎます。再度選択してください。</string>
-  <string name="INFRARED_IDENTIFY_SET">赤外線強化認識</string>
   <string name="INVALID_ACCOUNT">このアカウントは登録されていません</string>
   <string name="INVALID_CODE">検証コードの期限が切れています</string>
   <string name="IN_APP_SOUND">サウンド</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">既存の顔に移動する</string>
   <string name="MESSAGES_FACE_MOVE_BTN">へ引っ越す</string>
   <string name="MESSAGES_FACE_NONE">顔なし</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">今日 %s 人が訪れました</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">30日以内に%s回訪問</string>
   <string name="MESSAGES_FILTER_ALL">すべて</string>
   <string name="MESSAGES_FILTER_STRANGER">見知らぬ人</string>

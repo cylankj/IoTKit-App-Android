@@ -55,7 +55,6 @@
             android:gravity="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="最近-天来访-次"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp12"
             android:visibility="gone"

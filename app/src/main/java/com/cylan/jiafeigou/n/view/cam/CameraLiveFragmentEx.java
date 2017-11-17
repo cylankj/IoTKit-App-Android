@@ -791,6 +791,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }, false);
     }
 
+    @Override
+    public void onOpenDoorError() {
+        AppLogger.d("开门失败");
+        ToastUtil.showToast("语言包:开门失败");
+    }
+
+    @Override
+    public void onOpenDoorSuccess() {
+        AppLogger.d("开门成功");
+        ToastUtil.showToast("语言包:开门成功");
+    }
+
     public void removeVideoView() {
         if (!isUserVisible() && camLiveControlLayer != null)//可以解决退出activity,TransitionAnimation，出现黑屏
         {

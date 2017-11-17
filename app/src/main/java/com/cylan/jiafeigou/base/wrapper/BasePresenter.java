@@ -174,6 +174,14 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
                 .doOnTerminate(LoadingDialog::dismissLoading);
     }
 
+    protected <T> Observable.Transformer<T, T> applyLoading(String message, String subscription) {
+        return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
+                message, true,
+                dialog -> unsubscribe(subscription)))
+                .doOnTerminate(LoadingDialog::dismissLoading);
+    }
+
+
     protected void unsubscribe(String subscription) {
         destroySubscriptions.remove(subscription);
         stopSubscriptions.remove(subscription);

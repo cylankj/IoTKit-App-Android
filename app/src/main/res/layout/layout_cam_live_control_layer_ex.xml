@@ -369,11 +369,26 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clickable="true"
+                android:focusable="true"
                 android:padding="@dimen/x10"
                 android:src="@drawable/icon_port_mic_off_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imgV_cam_trigger_capture"
+                app:layout_constraintEnd_toStartOf="@+id/imgV_cam_door_look"
                 app:layout_constraintStart_toEndOf="@+id/imgV_cam_switch_speaker"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgV_cam_door_look"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/x10"
+                android:src="@drawable/icon_door_look_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgV_cam_trigger_capture"
+                app:layout_constraintStart_toEndOf="@+id/imgV_cam_trigger_mic"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
@@ -386,7 +401,7 @@
                 android:src="@drawable/icon_port_capture_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imgV_cam_trigger_mic"
+                app:layout_constraintStart_toEndOf="@+id/imgV_cam_door_look"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
 

@@ -590,6 +590,16 @@ public class JFGRules {
         return hasMicFeature;
     }
 
+    public static boolean hasDoorLock(int pid) {
+        boolean hasDoorLockFeature = false;
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String door_lock = loader.property(pid, "DOOR_LOCK");
+        hasDoorLockFeature = TextUtils.equals(door_lock, "1");
+        //just for test
+        hasDoorLockFeature = true;
+        return hasDoorLockFeature;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

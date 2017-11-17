@@ -118,7 +118,9 @@ public interface CamLiveContract {
 
         void onDeviceUnBind();
 
+        void onOpenDoorError();
 
+        void onOpenDoorSuccess();
     }
 
     interface Presenter extends BasePresenter {
@@ -247,6 +249,8 @@ public interface CamLiveContract {
         boolean isDeviceStandby();
 
         boolean fetchHistoryDataList();
+
+        void openDoorLock(String password);
     }
 
     class LiveStream {

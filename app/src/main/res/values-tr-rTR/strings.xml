@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">Lütfen önce geçmişi video edin</string>
   <string name="IGNORE">Yoksay</string>
   <string name="IMAGE_ERR">Yükleme başarısız, resim çok büyük</string>
-  <string name="INFRARED_IDENTIFY_SET">Kızılötesi kimlik</string>
   <string name="INVALID_ACCOUNT">Geçersiz hesap</string>
   <string name="INVALID_CODE">Geçersiz kod</string>
   <string name="IN_APP_SOUND">UYG-içi Alarm sesi</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Mevcut bir yüze taşı</string>
   <string name="MESSAGES_FACE_MOVE_BTN">taşınmak</string>
   <string name="MESSAGES_FACE_NONE">Yüzsüz</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">%s kişi bugün ziyaret</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">30 gün içinde %s defa ziyaret</string>
   <string name="MESSAGES_FILTER_ALL">Herşey</string>
   <string name="MESSAGES_FILTER_STRANGER">Yabancı</string>

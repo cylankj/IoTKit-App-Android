@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">Please get the history video firstly</string>
   <string name="IGNORE">Ignore the unread</string>
   <string name="IMAGE_ERR">Upload to failed,the picture is too big</string>
-  <string name="INFRARED_IDENTIFY_SET">Infrared identification</string>
   <string name="INVALID_ACCOUNT">Invalid account</string>
   <string name="INVALID_CODE">Invalid code</string>
   <string name="IN_APP_SOUND">In-APP Alert Sound</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Move to an existing face</string>
   <string name="MESSAGES_FACE_MOVE_BTN">move to</string>
   <string name="MESSAGES_FACE_NONE">No face</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">%s people visited today</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Visit %s times within 30 days</string>
   <string name="MESSAGES_FILTER_ALL">All</string>
   <string name="MESSAGES_FILTER_STRANGER">Stranger</string>

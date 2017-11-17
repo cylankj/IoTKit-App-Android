@@ -307,7 +307,6 @@
   <string name="History_video_Firstly">Trước tiên hãy tải video về lịch sử</string>
   <string name="IGNORE">Bỏ qua</string>
   <string name="IMAGE_ERR">Tải lên lỗi, kích thước ảnh quá lớn</string>
-  <string name="INFRARED_IDENTIFY_SET">Nhận dạng hồng ngoại</string>
   <string name="INVALID_ACCOUNT">Tài khoản không tồn tại</string>
   <string name="INVALID_CODE">Mã không tồn tại</string>
   <string name="IN_APP_SOUND">In-APP báo âm thanh</string>
@@ -413,6 +412,7 @@
   <string name="MESSAGES_FACE_MOVE">Di chuyển đến khuôn mặt hiện tại</string>
   <string name="MESSAGES_FACE_MOVE_BTN">chuyển tới</string>
   <string name="MESSAGES_FACE_NONE">Không có mặt</string>
+  <string name="MESSAGES_FACE_VISIT_SUM">%s người ghé thăm hôm nay</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Truy cập %s lần trong vòng 30 ngày</string>
   <string name="MESSAGES_FILTER_ALL">Tất cả các</string>
   <string name="MESSAGES_FILTER_STRANGER">Lạ</string>

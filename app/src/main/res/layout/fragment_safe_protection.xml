@@ -81,7 +81,7 @@
                 android:id="@+id/sw_infrared_strengthen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                hunt:sv_title="@string/INFRARED_IDENTIFY_SET"
+                hunt:sv_title="语言包:红外增强识别"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0

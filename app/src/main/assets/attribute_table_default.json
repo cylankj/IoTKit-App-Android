@@ -168,7 +168,7 @@
       "AUTORECORD": "0",
       "CIDPREFIX": "2901",
       "CLARITYVERSION": "1.0.0",
-      "DETECTION_ZONE_SETTING": "1",
+      "DETECTION_ZONE": "0",
       "DEVICE": "DOG-10W",
       "HANGUP": "0",
       "INTERVAL_ALARM": "60",
@@ -187,7 +187,7 @@
       "AUTORECORD": "0",
       "CIDPREFIX": "2902",
       "CLARITYVERSION": "1.0.0",
-      "DETECTION_ZONE_SETTING": "1",
+      "DETECTION_ZONE": "0",
       "DEVICE": "DOG-11W",
       "HANGUP": "0",
       "INTERVAL_ALARM": "60",
@@ -642,5 +642,5 @@
       1495
     ]
   },
-  "version": "20171115"
+  "version": "20171116"
 }

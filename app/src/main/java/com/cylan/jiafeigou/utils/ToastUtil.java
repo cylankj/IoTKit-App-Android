@@ -18,6 +18,7 @@ public class ToastUtil {
     private static SoftReference<TextView> toasterNormalView;
     private static SoftReference<TextView> toasterPosView;
     private static SoftReference<TextView> toasterNegView;
+    private static SoftReference<TextView> toasterFailureView;
 
     public static void showToast(String content) {
         showToast(ContextUtils.getContext(), content, Gravity.CENTER, Toast.LENGTH_SHORT);
@@ -82,6 +83,29 @@ public class ToastUtil {
             Context cxt = ContextUtils.getContext();
             TextView tv = toasterNegView != null && toasterNegView.get() != null ?
                     toasterNegView.get() :
+                    (TextView) View.inflate(cxt, R.layout.layout_toaster_negative, null);
+            if (toasterNegView == null) {
+                toasterNegView = new SoftReference<>(tv);
+            }
+            final Toast toast = new Toast(cxt.getApplicationContext());
+            toast.setView(tv);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            tv.setText(content);
+            toast.show();
+        } catch (Exception e) {
+
+        }
+    }
+
+    public static void showFailureToast(String content) {
+        try {
+            if (Looper.getMainLooper() != Looper.myLooper()) {
+                throw new NullPointerException("fxxx.");
+            }
+            Context cxt = ContextUtils.getContext();
+            TextView tv = toasterFailureView != null && toasterFailureView.get() != null ?
+                    toasterFailureView.get() :
                     (TextView) View.inflate(cxt, R.layout.layout_toaster_negative, null);
             if (toasterNegView == null) {
                 toasterNegView = new SoftReference<>(tv);

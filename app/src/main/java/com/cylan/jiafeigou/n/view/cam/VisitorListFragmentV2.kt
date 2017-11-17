@@ -234,7 +234,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
             FaceItem.FACE_TYPE_ALL -> {
                 if (TextUtils.isEmpty(faceId)) {
-                    cam_message_indicator_watcher_text.text = String.format("今天来访%s人", count)
+                    cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_SUM, count.toString())
                 }
             }
         }
@@ -289,9 +289,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     open fun refreshContent() {
         val adapter = vp_default?.adapter as FaceAdapter?
         if (adapter?.isNormalVisitor == true) {
-            presenter?.fetchVisitorList()
-        } else {
-            presenter?.fetchStrangerVisitorList()
+            cam_message_indicator_holder.post { presenter?.fetchVisitorList() }
+        } else if (adapter?.isNormalVisitor == false) {
+            cam_message_indicator_holder.post { presenter?.fetchStrangerVisitorList() }
         }
     }
 
@@ -435,7 +435,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     }
                 }
             } else {
-// 什么也没选
             }
             dialog.dismiss()
         }

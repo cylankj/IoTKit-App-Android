@@ -238,7 +238,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.setOnclickListener(this);
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
 
-        initFaceHeader();
 
     }
 
@@ -297,7 +296,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void layoutBarMenu(int barType) {
-        camMessageListAdapter.clear();
+        if (camMessageListAdapter != null) {
+            camMessageListAdapter.clear();
+        }
         if (barType == BAR_TYPE_FACE_COMMON) {
             barBack.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams;
@@ -406,7 +407,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void decideRefresh() {
-        if (hasFaceHeader&&pageType==FaceItem.FACE_TYPE_ALL) {
+        if (hasFaceHeader && pageType == FaceItem.FACE_TYPE_ALL) {
             //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
@@ -416,36 +417,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void lazyLoad() {
+        super.lazyLoad();
         //从通知栏跳进来
-        boolean needRefresh = false;
-        if (getActivity() != null && getActivity().getIntent() != null) {
-            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {//需要每次进来都刷新数据,
-                //客户端绑定门铃一代设备之后，门铃按呼叫键呼叫生成呼叫记录；
-                //客户端进入“功能设置”界面点击“清空呼叫记录”，之后返回门铃的“消息”界面，呼叫记录依旧存在；iOS客户端的呼叫记录已经被清空；
-
-                Intent intent = getActivity().getIntent();
-                if (intent != null) {
-                    intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
-                }
-                AppLogger.w("刷新数据中...");
-
-                needRefresh = true;
-            }
-        }
+        ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ClearDataEvent.class)) {
-            needRefresh = true;
             camMessageListAdapter.clear();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ClearDataEvent.class);
         }
-        if (getArguments() != null && getArguments().getBoolean(JConstant.KEY_JUMP_TO_MESSAGE, false)) {
-            //需要刷新
-            needRefresh = true;
-        }
-        if (needRefresh) {
-            decideRefresh();
-        }
+
+        decideRefresh();//需要每次刷新,而不是第一次刷新
+
         if (NetUtils.getNetType(getContext()) == -1) {
             Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
             KeyValueStringItem stringItem = boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
@@ -458,19 +440,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     e.printStackTrace();
                 }
             }
-        }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        //刚刚进入页面，尽量少点加载
-
-        if (isVisibleToUser && presenter != null && getActivity() != null && isResumed()) {
-//            if (camMessageListAdapter.getCount() == 0)
-            decideRefresh();//需要每次刷新,而不是第一次刷新
-            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         }
     }
 

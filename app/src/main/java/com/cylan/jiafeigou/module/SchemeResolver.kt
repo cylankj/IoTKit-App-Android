@@ -84,7 +84,8 @@ object SchemeResolver {
             DpMsgMap.ID_505_CAMERA_ALARM_MSG -> {
                 val dpAlarm = message as DpMsgDefine.DPAlarm
                 when {
-                    dpAlarm.face_id?.isNotEmpty() == true -> "cylan:///long/$vid/$account/AI/$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.ossType}"
+//                    dpAlarm.face_id?.isNotEmpty() == true -> "cylan:///long/$vid/$account/AI/$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.ossType}"
+                    dpAlarm.face_id?.isNotEmpty() == true -> "cylan:///long/$account/AI/$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.ossType}"
                     device.vid.isNullOrEmpty() -> "cylan:///$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.ossType}"
                     else -> "cylan:///cid/${device.vid}/$cid/${dpAlarm.time}?regionType=${dpAlarm.ossType}"
                 }
