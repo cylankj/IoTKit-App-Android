@@ -596,7 +596,7 @@ public class JFGRules {
         String door_lock = loader.property(pid, "DOOR_LOCK");
         hasDoorLockFeature = TextUtils.equals(door_lock, "1");
         //just for test
-        hasDoorLockFeature = true;
+//        hasDoorLockFeature = true;
         return hasDoorLockFeature;
     }
 

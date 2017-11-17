@@ -196,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 hunt:sv_image_src="@drawable/setting_icon_lock"
-                hunt:sv_title="语言包:修改开门密码"
+                hunt:sv_title="@string/MODIFY_DOOR_PSW"
                 hunt:sv_v_divider="true"
                 hunt:sv_v_image_show="true" />
 

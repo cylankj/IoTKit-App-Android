@@ -144,6 +144,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svTargetLevelBFS;
     @BindView(R.id.sv_setting_device_ap)
     SettingItemView0 svSettingDeviceAp;
+    @BindView(R.id.siv_setting_device_door_look)
+    SettingItemView0 sivDeviceDoorLock;
 
     //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
 //    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -193,7 +195,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceSoftAp.setVisibility(productProperty.hasProperty(device.pid, "AP") ? View.VISIBLE : View.GONE);
         svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
         sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
-
+        sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
 
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);

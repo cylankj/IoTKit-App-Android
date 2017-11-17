@@ -15,7 +15,7 @@
             android:layout_marginEnd="@dimen/y24"
             android:layout_marginStart="@dimen/y24"
             android:layout_marginTop="@dimen/y24"
-            android:text="语言包:请输入开门密码"
+            android:text="@string/DOOR_SET_WIFI_MSG"
             android:textColor="@color/color_black"
             android:textSize="@dimen/sp16"
             app:layout_constraintEnd_toEndOf="parent"
