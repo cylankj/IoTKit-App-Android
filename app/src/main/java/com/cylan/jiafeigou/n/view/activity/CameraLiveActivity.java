@@ -75,8 +75,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
-        //just for test
-        hasNewMsg = true;
+//        //just for test
+//        hasNewMsg = true;
         initToolbar(hasNewMsg);
         initAdapter();
         if (hasNewMsg && vpCameraLive.getAdapter().getCount() > 1) {
