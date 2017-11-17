@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_toaster_normal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/toaster_bg"
+    android:drawablePadding="@dimen/x12"
+    android:drawableTop="@drawable/tips_icon_failure"
+    android:gravity="center"
+    android:paddingBottom="@dimen/y23"
+    android:paddingTop="@dimen/y23"
+    android:textColor="#fff"
+    android:textSize="@dimen/sp14" />
