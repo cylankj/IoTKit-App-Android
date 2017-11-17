@@ -71,6 +71,7 @@
   <string name="CID_USED">L\'appareil a établi des connections, sa suppression entraînera leur perte. Continuer quand même ?</string>
   <string name="CLEAR">Effacer</string>
   <string name="CLEAR_DATA">Vider le cache des messages</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Fermez la porte avec succès</string>
   <string name="CODE_ERR">Code de vérification faux</string>
   <string name="COMFIRM_NEW_PASS">Confirmer le nouveau mot de passe</string>
   <string name="CONNECTING">La caméra ne répond pas, essayer à nouveau</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Supprimer</string>
   <string name="DELETE_THEME_XX">Vous êtes sûr de vouloir supprimer %s ?</string>
   <string name="DETECTED_AI">Découvrir</string>
+  <string name="DETECTION_AREA">Zone de détection</string>
+  <string name="DETECTION_AREA_ADD">Définir la zone de détection</string>
+  <string name="DETECTION_AREA_DEFAULT">défaut</string>
+  <string name="DETECTION_AREA_DESCRI">Toutes les zones sont détectées par défaut et enverront des alarmes uniquement lorsque la zone spécifiée change</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Échec de chargement graphique en temps réel</string>
+  <string name="DETECTION_AREA_GUIDE">Faites glisser la boîte rouge pour définir la zone de détection</string>
+  <string name="DETECTION_AREA_RESTORE">Réinitialiser</string>
+  <string name="DETECTION_AREA_SET">A été mis en</string>
   <string name="DEVICE">Dispositif</string>
   <string name="DEVICES_TIPS_TEXT">Ce processus a besoin:\n 1 l\'appareil connecté au réseau \n 2 enregistrer et activer le CID \n 3 liaison avec le compte actuel</string>
   <string name="DEVICES_TITLE">Ajouter un appareil</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Capacité de la batterie est faible, s\'il vous plaît charger</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Pas connecté</string>
+  <string name="DOOR_OPENED">Ouvert</string>
+  <string name="DOOR_OPENING">Ouverture&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">ne parvient pas à ouvrir la porte</string>
   <string name="DOOR_OTHER_LISTENED">D\'autres ont répondu</string>
+  <string name="DOOR_PASSWORD">Veuillez entrer le mot de passe de la porte</string>
   <string name="DOOR_SET_WIFI_MSG">Configuration envoyée</string>
   <string name="DOOR_SLIDE_TIP">Glisser à droite pour répondre</string>
   <string name="DOOR_STOPPED">Déconnecter</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Manqué</string>
   <string name="DOOR_VOICE">Voix</string>
   <string name="DOOR_WIFI_HINT">Voyant indicateur d\'état</string>
+  <string name="DOOR_WRONG_PSW">mauvais mot de passe</string>
+  <string name="DOOR_WRONG_PSW_MSG">Mot de passe incorrect</string>
   <string name="DailyGreatTips_Full">Collection nombre de Merveilleux de la journée a atteint la limite supérieure de 50, va supprimer?</string>
   <string name="Daily_Great_NO_CONTENTS">Pas content</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Veuillez d\'abord obtenir la vidéo d\'historique</string>
   <string name="IGNORE">Ignorer</string>
   <string name="IMAGE_ERR">Échec du transfert, l\'image est trop grande</string>
+  <string name="INFRARED_IDENTIFY_SET">Identification infrarouge</string>
   <string name="INVALID_ACCOUNT">Compte inconnu</string>
   <string name="INVALID_CODE">Code de vérification faux</string>
   <string name="IN_APP_SOUND">Alerte sonore</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">réseau de données mobile</string>
   <string name="MOBILE_TIPS">Lorsque cette fonction est activée, l\'appareil utilisera en priorité les données mobiles, même si une connexion Wifi existe.</string>
   <string name="MODEL">Type</string>
+  <string name="MODIFY_DOOR_PSW">Modifier le mot de passe de porte</string>
   <string name="MON">Lundi</string>
   <string name="MONTHS">mois</string>
   <string name="MON_1">Tous Les Lundis</string>
@@ -491,6 +508,7 @@
   <string name="OK">OK</string>
   <string name="ON">Marche</string>
   <string name="OPEN">Ouvrir</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Ouvrez la porte avec succès</string>
   <string name="OPEN_PROTECTION">Définir l\'intervalle de temps dans laquelle la protection est activée (détection de mouvement et l\'alarme)</string>
   <string name="OPEN_SAFETY">Activer la détection de mouvement et l\'alarme de tous les appareils présents</string>
   <string name="OTHERS_LOOKING">Vidéo indisponible:un autre usager utilise la connexion.</string>

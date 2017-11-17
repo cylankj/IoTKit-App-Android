@@ -71,6 +71,7 @@
   <string name="CID_USED">Cihaz kullanıldı, ve cihazı bağlamaya devam etmek isterseniz diğerleriyle olan bağlantısı kopartmaya zorlanacaktır, Devam edilsin mi?</string>
   <string name="CLEAR">Temizle</string>
   <string name="CLEAR_DATA">Mesajlar cebini temizleyiniz</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Kapıyı başarıyla kapat</string>
   <string name="CODE_ERR">Geçersiz kod</string>
   <string name="COMFIRM_NEW_PASS">Yeni şifreyi tekrar yazın</string>
   <string name="CONNECTING">Cevap yok, lütfen tekrar deneyiniz</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Sil</string>
   <string name="DELETE_THEME_XX">%s ı silmek istediğinizden emin misiniz ?</string>
   <string name="DETECTED_AI">keşfedin</string>
+  <string name="DETECTION_AREA">Algılama alanı</string>
+  <string name="DETECTION_AREA_ADD">Set algılama alanı</string>
+  <string name="DETECTION_AREA_DEFAULT">varsayılan</string>
+  <string name="DETECTION_AREA_DESCRI">Tüm bölgeler varsayılan olarak algılanır ve yalnızca belirtilen alan değiştiğinde alarm gönderir</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Gerçek zamanlı arka plan yüklenemedi</string>
+  <string name="DETECTION_AREA_GUIDE">Algılama alanını ayarlamak için kırmızı kutuyu sürükleyin</string>
+  <string name="DETECTION_AREA_RESTORE">Varsayılanları Geri Yükle</string>
+  <string name="DETECTION_AREA_SET">Ayarlandı</string>
   <string name="DEVICE">Cihaz</string>
   <string name="DEVICES_TIPS_TEXT">Bu işlem şunları gerektirir:\n1. Ağa bağlı cihaz\n2.CID yi kaydet ve aktifleştir\n3.Mevcut hesap bağlantısı</string>
   <string name="DEVICES_TITLE">Cihaz ekle</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Batarya kapasitesi düşük, lütfen şarj edin.</string>
   <string name="DOOR_MAGNET_NAME">iEv</string>
   <string name="DOOR_NOT_CONNECT">Bağlı değil</string>
+  <string name="DOOR_OPENED">Açıldı</string>
+  <string name="DOOR_OPENING">Açılış &#8230;</string>
+  <string name="DOOR_OPEN_FAIL">kapıyı açma başarısız</string>
   <string name="DOOR_OTHER_LISTENED">Diğer kullanıcı cevapladı</string>
+  <string name="DOOR_PASSWORD">Lütfen kapı şifresini giriniz</string>
   <string name="DOOR_SET_WIFI_MSG">Sunuldu</string>
   <string name="DOOR_SLIDE_TIP">Cevaplamak için kaydırın</string>
   <string name="DOOR_STOPPED">Bağlantıyı kopar</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Cevapsız</string>
   <string name="DOOR_VOICE">Ses</string>
   <string name="DOOR_WIFI_HINT">LED Durum Göstergesi</string>
+  <string name="DOOR_WRONG_PSW">yanlış şifre</string>
+  <string name="DOOR_WRONG_PSW_MSG">Yanlış kapı şifresi</string>
   <string name="DailyGreatTips_Full">Koleksiyonun Günlük Mükemmel sayısı 50\'ye ulaştı, silinecek mi?</string>
   <string name="Daily_Great_NO_CONTENTS">İçerik yok</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Lütfen önce geçmişi video edin</string>
   <string name="IGNORE">Yoksay</string>
   <string name="IMAGE_ERR">Yükleme başarısız, resim çok büyük</string>
+  <string name="INFRARED_IDENTIFY_SET">Kızılötesi kimlik</string>
   <string name="INVALID_ACCOUNT">Geçersiz hesap</string>
   <string name="INVALID_CODE">Geçersiz kod</string>
   <string name="IN_APP_SOUND">UYG-içi Alarm sesi</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">Mobil veri ağı</string>
   <string name="MOBILE_TIPS">Bu fonksiyon açıkken WiFi bağlantı kullanmaya tercihen cihaz, mobil veri kullanacaktır.</string>
   <string name="MODEL">Model</string>
+  <string name="MODIFY_DOOR_PSW">Kapı şifresini değiştir</string>
   <string name="MON">Pazartesi</string>
   <string name="MONTHS">ay</string>
   <string name="MON_1">Pazartesi</string>
@@ -491,6 +508,7 @@
   <string name="OK">TAMAM</string>
   <string name="ON">Açık</string>
   <string name="OPEN">Aç</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Kapıyı başarıyla açın</string>
   <string name="OPEN_PROTECTION">Zaman peryodu içinde kur, hareket algılamayı aç ve mesaj gönder</string>
   <string name="OPEN_SAFETY">Tüm cihazların alarm ve hareket algılamasını bu yerde açın</string>
   <string name="OTHERS_LOOKING">Birisi canlı video izliyor</string>

@@ -71,6 +71,7 @@
   <string name="CID_USED">このデバイスがすでにバインディングされており、続いて操作すると他とのバインディングが解除されます、継続しますか?</string>
   <string name="CLEAR">空にする</string>
   <string name="CLEAR_DATA">キャッシュクリア</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">ドアを正常に閉じる</string>
   <string name="CODE_ERR">有効な検証コードを入力してください</string>
   <string name="COMFIRM_NEW_PASS">新しいパスワードを確認してください</string>
   <string name="CONNECTING">デバイスに反応がありません。再試行してください</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">位置削除</string>
   <string name="DELETE_THEME_XX">位置%sを削除しますか？</string>
   <string name="DETECTED_AI">発見する</string>
+  <string name="DETECTION_AREA">検出領域</string>
+  <string name="DETECTION_AREA_ADD">検出領域の設定</string>
+  <string name="DETECTION_AREA_DEFAULT">デフォルト</string>
+  <string name="DETECTION_AREA_DESCRI">すべてのゾーンはデフォルトで検出され、指定されたエリアが変更された場合にのみアラームが送信されます</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">リアルタイムの背景を読み込めませんでした</string>
+  <string name="DETECTION_AREA_GUIDE">赤いボックスをドラッグして検出エリアを設定する</string>
+  <string name="DETECTION_AREA_RESTORE">デフォルトに戻す</string>
+  <string name="DETECTION_AREA_SET">設定されている</string>
   <string name="DEVICE">デバイス</string>
   <string name="DEVICES_TIPS_TEXT">ここに必要のステップは:\n1.デバイスをネットワークに接続させる\n2. CIDアカウントを登録して有効化する\n3.現在のアカウントとバインディングする</string>
   <string name="DEVICES_TITLE">デバイス追加</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">電池容量が低く、充電してください。</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">接続されていません</string>
+  <string name="DOOR_OPENED">開かれた</string>
+  <string name="DOOR_OPENING">オープニング&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">ドアを開けない</string>
   <string name="DOOR_OTHER_LISTENED">その他の端末で応答されました</string>
+  <string name="DOOR_PASSWORD">ドアのパスワードを入力してください</string>
   <string name="DOOR_SET_WIFI_MSG">設定が送信されました</string>
   <string name="DOOR_SLIDE_TIP">右にスライドして通話</string>
   <string name="DOOR_STOPPED">切断</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">回答なし</string>
   <string name="DOOR_VOICE">ボイス</string>
   <string name="DOOR_WIFI_HINT">デバイスのライト状態説明</string>
+  <string name="DOOR_WRONG_PSW">間違ったパスワード</string>
+  <string name="DOOR_WRONG_PSW_MSG">間違ったドアパスワード</string>
   <string name="DailyGreatTips_Full">毎日の見どころのコレクションは削除に行くかどうか、50の上限に達していますか？</string>
   <string name="Daily_Great_NO_CONTENTS">コンテンツなし</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">まず歴史ビデオを入手してください</string>
   <string name="IGNORE">未読無視</string>
   <string name="IMAGE_ERR">選択した画像のサイズが大きすぎます。再度選択してください。</string>
+  <string name="INFRARED_IDENTIFY_SET">赤外線強化認識</string>
   <string name="INVALID_ACCOUNT">このアカウントは登録されていません</string>
   <string name="INVALID_CODE">検証コードの期限が切れています</string>
   <string name="IN_APP_SOUND">サウンド</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">モバイルデータネットワーク</string>
   <string name="MOBILE_TIPS">当機能を有効にすると、WiFi接続が切断され、モバイルデータを使用します</string>
   <string name="MODEL">型番</string>
+  <string name="MODIFY_DOOR_PSW">ドアのパスワードを変更する</string>
   <string name="MON">月曜日</string>
   <string name="MONTHS">月</string>
   <string name="MON_1">毎週月曜日</string>
@@ -491,6 +508,7 @@
   <string name="OK">確定</string>
   <string name="ON">オン</string>
   <string name="OPEN">開く</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">ドアを正常に開く</string>
   <string name="OPEN_PROTECTION">設定された時間帯に、移動検出および警報を起動する</string>
   <string name="OPEN_SAFETY">位置にあるすべてのデバイスの移動検出および警報を開く</string>
   <string name="OTHERS_LOOKING">他のユーザーが閲覧中</string>

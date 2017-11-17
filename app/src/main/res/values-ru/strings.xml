@@ -71,6 +71,7 @@
   <string name="CID_USED">Данное оборудование уже привязано, если продолжить, то будут удалены все привязки, продолжить?</string>
   <string name="CLEAR">Очистить</string>
   <string name="CLEAR_DATA">Очистить кэш</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Закройте дверь успешно</string>
   <string name="CODE_ERR">Пожалуйста, введите верный пароль</string>
   <string name="COMFIRM_NEW_PASS">Снова введите новый пароль</string>
   <string name="CONNECTING">Нет ответа, пожалуйста, попробуйте еще раз</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Удалить</string>
   <string name="DELETE_THEME_XX">Вы уверены, что хотите удалить %s ?</string>
   <string name="DETECTED_AI">Обнаружить</string>
+  <string name="DETECTION_AREA">зона обнаружения</string>
+  <string name="DETECTION_AREA_ADD">Установить зону обнаружения</string>
+  <string name="DETECTION_AREA_DEFAULT">дефолт</string>
+  <string name="DETECTION_AREA_DESCRI">Все зоны обнаруживаются по умолчанию и будут отправлять сигналы тревоги только при изменении указанной области</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">не удалось загрузить график реального времени</string>
+  <string name="DETECTION_AREA_GUIDE">Перетащите красную рамку, чтобы установить область обнаружения</string>
+  <string name="DETECTION_AREA_RESTORE">Восстановить значения по умолчанию</string>
+  <string name="DETECTION_AREA_SET">Был установлен</string>
   <string name="DEVICE">устройство</string>
   <string name="DEVICES_TIPS_TEXT">Этот процесс требует:\n1.Устройство, подключенное к сети\n2.Регистрация и активация CID\n3.Привязки с данного аккаунта </string>
   <string name="DEVICES_TITLE">Добавить устройство</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Емкость батареи низкий, оплатите пожалуйста</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Дверной звонок не подключен</string>
+  <string name="DOOR_OPENED">открытый</string>
+  <string name="DOOR_OPENING">Открытие &#8230;</string>
+  <string name="DOOR_OPEN_FAIL">не открывать дверь</string>
   <string name="DOOR_OTHER_LISTENED">Другие устройства были услышаны</string>
+  <string name="DOOR_PASSWORD">Введите пароль двери</string>
   <string name="DOOR_SET_WIFI_MSG">Конфигурация была отправлена</string>
   <string name="DOOR_SLIDE_TIP">Слайд-направо</string>
   <string name="DOOR_STOPPED">Отключить</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Пропущенный</string>
   <string name="DOOR_VOICE">Голос</string>
   <string name="DOOR_WIFI_HINT">Светодиодный индикатор состояния</string>
+  <string name="DOOR_WRONG_PSW">неправильный пароль</string>
+  <string name="DOOR_WRONG_PSW_MSG">Неверный пароль двери</string>
   <string name="DailyGreatTips_Full">Число коллекции Ежедневное чудо достиг верхнего предела 50, собирается удалять?</string>
   <string name="Daily_Great_NO_CONTENTS">Без содержания</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Сначала возьмите видео с историей</string>
   <string name="IGNORE">Игнорировать</string>
   <string name="IMAGE_ERR">Изображение слишком большое</string>
+  <string name="INFRARED_IDENTIFY_SET">ИК-распознавание</string>
   <string name="INVALID_ACCOUNT">Данный аккаунт еще не зарегистрирован</string>
   <string name="INVALID_CODE">Истек срок проверочного кода</string>
   <string name="IN_APP_SOUND">Звуковой сигнал</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">Мобильная сеть передачи данных</string>
   <string name="MOBILE_TIPS">Когда эта функция включена, устройство будет приоритетно использовать мобильные данные, даже если существует известное WiFi соединение</string>
   <string name="MODEL">Модель</string>
+  <string name="MODIFY_DOOR_PSW">Изменить пароль двери</string>
   <string name="MON">Пн</string>
   <string name="MONTHS">месяц</string>
   <string name="MON_1">Кажд. пн</string>
@@ -491,6 +508,7 @@
   <string name="OK">Да</string>
   <string name="ON">Вкл.</string>
   <string name="OPEN">Открыть</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Хорошо открыть дверь</string>
   <string name="OPEN_PROTECTION">Включить обнаружение движения в помещении в определённое время с push-уведомлениями</string>
   <string name="OPEN_SAFETY">Открыть все устройства обнаружения движения и сигнализации в этом местоположении</string>
   <string name="OTHERS_LOOKING">Кто-то уже смотрит live video</string>

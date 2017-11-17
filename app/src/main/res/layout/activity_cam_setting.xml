@@ -192,7 +192,7 @@
                 hunt:sv_v_image_show="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/sv_setting_device_door_look"
+                android:id="@+id/siv_setting_device_door_look"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 hunt:sv_image_src="@drawable/setting_icon_lock"

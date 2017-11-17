@@ -71,6 +71,7 @@
   <string name="CID_USED">Este dispositivo ha sido enlazado, se eliminará el enlace con la operación actual, ¿ seguro de seguir el paso?</string>
   <string name="CLEAR">Vaciar</string>
   <string name="CLEAR_DATA">Limpiar caché</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Cierra la puerta con éxito</string>
   <string name="CODE_ERR">Introduzca el código de prueba válido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nueva contraseña</string>
   <string name="CONNECTING">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Borrar localización</string>
   <string name="DELETE_THEME_XX">Seguro de borrar la %s ?</string>
   <string name="DETECTED_AI">Descubrir</string>
+  <string name="DETECTION_AREA">Área de detección</string>
+  <string name="DETECTION_AREA_ADD">Establecer el área de detección</string>
+  <string name="DETECTION_AREA_DEFAULT">defecto</string>
+  <string name="DETECTION_AREA_DESCRI">Todas las zonas se detectan por defecto y enviarán alarmas solo cuando el área especificada cambie</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">No se pudo cargar gráfico en tiempo real</string>
+  <string name="DETECTION_AREA_GUIDE">Arrastra el cuadro rojo para configurar el área de detección</string>
+  <string name="DETECTION_AREA_RESTORE">restaurar valores predeterminados</string>
+  <string name="DETECTION_AREA_SET">Se ha fijádo</string>
   <string name="DEVICE">Dispositivo</string>
   <string name="DEVICES_TIPS_TEXT">Se necesita en este paso:\n1. Dispositivo conectado a Internet \n2.Inscribir y activar CID \n3.Enlazado con la cuenta actual</string>
   <string name="DEVICES_TITLE">Añadir Dispositivos</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">capacidad de la batería es baja, carga por favor</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">No conectado</string>
+  <string name="DOOR_OPENED">Abrió</string>
+  <string name="DOOR_OPENING">Apertura&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">dejar de abrir la puerta</string>
   <string name="DOOR_OTHER_LISTENED">Otros dispositivos han sido contestadas</string>
+  <string name="DOOR_PASSWORD">Por favor ingrese la contraseña de la puerta</string>
   <string name="DOOR_SET_WIFI_MSG">Ajustes han sido enviados</string>
   <string name="DOOR_SLIDE_TIP">Diapositiva a derecha</string>
   <string name="DOOR_STOPPED">Desconectar</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">perdidas</string>
   <string name="DOOR_VOICE">Sonido</string>
   <string name="DOOR_WIFI_HINT">Indicador LED de estado</string>
+  <string name="DOOR_WRONG_PSW">contraseña incorrecta</string>
+  <string name="DOOR_WRONG_PSW_MSG">contraseña puerta equivocada</string>
   <string name="DailyGreatTips_Full">Número de la colección de Gran día ha alcanzado el límite superior de 50, va a eliminar?</string>
   <string name="Daily_Great_NO_CONTENTS">Sin contenido</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Por favor, obtenga el video del historial en primer lugar</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">La foto es demasiado grande, no es bueno para la pruba, elija de nuevo por favor</string>
+  <string name="INFRARED_IDENTIFY_SET">Identificación infrarroja</string>
   <string name="INVALID_ACCOUNT">Esta cuenta no ha sido inscribida</string>
   <string name="INVALID_CODE">Código de prueba inválido</string>
   <string name="IN_APP_SOUND">Sonido</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">red de datos móviles</string>
   <string name="MOBILE_TIPS">Usará primero datos móviles aunque haya WiFi conocido abriendo esta función</string>
   <string name="MODEL">Modelo</string>
+  <string name="MODIFY_DOOR_PSW">Modificar la contraseña de la puerta</string>
   <string name="MON">Lun</string>
   <string name="MONTHS">mes</string>
   <string name="MON_1">Cada lunes</string>
@@ -491,6 +508,7 @@
   <string name="OK">Aceptar</string>
   <string name="ON">Activo</string>
   <string name="OPEN">Iniciar</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Abra la puerta con éxito</string>
   <string name="OPEN_PROTECTION">Se activarán la detección del movimiento y la alarma en el horaio elegido</string>
   <string name="OPEN_SAFETY">Todos los dispositivos bajo la ubicación encenderán la detección del movimiento y la alarma.</string>
   <string name="OTHERS_LOOKING">Cargando, no pueden averiguar varias personas al mismo tiempo</string>

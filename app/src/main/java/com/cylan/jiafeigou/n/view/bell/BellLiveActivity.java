@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -26,7 +25,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -66,7 +67,6 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
-import com.jakewharton.rxbinding.view.RxView;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -87,9 +87,6 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Presenter>
         implements DragLayout.OnDragReleaseListener, View.OnClickListener
         , BellLiveContract.View, ILiveControl.Action {
-
-    @BindView(R.id.fLayout_bell_live_holder)
-    FrameLayout fLayoutBellLiveHolder;
     @BindView(R.id.tv_bell_live_flow)
     TextView mBellFlow;
     @BindView(R.id.imgv_bell_live_switch_to_land)
@@ -102,16 +99,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     ImageView imgvBellLiveHangUp;
     @BindView(R.id.imgv_bell_live_speaker)
     ImageView imgvBellLiveSpeaker;
-    @BindView(R.id.fLayout_bell_after_live)
-    FrameLayout fLayoutBellAfterLive;
     @BindView(R.id.act_bell_live_video_picture)
     ImageView mBellLiveVideoPicture;
     @BindView(R.id.act_bell_live_video_view_container)
     FrameLayout mVideoViewContainer;
     @BindView(R.id.act_bell_live_video_play_controller)
     ILiveControl mVideoPlayController;
-    //    @BindView(R.id.act_bell_live_back)
-//    TextView mBellLiveBack;
     @BindView(R.id.view_bell_handle)
     ImageView mBellhandle;
     private ImageView mLandBellLiveSpeaker;
@@ -120,29 +113,25 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     CustomToolbar customToolbar;
     @BindView(R.id.act_bell_live_back)
     TextView landBack;
+    @BindView(R.id.root_view)
+    ViewGroup rootView;
+    @BindView(R.id.bottom_menu_switcher)
+    ViewSwitcher bottomMenuSwitcher;
+    @BindView(R.id.imgv_bell_door_lock)
+    ImageView bellDoorLock;
     /**
      * 水平方向的view
      */
     private WeakReference<View> fLayoutLandHolderRef;
-
     private SurfaceView mSurfaceView;
-
-    private String mNewCallHandle;
-
     private String mLiveTitle = "宝宝的房间";
-
-    private boolean isLandMode = false;
-    //    private boolean isLanchFromBellCall = false;
     private MediaPlayer mediaPlayer;
     private RoundCardPopup roundCardPopup;
     @Inject
     protected JFGSourceManager sourceManager;
     private float ratio;
-
-    private boolean isAnswerd = false;
     private boolean isSpeakerON = false;
     private boolean onUserLeaveHint = false;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -166,25 +155,22 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.initViewAndListener();
         registSreenStatusReceiver();
         initHeadSetEventReceiver();
-        initHomeListenReceiver();
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+            //判断是否有门锁功能
+            if (!JFGRules.hasDoorLock(device.pid)) {
+                bellDoorLock.setVisibility(View.GONE);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imgvBellLiveHangUp.getLayoutParams();
+                params.removeRule(RelativeLayout.BELOW);
+            }
         }
         customToolbar.setToolbarLeftTitle(mLiveTitle);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
+
         newCall();
-
-
-    }
-
-
-    private void initHomeListenReceiver() {
-        homeListen = new HomeListen();
-        IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(homeListen, homeFilter);
     }
 
     @OnClick(R.id.act_bell_live_back)
@@ -249,12 +235,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-////        setIntent(intent);//直接無視新的呼叫
-////        newCall();
-//        finish();
-//        startActivity(intent);
-//        parse(intent);
+        //直接無視新的呼叫
     }
 
     private void parse(Intent intent) {
@@ -281,8 +262,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onStart();
         onUserLeaveHint = false;
         //在这里初始化默认的 radio,bug:#120567
-        float videoHeight = fLayoutBellLiveHolder.getMeasuredHeight();
-        float videoWidth = fLayoutBellLiveHolder.getMeasuredWidth();
+        float videoHeight = mVideoViewContainer.getMeasuredHeight();
+        float videoWidth = mVideoViewContainer.getMeasuredWidth();
         ratio = videoHeight / videoWidth;
 
     }
@@ -310,11 +291,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         this.onUserLeaveHint = true;
-//        if (presenter.getLiveAction().hasStarted) {
-//            presenter.dismiss();
-//        }
-//        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
-//        finish();
+        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
     }
 
     @Override
@@ -343,7 +320,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onScreenRotationChanged(boolean land) {
-        isLandMode = land;
         handleScreenUpdate(!land);
     }
 
@@ -365,7 +341,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             landBack.setVisibility(View.GONE);
             if (ratio != 0) {
                 //进一步确认不会无故更新 radio
-                ViewUtils.updateViewHeight(fLayoutBellLiveHolder, ratio);
+                ViewUtils.updateViewHeight(mVideoViewContainer, ratio);
             }
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
             mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
@@ -375,7 +351,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            setHideBackMargin();
             customToolbar.setVisibility(View.GONE);
             landBack.setVisibility(View.VISIBLE);
-            ViewUtils.updateViewMatchScreenHeight(fLayoutBellLiveHolder);
+            ViewUtils.updateViewMatchScreenHeight(mVideoViewContainer);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
         }
     }
@@ -405,11 +381,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mLandBellLiveSpeaker.setOnClickListener(this);
             }
         }
-        View v = fLayoutBellLiveHolder.findViewById(R.id.fLayout_bell_live_land_layer);
+        View v = findViewById(R.id.fLayout_bell_live_land_layer);
         if (v == null) {
-            fLayoutBellLiveHolder.addView(fLayoutLandHolderRef.get());
+            rootView.addView(fLayoutLandHolderRef.get());
         }
-
     }
 
     @Override
@@ -423,14 +398,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (side == 0) {
             presenter.dismiss();
         } else {
-            isAnswerd = true;
             presenter.pickup();
         }
     }
 
     @Override
     public void onLoginState(int state) {
-
+        AppLogger.i("登录状态发生了变化:" + state);
     }
 
 
@@ -438,8 +412,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @OnClick({R.id.imgv_bell_live_capture,
             R.id.imgv_bell_live_hang_up,
             R.id.imgv_bell_live_speaker,
-            R.id.imgv_bell_live_switch_to_land,
-    })
+            R.id.imgv_bell_live_switch_to_land,})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_bell_live_capture:
@@ -468,11 +441,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private float getLandFillScreen() {
-        return (float) Resources.getSystem().getDisplayMetrics().heightPixels /
-                Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
@@ -490,12 +458,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
         }
 
-//        if (isLanchFromBellCall) {
-//            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
-//        }
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         ratio = JFGRules.isNeedNormalRadio(device.pid) ? (float) resolution.height / resolution.width : 1.0f;
-        ViewUtils.updateViewHeight(fLayoutBellLiveHolder, ratio);
+        ViewUtils.updateViewHeight(mVideoViewContainer, ratio);
     }
 
     @Override
@@ -599,9 +564,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
         args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, getString(R.string.Microphone)));
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
-        dialogFragment.setAction((id, value) -> {
-
-        });
         getSupportFragmentManager().beginTransaction().add(dialogFragment, "audio_permission").commitAllowingStateLoss();
     }
 
@@ -629,8 +591,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onListen() {
-        dLayoutBellHotSeat.setVisibility(View.VISIBLE);
-        fLayoutBellAfterLive.setVisibility(View.GONE);
+        bottomMenuSwitcher.setDisplayedChild(0);
         imgvBellLiveSwitchToLand.setEnabled(false);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
@@ -641,25 +602,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onNewCallTimeOut() {
-//        dismissAlert();
-//        mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
-//        INotify.NotifyBean notify = new INotify.NotifyBean();
-//        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-//        int count = 0;
-//        if (device != null) {
-//            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getMessageByOS(1004), device.getMessageByOS(1005));
-//            if (entity != null) {
-//                count = entity.getValue(0);
-//            }
-//        }
-//        notify.count = count == 0 ? 1 : count;
-//        Intent intent = new Intent(this, BellLiveActivity.class);
-//        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
-//        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-//        notify.pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        NotifyManager.getNotifyManager().sendNotify(notify);
-        RxView.clicks(mBellFlow).subscribe(ret -> {
-        });
         onDismiss();
     }
 
@@ -741,9 +683,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveCapture.setEnabled(false);
         imgvBellLiveSpeaker.setEnabled(false);
         imgvBellLiveSwitchToLand.setEnabled(false);
-        dLayoutBellHotSeat.setVisibility(View.GONE);
-        fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-
+        bottomMenuSwitcher.setDisplayedChild(1);
     }
 
 
@@ -786,16 +726,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mVideoViewContainer.addView(mSurfaceView);
         }
         AppLogger.i("initVideoView");
-//        mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-//        mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
     }
 
 
     @Override
     public void onPickup() {
-        dLayoutBellHotSeat.setVisibility(View.GONE);
-        fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-
+        bottomMenuSwitcher.setDisplayedChild(1);
     }
 
     @Override
@@ -820,20 +756,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onNewCallWhenInLive(String person) {
-//        mNewCallHandle = showAlert(getString(R.string.Tap1_Index_Tips_Newvisitor), getString(R.string.Tap1_Index_Tips_Newvisitor), getString(R.string.EFAMILY_CALL_ANSWER), getString(R.string.IGNORE));
-    }
-
-    public void onViewAction(int action, String handler, Object extra) {
-        if (TextUtils.equals(mNewCallHandle, handler)) {
-            switch (action) {
-                case VIEW_ACTION_OK:
-                    presenter.startViewer();
-                    break;
-                case VIEW_ACTION_CANCEL:
-
-                    break;
-            }
-        }
     }
 
     @Override
@@ -922,59 +844,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mScreenStatusReceiver);
-        if (homeListen != null) {
-            unregisterReceiver(homeListen);
-        }
         clearHeadSetEventReceiver();
     }
-
-
-//    protected void hideBottomUIMenu() {
-//        //隐藏虚拟按键，并且全屏
-//        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-//            View v = this.getWindow().getDecorView();
-//            v.setSystemUiVisibility(View.GONE);
-//        } else if (Build.VERSION.SDK_INT >= 19) {
-//            //for new api versions.
-//            View decorView = getWindow().getDecorView();
-//            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-//            decorView.setSystemUiVisibility(uiOptions);
-//        }
-//    }
-
-    private HomeListen homeListen;
-
-    private class HomeListen extends BroadcastReceiver {
-
-        private final String SYSTEM_DIALOG_REASON_KEY = "reason";
-        private final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
-        private final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
-                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
-
-                if (reason == null) {
-                    return;
-                }
-                // TODO: 2017/8/31 R11上监听不到
-                // Home键
-//                if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
-//                    presenter.dismiss();
-//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-//                }
-//
-//                // 最近任务列表键
-//                if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
-//                    presenter.dismiss();
-//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-//                }
-            }
-        }
-    }
-
-
 }

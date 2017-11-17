@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,7 +12,7 @@
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
         layout="@layout/layout_default_custom_tool_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:ct_background_color="@color/color_0ba8cf"
@@ -19,77 +20,92 @@
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_icon_back_white"
         app:ct_left_title_color="@color/color_white"
-        app:ct_title_color="@color/color_black" />
+        app:ct_title_color="@color/color_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <FrameLayout
-        android:id="@+id/fLayout_bell_live_holder"
-        android:layout_width="match_parent"
+        android:id="@+id/act_bell_live_video_view_container"
+        android:layout_width="0dp"
         android:layout_height="@dimen/y288"
-        android:background="#000">
+        android:background="#000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-        <FrameLayout
-            android:id="@+id/act_bell_live_video_view_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#000">
-
-            <ImageView
-                android:id="@+id/act_bell_live_video_picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY" />
-        </FrameLayout>
-
-        <com.cylan.jiafeigou.widget.live.LivePlayControlView
-            android:id="@+id/act_bell_live_video_play_controller"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/imgv_bell_live_switch_to_land"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/y10"
-            android:padding="@dimen/y10"
-            android:src="@drawable/icon_port_fullscreen_selector"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/tv_bell_live_flow"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/y21"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/y21"
-            android:layout_marginTop="@dimen/y18"
-            android:background="@drawable/live_flow_transparent_bg"
-            android:gravity="center"
-            android:paddingLeft="@dimen/y8"
-            android:paddingRight="@dimen/y8"
-            android:text="0K/s"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp13"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/act_bell_live_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/nav_icon_back_white"
-            android:padding="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:paddingTop="@dimen/y20"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp16" />
-    </FrameLayout>
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/act_bell_live_video_picture"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
+
+    <com.cylan.jiafeigou.widget.live.LivePlayControlView
+        android:id="@+id/act_bell_live_video_play_controller"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
+
+    <ImageView
+        android:id="@+id/imgv_bell_live_switch_to_land"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/y10"
+        android:padding="@dimen/y10"
+        android:src="@drawable/icon_port_fullscreen_selector"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container" />
+
+    <TextView
+        android:id="@+id/tv_bell_live_flow"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/y21"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/y21"
+        android:layout_marginTop="@dimen/y18"
+        android:background="@drawable/live_flow_transparent_bg"
+        android:gravity="center"
+        android:paddingLeft="@dimen/y8"
+        android:paddingRight="@dimen/y8"
+        android:text="0K/s"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp13"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
+
+    <TextView
+        android:id="@+id/act_bell_live_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/nav_icon_back_white"
+        android:padding="@dimen/y20"
+        android:paddingTop="@dimen/y20"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp16"
+        app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
+
+
+    <ViewSwitcher
+        android:id="@+id/bottom_menu_switcher"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/act_bell_live_video_view_container">
 
         <include
             layout="@layout/layout_bell_pre_live_hot_seat"
@@ -103,6 +119,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
 
-    </FrameLayout>
-
-</LinearLayout>
+    </ViewSwitcher>
+</android.support.constraint.ConstraintLayout>

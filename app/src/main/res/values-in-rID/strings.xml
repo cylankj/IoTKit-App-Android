@@ -71,6 +71,7 @@
   <string name="CID_USED">Perangkat telah digunakan , dan jika Anda terus mengikat perangkat , ini akan melepaskan perangkat dari orang lain , Lanjutkan atau tidak ?</string>
   <string name="CLEAR">Bersih</string>
   <string name="CLEAR_DATA">Hapus Pesan</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Tutup pintunya dengan sukses</string>
   <string name="CODE_ERR">Kode salah</string>
   <string name="COMFIRM_NEW_PASS">Ketik kata sandi baru</string>
   <string name="CONNECTING">Tidak ada respon , silahkan coba lagi</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Hapus</string>
   <string name="DELETE_THEME_XX">Anda yakin mau menghapus %s?</string>
   <string name="DETECTED_AI">Menemukan</string>
+  <string name="DETECTION_AREA">Deteksi daerah</string>
+  <string name="DETECTION_AREA_ADD">Tetapkan area deteksi</string>
+  <string name="DETECTION_AREA_DEFAULT">default</string>
+  <string name="DETECTION_AREA_DESCRI">Semua zona terdeteksi secara default, dan hanya akan mengirim alarm bila area yang ditentukan berubah</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Gagal memuat latar belakang real-time</string>
+  <string name="DETECTION_AREA_GUIDE">Seret kotak merah untuk mengatur area deteksi</string>
+  <string name="DETECTION_AREA_RESTORE">Kembalikan Default</string>
+  <string name="DETECTION_AREA_SET">Telah di atur</string>
   <string name="DEVICE">Perangkat</string>
   <string name="DEVICES_TIPS_TEXT">Proses ini membutuhkan:\n1 . Perangkat yang terhubung ke jaringan \n2. Pendaftaran dan CID Aktif \n3. Dengan Akun yang terhubung</string>
   <string name="DEVICES_TITLE">Tambah perangkat</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Kapasitas baterai rendah, silahkan mengisi</string>
   <string name="DOOR_MAGNET_NAME">iRumah</string>
   <string name="DOOR_NOT_CONNECT">Tidak tersambung</string>
+  <string name="DOOR_OPENED">Dibuka</string>
+  <string name="DOOR_OPENING">Pembukaan&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">gagal membuka pintu</string>
   <string name="DOOR_OTHER_LISTENED">Pengguna lain sudah menjawab</string>
+  <string name="DOOR_PASSWORD">Silahkan masukkan password pintu</string>
   <string name="DOOR_SET_WIFI_MSG">Sudah diserahkan</string>
   <string name="DOOR_SLIDE_TIP">Geser untuk menjawab</string>
   <string name="DOOR_STOPPED">Putuskan</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Terjawab</string>
   <string name="DOOR_VOICE">Suara</string>
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
+  <string name="DOOR_WRONG_PSW">kata sandi salah</string>
+  <string name="DOOR_WRONG_PSW_MSG">Password pintu salah</string>
   <string name="DailyGreatTips_Full">Nomor koleksi untuk My Favorite telah mencapai batas atas 50, pergi ke menghapus?</string>
   <string name="Daily_Great_NO_CONTENTS">Tidak ada isi</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Silahkan dapatkan video sejarahnya terlebih dahulu</string>
   <string name="IGNORE">Mengabaikan</string>
   <string name="IMAGE_ERR">Upload gagal, gambar terlalu besar</string>
+  <string name="INFRARED_IDENTIFY_SET">Identifikasi infra merah</string>
   <string name="INVALID_ACCOUNT">Akun salah</string>
   <string name="INVALID_CODE">Kode salah</string>
   <string name="IN_APP_SOUND">Di - APP Notifikasi Suara</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">jaringan data seluler</string>
   <string name="MOBILE_TIPS">Saat fungsi ini menyala, perangkat akan menggunakan data seluler dalam preferensi untuk menggunakan koneksi WiFI.</string>
   <string name="MODEL">Model</string>
+  <string name="MODIFY_DOOR_PSW">Ubah kata kunci pintu</string>
   <string name="MON">Senin</string>
   <string name="MONTHS">bulan</string>
   <string name="MON_1">Senin</string>
@@ -491,6 +508,7 @@
   <string name="OK">OK</string>
   <string name="ON">Menyala</string>
   <string name="OPEN">Buka</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Buka pintunya dengan sukses</string>
   <string name="OPEN_PROTECTION">Pada waktu yang ditentukan, buka deteksi gerakan dan pesan push</string>
   <string name="OPEN_SAFETY">Buka deteksi gerak dan alarm dari semua perangkat di lokasi ini</string>
   <string name="OTHERS_LOOKING">Seseorang sedang melihat video langsung</string>

@@ -71,6 +71,7 @@
   <string name="CID_USED">Thiết bị đang được sử dụng, nếu bạn tiếp tục thì camera này sẽ xoá khỏi tài khoản cũ và thêm vào tài khoản này, Tiếp?</string>
   <string name="CLEAR">Dọn dẹp</string>
   <string name="CLEAR_DATA">Xoá tin nhắn</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Đóng cửa thành công</string>
   <string name="CODE_ERR">Mã không tồn tại</string>
   <string name="COMFIRM_NEW_PASS">Nhập lại mật khẩu</string>
   <string name="CONNECTING">Không phản hồi, hãy thử lại</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Xoá</string>
   <string name="DELETE_THEME_XX">Bạn muốn xoá %s ?</string>
   <string name="DETECTED_AI">Khám phá</string>
+  <string name="DETECTION_AREA">Khu vực phát hiện</string>
+  <string name="DETECTION_AREA_ADD">Đặt vùng phát hiện</string>
+  <string name="DETECTION_AREA_DEFAULT">mặc định</string>
+  <string name="DETECTION_AREA_DESCRI">Tất cả các vùng đều được phát hiện theo mặc định và sẽ chỉ gửi báo động khi thay đổi vùng được chỉ định</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Không thể tải nền thời gian thực</string>
+  <string name="DETECTION_AREA_GUIDE">Kéo hộp màu đỏ để thiết lập khu vực phát hiện</string>
+  <string name="DETECTION_AREA_RESTORE">Khôi phục mặc định</string>
+  <string name="DETECTION_AREA_SET">Đã được chuẩn bị</string>
   <string name="DEVICE">Thiết bị</string>
   <string name="DEVICES_TIPS_TEXT">Quá trình:\n1. Thiết bị kết nối Internet \n2.Đăng ký kích hoạt CID \n3. Gắn vào tài khoản</string>
   <string name="DEVICES_TITLE">Thêm thiết bị</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Dung lượng pin thấp, hãy sạc điện</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Chưa kết nối</string>
+  <string name="DOOR_OPENED">Đã mở</string>
+  <string name="DOOR_OPENING">Khai mạc&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">không mở được cánh cửa</string>
   <string name="DOOR_OTHER_LISTENED">Người dùng khác đã trả lời</string>
+  <string name="DOOR_PASSWORD">Vui lòng nhập mật khẩu cửa</string>
   <string name="DOOR_SET_WIFI_MSG">Đã được đăng ký</string>
   <string name="DOOR_SLIDE_TIP">Kéo để trả lời</string>
   <string name="DOOR_STOPPED">Ngắt kết nối, hãy làm lại</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">nhỡ</string>
   <string name="DOOR_VOICE">Giọng nói</string>
   <string name="DOOR_WIFI_HINT">Trạng thái đèn LED</string>
+  <string name="DOOR_WRONG_PSW">sai mật khẩu</string>
+  <string name="DOOR_WRONG_PSW_MSG">Mật khẩu cửa sai</string>
   <string name="DailyGreatTips_Full">số lượng các My Favorite Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
   <string name="Daily_Great_NO_CONTENTS">Không có nội dung</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Trước tiên hãy tải video về lịch sử</string>
   <string name="IGNORE">Bỏ qua</string>
   <string name="IMAGE_ERR">Tải lên lỗi, kích thước ảnh quá lớn</string>
+  <string name="INFRARED_IDENTIFY_SET">Nhận dạng hồng ngoại</string>
   <string name="INVALID_ACCOUNT">Tài khoản không tồn tại</string>
   <string name="INVALID_CODE">Mã không tồn tại</string>
   <string name="IN_APP_SOUND">In-APP báo âm thanh</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">mạng dữ liệu di động</string>
   <string name="MOBILE_TIPS">Khi bật tính năng này, thiết bị sẽ ưu tiên sử dụng sóng 3G/4G thay vì WiFi</string>
   <string name="MODEL">Model</string>
+  <string name="MODIFY_DOOR_PSW">Sửa đổi mật khẩu cửa</string>
   <string name="MON">Thứ hai</string>
   <string name="MONTHS">tháng</string>
   <string name="MON_1">Thứ hai</string>
@@ -491,6 +508,7 @@
   <string name="OK">OK</string>
   <string name="ON">Bật</string>
   <string name="OPEN">Mở</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Mở cửa thành công</string>
   <string name="OPEN_PROTECTION">Chọn thời điểm ở Phát hiện chuyển động và gửi thông báo</string>
   <string name="OPEN_SAFETY">Mở phát hiện chuyển động và báo động của thiết bị trong khu vực này</string>
   <string name="OTHERS_LOOKING">Có người đang xem trực tiếp</string>

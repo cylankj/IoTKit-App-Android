@@ -178,6 +178,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             this.tvCamMessageListEdit.setVisibility(View.INVISIBLE);
             this.tvCamMessageListEdit = mockView;
         }
+
         this.tvCamMessageListEdit.setEnabled(false);
         srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF));
         srLayoutCamListRefresh.setOnRefreshListener(this);
@@ -238,7 +239,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.setOnclickListener(this);
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
 
-
+        if (hasFaceHeader) {
+            // #123596 AI-隐藏原图，具体看附件红色所指部分，仅仅留头像即可。--应用于测试演示使用
+            tvCamMessageListEdit.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void refreshFaceHeader() {
@@ -340,7 +344,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorFragment != null) {
             visitorFragment.exitStranger();
         }
-        presenter.fetchMessageListByFaceId(0, true, true);
+        startRequest(true);
         exitEditMode();
         AppLogger.d("还需要重新选中All");
     }
@@ -452,6 +456,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         if (camMessageListAdapter.getCount() > 1) {
             time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 2).message.getVersion();
+        }
+        if (hasFaceHeader) {
+            // #123596 AI-IOS-隐藏原图，具体看附件红色所指部分，仅仅留头像即可。--应用于测试演示使用
+            return;
         }
         if (presenter != null) {
             boolean success;

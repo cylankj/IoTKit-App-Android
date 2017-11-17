@@ -71,6 +71,7 @@
   <string name="CID_USED">Dieses Gerät ist bereits verbunden, es wird aufgelöst wenn Sie weiter machen, setzen Sie noch fort</string>
   <string name="CLEAR">Leeren</string>
   <string name="CLEAR_DATA">Cache leeren</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Schließen Sie die Tür erfolgreich</string>
   <string name="CODE_ERR">Bitte den gültigen Spamschutzcode eingeben</string>
   <string name="COMFIRM_NEW_PASS">Neues Passwort wiederholen</string>
   <string name="CONNECTING">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Löschen</string>
   <string name="DELETE_THEME_XX">Sind Sie sicher, den Ort %s zu löschen?</string>
   <string name="DETECTED_AI">Entdecken</string>
+  <string name="DETECTION_AREA">Erfassungsbereich</string>
+  <string name="DETECTION_AREA_ADD">Erkennungsbereich einstellen</string>
+  <string name="DETECTION_AREA_DEFAULT">Default</string>
+  <string name="DETECTION_AREA_DESCRI">Alle Zonen werden standardmäßig erkannt und senden nur dann Alarme, wenn sich das angegebene Gebiet ändert</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Fehlgeschlagen Echtzeit-Hintergrund laden</string>
+  <string name="DETECTION_AREA_GUIDE">Ziehen Sie das rote Feld den Erfassungsbereich einzustellen</string>
+  <string name="DETECTION_AREA_RESTORE">Standard wiederherstellen</string>
+  <string name="DETECTION_AREA_SET">Wurde gesetzt</string>
   <string name="DEVICE">Gerät</string>
   <string name="DEVICES_TIPS_TEXT">Schritte:\n1. Gerät mit Internet verbunden \n2. registrieren und CID aktivieren \n3. mit aktuellem Account verbinden</string>
   <string name="DEVICES_TITLE">Geräte hinzufügen</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Die Batteriekapazität niedrig ist, bitte laden</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Nicht verbunden</string>
+  <string name="DOOR_OPENED">Geöffnet</string>
+  <string name="DOOR_OPENING">Öffnung&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">die Tür nicht öffnen</string>
   <string name="DOOR_OTHER_LISTENED">Anderes Terminal angenommen</string>
+  <string name="DOOR_PASSWORD">Bitte geben Sie die Tür Passwort</string>
   <string name="DOOR_SET_WIFI_MSG">Zugestellt Configuration</string>
   <string name="DOOR_SLIDE_TIP">Schieber nach rechts</string>
   <string name="DOOR_STOPPED">Abgebrochen</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Verfehlt</string>
   <string name="DOOR_VOICE">Stimme</string>
   <string name="DOOR_WIFI_HINT">Anleitung für LED-Anzeiger</string>
+  <string name="DOOR_WRONG_PSW">falsches Passwort</string>
+  <string name="DOOR_WRONG_PSW_MSG">Falsche Tür Passwort</string>
   <string name="DailyGreatTips_Full">Collection Anzahl von Täglich Groß erreicht die obere Grenze 50, gehen zu löschen?</string>
   <string name="Daily_Great_NO_CONTENTS">Kein Inhalt</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Bitte erhalte die Geschichte Video zuerst</string>
   <string name="IGNORE">Ignorieren</string>
   <string name="IMAGE_ERR">Bild zu groß, bitte neu auswählen</string>
+  <string name="INFRARED_IDENTIFY_SET">Infrarot-Identifizierung</string>
   <string name="INVALID_ACCOUNT">Dieser Account nicht registriert</string>
   <string name="INVALID_CODE">Spamschutzcode ist abgelaufen</string>
   <string name="IN_APP_SOUND">Töne</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">Mobile Datennetz</string>
   <string name="MOBILE_TIPS">Wenn diese Funktion aktiviert wird, werden mobile Daten als Vorrang verwendet, selbst wenn es verfügbares WLAN gibt.</string>
   <string name="MODEL">Modell</string>
+  <string name="MODIFY_DOOR_PSW">Ändern Sie das Türpasswort</string>
   <string name="MON">Montag</string>
   <string name="MONTHS">Monat</string>
   <string name="MON_1">Montags</string>
@@ -491,6 +508,7 @@
   <string name="OK">Sichern</string>
   <string name="ON">Aktiviert</string>
   <string name="OPEN">Öffnen</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Öffnen Sie die Tür erfolgreich</string>
   <string name="OPEN_PROTECTION">Die Bewegungserkennung und Alarms werden im eingestellten Zeitraum eingeschaltet</string>
   <string name="OPEN_SAFETY">Bewegungserkennung und Alarm aller Geräte an diesem Ort werden eingeschaltet</string>
   <string name="OTHERS_LOOKING">In Verbindung, mehrere Leute zugleich nachschauen nicht erlaubt</string>

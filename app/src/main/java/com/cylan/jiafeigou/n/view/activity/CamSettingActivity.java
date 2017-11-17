@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
@@ -268,18 +267,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         customToolbar.post(() -> customToolbar.setBackAction((View v) -> v.postDelayed(this::finishExt, 200)));
     }
 
-//
-//    @Override
-//    public void onBackPressed() {
-//        if (checkExtraChildFragment()) {
-//            return;
-//        } else if (checkExtraFragment()) {
-//            return;
-//        }
-//        finishExt();
-//    }
-
-
     private void jumpDetail(boolean animation) {
 
         DeviceInfoDetailFragment fragment = DeviceInfoDetailFragment.newInstance(null);
@@ -294,7 +281,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             getSupportFragmentManager().beginTransaction()
                     .add(android.R.id.content, fragment, fragment.getClass().getSimpleName())
-//                    .addToBackStack(fragment.getClass().getSimpleName())
                     .commit();
         }
     }
@@ -434,6 +420,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.siv_target_leveledBFS:
                 setBFS();
                 break;
+            case R.id.siv_setting_device_door_look: {
+
+            }
+            break;
         }
     }
 

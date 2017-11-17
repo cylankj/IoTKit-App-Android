@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fLayout_bell_after_live"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="@dimen/y51"
-    android:paddingStart="@dimen/y51"
     android:visibility="visible">
 
     <ImageView
@@ -12,21 +10,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/y57"
         android:src="@drawable/icon_port_capture_selector" />
+
+    <ImageView
+        android:id="@+id/imgv_bell_door_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/y27"
+        android:src="@drawable/icon_door_look_selector" />
 
     <ImageView
         android:id="@+id/imgv_bell_live_hang_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_alignTop="@+id/imgv_bell_live_capture"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/doorbell_btn_hang_up" />
 
     <ImageView
         android:id="@+id/imgv_bell_live_speaker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|end"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/y57"
         android:src="@drawable/icon_port_voice_on_selector" />
 
 
-</FrameLayout>
+</RelativeLayout>

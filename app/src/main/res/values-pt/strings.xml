@@ -71,6 +71,7 @@
   <string name="CID_USED">Dispositivo em uso. Se continuar o cadastro, o vínculo com outros usuários será desfeito. Continuar?</string>
   <string name="CLEAR">Limpar</string>
   <string name="CLEAR_DATA">Limpar cache de mensagens</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Feche a porta com sucesso</string>
   <string name="CODE_ERR">Código de verificação inválido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nova senha</string>
   <string name="CONNECTING">O dispositivo não responde. Por favor tente novamente</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Remover localização</string>
   <string name="DELETE_THEME_XX">Apagar a localização %s ?</string>
   <string name="DETECTED_AI">Descobrir</string>
+  <string name="DETECTION_AREA">Área de detecção</string>
+  <string name="DETECTION_AREA_ADD">Definir a área de detecção</string>
+  <string name="DETECTION_AREA_DEFAULT">padrão</string>
+  <string name="DETECTION_AREA_DESCRI">Todas as zonas são detectadas por padrão e enviarão alarmes somente quando a área especificada mudar</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Falha ao carregar fundo em tempo real</string>
+  <string name="DETECTION_AREA_GUIDE">Arraste a caixa vermelha para configurar a área de detecção</string>
+  <string name="DETECTION_AREA_RESTORE">Restaurar padrões</string>
+  <string name="DETECTION_AREA_SET">Foi definido</string>
   <string name="DEVICE">Dispositivo</string>
   <string name="DEVICES_TIPS_TEXT">Etapas do processo:\n1. Conectar o dispositivo à rede\n2. Registrar e ativar a conta\n3. Vincular dispositivo à conta</string>
   <string name="DEVICES_TITLE">Adicionar dispositivo</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Bateria fraca. Por favor, recarregue o dispositivo</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Não conectado</string>
+  <string name="DOOR_OPENED">Aberto</string>
+  <string name="DOOR_OPENING">Abertura&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">não abra a porta</string>
   <string name="DOOR_OTHER_LISTENED">Outros usuários atenderam</string>
+  <string name="DOOR_PASSWORD">Digite a senha da porta</string>
   <string name="DOOR_SET_WIFI_MSG">Enviado</string>
   <string name="DOOR_SLIDE_TIP">Deslize para atender</string>
   <string name="DOOR_STOPPED">Desligar</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Esquecidas</string>
   <string name="DOOR_VOICE">Sons</string>
   <string name="DOOR_WIFI_HINT">Descrição do status do dispositivo</string>
+  <string name="DOOR_WRONG_PSW">senha incorreta</string>
+  <string name="DOOR_WRONG_PSW_MSG">Senha de porta errada</string>
   <string name="DailyGreatTips_Full">Número da coleção de Show Diário atingiu o limite superior de 50, vai para apagar?</string>
   <string name="Daily_Great_NO_CONTENTS">Sem conteúdo</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Por favor, pegue o vídeo da história em primeiro lugar</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">Falha ao carregar. A imagem é muito grande</string>
+  <string name="INFRARED_IDENTIFY_SET">Identificação de infravermelho</string>
   <string name="INVALID_ACCOUNT">Conta não registrada</string>
   <string name="INVALID_CODE">Código de verificação expirou</string>
   <string name="IN_APP_SOUND">Som</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">rede de dados móveis</string>
   <string name="MOBILE_TIPS">Se ativar esta função, os dados móveis 3G/4G serão usados preferencialmente sobre o WiFi</string>
   <string name="MODEL">Modelo</string>
+  <string name="MODIFY_DOOR_PSW">Modificar a senha da porta</string>
   <string name="MON">Segunda-feira</string>
   <string name="MONTHS">mês</string>
   <string name="MON_1">Segunda-feira</string>
@@ -491,6 +508,7 @@
   <string name="OK">OK</string>
   <string name="ON">Ligado</string>
   <string name="OPEN">Abrir</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Abra a porta com sucesso</string>
   <string name="OPEN_PROTECTION">Em um determinado período de tempo, sensor de movimento e alerta</string>
   <string name="OPEN_SAFETY">Ligar sensor de movimento e alertas deste local</string>
   <string name="OTHERS_LOOKING">Alguém está visualizando ao vivo</string>

@@ -812,10 +812,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     public void showBannerTextInformation(String text, boolean hasClose) {
-        int childIndex = bannerSwitcher.getDisplayedChild();
-        if (childIndex == 0) {
-            bannerSwitcher.showNext();
-        }
+        bannerSwitcher.setDisplayedChild(1);
         bannerWarmingTitle.setText(text);
         bannerTextInformationClose.setVisibility(hasClose ? View.VISIBLE : View.GONE);
     }
@@ -909,10 +906,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     public void onHideBadNetWorkBanner() {
         AppLogger.w("onHideBadNetWorkBanner");
-        int childIndex = bannerSwitcher.getDisplayedChild();
-        if (childIndex == 1) {
-            bannerSwitcher.showPrevious();
-        }
+        bannerSwitcher.setDisplayedChild(0);
     }
 
     @Override
@@ -1220,9 +1214,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         if ((!apMode && !isOnline) || connectionType == -1) {
 
-            if (bannerSwitcher.getDisplayedChild() == 0) {
-                bannerSwitcher.showNext();
-            }
+            bannerSwitcher.setDisplayedChild(1);
             onRefreshControllerView(false, false);
             int info = netType == -1 ? R.string.Tap1_DisconnectedPleaseCheck :
                     connectionType == -1 ? R.string.Tips_Device_TimeoutRetry : R.string.Tap1_Offline;
@@ -1239,9 +1231,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             return;
         }
 
-        if (bannerSwitcher.getDisplayedChild() == 1) {
-            bannerSwitcher.showPrevious();
-        }
+        bannerSwitcher.setDisplayedChild(0);
 
         onHideBadNetWorkBanner();//不管是 WiFi 还是移动网络,都应该隐藏网络不好的 banner
 

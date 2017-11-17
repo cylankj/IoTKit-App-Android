@@ -71,6 +71,7 @@
   <string name="CID_USED">Device has been bound.If continued,it will be forced to unbind from others,continue or not?</string>
   <string name="CLEAR">Clear</string>
   <string name="CLEAR_DATA">Clear messages cache</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Close the door successfully</string>
   <string name="CODE_ERR">Invalid code</string>
   <string name="COMFIRM_NEW_PASS">Retype new Password</string>
   <string name="CONNECTING">No response, please try again</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Delete</string>
   <string name="DELETE_THEME_XX">Are you sure to delete %s ?</string>
   <string name="DETECTED_AI">Discover</string>
+  <string name="DETECTION_AREA">Detection area</string>
+  <string name="DETECTION_AREA_ADD">Set detection area</string>
+  <string name="DETECTION_AREA_DEFAULT">default</string>
+  <string name="DETECTION_AREA_DESCRI">All zones are detected by default, and will send alarms only when the specified area changes</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">failed to load real-time graph</string>
+  <string name="DETECTION_AREA_GUIDE">Drag the red box to set the detection area</string>
+  <string name="DETECTION_AREA_RESTORE">Restore Defaults</string>
+  <string name="DETECTION_AREA_SET">Has been set</string>
   <string name="DEVICE">Device</string>
   <string name="DEVICES_TIPS_TEXT">This process requires:\n1.Your device is connected to your WIFI network\n2.A Registered and Active Account\n3.With the current account bound</string>
   <string name="DEVICES_TITLE">Add Device</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Low power, please charge</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Not connected</string>
+  <string name="DOOR_OPENED">Opened</string>
+  <string name="DOOR_OPENING">Opening&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">fail to open the door</string>
   <string name="DOOR_OTHER_LISTENED">Other user have answerd</string>
+  <string name="DOOR_PASSWORD">Please enter the door password</string>
   <string name="DOOR_SET_WIFI_MSG">Submitted</string>
   <string name="DOOR_SLIDE_TIP">Slide to answer</string>
   <string name="DOOR_STOPPED">Disconnect</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Missed</string>
   <string name="DOOR_VOICE">Voice</string>
   <string name="DOOR_WIFI_HINT">LED Status Indicator</string>
+  <string name="DOOR_WRONG_PSW">wrong password</string>
+  <string name="DOOR_WRONG_PSW_MSG">Wrong door password</string>
   <string name="DailyGreatTips_Full">Number of My Favorite Collection\'s has gonna to 50 upper limit, going to delete?</string>
   <string name="Daily_Great_NO_CONTENTS">No content</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Please get the history video firstly</string>
   <string name="IGNORE">Ignore the unread</string>
   <string name="IMAGE_ERR">Upload to failed,the picture is too big</string>
+  <string name="INFRARED_IDENTIFY_SET">Infrared identification</string>
   <string name="INVALID_ACCOUNT">Invalid account</string>
   <string name="INVALID_CODE">Invalid code</string>
   <string name="IN_APP_SOUND">In-APP Alert Sound</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">Mobile data network</string>
   <string name="MOBILE_TIPS">When it\'s on,device will use mobile data instead of WIFI.</string>
   <string name="MODEL">Model</string>
+  <string name="MODIFY_DOOR_PSW">Modify the door password</string>
   <string name="MON">Monday</string>
   <string name="MONTHS">month</string>
   <string name="MON_1">Mon</string>
@@ -491,6 +508,7 @@
   <string name="OK">OK</string>
   <string name="ON">On</string>
   <string name="OPEN">Open</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Open the door successfully</string>
   <string name="OPEN_PROTECTION">To detect motion and to push messages in the set time period</string>
   <string name="OPEN_SAFETY">This setting allows you to switch on the motion detection and alarm for all devices</string>
   <string name="OTHERS_LOOKING">Someone is watching live video</string>

@@ -71,6 +71,7 @@
   <string name="CID_USED">設備已被綁定，繼續操作對方將會被解除綁定，是否繼續?</string>
   <string name="CLEAR">清空</string>
   <string name="CLEAR_DATA">清空訊息暫存</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">關門成功</string>
   <string name="CODE_ERR">請輸入有效的驗證碼</string>
   <string name="COMFIRM_NEW_PASS">重新輸入新密碼</string>
   <string name="CONNECTING">設備無回應，請重試</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">刪除位置</string>
   <string name="DELETE_THEME_XX">確定刪除%s嗎？</string>
   <string name="DETECTED_AI">發現</string>
+  <string name="DETECTION_AREA">偵測區域</string>
+  <string name="DETECTION_AREA_ADD">設置偵測區域</string>
+  <string name="DETECTION_AREA_DEFAULT">默認</string>
+  <string name="DETECTION_AREA_DESCRI">默認偵測全部區域，設置後，僅在指定區域畫面變化時報警</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">加載實時圖失敗</string>
+  <string name="DETECTION_AREA_GUIDE">拖拽紅色方框，設置偵測區域</string>
+  <string name="DETECTION_AREA_RESTORE">恢復默認</string>
+  <string name="DETECTION_AREA_SET">已設置</string>
   <string name="DEVICE">設備</string>
   <string name="DEVICES_TIPS_TEXT">將完成以下步驟:\n1.設備連接到網路\n2.註冊並啟動CID\n3.與當前帳號綁定</string>
   <string name="DEVICES_TITLE">新增設備</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">設備電量較低，請立即充電</string>
   <string name="DOOR_MAGNET_NAME">雲相框</string>
   <string name="DOOR_NOT_CONNECT">未連接</string>
+  <string name="DOOR_OPENED">開門完成</string>
+  <string name="DOOR_OPENING">開門中&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">開門失敗</string>
   <string name="DOOR_OTHER_LISTENED">其他用戶已接聽</string>
+  <string name="DOOR_PASSWORD">請輸入開門密碼</string>
   <string name="DOOR_SET_WIFI_MSG">配置已發送</string>
   <string name="DOOR_SLIDE_TIP">右滑通話</string>
   <string name="DOOR_STOPPED">切斷連線</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">未接聽</string>
   <string name="DOOR_VOICE">聲音</string>
   <string name="DOOR_WIFI_HINT">設備指示燈狀態說明</string>
+  <string name="DOOR_WRONG_PSW">密碼錯誤</string>
+  <string name="DOOR_WRONG_PSW_MSG">開門密碼輸入錯誤</string>
   <string name="DailyGreatTips_Full">每日精彩收藏數量已達50條上限，是否前去刪除？</string>
   <string name="Daily_Great_NO_CONTENTS">暫無精彩內容</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">請先獲取歷史錄像</string>
   <string name="IGNORE">忽略未讀</string>
   <string name="IMAGE_ERR">圖片太大，請重新選擇</string>
+  <string name="INFRARED_IDENTIFY_SET">紅外增強識別</string>
   <string name="INVALID_ACCOUNT">此帳號尚未註冊</string>
   <string name="INVALID_CODE">驗證碼已過期</string>
   <string name="IN_APP_SOUND">警示聲音</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">移動數據網路</string>
   <string name="MOBILE_TIPS">開啟後，將斷開WiFi網路，使用移動數據連接</string>
   <string name="MODEL">型號</string>
+  <string name="MODIFY_DOOR_PSW">修改開門密碼</string>
   <string name="MON">星期一</string>
   <string name="MONTHS">月</string>
   <string name="MON_1">每週一</string>
@@ -491,6 +508,7 @@
   <string name="OK">確定</string>
   <string name="ON">已啟用</string>
   <string name="OPEN">開啟</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">開門成功</string>
   <string name="OPEN_PROTECTION">設定時段，開啟位移偵測及警示</string>
   <string name="OPEN_SAFETY">位置下所有設備，都將開啟移動偵測及報警</string>
   <string name="OTHERS_LOOKING">其他用戶正在查看</string>

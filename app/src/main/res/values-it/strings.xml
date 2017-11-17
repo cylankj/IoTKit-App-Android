@@ -71,6 +71,7 @@
   <string name="CID_USED">Device has been used, and if you continue to bind the device, it will be forced to unbind from others, Continue or not?</string>
   <string name="CLEAR">Pulisci</string>
   <string name="CLEAR_DATA">Cancella Cache</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">Chiudi la porta con successo</string>
   <string name="CODE_ERR">Codice non valido</string>
   <string name="COMFIRM_NEW_PASS">Conferma nuova password</string>
   <string name="CONNECTING">Nessuna reazione, riprova per favore</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">Cancella</string>
   <string name="DELETE_THEME_XX">Sei sicuro di eliminare %s ?</string>
   <string name="DETECTED_AI">Scoprire</string>
+  <string name="DETECTION_AREA">Area di rilevamento</string>
+  <string name="DETECTION_AREA_ADD">area di rilevamento Set</string>
+  <string name="DETECTION_AREA_DEFAULT">predefinito</string>
+  <string name="DETECTION_AREA_DESCRI">Tutte le zone sono rilevati per default, ed invierà allarmi solo quando cambia l\'area specificati</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">Impossibile caricare sfondo in tempo reale</string>
+  <string name="DETECTION_AREA_GUIDE">Trascina la casella rossa per impostare l\'area di rilevamento</string>
+  <string name="DETECTION_AREA_RESTORE">Ripristina valori predefiniti</string>
+  <string name="DETECTION_AREA_SET">È stato impostato</string>
   <string name="DEVICE">Dispositivo</string>
   <string name="DEVICES_TIPS_TEXT">Questo fase richiede:\n 1.Dispositivo connesso alla rete WiFi\n 2.Registrare e attivare un account \n 3.Inserire l\'account.</string>
   <string name="DEVICES_TITLE">Aggiungi Dispositivo</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">Batteria bassa, si prega di ricaricare</string>
   <string name="DOOR_MAGNET_NAME">iHome</string>
   <string name="DOOR_NOT_CONNECT">Non collegata</string>
+  <string name="DOOR_OPENED">Ha aperto</string>
+  <string name="DOOR_OPENING">Apertura&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">non aprire la porta</string>
   <string name="DOOR_OTHER_LISTENED">Un\'altro utente ha risposto</string>
+  <string name="DOOR_PASSWORD">Si prega di inserire la password porta</string>
   <string name="DOOR_SET_WIFI_MSG">Richiesta inviata</string>
   <string name="DOOR_SLIDE_TIP">Slide to answer</string>
   <string name="DOOR_STOPPED">Disconnetti</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">Perse</string>
   <string name="DOOR_VOICE">Voce</string>
   <string name="DOOR_WIFI_HINT">Indicatore di stato LED</string>
+  <string name="DOOR_WRONG_PSW">password errata</string>
+  <string name="DOOR_WRONG_PSW_MSG">Password porta errata</string>
   <string name="DailyGreatTips_Full">il numero di Raccolta dei Splendida della giornata ha raggiunto il limite massimo di 50, andando a eliminare?</string>
   <string name="Daily_Great_NO_CONTENTS">Nessun contenuto</string>
   <string name="Dec">Dec.</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">Prendi in primo luogo il video della storia</string>
   <string name="IGNORE">Ignora</string>
   <string name="IMAGE_ERR">Caricamento fallito, l\'immagine è troppo grande</string>
+  <string name="INFRARED_IDENTIFY_SET">Identificazione a infrarossi</string>
   <string name="INVALID_ACCOUNT">Email errata</string>
   <string name="INVALID_CODE">Codice non valido</string>
   <string name="IN_APP_SOUND">Suoneria</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">rete dati mobile</string>
   <string name="MOBILE_TIPS">Quando ON, il dispositivo utilizza preferibilmente la rete WiFi</string>
   <string name="MODEL">Modello</string>
+  <string name="MODIFY_DOOR_PSW">Modificare la password di porta</string>
   <string name="MON">Lunedi</string>
   <string name="MONTHS">mese</string>
   <string name="MON_1">LUN</string>
@@ -491,6 +508,7 @@
   <string name="OK">OK</string>
   <string name="ON">Acceso</string>
   <string name="OPEN">Aperto</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">Apri la porta con successo</string>
   <string name="OPEN_PROTECTION">Se qualcosa si muove, invia messaggi nel periodo selezionato</string>
   <string name="OPEN_SAFETY">Accende tutti I rilevatori di movimento</string>
   <string name="OTHERS_LOOKING">Qualcuno sta gia\' guardando il video.</string>

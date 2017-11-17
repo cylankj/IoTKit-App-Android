@@ -71,6 +71,7 @@
   <string name="CID_USED">设备已被绑定，继续操作对方将会被解除绑定，是否继续?</string>
   <string name="CLEAR">清空</string>
   <string name="CLEAR_DATA">清空消息缓存</string>
+  <string name="CLOSE_DOOR_SUCCE_MSG">关门成功</string>
   <string name="CODE_ERR">请输入有效的验证码</string>
   <string name="COMFIRM_NEW_PASS">确认新密码</string>
   <string name="CONNECTING">设备无响应，请重试</string>
@@ -112,6 +113,14 @@
   <string name="DELETE_THEME">删除位置</string>
   <string name="DELETE_THEME_XX">确定删除位置“%s”吗？</string>
   <string name="DETECTED_AI">发现</string>
+  <string name="DETECTION_AREA">侦测区域</string>
+  <string name="DETECTION_AREA_ADD">设置侦测区域</string>
+  <string name="DETECTION_AREA_DEFAULT">默认</string>
+  <string name="DETECTION_AREA_DESCRI">默认侦测全部区域，设置后，仅在指定区域画面变化时报警</string>
+  <string name="DETECTION_AREA_FAILED_LOAD">加载实时图失败</string>
+  <string name="DETECTION_AREA_GUIDE">拖拽红色方框，设置侦测区域</string>
+  <string name="DETECTION_AREA_RESTORE">恢复默认</string>
+  <string name="DETECTION_AREA_SET">已设置</string>
   <string name="DEVICE">设备</string>
   <string name="DEVICES_TIPS_TEXT">将完成以下步骤：\n1.设备连接到网络\n2.注册并激活CID\n3.与当前账号绑定</string>
   <string name="DEVICES_TITLE">添加设备</string>
@@ -163,7 +172,11 @@
   <string name="DOOR_LOW_BATTERY">设备电量较低，请及时充电</string>
   <string name="DOOR_MAGNET_NAME">智能中控</string>
   <string name="DOOR_NOT_CONNECT">未连接</string>
+  <string name="DOOR_OPENED">开门完成</string>
+  <string name="DOOR_OPENING">开门中&#8230;</string>
+  <string name="DOOR_OPEN_FAIL">开门失败</string>
   <string name="DOOR_OTHER_LISTENED">其他用户已接听</string>
+  <string name="DOOR_PASSWORD">请输入开门密码</string>
   <string name="DOOR_SET_WIFI_MSG">配置已发送</string>
   <string name="DOOR_SLIDE_TIP">右滑通话</string>
   <string name="DOOR_STOPPED">断开</string>
@@ -172,6 +185,8 @@
   <string name="DOOR_UNCALL">未接听</string>
   <string name="DOOR_VOICE">声音</string>
   <string name="DOOR_WIFI_HINT">设备指示灯状态说明</string>
+  <string name="DOOR_WRONG_PSW">密码错误</string>
+  <string name="DOOR_WRONG_PSW_MSG">开门密码输入错误</string>
   <string name="DailyGreatTips_Full">每日精彩收藏数量已达50条上限，是否前去删除？</string>
   <string name="Daily_Great_NO_CONTENTS">暂无精彩内容</string>
   <string name="Dec">12月</string>
@@ -307,6 +322,7 @@
   <string name="History_video_Firstly">请先获取历史录像</string>
   <string name="IGNORE">忽略未读</string>
   <string name="IMAGE_ERR">图片太大，请重新选择</string>
+  <string name="INFRARED_IDENTIFY_SET">红外增强识别</string>
   <string name="INVALID_ACCOUNT">此账号还没有注册</string>
   <string name="INVALID_CODE">验证码已过期</string>
   <string name="IN_APP_SOUND">声音</string>
@@ -427,6 +443,7 @@
   <string name="MOBILE_DATA">移动数据网络</string>
   <string name="MOBILE_TIPS">开启后，将断开WiFi网络，使用移动数据连接</string>
   <string name="MODEL">型号</string>
+  <string name="MODIFY_DOOR_PSW">修改开门密码</string>
   <string name="MON">星期一</string>
   <string name="MONTHS">月</string>
   <string name="MON_1">每周一</string>
@@ -491,6 +508,7 @@
   <string name="OK">确定</string>
   <string name="ON">已启用</string>
   <string name="OPEN">开启</string>
+  <string name="OPEN_DOOR_SUCCE_MSG">开门成功</string>
   <string name="OPEN_PROTECTION">将在设定的时间段，开启移动侦测及报警</string>
   <string name="OPEN_SAFETY">位置下所有设备，都将开启移动侦测及报警</string>
   <string name="OTHERS_LOOKING">其他用户正在查看</string>
