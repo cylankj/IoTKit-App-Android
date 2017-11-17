@@ -159,18 +159,36 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             //判断是否有门锁功能
-            if (!JFGRules.hasDoorLock(device.pid)) {
-                bellDoorLock.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imgvBellLiveHangUp.getLayoutParams();
-                params.removeRule(RelativeLayout.BELOW);
-            }
         }
+        decideBottomLayout();
         customToolbar.setToolbarLeftTitle(mLiveTitle);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
 
         newCall();
+    }
+
+    private void decideBottomLayout() {
+        Device device = sourceManager.getDevice(uuid);
+        if (device == null) return;
+
+        if (JFGRules.hasDoorLock(device.pid)) {
+            bellDoorLock.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgvBellLiveCapture.getLayoutParams();
+            layoutParams.removeRule(RelativeLayout.ALIGN_TOP);
+            layoutParams.removeRule(RelativeLayout.ALIGN_BOTTOM);
+            imgvBellLiveCapture.setLayoutParams(layoutParams);
+
+            layoutParams = (RelativeLayout.LayoutParams) imgvBellLiveSpeaker.getLayoutParams();
+            layoutParams.removeRule(RelativeLayout.ALIGN_TOP);
+            layoutParams.removeRule(RelativeLayout.ALIGN_BOTTOM);
+            imgvBellLiveSpeaker.setLayoutParams(layoutParams);
+
+            layoutParams = (RelativeLayout.LayoutParams) imgvBellLiveHangUp.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.BELOW, R.id.imgv_bell_door_lock);
+            imgvBellLiveHangUp.setLayoutParams(layoutParams);
+        }
     }
 
     @OnClick(R.id.act_bell_live_back)
