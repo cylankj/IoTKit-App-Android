@@ -79,7 +79,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         String alias = bundle.getString(JConstant.KEY_BIND_DEVICE_ALIAS);
         if (!TextUtils.isEmpty(alias)) {
@@ -122,6 +122,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
                 break;
         }
     }
+
     @Override
     public void setupAliasDone(int state) {
         if (state == JError.ErrorOK) {
@@ -130,6 +131,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else {
+            btnBindDone.cancelAnim();
             ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
         }
     }

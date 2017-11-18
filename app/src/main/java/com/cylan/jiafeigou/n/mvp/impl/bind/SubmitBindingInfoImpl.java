@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -88,6 +87,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
     public void start() {
         super.start();
         if (task == null) {
+
             task = new BindResultTask(uuid, mView, this);
             task.call(uuid);
         } else {
@@ -169,50 +169,44 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     }, AppLogger::e);
         }
 
+
         private Subscription submitBindDeviceSub() {
+            JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
+            UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+            if (portrait == null || account == null || TextUtils.isEmpty(portrait.uuid)) {
+                AppLogger.w("当前情况下无法进行绑定!!!!!");
+                return Observable.empty().subscribe();
+            }
             return Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.io())
                     .flatMap(aLong -> {
                         if (INTERVAL * aLong * 1000 >= TIME_OUT) {
                             throw new RxEvent.HelperBreaker("timeout");
                         }
-                        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                        if (account != null /*&& !sendBindInfo,ret 返回0 不可靠,*/) {
-                            try {
-                                String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-                                UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                                if (portrait != null) {
-                                    int ret = BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                                    AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait) + "," + ret);
-//                                    if (ret != 0) {
-//                                        AppLogger.d("客户端登录失败.需要不断尝试");
-//                                    } else {
-//                                        sendBindInfo = true;
-//                                        PerformanceUtils.stopTrace(TAG_NET_LOGIN_FLOW);
-//                                        PerformanceUtils.startTrace(TAG_NET_FINAL_FLOW);
-//                                    }
-                                }
-                            } catch (Exception e) {
-                                AppLogger.d("err: " + e.getLocalizedMessage());
-                            }
-                        }
-                        //
-                        ArrayList<JFGDPMsg> params = new ArrayList<>(1);
-                        JFGDPMsg msg = new JFGDPMsg(201, 0);
-                        params.add(msg);
                         try {
-                            BaseApplication.getAppComponent().getCmd().robotGetData(uuid, params, 1, false, 0);
-                        } catch (JfgException e) {
-                            AppLogger.d(e.getMessage());
+                            AppLogger.d("设备画像为:" + new Gson().toJson(portrait));
+                            int ret = BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                            AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait) + "," + ret);
+                            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.uuid);
+                            if (device != null && device.available()) {
+                                //没有 Device 发送查询请求有什么用?
+                                ArrayList<JFGDPMsg> params = new ArrayList<>(1);
+                                JFGDPMsg msg = new JFGDPMsg(201, 0);
+                                params.add(msg);
+                                BaseApplication.getAppComponent().getCmd().robotGetData(portrait.uuid, params, 1, false, 0);
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                        DpMsgDefine.DPNet net = null;
-                        if (device != null) {
-                            net = device.$(201, new DpMsgDefine.DPNet());
-                        }
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.uuid);
+                        DpMsgDefine.DPNet net;
+                        net = device.$(201, new DpMsgDefine.DPNet());
                         AppLogger.d("正在查询设备网络状态:" + new Gson().toJson(net));
                         if (JFGRules.isDeviceOnline(net)) {
                             //成功了
                             // TODO: 2017/8/17 绑定成功了同步所有的属性
+                            AppLogger.d("绑定成功了!" + new Gson().toJson(portrait));
                             DataSourceManager.getInstance().syncAllProperty(device.uuid);
                             bindState = BIND_SUC;
                             throw new RxEvent.HelperBreaker("good");

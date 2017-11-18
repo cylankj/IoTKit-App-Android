@@ -148,11 +148,6 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
         mView.onLoginStateChanged(loginState.state);
     }
-
-//    protected void addSubscription(Subscription subscription) {
-//
-//    }
-
     protected String addStopSubscription(Subscription subscription) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
         String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):stop:" + traceElement.getMethodName();
@@ -177,6 +172,13 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     protected <T> Observable.Transformer<T, T> applyLoading(String message, String subscription) {
         return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
                 message, true,
+                dialog -> unsubscribe(subscription)))
+                .doOnTerminate(LoadingDialog::dismissLoading);
+    }
+
+    protected <T> Observable.Transformer<T, T> applyLoadingFocus(int resId, String subscription, Object... args) {
+        return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
+                mContext.getString(resId, args), true,
                 dialog -> unsubscribe(subscription)))
                 .doOnTerminate(LoadingDialog::dismissLoading);
     }

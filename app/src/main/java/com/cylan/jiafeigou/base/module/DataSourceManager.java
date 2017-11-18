@@ -525,8 +525,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .map(devices -> {
                     for (String uuid : devices) {
                         AppLogger.w("设备已解绑:" + uuid);
-                        Device device = mCachedDeviceMap.get(uuid);
-                        mCachedDeviceMap.remove(uuid);
+                        Device device = mCachedDeviceMap.remove(uuid);
                         String mac = null;
                         if (device != null && device.available()) {
                             mac = device.$(DpMsgMap.ID_202_MAC, "");
@@ -990,6 +989,7 @@ public class DataSourceManager implements JFGSourceManager {
                 });
     }
 
+
     private Subscription makeCacheGetDataSub() {
         return getCacheInstance().toObservable(RxEvent.SerializeCacheGetDataEvent.class)
                 .onBackpressureBuffer()
@@ -1043,7 +1043,7 @@ public class DataSourceManager implements JFGSourceManager {
                             if (!BaseApplication.isBackground()) {
                                 RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
                             }
-//                            AppLogger.w("收到设备同步消息:" + event.arrayList);
+                            AppLogger.w("收到设备同步消息:" + event.arrayList);
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))

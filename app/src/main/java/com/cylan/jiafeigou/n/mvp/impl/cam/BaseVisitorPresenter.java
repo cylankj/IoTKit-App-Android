@@ -130,7 +130,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     .filter(rsp -> rsp.seq == seq)
                     .subscribeOn(Schedulers.io())
                     .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
-                    .filter(ret -> mView != null)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(rsp -> {
                         DpMsgDefine.VisitsTimesRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.VisitsTimesRsp.class, null);
                         if (rrsp == null || !TextUtils.equals(rrsp.cid, uuid)) {

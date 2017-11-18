@@ -58,6 +58,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.DoorLockDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -558,6 +559,21 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void onOpenDoorLockSuccess() {
+        ToastUtil.showToast(getString(R.string.DOOR_OPENED));
+    }
+
+    @Override
+    public void onOpenDoorLockFailure() {
+        ToastUtil.showFailureToast(getString(R.string.DOOR_OPEN_FAIL));
+    }
+
+    @Override
+    public void onOpenDoorLockTimeOut() {
+        ToastUtil.showFailureToast(getString(R.string.DOOR_OPEN_FAIL));
+    }
+
+    @Override
     public void onLoading(boolean loading) {
         if (loading) {
             mVideoPlayController.setState(PLAY_STATE_PREPARE, null);
@@ -863,5 +879,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onDestroy();
         unregisterReceiver(mScreenStatusReceiver);
         clearHeadSetEventReceiver();
+    }
+
+    @OnClick(R.id.imgv_bell_door_lock)
+    void onDoorLockClicked() {
+        AppLogger.w("onDoorLockClicked");
+        DoorLockDialog doorLockDialog = DoorLockDialog.Companion.newInstance(uuid);
+        doorLockDialog.setAction((id, password) -> {
+            if (id == R.id.ok) {
+                AppLogger.w("将进行开锁");
+                presenter.openDoorLock((String) password);
+            }
+        });
+        doorLockDialog.show(getSupportFragmentManager(), "BellLiveActivity.onDoorLockClicked");
     }
 }

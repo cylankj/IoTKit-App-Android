@@ -27,6 +27,7 @@ import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
@@ -46,6 +47,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -153,7 +155,14 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.w("OnRobotGetDataRsp :" + gson.toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
-
+        if (robotoGetDataRsp != null && robotoGetDataRsp.map != null && robotoGetDataRsp.map.size() > 0) {
+            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
+                if (entry.getKey() == 201 && entry.getValue().size() > 0) {
+                    AppLogger.w("全局过滤的201消息:uuid" + robotoGetDataRsp.identity + ",net:" +
+                            DpUtils.unpackDataWithoutThrow(entry.getValue().get(0).packValue, DpMsgDefine.DPNet.class, new DpMsgDefine.DPNet()));
+                }
+            }
+        }
 
 //        CacheHolderKt.saveProperty(robotoGetDataRsp.identity, (Map<Integer, List<?>>) (Object) robotoGetDataRsp.map, null);
     }

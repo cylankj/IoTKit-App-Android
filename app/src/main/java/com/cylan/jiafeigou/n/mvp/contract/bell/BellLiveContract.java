@@ -23,6 +23,12 @@ public interface BellLiveContract {
 
         @Override
         void onDeviceUnBind();
+
+        void onOpenDoorLockSuccess();
+
+        void onOpenDoorLockFailure();
+
+        void onOpenDoorLockTimeOut();
     }
 
     interface Presenter extends CallablePresenter {
@@ -30,6 +36,7 @@ public interface BellLiveContract {
         void capture();
 
 
+        void openDoorLock(String password);
     }
 }
 

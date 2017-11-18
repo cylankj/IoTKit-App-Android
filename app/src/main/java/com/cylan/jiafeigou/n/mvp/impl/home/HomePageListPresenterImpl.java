@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
@@ -13,14 +12,12 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.MethodFilter;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -28,7 +25,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -53,7 +49,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 internalUpdateUuidList(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
-                deviceRecordStateSub()
+                deviceRecordStateSub(),
+                deviceUnbindSub()
         };
     }
 
@@ -79,29 +76,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     recordSub.add(subscribe);
                 }
             }
-//            if (apDirect) {
-//                BaseDeviceInformationFetcher.getInstance().init(uuid);
-//                Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus(uuid).subscribe(ret -> {
-//                    if (recordSub != null && !recordSub.isSubscribed()) {
-//                        recordSub.unsubscribe();
-//                    }
-//                }, e -> {
-//                    AppLogger.e(e.getMessage());
-//                });
-//                recordSub.add(subscribe);
-//            } else {
-//                for (Device device1 : device) {
-//                    if (device1 == null) continue;//可能
-//                    if (JFGRules.isPan720(device1.pid)) {
-//                        Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
-//                            if (recordSub != null && !recordSub.isSubscribed()) {
-//                                recordSub.unsubscribe();
-//                            }
-//                        }, e -> AppLogger.e(e.getMessage()));
-//                        recordSub.add(subscribe);
-//                    }
-//                }
-//            }
         }
     }
 
@@ -115,6 +89,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 });
     }
 
+    private Subscription deviceUnbindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(event -> {
+                    subUuidList();
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e);
+                });
+    }
 
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
@@ -172,12 +156,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        if (MethodFilter.run("HomePageListPresenterImpl#subUuidList", 5 * 1000)) {
-            List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
-            AppLogger.w("subUuidList?" + ListUtils.getSize(list));
-            getView().onItemsRsp(list);
-            getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
-        }
+        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        AppLogger.w("subUuidList?" + ListUtils.getSize(list));
+        getView().onItemsRsp(list);
+        getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
     /**
@@ -187,14 +169,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription robotDeviceDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .debounce(3, TimeUnit.SECONDS)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msg -> subUuidList(), AppLogger::e);
     }
 
     private Subscription internalUpdateUuidList() {
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
-                .debounce(5, TimeUnit.SECONDS)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> subUuidList(), AppLogger::e);
     }
@@ -211,16 +193,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
-        AndroidSchedulers.mainThread().createWorker().schedule(()->{
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> {
             mView.onRefreshFinish();
-        },30,TimeUnit.SECONDS);
+        }, 30, TimeUnit.SECONDS);
     }
 
     @Override
     public void refreshDevices() {
-
-//        MIDServerAPI.INSTANCE.getPageMessage(PAGE_MESSAGE.PAGE_HOME);
-
     }
 
     @Override
@@ -241,27 +220,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         }
         WifiInfo wifiInfo = NetUtils.getWifiManager().getConnectionInfo();
         AppLogger.w("网络变化?" + (wifiInfo == null ? null : (wifiInfo.getSupplicantState()) + "," + wifiInfo.getSSID()));
-    }
-
-    /**
-     * 可能连上其他非 'DOG-xxx'
-     *
-     * @param networkInfo
-     */
-    private void updateConnectInfo(NetworkInfo networkInfo) {
-        Observable.just(networkInfo)
-                .subscribeOn(Schedulers.io())
-                .map(aLong -> {
-                    ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-                    if (info != null && info.isAvailable() && info.isConnected()) {
-                        return true;
-                    }
-                    return NetUtils.isPublicNetwork();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(v -> getView() != null)
-                .subscribe(ret -> getView().onNetworkChanged(ret), AppLogger::e);
     }
 
     private static final class InternalHelp {

@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.layout_door_lock_alert.*
 /**
  * Created by yanzhendong on 2017/11/18.
  */
-class DoorLockDialog : BaseDialog<Any>() {
+class DoorLockDialog : BaseDialog<String>() {
     lateinit var uuid: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,6 @@ class DoorLockDialog : BaseDialog<Any>() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     @OnTextChanged(R.id.edit_door_pass_word)
@@ -49,6 +48,7 @@ class DoorLockDialog : BaseDialog<Any>() {
             password.length < 6 -> ToastUtil.showToast("语言包:请输入6~16位密码")
             else -> {
                 dialog.dismiss()
+                action?.onDialogAction(R.id.ok, password)
             }
         }
     }

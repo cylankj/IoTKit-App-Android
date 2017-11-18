@@ -19,16 +19,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,6 +70,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.Switcher;
+import com.cylan.jiafeigou.widget.dialog.DoorLockDialog;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -245,6 +244,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private YoYo.YoYoString landAnimationLayoutE;
     private YoYo.YoYoString landAnimationLayoutG;
     private YoYo.YoYoString flowTextAnimation;
+    private FragmentManager fragmentManager;
 
 
     public CamLiveControllerEx(Context context) {
@@ -2008,6 +2008,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         return ivModeXunHuan.isSelected() && ivModeXunHuan.isEnabled();
     }
 
+    public void setFragmentManager(FragmentManager childFragmentManager) {
+        this.fragmentManager = childFragmentManager;
+    }
+
     interface OrientationHandle {
         void setRequestOrientation(int orientation, boolean fromUser);
     }
@@ -2020,42 +2024,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @OnClick(R.id.imgV_cam_door_look)
     public void onDoorLockClick() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_door_lock_alert, null);
-        AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(view).show();
-        View ok = view.findViewById(R.id.ok);
-        View cancel = view.findViewById(R.id.cancel);
-        EditText doorPassWord = (EditText) view.findViewById(R.id.edit_door_pass_word);
-        doorPassWord.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ok.setEnabled(!TextUtils.isEmpty(s));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+        DoorLockDialog doorLockDialog = DoorLockDialog.Companion.newInstance(uuid);
+        doorLockDialog.setAction((id, value) -> {
+            if (id == R.id.ok) {
+                presenter.openDoorLock((String) value);
             }
         });
-
-        ok.setOnClickListener(v -> {
-            String password = doorPassWord.getText().toString().trim();
-            if (TextUtils.isEmpty(password)) {
-                ToastUtil.showToast("语言包:密码不能为空");
-            } else if (password.length() < 6) {
-                ToastUtil.showToast("语言包:请输入6~16位密码");
-            } else {
-                dialog.dismiss();
-                presenter.openDoorLock(password);
-            }
-        });
-        cancel.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
+        doorLockDialog.show(fragmentManager, "CamLiveControllerEx.onDoorLockClick");
     }
 
 }

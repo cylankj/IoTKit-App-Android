@@ -136,6 +136,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private boolean hasFaceHeader = false;
     private int pageType = FaceItem.FACE_TYPE_ALL;
     private String personId;
+    private boolean hasFirstRequested = false;
 
     public CamMessageListFragment() {
         // Required empty public constructor
@@ -422,6 +423,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     protected void lazyLoad() {
         super.lazyLoad();
         //从通知栏跳进来
+        if (hasFirstRequested) return;
+
         ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ClearDataEvent.class)) {
             camMessageListAdapter.clear();
@@ -448,6 +451,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     /**
      */
     private void startRequest(boolean refresh) {
+        hasFirstRequested = true;
         long time = 0;
         if (!camMessageListAdapter.hasFooter() && camMessageListAdapter.getCount() > 0) {
             setupFootView();

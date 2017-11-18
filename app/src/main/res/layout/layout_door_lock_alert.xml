@@ -29,6 +29,10 @@
             android:layout_marginEnd="@dimen/y24"
             android:layout_marginStart="@dimen/y24"
             android:layout_marginTop="@dimen/y23"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:maxLines="1"
+            android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/door_lock_title" />

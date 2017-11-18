@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
+import com.cylan.jiafeigou.n.view.cam.DoorPassWordSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.SdcardDetailActivity;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
@@ -51,6 +52,7 @@ import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -423,7 +425,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 setBFS();
                 break;
             case R.id.siv_setting_device_door_look: {
-
+                DoorPassWordSettingFragment fragment = DoorPassWordSettingFragment.Companion.newInstance(uuid);
+                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
             }
             break;
         }

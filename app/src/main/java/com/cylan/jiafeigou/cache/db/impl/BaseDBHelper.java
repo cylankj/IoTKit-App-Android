@@ -127,37 +127,20 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs) {
-
-//        Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
-
-
         return getActiveAccount().map(account -> {
             if (BuildConfig.DEBUG) {
                 Log.d("saveDPByteInTx", "saveDPByteInTx:" + uuid);
             }
             Set<DPEntity> result = new HashSet<>();
-//            CacheHolderKt.saveProperty(uuid, (List<?>) msgs, HashStrategyFactory.INSTANCE::select);
-
-//            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
-//            PropertyItem propertyItem = null;
             Device device = sourceManager.getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
-
-//                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, (int) msg.id, msg.version),
-//                        uuid, (int) msg.id, msg.version, msg.packValue);
-//
-//                propertyItems.add(propertyItem);
-
-
                 long select = HashStrategyFactory.INSTANCE.select(uuid, msg.id, msg.version);
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
                 if (dpEntity == null) {
                     dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties._id.eq(select)).unique();
-//                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-//                    dpEntity = unique(builder);
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
@@ -177,7 +160,6 @@ public class BaseDBHelper implements IDBHelper {
                 result.add(dpEntity);
                 dpEntity = null;
             }
-//            itemBox.put(propertyItems);
             if (!BaseApplication.isBackground()) {
                 mEntityDao.insertOrReplaceInTx(result);
             }
