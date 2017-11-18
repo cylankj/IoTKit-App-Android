@@ -236,10 +236,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.setOnclickListener(this);
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
 
-        if (hasFaceHeader) {
-            // #123596 AI-隐藏原图，具体看附件红色所指部分，仅仅留头像即可。--应用于测试演示使用
-            tvCamMessageListEdit.setVisibility(View.INVISIBLE);
-        }
     }
 
     private void refreshFaceHeader() {
@@ -249,6 +245,14 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
         } else {
             visitorFragment.refreshContent();
+        }
+    }
+
+    private void justForDemo(boolean hasMessage) {
+        if (hasFaceHeader) {
+            // #123596 AI-隐藏原图，具体看附件红色所指部分，仅仅留头像即可。--应用于测试演示使用
+            tvCamMessageListEdit.setVisibility(hasMessage ? View.VISIBLE : View.INVISIBLE);
+            tvCamMessageListDate.setVisibility(hasMessage ? View.VISIBLE : View.INVISIBLE);
         }
     }
 
@@ -274,11 +278,14 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
                     camMessageListAdapter.onStrangerInformationReady(visitorList);
                     pageType = FaceItem.FACE_TYPE_STRANGER_SUB;
+                    justForDemo(false);
+
                 }
 
                 @Override
                 public void onVisitorReady(@NotNull List<FaceItem> visitorList) {
                     camMessageListAdapter.onVisitorInformationReady(visitorList);
+                    justForDemo(true);
                 }
             });
             //显示 所有面孔列表
@@ -448,7 +455,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (camMessageListAdapter.getCount() > 1) {
             time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 2).message.getVersion();
         }
-        if (hasFaceHeader) {
+        if (hasFaceHeader && pageType != FaceItem.FACE_TYPE_ALL) {
             // #123596 AI-IOS-隐藏原图，具体看附件红色所指部分，仅仅留头像即可。--应用于测试演示使用
             srLayoutCamListRefresh.setRefreshing(false);
             return;
@@ -484,7 +491,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     break;
                 default:
                     presenter.fetchMessageListByFaceId(time, false, refresh);
-
             }
         }
     }
