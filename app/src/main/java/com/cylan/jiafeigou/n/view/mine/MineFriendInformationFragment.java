@@ -110,6 +110,7 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
         friendDetailBinding.setAlias(alias);
         friendDetailBinding.setAccount(nick);
         GlideApp.with(this).load(new JFGAccountURL(account))
+                .dontAnimate()//圆角 View 的 bug,不能使用 drawable 动画
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

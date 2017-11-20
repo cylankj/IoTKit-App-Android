@@ -123,6 +123,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     ImageView bellDoorLock;
     @BindView(R.id.sv_switch_stream)
     Switcher streamSwitcher;
+    @BindView(R.id.cover)
+    View cover;
     /**
      * 水平方向的view
      */
@@ -390,6 +392,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 ViewUtils.updateViewHeight(mVideoViewContainer, ratio);
             }
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
+            cover.setVisibility(View.VISIBLE);
             mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
 
         } else {
@@ -399,6 +402,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             landBack.setVisibility(View.VISIBLE);
             ViewUtils.updateViewMatchScreenHeight(mVideoViewContainer);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
+            cover.setVisibility(View.GONE);
         }
     }
 
