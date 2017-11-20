@@ -92,7 +92,7 @@
                 android:background="@color/color_white"
                 hunt:leftDrawable="@drawable/home_icon_outcam"
                 hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-                hunt:text="@string/DOG_CAMERA_NAME"
+                hunt:text="@string/Camera_Outdoor"
                 hunt:textColor="@color/color_666666"
                 hunt:textSize="@dimen/sp16" />
 

@@ -768,7 +768,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             bundle.putString(JConstant.KEY_VCODE_TO_SEND, ViewUtils.getTextViewContent(etVerificationInput));
             bundle.putInt(JConstant.KEY_SET_UP_PWD_TYPE, 1);
             RegisterPwdFragment fragment = RegisterPwdFragment.newInstance(bundle);
-            new SetupPwdPresenterImpl(fragment);
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                     fragment, containerId);
         }

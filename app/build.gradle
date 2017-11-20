@@ -222,8 +222,8 @@ android {
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES"  : "com.cylan.doby.hms.update.provider",
                                     "HW_APP_ID"            : "\\ 100043669",
-                                    "VID"                  : "\\ 0001",
-                                    "VKEY"                 : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "VID"                  : "\\ 0002",
+                                    "VKEY"                 : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
                                     "qqAppId"              : "\\ 1106279832",
                                     "qqAppKey"             : "vqSXNT11dsbu24io",
                                     "mtaAppKey"            : "ATQ1JV694AKT",
