@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.XmlResourceParser;
+import android.icu.text.TimeZoneNames;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
@@ -15,8 +16,11 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.BidiFormatter;
+import android.text.TextDirectionHeuristics;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.BuildConfig;
@@ -47,8 +51,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -309,7 +315,7 @@ public class MiscUtils {
                                     bean.setName(region);
                                     TimeZone timeZone = TimeZone.getTimeZone(key);
                                     bean.setOffset(timeZone.getRawOffset());
-                                    final String gmt = displayTimeZone(timeZone);
+                                    final String gmt = getTimeZoneText(timeZone, false);
                                     bean.setGmt(gmt);
                                     list.add(bean);
                                 }
@@ -326,7 +332,7 @@ public class MiscUtils {
     }
 
     private static final String FORMAT_PH_P = "GMT +%02d:%02d";
-    private static final String FORMAT_PH_N = "GMT -%02d:%02d";
+    private static final String FORMAT_PH_N = "GMT %02d:%02d";
 
     private static String displayTimeZone(TimeZone tz) {
         long hours = TimeUnit.MILLISECONDS.toHours(tz.getRawOffset());
@@ -1005,5 +1011,56 @@ public class MiscUtils {
         AppLogger.d(Build.MODEL);
         AppLogger.d(Build.MANUFACTURER);
         AppLogger.d(Build.VERSION.SDK_INT + " " + Build.VERSION.RELEASE);
+    }
+
+    private static SimpleDateFormat gmtFormatter = new SimpleDateFormat("ZZZZ");
+
+    public static String getTimeZoneText(TimeZone tz, boolean includeName) {
+        Date now = new Date();
+
+        // Use SimpleDateFormat to format the GMT+00:00 string.
+
+        gmtFormatter.setTimeZone(tz);
+        String gmtString = gmtFormatter.format(now);
+
+        // Ensure that the "GMT+" stays with the "00:00" even if the digits are RTL.
+        BidiFormatter bidiFormatter = BidiFormatter.getInstance();
+        Locale l = Locale.getDefault();
+        boolean isRtl = TextUtils.getLayoutDirectionFromLocale(l) == View.LAYOUT_DIRECTION_RTL;
+        gmtString = bidiFormatter.unicodeWrap(gmtString,
+                isRtl ? TextDirectionHeuristics.RTL : TextDirectionHeuristics.LTR);
+
+        if (!includeName) {
+            return gmtString;
+        }
+
+        // Optionally append the time zone name.
+        SimpleDateFormat zoneNameFormatter = new SimpleDateFormat("zzzz");
+        zoneNameFormatter.setTimeZone(tz);
+        String zoneNameString = zoneNameFormatter.format(now);
+
+        // We don't use punctuation here to avoid having to worry about localizing that too!
+        return gmtString + " " + zoneNameString;
+    }
+
+    private void addTimeZone(String olsonId) {
+//        // We always need the "GMT-07:00" string.
+//        final TimeZone tz = TimeZone.getTimeZone(olsonId);
+//
+//        // For the display name, we treat time zones within the country differently
+//        // from other countries' time zones. So in en_US you'd get "Pacific Daylight Time"
+//        // but in de_DE you'd get "Los Angeles" for the same time zone.
+//        String displayName;
+//        if (mLocalZones.contains(olsonId)) {
+//            // Within a country, we just use the local name for the time zone.
+//            mZoneNameFormatter.setTimeZone(tz);
+//            displayName = mZoneNameFormatter.format(mNow);
+//        } else {
+//            // For other countries' time zones, we use the exemplar location.
+//            final String localeName = Locale.getDefault().toString();
+//            displayName = TimeZoneNames.getExemplarLocation(localeName, olsonId);
+//        }
+//    }
+
     }
 }
