@@ -355,4 +355,16 @@
             <enum name="stretch" value="3" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="CustomEditText">
+        <attr name="android:hint" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:inputType" />
+        <attr name="android:maxLength" />
+        <attr name="android:textColorHint" />
+        <attr name="android:gravity" />
+        <attr name="checkPasswordIcon" format="boolean" />
+        <attr name="showPasswordIcon" format="boolean" />
+    </declare-styleable>
 </resources>

@@ -199,6 +199,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
         sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
 
+        //for test only
+        sivDeviceDoorLock.setVisibility(View.VISIBLE);
+
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
 
@@ -300,7 +303,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_device_clear_record,
             R.id.sv_setting_device_home_mode,
             R.id.sv_setting_direct_mode,
-            R.id.siv_target_leveledBFS
+            R.id.siv_target_leveledBFS,
+            R.id.siv_setting_device_door_look
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);

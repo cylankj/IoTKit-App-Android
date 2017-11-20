@@ -335,8 +335,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void toggleSwitchMenu(View view) {
         //平视,1.平视.0俯视.默认平视
-        String dpPrimary = device.$(509, "1");
-        if ("1".equals(dpPrimary) && JFGRules.hasViewAngle(device.pid)) {
+        String dpPrimary = getDevice().$(509, "1");
+        if ("1".equals(dpPrimary) && JFGRules.hasViewAngle(getDevice().pid)) {
             new AlertDialog.Builder(getContext())
                     .setMessage(R.string.SWITCH_VIEW_POP)
                     .setNegativeButton(R.string.CANCEL, null)
@@ -615,10 +615,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         // TODO: 2017/10/11
         boolean hasMicFeature = JFGRules.hasMicFeature(device.pid);
+        boolean hasDoorLock = JFGRules.hasDoorLock(device.pid);
 
         imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
         imgVLandCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
-        ivCamDoorLock.setVisibility(JFGRules.hasDoorLock(device.pid) ? VISIBLE : GONE);
+        ivCamDoorLock.setVisibility(hasDoorLock ? VISIBLE : GONE);
+
+        imgVCamTriggerMic.setImageResource(hasDoorLock ? portBellMicRes[0] : portMicRes[0]);
+
         AppLogger.w("需要重置清晰度");
     }
 
@@ -1672,6 +1676,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private int[] portMicRes = {R.drawable.icon_port_mic_off_selector,
             R.drawable.icon_port_mic_on_selector};
+    private int[] portBellMicRes = {R.drawable.door_bell_no_talk_selector, R.drawable.door_bell_talk_selector};
     private int[] landMicRes = {R.drawable.icon_land_mic_off_selector,
             R.drawable.icon_land_mic_on_selector};
     private int[] portSpeakerRes = {R.drawable.icon_port_speaker_off_selector,
@@ -1697,7 +1702,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 boolean capture, boolean captureEnable) {
         ImageView pMic = (ImageView) imgVCamTriggerMic;
         pMic.setEnabled(micEnable);
-        pMic.setImageResource(portMicRes[mic ? 1 : 0]);
+        pMic.setImageResource(JFGRules.hasDoorLock(getDevice().pid) ? portBellMicRes[mic ? 1 : 0] : portMicRes[mic ? 1 : 0]);
         ImageView lMic = (ImageView) imgVLandCamTriggerMic;
         lMic.setEnabled(micEnable);
         lMic.setImageResource(landMicRes[mic ? 1 : 0]);

@@ -25,12 +25,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <!--android:background="#000"-->
     <FrameLayout
         android:id="@+id/act_bell_live_video_view_container"
         android:layout_width="0dp"
         android:layout_height="@dimen/y288"
-        android:background="#000"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
@@ -55,17 +55,76 @@
         app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
         app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
 
+    <View
+        android:id="@+id/cover"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/y38"
+        android:background="@drawable/bottom_black_top_white_color"
+        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/imgv_bell_live_switch_to_land"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/y10"
         android:padding="@dimen/y10"
         android:src="@drawable/icon_port_fullscreen_selector"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
-        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/cover"
+        app:layout_constraintEnd_toEndOf="@+id/cover"
+        app:layout_constraintTop_toTopOf="@+id/cover" />
+
+    <com.cylan.jiafeigou.widget.Switcher
+        android:id="@+id/sv_switch_stream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/y13"
+        android:layout_marginEnd="@dimen/y13"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/cover"
+        app:layout_constraintEnd_toEndOf="@+id/cover">
+
+        <TextView
+            android:id="@+id/switch_hd"
+            android:layout_width="@dimen/x48"
+            android:layout_height="@dimen/x21"
+            android:layout_marginEnd="@dimen/x5"
+            android:layout_marginStart="@dimen/x5"
+            android:background="@drawable/flow_bg"
+            android:gravity="center"
+            android:text="@string/Tap1_Camera_Video_HD"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp12"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/switch_sd"
+            android:layout_width="@dimen/x48"
+            android:layout_height="@dimen/x21"
+            android:layout_marginEnd="@dimen/x5"
+            android:layout_marginStart="@dimen/x5"
+            android:background="@drawable/flow_bg"
+            android:gravity="center"
+            android:text="@string/Tap1_Camera_Video_SD"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp12"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="@dimen/x48"
+            android:layout_height="@dimen/x21"
+            android:layout_marginStart="@dimen/x5"
+            android:background="@drawable/flow_bg"
+            android:drawablePadding="@dimen/x3"
+            android:drawableStart="@drawable/icon_rate_arrow"
+            android:gravity="center"
+            android:paddingStart="@dimen/x4"
+            android:text="@string/Tap1_Camera_Video_Auto"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp12" />
+    </com.cylan.jiafeigou.widget.Switcher>
 
     <TextView
         android:id="@+id/tv_bell_live_flow"

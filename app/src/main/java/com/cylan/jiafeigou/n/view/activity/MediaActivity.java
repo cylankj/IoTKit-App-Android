@@ -341,7 +341,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             //需要隐藏Footer,但此时Footer已经显示，则直接隐藏
             AnimatorUtils.slide(mFooterContainer, true, finish);
         } else if (!showFooter && !mFooterContainer.isShown()) {
-            finish.onFinish();
+            if (finish != null) {
+                finish.onFinish();
+            }
         }
     }
 
