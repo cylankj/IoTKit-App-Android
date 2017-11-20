@@ -623,17 +623,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         AppLogger.d("需要重置清晰度");
     }
 
-    private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
-        try {
-            CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
-            if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {
-                cp = CameraParam.getTopPreset();
-            }
-            liveViewWithThumbnail.getVideoView().config360(cp);
-        } catch (Exception e) {
-        }
-    }
-
     public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
         reInitHistoryHandler(presenter);
         return historyWheelHandler;
@@ -1602,17 +1591,27 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);
+        updateLiveViewMode(presenter.getDevice().$(509, "0"));
+    }
+
+
+    private CameraParam getCoor() {
+        final String mode = presenter.getDevice().$(509, "1");
+        CameraParam cameraParam = TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset();
+        DpMsgDefine.DpCoordinate coord = presenter.getDevice().$(510, null);
+        if (coord == null) return cameraParam;
+        CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
+        if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {
+            cp = CameraParam.getTopPreset();
+        }
+        return cp;
     }
 
     @Override
     public void updateLiveViewMode(String mode) {
         if (device.pid == 39 || device.pid == 49)
             mode = "0";
-        if (!needShowSight) {
-            updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
-        } else {
-            liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
-        }
+        liveViewWithThumbnail.getVideoView().config360(getCoor());
         liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
         liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
@@ -1812,11 +1811,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             liveTimeDateFormat.setTimeZone(timeZone);
         }
         if (msg != null && msg.id == 510) {
-            try {
-                updateCamParam(DpUtils.unpackData(msg.packValue, DpMsgDefine.DpCoordinate.class));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            liveViewWithThumbnail.getVideoView().config360(getCoor());
         }
     }
 

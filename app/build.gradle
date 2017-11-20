@@ -326,7 +326,7 @@ dependencies {
                 ext : 'aar'
         ])
     }
-    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20171102.062102-20', ext: 'aar')
+//    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20171102.062102-20', ext: 'aar')
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile('com.mikepenz:fastadapter:2.6.2@aar') {

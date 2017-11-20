@@ -91,6 +91,11 @@ public class BaseAppCallBackHolder implements AppCallBack {
     }
 
     @Override
+    public void OnUpdateHistoryVideoV2(byte[] bytes) {
+
+    }
+
+    @Override
     public void OnUpdateHistoryErrorCode(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
         AppLogger.d("OnUpdateHistoryErrorCode :" + gson.toJson(jfgHistoryVideoErrorInfo));
         RxBus.getCacheInstance().post(jfgHistoryVideoErrorInfo);
