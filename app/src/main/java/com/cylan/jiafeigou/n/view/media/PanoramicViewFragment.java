@@ -22,6 +22,8 @@ import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -176,7 +178,7 @@ public class PanoramicViewFragment extends IBaseFragment {
                 }
             });
             panoramicView.setMode(TextUtils.equals(mode, "0") ? 0 : 1);
-            panoramicView.config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+            panoramicView.config360(getCoor());
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mPanoramicContainer.addView(panoramicView, layoutParams);
@@ -196,6 +198,20 @@ public class PanoramicViewFragment extends IBaseFragment {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
                 .into(new Loader(this, index));
+    }
+
+    private CameraParam getCoor() {
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        final String mode = device.$(509, "1");
+        CameraParam cameraParam = TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset();
+        DpMsgDefine.DpCoordinate coord = DpUtils.unpackDataWithoutThrow(device.getProperty(510).getBytes(),
+                DpMsgDefine.DpCoordinate.class, null);
+        if (coord == null) return cameraParam;
+        CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
+        if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {
+            cp = CameraParam.getTopPreset();
+        }
+        return cp;
     }
 
     public void loadBitmap(int index) {
