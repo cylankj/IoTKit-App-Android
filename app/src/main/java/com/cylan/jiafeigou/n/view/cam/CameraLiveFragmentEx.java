@@ -795,13 +795,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onOpenDoorError() {
         AppLogger.d("开门失败");
-        ToastUtil.showToast("语言包:开门失败");
+        ToastUtil.showToast(getString(R.string.DOOR_OPEN_FAIL));
     }
 
     @Override
     public void onOpenDoorSuccess() {
         AppLogger.d("开门成功");
-        ToastUtil.showToast("语言包:开门成功");
+        ToastUtil.showToast(getString(R.string.OPEN_DOOR_SUCCE_MSG));
     }
 
     public void removeVideoView() {

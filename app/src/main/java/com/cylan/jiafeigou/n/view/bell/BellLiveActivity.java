@@ -56,6 +56,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.Switcher;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DoorLockDialog;
@@ -120,6 +121,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     ViewSwitcher bottomMenuSwitcher;
     @BindView(R.id.imgv_bell_door_lock)
     ImageView bellDoorLock;
+    @BindView(R.id.sv_switch_stream)
+    Switcher streamSwitcher;
+    @BindView(R.id.cover)
+    View cover;
     /**
      * 水平方向的view
      */
@@ -159,15 +164,39 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            //判断是否有门锁功能
+            //判断是否有分辨率切换
+            boolean showSdHd = JFGRules.showSdHd(device.pid, device.$(207, ""), false);
+            streamSwitcher.setVisibility(showSdHd ? View.VISIBLE : View.GONE);
         }
+        streamSwitcher.setSwitcherListener(this::switchStreamMode);
         decideBottomLayout();
         customToolbar.setToolbarLeftTitle(mLiveTitle);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
-
+        if (TextUtils.isEmpty(uuid)) {
+            uuid = "2900098989898";
+            presenter.uuid(uuid);
+        }
         newCall();
+    }
+
+    private void switchStreamMode(View view, int mode) {
+        switch (mode) {
+            case 0: {
+
+            }
+            break;
+            case 1: {
+
+            }
+            break;
+            case 2: {
+
+            }
+            break;
+        }
+        AppLogger.d("切换门铃分辨率:" + mode);
     }
 
     private void decideBottomLayout() {
@@ -363,6 +392,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 ViewUtils.updateViewHeight(mVideoViewContainer, ratio);
             }
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
+            cover.setVisibility(View.VISIBLE);
             mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
 
         } else {
@@ -372,6 +402,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             landBack.setVisibility(View.VISIBLE);
             ViewUtils.updateViewMatchScreenHeight(mVideoViewContainer);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
+            cover.setVisibility(View.GONE);
         }
     }
 
@@ -884,6 +915,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @OnClick(R.id.imgv_bell_door_lock)
     void onDoorLockClicked() {
         AppLogger.w("onDoorLockClicked");
+
         DoorLockDialog doorLockDialog = DoorLockDialog.Companion.newInstance(uuid);
         doorLockDialog.setAction((id, password) -> {
             if (id == R.id.ok) {

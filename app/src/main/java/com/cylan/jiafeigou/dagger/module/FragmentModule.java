@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.cam.CreateNewFaceFragment;
+import com.cylan.jiafeigou.n.view.cam.DoorPassWordSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceListFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerFragment;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameFragment;
@@ -76,4 +77,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract FaceListFragment faceListFragment();
+
+    @ContributesAndroidInjector(modules = MVPModule2.class)
+    abstract DoorPassWordSettingFragment doorPassWordSettingFragment();
 }

@@ -283,7 +283,7 @@ public class BaseForwardHelper {
         } catch (Exception e) {
             AppLogger.e(e.getMessage());
         }
-        return null;
+        return (T) forward;
     }
 
 }

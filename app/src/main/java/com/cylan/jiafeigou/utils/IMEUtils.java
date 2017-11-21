@@ -27,11 +27,9 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 public class IMEUtils {
 
     public static void hide(Activity context) {
-        if (context != null && context.getCurrentFocus() != null && context.getCurrentFocus().getWindowToken() != null) {
-//            context.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(
-                    context.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(context.getWindow().getDecorView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 

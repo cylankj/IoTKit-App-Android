@@ -19,6 +19,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -339,7 +340,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             startPlay();
         }
         Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
-                .doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(), "开门中", false))
+                .doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(), mView.getContext().getString(R.string.DOOR_OPENING), false))
                 .doOnTerminate(LoadingDialog::dismissLoading)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())

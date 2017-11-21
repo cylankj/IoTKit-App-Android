@@ -109,6 +109,7 @@ public class FriendContextItem extends AbstractItem<FriendContextItem, FriendCon
         holder.message.setText(message);
         GlideApp.with(holder.itemView.getContext())
                 .load(new JFGAccountURL(account))
+                .dontAnimate()
                 .placeholder(R.drawable.img_me_list_head)
                 .error(R.drawable.img_me_list_head)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

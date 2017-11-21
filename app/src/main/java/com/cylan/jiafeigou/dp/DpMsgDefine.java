@@ -2652,6 +2652,14 @@ public class DpMsgDefine {
         public String oldPassWord;
         @Index(1)
         public String newPassWord;
+
+        public DPChangeLockPassword(String oldPassWord, String newPassWord) {
+            this.oldPassWord = oldPassWord;
+            this.newPassWord = newPassWord;
+        }
+
+        public DPChangeLockPassword() {
+        }
     }
 
     @Message

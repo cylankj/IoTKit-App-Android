@@ -158,16 +158,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     public void friendItem(View view) {
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
-
-//        if (true) {//just for test
-//            showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
-//            return;
-//        }
-
         if (presenter.checkOpenLogIn()) {
             if (TextUtils.isEmpty(presenter.getUserInfoBean().getEmail()) &&
                     TextUtils.isEmpty(presenter.getUserInfoBean().getPhone())) {
@@ -209,7 +202,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     public void settingsItem(View view) {
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -226,18 +218,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     public void shareItem(View view) {
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
-//
-//        MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
-//        getActivity().getSupportFragmentManager().beginTransaction()
-//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                        , R.anim.slide_in_left, R.anim.slide_out_right)
-//                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
-//                .addToBackStack("HomeMineFragment")
-//                .commit();
+
         HomeMineShareManagerFragment managerFragment = HomeMineShareManagerFragment.newInstance(null);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

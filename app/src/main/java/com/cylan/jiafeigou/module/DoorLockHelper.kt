@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.module
 
-import com.cylan.entity.jniCall.JFGDPMsg
+import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
@@ -17,8 +17,9 @@ object DoorLockHelper {
         return Observable.just("changePassword")
                 .observeOn(Schedulers.io())
                 .map {
-                    var params = arrayListOf<JFGDPMsg>()
-                    return@map BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params)
+                    val password = DpMsgDefine.DPChangeLockPassword(oldPassword, newPassword)
+
+                    return@map BaseApplication.getAppComponent().getCmd().robotSetData(uuid, null)
                 }
                 .flatMap { seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp::class.java).first { it.seq == seq } }
                 .first()

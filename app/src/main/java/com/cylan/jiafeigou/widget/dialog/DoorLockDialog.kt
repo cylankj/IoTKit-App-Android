@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.widget.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import butterknife.OnTextChanged
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.IMEUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import kotlinx.android.synthetic.main.layout_door_lock_alert.*
 
@@ -35,8 +37,8 @@ class DoorLockDialog : BaseDialog<String>() {
     }
 
     @OnTextChanged(R.id.edit_door_pass_word)
-    fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        ok.isEnabled = !TextUtils.isEmpty(s)
+    fun onTextChanged(text: CharSequence) {
+        ok.isEnabled = !TextUtils.isEmpty(text) && text.length >= 6
     }
 
     @OnClick(R.id.ok)
@@ -59,8 +61,15 @@ class DoorLockDialog : BaseDialog<String>() {
         dismiss()
     }
 
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        if (activity != null) {
+            IMEUtils.hide(activity)
+        }
+    }
+
     companion object {
-        fun newInstance(uuid: String): DoorLockDialog {
+        fun newInstance(uuid: String?): DoorLockDialog {
             val dialog = DoorLockDialog()
             val argument = Bundle()
             argument.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid)

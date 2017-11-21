@@ -6,12 +6,12 @@ import android.content.Context;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.module.ISubscriptionManager;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
+import com.cylan.jiafeigou.n.mvp.contract.cam.DoorPassWordSettingContact;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.cam.DoorPasswordSettingPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
@@ -35,6 +36,7 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.cam.CreateFaceContact;
 import com.cylan.jiafeigou.n.view.cam.CreateNewFaceFragment;
+import com.cylan.jiafeigou.n.view.cam.DoorPassWordSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceListContact;
 import com.cylan.jiafeigou.n.view.cam.FaceListFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerContact;
@@ -82,14 +84,11 @@ import com.cylan.jiafeigou.support.splash.SplashActivity;
 import com.cylan.jiafeigou.support.splash.SplashContact;
 import com.cylan.jiafeigou.support.splash.SplashPresenter;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.trello.rxlifecycle.LifecycleProvider;
-import com.trello.rxlifecycle.android.FragmentEvent;
 
 import javax.inject.Inject;
 
 import dagger.Binds;
 import dagger.Module;
-import rx.subjects.BehaviorSubject;
 
 /**
  * Created by yanzhendong on 2017/10/26.
@@ -286,4 +285,10 @@ public abstract class MVPModule2 {
 
     @Binds
     public abstract Pan720FullContract.View bindPan720FullView(Pan720FullFragment fragment);
+
+    @Binds
+    public abstract DoorPassWordSettingContact.Presenter bindDoorPasswordPresenter(DoorPasswordSettingPresenter passwordSettingPresenter);
+
+    @Binds
+    public abstract DoorPassWordSettingContact.View bindDoorPasswordSetting(DoorPassWordSettingFragment fragment);
 }
