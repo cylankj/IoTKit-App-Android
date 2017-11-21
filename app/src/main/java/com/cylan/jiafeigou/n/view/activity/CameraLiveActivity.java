@@ -76,7 +76,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
 //        //just for test
-//        hasNewMsg = true;
+        hasNewMsg = true;
         initToolbar(hasNewMsg);
         initAdapter();
         if (hasNewMsg && vpCameraLive.getAdapter().getCount() > 1) {
@@ -174,12 +174,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onNewIntent(intent);
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         Log.d("onNewIntent", "onNewIntent:" + uuid);
-//        if (TextUtils.isEmpty(uuid)) {
-//            AppLogger.e("what the hell uuid is null");
-//            finishExt();
-//        }
-//        initToolbar(getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE));
-//        initAdapter();
         finish();
         startActivity(intent);
     }

@@ -146,13 +146,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
                         CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
-                        if (accept()) {  // 减少if 层次
-                            if (prePlayType.type == TYPE_HISTORY) {
-                                presenter.startPlayHistory(prePlayType.time * 1000L);
-                            } else if (prePlayType.type == TYPE_LIVE) {
-                                presenter.startPlay();
-                            }
+//                        if (accept()) {  // 减少if 层次
+                        //用户手动点击优先级最高,不应该再进行一些其他判断了,除非播放失败
+                        if (prePlayType.type == TYPE_HISTORY) {
+                            presenter.startPlayHistory(prePlayType.time * 1000L);
+                        } else if (prePlayType.type == TYPE_LIVE) {
+                            presenter.startPlay();
                         }
+//                        }
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop
