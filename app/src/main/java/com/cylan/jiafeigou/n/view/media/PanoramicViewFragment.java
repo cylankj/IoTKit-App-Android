@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -200,9 +201,11 @@ public class PanoramicViewFragment extends IBaseFragment {
     }
 
     private CameraParam getCoor() {
-        final String mode = basePresenter.getDevice().$(509, "1");
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        final String mode = device.$(509, "1");
         CameraParam cameraParam = TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset();
-        DpMsgDefine.DpCoordinate coord = basePresenter.getDevice().$(510, null);
+        DpMsgDefine.DpCoordinate coord = DpUtils.unpackDataWithoutThrow(device.getProperty(510).getBytes(),
+                DpMsgDefine.DpCoordinate.class, null);
         if (coord == null) return cameraParam;
         CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
         if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {

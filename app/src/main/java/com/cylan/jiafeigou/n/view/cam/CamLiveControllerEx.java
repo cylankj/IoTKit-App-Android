@@ -1598,7 +1598,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private CameraParam getCoor() {
         final String mode = presenter.getDevice().$(509, "1");
         CameraParam cameraParam = TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset();
-        DpMsgDefine.DpCoordinate coord = presenter.getDevice().$(510, null);
+        DpMsgDefine.DpCoordinate coord = DpUtils.unpackDataWithoutThrow(presenter.getDevice()
+                .getProperty(510).getBytes(), DpMsgDefine.DpCoordinate.class, null);
         if (coord == null) return cameraParam;
         CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
         if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {

@@ -28,6 +28,10 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     protected abstract int pid();
 
+    public DPEntity get(int msgId) {
+        return getProperty(msgId);
+    }
+
     /**
      * @param msgId
      * @param defaultValue
