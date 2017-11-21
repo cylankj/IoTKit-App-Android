@@ -38,15 +38,6 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     @Override
     public <V> V $(int msgId, V defaultValue) {
 
-//        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
-//        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
-//        V cast = null;
-//        if (item != null) {
-//            cast = item.cast(defaultValue);
-//            Log.i(JConstant.CYLAN_TAG, "item cast :" + cast.toString());
-//        }
-//        return cast == null ? defaultValue : cast;
-
         synchronized (lock) {
             try {
                 DPEntity entity = getProperty(msgId);

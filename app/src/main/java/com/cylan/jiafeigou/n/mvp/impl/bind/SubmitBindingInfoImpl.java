@@ -55,6 +55,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
 
     public SubmitBindingInfoImpl(SubmitBindingInfoContract.View view, String uuid) {
         super(view);
+        this.uuid = uuid;
     }
 
     @Override

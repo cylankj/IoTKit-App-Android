@@ -10,6 +10,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
@@ -264,6 +265,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
                 }
                 //如果出现异常直接捕获就行了
             } catch (Exception e) {
+                e.printStackTrace();
                 AppLogger.e(MiscUtils.getErr(e));
             }
         }
@@ -283,7 +285,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void startActivity(Intent intent) {
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        if (!TextUtils.isEmpty(uuid)) {//避免写入空值
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        }
         super.startActivity(intent);
     }
 

@@ -44,6 +44,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.LoginButton;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -363,6 +364,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
+        AppLogger.d("ConfigWiFiActivity:设备画像为:" + new Gson().toJson(o));
+        this.uuid = o.uuid;
         LoadingDialog.dismissLoading();
         if (getIntent().hasExtra(JUST_SEND_INFO) && !getIntent().getBooleanExtra("just_config", false)) {
             runOnUiThread(() -> ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG)));

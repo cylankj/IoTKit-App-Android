@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.module
 
 import com.cylan.jiafeigou.dp.DpMsgDefine
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import rx.Observable
@@ -19,7 +18,9 @@ object DoorLockHelper {
                 .map {
                     val password = DpMsgDefine.DPChangeLockPassword(oldPassword, newPassword)
 
-                    return@map BaseApplication.getAppComponent().getCmd().robotSetData(uuid, null)
+                    //TODO ForwardV3
+
+                    return@map 0L
                 }
                 .flatMap { seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp::class.java).first { it.seq == seq } }
                 .first()
@@ -33,6 +34,7 @@ object DoorLockHelper {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map {
+                    //TODO ForwardV3
                     false
                 }
     }

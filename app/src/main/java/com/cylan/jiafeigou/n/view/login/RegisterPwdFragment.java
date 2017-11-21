@@ -46,7 +46,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pwdPresenter = new SetupPwdPresenterImpl(this);
+        presenter = new SetupPwdPresenterImpl(this);
     }
 
     /**
@@ -92,7 +92,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         AppLogger.i("account:" + account + ",pwd:" + pwd + ",code:" + code);
         boolean isPhone =
                 (validPhoneNum && !TextUtils.isEmpty(code) && code.length() == JConstant.VALID_VERIFICATION_CODE_LEN);
-        pwdPresenter.register(account,
+        presenter.register(account,
                 pwd,
                 isPhone ? JConstant.TYPE_PHONE : JConstant.TYPE_EMAIL,
                 isPhone ? PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN) : "");
@@ -161,7 +161,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         if (!TextUtils.isEmpty(login.userName) || !TextUtils.isEmpty(login.pwd)) {
             if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
                 ToastUtil.showToast(getString(R.string.RIGN_SUC));
-                pwdPresenter.executeLogin(login);
+                presenter.executeLogin(login);
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
             }

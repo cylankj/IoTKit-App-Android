@@ -729,10 +729,8 @@ public class DataSourceManager implements JFGSourceManager {
     public void setLoginState(LogState loginState) {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
         if (loginState.state == LogState.STATE_NONE) {
-//            shareList.clearLocal();
             setJfgAccount(null);
         } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
-//            shareList.clearLocal();
         } else {
 
         }
@@ -786,25 +784,11 @@ public class DataSourceManager implements JFGSourceManager {
                             list.add(jfgdpMsg);
 
                         }
-
-//                        List<PropertyItem> items = new ArrayList<>(value.size());
-//                        for (T t : value) {
-//                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
-//                        }
-//                        BaseApplication.getPropertyItemBox().put(items);
-
                         List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(AppLogger::e)
                                 .subscribe(ret -> {
-//                                    if (ret.getResultCode() == 0) {
-//                                        List<PropertyItem> items = new ArrayList<>(value.size());
-//                                        for (T t : value) {
-//                                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
-//                                        }
-//                                        BaseApplication.getPropertyItemBox().put(items);
-//                                    }
                                 }, AppLogger::e);
                     } catch (Exception e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));

@@ -29,6 +29,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
     public SetDeviceAliasPresenterImpl(SetDeviceAliasContract.View view,
                                        String uuid) {
         super(view);
+        this.uuid = uuid;
     }
 
     @Override

@@ -856,10 +856,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             } else if (livePlayState == PLAY_STATE_PREPARE) {
                 layoutC.setVisibility(VISIBLE);//loading 必须显示
             }
-            svSwitchStream.setVisibility(GONE);
+//            svSwitchStream.setVisibility(GONE);
             if (landAnimationLayoutA != null) {
                 landAnimationLayoutA.stop();
             }
+            YoYo.with(Techniques.FadeOutDown)
+                    .duration(250)
+                    .playOn(svSwitchStream);
             landAnimationLayoutA = YoYo.with(Techniques.FadeOutUp)
                     .duration(250)
                     .playOn(layoutA);
@@ -928,8 +931,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
-            svSwitchStream.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
-
+//            svSwitchStream.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
+            YoYo.with(Techniques.FadeInUp)
+                    .duration(250)
+                    .playOn(svSwitchStream);
             YoYo.with(Techniques.FadeInDown)
                     .duration(250)
                     .playOn(layoutA);

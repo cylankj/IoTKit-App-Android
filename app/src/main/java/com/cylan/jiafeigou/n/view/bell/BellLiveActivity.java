@@ -174,10 +174,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
-        if (TextUtils.isEmpty(uuid)) {
-            uuid = "2900098989898";
-            presenter.uuid(uuid);
-        }
         newCall();
     }
 

@@ -55,7 +55,6 @@ public class SetupPwdFragment extends IBaseFragment<SetupPwdContract.Presenter> 
     CheckBox cbShowInputBox;
     @BindView(R.id.et_input_box)
     EditText etInputBox;
-    protected SetupPwdContract.Presenter pwdPresenter;
     @BindView(R.id.vs_set_account_pwd)
     ViewSwitcher vsSetAccountPwd;
     @BindView(R.id.fl_input_container)
@@ -100,6 +99,7 @@ public class SetupPwdFragment extends IBaseFragment<SetupPwdContract.Presenter> 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setupInputBox();
         initTitleBar();
         setupButton();
@@ -177,7 +177,7 @@ public class SetupPwdFragment extends IBaseFragment<SetupPwdContract.Presenter> 
                 final String pwd = etInputBox.getText().toString().trim();
                 final String code = bundle.getString(JConstant.KEY_VCODE_TO_SEND);
                 IMEUtils.hide(getActivity());
-                if (pwdPresenter == null) {
+                if (presenter == null) {
                     AppLogger.i("pwdPresenter is null ");
                     return;
                 }
