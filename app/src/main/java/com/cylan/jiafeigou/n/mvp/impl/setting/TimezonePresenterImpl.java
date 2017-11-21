@@ -31,13 +31,7 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
     public void start() {
         super.start();
         MiscUtils.loadTimeZoneList()
-                .flatMap(new Func1<List<TimeZoneBean>, Observable<List<TimeZoneBean>>>() {
-                    @Override
-                    public Observable<List<TimeZoneBean>> call(List<TimeZoneBean> timeZoneBeen) {
-                        timeZoneBeenList = timeZoneBeen;
-                        return Observable.just(timeZoneBeen);
-                    }
-                })
+                .flatMap(timeZoneBeen -> Observable.just(timeZoneBeenList = timeZoneBeen))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<TimeZoneBean> list) -> {
                     getView().timezoneList(list);

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.base.module.BaseForwardHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -184,18 +185,18 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        Schedulers.io().createWorker().schedule(() -> {
+        addSubscription(Schedulers.io().createWorker().schedule(() -> {
             if (manually) {
                 BaseApplication.getAppComponent().getCmd().refreshDevList();
             }
-        });
+        }), "refresh_manually");
         int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
-        AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+        addSubscription(AndroidSchedulers.mainThread().createWorker().schedule(() -> {
             mView.onRefreshFinish();
-        }, 30, TimeUnit.SECONDS);
+        }, 30, TimeUnit.SECONDS), "refresh_delay");
     }
 
     @Override
