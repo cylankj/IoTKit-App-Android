@@ -477,9 +477,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onLiveStarted(int type) {
         enableSensor(true);
-        if (getView() != null) {
-            getView().setKeepScreenOn(true);
-        }
+        camLiveControlLayer.setKeepScreenOn(true);//需要保持屏幕常亮
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
         camLiveControlLayer.onLiveStart(presenter, device);
         camLiveControlLayer.setHotSeatListener(mic -> CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrant_MicWithCheck(this),
@@ -608,9 +606,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
         if (getView() != null) {
             getView().postDelayed(() -> {
-                if (getView() != null) {
-                    getView().setKeepScreenOn(false);
-                }
+//                if (getView() != null) {
+//                    getView().setKeepScreenOn(false);
+//                }
+                //getView 可能为 null
+                camLiveControlLayer.setKeepScreenOn(false);
                 camLiveControlLayer.onLiveStop(presenter, device, errId);
             }, 500);
         }
@@ -795,7 +795,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onOpenDoorError() {
         AppLogger.d("开门失败");
-        ToastUtil.showToast(getString(R.string.DOOR_OPEN_FAIL));
+        ToastUtil.showFailureToast(getString(R.string.DOOR_OPEN_FAIL));
     }
 
     @Override

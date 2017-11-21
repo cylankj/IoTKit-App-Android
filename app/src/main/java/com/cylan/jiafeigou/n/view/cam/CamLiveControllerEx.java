@@ -207,7 +207,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @BindView(R.id.imgV_cam_door_look)
     ImageView ivCamDoorLock;
     private boolean enableAutoRotate = true;
-
+    private boolean enableAutoSlideOut = true;
 
     private String uuid;
     private static final String TAG = "CamLiveControllerEx";
@@ -598,6 +598,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 postDelayed(landHideRunnable, 3000);
             } else {
                 removeCallbacks(portHideRunnable);
+                removeCallbacks(landHideRunnable);
 //                postDelayed(portHideRunnable, 3000);
             }
         });
@@ -793,8 +794,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             setLoadingState(null, null);
+//            YoYo.with(Techniques.FadeOut).duration(100).playOn(svSwitchStream);
             svSwitchStream.setVisibility(GONE);
-            layoutC.setVisibility(INVISIBLE);
+            if (layoutC.getState() != PLAY_STATE_LOADING_FAILED) {
+                layoutC.setVisibility(INVISIBLE);
+            }
             Log.d("wahat", "portHideRunnable");
         }
     };
@@ -856,13 +860,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             } else if (livePlayState == PLAY_STATE_PREPARE) {
                 layoutC.setVisibility(VISIBLE);//loading 必须显示
             }
-//            svSwitchStream.setVisibility(GONE);
+
             if (landAnimationLayoutA != null) {
                 landAnimationLayoutA.stop();
             }
             YoYo.with(Techniques.FadeOutDown)
                     .duration(250)
+                    .withListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            svSwitchStream.setVisibility(GONE);
+                        }
+                    })
                     .playOn(svSwitchStream);
+
             landAnimationLayoutA = YoYo.with(Techniques.FadeOutUp)
                     .duration(250)
                     .playOn(layoutA);
@@ -931,9 +943,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
-//            svSwitchStream.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
+
             YoYo.with(Techniques.FadeInUp)
                     .duration(250)
+                    .withListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            svSwitchStream.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
+                        }
+                    })
                     .playOn(svSwitchStream);
             YoYo.with(Techniques.FadeInDown)
                     .duration(250)
@@ -1019,11 +1038,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isPlayHistory = livePlayType == TYPE_HISTORY;
         //左下角直播,竖屏下:左下角按钮已经隐藏
         (imgVCamLiveLandPlay).setImageResource(R.drawable.icon_landscape_playing);
+        boolean land = isLand();
         //|直播| 按钮
-        post(portShowRunnable);
+        post(land ? landShowRunnable : portShowRunnable);
         //现在显示的条件就是手动点击其他情况都不显示
         setLoadingState(null, null);
-        post(() -> layoutC.setVisibility(INVISIBLE));
+        if (layoutC.getState() != PLAY_STATE_LOADING_FAILED) {
+            layoutC.setVisibility(INVISIBLE);
+        }
         if (tvLive != null) {
             tvLive.setEnabled(isPlayHistory);
         }
@@ -1034,7 +1056,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.onLiveStart();
         imgVCamZoomToFullScreen.setEnabled(true);
         //暂时隐藏吧,用户不喜欢
-        post(portHideRunnable);
+        post(land ? landHideRunnable : portHideRunnable);
         layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
@@ -1064,6 +1086,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
+    private void removeAnimator() {
+
+    }
+
     @Override
     public void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode) {
         livePlayState = presenter.getPlayState();
@@ -1073,6 +1099,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.showFlowView(false, null);
         imgVCamZoomToFullScreen.setEnabled(false);
         removeCallbacks(portHideRunnable);
+        removeCallbacks(portShowRunnable);
+        removeCallbacks(landHideRunnable);
+        removeCallbacks(landShowRunnable);
         handlePlayErr(presenter, errCode);
         imgVLandCamTriggerCapture.setEnabled(false);
         imgVCamTriggerCapture.setEnabled(false);
@@ -1225,6 +1254,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
+            svSwitchStream.setVisibility(VISIBLE);
             ViewUtils.increaseMargins(svSwitchStream, 0, 0, 0, (int) getResources().getDimension(R.dimen.y10));
         } else {
             tvLive.setVisibility(vsLayoutWheel.getCurrentView() instanceof FrameLayout ? GONE : VISIBLE);
@@ -1324,18 +1354,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.setTranslationY(0);
         layoutE.setTranslationY(0);
         layoutG.setTranslationY(0);
+        svSwitchStream.setTranslationY(0);
         liveViewWithThumbnail.getTvLiveFlow().setTranslationY(0);
         layoutA.setAlpha(1);
         layoutD.setAlpha(1);
         layoutE.setAlpha(1);
         layoutG.setAlpha(1);
+        svSwitchStream.setAlpha(1);
         liveViewWithThumbnail.getTvLiveFlow().setAlpha(1);
 
         if (land) {
             layoutE.setVisibility(VISIBLE);
             removeCallbacks(portHideRunnable);
-            removeCallbacks(landHideRunnable);
+            removeCallbacks(portShowRunnable);
             removeCallbacks(landShowRunnable);
+            removeCallbacks(landHideRunnable);
             postDelayed(landHideRunnable, 3000);//3s后隐藏
         } else {
             //只有播放是才显示 LayoutD
@@ -1350,15 +1383,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate);
             removeCallbacks(portHideRunnable);
+            removeCallbacks(portShowRunnable);
             removeCallbacks(landHideRunnable);
             removeCallbacks(landShowRunnable);
             if (livePlayState != PLAY_STATE_PLAYING) {//暂停或 idle 不隐藏
+                removeCallbacks(portHideRunnable);
+                removeCallbacks(landHideRunnable);
                 post(portShowRunnable);
-                post(() -> {
-                    removeCallbacks(portHideRunnable);
-                    removeCallbacks(landHideRunnable);
-
-                });
             }
         }
     }
@@ -1369,12 +1400,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
         //暴力处理吧,不知道该在哪里隐藏了
-
-        postDelayed(portHideRunnable, 3000);//#118022
-//        postDelayed(landHideRunnable, 3000);
-//        postDelayed(() -> {
-//
-//        }, 3000);
+        boolean land = isLand();
+        if (!land) {
+            postDelayed(portHideRunnable, 3000);//#118022
+        }
         //分享账号不显示啊.
 //        if (JFGRules.isShareDevice(uuid)) return;
         historyWheelHandler = getHistoryWheelHandler(presenter);
@@ -1527,6 +1556,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.enableStandbyMode(standby.standby && dpNet.net > 0, clickListener, !TextUtils.isEmpty(device.shareAccount));
         if (standby.standby && JFGRules.isDeviceOnline(dpNet) && !isLand()) {
             post(portHideRunnable);
+            post(landHideRunnable);
             setLoadingState(null, null);
         }
         if (!isLand()) {
@@ -1619,6 +1649,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onActivityStart(CamLiveContract.Presenter presenter, Device device) {
         boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
         removeCallbacks(portHideRunnable);
+        removeCallbacks(landHideRunnable);
         setFlipped(!safeIsOpen);
         updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
