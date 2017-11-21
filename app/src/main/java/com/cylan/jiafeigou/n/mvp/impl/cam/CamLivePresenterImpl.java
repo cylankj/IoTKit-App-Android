@@ -340,10 +340,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             startPlay();
         }
         Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
-                .doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(), mView.getContext().getString(R.string.DOOR_OPENING), false))
-                .doOnTerminate(LoadingDialog::dismissLoading)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(), mView.getContext().getString(R.string.DOOR_OPENING), false))
+                .doOnTerminate(LoadingDialog::dismissLoading)
                 .subscribe(success -> {
                     if (success == null) {
                         mView.onOpenDoorError();

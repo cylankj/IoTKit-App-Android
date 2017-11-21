@@ -3,12 +3,10 @@ package com.cylan.jiafeigou.module.request
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.module.message.DPList
-import com.cylan.jiafeigou.module.message.DPListConverter
 import com.cylan.jiafeigou.module.message.MIDHeader
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
-import org.msgpack.MessagePack
 import org.msgpack.annotation.Index
 import org.msgpack.annotation.Message
 import rx.Observable
@@ -39,17 +37,10 @@ abstract class AbstractRequest<T : IResponse>(
     fun convert(header: MIDHeader): T {
         val parameterizedType = javaClass.genericSuperclass as ParameterizedType
         val responseType: Class<T> = parameterizedType.actualTypeArguments[0] as Class<T>
-        return msgPack.createBufferUnpacker(header.rawBytes).read(responseType)
+        return DpUtils.unpackData(header.rawBytes, responseType)
     }
 
-    companion object {
-        @JvmStatic
-        val msgPack: MessagePack = MessagePack()
-    }
 
-    init {
-        msgPack.register(DPList::class.java, DPListConverter())
-    }
 }
 
 abstract class AbstractResponse : IResponse, MIDHeader() {

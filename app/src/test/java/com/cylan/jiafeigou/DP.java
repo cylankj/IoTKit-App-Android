@@ -14,6 +14,8 @@ import com.cylan.jiafeigou.module.SubscriptionManager;
 import com.cylan.jiafeigou.module.message.DPList;
 import com.cylan.jiafeigou.module.message.DPMessage;
 import com.cylan.jiafeigou.module.message.MIDHeader;
+import com.cylan.jiafeigou.module.request.RobotForwardDataV3Request;
+import com.cylan.jiafeigou.module.request.RobotForwardDataV3Response;
 import com.cylan.jiafeigou.module.request.RobotGetDataRequest;
 import com.cylan.jiafeigou.module.request.RobotGetDataResponse;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -469,7 +471,6 @@ public class DP {
     SubscriptionManager manager = new SubscriptionManager();
 
 
-
     @Test
     public void testFetch() throws Exception {
         byte[] bytes = new byte[]{-107, -84, 50, 57, 48, 49, 48, 48, 48, 48, 48, 48, 48, 51, 2, -38, 0, 32, 50, 48, 49, 55, 49, 48, 51, 49, 49, 55, 49, 55, 49, 53, 118, 76, 54, 80, 103, 80, 77, 55, 49, 120, 120, 118, 120, 100, 69, 106, 80, 98, 0, -111, -109, -51, 1, -7, -49, 0, 0, 1, 95, 96, -33, 85, 80, -38, 0, 49, -104, -50, 89, -13, -17, 114, 0, 0, 1, -95, 48, -112, 0, -111, -38, 0, 32, 50, 48, 49, 55, 49, 48, 50, 56, 49, 48, 52, 54, 49, 48, 76, 116, 76, 80, 87, 97, 115, 113, 57, 113, 79, 97, 71, 104, 49, 113, 98, 110
@@ -544,7 +545,7 @@ public class DP {
         byte[] bytes = packer.toByteArray();
         response.rawBytes = bytes;
         BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
-        DpUtils.mp.register(DPList.class,new MyListTemplate());
+        DpUtils.mp.register(DPList.class, new MyListTemplate());
         RobotGetDataResponse convert = new RobotGetDataRequest().convert(response);
         System.out.println(convert);
 
@@ -570,7 +571,17 @@ public class DP {
 
         @Override
         public void write(Packer packer, DPList dpMessages, boolean b) throws IOException {
-
+            if (dpMessages != null) {
+                packer.writeArrayBegin(dpMessages.size());
+                for (DPMessage message : dpMessages) {
+                    packer.writeArrayBegin(3);
+                    packer.write(message.getMsgId());
+                    packer.write(message.getVersion());
+                    packer.write(message.getValue());
+                    packer.writeArrayEnd();
+                }
+                packer.writeArrayEnd();
+            }
         }
 
         @Override
@@ -589,6 +600,24 @@ public class DP {
             unpacker.readArrayEnd();
             return result;
         }
+    }
+
+    @Test
+    public void testV3() throws IOException {
+        MessagePack pack = new MessagePack();
+        pack.register(DPList.class, new MyListTemplate());
+        DPList dpList = new DPList();
+        byte[] ddds = pack.write(new DpMsgDefine.DPChangeLockPassword("222", "ddd"));
+        System.out.println(Arrays.toString(ddds));
+        DPMessage ddd = new DPMessage(3, 0, ddds);
+        dpList.add(ddd);
+        RobotForwardDataV3Request robotForwardDataV3Request = new RobotForwardDataV3Request("sss", "ssdd", 32, dpList);
+        byte[] bytes = pack.write(robotForwardDataV3Request);
+        System.out.println(Arrays.toString(bytes));
+        System.out.println(pack.createBufferUnpacker(bytes).readValue().toString());
+        BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
+        RobotForwardDataV3Response read = unpacker.read(RobotForwardDataV3Response.class);
+        System.out.println(read);
     }
 
 }

@@ -51,12 +51,12 @@ public class LoadingDialog extends AppCompatDialog {
 
 
     public static LoadingDialog getLoadingDialog(Context context) {
-        final LoadingDialog dialog=loadingDialog;
-        loadingDialog=null;
-        if (dialog!=null){
+        final LoadingDialog dialog = loadingDialog;
+        loadingDialog = null;
+        if (dialog != null) {
             dialog.dismiss();
         }
-        loadingDialog=new LoadingDialog(context);
+        loadingDialog = new LoadingDialog(context);
         return loadingDialog;
     }
 
@@ -95,6 +95,7 @@ public class LoadingDialog extends AppCompatDialog {
     public static void dismissLoading() {
         if (loadingDialog != null) {
             loadingDialog.dismiss();
+            loadingDialog = null;
         }
     }
 

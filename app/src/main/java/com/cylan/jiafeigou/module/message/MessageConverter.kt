@@ -11,8 +11,18 @@ import java.io.IOException
 class DPListConverter : AbstractTemplate<DPList>() {
 
     @Throws(IOException::class)
-    override fun write(packer: Packer, dpMessages: DPList, b: Boolean) {
+    override fun write(packer: Packer, dpMessages: DPList?, b: Boolean) {
+        if (dpMessages == null) return
 
+        packer.writeArrayBegin(dpMessages.size)
+        for (message in dpMessages) {
+            packer.writeArrayBegin(3)
+            packer.write(message.msgId)
+            packer.write(message.version)
+            packer.write(message.value)
+            packer.writeArrayEnd()
+        }
+        packer.writeArrayEnd()
     }
 
     @Throws(IOException::class)

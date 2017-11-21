@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.dp;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.module.message.DPList;
+import com.cylan.jiafeigou.module.message.DPListConverter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.msgpack.MessagePack;
@@ -15,6 +17,10 @@ import java.util.ArrayList;
 
 public class DpUtils {
     public static MessagePack mp = new MessagePack();
+
+    static {
+        mp.register(DPList.class, new DPListConverter());
+    }
 
     /**
      * @param data
