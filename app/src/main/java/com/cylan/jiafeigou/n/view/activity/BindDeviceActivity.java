@@ -123,7 +123,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
-                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Cloud_Camera));
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Camera_Outdoor));
                 break;
             case R.id.v_to_bind_camera_cloud:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
