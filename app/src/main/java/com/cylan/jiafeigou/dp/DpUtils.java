@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 
 public class DpUtils {
-   public static MessagePack mp = new MessagePack();
+    public static MessagePack mp = new MessagePack();
 
     /**
      * @param data
@@ -34,7 +34,7 @@ public class DpUtils {
     public static <T> T unpackDataWithoutThrow(byte[] data, Class<T> clazz, T defaultValue) {
         if (clazz == null || data == null) {
             AppLogger.e("value is null: " + clazz);
-            return null;
+            return defaultValue;
         }
         try {
             return mp.createBufferUnpacker(data).read(clazz);

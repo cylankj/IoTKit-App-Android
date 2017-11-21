@@ -2668,6 +2668,15 @@ public class DpMsgDefine {
         public String password;
         @Index(1)
         public int status;
+
+        public DPChangeLockStatusReq() {
+        }
+
+        public DPChangeLockStatusReq(String password, int status) {
+            this.password = password;
+            this.status = status;
+        }
+
     }
 
     @Message

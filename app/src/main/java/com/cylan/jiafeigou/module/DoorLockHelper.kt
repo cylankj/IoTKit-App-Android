@@ -1,41 +1,49 @@
 package com.cylan.jiafeigou.module
 
 import com.cylan.jiafeigou.dp.DpMsgDefine
-import com.cylan.jiafeigou.rx.RxBus
-import com.cylan.jiafeigou.rx.RxEvent
+import com.cylan.jiafeigou.dp.DpMsgMap
+import com.cylan.jiafeigou.dp.DpUtils
+import com.cylan.jiafeigou.module.message.DPList
+import com.cylan.jiafeigou.module.message.DPMessage
+import com.cylan.jiafeigou.module.request.RobotForwardDataV3Request
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 /**
  * Created by yanzhendong on 2017/11/16.
  */
 object DoorLockHelper {
+    private val CHANGE_PASSWORD_ACTION =
+            +1 shl 0/*转发给对端:0-否，1-是*/ +
+                    +1 shl 1/*get/set:0-get，1-set*/ +
+                    +1 shl 2 /*对端应答:0-否，1-是*/ +
+                    +1 shl 3/*多终端同步:0-否，1-是*/
+
+    private val OPEN_DOOR_LOCK_ACTION =
+            +1 shl 0 /*转发给对端*/ +
+                    +1 shl 1 /*set*/ +
+                    +1 shl 2/*需要对端应答*/
 
     fun changePassword(uuid: String, oldPassword: String, newPassword: String): Observable<Boolean> {
-        return Observable.just("changePassword")
-                .observeOn(Schedulers.io())
+        val dpList = DPList()
+        val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockPassword(oldPassword, newPassword))
+        dpList.add(DPMessage(DpMsgMap.ID_405_BELL_CHANGE_LOCK_PASSWORD, 0, bytes))
+        return RobotForwardDataV3Request(callee = uuid, action = CHANGE_PASSWORD_ACTION, values = dpList)
+                .execute()
                 .map {
-                    val password = DpMsgDefine.DPChangeLockPassword(oldPassword, newPassword)
-
-                    //TODO ForwardV3
-
-                    return@map 0L
-                }
-                .flatMap { seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp::class.java).first { it.seq == seq } }
-                .first()
-                .map {
-                    it.rets.getOrNull(0)?.ret == 0
+                    it.values.singleOrNull { it.msgId == DpMsgMap.ID_406_BELL_CHANGE_LOCK_PASSWORD_RSP }
+                            .let { DpUtils.unpackDataWithoutThrow(it?.value, Int::class.java, -1) } == 0
                 }
     }
 
     fun openDoor(uuid: String, password: String): Observable<Boolean> {
-        return Observable.just("openDoor")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
+        val dpList = DPList()
+        val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockStatusReq(password, 1))
+        dpList.add(DPMessage(DpMsgMap.ID_406_BELL_CHANGE_LOCK_PASSWORD_RSP, 0, bytes))
+        return RobotForwardDataV3Request(callee = uuid, action = OPEN_DOOR_LOCK_ACTION, values = dpList)
+                .execute()
                 .map {
-                    //TODO ForwardV3
-                    false
+                    it.values.singleOrNull { it.msgId == DpMsgMap.ID_408_BELL_CHANGE_LOCK_STATUS_RSP }
+                            .let { DpUtils.unpackDataWithoutThrow(it?.value, Int::class.java, 1) } == 0
                 }
     }
 }

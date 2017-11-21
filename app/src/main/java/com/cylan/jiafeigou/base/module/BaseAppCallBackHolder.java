@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.message.MIDHeader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -42,7 +43,6 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -384,13 +384,24 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnForwardData(byte[] bytes) {
-        try {
-            PanoramaEvent.MsgForward rawRspMsg = DpUtils.unpackData(bytes, PanoramaEvent.MsgForward.class);
-            RxBus.getCacheInstance().post(rawRspMsg);
-            BaseForwardHelper.getInstance().dispatcherForward(rawRspMsg);
-        } catch (IOException e) {
-            e.printStackTrace();
-            AppLogger.w("解析服务器透传消息失败");
+        MIDHeader midHeader = DpUtils.unpackDataWithoutThrow(bytes, MIDHeader.class, null);
+        if (midHeader == null) {
+            AppLogger.w("解析透传消息失败:" + DpUtils.unpack(bytes));
+            return;
+        }
+        midHeader.setRawBytes(bytes);
+        switch (midHeader.getMsgId()) {
+            case 20006: {
+                PanoramaEvent.MsgForward rawRspMsg = DpUtils.unpackDataWithoutThrow(bytes, PanoramaEvent.MsgForward.class, null);
+                if (rawRspMsg == null) return;
+
+                RxBus.getCacheInstance().post(rawRspMsg);
+                BaseForwardHelper.getInstance().dispatcherForward(rawRspMsg);
+            }
+            break;
+            default: {
+                RxBus.getCacheInstance().post(midHeader);
+            }
         }
     }
 

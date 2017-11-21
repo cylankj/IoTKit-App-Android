@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.module.request
 
 import com.cylan.entity.jniCall.JFGDPMsg
+import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.module.message.DPList
 import com.cylan.jiafeigou.module.message.DPListConverter
 import com.cylan.jiafeigou.module.message.MIDHeader
@@ -103,3 +104,34 @@ class RobotSetDataRequest(
 }
 
 class RobotSetDataResponse : AbstractResponse()
+
+@Message
+class RobotForwardDataV3Request(
+        caller: String = "",
+        callee: String = "",
+        @Index(4) var action: Int = 0,
+        @Index(5) var values: DPList = DPList()
+) : AbstractRequest<RobotForwardDataV3Response>(20224, caller, callee, Random().nextLong()) {
+
+    override fun execute(): Observable<RobotForwardDataV3Response> {
+        return Observable.create<RobotForwardDataV3Response> { subscriber ->
+            val subscribe = RxBus.getCacheInstance().toObservable(MIDHeader::class.java).first { it.seq == seq }.subscribe({
+                val dataV3Response = convert(it)
+                subscriber.onNext(dataV3Response)
+                subscriber.onCompleted()
+            }) {
+                it.printStackTrace()
+                subscriber.onError(it)
+            }
+            subscriber.add(subscribe)
+            val appCmd = BaseApplication.getAppComponent().getCmd()
+            appCmd.SendForwardData(DpUtils.pack(this@RobotForwardDataV3Request))
+        }.subscribeOn(Schedulers.io())
+    }
+}
+
+@Message
+class RobotForwardDataV3Response(
+        @Index(4) var action: Int = 0,
+        @Index(5) var values: DPList = DPList()
+) : AbstractResponse()

@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.utils.JfgUtils;
 
 import java.io.File;
@@ -103,8 +102,9 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
             startViewer();
         }
         DoorLockHelper.INSTANCE.openDoor(uuid, password)
-                .compose(applyLoadingFocus(R.string.DOOR_OPENING, method))
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(applyLoadingFocus(R.string.DOOR_OPENING, method))
                 .subscribe(success -> {
                     if (success == null) {
                         mView.onOpenDoorLockTimeOut();

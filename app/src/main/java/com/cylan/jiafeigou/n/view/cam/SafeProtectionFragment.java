@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -99,6 +100,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView1 swInfraredStrengthen;
     @BindView(R.id.sw_monitoring_area)
     SettingItemView0 swMonitoringArea;
+    @BindView(R.id.rl_monitoring_area_container)
+    RelativeLayout rlMonitorAreaContainer;
     //    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     //    private TimePickDialogFragment timePickDialogFragment;
 
@@ -247,7 +250,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         swMotionInterval.setVisibility(warmInterval && show ? View.VISIBLE : View.GONE);
 
         swInfraredStrengthen.setVisibility(show && infrared_enhanced_recognition ? View.VISIBLE : View.GONE);
-        swMonitoringArea.setVisibility(show && detection_zone_setting ? View.VISIBLE : View.GONE);
+        rlMonitorAreaContainer.setVisibility(show && detection_zone_setting ? View.VISIBLE : View.GONE);
     }
 
     @Override

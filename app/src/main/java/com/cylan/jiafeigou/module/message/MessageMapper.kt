@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.module.message
 
 import android.os.Parcel
 import android.os.Parcelable
+import org.msgpack.annotation.Ignore
 import org.msgpack.annotation.Index
 import org.msgpack.annotation.Message
 import java.io.Serializable
@@ -19,7 +20,7 @@ open class MIDHeader(
         @Index(3) var seq: Long = 0L
 ) : Parcelable, Serializable {
     //不能为空
-    lateinit var rawBytes: ByteArray
+    @Ignore lateinit var rawBytes: ByteArray
 
     constructor(source: Parcel) : this(
             source.readInt(),
