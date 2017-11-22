@@ -370,7 +370,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            return true;
+        } else {
             presenter.dismiss();
         }
         return super.performBackIntercept(willExit);
@@ -907,6 +910,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         unregisterReceiver(mScreenStatusReceiver);
         clearHeadSetEventReceiver();
     }
+
 
     @OnClick(R.id.imgv_bell_door_lock)
     void onDoorLockClicked() {

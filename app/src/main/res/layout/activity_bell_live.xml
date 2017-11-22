@@ -35,15 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-    <ImageView
-        android:id="@+id/act_bell_live_video_picture"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
-        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container"
-        app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
-        app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
 
     <com.cylan.jiafeigou.widget.live.LivePlayControlView
         android:id="@+id/act_bell_live_video_play_controller"
@@ -156,6 +147,15 @@
         app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
         app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
 
+    <ImageView
+        android:id="@+id/act_bell_live_video_picture"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintEnd_toEndOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintStart_toStartOf="@+id/act_bell_live_video_view_container"
+        app:layout_constraintTop_toTopOf="@+id/act_bell_live_video_view_container" />
 
     <ViewSwitcher
         android:id="@+id/bottom_menu_switcher"

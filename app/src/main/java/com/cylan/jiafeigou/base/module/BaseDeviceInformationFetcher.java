@@ -121,8 +121,6 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                 connectionEvent.mobile = mobNetInfo;
                 connectionEvent.wifi = wifiNetInfo;
                 connectionEvent.isOnLine = BaseApplication.isOnline();
-//            boolean publicNetwork = NetUtils.isPublicNetwork();
-//            BaseApplication.getAppComponent().getSourceManager().setOnline(publicNetwork);
                 RxBus.getCacheInstance().postSticky(connectionEvent);
             });
         }

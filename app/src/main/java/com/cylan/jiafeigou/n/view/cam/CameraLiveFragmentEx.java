@@ -453,6 +453,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
             camLiveControlLayer.updateLiveViewMode(_509);
         }
+        if (msgId == DpMsgMap.ID_201_NET) {
+            camLiveControlLayer.updateDeviceNet();
+        }
         camLiveControlLayer.dpUpdate(msg, getDevice());
     }
 

@@ -171,6 +171,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
             try {
                 String account = DataSourceManager.getInstance().getAccount().getAccount();
                 String vid = Security.getVId();
+                vid = "0001";
                 String serviceKey = OptionsImpl.getServiceKey(vid);
                 String timestamp = String.valueOf((System.currentTimeMillis() / 1000));//这里的时间是秒
                 String seceret = OptionsImpl.getServiceSeceret(vid);
@@ -186,6 +187,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     }
                     PostRequest request = OkGo.post(url)
                             .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            //TODO 现在 VID 写死成 0001
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
@@ -222,6 +224,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
             try {
                 String account = DataSourceManager.getInstance().getAccount().getAccount();
                 String vid = Security.getVId();
+                vid = "0001";
                 String serviceKey = OptionsImpl.getServiceKey(vid);
                 String timestamp = String.valueOf((System.currentTimeMillis() / 1000));//这里的时间是秒
                 String seceret = OptionsImpl.getServiceSeceret(vid);
@@ -237,6 +240,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     }
                     PostRequest request = OkGo.post(url)
                             .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            //TODO 现在 VID 写死成 0001
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")

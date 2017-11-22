@@ -200,7 +200,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
 
         //for test only
-        sivDeviceDoorLock.setVisibility(View.VISIBLE);
+//        sivDeviceDoorLock.setVisibility(View.VISIBLE);
 
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);

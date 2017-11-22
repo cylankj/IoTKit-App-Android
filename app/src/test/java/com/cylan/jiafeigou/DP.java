@@ -435,6 +435,7 @@ public class DP {
         String sign = AESUtil.sign(JConstant.RobotCloudApi.ROBOTSCLOUD_FACE_QUERY_API, seceret, timeMillis);
         Response response = OkGo.post("http://yf.robotscloud.com/aiservice/v1/search_face")
                 .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                //TODO 现在 VID 写死成 0001
                 .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, "0001")
                 .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, "v0UAlWduk09lvo4qUWZOaNcZeiACHEwm")
                 .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")

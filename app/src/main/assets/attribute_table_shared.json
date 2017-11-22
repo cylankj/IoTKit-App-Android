@@ -532,7 +532,7 @@
       "PROTECTION": "0",
       "REMOTE_VIEW": "0",
       "SD": "0",
-      "SD/HD": "1,1.0.0",
+      "SD/HD": "0",
       "SN": "智能摄像机",
       "SOFTVERSION": "1",
       "SSID": "DOG-10W-",
@@ -582,7 +582,7 @@
       "PROTECTION": "0",
       "REMOTE_VIEW": "0",
       "SD": "0",
-      "SD/HD": "1,1.0.0",
+      "SD/HD": "0",
       "SN": "智能摄像机（户外版）",
       "SOFTVERSION": "1",
       "SSID": "DOG-11W-",
@@ -2385,5 +2385,5 @@
       1495
     ]
   },
-  "version": "20171116"
+  "version": "20171122"
 }

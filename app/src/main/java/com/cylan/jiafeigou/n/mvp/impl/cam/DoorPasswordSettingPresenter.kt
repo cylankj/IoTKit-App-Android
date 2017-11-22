@@ -5,7 +5,9 @@ import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.module.DoorLockHelper
 import com.cylan.jiafeigou.n.mvp.contract.cam.DoorPassWordSettingContact
 import com.cylan.jiafeigou.support.log.AppLogger
+import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -17,6 +19,7 @@ class DoorPasswordSettingPresenter @Inject constructor(view: DoorPassWordSetting
     override fun changePassWord(oldPassword: String, newPassword: String) {
         val method = method()
         val subscribe = DoorLockHelper.changePassword(uuid, oldPassword, newPassword)
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({
@@ -24,7 +27,7 @@ class DoorPasswordSettingPresenter @Inject constructor(view: DoorPassWordSetting
                         true -> {
                             mView.onChangePasswordSuccess()
                         }
-                        false -> {
+                        null, false -> {
                             mView.onChangePasswordError()
                         }
                     }

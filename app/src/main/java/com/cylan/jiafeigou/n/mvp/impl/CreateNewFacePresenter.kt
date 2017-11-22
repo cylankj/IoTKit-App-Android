@@ -32,9 +32,11 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
 
     override fun createNewFace(faceId: String, faceName: String) {
         val method = method()
+        AppLogger.d("正在创建 Face,face id:$faceId,face name:$faceName")
         val subscribe = Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
             val account = DataSourceManager.getInstance().account.account
-            val vid = Security.getVId()
+            var vid = Security.getVId()
+            vid="0001"
             val serviceKey = OptionsImpl.getServiceKey(vid)
             val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
             val seceret = OptionsImpl.getServiceSeceret(vid)
@@ -79,7 +81,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
             subscriber.onCompleted()
         }
                 .subscribeOn(Schedulers.io())
-                .timeout(10,TimeUnit.SECONDS, Observable.just(null))
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ response ->

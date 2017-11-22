@@ -196,6 +196,7 @@ public class JConstant {
     public static final String PANORAMA_VIEW_MODE = "PANORAMA_VIEW_MODE";
     public static final String ROBOT_SERVICES_KEY = "ROBOT_SERVICES_KEY";
     public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
+    public static final String SHOW_MONITOR_AREA_TIPS = "SHOW_MONITOR_AREA_TIPS";
 
     public static String getFaceText(String[] face_id, Map<String, String> faceMap, String defaultText) {
         if (face_id == null || faceMap == null || faceMap.size() == 0) {

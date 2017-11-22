@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.DoorPassWordSettingContact;
+import com.cylan.jiafeigou.n.mvp.contract.cam.MonitorAreaSettingContact;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -25,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DoorPasswordSettingPresenter;
+import com.cylan.jiafeigou.n.mvp.impl.cam.MonitorAreaSettingPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
@@ -41,6 +43,7 @@ import com.cylan.jiafeigou.n.view.cam.FaceListContact;
 import com.cylan.jiafeigou.n.view.cam.FaceListFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerContact;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerFragment;
+import com.cylan.jiafeigou.n.view.cam.MonitorAreaSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
@@ -291,4 +294,10 @@ public abstract class MVPModule2 {
 
     @Binds
     public abstract DoorPassWordSettingContact.View bindDoorPasswordSetting(DoorPassWordSettingFragment fragment);
+
+    @Binds
+    public abstract MonitorAreaSettingContact.Presenter bindMonitorAreaSettingPresenter(MonitorAreaSettingPresenter presenter);
+
+    @Binds
+    public abstract MonitorAreaSettingContact.View bindMonitorAreaSettingView(MonitorAreaSettingFragment fragment);
 }

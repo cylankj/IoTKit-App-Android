@@ -61,6 +61,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -230,6 +231,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private CamLiveContract.Presenter presenter;
     private int pid;
     private boolean isRSCam;
+    private boolean isShareAccount = false;
+    private boolean hasPingSuccess = false;
     private Handler handler = new Handler();
     private boolean needShowSight;
 
@@ -538,12 +541,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamTriggerCapture.setEnabled(false);
         imgVCamZoomToFullScreen.setEnabled(false);
         tvLive.setEnabled(false);
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        isRSCam = JFGRules.isRS(device.pid);
-        if (device == null) {
-            AppLogger.e("device is null");
-            return;
-        }
+        this.device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        this.isRSCam = JFGRules.isRS(device.pid);
+        this.isShareAccount = !TextUtils.isEmpty(device.shareAccount);
         this.pid = device.pid;
         VideoViewFactory.IVideoView videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
         if (!JFGRules.showSwitchModeButton(device.pid) && videoView instanceof Panoramic360ViewRS) {
@@ -599,7 +599,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             } else {
                 removeCallbacks(portHideRunnable);
                 removeCallbacks(landHideRunnable);
-//                postDelayed(portHideRunnable, 3000);
             }
         });
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
@@ -621,10 +620,37 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
         imgVLandCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
         ivCamDoorLock.setVisibility(hasDoorLock ? VISIBLE : GONE);
-
         imgVCamTriggerMic.setImageResource(hasDoorLock ? portBellMicRes[0] : portMicRes[0]);
 
+        updateDoorLock();
+
+        if (JFGRules.shouldObserverAP()) {//需要监听是否局域网在线
+            Subscription subscribe = APObserver.INSTANCE.scan(uuid).timeout(5, TimeUnit.SECONDS)
+                    .subscribe(ret -> {
+                        updateDoorLockFromPing(true);
+                    }, e -> {
+                        e.printStackTrace();
+                        AppLogger.e(e);
+                        updateDoorLockFromPing(false);
+                    });
+            presenter.addSubscription("CamLiveControllerEx.APObserver.scan", subscribe);
+        }
         AppLogger.w("需要重置清晰度");
+    }
+
+    public void updateDoorLock() {
+        //无网络连接或者设备离线不可点击,局域网在线可点击,
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        boolean noNet = NetUtils.getNetType(getContext()) == -1;
+
+        if (!JFGRules.isDeviceOnline(net) || noNet || isShareAccount) {
+            ivCamDoorLock.setEnabled(false);
+        }
+    }
+
+    public void updateDoorLockFromPing(boolean pingSuccess) {
+        this.hasPingSuccess = pingSuccess;
+        ivCamDoorLock.setEnabled(hasPingSuccess && !isShareAccount);
     }
 
     private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
@@ -1084,10 +1110,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(INVISIBLE);
                 break;
         }
-    }
-
-    private void removeAnimator() {
-
     }
 
     @Override
@@ -1553,8 +1575,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //设置 standby view相关点击事件
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());//http://yf.cylan.com.cn:82/redmine/issues/109805
-        liveViewWithThumbnail.enableStandbyMode(standby.standby && dpNet.net > 0, clickListener, !TextUtils.isEmpty(device.shareAccount));
-        if (standby.standby && JFGRules.isDeviceOnline(dpNet) && !isLand()) {
+        liveViewWithThumbnail.enableStandbyMode(standby.standby && dpNet.net > 0, clickListener, isShareAccount);
+        boolean online = JFGRules.isDeviceOnline(dpNet);
+        boolean noNet = NetUtils.getNetType(getContext()) == -1;
+        if (standby.standby && online && !isLand()) {
             post(portHideRunnable);
             post(landHideRunnable);
             setLoadingState(null, null);
@@ -1568,7 +1592,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             }
         }
-        btnLoadHistory.setEnabled(!standby.standby && device.$(201, new DpMsgDefine.DPNet()).net > 0);
+
+        updateDoorLock();
+        btnLoadHistory.setEnabled(!standby.standby && online);
+
     }
 
     private boolean isStandBy() {
@@ -2051,6 +2078,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void setFragmentManager(FragmentManager childFragmentManager) {
         this.fragmentManager = childFragmentManager;
+    }
+
+    public void updateDeviceNet() {
+        updateDoorLock();
     }
 
     interface OrientationHandle {

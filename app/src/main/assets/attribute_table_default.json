@@ -167,7 +167,6 @@
       "AI_RECOGNITION": "[0,1,2,3]",
       "AUTORECORD": "0",
       "CIDPREFIX": "2901",
-      "CLARITYVERSION": "1.0.0",
       "DETECTION_ZONE": "0",
       "DEVICE": "DOG-10W",
       "HANGUP": "0",
@@ -186,7 +185,6 @@
       "AI_RECOGNITION": "[0,1,2,3]",
       "AUTORECORD": "0",
       "CIDPREFIX": "2902",
-      "CLARITYVERSION": "1.0.0",
       "DETECTION_ZONE": "0",
       "DEVICE": "DOG-11W",
       "HANGUP": "0",
@@ -570,6 +568,14 @@
       "PROTECTION": "1",
       "REMOTE_VIEW": "2",
       "VALUE": "KKS_BELL01"
+    },
+    {
+      "CIDPREFIX": "2105",
+      "DEVICE": "DOG-DB-V4",
+      "OS": "59",
+      "PID": "1558",
+      "PRODUCT": "门锁测试型号（门铃8620）",
+      "VALUE": "BELL_LOCK_TEST"
     }
   ],
   "serialMap": {
@@ -586,6 +592,7 @@
       46,
       50,
       52,
+      59,
       1093,
       1094,
       1159,
@@ -594,7 +601,8 @@
       1344,
       1345,
       1378,
-      1379
+      1379,
+      1558
     ],
     "CAM": [
       4,
@@ -642,5 +650,5 @@
       1495
     ]
   },
-  "version": "20171116"
+  "version": "20171122"
 }

@@ -346,13 +346,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 contentView.findViewById(R.id.viewer).visibility = View.GONE
             }
         }
-
-
-        val popupWindow = PopupWindow(context)
+        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWindow = PopupWindow(contentView, contentView.measuredWidth, contentView.measuredHeight)
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
-        popupWindow.contentView = contentView
-        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         contentView.findViewById(R.id.delete).setOnClickListener { v ->
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔")

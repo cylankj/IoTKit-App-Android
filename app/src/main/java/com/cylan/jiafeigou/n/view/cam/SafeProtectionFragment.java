@@ -320,7 +320,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             R.id.fLayout_protection_end_time,
             R.id.fLayout_protection_repeat_period,
             R.id.sw_motion_AI,
-            R.id.sw_motion_interval
+            R.id.sw_motion_interval,
+            R.id.sw_monitoring_area
     })
     public void onClick(View view) {
         switch (view.getId()) {
@@ -455,6 +456,12 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     }
                 });
                 showFragment(fragment);
+            }
+            break;
+
+            case R.id.sw_monitoring_area: {
+                MonitorAreaSettingFragment fragment = MonitorAreaSettingFragment.Companion.newInstance(uuid);
+                ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
             }
             break;
         }

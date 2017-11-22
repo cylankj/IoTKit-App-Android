@@ -49,7 +49,8 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         val method = method()
         val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
             try {
-                val vid = Security.getVId()
+                var vid = Security.getVId()
+                vid="0001"
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
@@ -66,6 +67,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     }
                     val response = OkGo.post(url)
                             .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
+                            //TODO 现在 VID 写死成 0001
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")
@@ -102,7 +104,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
             }
         }
                 .subscribeOn(Schedulers.io())
-                .timeout(10,TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING, method))
                 .subscribe({ rsp ->
@@ -141,7 +143,8 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         val method = method()
         val subscribe = Observable.create<DpMsgDefine.FaceQueryResponse> { subscriber ->
             try {
-                val vid = Security.getVId()
+                var vid = Security.getVId()
+                vid="0001"
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
@@ -157,6 +160,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     }
                     val response = OkGo.post(url)
                             .cacheMode(CacheMode.NO_CACHE)
+                            //TODO 现在 VID 写死成 0001
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_SERVICE_KEY, serviceKey)
                             .params(JConstant.RobotCloudApi.ROBOTSCLOUD_BUSINESS, "1")

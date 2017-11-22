@@ -244,8 +244,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
         if (mHasMore) {
             homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
-
-        } else {
+        } else if (homeWonderAdapter.getItemCount() > 0) {
             homeWonderAdapter.add(DPWonderItem.getNoMoreTypeBean());
         }
         homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
@@ -347,7 +346,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
 //                mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
-
             }
             break;
             case VIEW_TYPE_GUIDE: {//guide

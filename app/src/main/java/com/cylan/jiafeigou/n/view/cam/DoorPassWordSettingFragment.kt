@@ -58,7 +58,7 @@ class DoorPassWordSettingFragment : BaseFragment<DoorPassWordSettingContact.Pres
     fun setDoneEnable() {
         val text1 = password1.getEditer().text
         val text2 = password2.getEditer().text
-        custom_toolbar.setRightEnable(text1.length > 6 && text2.length > 6)
+        custom_toolbar.setRightEnable(text1.length >= 6 && text2.length >= 6)
     }
 
     private var textWatcher: TextWatcher = object : TextWatcher {

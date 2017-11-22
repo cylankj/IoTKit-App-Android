@@ -10,9 +10,19 @@ interface MonitorAreaSettingContact {
 
     interface View : JFGView {
 
+        fun onGetMonitorPictureSuccess(url: String)
+
+        fun onGetMonitorPictureError()
+
+        fun showLoadingBar()
+
+        fun hideLoadingBar()
+
     }
 
     interface Presenter : JFGPresenter {
+
+        fun loadMonitorPicture()
 
     }
 }

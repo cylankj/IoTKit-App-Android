@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.base.wrapper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -268,12 +267,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
                 e.printStackTrace();
                 AppLogger.e(MiscUtils.getErr(e));
             }
-        }
-
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            return;
         }
         super.onBackPressed();
     }
