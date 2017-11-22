@@ -391,12 +391,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private void onShareWonderfulContent(DPWonderItem bean) {
-//        ShareOptionMenuDialog fragment = initShareDialog();
-//        fragment.setPictureURL(new WonderGlideURL(bean));
-//        if (bean.msgType == DPWonderItem.TYPE_VIDEO) {
-//            fragment.setVideoURL(bean.fileName);
-//        }
-//        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
         GlideApp.with(this)
                 .downloadOnly()
                 .onlyRetrieveFromCache(true)
@@ -409,7 +403,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                                 .share();
                     }
                 });
-
     }
 
     private void onDeleteWonderfulContent(DPWonderItem bean, int position) {

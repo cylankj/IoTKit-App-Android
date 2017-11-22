@@ -1,0 +1,290 @@
+{
+  "project_info": {
+    "project_number": "985304692675",
+    "firebase_url": "https://gcmkey-23dad.firebaseio.com",
+    "project_id": "gcmkey-23dad",
+    "storage_bucket": "gcmkey-23dad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:b3e0d7268c55e9da",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:334006ebd872562e",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.zhongxing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:b356de17a6ecdd82",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.test1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:20e58401f342e513",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.cell_c"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:c3429bffb3d4c233",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.yf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:80cfe1117ca520ab",
+        "android_client_info": {
+          "package_name": "com.cleverdog.new"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:128a30bed2c6fdb0",
+        "android_client_info": {
+          "package_name": "com.cleverdog.new.doby"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:75bb71ac42b29772",
+        "android_client_info": {
+          "package_name": "com.cleverdog.new.cell_c"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985304692675:android:a6914a5a59004549",
+        "android_client_info": {
+          "package_name": "com.cylan.cleverdog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

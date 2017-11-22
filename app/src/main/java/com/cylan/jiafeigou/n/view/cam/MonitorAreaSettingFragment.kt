@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.cam
 
+import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -32,7 +33,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
+        ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
 
     }
 

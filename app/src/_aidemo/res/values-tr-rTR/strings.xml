@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resources>
+  <string name="Slogan">Smart Home, for better life</string>
+  <string name="Tap1_Shared_Description">720°Panoramik Cam ile harika bir şey yaptım, gelip görün!</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
+  <string name="app_name">DobyNew</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+</resources>
