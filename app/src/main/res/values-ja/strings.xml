@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">接続タイムアウト</string>
   <string name="Clear_Sdcard_tips6">SDカードのデータがクリアされています</string>
   <string name="ClearingTips">クリア&#8230;</string>
-  <string name="Cloud_Camera">クラウドカメラ</string>
+  <string name="Cloud_Camera">カメラ（バッテリー版）</string>
   <string name="Consumer_Camera">消費者のカメラ</string>
   <string name="DATA_FLOW_PHOTO">WIFI接続せずに元の写真を表示するとデータ消費が発生しますか？</string>
   <string name="DEAL_FEEDBACK">フィードバックありがとうございます</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">デフォルト</string>
   <string name="DETECTION_AREA_DESCRI">すべてのゾーンはデフォルトで検出され、指定されたエリアが変更された場合にのみアラームが送信されます</string>
   <string name="DETECTION_AREA_FAILED_LOAD">リアルタイムの背景を読み込めませんでした</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">ライブ画像を取得できないため、領域を設定できません。もう一度お試しください。</string>
   <string name="DETECTION_AREA_GUIDE">赤いボックスをドラッグして検出エリアを設定する</string>
   <string name="DETECTION_AREA_RESTORE">デフォルトに戻す</string>
   <string name="DETECTION_AREA_SET">設定されている</string>

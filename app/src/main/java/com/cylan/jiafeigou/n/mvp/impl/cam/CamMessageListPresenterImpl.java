@@ -390,6 +390,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void fetchVisitorMessageList(int type, final String id, long sec, boolean refresh) {
+        AppLogger.w("fetchVisitorMessageList:" + type + ",id:" + id);
         Subscription subscribe = Observable.just("fetchVisitorMessageList")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())

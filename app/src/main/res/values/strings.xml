@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">Connection timeout</string>
   <string name="Clear_Sdcard_tips6">Data of SD card has been wiped</string>
   <string name="ClearingTips">Clearing&#8230;</string>
-  <string name="Cloud_Camera">Cloud Camera</string>
+  <string name="Cloud_Camera">Camera (Battery Version)</string>
   <string name="Consumer_Camera">Consumer Camera</string>
   <string name="DATA_FLOW_PHOTO">Data consumption would be created if view original photo without WIFI connection,continue?</string>
   <string name="DEAL_FEEDBACK">Thank you for your feedback</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">default</string>
   <string name="DETECTION_AREA_DESCRI">All zones are detected by default, and will send alarms only when the specified area changes</string>
   <string name="DETECTION_AREA_FAILED_LOAD">failed to load real-time graph</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">fail to get live image, so can not set area, please try agian.</string>
   <string name="DETECTION_AREA_GUIDE">Drag the red box to set the detection area</string>
   <string name="DETECTION_AREA_RESTORE">Restore Defaults</string>
   <string name="DETECTION_AREA_SET">Has been set</string>

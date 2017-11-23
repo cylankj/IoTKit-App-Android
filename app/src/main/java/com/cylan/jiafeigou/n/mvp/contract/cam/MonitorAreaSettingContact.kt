@@ -18,11 +18,16 @@ interface MonitorAreaSettingContact {
 
         fun hideLoadingBar()
 
+        fun onSetMonitorAreaSuccess()
+
+        fun onSetMonitorAreaError()
     }
 
     interface Presenter : JFGPresenter {
 
         fun loadMonitorPicture()
+
+        fun setMonitorArea(uuid: String, rects: FloatArray)
 
     }
 }

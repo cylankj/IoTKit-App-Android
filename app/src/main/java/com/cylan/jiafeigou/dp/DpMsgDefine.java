@@ -2622,6 +2622,16 @@ public class DpMsgDefine {
         public float right;
         @Index(3)
         public float bottom;
+
+        public Rect4F(float left, float top, float right, float bottom) {
+            this.left = left;
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+        }
+
+        public Rect4F() {
+        }
     }
 
     @Message
@@ -2636,6 +2646,13 @@ public class DpMsgDefine {
         @Index(1)
         public List<Rect4F> rects;
 
+        public DPCameraWarnArea(boolean enable, List<Rect4F> rects) {
+            this.enable = enable;
+            this.rects = rects;
+        }
+
+        public DPCameraWarnArea() {
+        }
     }
 
     @Message
@@ -2682,6 +2699,21 @@ public class DpMsgDefine {
     @Message
     public static class DPChangeLockStatusRsp extends BaseDataPoint {
 
+    }
+
+    @Message
+    public static class DPCameraTakePicture extends BaseDataPoint{
+
+    }
+
+    @Message
+    public static class DPCameraTakePictureRsp extends BaseDataPoint {
+        @Index(0)
+        public int ret;
+        @Index(1)
+        public int ossType;
+        @Index(2)
+        public long time;
     }
 
     @Message

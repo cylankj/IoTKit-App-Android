@@ -50,7 +50,8 @@ public final class DpMsgMap {
     public static final int ID_408_BELL_CHANGE_LOCK_STATUS_RSP = 408;
     public static final int ID_511_CAMERAWARNANDWONDER = 511;
     public static final int ID_510_CAMERA_COORDINATE = 510;
-
+    public static final int ID_521_CAMERA_TAKEPICTURE = 521;
+    public static final int ID_522_CAMERA_TAKEPICTURE_RSP = 522;
     public static final int ID_218_DEVICE_FORMAT_SDCARD = 218;
 
     public static final int ID_305_VIEW_VIDEO_RECORD = 305;

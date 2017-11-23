@@ -387,11 +387,11 @@ public class ViewUtils {
     public static void setSystemUiVisibility(View headerTitleContainer, boolean show) {
 //        PermissionUtils.hasSelfPermissions()
         if (show) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             }
         } else {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN

@@ -4,14 +4,15 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.widget.PopupWindowCompat
+import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupWindow
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import butterknife.OnClick
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
@@ -31,11 +32,10 @@ import java.util.*
  */
 class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presenter>(), MonitorAreaSettingContact.View {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
+    private var hasRequested: Boolean = false
 
-    }
+    private var monitorWidth: Int = 0
+    private var monitorHeight: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_monitor_area_setting, container, false)
@@ -44,20 +44,18 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun initViewAndListener() {
         super.initViewAndListener()
+        ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
         ViewUtils.setSystemUiVisibility(monitor_picture, false)
         effect_container.setSizeUpdateListener(this::onMonitorAreaChanged)
         effect_container.setOnSystemUiVisibilityChangeListener { ViewUtils.setSystemUiVisibility(monitor_picture, false) }
-    }
-
-
-    override fun onStart() {
-        super.onStart()
+        monitorWidth = context.resources.getDimensionPixelSize(R.dimen.y206)
+        monitorHeight = context.resources.getDimensionPixelSize(R.dimen.y136)
         presenter.loadMonitorPicture()
     }
 
     private fun onMonitorAreaChanged(layout: CropLayout, width: Int, height: Int) {
         AppLogger.w("onMonitorAreaChanged:width:$width,height:$height")
-        if (width < layout.monitorAreaWidth || height < layout.monitorAreaHeight) {
+        if (width < monitorWidth || height < monitorHeight) {
             effect_hint.visibility = View.GONE
         }
     }
@@ -68,20 +66,45 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                 .load(url)
                 .placeholder(R.drawable.default_diagram_mask)
                 .error(R.drawable.default_diagram_mask)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(object : DrawableImageViewTarget(monitor_picture, true) {
                     override fun setResource(resource: Drawable?) {
                         if (resource != null) {
                             AppLogger.w("设置区域设置图片")
+                            PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
                             updateMonitorAreaPicture(resource)
-                            updateViewVisibility(true)
+                            updateViewVisibility(false)
                         }
+                    }
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        AlertDialog.Builder(context)
+                                .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
+                                .create()
+                                .show()
                     }
                 })
     }
 
+
     override fun onGetMonitorPictureError() {
         AppLogger.w("onGetMonitorPictureError")
-        ToastUtil.showToast(getString(R.string.DETECTION_AREA_FAILED_LOAD))
+        finish.isEnabled = false
+        val url = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
+        if (url.isNullOrEmpty()) {
+            AlertDialog.Builder(context)
+                    .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
+                    .create()
+                    .show()
+        } else {
+            onGetMonitorPictureSuccess(url)
+        }
+
     }
 
     fun updateMonitorAreaPicture(drawable: Drawable) {
@@ -92,18 +115,41 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         monitor_picture.layoutParams = params
     }
 
-    fun updateViewVisibility(ready: Boolean) {
-        monitor_toggle.visibility = if (ready) View.VISIBLE else View.INVISIBLE
-        decideShowPopTips()
+    fun updateViewVisibility(readyToSelect: Boolean) {
+        load_bar.visibility = View.GONE
+        finish.isEnabled = true
+        if (readyToSelect) {
+            val layoutParams = effect_view.layoutParams as FrameLayout.LayoutParams
+            layoutParams.width = monitorWidth
+            layoutParams.height = monitorHeight
+            layoutParams.gravity = Gravity.CENTER
+            layoutParams.setMargins(0, 0, 0, 0)
+            effect_view.layoutParams = layoutParams
+            effect_view.visibility = View.VISIBLE
+            effect_hint.visibility = View.VISIBLE
+            monitor_toggle.visibility = View.VISIBLE
+            drag_and_drop.visibility = View.GONE
+            decideShowPopTips()
+        } else {
+            monitor_toggle.visibility = View.GONE
+            drag_and_drop.visibility = View.VISIBLE
+            effect_view.visibility = View.GONE
+        }
+
     }
 
     private fun decideShowPopTips() {
         val showPopTips = PreferencesUtils.getBoolean(JConstant.SHOW_MONITOR_AREA_TIPS, true)
         if (showPopTips) {
             PreferencesUtils.putBoolean(JConstant.SHOW_MONITOR_AREA_TIPS, false)
-            val popTips = PopupWindow()
-            PopupWindowCompat.showAsDropDown(popTips, monitor_toggle, 0, 0, Gravity.TOP or Gravity.END)
+            pop_tips.visibility = View.VISIBLE
         }
+    }
+
+    @OnClick(R.id.pop_tips)
+    fun clickedPopTips() {
+        AppLogger.w("点击了 pop tips")
+        pop_tips.visibility = View.GONE
     }
 
     override fun performBackIntercept(willExit: Boolean): Boolean {
@@ -112,10 +158,11 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     }
 
     @OnClick(R.id.back)
-    fun clickedBack() {
+    fun exitToParent() {
         AppLogger.w("点击了返回按钮")
-        ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-        fragmentManager.popBackStack()
+        back.post { ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
+        back.post { fragmentManager.popBackStack() }
+
     }
 
     @OnClick(R.id.monitor_toggle)
@@ -123,15 +170,23 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         AppLogger.w("点击了切换")
         if (effect_view.visibility == View.VISIBLE) {
             effect_view.visibility = View.GONE
+            monitor_toggle.visibility = View.GONE
+            drag_and_drop.visibility = View.VISIBLE
         } else {
             val layoutParams = effect_view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.width = effect_container.monitorAreaWidth
-            layoutParams.height = effect_container.monitorAreaHeight
+            layoutParams.width = monitorWidth
+            layoutParams.height = monitorHeight
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
             effect_view.layoutParams = layoutParams
             effect_view.visibility = View.VISIBLE
             effect_hint.visibility = View.VISIBLE
         }
+    }
+
+    @OnClick(R.id.drag_and_drop)
+    fun clickedDropAndDrag() {
+        AppLogger.w("点击了进入选择侦测区域按钮")
+        updateViewVisibility(true)
     }
 
     @OnClick(R.id.finish)
@@ -140,10 +195,23 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         val monitorArea = FloatArray(4)
         effect_container.getMotionArea(monitorArea)
         AppLogger.w("选择区域为:" + Arrays.toString(monitorArea))
+        presenter.setMonitorArea(uuid, monitorArea)
+    }
+
+    override fun onSetMonitorAreaSuccess() {
+        AppLogger.w("设置侦测区域成功了")
+        ToastUtil.showToast(getString(R.string.PWD_OK_2))
+        exitToParent()
+    }
+
+    override fun onSetMonitorAreaError() {
+        AppLogger.w("设置侦测区域失败了")
+        ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
     }
 
     override fun showLoadingBar() {
         load_bar.visibility = View.VISIBLE
+        load_bar.run()
     }
 
     override fun hideLoadingBar() {

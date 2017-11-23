@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">Tiempo de espera de conexión</string>
   <string name="Clear_Sdcard_tips6">Los datos de la tarjeta SD ha sido borrado</string>
   <string name="ClearingTips">Claro&#8230;</string>
-  <string name="Cloud_Camera">Cámara de nubes</string>
+  <string name="Cloud_Camera">Cámara (versión a batería)</string>
   <string name="Consumer_Camera">Cámara del Consumidor</string>
   <string name="DATA_FLOW_PHOTO">El consumo de datos se crearía si ver la foto original sin conexión WIFI, continúa?</string>
   <string name="DEAL_FEEDBACK">Gracias por sus comentarios</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">defecto</string>
   <string name="DETECTION_AREA_DESCRI">Todas las zonas se detectan por defecto y enviarán alarmas solo cuando el área especificada cambie</string>
   <string name="DETECTION_AREA_FAILED_LOAD">No se pudo cargar gráfico en tiempo real</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">no se puede obtener la imagen en vivo, por lo que no se puede configurar el área, por favor intente de nuevo.</string>
   <string name="DETECTION_AREA_GUIDE">Arrastra el cuadro rojo para configurar el área de detección</string>
   <string name="DETECTION_AREA_RESTORE">restaurar valores predeterminados</string>
   <string name="DETECTION_AREA_SET">Se ha fijádo</string>

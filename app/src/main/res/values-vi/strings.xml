@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">thời gian chờ kết nối</string>
   <string name="Clear_Sdcard_tips6">Dữ liệu của thẻ SD đã bị xóa</string>
   <string name="ClearingTips">Clearing&#8230;</string>
-  <string name="Cloud_Camera">Máy ảnh Đám mây</string>
+  <string name="Cloud_Camera">Máy ảnh(Version Pin)</string>
   <string name="Consumer_Camera">Máy ảnh người tiêu dùng</string>
   <string name="DATA_FLOW_PHOTO">Tiêu thụ dữ liệu sẽ được tạo ra nếu xem ảnh gốc mà không có kết nối WIFI, tiếp tục?</string>
   <string name="DEAL_FEEDBACK">Cảm ơn đóng góp ý kiến</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">mặc định</string>
   <string name="DETECTION_AREA_DESCRI">Tất cả các vùng đều được phát hiện theo mặc định và sẽ chỉ gửi báo động khi thay đổi vùng được chỉ định</string>
   <string name="DETECTION_AREA_FAILED_LOAD">Không thể tải nền thời gian thực</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">không nhận được hình ảnh trực tiếp, vì vậy không thể đặt khu vực, hãy thử lại.</string>
   <string name="DETECTION_AREA_GUIDE">Kéo hộp màu đỏ để thiết lập khu vực phát hiện</string>
   <string name="DETECTION_AREA_RESTORE">Khôi phục mặc định</string>
   <string name="DETECTION_AREA_SET">Đã được chuẩn bị</string>

@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -18,7 +20,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
  * Created by hds on 17-11-15.
  */
 
-public class CropLayout extends RelativeLayout {
+public class CropLayout extends FrameLayout {
     private static final String TAG = "CropLayout";
 
     private int l = 0, t = 0, r = 0, b = 0;
@@ -29,9 +31,6 @@ public class CropLayout extends RelativeLayout {
 
     private Shaper shapper;
     private ViewDragHelper dragHelper;
-    private int monitorAreaWidth = 0;
-    private int monitorAreaHeight = 0;
-
 
     public CropLayout(@NonNull Context context) {
         super(context);
@@ -48,26 +47,11 @@ public class CropLayout extends RelativeLayout {
         init();
     }
 
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        for (int i = 0; i < getChildCount(); i++) {
-            View view = getChildAt(i);
-            if (view instanceof Shaper) {
-                shapper = (Shaper) view;
-                monitorAreaWidth = view.getMeasuredWidth();
-                monitorAreaHeight = view.getMeasuredHeight();
-                break;
-            }
-        }
-    }
-
-    public int getMonitorAreaHeight() {
-        return monitorAreaHeight;
-    }
-
-    public int getMonitorAreaWidth() {
-        return monitorAreaWidth;
+        shapper = (Shaper) getChildAt(0);
     }
 
     private void init() {
@@ -78,22 +62,15 @@ public class CropLayout extends RelativeLayout {
 
             @Override
             public boolean tryCaptureView(View child, int pointerId) {
-                if (child instanceof Shaper) {
-                    shapper = (Shaper) child;
-                    return true;
-                }
-                return false;
+                shapper = (Shaper) child;
+                return true;
             }
 
             @Override
             public void onViewReleased(View releasedChild, float xvel, float yvel) {
                 super.onViewReleased(releasedChild, xvel, yvel);
                 LayoutParams lp = (LayoutParams) releasedChild.getLayoutParams();
-
-                lp.removeRule(RelativeLayout.CENTER_HORIZONTAL);
-                lp.removeRule(RelativeLayout.CENTER_IN_PARENT);
-                lp.removeRule(RelativeLayout.CENTER_VERTICAL);
-
+                lp.gravity = Gravity.NO_GRAVITY;
                 lp.setMargins(releasedChild.getLeft(), releasedChild.getTop(), 0, 0);
                 releasedChild.setLayoutParams(lp);
             }
@@ -258,10 +235,7 @@ public class CropLayout extends RelativeLayout {
             LayoutParams lp = (LayoutParams) getChildView().getLayoutParams();
             lp.width = w;
             lp.height = h;
-            lp.removeRule(RelativeLayout.CENTER_VERTICAL);
-            lp.removeRule(RelativeLayout.CENTER_HORIZONTAL);
-            lp.removeRule(RelativeLayout.CENTER_IN_PARENT);
-//            lp.gravity = Gravity.NO_GRAVITY;
+            lp.gravity = Gravity.NO_GRAVITY;
             lp.setMargins(l, t, 0, 0);
             getChildView().layout(l, t, r, b);
             Log.d(TAG, "getChildView:" + shapper.getId());
@@ -281,9 +255,9 @@ public class CropLayout extends RelativeLayout {
         super.onLayout(changed, left, top, right, bottom);
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
-//            ViewGroup v = (ViewGroup) getChildAt(i);
-//            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-//            Log.d(TAG, "onLayout:" + v.getTag() + "," + lp.gravity);
+            ViewGroup v = (ViewGroup) getChildAt(i);
+            FrameLayout.LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            Log.d(TAG, "onLayout:" + v.getTag() + "," + lp.gravity);
         }
     }
 
@@ -291,17 +265,14 @@ public class CropLayout extends RelativeLayout {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View v = getChildAt(i);
-            if (v instanceof Shaper) {
-                int l = v.getLeft();
-                int t = v.getTop();
-                int r = v.getRight();
-                int b = v.getBottom();
-                if (l < x && r > x && t < y && b > y) {
-                    shapper = (Shaper) v;
-                    break;
-                }
+            int l = v.getLeft();
+            int t = v.getTop();
+            int r = v.getRight();
+            int b = v.getBottom();
+            if (l < x && r > x && t < y && b > y) {
+                shapper = (Shaper) v;
+                break;
             }
-
         }
         Log.d(TAG, "ensureShapper:" + ((View) shapper).getTag());
     }
@@ -309,6 +280,8 @@ public class CropLayout extends RelativeLayout {
     public void setSizeUpdateListener(SizeUpdateListener sizeUpdateListener) {
         this.sizeUpdateListener = sizeUpdateListener;
     }
+
+    private SizeUpdateListener sizeUpdateListener;
 
     public void getMotionArea(float[] result) {
         if (result == null || result.length < 4) {
@@ -325,8 +298,6 @@ public class CropLayout extends RelativeLayout {
             result[3] = childView.getBottom() / height;
         }
     }
-
-    private SizeUpdateListener sizeUpdateListener;
 
     public interface SizeUpdateListener {
         void update(CropLayout layout, int w, int h);

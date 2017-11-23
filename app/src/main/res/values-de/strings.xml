@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">Verbindungs-Timeout</string>
   <string name="Clear_Sdcard_tips6">Die Daten der SD-Karte wurden gelöscht</string>
   <string name="ClearingTips">Clearing&#8230;</string>
-  <string name="Cloud_Camera">Cloud-Kamera</string>
+  <string name="Cloud_Camera">Kamera(Batterieversion)</string>
   <string name="Consumer_Camera">Consumer Camera</string>
   <string name="DATA_FLOW_PHOTO">Datenverbrauch würde erstellt, wenn das Originalfoto ohne WIFI-Verbindung angezeigt wird, weiter?</string>
   <string name="DEAL_FEEDBACK">Vielen Dank für Ihr Feedback</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">Default</string>
   <string name="DETECTION_AREA_DESCRI">Alle Zonen werden standardmäßig erkannt und senden nur dann Alarme, wenn sich das angegebene Gebiet ändert</string>
   <string name="DETECTION_AREA_FAILED_LOAD">Fehlgeschlagen Echtzeit-Hintergrund laden</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">Live-Bild kann nicht angezeigt werden, daher kann kein Bereich festgelegt werden. Bitte versuchen Sie es erneut.</string>
   <string name="DETECTION_AREA_GUIDE">Ziehen Sie das rote Feld den Erfassungsbereich einzustellen</string>
   <string name="DETECTION_AREA_RESTORE">Standard wiederherstellen</string>
   <string name="DETECTION_AREA_SET">Wurde gesetzt</string>

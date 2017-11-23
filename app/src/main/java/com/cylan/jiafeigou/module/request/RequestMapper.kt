@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.module.message.MIDHeader
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
+import com.cylan.jiafeigou.support.log.AppLogger
 import org.msgpack.annotation.Index
 import org.msgpack.annotation.Message
 import rx.Observable
@@ -116,7 +117,9 @@ class RobotForwardDataV3Request(
             }
             subscriber.add(subscribe)
             val appCmd = BaseApplication.getAppComponent().getCmd()
-            appCmd.SendForwardData(DpUtils.pack(this@RobotForwardDataV3Request))
+            val bytes = DpUtils.pack(this@RobotForwardDataV3Request)
+            AppLogger.w("正在发送 RobotForwardDataV3Request,原始 bytes 为:${Arrays.toString(bytes)}")
+            appCmd.SendForwardData(bytes)
         }.subscribeOn(Schedulers.io())
     }
 }

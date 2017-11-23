@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">timeout di connessione</string>
   <string name="Clear_Sdcard_tips6">L\' SD card è stata cancellata</string>
   <string name="ClearingTips">Clearing&#8230;</string>
-  <string name="Cloud_Camera">Fotocamera Nuvola</string>
+  <string name="Cloud_Camera">Camera(versione batteria)</string>
   <string name="Consumer_Camera">Macchina fotografica del consumatore</string>
   <string name="DATA_FLOW_PHOTO">Il consumo di dati sarebbe stato creato se visualizzare la foto originale senza connessione WIFI, continuare?</string>
   <string name="DEAL_FEEDBACK">Grazie per la Tua opinione</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">predefinito</string>
   <string name="DETECTION_AREA_DESCRI">Tutte le zone sono rilevati per default, ed invierà allarmi solo quando cambia l\'area specificati</string>
   <string name="DETECTION_AREA_FAILED_LOAD">Impossibile caricare sfondo in tempo reale</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">non riescono a ottenere l\'immagine dal vivo, quindi non può impostare l\'area, per favore riprova.</string>
   <string name="DETECTION_AREA_GUIDE">Trascina la casella rossa per impostare l\'area di rilevamento</string>
   <string name="DETECTION_AREA_RESTORE">Ripristina valori predefiniti</string>
   <string name="DETECTION_AREA_SET">È stato impostato</string>

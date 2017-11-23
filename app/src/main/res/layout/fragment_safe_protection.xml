@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment">
 
@@ -27,11 +28,15 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
         android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
             android:orientation="vertical">
 
 
@@ -101,6 +106,8 @@
                     android:id="@+id/sw_monitoring_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     hunt:sv_sub_title="@string/DETECTION_AREA_DEFAULT"
                     hunt:sv_switch_visibility="false"
                     hunt:sv_title="@string/DETECTION_AREA"

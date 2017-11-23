@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">délai de connexion</string>
   <string name="Clear_Sdcard_tips6">Les données de la carte SD a été effacé</string>
   <string name="ClearingTips">Clairière&#8230;</string>
-  <string name="Cloud_Camera">Caméra nuage</string>
+  <string name="Cloud_Camera">Caméra (version batterie)</string>
   <string name="Consumer_Camera">Appareil photo consommateur</string>
   <string name="DATA_FLOW_PHOTO">La consommation de données serait créée si vous voyez la photo originale sans connexion WIFI, continuez-vous?</string>
   <string name="DEAL_FEEDBACK">Merci pour vos commentaires</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">défaut</string>
   <string name="DETECTION_AREA_DESCRI">Toutes les zones sont détectées par défaut et enverront des alarmes uniquement lorsque la zone spécifiée change</string>
   <string name="DETECTION_AREA_FAILED_LOAD">Échec de chargement graphique en temps réel</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">ne parvient pas à obtenir l\'image en direct, donc ne peut pas définir la zone, s\'il vous plaît essayez à nouveau.</string>
   <string name="DETECTION_AREA_GUIDE">Faites glisser la boîte rouge pour définir la zone de détection</string>
   <string name="DETECTION_AREA_RESTORE">Réinitialiser</string>
   <string name="DETECTION_AREA_SET">A été mis en</string>

@@ -103,18 +103,6 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         super.bindView(holder, payloads);
         this.mContext = holder.imgDeviceIcon.getContext();
         handleState(holder);
-
-        // TODO: 2017/8/21 需要 RxJava2的支持 ,直接将界面上的属性 bind 到 ObjectBox 中 ,可以简化逻辑
-        //            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
-//
-//            BaseApplication.getDeviceBox().query().build().subscribe().
-//
-//            String uuid = String.valueOf(device.uuid());
-//            long[] properties = new long[]{
-//                    CacheHolderKt.msgIdKey(uuid, 201),
-//                    CacheHolderKt.msgIdKey(uuid, 206),
-//                    CacheHolderKt.msgIdKey(uuid, 508),
-//                    CacheHolderKt.msgIdKey(uuid, 501),
     }
 
 
@@ -218,12 +206,13 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         final String alias = device.alias;
         final String shareAccount = device.shareAccount;
         final boolean deviceOnline = JFGRules.isDeviceOnline(net);
-        Log.d("handleState", "handleState: " + uuid + " " + net + "," + deviceOnline);
+        boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
+        final boolean finalDeviceOnline = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || (JFGRules.isPan720(device.pid) && apMode);
+        Log.d("handleState", "handleState: " + uuid + " " + net + "," + deviceOnline + ",final online:" + finalDeviceOnline);
         int online = JConstant.getOnlineIcon(device.pid);
         int offline = JConstant.getOfflineIcon(device.pid);
-        boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
 
-        int iconRes = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || (JFGRules.isPan720(device.pid) && apMode) ? online : offline;
+        int iconRes = finalDeviceOnline ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!isPrimaryAccount(shareAccount)) {

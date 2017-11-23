@@ -102,9 +102,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView0 swMonitoringArea;
     @BindView(R.id.rl_monitoring_area_container)
     RelativeLayout rlMonitorAreaContainer;
-    //    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
-    //    private TimePickDialogFragment timePickDialogFragment;
-
     private Device device;
 
 
@@ -231,7 +228,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean infrared_enhanced_recognition = property.hasProperty(device.pid, "INFRARED_ENHANCED_RECOGNITION");
         boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE_SETTING");
         //先隐藏
-        detection_zone_setting = false;
+        detection_zone_setting = true;
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
@@ -461,7 +458,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
             case R.id.sw_monitoring_area: {
                 MonitorAreaSettingFragment fragment = MonitorAreaSettingFragment.Companion.newInstance(uuid);
-                ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
+                ActivityUtils.addFragmentToActivity(getFragmentManager(), fragment, android.R.id.content);
             }
             break;
         }

@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">тайм-аут соединения</string>
   <string name="Clear_Sdcard_tips6">Данные карты SD были уничтожены</string>
   <string name="ClearingTips">Clearing &#8230;</string>
-  <string name="Cloud_Camera">Облачная камера</string>
+  <string name="Cloud_Camera">Камера (версия батареи)</string>
   <string name="Consumer_Camera">Потребительская камера</string>
   <string name="DATA_FLOW_PHOTO">Потребление данных будет создано, если просмотреть исходную фотографию без подключения WIFI, продолжите?</string>
   <string name="DEAL_FEEDBACK">Спасибо за ваш отзыв!</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">дефолт</string>
   <string name="DETECTION_AREA_DESCRI">Все зоны обнаруживаются по умолчанию и будут отправлять сигналы тревоги только при изменении указанной области</string>
   <string name="DETECTION_AREA_FAILED_LOAD">не удалось загрузить график реального времени</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">не получить изображение в реальном времени, поэтому не можете установить область, повторите попытку.</string>
   <string name="DETECTION_AREA_GUIDE">Перетащите красную рамку, чтобы установить область обнаружения</string>
   <string name="DETECTION_AREA_RESTORE">Восстановить значения по умолчанию</string>
   <string name="DETECTION_AREA_SET">Был установлен</string>

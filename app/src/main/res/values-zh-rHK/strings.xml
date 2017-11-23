@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">連接超時</string>
   <string name="Clear_Sdcard_tips6">SD卡數據已被清空</string>
   <string name="ClearingTips">清除中&#8230;</string>
-  <string name="Cloud_Camera">云攝像機</string>
+  <string name="Cloud_Camera">智能攝像機(電池版)</string>
   <string name="Consumer_Camera">消費類攝像機</string>
   <string name="DATA_FLOW_PHOTO">當前使用非WiFi網絡，查看原圖將會產生流量，是否繼續？</string>
   <string name="DEAL_FEEDBACK">感謝您的回饋</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">默認</string>
   <string name="DETECTION_AREA_DESCRI">默認偵測全部區域，設置後，僅在指定區域畫面變化時報警</string>
   <string name="DETECTION_AREA_FAILED_LOAD">加載實時圖失敗</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">未獲取到實時畫面，無法設置偵測區域，請重試</string>
   <string name="DETECTION_AREA_GUIDE">拖拽紅色方框，設置偵測區域</string>
   <string name="DETECTION_AREA_RESTORE">恢復默認</string>
   <string name="DETECTION_AREA_SET">已設置</string>

@@ -197,6 +197,7 @@ public class JConstant {
     public static final String ROBOT_SERVICES_KEY = "ROBOT_SERVICES_KEY";
     public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
     public static final String SHOW_MONITOR_AREA_TIPS = "SHOW_MONITOR_AREA_TIPS";
+    public static final String MONITOR_AREA_PICTURE="MONITOR_AREA_PICTURE";
 
     public static String getFaceText(String[] face_id, Map<String, String> faceMap, String defaultText) {
         if (face_id == null || faceMap == null || faceMap.size() == 0) {
@@ -469,7 +470,7 @@ public class JConstant {
             return R.drawable.home_icon_720camera_offline;
         }
         if (pid == 84) {
-            return R.drawable.home_icon_outcam;
+            return R.drawable.home_icon_outcam_disabled;
         }
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_offline;

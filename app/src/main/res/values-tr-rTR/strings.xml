@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">bağlantı zaman aşımı</string>
   <string name="Clear_Sdcard_tips6">SD kart veri yok edildi</string>
   <string name="ClearingTips">Takas&#8230;</string>
-  <string name="Cloud_Camera">Bulut Kamerası</string>
+  <string name="Cloud_Camera">Kamera (pil sürümü)</string>
   <string name="Consumer_Camera">Tüketici Kamerası</string>
   <string name="DATA_FLOW_PHOTO">WIFI bağlantısı olmadan orijinal fotoğrafı izlerseniz veri tüketimi oluşturulur, devam edilsin mi?</string>
   <string name="DEAL_FEEDBACK">Geri dönüşünüz için teşekkür ederiz</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">varsayılan</string>
   <string name="DETECTION_AREA_DESCRI">Tüm bölgeler varsayılan olarak algılanır ve yalnızca belirtilen alan değiştiğinde alarm gönderir</string>
   <string name="DETECTION_AREA_FAILED_LOAD">Gerçek zamanlı arka plan yüklenemedi</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">Canlı resim alamıyor, bu yüzden alan ayarlayamıyor, lütfen tekrar deneyin.</string>
   <string name="DETECTION_AREA_GUIDE">Algılama alanını ayarlamak için kırmızı kutuyu sürükleyin</string>
   <string name="DETECTION_AREA_RESTORE">Varsayılanları Geri Yükle</string>
   <string name="DETECTION_AREA_SET">Ayarlandı</string>

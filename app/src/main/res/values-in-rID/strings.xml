@@ -99,7 +99,7 @@
   <string name="Clear_Sdcard_tips5">timeout koneksi</string>
   <string name="Clear_Sdcard_tips6">Data kartu SD telah dihapus</string>
   <string name="ClearingTips">Kliring&#8230;</string>
-  <string name="Cloud_Camera">Kamera awan</string>
+  <string name="Cloud_Camera">Bel (Battery Version)</string>
   <string name="Consumer_Camera">Kamera konsumen</string>
   <string name="DATA_FLOW_PHOTO">Konsumsi data akan tercipta jika melihat foto asli tanpa koneksi WIFI, lanjutkan?</string>
   <string name="DEAL_FEEDBACK">Terima kasih untuk saran yang anda berikan</string>
@@ -118,6 +118,7 @@
   <string name="DETECTION_AREA_DEFAULT">default</string>
   <string name="DETECTION_AREA_DESCRI">Semua zona terdeteksi secara default, dan hanya akan mengirim alarm bila area yang ditentukan berubah</string>
   <string name="DETECTION_AREA_FAILED_LOAD">Gagal memuat latar belakang real-time</string>
+  <string name="DETECTION_AREA_FAILED_LOAD_RETRY">gagal mendapatkan live image, jadi tidak bisa mengatur area, silahkan coba lagi.</string>
   <string name="DETECTION_AREA_GUIDE">Seret kotak merah untuk mengatur area deteksi</string>
   <string name="DETECTION_AREA_RESTORE">Kembalikan Default</string>
   <string name="DETECTION_AREA_SET">Telah di atur</string>
@@ -466,7 +467,7 @@
   <string name="MSG_VIDEO">Video</string>
   <string name="MSG_WARNING">Penemuan Baru</string>
   <string name="MSG_WARN_OFF">Anda telah menutup deteksi gerakan</string>
-  <string name="MSG_WARN_ON">Anda telah membuka deteksi gerakan . Perangkat akan memberitahu anda segera ketika sesuatu bergerak</string>
+  <string name="MSG_WARN_ON">Deteksi gerak telah dinyalakan, Anda akan diberi tahu saat gerakan terdeteksi. Anda telah membuka deteksi gerakan . Perangkat akan memberitahu anda segera ketika sesuatu bergerak</string>
   <string name="MUTE">Diam</string>
   <string name="MY_HOME">Rumah saya</string>
   <string name="Mail_Class_Application">Silakan pilih aplikasi kelas surat</string>
