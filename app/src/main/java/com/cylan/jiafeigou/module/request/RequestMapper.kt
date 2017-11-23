@@ -52,10 +52,10 @@ class RobotGetDataRequest(
         caller: String = "",
         callee: String = "",
         seq: Long = 0L,
-        @Index(4) var limit: Int = 20,
-        @Index(5) var asc: Boolean = false,
-        @Index(6) var reqList: ByteArray = byteArrayOf(),
-        @Index(7) var equal: Boolean = false
+        @field:Index(4) var limit: Int = 20,
+        @field:Index(5) var asc: Boolean = false,
+        @field:Index(6) var reqList: ByteArray = byteArrayOf(),
+        @field:Index(7) var equal: Boolean = false
 ) : AbstractRequest<RobotGetDataResponse>(20200, caller, callee, seq) {
     override fun execute(): Observable<RobotGetDataResponse> {
         BaseApplication.getAppComponent().getCmd().robotGetData(caller, null, limit, asc, 0)
@@ -64,7 +64,7 @@ class RobotGetDataRequest(
 }
 
 @Message
-class RobotGetDataResponse(@Index(4) var dataMap: Map<Int, DPList> = mutableMapOf()) : AbstractResponse() {
+class RobotGetDataResponse(@field:Index(4) var dataMap: Map<Int, DPList> = mutableMapOf()) : AbstractResponse() {
 }
 
 @Message
@@ -72,7 +72,7 @@ class RobotSetDataRequest(
         caller: String = "",
         callee: String = "",
         seq: Long = 0,
-        @Index(4) var reqList: DPList
+        @field:Index(4) var reqList: DPList
 ) : AbstractRequest<RobotSetDataResponse>(20202, caller, callee, seq) {
     override fun execute(): Observable<RobotSetDataResponse> {
         Observable.create<RobotSetDataResponse> { subscriber ->
@@ -101,8 +101,8 @@ class RobotSetDataResponse : AbstractResponse()
 class RobotForwardDataV3Request(
         caller: String = "",
         callee: String = "",
-        @Index(4) var action: Int = 0,
-        @Index(5) var values: DPList = DPList()
+        @field:Index(4) var action: Int = 0,
+        @field:Index(5) var values: DPList = DPList()
 ) : AbstractRequest<RobotForwardDataV3Response>(20224, caller, callee, Random().nextLong()) {
 
     override fun execute(): Observable<RobotForwardDataV3Response> {
@@ -126,6 +126,6 @@ class RobotForwardDataV3Request(
 
 @Message
 class RobotForwardDataV3Response(
-        @Index(4) var action: Int = 0,
-        @Index(5) var values: DPList = DPList()
+        @field:Index(4) var action: Int = 0,
+        @field:Index(5) var values: DPList = DPList()
 ) : AbstractResponse()

@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -210,7 +211,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             }
         });
-
+        DpMsgDefine.DPCameraWarnArea warnArea = device.$(DpMsgMap.ID_519_CAM_WARNAREA, new DpMsgDefine.DPCameraWarnArea());
+        swMonitoringArea.setSubTitle(warnArea.enable ? getString(R.string.DETECTION_AREA_SET) : getString(R.string.DETECTION_AREA_DEFAULT));
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(AIRecognitionFragment.class.getSimpleName());
         swMotionAI.showRedHint(node != null && node.getNodeCount() > 0);
     }
@@ -228,7 +230,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean infrared_enhanced_recognition = property.hasProperty(device.pid, "INFRARED_ENHANCED_RECOGNITION");
         boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE_SETTING");
         //先隐藏
-        detection_zone_setting = true;
+        if (BuildConfig.DEBUG) {
+            detection_zone_setting = true;
+        }
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
@@ -306,6 +310,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     } else {
                         swMotionAI.setSubTitle(JConstant.getAIText(objectDetect));
                     }
+
+                    //区域侦测设置
+                    DpMsgDefine.DPCameraWarnArea warnArea = device.$(DpMsgMap.ID_519_CAM_WARNAREA, new DpMsgDefine.DPCameraWarnArea());
+                    swMonitoringArea.setSubTitle(warnArea.enable ? getString(R.string.DETECTION_AREA_SET) : getString(R.string.DETECTION_AREA_DEFAULT));
 
                 }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
     }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cylan.jiafeigou.widget.crop.EffectLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/effect_view"
+    android:layout_width="@dimen/y206"
+    android:layout_height="@dimen/y136"
+    android:layout_gravity="center"
+    android:minHeight="@dimen/y80"
+    android:minWidth="@dimen/y80">
+
+    <TextView
+        android:id="@+id/effect_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/y20"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:text="@string/DETECTION_AREA_GUIDE"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp15" />
+</com.cylan.jiafeigou.widget.crop.EffectLayout>

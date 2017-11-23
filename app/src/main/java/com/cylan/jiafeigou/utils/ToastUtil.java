@@ -72,6 +72,7 @@ public class ToastUtil {
             tv.setText(content);
             toast.show();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -94,7 +95,7 @@ public class ToastUtil {
             tv.setText(content);
             toast.show();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -106,7 +107,7 @@ public class ToastUtil {
             Context cxt = ContextUtils.getContext();
             TextView tv = toasterFailureView != null && toasterFailureView.get() != null ?
                     toasterFailureView.get() :
-                    (TextView) View.inflate(cxt, R.layout.layout_toaster_negative, null);
+                    (TextView) View.inflate(cxt, R.layout.layout_toaster_failure, null);
             if (toasterNegView == null) {
                 toasterNegView = new SoftReference<>(tv);
             }
@@ -117,7 +118,7 @@ public class ToastUtil {
             tv.setText(content);
             toast.show();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

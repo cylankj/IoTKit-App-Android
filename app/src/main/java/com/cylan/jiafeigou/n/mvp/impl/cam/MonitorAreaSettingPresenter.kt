@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam
 
 import com.cylan.entity.jniCall.JFGDPMsg
+import com.cylan.entity.jniCall.RobotoGetDataRsp
 import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.R
+import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpMsgMap
@@ -18,7 +20,6 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -27,17 +28,115 @@ import javax.inject.Inject
  */
 class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingContact.View)
     : BasePresenter<MonitorAreaSettingContact.View>(view), MonitorAreaSettingContact.Presenter {
+
+
+    override fun loadMonitorAreaSetting() {
+        val subscribe = Observable.zip(loadSavedMonitorPicture(), loadSavedMonitorArea()) { rsp, warn -> Pair(rsp, warn) }
+                .timeout(15, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { mView.showLoadingBar() }
+                .doOnTerminate { mView.hideLoadingBar() }
+                .subscribe({
+                    if (it.second?.enable == true) {
+                        mView.onRestoreMonitorAreaSetting(it.second?.rects!!)
+                    }
+                    if (it.first?.ret != 0) {
+                        if (BuildConfig.DEBUG) {
+                            mView.onGetMonitorPictureSuccess("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511339880450&di=36b3d62c85f7253086dc18a7ca24bf3b&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd788d43f8794a4c2688360c704f41bd5ac6e39bd.jpg")
+                        } else {
+                            mView.onGetMonitorPictureError()
+                        }
+                    } else if (it.first?.ret == 0) {
+                        mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.first.time}.jpg?regionType=${it.first.ossType}")
+                    }
+                }) {
+
+                }
+        addDestroySubscription(subscribe)
+    }
+
+    private fun loadSavedMonitorArea(): Observable<DpMsgDefine.DPCameraWarnArea?>? {
+        return Observable.create<Long> {
+            val params = arrayListOf(JFGDPMsg(DpMsgMap.ID_519_CAM_WARNAREA, 0))
+            val seq = appCmd.robotGetData(uuid, params, 1, false, 0)
+            it.onNext(seq)
+            it.onCompleted()
+        }
+                .subscribeOn(Schedulers.io())
+                .flatMap { seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq } }
+                .first()
+                .map {
+                    val msg = it?.map?.get(DpMsgMap.ID_519_CAM_WARNAREA)?.getOrNull(0)
+                    var warnArea: DpMsgDefine.DPCameraWarnArea? = null
+                    if (msg != null) {
+                        warnArea = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPCameraWarnArea::class.java)
+                    }
+                    return@map warnArea
+                }
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private fun loadSavedMonitorPicture(): Observable<DpMsgDefine.DPCameraTakePictureRsp>? {
+        val dpList = DPList()
+        dpList.add(DPMessage(DpMsgMap.ID_521_CAMERA_TAKEPICTURE, 0, DpUtils.pack(true)))
+        return RobotForwardDataV3Request(callee = uuid, action = TAKE_PICTURE_ACTION, values = dpList)
+                .execute()
+                .map {
+                    it.values.singleOrNull { it.msgId == DpMsgMap.ID_522_CAMERA_TAKEPICTURE_RSP }
+                            .let { DpUtils.unpackDataWithoutThrow(it?.value, DpMsgDefine.DPCameraTakePictureRsp::class.java, null) }
+                }
+                .first()
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+
+    }
+
+    fun loadMonitorSetting() {
+        val subscribe = Observable.create<Long> {
+            val params = arrayListOf(JFGDPMsg(DpMsgMap.ID_519_CAM_WARNAREA, 0))
+            val seq = appCmd.robotGetData(uuid, params, 1, false, 0)
+            it.onNext(seq)
+            it.onCompleted()
+        }
+                .subscribeOn(Schedulers.io())
+                .flatMap { seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq } }
+                .first()
+                .map {
+                    val msg = it?.map?.get(DpMsgMap.ID_519_CAM_WARNAREA)?.getOrNull(0)
+                    var warnArea: DpMsgDefine.DPCameraWarnArea? = null
+                    if (msg != null) {
+                        warnArea = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPCameraWarnArea::class.java)
+                    }
+                    return@map warnArea
+                }
+                .timeout(10, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    when {
+                        it == null -> {
+                            mView.onRestoreDefaultMonitorAreaSetting()
+                        }
+                        it.enable -> {
+                            mView.onRestoreMonitorAreaSetting(it.rects)
+                        }
+                    }
+                }) {
+                    it.printStackTrace()
+                }
+        addDestroySubscription(subscribe)
+    }
+
     @Inject lateinit var appCmd: AppCmd
     private val TAKE_PICTURE_ACTION =
             +1 shl 0/*转发给对端:0-否，1-是*/ +
                     +1 shl 1/*get/set:0-get，1-set*/ +
                     +1 shl 2 /*对端应答:0-否，1-是*/
 
-    override fun setMonitorArea(uuid: String, rects: FloatArray) {
-        AppLogger.w("正在设置侦测区域:${Arrays.toString(rects)}")
+    override fun setMonitorArea(uuid: String, rects: MutableList<DpMsgDefine.Rect4F>) {
+        AppLogger.w("正在设置侦测区域:$rects")
+        val warnArea = DpMsgDefine.DPCameraWarnArea(true, rects)
         val subscribe = Observable.create<Long> {
-            val rect4F = DpMsgDefine.Rect4F(rects[0], rects[1], rects[2], rects[3])
-            val warnArea = DpMsgDefine.DPCameraWarnArea(true, mutableListOf(rect4F))
             val params = arrayListOf(JFGDPMsg(519, 0, DpUtils.pack(warnArea)))
             it.onNext(appCmd.robotSetData(uuid, params))
             it.onCompleted()
@@ -45,7 +144,17 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                 .subscribeOn(Schedulers.io())
                 .flatMap { seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp::class.java).filter { it.seq == seq } }
                 .first()
-                .map { it?.rets?.getOrNull(0)?.ret == 0 }
+                .map {
+                    val success = it?.rets?.getOrNull(0)?.ret == 0
+                    val version = it?.rets?.getOrNull(0)?.version ?: System.currentTimeMillis()
+                    if (success) {
+                        val device = DataSourceManager.getInstance().getDevice(uuid)
+                        val dpEntity = device.getEmptyProperty(DpMsgMap.ID_519_CAM_WARNAREA)
+                        dpEntity.setValue(warnArea, DpUtils.pack(warnArea), version)
+                        device.updateProperty(DpMsgMap.ID_519_CAM_WARNAREA, dpEntity)
+                    }
+                    success
+                }
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.LOADING))
@@ -66,7 +175,7 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
         addDestroySubscription(subscribe)
     }
 
-    override fun loadMonitorPicture() {
+    fun loadMonitorPicture() {
         val dpList = DPList()
         dpList.add(DPMessage(DpMsgMap.ID_521_CAMERA_TAKEPICTURE, 0, DpUtils.pack(true)))
         val subscribe = RobotForwardDataV3Request(callee = uuid, action = TAKE_PICTURE_ACTION, values = dpList)

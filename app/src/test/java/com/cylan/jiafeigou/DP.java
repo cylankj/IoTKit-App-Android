@@ -48,6 +48,7 @@ import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.msgpack.packer.BufferPacker;
 import org.msgpack.packer.Packer;
 import org.msgpack.template.AbstractTemplate;
+import org.msgpack.type.Value;
 import org.msgpack.unpacker.BufferUnpacker;
 import org.msgpack.unpacker.Unpacker;
 
@@ -619,6 +620,12 @@ public class DP {
         BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
         RobotForwardDataV3Response read = unpacker.read(RobotForwardDataV3Response.class);
         System.out.println(read);
+    }
+
+    @Test
+    public void testV31() throws IOException {
+        Value read = new MessagePack().read(new byte[]{-106, -51, 79, 0, -96, -84, 50, 48, 48, 48, 48, 48, 48, 48, 48, 52, 55, 50, -49, 97, 124, 15, 116, -82, 71, -79, -128, 32, -111, -109, -51, 1, -106, 0, -87, -110, -90, 117, 117, 117, 117, 117, 117, 1});
+        System.out.println(read.toString());
     }
 
 }

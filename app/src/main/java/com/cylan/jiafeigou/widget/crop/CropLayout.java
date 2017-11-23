@@ -14,7 +14,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.cylan.jiafeigou.support.log.AppLogger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hds on 17-11-15.
@@ -46,7 +47,6 @@ public class CropLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
         init();
     }
-
 
     @Override
     protected void onFinishInflate() {
@@ -241,7 +241,7 @@ public class CropLayout extends FrameLayout {
             Log.d(TAG, "getChildView:" + shapper.getId());
             getChildView().requestLayout();
             if (sizeUpdateListener != null) {
-                sizeUpdateListener.update(this, w, h);
+                sizeUpdateListener.update(shapper, w, h);
             }
         }
     }
@@ -274,7 +274,9 @@ public class CropLayout extends FrameLayout {
                 break;
             }
         }
-        Log.d(TAG, "ensureShapper:" + ((View) shapper).getTag());
+        if (shapper != null) {
+            Log.d(TAG, "ensureShapper:" + ((View) shapper).getTag());
+        }
     }
 
     public void setSizeUpdateListener(SizeUpdateListener sizeUpdateListener) {
@@ -283,23 +285,44 @@ public class CropLayout extends FrameLayout {
 
     private SizeUpdateListener sizeUpdateListener;
 
-    public void getMotionArea(float[] result) {
-        if (result == null || result.length < 4) {
-            AppLogger.w("错误的参数");
-            return;
-        }
-        View childView = getChildView();
-        if (childView != null) {
-            float width = getMeasuredWidth();
-            float height = getMeasuredHeight();
-            result[0] = childView.getLeft() / width;
-            result[1] = childView.getTop() / width;
-            result[2] = childView.getRight() / height;
-            result[3] = childView.getBottom() / height;
-        }
+    public interface SizeUpdateListener {
+        void update(Shaper shaper, int w, int h);
     }
 
-    public interface SizeUpdateListener {
-        void update(CropLayout layout, int w, int h);
+    public List<float[]> getMotionArea() {
+        List<float[]> result = new ArrayList<>();
+        for (int i = 0; i < getChildCount(); i++) {
+            View view = getChildAt(i);
+            if (view instanceof Shaper) {
+                float[] floats = new float[4];
+                if (view.getVisibility() == VISIBLE) {
+                    float width = getMeasuredWidth();
+                    float height = getMeasuredHeight();
+                    floats[0] = Math.min(view.getLeft() / width, 1.0f);//最大1.0f
+                    floats[1] = Math.min(view.getTop() / width, 1.0f);
+                    floats[2] = Math.min(view.getRight() / height, 1.0f);
+                    floats[3] = Math.min(view.getBottom() / height, 1.0f);
+                }
+                result.add(floats);
+            }
+        }
+        if (result.size() == 0) {
+            result.add(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+        }
+        return result;
+    }
+
+    public boolean hasShaper() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View view = getChildAt(i);
+            if (view instanceof Shaper) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Shaper getShapper() {
+        return shapper;
     }
 }

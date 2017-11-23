@@ -39,31 +39,7 @@
         android:layout_alignEnd="@+id/monitor_picture"
         android:layout_alignStart="@+id/monitor_picture"
         android:layout_alignTop="@id/monitor_picture"
-        android:layout_centerInParent="true">
-
-        <com.cylan.jiafeigou.widget.crop.EffectLayout
-            android:id="@+id/effect_view"
-            android:layout_width="@dimen/y206"
-            android:layout_height="@dimen/y136"
-            android:layout_gravity="center"
-            android:minHeight="@dimen/y80"
-            android:minWidth="@dimen/y80"
-            android:visibility="invisible">
-
-            <TextView
-                android:id="@+id/effect_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/y20"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:text="@string/DETECTION_AREA_GUIDE"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp15" />
-        </com.cylan.jiafeigou.widget.crop.EffectLayout>
-
-    </com.cylan.jiafeigou.widget.crop.CropLayout>
+        android:layout_centerInParent="true" />
 
     <com.cylan.jiafeigou.widget.SimpleProgressBar
         android:id="@+id/load_bar"
@@ -136,10 +112,11 @@
         android:background="@drawable/collect_tips"
         android:drawableStart="@drawable/tips_close"
         android:gravity="center_vertical"
-        android:text="@string/FINISHED"
+        android:paddingEnd="@dimen/y14"
+        android:text="@string/DETECTION_AREA_RESTORE"
         android:textColor="@color/normal_btn_color_selector"
         android:textSize="@dimen/sp13"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/monitor_toggle"
@@ -150,6 +127,6 @@
         android:layout_marginBottom="@dimen/y20"
         android:layout_marginEnd="@dimen/y20"
         android:background="@drawable/icon_default_area"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

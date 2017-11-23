@@ -14,10 +14,10 @@ import java.util.*
  */
 @Message
 open class MIDHeader(
-        @Index(0) var msgId: Int = 0,
-        @Index(1) var caller: String = "",
-        @Index(2) var callee: String = "",
-        @Index(3) var seq: Long = 0L
+        @field:Index(0) var msgId: Int = 0,
+        @field:Index(1) var caller: String = "",
+        @field:Index(2) var callee: String = "",
+        @field:Index(3) var seq: Long = 0L
 ) : Parcelable, Serializable {
     //不能为空
     @Ignore lateinit var rawBytes: ByteArray
@@ -38,9 +38,7 @@ open class MIDHeader(
         writeLong(seq)
     }
 
-    override fun toString(): String {
-        return "MIDHeader(msgId=$msgId, caller='$caller', callee='$callee', seq=$seq)"
-    }
+    override fun toString(): String = "MIDHeader(msgId=$msgId, caller='$caller', callee='$callee', seq=$seq)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -73,9 +71,9 @@ open class MIDHeader(
 
 @Message
 open class DPMessage(
-        @Index(0) var msgId: Int = 0,
-        @Index(1) var version: Long = 0L,
-        @Index(2) var value: ByteArray = byteArrayOf()
+        @field:Index(0) var msgId: Int = 0,
+        @field:Index(1) var version: Long = 0L,
+        @field:Index(2) var value: ByteArray = byteArrayOf()
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -95,9 +93,7 @@ open class DPMessage(
         return result
     }
 
-    override fun toString(): String {
-        return "DPMessage(msgId=$msgId, version=$version, value=${Arrays.toString(value)})"
-    }
+    override fun toString(): String = "DPMessage(msgId=$msgId, version=$version, value=${Arrays.toString(value)})"
 
     constructor(source: Parcel) : this(
             source.readInt(),
