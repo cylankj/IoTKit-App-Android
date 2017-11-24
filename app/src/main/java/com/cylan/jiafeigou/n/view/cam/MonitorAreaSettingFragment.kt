@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -88,10 +89,11 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         val localUrl: String? = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
         localUrl?.apply {
             GlideApp.with(this@MonitorAreaSettingFragment)
+                    .asBitmap()
                     .load(this)
                     .onlyRetrieveFromCache(true)
-                    .into(object : SimpleTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
+                    .into(object :SimpleTarget<Bitmap>(){
+                        override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                             resource?.apply {
                                 isLocalLoadSuccess = true
                                 updateMonitorAreaPicture(this)
@@ -99,16 +101,26 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                         }
 
                     })
+//                    .into(object : SimpleTarget<Drawable>() {
+//                        override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
+//                            resource?.apply {
+//                                isLocalLoadSuccess = true
+//                                updateMonitorAreaPicture(this)
+//                            }
+//                        }
+//
+//                    })
         }
     }
 
 
     private fun tryGetMonitorPicture(url: String) {
         GlideApp.with(this)
+                .asBitmap()
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(object : SimpleTarget<Drawable>() {
-                    override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                         if (resource != null) {
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
@@ -122,7 +134,24 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                             alertErrorGetMonitorPicture()
                         }
                     }
+
                 })
+//                .into(object : SimpleTarget<Drawable>() {
+//                    override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
+//                        if (resource != null) {
+//                            AppLogger.w("设置区域设置图片")
+//                            PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
+//                            updateMonitorAreaPicture(resource)
+//                            effect_container.post { toggleMonitorAreaMode(enable) }
+//                        }
+//                    }
+//
+//                    override fun onLoadFailed(errorDrawable: Drawable?) {
+//                        if (!isLocalLoadSuccess) {
+//                            alertErrorGetMonitorPicture()
+//                        }
+//                    }
+//                })
     }
 
     private fun alertErrorGetMonitorPicture() {
@@ -139,6 +168,16 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         val params = monitor_picture.layoutParams
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        monitor_picture.layoutParams = params
+    }
+
+    fun updateMonitorAreaPicture(drawable: Bitmap) {
+        monitor_picture.setImageBitmap(drawable)
+        val params = monitor_picture.layoutParams
+        val width = drawable.width
+        val height = drawable.height
+        params.width = if (width > height) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT
+        params.height = if (width > height) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
         monitor_picture.layoutParams = params
     }
 
