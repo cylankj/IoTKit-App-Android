@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.SimpleTarget
@@ -169,13 +171,20 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     }
 
     fun updateMonitorAreaPicture(drawable: Bitmap) {
+        monitor_picture.scaleType = ImageView.ScaleType.FIT_CENTER
         monitor_picture.setImageBitmap(drawable)
         val params = monitor_picture.layoutParams
-        val width = drawable.width
-        val height = drawable.height
-        params.width = if (width > height) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT
-        params.height = if (width > height) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-        monitor_picture.layoutParams = params
+        var pictureRadio: Float = drawable.width.toFloat() / drawable.height.toFloat()
+        val metrics = Resources.getSystem().displayMetrics
+        var screenRadio: Float = metrics.widthPixels.toFloat() / metrics.heightPixels.toFloat()
+        if (pictureRadio > screenRadio) {
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+        monitor_picture.post { monitor_picture.layoutParams = params }
     }
 
     fun toggleMonitorAreaMode(readyToSelect: Boolean) {
