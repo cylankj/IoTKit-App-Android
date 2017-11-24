@@ -39,7 +39,7 @@
         android:layout_alignEnd="@+id/monitor_picture"
         android:layout_alignStart="@+id/monitor_picture"
         android:layout_alignTop="@id/monitor_picture"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"/>
 
     <com.cylan.jiafeigou.widget.SimpleProgressBar
         android:id="@+id/load_bar"

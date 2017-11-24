@@ -14,6 +14,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +99,7 @@ public class CropLayout extends FrameLayout {
         float x = event.getX();
         float y = event.getY();
         ensureShapper(x, y);
-        if (handleExpand(x, y, event)) {
+        if (shapper != null && handleExpand(x, y, event)) {
             //处理 缩放
             return true;
         }
@@ -298,10 +300,11 @@ public class CropLayout extends FrameLayout {
                 if (view.getVisibility() == VISIBLE) {
                     float width = getMeasuredWidth();
                     float height = getMeasuredHeight();
-                    floats[0] = Math.min(view.getLeft() / width, 1.0f);//最大1.0f
-                    floats[1] = Math.min(view.getTop() / width, 1.0f);
-                    floats[2] = Math.min(view.getRight() / height, 1.0f);
-                    floats[3] = Math.min(view.getBottom() / height, 1.0f);
+                    floats[0] = Math.min((float) view.getLeft() / width, 1.0f);//最大1.0f
+                    floats[1] = Math.min((float) view.getTop() / height, 1.0f);
+                    floats[2] = Math.min((float) view.getRight() / width, 1.0f);
+                    floats[3] = Math.min((float) view.getBottom() / height, 1.0f);
+                    AppLogger.w("区域侦测:container width:" + width + ", area width:" + view.getWidth() + ",container height:" + height + ",area height:" + view.getHeight() + ",left:" + floats[0] + ",top:" + floats[1] + ",right:" + floats[2] + ",bottom:" + floats[3]);
                 }
                 result.add(floats);
             }

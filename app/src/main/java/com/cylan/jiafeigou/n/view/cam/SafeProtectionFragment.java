@@ -466,6 +466,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
             case R.id.sw_monitoring_area: {
                 MonitorAreaSettingFragment fragment = MonitorAreaSettingFragment.Companion.newInstance(uuid);
+                fragment.setCallBack(t -> updateDetails());
                 ActivityUtils.addFragmentToActivity(getFragmentManager(), fragment, android.R.id.content);
             }
             break;

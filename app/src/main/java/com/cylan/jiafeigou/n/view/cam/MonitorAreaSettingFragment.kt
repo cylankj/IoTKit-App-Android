@@ -77,7 +77,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
                             updateMonitorAreaPicture(resource)
-                            toggleMonitorAreaMode(false)
+                            effect_container.post { toggleMonitorAreaMode(enable) }
                         }
                     }
 
@@ -126,10 +126,10 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         if (readyToSelect) {
             effect_container.removeAllViews()
             val effectView = LayoutInflater.from(context).inflate(R.layout.layout_motion_shaper, effect_container, false)
+            restoreMonitorAreaIfNeeded(effectView)
             monitor_toggle.visibility = View.VISIBLE
             drag_and_drop.visibility = View.GONE
             decideShowPopTips()
-            restoreMonitorAreaIfNeeded(effectView)
         } else {
             monitor_toggle.visibility = View.GONE
             drag_and_drop.visibility = View.VISIBLE
@@ -141,13 +141,14 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     private fun restoreMonitorAreaIfNeeded(effectView: View) {
         if (monitorAreaArray.size > 0) {
             val rect4F = monitorAreaArray[0]
-            val width = effect_container.measuredWidth
-            val height = effect_container.measuredHeight
+            val width = effect_container.width.toFloat()
+            val height = effect_container.height.toFloat()
             val layoutParams = effectView.layoutParams as FrameLayout.LayoutParams
             layoutParams.gravity = Gravity.NO_GRAVITY
             layoutParams.setMargins((width * rect4F.left).toInt(), (height * rect4F.top).toInt(), 0, 0)
-            layoutParams.width = (width * (rect4F.right - rect4F.left)).toInt()
-            layoutParams.height = (height * (rect4F.bottom - rect4F.top)).toInt()
+            layoutParams.width = Math.max((width * (rect4F.right - rect4F.left)).toInt(), effectView.minimumWidth)
+            layoutParams.height = Math.max((height * (rect4F.bottom - rect4F.top)).toInt(), effectView.minimumHeight)
+            AppLogger.w("区域侦测:恢复区域为:$rect4F,width:${layoutParams.width},height:${layoutParams.height},container width:$width,container height:$height")
             if (layoutParams.width < monitorWidth || layoutParams.height < monitorHeight) {
                 effectView.findViewById(R.id.effect_hint).visibility = View.GONE
             }
@@ -181,6 +182,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     @OnClick(R.id.back)
     fun exitToParent() {
         AppLogger.w("点击了返回按钮")
+
         back.post { ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
         back.post { fragmentManager.popBackStack() }
 
@@ -189,7 +191,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     @OnClick(R.id.monitor_toggle)
     fun clickedToggleMonitor() {
         AppLogger.w("点击了切换")
-        monitorAreaArray.clear()
         toggleMonitorAreaMode(false)
     }
 
@@ -203,7 +204,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     fun clickedFinish() {
         AppLogger.w("点击了完成按钮")
         val rects = effect_container.motionArea.map { DpMsgDefine.Rect4F(it[0], it[1], it[2], it[3]) }
-        AppLogger.w("选择区域为:$rects")
+        AppLogger.w("区域侦测:选择区域为:$rects")
         monitorAreaArray.clear()
         monitorAreaArray.addAll(rects)
         presenter.setMonitorArea(uuid, enable, monitorAreaArray)
@@ -212,6 +213,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onSetMonitorAreaSuccess() {
         AppLogger.w("设置侦测区域成功了")
         ToastUtil.showToast(getString(R.string.PWD_OK_2))
+        callBack?.callBack(null)
         exitToParent()
     }
 
