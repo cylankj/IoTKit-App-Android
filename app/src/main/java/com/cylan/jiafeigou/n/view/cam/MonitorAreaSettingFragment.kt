@@ -89,6 +89,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                     .asBitmap()
                     .load(this)
                     .onlyRetrieveFromCache(true)
+                    .skipMemoryCache(true)
                     .into(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                             resource?.apply {
@@ -172,7 +173,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     fun updateMonitorAreaPicture(drawable: Bitmap) {
         monitor_picture.scaleType = ImageView.ScaleType.FIT_CENTER
-        monitor_picture.setImageBitmap(drawable)
         val params = monitor_picture.layoutParams
         var pictureRadio: Float = drawable.width.toFloat() / drawable.height.toFloat()
         val metrics = Resources.getSystem().displayMetrics
@@ -185,6 +185,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
         monitor_picture.post { monitor_picture.layoutParams = params }
+        monitor_picture.post { monitor_picture.setImageBitmap(drawable) }
     }
 
     fun toggleMonitorAreaMode(readyToSelect: Boolean) {
