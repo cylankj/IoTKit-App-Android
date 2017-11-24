@@ -77,12 +77,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onGetMonitorPictureError() {
         AppLogger.w("onGetMonitorPictureError")
         finish.isEnabled = false
-        val url: String? = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
-        if (url.isNullOrEmpty()) {
-            alertErrorGetMonitorPicture()
-        } else {
-            onGetMonitorPictureSuccess(url!!)
-        }
+        alertErrorGetMonitorPicture(isLocalLoadSuccess)
     }
 
     override fun tryGetLocalMonitorPicture() {
@@ -92,7 +87,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                     .asBitmap()
                     .load(this)
                     .onlyRetrieveFromCache(true)
-                    .into(object :SimpleTarget<Bitmap>(){
+                    .into(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                             resource?.apply {
                                 isLocalLoadSuccess = true
@@ -130,9 +125,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
-                        if (!isLocalLoadSuccess) {
-                            alertErrorGetMonitorPicture()
-                        }
+                        alertErrorGetMonitorPicture(!isLocalLoadSuccess)
                     }
 
                 })
@@ -154,13 +147,17 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 //                })
     }
 
-    private fun alertErrorGetMonitorPicture() {
-        AlertDialog.Builder(context)
-                .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
-                .setCancelable(false)
-                .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
-                .create()
-                .show()
+    private fun alertErrorGetMonitorPicture(focusToExit: Boolean) {
+        if (focusToExit) {
+            AlertDialog.Builder(context)
+                    .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
+                    .create()
+                    .show()
+        } else {
+            ToastUtil.showToast(getString(R.string.DETECTION_AREA_FAILED_LOAD))
+        }
     }
 
     fun updateMonitorAreaPicture(drawable: Drawable) {
