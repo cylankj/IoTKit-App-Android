@@ -5,9 +5,11 @@ import android.content.pm.ActivityInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -24,16 +26,12 @@ import com.cylan.jiafeigou.utils.ToastUtil
 import com.cylan.jiafeigou.utils.ViewUtils
 import com.cylan.jiafeigou.widget.crop.Shaper
 import kotlinx.android.synthetic.main.fragment_monitor_area_setting.*
-import kotlinx.android.synthetic.main.layout_motion_shaper.*
 
 /**
  * Created by yanzhendong on 2017/11/15.
  */
 class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presenter>(), MonitorAreaSettingContact.View {
-
-
-    private var hasRequested: Boolean = false
-
+    private var enable: Boolean = false
     private var monitorWidth: Int = 0
     private var monitorHeight: Int = 0
     private var monitorAreaArray = mutableListOf<DpMsgDefine.Rect4F>()
@@ -79,7 +77,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
                             updateMonitorAreaPicture(resource)
-                            updateViewVisibility(false)
+                            toggleMonitorAreaMode(false)
                         }
                     }
 
@@ -121,32 +119,41 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         monitor_picture.layoutParams = params
     }
 
-    fun updateViewVisibility(readyToSelect: Boolean) {
+    fun toggleMonitorAreaMode(readyToSelect: Boolean) {
         load_bar.visibility = View.GONE
         finish.isEnabled = true
+        enable = readyToSelect
         if (readyToSelect) {
-            if (effect_container.hasShaper()) {
-                effect_container.removeAllViews()
-            }
-            View.inflate(context, R.layout.layout_motion_shaper, effect_container)
-            restoreMonitorAreaIfNeeded()
+            effect_container.removeAllViews()
+            val effectView = LayoutInflater.from(context).inflate(R.layout.layout_motion_shaper, effect_container, false)
             monitor_toggle.visibility = View.VISIBLE
             drag_and_drop.visibility = View.GONE
             decideShowPopTips()
+            restoreMonitorAreaIfNeeded(effectView)
         } else {
             monitor_toggle.visibility = View.GONE
             drag_and_drop.visibility = View.VISIBLE
+            pop_tips.visibility = View.GONE
             effect_container.removeAllViews()
         }
     }
 
-    private fun restoreMonitorAreaIfNeeded() {
+    private fun restoreMonitorAreaIfNeeded(effectView: View) {
         if (monitorAreaArray.size > 0) {
             val rect4F = monitorAreaArray[0]
             val width = effect_container.measuredWidth
             val height = effect_container.measuredHeight
-            effect_view.layout(width * rect4F.left.toInt(), height * rect4F.top.toInt(), width * rect4F.right.toInt(), height * rect4F.bottom.toInt())
+            val layoutParams = effectView.layoutParams as FrameLayout.LayoutParams
+            layoutParams.gravity = Gravity.NO_GRAVITY
+            layoutParams.setMargins((width * rect4F.left).toInt(), (height * rect4F.top).toInt(), 0, 0)
+            layoutParams.width = (width * (rect4F.right - rect4F.left)).toInt()
+            layoutParams.height = (height * (rect4F.bottom - rect4F.top)).toInt()
+            if (layoutParams.width < monitorWidth || layoutParams.height < monitorHeight) {
+                effectView.findViewById(R.id.effect_hint).visibility = View.GONE
+            }
+            effectView.layoutParams = layoutParams
         }
+        effect_container.addView(effectView)
     }
 
     private fun decideShowPopTips() {
@@ -182,18 +189,14 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     @OnClick(R.id.monitor_toggle)
     fun clickedToggleMonitor() {
         AppLogger.w("点击了切换")
-        pop_tips.visibility = View.GONE
-        if (effect_container.hasShaper()) {
-            effect_container.removeAllViews()
-            monitor_toggle.visibility = View.GONE
-            drag_and_drop.visibility = View.VISIBLE
-        }
+        monitorAreaArray.clear()
+        toggleMonitorAreaMode(false)
     }
 
     @OnClick(R.id.drag_and_drop)
     fun clickedDropAndDrag() {
         AppLogger.w("点击了进入选择侦测区域按钮")
-        updateViewVisibility(true)
+        toggleMonitorAreaMode(true)
     }
 
     @OnClick(R.id.finish)
@@ -203,7 +206,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         AppLogger.w("选择区域为:$rects")
         monitorAreaArray.clear()
         monitorAreaArray.addAll(rects)
-        presenter.setMonitorArea(uuid, monitorAreaArray)
+        presenter.setMonitorArea(uuid, enable, monitorAreaArray)
     }
 
     override fun onSetMonitorAreaSuccess() {
@@ -221,6 +224,9 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         AppLogger.w("onRestoreMonitorAreaSetting:$rects")
         monitorAreaArray.clear()
         monitorAreaArray.addAll(rects)
+        if (monitorAreaArray.isNotEmpty()) {
+            enable = true
+        }
     }
 
     override fun onRestoreDefaultMonitorAreaSetting() {

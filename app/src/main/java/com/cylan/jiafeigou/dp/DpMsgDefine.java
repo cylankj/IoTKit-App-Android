@@ -2632,6 +2632,16 @@ public class DpMsgDefine {
 
         public Rect4F() {
         }
+
+        @Override
+        public String toString() {
+            return "Rect4F{" +
+                    "left=" + left +
+                    ", top=" + top +
+                    ", right=" + right +
+                    ", bottom=" + bottom +
+                    '}';
+        }
     }
 
     @Message
@@ -2652,6 +2662,14 @@ public class DpMsgDefine {
         }
 
         public DPCameraWarnArea() {
+        }
+
+        @Override
+        public String toString() {
+            return "DPCameraWarnArea{" +
+                    "enable=" + enable +
+                    ", rects=" + rects +
+                    '}';
         }
     }
 

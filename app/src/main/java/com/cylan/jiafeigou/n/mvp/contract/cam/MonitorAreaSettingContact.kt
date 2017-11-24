@@ -30,7 +30,7 @@ interface MonitorAreaSettingContact {
 
     interface Presenter : JFGPresenter {
 
-        fun setMonitorArea(uuid: String, rects: MutableList<DpMsgDefine.Rect4F>)
+        fun setMonitorArea(uuid: String, enable: Boolean, rects: MutableList<DpMsgDefine.Rect4F>)
 
         fun loadMonitorAreaSetting()
     }

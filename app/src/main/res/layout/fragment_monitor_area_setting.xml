@@ -116,7 +116,7 @@
         android:text="@string/DETECTION_AREA_RESTORE"
         android:textColor="@color/normal_btn_color_selector"
         android:textSize="@dimen/sp13"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/monitor_toggle"
@@ -127,6 +127,6 @@
         android:layout_marginBottom="@dimen/y20"
         android:layout_marginEnd="@dimen/y20"
         android:background="@drawable/icon_default_area"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

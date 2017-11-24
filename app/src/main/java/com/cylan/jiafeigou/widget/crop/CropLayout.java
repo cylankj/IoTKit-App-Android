@@ -307,7 +307,7 @@ public class CropLayout extends FrameLayout {
             }
         }
         if (result.size() == 0) {
-            result.add(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+            result.add(new float[]{0.0f, 0.0f, 1.0f, 1.0f});
         }
         return result;
     }

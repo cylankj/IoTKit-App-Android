@@ -70,6 +70,7 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                     var warnArea: DpMsgDefine.DPCameraWarnArea? = null
                     if (msg != null) {
                         warnArea = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPCameraWarnArea::class.java)
+                        AppLogger.w("读取服务器上保存的侦测区域值为:$warnArea")
                     }
                     return@map warnArea
                 }
@@ -133,9 +134,9 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                     +1 shl 1/*get/set:0-get，1-set*/ +
                     +1 shl 2 /*对端应答:0-否，1-是*/
 
-    override fun setMonitorArea(uuid: String, rects: MutableList<DpMsgDefine.Rect4F>) {
+    override fun setMonitorArea(uuid: String, enable: Boolean, rects: MutableList<DpMsgDefine.Rect4F>) {
         AppLogger.w("正在设置侦测区域:$rects")
-        val warnArea = DpMsgDefine.DPCameraWarnArea(true, rects)
+        val warnArea = DpMsgDefine.DPCameraWarnArea(enable, rects)
         val subscribe = Observable.create<Long> {
             val params = arrayListOf(JFGDPMsg(519, 0, DpUtils.pack(warnArea)))
             it.onNext(appCmd.robotSetData(uuid, params))
