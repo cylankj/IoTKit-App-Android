@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.cylan.jiafeigou.BuildConfig
@@ -91,13 +90,14 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
             GlideApp.with(this@MonitorAreaSettingFragment)
                     .load(this)
                     .onlyRetrieveFromCache(true)
-                    .into(object : DrawableImageViewTarget(monitor_picture, true) {
-                        override fun setResource(resource: Drawable?) {
+                    .into(object : SimpleTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
                             resource?.apply {
                                 isLocalLoadSuccess = true
                                 updateMonitorAreaPicture(this)
                             }
                         }
+
                     })
         }
     }
