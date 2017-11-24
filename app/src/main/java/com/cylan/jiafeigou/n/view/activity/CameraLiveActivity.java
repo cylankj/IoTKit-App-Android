@@ -40,6 +40,8 @@ import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
 import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.gson.Gson;
 
+import java.util.logging.Logger;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

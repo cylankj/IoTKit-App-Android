@@ -14,13 +14,13 @@ import java.util.*
  */
 @Message
 open class MIDHeader(
-        @field:Index(0) var msgId: Int = 0,
-        @field:Index(1) var caller: String = "",
-        @field:Index(2) var callee: String = "",
-        @field:Index(3) var seq: Long = 0L
+        @JvmField @field:Index(0) var msgId: Int = 0,
+        @JvmField @field:Index(1) var caller: String = "",
+        @JvmField @field:Index(2) var callee: String = "",
+        @JvmField @field:Index(3) var seq: Long = 0L
 ) : Parcelable, Serializable {
     //不能为空
-    @Ignore lateinit var rawBytes: ByteArray
+    @Ignore  lateinit var rawBytes: ByteArray
 
     constructor(source: Parcel) : this(
             source.readInt(),

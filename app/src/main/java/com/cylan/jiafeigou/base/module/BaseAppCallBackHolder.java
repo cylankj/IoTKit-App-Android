@@ -390,7 +390,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
             return;
         }
         midHeader.setRawBytes(bytes);
-        switch (midHeader.getMsgId()) {
+        switch (midHeader.msgId) {
             case 20006: {
                 PanoramaEvent.MsgForward rawRspMsg = DpUtils.unpackDataWithoutThrow(bytes, PanoramaEvent.MsgForward.class, null);
                 if (rawRspMsg == null) return;

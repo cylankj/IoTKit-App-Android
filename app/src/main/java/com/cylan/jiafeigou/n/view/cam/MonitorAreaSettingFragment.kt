@@ -13,6 +13,8 @@ import android.widget.FrameLayout
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
@@ -35,6 +37,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     private var monitorWidth: Int = 0
     private var monitorHeight: Int = 0
     private var monitorAreaArray = mutableListOf<DpMsgDefine.Rect4F>()
+    private var isLocalLoadSuccess: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_monitor_area_setting, container, false)
@@ -60,19 +63,52 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         AppLogger.w("onMonitorAreaChanged:width:$width,height:$height")
         val hintView = shaper?.shaper?.findViewById(R.id.effect_hint)
         if (hintView != null) {
+            //长和宽 任何一个小于默认尺寸,则隐藏提示文字
             hintView.visibility = if (width >= monitorWidth && height >= monitorHeight) View.VISIBLE else View.GONE
         }
     }
 
     override fun onGetMonitorPictureSuccess(url: String) {
         AppLogger.w("onGetMonitorPictureSuccess:$url")
+        tryGetMonitorPicture(url)
+    }
+
+
+    override fun onGetMonitorPictureError() {
+        AppLogger.w("onGetMonitorPictureError")
+        finish.isEnabled = false
+        val url: String? = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
+        if (url.isNullOrEmpty()) {
+            alertErrorGetMonitorPicture()
+        } else {
+            onGetMonitorPictureSuccess(url!!)
+        }
+    }
+
+    override fun tryGetLocalMonitorPicture() {
+        val localUrl: String? = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
+        localUrl?.apply {
+            GlideApp.with(this@MonitorAreaSettingFragment)
+                    .load(this)
+                    .onlyRetrieveFromCache(true)
+                    .into(object : DrawableImageViewTarget(monitor_picture, true) {
+                        override fun setResource(resource: Drawable?) {
+                            resource?.apply {
+                                isLocalLoadSuccess = true
+                                updateMonitorAreaPicture(this)
+                            }
+                        }
+                    })
+        }
+    }
+
+
+    private fun tryGetMonitorPicture(url: String) {
         GlideApp.with(this)
                 .load(url)
-                .placeholder(R.drawable.default_diagram_mask)
-                .error(R.drawable.default_diagram_mask)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(object : DrawableImageViewTarget(monitor_picture, true) {
-                    override fun setResource(resource: Drawable?) {
+                .into(object : SimpleTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
                         if (resource != null) {
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
@@ -82,33 +118,20 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
-                        AlertDialog.Builder(context)
-                                .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
-                                .create()
-                                .show()
+                        if (!isLocalLoadSuccess) {
+                            alertErrorGetMonitorPicture()
+                        }
                     }
                 })
     }
 
-
-    override fun onGetMonitorPictureError() {
-        AppLogger.w("onGetMonitorPictureError")
-        finish.isEnabled = false
-        val url = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
-        if (url.isNullOrEmpty()) {
-            AlertDialog.Builder(context)
-                    .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
-                    .create()
-                    .show()
-        } else {
-            onGetMonitorPictureSuccess(url)
-        }
-
+    private fun alertErrorGetMonitorPicture() {
+        AlertDialog.Builder(context)
+                .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
+                .setCancelable(false)
+                .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
+                .create()
+                .show()
     }
 
     fun updateMonitorAreaPicture(drawable: Drawable) {
@@ -238,7 +261,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun showLoadingBar() {
         load_bar.visibility = View.VISIBLE
-        load_bar.run()
     }
 
     override fun hideLoadingBar() {
@@ -246,6 +268,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     }
 
     companion object {
+        @JvmStatic
         fun newInstance(uuid: String): MonitorAreaSettingFragment {
             val fragment = MonitorAreaSettingFragment()
             val argument = Bundle()

@@ -236,7 +236,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         });
         camMessageListAdapter.setOnclickListener(this);
         tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE);
-
+        if (!hasFaceHeader) {
+            arrow.setVisibility(View.GONE);
+            aplCamMessageAppbar.setExpanded(false);
+            layoutBarMenu(BAR_TYPE_NORMAL);
+            rLayoutCamMessageListTop.setVisibility(View.GONE);
+        }
     }
 
     private void refreshFaceHeader() {
@@ -258,46 +263,39 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void initFaceHeader() {
-        if (hasFaceHeader) {
-            aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
-            tvCamMessageListDate.setClickable(false);
-            layoutBarMenu(BAR_TYPE_FACE_COMMON);
-            aplCamMessageAppbar.setExpanded(true, false);
+        aplCamMessageAppbar.addOnOffsetChangedListener(this::onMessageAppbarScrolled);
+        tvCamMessageListDate.setClickable(false);
+        layoutBarMenu(BAR_TYPE_FACE_COMMON);
+        aplCamMessageAppbar.setExpanded(true, false);
 
-            if (visitorFragment != null) {
-                return;//do nothing
+        if (visitorFragment != null) {
+            return;//do nothing
+        }
+
+        visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
+        visitorFragment.setVisitorListener(new VisitorListFragmentV2.VisitorListener() {
+            @Override
+            public void onLoadItemInformation(@NotNull FaceItem item) {
+                changeContentByHeaderClick(item);
             }
 
-            visitorFragment = VisitorListFragmentV2.Companion.newInstance(uuid());
-            visitorFragment.setVisitorListener(new VisitorListFragmentV2.VisitorListener() {
-                @Override
-                public void onLoadItemInformation(@NotNull FaceItem item) {
-                    changeContentByHeaderClick(item);
-                }
+            @Override
+            public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
+                camMessageListAdapter.onStrangerInformationReady(visitorList);
+                pageType = FaceItem.FACE_TYPE_STRANGER_SUB;
+                justForDemo(false);
 
-                @Override
-                public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
-                    camMessageListAdapter.onStrangerInformationReady(visitorList);
-                    pageType = FaceItem.FACE_TYPE_STRANGER_SUB;
-                    justForDemo(false);
+            }
 
-                }
-
-                @Override
-                public void onVisitorReady(@NotNull List<FaceItem> visitorList) {
-                    camMessageListAdapter.onVisitorInformationReady(visitorList);
-                    justForDemo(true);
-                }
-            });
-            //显示 所有面孔列表
-            ActivityUtils.replaceFragment(getFragmentManager(),
-                    visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
-        } else {
-            arrow.setVisibility(View.GONE);
-            aplCamMessageAppbar.setExpanded(false);
-            layoutBarMenu(BAR_TYPE_NORMAL);
-            rLayoutCamMessageListTop.setVisibility(View.GONE);
-        }
+            @Override
+            public void onVisitorReady(@NotNull List<FaceItem> visitorList) {
+                camMessageListAdapter.onVisitorInformationReady(visitorList);
+                justForDemo(true);
+            }
+        });
+        //显示 所有面孔列表
+        ActivityUtils.replaceFragment(getFragmentManager(),
+                visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
     }
 
     private void layoutBarMenu(int barType) {

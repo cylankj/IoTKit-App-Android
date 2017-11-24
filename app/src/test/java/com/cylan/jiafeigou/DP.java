@@ -624,7 +624,7 @@ public class DP {
 
     @Test
     public void testV31() throws IOException {
-        Value read = new MessagePack().read(new byte[]{-106, -51, 79, 0, -96, -84, 50, 48, 48, 48, 48, 48, 48, 48, 48, 52, 55, 50, -49, 97, 124, 15, 116, -82, 71, -79, -128, 32, -111, -109, -51, 1, -106, 0, -87, -110, -90, 117, 117, 117, 117, 117, 117, 1});
+        Value read = new MessagePack().read(new byte[]{-106, -51, 79, 0, -96, -84, 50, 56, 48, 53, 48, 48, 48, 48, 48, 48, 49, 56, -45, -80, 100, 98, 63, 64, 28, -126, 30, 41, -111, -109, -51, 2, 9, 0, -95, -61});
         System.out.println(read.toString());
     }
 

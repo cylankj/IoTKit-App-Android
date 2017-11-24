@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
@@ -200,7 +201,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
 
         //for test only
-//        sivDeviceDoorLock.setVisibility(View.VISIBLE);
+        if (BuildConfig.DEBUG) {
+            sivDeviceDoorLock.setVisibility(View.VISIBLE);
+        }
 
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
@@ -679,9 +682,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         final int count = viewGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
-//            if (view.getId() == R.id.sv_setting_device_wifi) {
-//                continue;
-//            }
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
             }

@@ -29,10 +29,9 @@ import javax.inject.Inject
 class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingContact.View)
     : BasePresenter<MonitorAreaSettingContact.View>(view), MonitorAreaSettingContact.Presenter {
 
-
     override fun loadMonitorAreaSetting() {
         val subscribe = Observable.zip(loadSavedMonitorPicture(), loadSavedMonitorArea()) { rsp, warn -> Pair(rsp, warn) }
-                .timeout(15, TimeUnit.SECONDS)
+                .timeout(31, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mView.showLoadingBar() }
                 .doOnTerminate { mView.hideLoadingBar() }
@@ -41,11 +40,11 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                         mView.onRestoreMonitorAreaSetting(it.second?.rects!!)
                     }
                     if (it.first?.ret != 0) {
-                        if (BuildConfig.DEBUG) {
-                            mView.onGetMonitorPictureSuccess("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511339880450&di=36b3d62c85f7253086dc18a7ca24bf3b&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd788d43f8794a4c2688360c704f41bd5ac6e39bd.jpg")
-                        } else {
-                            mView.onGetMonitorPictureError()
-                        }
+//                        if (BuildConfig.DEBUG) {
+//                            mView.onGetMonitorPictureSuccess("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511339880450&di=36b3d62c85f7253086dc18a7ca24bf3b&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd788d43f8794a4c2688360c704f41bd5ac6e39bd.jpg")
+//                        } else {
+                        mView.onGetMonitorPictureError()
+//                        }
                     } else if (it.first?.ret == 0) {
                         mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.first.time}.jpg?regionType=${it.first.ossType}")
                     }
@@ -74,21 +73,22 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                     }
                     return@map warnArea
                 }
-                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
     private fun loadSavedMonitorPicture(): Observable<DpMsgDefine.DPCameraTakePictureRsp>? {
         val dpList = DPList()
         dpList.add(DPMessage(DpMsgMap.ID_521_CAMERA_TAKEPICTURE, 0, DpUtils.pack(true)))
-        return RobotForwardDataV3Request(callee = uuid, action = TAKE_PICTURE_ACTION, values = dpList)
+        return RobotForwardDataV3Request(callee = uuid, action = 41, values = dpList)
                 .execute()
+                .doOnSubscribe { mView.tryGetLocalMonitorPicture() }
                 .map {
                     it.values.singleOrNull { it.msgId == DpMsgMap.ID_522_CAMERA_TAKEPICTURE_RSP }
                             .let { DpUtils.unpackDataWithoutThrow(it?.value, DpMsgDefine.DPCameraTakePictureRsp::class.java, null) }
                 }
                 .first()
-                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
 
     }
