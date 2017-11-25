@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -30,29 +31,29 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
     : BasePresenter<MonitorAreaSettingContact.View>(view), MonitorAreaSettingContact.Presenter {
 
     override fun loadMonitorAreaSetting() {
-        val subscribe = Observable.zip(loadSavedMonitorPicture(), loadSavedMonitorArea()) { rsp, warn -> Pair(rsp, warn) }
-                .timeout(31, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
+        val subscribe = CompositeSubscription()
+        val subscribe1 = loadSavedMonitorPicture().subscribe({
+            if (it?.ret != 0) {
+                mView.onGetMonitorPictureError()
+            } else if (it.ret == 0) {
+                mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.time}.jpg?regionType=${it.ossType}")
+            }
+        }) {}
+        val subscribe2 = loadSavedMonitorArea()
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
-                    if (it.second?.enable == true) {
-                        mView.onRestoreMonitorAreaSetting(it.second?.rects!!)
+                    if (it?.enable == true) {
+                        mView.onRestoreMonitorAreaSetting(it.rects!!)
+                    } else {
+                        mView.onRestoreDefaultMonitorAreaSetting()
                     }
-                    if (it.first?.ret != 0) {
-//                        if (BuildConfig.DEBUG) {
-//                            mView.onGetMonitorPictureSuccess("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511339880450&di=36b3d62c85f7253086dc18a7ca24bf3b&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd788d43f8794a4c2688360c704f41bd5ac6e39bd.jpg")
-//                        } else {
-                        mView.onGetMonitorPictureError()
-//                        }
-                    } else if (it.first?.ret == 0) {
-                        mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.first.time}.jpg?regionType=${it.first.ossType}")
-                    }
-                }) {
-
-                }
+                }) {}
+        subscribe.add(subscribe1)
+        subscribe.add(subscribe2)
         addDestroySubscription(subscribe)
     }
 
-    private fun loadSavedMonitorArea(): Observable<DpMsgDefine.DPCameraWarnArea?>? {
+    private fun loadSavedMonitorArea(): Observable<DpMsgDefine.DPCameraWarnArea?> {
         return Observable.create<Long> {
             val params = arrayListOf(JFGDPMsg(DpMsgMap.ID_519_CAM_WARNAREA, 0))
             val seq = appCmd.robotGetData(uuid, params, 1, false, 0)
@@ -75,7 +76,7 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    private fun loadSavedMonitorPicture(): Observable<DpMsgDefine.DPCameraTakePictureRsp>? {
+    private fun loadSavedMonitorPicture(): Observable<DpMsgDefine.DPCameraTakePictureRsp> {
         val dpList = DPList()
         dpList.add(DPMessage(DpMsgMap.ID_521_CAMERA_TAKEPICTURE, 0, DpUtils.pack(true)))
         return RobotForwardDataV3Request(callee = uuid, action = 41, values = dpList)

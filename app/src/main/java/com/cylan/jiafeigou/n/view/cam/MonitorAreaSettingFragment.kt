@@ -16,7 +16,6 @@ import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
@@ -34,16 +33,14 @@ import kotlinx.android.synthetic.main.fragment_monitor_area_setting.*
  * Created by yanzhendong on 2017/11/15.
  */
 class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presenter>(), MonitorAreaSettingContact.View {
-    private var enable: Boolean = false
     private var monitorWidth: Int = 0
     private var monitorHeight: Int = 0
     private var monitorAreaArray = mutableListOf<DpMsgDefine.Rect4F>()
-    private var isLocalLoadSuccess: Boolean = false
-
+    private var monitorPictureReady: Boolean = false
+    private var restoreMonitorLayout: Boolean = true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_monitor_area_setting, container, false)
     }
-
 
     override fun initViewAndListener() {
         super.initViewAndListener()
@@ -77,9 +74,8 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun onGetMonitorPictureError() {
         AppLogger.w("onGetMonitorPictureError")
-        finish.isEnabled = false
         hideLoadingBar()
-        alertErrorGetMonitorPicture(!isLocalLoadSuccess)
+        alertErrorGetMonitorPicture()
     }
 
     override fun tryGetLocalMonitorPicture() {
@@ -93,8 +89,8 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                     .into(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                             resource?.apply {
-                                isLocalLoadSuccess = true
                                 updateMonitorAreaPicture(this)
+                                toggleMonitorAreaMode(false)
                             }
                         }
 
@@ -115,32 +111,34 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
                             hideLoadingBar()
                             updateMonitorAreaPicture(resource)
-                            effect_container.post { toggleMonitorAreaMode(enable) }
+                            toggleMonitorAreaMode(restoreMonitorLayout)
                         }
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
                         hideLoadingBar()
-                        alertErrorGetMonitorPicture(!isLocalLoadSuccess)
+                        alertErrorGetMonitorPicture()
                     }
 
                 })
     }
 
-    private fun alertErrorGetMonitorPicture(focusToExit: Boolean) {
-        if (focusToExit) {
+    private fun alertErrorGetMonitorPicture() {
+        finish.isEnabled = monitorPictureReady
+        if (monitorPictureReady) {
+            ToastUtil.showToast(getString(R.string.DETECTION_AREA_FAILED_LOAD))
+        } else {
             AlertDialog.Builder(context)
                     .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
                     .setCancelable(false)
                     .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
                     .create()
                     .show()
-        } else {
-            ToastUtil.showToast(getString(R.string.DETECTION_AREA_FAILED_LOAD))
         }
     }
 
     fun updateMonitorAreaPicture(drawable: Bitmap) {
+        monitorPictureReady = true
         monitor_picture.setImageBitmap(drawable)
         val params = monitor_picture.layoutParams
         var pictureRadio: Float = drawable.height.toFloat() / drawable.width.toFloat()
@@ -156,24 +154,27 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
             params.height = (metrics.heightPixels.toFloat() * pictureRadio).toInt()
         }
         monitor_picture.post { monitor_picture.layoutParams = params }
+        finish.isEnabled = true
     }
 
-    fun toggleMonitorAreaMode(readyToSelect: Boolean) {
-        load_bar.visibility = View.GONE
-        finish.isEnabled = true
-        enable = readyToSelect
-        if (readyToSelect) {
+    private fun toggleMonitorAreaMode(restore: Boolean) {
+        this.restoreMonitorLayout = restore
+        if (!monitorPictureReady) {
+            //图片还没准备好 不允许进行模式切换
+            return
+        }
+        if (restoreMonitorLayout) {
+            monitor_toggle.visibility = View.GONE
+            drag_and_drop.visibility = View.VISIBLE
+            pop_tips.visibility = View.GONE
+            effect_container.removeAllViews()
+        } else {
             effect_container.removeAllViews()
             val effectView = LayoutInflater.from(context).inflate(R.layout.layout_motion_shaper, effect_container, false)
             restoreMonitorAreaIfNeeded(effectView)
             monitor_toggle.visibility = View.VISIBLE
             drag_and_drop.visibility = View.GONE
             decideShowPopTips()
-        } else {
-            monitor_toggle.visibility = View.GONE
-            drag_and_drop.visibility = View.VISIBLE
-            pop_tips.visibility = View.GONE
-            effect_container.removeAllViews()
         }
     }
 
@@ -218,22 +219,20 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     @OnClick(R.id.back)
     fun exitToParent() {
         AppLogger.w("点击了返回按钮")
-
         back.post { ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
         back.post { fragmentManager.popBackStack() }
-
     }
 
     @OnClick(R.id.monitor_toggle)
     fun clickedToggleMonitor() {
         AppLogger.w("点击了切换")
-        toggleMonitorAreaMode(false)
+        toggleMonitorAreaMode(true)
     }
 
     @OnClick(R.id.drag_and_drop)
     fun clickedDropAndDrag() {
         AppLogger.w("点击了进入选择侦测区域按钮")
-        toggleMonitorAreaMode(true)
+        toggleMonitorAreaMode(false)
     }
 
     @OnClick(R.id.finish)
@@ -243,7 +242,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         AppLogger.w("区域侦测:选择区域为:$rects")
         monitorAreaArray.clear()
         monitorAreaArray.addAll(rects)
-        presenter.setMonitorArea(uuid, enable, monitorAreaArray)
+        presenter.setMonitorArea(uuid, !restoreMonitorLayout, monitorAreaArray)
     }
 
     override fun onSetMonitorAreaSuccess() {
@@ -262,13 +261,12 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         AppLogger.w("onRestoreMonitorAreaSetting:$rects")
         monitorAreaArray.clear()
         monitorAreaArray.addAll(rects)
-        if (monitorAreaArray.isNotEmpty()) {
-            enable = true
-        }
+        toggleMonitorAreaMode(false)
     }
 
     override fun onRestoreDefaultMonitorAreaSetting() {
         AppLogger.w("onRestoreDefaultMonitorAreaSetting")
+        toggleMonitorAreaMode(true)
     }
 
 

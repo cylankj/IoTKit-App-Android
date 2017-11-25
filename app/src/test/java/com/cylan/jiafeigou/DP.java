@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.module.message.DPMessage;
 import com.cylan.jiafeigou.module.message.MIDHeader;
 import com.cylan.jiafeigou.module.request.RobotForwardDataV3Request;
 import com.cylan.jiafeigou.module.request.RobotForwardDataV3Response;
-import com.cylan.jiafeigou.module.request.RobotGetDataRequest;
 import com.cylan.jiafeigou.module.request.RobotGetDataResponse;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -548,8 +547,8 @@ public class DP {
         response.rawBytes = bytes;
         BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
         DpUtils.mp.register(DPList.class, new MyListTemplate());
-        RobotGetDataResponse convert = new RobotGetDataRequest().convert(response);
-        System.out.println(convert);
+//        RobotGetDataResponse convert = new RobotGetDataRequest().convert(response);
+//        System.out.println(convert);
 
     }
 

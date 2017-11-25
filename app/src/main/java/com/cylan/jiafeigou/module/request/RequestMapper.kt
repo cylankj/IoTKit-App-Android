@@ -14,6 +14,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.lang.reflect.ParameterizedType
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by yanzhendong on 2017/11/13.
@@ -40,9 +41,13 @@ interface IRequest<T : IResponse> {
         CACHE_MIX
     }
 
-    fun execute(): Observable<T>
+    /**
+     *@param timeout 超时时间,单位:秒
+     *@param cacheMode 超时后是否使用缓存
+     */
+    fun execute(timeout: Long, cacheMode: CacheMode = CacheMode.NO_CACHE): Observable<T>
 
-    fun cacheMode(cacheMode: CacheMode = CacheMode.NO_CACHE)
+    fun execute(): Observable<T>
 }
 
 interface IResponse {
@@ -55,31 +60,56 @@ abstract class AbstractRequest<T : IResponse>(
         callee: String,
         seq: Long
 ) : IRequest<T>, MIDHeader(msgId, caller, callee, seq) {
-    protected var cacheMode: IRequest.CacheMode = IRequest.CacheMode.NO_CACHE
-    fun convert(header: MIDHeader): T {
+    open protected fun convert(header: MIDHeader): T {
         val parameterizedType = javaClass.genericSuperclass as ParameterizedType
         val responseType: Class<T> = parameterizedType.actualTypeArguments[0] as Class<T>
         return DpUtils.unpackData(header.rawBytes, responseType)
     }
 
-    override fun cacheMode(cacheMode: IRequest.CacheMode) {
-        this.cacheMode = cacheMode
-    }
+    override fun execute(timeout: Long, cacheMode: IRequest.CacheMode): Observable<T> =
+            when (cacheMode) {
+                IRequest.CacheMode.CACHE_FIRST -> {
+                    Observable
+                            .concat(
+                                    executeFromLocal()
 
-    override fun execute(): Observable<T> = when (cacheMode) {
-        IRequest.CacheMode.CACHE_FIRST -> {
-            Observable.concat(executeFromLocal(), executeFromServer()).first { it != null }
-        }
-        IRequest.CacheMode.CACHE_LAST -> {
-            Observable.concat(executeFromServer(), executeFromLocal()).first { it != null }
-        }
-        IRequest.CacheMode.CACHE_MIX -> {
-            executeFromServer()
-        }
-        IRequest.CacheMode.NO_CACHE -> {
-            executeFromServer()
-        }
-    }
+                                            .timeout(timeout, TimeUnit.SECONDS, Observable.just(null)),
+
+
+                                    executeFromServer()
+
+                                            .doOnNext { executeLocalSave(it) }
+
+                            )
+                            .first { it != null }
+                }
+                IRequest.CacheMode.CACHE_LAST -> {
+                    Observable
+                            .concat(
+                                    executeFromServer()
+                                            .doOnNext { executeLocalSave(it) }
+                                            .timeout(timeout, TimeUnit.SECONDS, Observable.just(null)),
+                                    executeFromLocal()
+                            )
+                            .first { it != null }
+                }
+                IRequest.CacheMode.CACHE_MIX -> {
+                    Observable
+                            .merge(
+                                    executeFromLocal(),
+
+                                    executeFromServer()
+                                            .doOnNext { executeLocalSave(it) }
+                            )
+                            .timeout(timeout, TimeUnit.SECONDS, Observable.just(null))
+                }
+                IRequest.CacheMode.NO_CACHE -> {
+                    executeFromServer()
+                            .timeout(timeout, TimeUnit.SECONDS, Observable.just(null))
+                }
+            }
+
+    override fun execute(): Observable<T> = execute(Long.MAX_VALUE)
 
     open protected fun executeFromLocal(): Observable<T> {
         return Observable.empty()
@@ -89,8 +119,7 @@ abstract class AbstractRequest<T : IResponse>(
         return Observable.empty()
     }
 
-    open protected fun executeLocalSave() {
-
+    open protected fun executeLocalSave(response: T) {
     }
 }
 
@@ -174,10 +203,12 @@ class RobotForwardDataV3Request(
     }
 
     override fun executeFromLocal(): Observable<RobotForwardDataV3Response> {
+        AppLogger.d("executeFromLocal:$this")
         return super.executeFromLocal()
     }
 
-    override fun executeLocalSave() {
+    override fun executeLocalSave(response: RobotForwardDataV3Response) {
+        AppLogger.d("executeLocalSave:$response")
     }
 }
 
@@ -185,5 +216,25 @@ class RobotForwardDataV3Request(
 class RobotForwardDataV3Response(
         @JvmField @field:Index(4) var action: Int = 0,
         @JvmField @field:Index(5) var values: DPList = DPList()
-) : AbstractResponse()
+) : AbstractResponse() {
+    override fun toString(): String = "RobotForwardDataV3Response(action=$action, values=$values)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RobotForwardDataV3Response) return false
+        if (!super.equals(other)) return false
+
+        if (action != other.action) return false
+        if (values != other.values) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + action
+        result = 31 * result + values.hashCode()
+        return result
+    }
+}
 

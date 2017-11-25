@@ -20,7 +20,7 @@ open class MIDHeader(
         @JvmField @field:Index(3) var seq: Long = 0L
 ) : Parcelable, Serializable {
     //不能为空
-    @Ignore  lateinit var rawBytes: ByteArray
+    @Ignore lateinit var rawBytes: ByteArray
 
     constructor(source: Parcel) : this(
             source.readInt(),
@@ -120,4 +120,5 @@ open class DPMessage(
 }
 
 class DPList : ArrayList<DPMessage>()
+
 
