@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.SimpleTarget
@@ -79,7 +78,8 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onGetMonitorPictureError() {
         AppLogger.w("onGetMonitorPictureError")
         finish.isEnabled = false
-        alertErrorGetMonitorPicture(isLocalLoadSuccess)
+        hideLoadingBar()
+        alertErrorGetMonitorPicture(!isLocalLoadSuccess)
     }
 
     override fun tryGetLocalMonitorPicture() {
@@ -99,15 +99,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                         }
 
                     })
-//                    .into(object : SimpleTarget<Drawable>() {
-//                        override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
-//                            resource?.apply {
-//                                isLocalLoadSuccess = true
-//                                updateMonitorAreaPicture(this)
-//                            }
-//                        }
-//
-//                    })
         }
     }
 
@@ -122,32 +113,18 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                         if (resource != null) {
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
+                            hideLoadingBar()
                             updateMonitorAreaPicture(resource)
                             effect_container.post { toggleMonitorAreaMode(enable) }
                         }
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
+                        hideLoadingBar()
                         alertErrorGetMonitorPicture(!isLocalLoadSuccess)
                     }
 
                 })
-//                .into(object : SimpleTarget<Drawable>() {
-//                    override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
-//                        if (resource != null) {
-//                            AppLogger.w("设置区域设置图片")
-//                            PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
-//                            updateMonitorAreaPicture(resource)
-//                            effect_container.post { toggleMonitorAreaMode(enable) }
-//                        }
-//                    }
-//
-//                    override fun onLoadFailed(errorDrawable: Drawable?) {
-//                        if (!isLocalLoadSuccess) {
-//                            alertErrorGetMonitorPicture()
-//                        }
-//                    }
-//                })
     }
 
     private fun alertErrorGetMonitorPicture(focusToExit: Boolean) {
@@ -163,29 +140,22 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         }
     }
 
-    fun updateMonitorAreaPicture(drawable: Drawable) {
-        monitor_picture.setImageDrawable(drawable)
-        val params = monitor_picture.layoutParams
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        monitor_picture.layoutParams = params
-    }
-
     fun updateMonitorAreaPicture(drawable: Bitmap) {
-        monitor_picture.scaleType = ImageView.ScaleType.FIT_CENTER
+        monitor_picture.setImageBitmap(drawable)
         val params = monitor_picture.layoutParams
-        var pictureRadio: Float = drawable.width.toFloat() / drawable.height.toFloat()
+        var pictureRadio: Float = drawable.height.toFloat() / drawable.width.toFloat()
         val metrics = Resources.getSystem().displayMetrics
-        var screenRadio: Float = metrics.widthPixels.toFloat() / metrics.heightPixels.toFloat()
-        if (pictureRadio > screenRadio) {
-            params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+        var screenRadio: Float = metrics.heightPixels.toFloat() / metrics.widthPixels.toFloat()
+        if (pictureRadio >= screenRadio) {
+            //图片的高宽比 大于 屏幕的 高宽比 则此时需要高度铺满屏幕高度,宽度计算出来
+            params.height = metrics.heightPixels
+            params.width = (metrics.heightPixels.toFloat() / pictureRadio).toInt()
         } else {
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            //图片的高宽比小于屏幕的高宽比 则此时需要宽度铺满屏幕宽度,高度计算出来
+            params.width = metrics.widthPixels
+            params.height = (metrics.heightPixels.toFloat() * pictureRadio).toInt()
         }
         monitor_picture.post { monitor_picture.layoutParams = params }
-        monitor_picture.post { monitor_picture.setImageBitmap(drawable) }
     }
 
     fun toggleMonitorAreaMode(readyToSelect: Boolean) {
@@ -228,9 +198,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     private fun decideShowPopTips() {
         var showPopTips = PreferencesUtils.getBoolean(JConstant.SHOW_MONITOR_AREA_TIPS, true)
-        if (BuildConfig.DEBUG) {
-            showPopTips = true
-        }
         if (showPopTips) {
             PreferencesUtils.putBoolean(JConstant.SHOW_MONITOR_AREA_TIPS, false)
             pop_tips.visibility = View.VISIBLE

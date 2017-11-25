@@ -21,7 +21,28 @@ import java.util.*
 
 interface IRequest<T : IResponse> {
 
+    enum class CacheMode {
+        /**
+         *不对结果进行缓存,默认配置
+         */
+        NO_CACHE,
+        /**
+         *优先使用缓存
+         */
+        CACHE_FIRST,
+        /**
+         *如果请求失败,尝试使用缓存
+         */
+        CACHE_LAST,
+        /**
+         *缓存和请求同时进行,先读缓存同时请求网络
+         */
+        CACHE_MIX
+    }
+
     fun execute(): Observable<T>
+
+    fun cacheMode(cacheMode: CacheMode = CacheMode.NO_CACHE)
 }
 
 interface IResponse {
@@ -34,14 +55,42 @@ abstract class AbstractRequest<T : IResponse>(
         callee: String,
         seq: Long
 ) : IRequest<T>, MIDHeader(msgId, caller, callee, seq) {
-
+    protected var cacheMode: IRequest.CacheMode = IRequest.CacheMode.NO_CACHE
     fun convert(header: MIDHeader): T {
         val parameterizedType = javaClass.genericSuperclass as ParameterizedType
         val responseType: Class<T> = parameterizedType.actualTypeArguments[0] as Class<T>
         return DpUtils.unpackData(header.rawBytes, responseType)
     }
 
+    override fun cacheMode(cacheMode: IRequest.CacheMode) {
+        this.cacheMode = cacheMode
+    }
 
+    override fun execute(): Observable<T> = when (cacheMode) {
+        IRequest.CacheMode.CACHE_FIRST -> {
+            executeFromLocal()
+            executeFromServer()
+        }
+        IRequest.CacheMode.CACHE_LAST -> {
+            executeFromServer()
+        }
+        IRequest.CacheMode.CACHE_MIX -> {
+            executeFromServer()
+        }
+        else -> executeFromServer()
+    }
+
+    open protected fun executeFromLocal(): Observable<T> {
+        return Observable.empty()
+    }
+
+    open protected fun executeFromServer(): Observable<T> {
+        return Observable.empty()
+    }
+
+    open protected fun executeLocalSave() {
+
+    }
 }
 
 abstract class AbstractResponse : IResponse, MIDHeader() {
@@ -105,7 +154,7 @@ class RobotForwardDataV3Request(
         @JvmField @field:Index(5) var values: DPList = DPList()
 ) : AbstractRequest<RobotForwardDataV3Response>(20224, caller, callee, Math.abs(Random().nextLong())) {
 
-    override fun execute(): Observable<RobotForwardDataV3Response> {
+    override fun executeFromServer(): Observable<RobotForwardDataV3Response> {
         return Observable.create<RobotForwardDataV3Response> { subscriber ->
             val subscribe = RxBus.getCacheInstance().toObservable(MIDHeader::class.java).first { it.seq == seq }.subscribe({
                 val dataV3Response = convert(it)
@@ -122,6 +171,10 @@ class RobotForwardDataV3Request(
             appCmd.SendForwardData(bytes)
         }.subscribeOn(Schedulers.io())
     }
+
+    override fun executeFromLocal(): Observable<RobotForwardDataV3Response> {
+        return super.executeFromLocal()
+    }
 }
 
 @Message
@@ -129,3 +182,4 @@ class RobotForwardDataV3Response(
         @JvmField @field:Index(4) var action: Int = 0,
         @JvmField @field:Index(5) var values: DPList = DPList()
 ) : AbstractResponse()
+

@@ -272,8 +272,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void lazyLoad() {
+        super.lazyLoad();
         Log.d("isResumed", "start isResumed: " + getUserVisibleHint());
         Device device = presenter.getDevice();
         camLiveControlLayer.onActivityStart(presenter, device);

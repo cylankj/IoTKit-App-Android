@@ -28,15 +28,20 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
 
 import org.webrtc.videoengine.ViEAndroidGLES20;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 17-3-13.
@@ -153,23 +158,22 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
-        //todo GLIDE
-//        subscription = Observable.just(bitmap)
-//                .subscribeOn(Schedulers.io())
-//                .map(bMap -> {
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                    bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                    return stream.toByteArray();
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(bytes -> Glide.with(context)
-//                                .load(bytes)
-//                                .asBitmap()
-//                                .signature(new StringSignature(token))
-//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                .skipMemoryCache(!isNormalView)
-//                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
-//                        MiscUtils::getErr);
+        subscription = Observable.just(bitmap)
+                .subscribeOn(Schedulers.io())
+                .map(bMap -> {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    return stream.toByteArray();
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bytes -> GlideApp.with(context)
+                                .asBitmap()
+                                .load(bytes)
+                                .signature(new ObjectKey(token))
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .skipMemoryCache(!isNormalView)
+                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
+                        MiscUtils::getErr);
     }
 
 

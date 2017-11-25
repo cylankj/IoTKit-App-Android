@@ -33,8 +33,6 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
         val subscribe = Observable.zip(loadSavedMonitorPicture(), loadSavedMonitorArea()) { rsp, warn -> Pair(rsp, warn) }
                 .timeout(31, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mView.showLoadingBar() }
-                .doOnTerminate { mView.hideLoadingBar() }
                 .subscribe({
                     if (it.second?.enable == true) {
                         mView.onRestoreMonitorAreaSetting(it.second?.rects!!)
