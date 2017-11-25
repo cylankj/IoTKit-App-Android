@@ -68,16 +68,17 @@ abstract class AbstractRequest<T : IResponse>(
 
     override fun execute(): Observable<T> = when (cacheMode) {
         IRequest.CacheMode.CACHE_FIRST -> {
-            executeFromLocal()
-            executeFromServer()
+            Observable.concat(executeFromLocal(), executeFromServer()).first { it != null }
         }
         IRequest.CacheMode.CACHE_LAST -> {
-            executeFromServer()
+            Observable.concat(executeFromServer(), executeFromLocal()).first { it != null }
         }
         IRequest.CacheMode.CACHE_MIX -> {
             executeFromServer()
         }
-        else -> executeFromServer()
+        IRequest.CacheMode.NO_CACHE -> {
+            executeFromServer()
+        }
     }
 
     open protected fun executeFromLocal(): Observable<T> {
@@ -174,6 +175,9 @@ class RobotForwardDataV3Request(
 
     override fun executeFromLocal(): Observable<RobotForwardDataV3Response> {
         return super.executeFromLocal()
+    }
+
+    override fun executeLocalSave() {
     }
 }
 
