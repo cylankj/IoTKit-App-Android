@@ -425,9 +425,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 break;
         }
         rbViewModeSwitchParent.setVisibility(GONE);
-//        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-//
-//        }
     }
 
     private void getSdcardStatus() {
@@ -578,6 +575,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         //是否显示清晰度切换
         int mode = device.$(513, 0);
+        svSwitchStream.setVisibility(presenter.getPlayState() == JConstant.PLAY_STATE_PLAYING ? VISIBLE : GONE);
         svSwitchStream.setMode(mode);
         svSwitchStream.setSwitcherListener((view, index) -> {
             if (view.getId() == R.id.switch_hd) {
@@ -1276,7 +1274,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
-            svSwitchStream.setVisibility(VISIBLE);
+            //需要判断是否已近是播放状态
+            svSwitchStream.setVisibility(playType == PLAY_STATE_PLAYING ? VISIBLE : GONE);
             ViewUtils.increaseMargins(svSwitchStream, 0, 0, 0, (int) getResources().getDimension(R.dimen.y10));
         } else {
             tvLive.setVisibility(vsLayoutWheel.getCurrentView() instanceof FrameLayout ? GONE : VISIBLE);

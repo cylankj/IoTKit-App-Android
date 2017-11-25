@@ -47,3 +47,14 @@ if [ -d "./doby" ]; then
     cp -rf ./doby/* ${RootPath}/app/src/_doby/res
 fi
 echo "自动更新语言包完成了!!!"
+
+echo "正在更新设备属性表"
+
+cd ${CleverDog}/设备属性
+PropertyTools="./Property-1.0.2017-11-13.jar"
+if [ -f ${PropertyTools} ]; then
+  for file in $(ls *.xls);do
+  java -jar ${PropertyTools} file ${RootPath}/app/src/main/assets/${file%.*}.json
+  done
+fi
+

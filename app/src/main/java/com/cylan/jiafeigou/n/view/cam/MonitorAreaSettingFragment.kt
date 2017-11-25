@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.SimpleTarget
@@ -38,6 +39,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     private var monitorAreaArray = mutableListOf<DpMsgDefine.Rect4F>()
     private var monitorPictureReady: Boolean = false
     private var restoreMonitorLayout: Boolean = true
+    private var monitorAreaMarginRadio = 0.0f//听说不能全部图片区域选择?,先写好先
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_monitor_area_setting, container, false)
     }
@@ -62,7 +64,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         val hintView = shaper?.shaper?.findViewById(R.id.effect_hint)
         if (hintView != null) {
             //长和宽 任何一个小于默认尺寸,则隐藏提示文字
-            hintView.visibility = if (width >= monitorWidth && height >= monitorHeight) View.VISIBLE else View.GONE
+//            hintView.visibility = if (width >= monitorWidth && height >= monitorHeight) View.VISIBLE else View.GONE
         }
     }
 
@@ -90,10 +92,12 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                         override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                             resource?.apply {
                                 updateMonitorAreaPicture(this)
-                                toggleMonitorAreaMode(false)
+                                if (monitorAreaArray.size > 0) {
+                                    //说明区域数据已经先回来了
+                                    toggleMonitorAreaMode(false)
+                                }
                             }
                         }
-
                     })
         }
     }
@@ -119,7 +123,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                         hideLoadingBar()
                         alertErrorGetMonitorPicture()
                     }
-
                 })
     }
 
@@ -141,19 +144,33 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         monitorPictureReady = true
         monitor_picture.setImageBitmap(drawable)
         val params = monitor_picture.layoutParams
-        var pictureRadio: Float = drawable.height.toFloat() / drawable.width.toFloat()
+        val pictureRadio: Float = drawable.height.toFloat() / drawable.width.toFloat()
         val metrics = Resources.getSystem().displayMetrics
-        var screenRadio: Float = metrics.heightPixels.toFloat() / metrics.widthPixels.toFloat()
+        val screenRadio: Float = metrics.heightPixels.toFloat() / metrics.widthPixels.toFloat()
+        val monitorPictureWidth: Int
+        val monitorPictureHeight: Int
+        val heightMargin: Int
+        val widthMargin: Int
         if (pictureRadio >= screenRadio) {
             //图片的高宽比 大于 屏幕的 高宽比 则此时需要高度铺满屏幕高度,宽度计算出来
-            params.height = metrics.heightPixels
-            params.width = (metrics.heightPixels.toFloat() / pictureRadio).toInt()
+            monitorPictureHeight = metrics.heightPixels
+            monitorPictureWidth = (metrics.heightPixels.toFloat() / pictureRadio).toInt()
+
         } else {
             //图片的高宽比小于屏幕的高宽比 则此时需要宽度铺满屏幕宽度,高度计算出来
-            params.width = metrics.widthPixels
-            params.height = (metrics.heightPixels.toFloat() * pictureRadio).toInt()
+            monitorPictureWidth = metrics.widthPixels
+            monitorPictureHeight = (metrics.heightPixels.toFloat() * pictureRadio).toInt()
         }
+        params.width = monitorPictureWidth
+        params.height = monitorPictureHeight
+        heightMargin = (monitorPictureHeight * monitorAreaMarginRadio).toInt()
+        widthMargin = (monitorPictureWidth * monitorAreaMarginRadio).toInt()
         monitor_picture.post { monitor_picture.layoutParams = params }
+        effect_container.post {
+            val layoutParams = effect_container.layoutParams as RelativeLayout.LayoutParams
+            layoutParams.setMargins(widthMargin / 2, heightMargin / 2, widthMargin / 2, heightMargin / 2)
+            effect_container.layoutParams = layoutParams
+        }
         finish.isEnabled = true
     }
 
@@ -190,7 +207,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
             layoutParams.height = Math.max((height * (rect4F.bottom - rect4F.top)).toInt(), effectView.minimumHeight)
             AppLogger.w("区域侦测:恢复区域为:$rect4F,width:${layoutParams.width},height:${layoutParams.height},container width:$width,container height:$height")
             if (layoutParams.width < monitorWidth || layoutParams.height < monitorHeight) {
-                effectView.findViewById(R.id.effect_hint).visibility = View.GONE
+//                effectView.findViewById(R.id.effect_hint).visibility = View.GONE
             }
             effectView.layoutParams = layoutParams
         }

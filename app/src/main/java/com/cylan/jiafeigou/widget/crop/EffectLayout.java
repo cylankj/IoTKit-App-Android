@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import com.cylan.jiafeigou.R;
+
 /**
  * Created by hds on 17-11-15.
  */
@@ -21,8 +23,9 @@ public class EffectLayout extends FrameLayout implements Shaper {
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private RectF defaultRect = new RectF();
+    private int cornorWidth;
 
-    private int colorCorner = Color.RED;
+    private int colorCorner = Color.parseColor("#FA0A0A");
     private int colorRect = 0x30FF4081;
 
     public EffectLayout(@NonNull Context context) {
@@ -48,6 +51,7 @@ public class EffectLayout extends FrameLayout implements Shaper {
         mPaint.setStyle(Paint.Style.STROKE);
         final ViewConfiguration vc = ViewConfiguration.get(getContext());
         mTouchSlop = vc.getScaledTouchSlop() * 3;
+        cornorWidth = getResources().getDimensionPixelSize(R.dimen.y14);
     }
 
     @Override
@@ -59,21 +63,21 @@ public class EffectLayout extends FrameLayout implements Shaper {
         mPaint.setStrokeWidth(10);
         mPaint.setStyle(Paint.Style.STROKE);
         //0
-        canvas.drawLine(0, 0, mTouchSlop, 0, mPaint);
-        canvas.drawLine(0, 0, 0, mTouchSlop, mPaint);
+        canvas.drawLine(0, 0, cornorWidth, 0, mPaint);
+        canvas.drawLine(0, 0, 0, cornorWidth, mPaint);
         //1
-        canvas.drawLine(getWidth() - mTouchSlop, 0, getWidth(), 0, mPaint);
-        canvas.drawLine(getWidth(), 0, getWidth(), mTouchSlop, mPaint);
+        canvas.drawLine(getWidth() - cornorWidth, 0, getWidth(), 0, mPaint);
+        canvas.drawLine(getWidth(), 0, getWidth(), cornorWidth, mPaint);
         //2
-        canvas.drawLine(getWidth() - mTouchSlop, getHeight(),
+        canvas.drawLine(getWidth() - cornorWidth, getHeight(),
                 getWidth(), getHeight(), mPaint);
-        canvas.drawLine(getWidth(), getHeight() - mTouchSlop,
+        canvas.drawLine(getWidth(), getHeight() - cornorWidth,
                 getWidth(), getHeight(), mPaint);
 //        //3
         canvas.drawLine(0, getHeight(),
-                0, getHeight() - mTouchSlop, mPaint);
+                0, getHeight() - cornorWidth, mPaint);
         canvas.drawLine(0, getHeight(),
-                mTouchSlop, getHeight(), mPaint);
+                cornorWidth, getHeight(), mPaint);
         super.dispatchDraw(canvas);
     }
 
