@@ -709,7 +709,6 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".support.splash.SplashActivity" />
-        <activity android:name=".support.login.LoginActivity" />
         <activity android:name=".n.view.activity.BindDeviceActivityExt">
 
             <!-- <intent-filter> -->

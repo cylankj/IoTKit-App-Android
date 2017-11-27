@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
-import com.cylan.jiafeigou.module.SubscriptionManager;
+import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.message.DPList;
 import com.cylan.jiafeigou.module.message.DPMessage;
 import com.cylan.jiafeigou.module.message.MIDHeader;
@@ -469,7 +469,6 @@ public class DP {
         countDownLatch.await();
     }
 
-    SubscriptionManager manager = new SubscriptionManager();
 
 
     @Test
@@ -625,6 +624,11 @@ public class DP {
     public void testV31() throws IOException {
         Value read = new MessagePack().read(new byte[]{-106, -51, 79, 0, -96, -84, 50, 56, 48, 53, 48, 48, 48, 48, 48, 48, 49, 56, -45, -80, 100, 98, 63, 64, 28, -126, 30, 41, -111, -109, -51, 2, 9, 0, -95, -61});
         System.out.println(read.toString());
+    }
+
+    @Test
+    public void testV3Action(){
+        System.out.println(DoorLockHelper.OPEN_DOOR_LOCK_ACTION);
     }
 
 }

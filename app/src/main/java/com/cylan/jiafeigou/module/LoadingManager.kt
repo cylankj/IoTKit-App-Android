@@ -99,7 +99,6 @@ class LoadingManager @Inject constructor() : ILoadingManager {
             })
             serialSubscription.set(subscriber)
         }
-        Observable.just("").doOnUnsubscribe {  }
         Observable.create(subscribe).subscribe({}) {
             AppLogger.e(MiscUtils.getErr(it))
         }

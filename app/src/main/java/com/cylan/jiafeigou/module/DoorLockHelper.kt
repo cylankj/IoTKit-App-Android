@@ -15,8 +15,8 @@ object DoorLockHelper {
     const val CHANGE_PASSWORD_ACTION =
             +1 shl 0/*转发给对端:0-否，1-是*/ +
                     +1 shl 1/*get/set:0-get，1-set*/ +
-                    +1 shl 2 /*对端应答:0-否，1-是*/ +
-                    +1 shl 3/*多终端同步:0-否，1-是*/
+                    +0 shl 2 /*对端应答:0-否，1-是*/ +
+                    +0 shl 3/*多终端同步:0-否，1-是*/
 
     const val OPEN_DOOR_LOCK_ACTION =
             +1 shl 0 /*转发给对端*/ +

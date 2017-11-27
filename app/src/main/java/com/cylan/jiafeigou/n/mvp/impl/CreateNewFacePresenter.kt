@@ -53,6 +53,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
             if (!url.startsWith("http://")) {
                 url = "http://" + url
             }
+
             val response = OkGo.post(url)
                     .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
                     .params(JConstant.RobotCloudApi.ROBOTSCLOUD_VID, vid)

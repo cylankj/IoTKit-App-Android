@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.dagger.module.ActivityModule
 import com.cylan.jiafeigou.dagger.module.CommonModule
 import com.cylan.jiafeigou.dagger.module.FragmentModule
 import com.cylan.jiafeigou.misc.pty.IProperty
-import com.cylan.jiafeigou.module.ISubscriptionManager
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.support.badge.TreeHelper
 import com.danikula.videocache.HttpProxyCacheServer
@@ -81,7 +80,4 @@ interface AppComponent : AndroidInjector<BaseApplication> {
     fun getTreeHelper(): TreeHelper
 
     fun getHttpApi(): IHttpApi
-
-    fun getSubscriptionManager(): ISubscriptionManager
-
 }

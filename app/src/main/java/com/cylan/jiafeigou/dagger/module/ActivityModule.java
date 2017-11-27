@@ -12,10 +12,8 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingActivity;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
-import com.cylan.jiafeigou.support.login.LoginActivity;
 import com.cylan.jiafeigou.support.share.H5ShareEditorActivity;
 import com.cylan.jiafeigou.support.share.ShareMediaActivity;
-import com.cylan.jiafeigou.support.splash.SplashActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -61,15 +59,6 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract ShareMediaActivity shareMediaActivity();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = MVPModule2.class)
-    abstract SplashActivity splashActivity();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = MVPModule2.class)
-    abstract LoginActivity loginActivity();
-
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract PanoramaCameraActivity panoramaCameraActivity();
