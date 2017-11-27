@@ -111,7 +111,7 @@ public class History {
         try {
             int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
                     endTime, way, count);
-            AppLogger.d(String.format("ret:%s,uuid:%s,startTime:%s,way:%s,count:%s", ret, uuid, startTime, way, count));
+            AppLogger.d(String.format("ret:%s,uuid:%s,startTime:%s,way:%s,count:%s", ret, uuid, endTime, way, count));
         } catch (JfgException e) {
         }
     }
