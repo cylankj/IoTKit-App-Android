@@ -250,6 +250,14 @@ public interface CamLiveContract {
 
         boolean fetchHistoryDataList();
 
+        /**
+         * 按照时间查
+         *
+         * @param time
+         * @return
+         */
+        boolean fetchHistoryDataList(long time);
+
         void openDoorLock(String password);
     }
 

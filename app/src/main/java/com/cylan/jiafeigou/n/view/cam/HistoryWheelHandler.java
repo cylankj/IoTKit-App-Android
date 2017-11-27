@@ -134,6 +134,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                         playByTime(timeStart);
                     }, throwable -> AppLogger.e("失败了?" + MiscUtils.getErr(throwable)));
             presenter.addSubscription("playPreciseByTime", subscription);
+            presenter.fetchHistoryDataList(timeStart);
             return;
         }
         playByTime(timeStart);

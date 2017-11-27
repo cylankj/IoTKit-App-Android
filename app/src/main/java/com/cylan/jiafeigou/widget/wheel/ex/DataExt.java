@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +94,7 @@ public class DataExt implements IData {
         synchronized (lock) {
             if (time / 1000L % 3600 == 0) {
                 timeWithType.put(time, 1);
-                dateFormatMap.put(time, History.parseTime2Date(time));
+                dateFormatMap.put(time, TimeUtils.getHistoryTime(time));
             }
         }
     }

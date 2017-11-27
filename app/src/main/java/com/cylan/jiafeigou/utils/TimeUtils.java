@@ -438,8 +438,12 @@ public class TimeUtils {
         if (time == 0) {
             return 0;
         }
-        long ret = System.currentTimeMillis() / time;
-        return ret * time;
+        long c = System.currentTimeMillis();
+        if (String.valueOf(c).length() == String.valueOf(time).length()) {
+            return time;
+        } else {
+            return time * 1000L;
+        }
     }
 
     public static String get1224(long l) {

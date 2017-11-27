@@ -107,10 +107,10 @@ public class History {
                 .subscribe();
     }
 
-    public void queryHistory(String uuid, int startTime, int way, int count) {
+    public void queryHistory(String uuid, int endTime, int way, int count) {
         try {
             int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
-                    startTime, way, count);
+                    endTime, way, count);
             AppLogger.d(String.format("ret:%s,uuid:%s,startTime:%s,way:%s,count:%s", ret, uuid, startTime, way, count));
         } catch (JfgException e) {
         }

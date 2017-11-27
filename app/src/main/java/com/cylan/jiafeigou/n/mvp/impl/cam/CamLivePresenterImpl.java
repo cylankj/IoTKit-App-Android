@@ -334,6 +334,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public boolean fetchHistoryDataList(long time) {
+        History.getHistory().queryHistory(uuid, (int) (TimeUtils.getSpecificDayEndTime(TimeUtils.wrapToLong(time)) / 1000), 0, 3);
+        return true;
+    }
+
+    @Override
     public void openDoorLock(String password) {
         if (liveStream.playState != PLAY_STATE_PLAYING) {
             //还没有开始直播,则需要开始直播
