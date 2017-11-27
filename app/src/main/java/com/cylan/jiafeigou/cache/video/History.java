@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.google.gson.Gson;
 
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,8 +55,26 @@ public class History {
     private final Object lock = new Object();
     private static final Gson GSON = new Gson();
 
-    public static final SimpleDateFormat SAFE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
-    public static final SimpleDateFormat SAFE_FORMAT_0 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.UK);
+    private static final ThreadLocal<SimpleDateFormat> SAFE_FORMAT__ = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+            TimeZone zone = TimeZone.getTimeZone("Europe/London");
+            format.setTimeZone(zone);
+            return format;
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> SAFE_FORMAT_ = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.UK);
+            TimeZone zone = TimeZone.getTimeZone("Europe/London");
+            format.setTimeZone(zone);
+            return format;
+        }
+    };
+
     private volatile static History history;
     private HashMap<String, ArrayList<Long>> dateListMap = new HashMap<>();
     private ConcurrentHashMap<String, ArrayList<HistoryFile>> historyMap;
@@ -82,11 +102,11 @@ public class History {
     }
 
     public synchronized static String parseTime2Date(long time) {
-        return SAFE_FORMAT.format(new Date(time));
+        return SAFE_FORMAT__.get().format(new Date(time));
     }
 
     public synchronized static String date2String(long time) {
-        return SAFE_FORMAT_0.format(new Date(time));
+        return SAFE_FORMAT_.get().format(new Date(time));
     }
 
     private History() {
@@ -111,6 +131,7 @@ public class History {
         try {
             int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
                     endTime, way, count);
+            rspIndexMap.put(uuid, ret == 0);
             AppLogger.d(String.format("ret:%s,uuid:%s,startTime:%s,way:%s,count:%s", ret, uuid, endTime, way, count));
         } catch (JfgException e) {
         }
@@ -144,6 +165,20 @@ public class History {
     public ArrayList<HistoryFile> getHistoryFile(String date) {
         ensureMap();
         return historyMap.get(date);
+    }
+
+    public HistoryFile getHistoryFile(long time) {
+        final String date = parseTime2Date(TimeUtils.wrapToLong(time));
+        AppLogger.d("historyFile:timeEnd?" + date);
+        ArrayList<HistoryFile> list = getHistoryFile(date);
+        final int timeInt = (int) (TimeUtils.wrapToLong(time) / 1000);
+        if (list == null) return null;
+        for (HistoryFile file : list) {
+            if (file.getTime() <= timeInt && file.getTime() + file.getDuration() >= timeInt) {
+                return file;
+            }
+        }
+        return null;
     }
 
     public ArrayList<HistoryFile> getAllHistoryFile() {
@@ -235,8 +270,7 @@ public class History {
         //注意啊，有一个落后设备只能 一次查2天。
         final int total = 2;
         final int qNum = cnt / total + (cnt % total == 0 ? 0 : 1);//查询次数
-        rspIndexMap.put(uuid, qNum != 0);
-//        for (int i = 0; i < qNum; i++) {
+        //        for (int i = 0; i < qNum; i++) {
 //            final int startTime = tmList.get(i * total);
 //            queryHistory(uuid, (int) (getSpecificDayEndTime(startTime * 1000L) / 1000),
 //                    0, total);

@@ -103,7 +103,10 @@ public class TimeUtils {
     private static final ThreadLocal<SimpleDateFormat> historyDateFormat = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("HH:mm", Locale.UK);
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.UK);
+            TimeZone zone = TimeZone.getTimeZone("Europe/London");
+            format.setTimeZone(zone);
+            return format;
         }
     };
 
@@ -111,7 +114,7 @@ public class TimeUtils {
         @Override
         protected SimpleDateFormat initialValue() {
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
             return dateFormat;
         }
     };

@@ -71,6 +71,10 @@ public class SuperWheelExt extends View {
     private long nextTarget;
     private long currentTarget;
 
+    private static final int STATE_IDLE = 0x000;
+    private static final int STATE_ASSEMBLE = 0x001;
+    private int state = STATE_IDLE;
+
     public IData getDataProvider() {
         return iDataProvider;
     }
@@ -80,6 +84,7 @@ public class SuperWheelExt extends View {
         if (DEBUG) {
             Log.d(TAG, "setDataProvider: " + iDataProvider.getDataCount());
         }
+        state = STATE_ASSEMBLE;
         setScrollX(0);
         post(() -> {
             if (DEBUG) {
@@ -87,6 +92,7 @@ public class SuperWheelExt extends View {
             }
             invalidate();
         });
+        postDelayed(() -> state = STATE_IDLE, 500);
     }
 
 
@@ -450,7 +456,7 @@ public class SuperWheelExt extends View {
      * @param timeTarget
      */
     public void setPositionByTime(long timeTarget, boolean animate) {
-        if (timeTarget == 0) {
+        if (timeTarget == 0 || state == STATE_ASSEMBLE) {
             return;
         }
         long timeCurrent = getCurrentFocusTime();

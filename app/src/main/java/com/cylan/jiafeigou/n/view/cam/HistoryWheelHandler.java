@@ -90,11 +90,17 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             if (value != null && value instanceof Long) {
                 IData data = presenter.getHistoryDataProvider();
                 HistoryFile historyFile = data == null ? null : data.getMaxHistoryFile();
-
+                //时间轴上没有
                 if (historyFile == null || historyFile.getTime() + historyFile.getDuration() < (long) value / 1000) {
-                    AppLogger.d("没有这段视频: " + historyFile + "," + value);
-                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
-                    return;
+                    historyFile = History.getHistory().getHistoryFile((Long) value);
+                    if (historyFile == null) {
+                        AppLogger.d("没有这段视频: " + historyFile + "," + value);
+                        ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
+                        return;
+                    } else {
+                        //需要重新回执时间轴
+
+                    }
                 }
 
                 AppLogger.d("msgTime pick: " + History.date2String((Long) value) + "," + value);
