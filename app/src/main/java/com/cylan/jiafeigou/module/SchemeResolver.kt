@@ -65,6 +65,7 @@ object SchemeResolver {
             AppLogger.w("SchemeResolver:cylan scheme:$schema, signed: $signedCloudUrl")
             signedCloudUrl
         } catch (e: Exception) {
+            e.printStackTrace()
             ""
         }!!
 

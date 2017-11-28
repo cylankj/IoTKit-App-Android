@@ -71,9 +71,6 @@ import com.cylan.jiafeigou.support.share.H5ShareEditorActivity;
 import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.share.ShareMediaContact;
 import com.cylan.jiafeigou.support.share.SharePresenter;
-import com.cylan.jiafeigou.support.splash.SplashActivity;
-import com.cylan.jiafeigou.support.splash.SplashContact;
-import com.cylan.jiafeigou.support.splash.SplashPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -123,11 +120,6 @@ public abstract class MVPModule {
     @Provides
     public static ShareMediaContact.Presenter provideSharePresenter(ShareMediaActivity activity) {
         return new SharePresenter(activity);
-    }
-
-    @Provides
-    public static SplashContact.Presenter provideSplashPresenter(SplashActivity activity) {
-        return new SplashPresenter(activity);
     }
 
     @Provides

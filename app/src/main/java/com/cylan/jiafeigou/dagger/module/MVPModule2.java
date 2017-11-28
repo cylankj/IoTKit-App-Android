@@ -83,9 +83,6 @@ import com.cylan.jiafeigou.support.share.H5ShareEditorActivity;
 import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.share.ShareMediaContact;
 import com.cylan.jiafeigou.support.share.SharePresenter;
-import com.cylan.jiafeigou.support.splash.SplashActivity;
-import com.cylan.jiafeigou.support.splash.SplashContact;
-import com.cylan.jiafeigou.support.splash.SplashPresenter;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import javax.inject.Inject;
@@ -180,12 +177,6 @@ public abstract class MVPModule2 {
 
     @Binds
     public abstract ShareMediaContact.View bindShareMediaView(ShareMediaActivity activity);
-
-    @Binds
-    public abstract SplashContact.Presenter provideSplashPresenter(SplashPresenter presenter);
-
-    @Binds
-    public abstract SplashContact.View bindSplashView(SplashActivity activity);
 
     @Binds
     public abstract PanoramaCameraContact.Presenter providePanoramaCameraPresenter(PanoramaPresenter presenter);

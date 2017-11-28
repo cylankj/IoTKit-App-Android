@@ -306,6 +306,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (panoramicView720Ext != null) {
             panoramicView720Ext.detectOrientationChange();
         }
+        
         if (land) {
             if (isSetPadding) {
                 isSetPadding = false;

@@ -136,15 +136,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     //横屏 top bar
     @BindView(R.id.layout_a)
     FrameLayout layoutA;
-
     //流量
     @BindView(R.id.layout_b)
     TextView layoutB;
-
     //流量
     @BindView(R.id.vs_wheel)
     ViewSwitcher vsLayoutWheel;
-
     //loading
     @BindView(R.id.layout_c)
     LiveControlView layoutC;
@@ -2013,10 +2010,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void switchXunHuanMode() {
         ivModeXunHuan.setSelected(!ivModeXunHuan.isSelected());
-//        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
-//        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-//            ((Panoramic360ViewRS) videoView).enableAutoRotation(ivModeXunHuan.isSelected());
-//        }
     }
 
     public void setLoadingState(int state, String content) {

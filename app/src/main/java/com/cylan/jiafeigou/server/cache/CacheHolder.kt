@@ -7,7 +7,6 @@ import com.cylan.jiafeigou.dp.BaseDataPoint
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
-import com.cylan.jiafeigou.server.VersionValue
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -88,7 +87,6 @@ class PropertyItem(@Id(assignable = true)
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> cast(defaultValue: T): T = try {
         when (defaultValue) {
-            is VersionValue -> VersionValue(value).apply { this.version = version }
 //            is VersionHeader -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as VersionHeader).version = version }
             is DpMsgDefine.DPPrimary<*> -> DpMsgDefine.DPPrimary(value)
             is BaseDataPoint -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { val v = (this as BaseDataPoint);v.version = version;v.msgId = msgId }
@@ -167,79 +165,18 @@ fun getProperty(uuid: String? = "", msgId: Long): PropertyItem = BaseApplication
 
 fun saveProperty(uuid: String? = "", valueMap: MutableMap<Long, List<*>>?, hashStrategy: ((String?, Long, Long) -> Long?)?) = try {
     {
-
-        //        var items: MutableList<PropertyItem> = mutableListOf()
-//
-//        valueMap?.forEach { item ->
-//            item.value.forEach {
-//                var msg = it as? JFGDPMsg
-//                val propertyItem = PropertyItem(hashStrategy?.invoke(uuid, item.key, msg?.version ?: 0) ?: msgIdKey(uuid, item.key), uuid, item.key.toInt(), msg?.version ?: 0, msg?.packValue)
-//                items.add(propertyItem)
-//            }
-//        }?.apply { BaseApplication.getPropertyItemBox().put(items) }
     }
 } catch (e: Exception) {
     Log.i(JConstant.CYLAN_TAG, e.message)
 }
 
 fun saveProperty(uuid: String? = "", valueList: MutableList<*>?, hashStrategy: ((String?, Long, Long) -> Long?)?) = try {
-//    val items: MutableList<PropertyItem> = mutableListOf()
-//    valueList?.forEach {
-//        var msg = it as? JFGDPMsg
-//        val msdId = msg?.id ?: 0
-//        val version = msg?.version ?: 0
-//        val item = PropertyItem(hashStrategy?.invoke(uuid, msdId, version) ?: msgIdKey(uuid, msdId), uuid, msdId.toInt(), msg?.version ?: 0, msg?.packValue)
-//        items.add(item)
-//    }?.apply { BaseApplication.getPropertyItemBox().put(items) }
 } catch (e: Exception) {
     Log.i(JConstant.CYLAN_TAG, e.message)
 }
 
-fun saveProperty(maps: Map<String, Map<Long, *>>, hashStrategy: ((String?, Int, Long) -> Long?)?) {
-    try {
-//        val items: MutableList<PropertyItem> = mutableListOf()
-//
-//        maps.forEach { cidItem ->
-//
-//            cidItem.value.forEach { msgItem ->
-//
-//                when (msgItem.value) {
-//
-//                    is Array<*> -> {
-//                        (msgItem.value as? Array<*>)?.forEach {
-//                            val dp = it as? JFGDPValue
-//                            val version = dp?.version ?: 0
-//                            val value = dp?.value ?: byteArrayOf()
-//                            val item = PropertyItem(hashStrategy?.invoke(cidItem.key, msgItem.key.toInt(), version) ?: msgIdKey(cidItem.key, msgItem.key), cidItem.key, msgItem.key.toInt(), version, value)
-//                            items.add(item)
-//                        }
-//                    }
-//
-//                }
-//
-//
-//            }
-//        }.apply { BaseApplication.getPropertyItemBox().put(items) }
-
-    } catch (e: Exception) {
-        Log.i(JConstant.CYLAN_TAG, e.message)
-    }
-
-}
-
 fun saveDevices(devices: Array<JFGDevice>) = try {
     {
-        //        val items: MutableList<Device> = mutableListOf()
-//
-//        BaseApplication.getDeviceBox().query()
-//                .notIn(Device_.uuid, devices.map { it.uuid.toLong() }.toLongArray())
-//                .build().find().forEach {
-//            //        DataSourceManager.getInstance().unBindDevice(it.uuid.toString())
-//        }
-//
-//        devices.forEach {
-//            items.add(Device(it.uuid.toLong(), it.sn, it.alias, it.shareAccount, it.pid, it.regionType, it.vid))
-//        }.apply { BaseApplication.getDeviceBox().put(items) }
     }
 } catch (e: Exception) {
     Log.i(JConstant.CYLAN_TAG, e.message)
@@ -258,16 +195,6 @@ object HashStrategyFactory {
 
 
 }
-
-/**
- * string,   cid
-string,   sn
-string,   alias
-string,   shareAccount
-int,      pid //原os
-int,      regionType  //详见 DPIDCloudStorage
-string,   vid
- * */
 @Entity
 data class Device(@Id(assignable = true) var uuid: Long,
                   var sn: String?,
@@ -283,23 +210,6 @@ data class Device(@Id(assignable = true) var uuid: Long,
     }
 
 }
-
-//@Id
-//private Long _id;
-//@Unique
-//private String account;
-//private String server;
-//private String password;
-//private int loginType;
-//private String phone;
-//private String token;
-//private String alias;
-//private boolean enablePush;
-//private boolean enableSound;
-//private String email;
-//private boolean enableVibrate;
-//private String photoUrl;
-
 @Entity
 data class Account(@Id(assignable = true) var hash: Long,
                    var account: String,

@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -1231,26 +1230,5 @@ public class DataSourceManager implements JFGSourceManager {
          * @return
          */
         void handleInterception(T data);
-    }
-
-    private void removeLastPreview(String uuid) {
-        final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-        if (TextUtils.isEmpty(pre)) {
-            return;
-        }
-        try {
-            if (SimpleCache.getInstance().getPreviewKeyList() != null) {
-                List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
-                for (String key : list) {
-                    if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
-                        SimpleCache.getInstance().removeCache(key);
-                    }
-                }
-            }
-        } catch (Exception e) {
-        }
-        Observable.just("go")
-                .subscribeOn(Schedulers.io())
-                .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
     }
 }
