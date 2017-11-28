@@ -74,6 +74,15 @@ public class History {
             return format;
         }
     };
+    private static final ThreadLocal<SimpleDateFormat> SAFE_FORMAT_LIVE_TIME = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+            TimeZone zone = TimeZone.getTimeZone("Europe/London");
+            format.setTimeZone(zone);
+            return format;
+        }
+    };
 
     private volatile static History history;
     private HashMap<String, ArrayList<Long>> dateListMap = new HashMap<>();
@@ -103,6 +112,10 @@ public class History {
 
     public synchronized static String parseTime2Date(long time) {
         return SAFE_FORMAT__.get().format(new Date(time));
+    }
+
+    public synchronized static String parseLiveTime(long time) {
+        return SAFE_FORMAT_LIVE_TIME.get().format(new Date(time));
     }
 
     public synchronized static String date2String(long time) {
@@ -174,7 +187,7 @@ public class History {
         final int timeInt = (int) (TimeUtils.wrapToLong(time) / 1000);
         if (list == null) return null;
         for (HistoryFile file : list) {
-            if (file.getTime() <= timeInt && file.getTime() + file.getDuration() >= timeInt) {
+            if (file.getTime() <= timeInt && (file.getTime() + file.getDuration()) >= timeInt) {
                 return file;
             }
         }
@@ -238,7 +251,7 @@ public class History {
     private static String flatBitList(List<DpMsgDefine.Unit> unitList) {
         PerformanceUtils.startTrace("flatBitList");
         LinkedList<DpMsgDefine.Unit> list = new LinkedList<>(unitList);
-        Collections.reverse(list);
+//        Collections.reverse(list);
         //
         StringBuilder builder = new StringBuilder();
         for (DpMsgDefine.Unit unit : list) {

@@ -8,11 +8,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 /**
  * Created by cylan-hunt on 16-12-23.
@@ -23,7 +21,7 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
     private TextView textView;
     private int liveType;
     private long liveTime;
-    private SimpleDateFormat liveTimeDateFormat;
+//    private SimpleDateFormat liveTimeDateFormat;
 
     public LiveTimeLayout(Context context) {
         this(context, null);
@@ -40,10 +38,7 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
     }
 
     private String getTime(long time) {
-        if (liveTimeDateFormat == null) {
-            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
-        }
-        return liveTimeDateFormat.format(new Date(time));
+        return History.parseLiveTime(TimeUtils.wrapToLong(time));
     }
 
     @Override
