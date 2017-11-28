@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Parcel;
 import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
 

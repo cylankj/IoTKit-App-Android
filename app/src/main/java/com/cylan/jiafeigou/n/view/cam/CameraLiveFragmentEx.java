@@ -372,9 +372,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        if (isVisible && isPrepared && onBackPressed()) {
+        if ((isVisible && isPrepared && onBackPressed()) || willExit) {
             removeVideoView();
-            return true;
         }
         return super.performBackIntercept(willExit);
     }
@@ -811,6 +810,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void removeVideoView() {
         if (!isUserVisible() && camLiveControlLayer != null)//可以解决退出activity,TransitionAnimation，出现黑屏
         {
+            Log.d("CameraLiveFragmentExt:", "RemoveVideoView");
             camLiveControlLayer.removeAllViews();
         }
     }

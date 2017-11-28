@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">设备软件升级</string>
   <string name="DEVICE_UPGRADE_TIPS">设备软件版本较低，请重新绑定设备进行升级</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi在线</string>
+  <string name="DEVICE_WIRED_CONNECTION">有线连接</string>
   <string name="DEViCE_NAME">请输入设备名称</string>
   <string name="DIRECTION_180">倒置(旋转180°)</string>
   <string name="DIRECTION_NORMAL">默认(正向)</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
   <string name="WIFI_SET_RS">请在系统设置->无线局域网，选择“RS-CAM-******”加入，密码8个1</string>
   <string name="WIFI_SET_VER">请在系统设置->无线局域网，选择“%s”加入，密码8个1</string>
+  <string name="WIRED_GUIDE">请将设备用网线连接到路由器，并确保和客户端处于同一网络</string>
   <string name="WIRED_MODE_CONNECTED">已连接</string>
+  <string name="WIRED_SELECT_DEVICE_CID">选择设备CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">设备CID</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>

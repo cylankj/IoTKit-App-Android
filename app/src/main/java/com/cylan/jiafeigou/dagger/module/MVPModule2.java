@@ -10,6 +10,8 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
+import com.cylan.jiafeigou.n.mvp.contract.bind.SelectCidContract;
+import com.cylan.jiafeigou.n.mvp.contract.bind.WireBindContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.DoorPassWordSettingContact;
 import com.cylan.jiafeigou.n.mvp.contract.cam.MonitorAreaSettingContact;
@@ -25,6 +27,8 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.bind.SelectCidPresenter;
+import com.cylan.jiafeigou.n.mvp.impl.bind.WireBindPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DoorPasswordSettingPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.cam.MonitorAreaSettingPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
@@ -35,6 +39,8 @@ import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
+import com.cylan.jiafeigou.n.view.bind.SelectCidFragment;
+import com.cylan.jiafeigou.n.view.bind.WireBindActivity;
 import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.cam.CreateFaceContact;
 import com.cylan.jiafeigou.n.view.cam.CreateNewFaceFragment;
@@ -291,4 +297,16 @@ public abstract class MVPModule2 {
 
     @Binds
     public abstract MonitorAreaSettingContact.View bindMonitorAreaSettingView(MonitorAreaSettingFragment fragment);
+
+    @Binds
+    public abstract WireBindContract.Presenter bindWireBindPresenter(WireBindPresenter presenter);
+
+    @Binds
+    public abstract WireBindContract.View bindWireBindView(WireBindActivity view);
+
+    @Binds
+    public abstract SelectCidContract.Presenter bindSelectCidPresenter(SelectCidPresenter presenter);
+
+    @Binds
+    public abstract SelectCidContract.View bindSelectCidView(SelectCidFragment fragment);
 }

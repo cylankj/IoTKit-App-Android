@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Device software update</string>
   <string name="DEVICE_UPGRADE_TIPS">The device needs to be rebound to update software.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi-Online</string>
+  <string name="DEVICE_WIRED_CONNECTION">Wired connection</string>
   <string name="DEViCE_NAME">Enter device name</string>
   <string name="DIRECTION_180">Inversion (rotate 180°)</string>
   <string name="DIRECTION_NORMAL">Defualt</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Note: This device does not support 5G WIFI currently</string>
   <string name="WIFI_SET_RS">Please via \"Settings\"->\"WLAN\", choose \"RS-CAM-******\" join on your phone, password 11111111</string>
   <string name="WIFI_SET_VER">Please via \"Settings\"->\"WLAN\", choose \"%s\" join on your phone, password 11111111</string>
+  <string name="WIRED_GUIDE">Use network cable to connect device and router, ensure device and APP use same network</string>
   <string name="WIRED_MODE_CONNECTED">Connected</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Select device CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">Device CID</string>
   <string name="WONDER_TODAY_H_M">Today HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Yesterday HH:mm</string>
   <string name="WeChat">WeChat</string>

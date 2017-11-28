@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Tingkatkan perangkat</string>
   <string name="DEVICE_UPGRADE_TIPS">Perangkat harus pulih untuk memperbarui perangkat lunak.</string>
   <string name="DEVICE_WIFI_ONLINE">WIFI-Online</string>
+  <string name="DEVICE_WIRED_CONNECTION">Koneksi kabel</string>
   <string name="DEViCE_NAME">Nama perangkat tidak valid</string>
   <string name="DIRECTION_180">Terbalik (rotasi°)</string>
   <string name="DIRECTION_NORMAL">Normal</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Tips:Sinyal 5G WIFI tidak memungkinkan sekarang</string>
   <string name="WIFI_SET_RS">Silahkan melalui \"Pengaturan\"->\"WLAN\", pilih \"RS-CAM-******\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
   <string name="WIFI_SET_VER">Silahkan melalui \"Pengaturan\"->\"WLAN\", pilih \"%s\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
+  <string name="WIRED_GUIDE">Gunakan kabel jaringan untuk menghubungkan perangkat dan router, pastikan perangkat dan APP menggunakan jaringan yang sama</string>
   <string name="WIRED_MODE_CONNECTED">Terhubung</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Pilih perangkat CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">Perangkat CID</string>
   <string name="WONDER_TODAY_H_M">Hari ini HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Kemarin HH:mm</string>
   <string name="WeChat">WeChat</string>

@@ -17,9 +17,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoImpl;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
@@ -85,27 +87,20 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         return true;
     }
 
-    @Override
-    public void bindState(int state) {
+    public void bindState(RxEvent.BindDeviceEvent state) {
         runOnUiThread(() -> {
             if (isFinishing()) {
                 return;
             }
-            if (state == BindUtils.BIND_FAILED) {//失败
-                vsLayoutSwitch.showNext();
-                if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
-                        && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
-                        getString(R.string._720PanoramicCamera))) {
-                    ivExplainGray.setVisibility(View.VISIBLE);
-                }
-//            customToolbar.setVisibility(View.INVISIBLE);
-            } else if (state == JError.ErrorCIDBinded) {//强绑
+            // TODO: 2017/11/28 需要判断是否支持强绑
+
+            if (state.bindResult == JError.ErrorCIDBinded) {//强绑
                 getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
                         getString(R.string.OK), (DialogInterface dialog, int which) -> {
                             //强绑提示按钮,
                             onBindNext();
                         }, false);
-            } else if (state == BindUtils.BIND_SUC) {//成功
+            } else if (state.bindResult == BindUtils.BIND_SUC) {//成功
                 progressLoading.setVisibility(View.INVISIBLE);
                 if (presenter != null) {
                     presenter.unsubscribe();
@@ -130,7 +125,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                             newInstance, android.R.id.content);
                 }
 
-            } else if (state == BindUtils.BIND_NULL) {
+            } else if (state.bindResult == BindUtils.BIND_NULL) {
                 getAlertDialogManager().showDialog(this, "null", getString(R.string.RET_ECID_INVALID),
                         getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
@@ -155,6 +150,118 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     public void onCounting(int percent) {
         Log.d("SubmitBindingInfo", "SubmitBindingInfo: " + percent);
         tvLoadingPercent.post(() -> tvLoadingPercent.setText(percent + "%"));//现在需要显示百分比
+    }
+
+    public void bindState(int state) {
+        runOnUiThread(() -> {
+            if (isFinishing()) {
+                return;
+            }
+            if (state == BindUtils.BIND_FAILED) {//失败
+
+//            customToolbar.setVisibility(View.INVISIBLE);
+            } else if (state == JError.ErrorCIDBinded) {//强绑
+
+            } else if (state == BindUtils.BIND_SUC) {//成功
+
+
+            } else if (state == BindUtils.BIND_NULL) {
+
+            } else {
+
+            }
+        });
+    }
+
+    @Override
+    public void onBindSuccess() {
+        AppLogger.d("onBindSuccess");
+
+        progressLoading.setVisibility(View.INVISIBLE);
+        if (presenter != null) {
+            presenter.unsubscribe();
+        }
+
+        String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+        AppLogger.d("panoramaConfigure:" + panoramaConfigure);
+        if (TextUtils.isEmpty(panoramaConfigure)) {
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+            SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                    fragment, android.R.id.content);
+        } else {
+            Bundle bundle = new Bundle();
+            customToolbar.setVisibility(View.INVISIBLE);
+            bundle.putString("PanoramaConfigure", panoramaConfigure);
+            bundle.putBoolean("Success", true);
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+            ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                    newInstance, android.R.id.content);
+        }
+
+    }
+
+    @Override
+    public void onBindFailed() {
+        AppLogger.d("onBindFailed");
+        vsLayoutSwitch.showNext();
+        if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                getString(R.string._720PanoramicCamera))) {
+            ivExplainGray.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onBindTimeout() {
+        AppLogger.d("onBindTimeout");
+        AppLogger.d("绑定失败了!!!!!!!!!!!!!");
+        progressLoading.setVisibility(View.INVISIBLE);
+        vsLayoutSwitch.showNext();
+        if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                getString(R.string._720PanoramicCamera))) {
+            ivExplainGray.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onRebindRequired(UdpConstant.UdpDevicePortrait portrait, String reason) {
+        AppLogger.d("onRebindRequired,reason:" + reason + ",portrait:" + portrait);
+        switch (portrait.pid) {
+            case 84: {// TODO: 2017/11/28 DC 11 不支持强绑 ,DC11没有 WiFi 模块
+                getAlertDialogManager().showDialog(this, "reBind", reason,
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            //强绑提示按钮,
+                            onBindNext();
+                        }, false);
+            }
+            break;
+            default: {
+                getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            //强绑提示按钮,
+                            onBindNext();
+                        }, false);
+            }
+            break;
+        }
+
+    }
+
+    @Override
+    public void onBindCidNotExist() {
+        AppLogger.d("onBindCidNotExist");
+        getAlertDialogManager().showDialog(this, "null", getString(R.string.RET_ECID_INVALID),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                }, false);
+        if (presenter != null) {
+            presenter.unsubscribe();
+        }
     }
 
     @OnClick(R.id.btn_bind_failed_repeat)

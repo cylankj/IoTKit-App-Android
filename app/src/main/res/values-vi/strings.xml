@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Nâng cấp thiết bị</string>
   <string name="DEVICE_UPGRADE_TIPS">Các thiết bị cần phải được bật để cập nhật phần mềm.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi-Online</string>
+  <string name="DEVICE_WIRED_CONNECTION">Kết nối có dây</string>
   <string name="DEViCE_NAME">Tên thiết bị không có</string>
   <string name="DIRECTION_180">Đảo hình (xoay 180 độ)</string>
   <string name="DIRECTION_NORMAL">Bình thường</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Lưu ý:5G WiFi chưa được bật</string>
   <string name="WIFI_SET_RS">Trong mục \"Cài đặt\"->\"WLAN\", chọn \"RS-CAM-*****\" kết nối iPhone, Mật khẩu 11111111</string>
   <string name="WIFI_SET_VER">Trong mục \"Cài đặt\"->\"WLAN\", chọn \"%s\" kết nối iPhone, Mật khẩu 11111111</string>
+  <string name="WIRED_GUIDE">Sử dụng cáp mạng để kết nối thiết bị và bộ định tuyến, đảm bảo thiết bị và APP sử dụng cùng một mạng</string>
   <string name="WIRED_MODE_CONNECTED">Đã kết nối</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Chọn thiết bị CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">Thiết bị CID</string>
   <string name="WONDER_TODAY_H_M">Hôm nay HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Hôm qua HH:mm</string>
   <string name="WeChat">WeChat</string>

@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Устройство обновлено</string>
   <string name="DEVICE_UPGRADE_TIPS">Устройство должно быть отскок, чтобы обновить программное обеспечение.</string>
   <string name="DEVICE_WIFI_ONLINE">Подключено к WiFi</string>
+  <string name="DEVICE_WIRED_CONNECTION">Проводное соединение</string>
   <string name="DEViCE_NAME">Недопустимое имя устройства</string>
   <string name="DIRECTION_180">Инверсия (поворот на 180°)</string>
   <string name="DIRECTION_NORMAL">По умолчанию</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Примечание:5ГГц WiFi сигнал не включен сейчас</string>
   <string name="WIFI_SET_RS">Зайдите в телефоне в настройки->сети WLAN, выберите \"RS-CAM******\", подключиться. Пароль:11111111</string>
   <string name="WIFI_SET_VER">Зайдите в телефоне в настройки->сети WLAN, выберите \"%s\", подключиться. Пароль:11111111</string>
+  <string name="WIRED_GUIDE">Используйте сетевой кабель для подключения устройства и маршрутизатора, обеспечить устройство и APP использовать ту же сеть</string>
   <string name="WIRED_MODE_CONNECTED">Связанный</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Выберите CID устройства</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">CID устройства</string>
   <string name="WONDER_TODAY_H_M">Сегодня HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Вчера HH:mm</string>
   <string name="WeChat">WeChat</string>

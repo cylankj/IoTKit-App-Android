@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Mise à jour</string>
   <string name="DEVICE_UPGRADE_TIPS">Le dispositif doit être rebondir à mettre à jour le logiciel.</string>
   <string name="DEVICE_WIFI_ONLINE">Connecté au Wifi</string>
+  <string name="DEVICE_WIRED_CONNECTION">Connexion filaire</string>
   <string name="DEViCE_NAME">Nom d\'appareil incorrect</string>
   <string name="DIRECTION_180">Inversion (rotation de 180°)</string>
   <string name="DIRECTION_NORMAL">Par défaut (normal)</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Note:Ne supporte pas le WiFi 5G</string>
   <string name="WIFI_SET_RS">Sur l\'phone via Réglages->WLAN, se connecter à RS-CAM-******, mot de passe 11111111</string>
   <string name="WIFI_SET_VER">Sur l\'phone via Réglages->WLAN, se connecter à %s, mot de passe 11111111</string>
+  <string name="WIRED_GUIDE">Utilisez un câble réseau pour connecter un appareil et un routeur, vérifier que le dispositif et APP utiliser le même réseau</string>
   <string name="WIRED_MODE_CONNECTED">Connecté</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Sélectionnez l\'appareil CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">Device CID</string>
   <string name="WONDER_TODAY_H_M">Aujourd\'hui HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Hier HH:mm</string>
   <string name="WeChat">WeChat</string>

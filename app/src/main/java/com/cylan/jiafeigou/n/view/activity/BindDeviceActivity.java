@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.n.view.bind.SNInputFragment;
+import com.cylan.jiafeigou.n.view.bind.WireBindActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -57,7 +58,9 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @OnClick({R.id.v_to_scan_qrcode,
             R.id.v_to_bind_camera,
             R.id.v_to_input_sn,
-            R.id.v_to_bind_panorama_camera})
+            R.id.v_to_bind_panorama_camera,
+            R.id.v_to_lan_mode
+    })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
@@ -88,6 +91,13 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 jump2PanoramaCam(true);
                 break;
             }
+            case R.id.v_to_lan_mode: {
+                ViewUtils.deBounceClick(view);
+                Intent intent = new Intent(this, WireBindActivity.class);
+
+                startActivity(intent);
+            }
+            break;
             default:
                 break;
         }

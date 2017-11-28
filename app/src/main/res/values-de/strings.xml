@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Software-Upgrade</string>
   <string name="DEVICE_UPGRADE_TIPS">Das Gerät benötigt werden Rebound-Software zu aktualisieren.</string>
   <string name="DEVICE_WIFI_ONLINE">Online via WiFi</string>
+  <string name="DEVICE_WIRED_CONNECTION">Kabelverbindung</string>
   <string name="DEViCE_NAME">Bitte Namen des Geräts eingeben</string>
   <string name="DIRECTION_180">Gegen Uhrzeigersinn (180° drehen)</string>
   <string name="DIRECTION_NORMAL">Im Uhrzeigersinn</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Hinweis:Unterstützt nicht die 5GHz WiFi</string>
   <string name="WIFI_SET_RS">Bitte \"RS-CAM-******\" in Einstellung vom phone->WLAN wählen,wenn Passwort erforderlich, bitte 11111111 eingeben</string>
   <string name="WIFI_SET_VER">Bitte \"%s\" in Einstellung vom phone->WLAN wählen,wenn Passwort erforderlich, bitte 11111111 eingeben</string>
+  <string name="WIRED_GUIDE">Verwenden Sie Netzwerkkabel anschließen Gerät und Router, sicherzustellen, Gerät und APP verwendet gleiches Netzwerk</string>
   <string name="WIRED_MODE_CONNECTED">Verbunden</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Gerät auswählen CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">Geräte-ID</string>
   <string name="WONDER_TODAY_H_M">Heute HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Gestern HH:mm</string>
   <string name="WeChat">WeChat</string>

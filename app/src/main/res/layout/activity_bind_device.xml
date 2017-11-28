@@ -51,6 +51,18 @@
                     android:textColor="@color/color_333333" />
 
                 <TextView
+                    android:id="@+id/v_to_lan_mode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawablePadding="@dimen/y5"
+                    android:drawableTop="@drawable/icon_sn"
+                    android:gravity="center"
+                    android:text="语言包:有线模式"
+                    android:textColor="@color/color_333333" />
+
+                <TextView
                     android:id="@+id/v_to_input_sn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

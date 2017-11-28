@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Cihaz yükseltme</string>
   <string name="DEVICE_UPGRADE_TIPS">Cihaz yazılımını güncellemek için tepme gerekmektedir.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi Çevrimiçi</string>
+  <string name="DEVICE_WIRED_CONNECTION">Kablolu bağlantı</string>
   <string name="DEViCE_NAME">Geçersiz cihaz adı</string>
   <string name="DIRECTION_180">Evirme (180° döndür)</string>
   <string name="DIRECTION_NORMAL">Normal</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">İpuçları:5Ghz WiFi sinyali şu an izinsiz</string>
   <string name="WIFI_SET_RS">Lütfen Ayarlamalar->WLAN aracaılığıyla RS-CAM-****** yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
   <string name="WIFI_SET_VER">Lütfen Ayarlamalar->WLAN aracaılığıyla %s yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
+  <string name="WIRED_GUIDE">cihaz ve yönlendirici bağlamak için ağ kablosunu kullanın, cihazı sağlamak ve APP aynı ağ kullanın</string>
   <string name="WIRED_MODE_CONNECTED">bağlantılı</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Cihaz seç CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">Cihaz CID</string>
   <string name="WONDER_TODAY_H_M">Bugün HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Dün HH:mm</string>
   <string name="WeChat">WeChat</string>

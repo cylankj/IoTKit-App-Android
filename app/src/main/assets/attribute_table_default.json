@@ -177,7 +177,6 @@
       "PID": "1494",
       "PRODUCT": "看家王AI摄像机·标准版",
       "PROTECTION": "1",
-      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "AI_CAMERA_NORMAL"
     },
@@ -189,15 +188,30 @@
       "DEVICE": "DOG-11W",
       "HANGUP": "0",
       "INTERVAL_ALARM": "60",
-      "LED": "1",
       "NTSC": "0",
       "OS": "84",
       "PID": "1495",
       "PRODUCT": "看家王AI摄像机·户外版",
       "PROTECTION": "1",
-      "SD/HD": "1",
       "STANDBY": "0",
       "VALUE": "AI_CAMERA_OUTDOOR",
+      "WIREDMODE": "1"
+    },
+    {
+      "AI_RECOGNITION": "[0,1,2,3]",
+      "AUTORECORD": "0",
+      "CIDPREFIX": "2903",
+      "DETECTION_ZONE": "0",
+      "DEVICE": "DOG-13W",
+      "HANGUP": "0",
+      "INTERVAL_ALARM": "60",
+      "NTSC": "0",
+      "OS": "92",
+      "PID": "1564",
+      "PRODUCT": "AI半球机",
+      "PROTECTION": "1",
+      "STANDBY": "0",
+      "VALUE": "AI_CAMERA_DOME",
       "WIREDMODE": "1"
     },
     {
@@ -628,6 +642,7 @@
       82,
       83,
       84,
+      92,
       1071,
       1088,
       1089,
@@ -647,8 +662,9 @@
       1385,
       1406,
       1494,
-      1495
+      1495,
+      1564
     ]
   },
-  "version": "20171125"
+  "version": "20171128"
 }

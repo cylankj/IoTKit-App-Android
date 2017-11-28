@@ -221,6 +221,7 @@ public class OptionalBindFlow extends AFullBind {
                         d.mac = ret.mac;
                         d.version = ret.version;
                         d.net = pingAck.net;
+                        d.pid = pingAck.pid;
                         subscriber.onNext(d);
                         subscriber.onCompleted();
                         //结束本身.

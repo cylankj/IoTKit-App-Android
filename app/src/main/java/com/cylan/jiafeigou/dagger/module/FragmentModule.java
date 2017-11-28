@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dagger.module;
 import com.cylan.jiafeigou.base.wrapper.DaggerSupportFragment;
 import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
+import com.cylan.jiafeigou.n.view.bind.SelectCidFragment;
 import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.cam.CreateNewFaceFragment;
 import com.cylan.jiafeigou.n.view.cam.DoorPassWordSettingFragment;
@@ -84,4 +85,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract MonitorAreaSettingFragment monitorAreaSettingFragment();
+
+    @ContributesAndroidInjector(modules = MVPModule2.class)
+    abstract SelectCidFragment selectCidFragment();
 }

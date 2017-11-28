@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Atualização do dispositivo</string>
   <string name="DEVICE_UPGRADE_TIPS">O dispositivo precisa ser rebote para atualizar software.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi online</string>
+  <string name="DEVICE_WIRED_CONNECTION">Conexão com fio</string>
   <string name="DEViCE_NAME">Nome de dispositivo inválido</string>
   <string name="DIRECTION_180">Invertido (girado 180°)</string>
   <string name="DIRECTION_NORMAL">Padrão</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Nota:WiFi em 5GHz não é suportado</string>
   <string name="WIFI_SET_RS">Por favor, selecione \"RS-CAM******\" na definições de WiFi. Se precisar de senha, digite 11111111</string>
   <string name="WIFI_SET_VER">Por favor, selecione \"%s\" na definições de WiFi. Se precisar de senha, digite 11111111</string>
+  <string name="WIRED_GUIDE">Use cabo de rede para conectar dispositivo e router, certifique-se de dispositivo e APP usar mesma rede</string>
   <string name="WIRED_MODE_CONNECTED">Conectado</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Select CID dispositivo</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">CID dispositivo</string>
   <string name="WONDER_TODAY_H_M">Hoje HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ontem HH:mm</string>
   <string name="WeChat">WeChat</string>

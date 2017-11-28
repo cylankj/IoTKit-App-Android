@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.utils
 
-import android.os.Handler
-import android.os.Message
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
 import com.cylan.jiafeigou.BuildConfig
@@ -15,6 +15,7 @@ import com.cylan.udpMsgPack.JfgUdpMsg
 import com.google.gson.Gson
 import rx.Observable
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by yanzhendong on 2017/11/22.
@@ -22,7 +23,6 @@ import rx.schedulers.Schedulers
 object APObserver {
     private val observers: MutableMap<String, Any> = mutableMapOf()
     private val scanResult = mutableMapOf<String, ScanResult>()
-    private val handler: Handler = LoopHandler()
     private val START_SCAN = 10000
     private val SCAN_PERIOD = 5000//五秒扫描
     fun addObserver(uuid: String) {
@@ -37,25 +37,107 @@ object APObserver {
 
     }
 
+    @JvmStatic
+    fun scanDogWiFi(): Observable<MutableList<ScanResult>> {
+        return Observable.create<ScanResult> { subscriber ->
+            var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
+                    .map {
+                        if (BuildConfig.DEBUG) {
+                            Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:" + Gson().toJson(it))
+                        }
+                        val secondaryHeard = unpackData<JfgUdpMsg.UdpSecondaryHeard>(it.data, JfgUdpMsg.UdpSecondaryHeard::class.java)
+                        return@map when {
+                            TextUtils.equals(secondaryHeard.cmd, UdpConstant.F_PING_ACK) -> {
+                                val fPingAck = unpackData<JfgUdpMsg.FPingAck>(it.data, JfgUdpMsg.FPingAck::class.java)
+                                ScanResult(
+                                        uuid = fPingAck.cid,
+                                        ip = it.ip,
+                                        port = it.port,
+                                        updateTime = it.time,
+                                        mac = fPingAck.mac,
+                                        version = fPingAck.version
+                                )
+                            }
+                            TextUtils.equals(secondaryHeard.cid, UdpConstant.PING_ACK) -> {
+                                val pingAck = unpackData<JfgUdpMsg.PingAck>(it.data, JfgUdpMsg.PingAck::class.java)
+                                ScanResult(
+                                        uuid = pingAck.cid,
+                                        ip = it.ip,
+                                        port = it.port,
+                                        updateTime = it.time
+                                )
+                            }
+                            else -> null
+                        }
+                    }
+                    .filter { it != null }
+                    .subscribe({
+                        subscriber.onNext(it)
+                    }) {
+                        it.printStackTrace()
+                    }
+            subscriber.add(subscribe)
+            subscribe = Schedulers.io().createWorker().schedulePeriodically({
+
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
+
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
+
+            }, 0, 500, TimeUnit.MILLISECONDS)
+            subscriber.add(subscribe)
+        }
+                .subscribeOn(Schedulers.io())
+                .buffer(5, TimeUnit.SECONDS)
+                .first()
+                .map {
+                    val map = mutableMapOf<String, ScanResult>()
+                    for (result in it) {
+                        map[result.uuid]?.apply {
+                            when {
+                                ip.isNotEmpty() -> result.ip = ip
+                                uuid.isNotEmpty() -> result.uuid = uuid
+                                port.toInt() != 0 -> result.port = port
+                                updateTime != 0L -> result.updateTime = updateTime
+                                os != 0 -> result.os = os
+                                mac.isNotEmpty() -> result.mac = mac
+                                version.isNotEmpty() -> result.version = version
+                                net != 0 -> result.net = net
+                            }
+                        }
+                        map[result.uuid] = result
+                    }
+                    map.values.toMutableList()
+                }
+    }
+
+    @JvmStatic
     fun scan(uuid: String): Observable<ScanResult> {
         return Observable.create<ScanResult> { subscriber ->
-            RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
+            val subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
                     .map {
                         if (BuildConfig.DEBUG) {
                             Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:" + Gson().toJson(it))
                         }
 
                         val secondaryHeard = unpackData<JfgUdpMsg.UdpSecondaryHeard>(it.data, JfgUdpMsg.UdpSecondaryHeard::class.java)
-                        ScanResult(secondaryHeard.cid, it.ip, it.port, it.time, secondaryHeard)
+                        ScanResult(
+                                uuid = secondaryHeard.cid,
+                                ip = it.ip,
+                                port = it.port,
+                                updateTime = it.time,
+                                mac = secondaryHeard.mac
+                        )
                     }
-                    .first { TextUtils.equals(it.uuid, uuid) && TextUtils.equals(it.header.cmd, UdpConstant.F_PING_ACK) }
+                    .first { TextUtils.equals(it.uuid, uuid) }
                     .subscribe({
                         subscriber.onNext(it)
                         subscriber.onCompleted()
                     }) {
                         subscriber.onError(it)
                     }
-
+            subscriber.add(subscribe)
             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
@@ -64,17 +146,46 @@ object APObserver {
                 .subscribeOn(Schedulers.io())
     }
 
-    data class ScanResult(var uuid: String, var ip: String, var port: Short, var updateTime: Long, var header: JfgUdpMsg.UdpSecondaryHeard)
+    data class ScanResult(var uuid: String = "",
+                          var ip: String = "",
+                          var port: Short = 0,
+                          var updateTime: Long = 0,
+                          var os: Int = 0,
+                          var mac: String = "",
+                          var version: String = "",
+                          var net: Int = 0
+    ) : Parcelable {
+        constructor(source: Parcel) : this(
+                source.readString(),
+                source.readString(),
+                source.readInt().toShort(),
+                source.readLong(),
+                source.readInt(),
+                source.readString(),
+                source.readString(),
+                source.readInt()
+        )
 
-    private class LoopHandler : Handler() {
-        override fun handleMessage(msg: Message) {
-            when (msg.what) {
-                START_SCAN -> {
-                    if (observers.isNotEmpty()) {
-                        scan()
-                    }
-                }
+        override fun describeContents() = 0
+
+        override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+            writeString(uuid)
+            writeString(ip)
+            writeInt(port.toInt())
+            writeLong(updateTime)
+            writeInt(os)
+            writeString(mac)
+            writeString(version)
+            writeInt(net)
+        }
+
+        companion object {
+            @JvmField
+            val CREATOR: Parcelable.Creator<ScanResult> = object : Parcelable.Creator<ScanResult> {
+                override fun createFromParcel(source: Parcel): ScanResult = ScanResult(source)
+                override fun newArray(size: Int): Array<ScanResult?> = arrayOfNulls(size)
             }
         }
     }
+
 }

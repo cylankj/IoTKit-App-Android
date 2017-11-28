@@ -163,6 +163,7 @@ public class BindUtils {
         devicePortrait.mac = fPingAck.mac;
         devicePortrait.version = fPingAck.version;
         devicePortrait.net = pingAck.net;
+        devicePortrait.pid = pingAck.pid;
         return devicePortrait;
     }
 

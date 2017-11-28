@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">ソフトウェアアップグレード</string>
   <string name="DEVICE_UPGRADE_TIPS">デバイスは、ソフトウェアを更新するために反発する必要があります。</string>
   <string name="DEVICE_WIFI_ONLINE">WiFiオンライン</string>
+  <string name="DEVICE_WIRED_CONNECTION">有線接続</string>
   <string name="DEViCE_NAME">デバイス名を入力してください</string>
   <string name="DIRECTION_180">逆向き（上下回転180°）</string>
   <string name="DIRECTION_NORMAL">デフォルト（正面）</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">注意：ただいま5GHz式のWiFi電波が適用されません</string>
   <string name="WIFI_SET_RS">システム設定-> WiFiにRS-CAM -******を選択し追加してください,パスワード11111111</string>
   <string name="WIFI_SET_VER">システム設定-> WiFiに %s を選択し追加してください,パスワード11111111</string>
+  <string name="WIRED_GUIDE">デバイスとルータを接続するネットワークケーブルを使用して、デバイスを確保し、APPは、同じネットワークを使用</string>
   <string name="WIRED_MODE_CONNECTED">接続済み</string>
+  <string name="WIRED_SELECT_DEVICE_CID">デバイスCIDを選択</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">デバイスCID</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="WeChat">WeChat</string>

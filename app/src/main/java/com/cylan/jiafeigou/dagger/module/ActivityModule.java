@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.dagger.annotation.ActivityScope;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellRecordDetailActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
+import com.cylan.jiafeigou.n.view.bind.WireBindActivity;
 import com.cylan.jiafeigou.n.view.mine.ShareContentWebH5Activity;
 import com.cylan.jiafeigou.n.view.panorama.LiveSettingActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity;
@@ -59,6 +60,7 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract ShareMediaActivity shareMediaActivity();
+
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract PanoramaCameraActivity panoramaCameraActivity();
@@ -74,4 +76,8 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract ShareContentWebH5Activity shareContentWebH5Activity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = MVPModule2.class)
+    abstract WireBindActivity wireBindActivity();
 }

@@ -277,6 +277,7 @@ public class SimpleBindFlow extends AFullBind {
                         devicePortrait.mac = ret.mac;
                         devicePortrait.version = ret.version;
                         devicePortrait.net = pingAck.net;
+                        devicePortrait.pid = pingAck.pid;
                         if (subscriber != null && !subscriber.isUnsubscribed()) {
                             subscriber.onNext(devicePortrait);
                             subscriber.onCompleted();

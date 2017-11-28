@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
@@ -23,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -112,7 +114,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         private Subscription subscriptionBindResult;
         private static final long TIME_OUT = 90 * 1000;
         private String uuid;
-
+        private UdpConstant.UdpDevicePortrait portrait;
         //        private boolean sendBindInfo;
         private static final int INTERVAL = 3;
 
@@ -157,16 +159,33 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
          */
         private Subscription bindResultSub() {
             return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
-                    .subscribeOn(AndroidSchedulers.mainThread())
                     .filter(ret -> viewWeakReference.get() != null)
+                    .subscribeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
-                        if (ret.bindResult != 0) {//0表示正常绑定
-                            RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
-                            viewWeakReference.get().bindState(ret.bindResult);
-                            if (subscription != null) {
-                                subscription.unsubscribe();
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
+                        switch (ret.bindResult) {
+                            case JError.ErrorOK: {
+                                //绑定成功了
+                                viewWeakReference.get().onBindSuccess();
                             }
+                            break;
+                            case BindUtils.BIND_FAILED: {
+                                viewWeakReference.get().onBindFailed();
+                            }
+                            break;
+                            case JError.ErrorCIDBinded: {
+                                viewWeakReference.get().onRebindRequired(portrait, ret.reason);
+                            }
+                            break;
+                            case BindUtils.BIND_NULL: {
+                                viewWeakReference.get().onBindCidNotExist();
+                            }
+                            break;
                         }
+                        if (subscription != null) {
+                            subscription.unsubscribe();
+                        }
+//                        }
                     }, AppLogger::e);
         }
 
@@ -174,7 +193,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         private Subscription submitBindDeviceSub() {
             JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
             String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-            UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+            portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
             if (portrait == null || account == null || TextUtils.isEmpty(portrait.uuid)) {
                 AppLogger.w("当前情况下无法进行绑定!!!!!");
                 return Observable.empty().subscribe();
@@ -228,7 +247,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                 bindState = BIND_TIME_OUT;
                                 simulatePercent.stop();
                                 if (viewWeakReference.get() != null) {
-                                    viewWeakReference.get().bindState(bindState);
+                                    viewWeakReference.get().onBindTimeout();
                                 }
                                 AppLogger.e("绑定设备超时");
                             }
@@ -278,7 +297,17 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         @Override
         public void actionDone() {
             if (viewWeakReference.get() != null) {
-                viewWeakReference.get().bindState(bindState);
+                switch (bindState) {
+                    case BIND_SUC: {
+                        viewWeakReference.get().onBindSuccess();
+                    }
+                    break;
+                    case BIND_TIME_OUT: {
+                        viewWeakReference.get().onBindTimeout();
+                    }
+                    break;
+                }
+
             }
         }
 

@@ -257,16 +257,21 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     @Override
     public final void onBackPressed() {
         boolean willExit = getSupportFragmentManager().getBackStackEntryCount() == 0;
+        boolean hasConsumed = false;
         for (ActivityBackInterceptor interceptor : interceptors) {
             try {
                 if (interceptor.performBackIntercept(willExit)) {
-                    return;
+                    hasConsumed = true;
                 }
                 //如果出现异常直接捕获就行了
             } catch (Exception e) {
                 e.printStackTrace();
                 AppLogger.e(MiscUtils.getErr(e));
             }
+        }
+        //每个类都可以接收到 back 事件,但需要子类自己判断是否需要消费 back 事件
+        if (hasConsumed) {
+            return;
         }
         super.onBackPressed();
     }

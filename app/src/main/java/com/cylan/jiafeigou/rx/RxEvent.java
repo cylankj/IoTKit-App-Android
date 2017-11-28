@@ -296,14 +296,16 @@ public class RxEvent {
     public static final class BindDeviceEvent {
         public int bindResult;
         public String uuid;
+        public String reason;
 
         public BindDeviceEvent(int jfgResult) {
             this.bindResult = jfgResult;
         }
 
-        public BindDeviceEvent(int jfgResult, String uuid) {
+        public BindDeviceEvent(int jfgResult, String uuid, String reason) {
             this.bindResult = jfgResult;
             this.uuid = uuid;
+            this.reason = reason;
         }
 
         @Override
@@ -311,6 +313,7 @@ public class RxEvent {
             return "BindDeviceEvent{" +
                     "bindResult=" + bindResult +
                     ", uuid='" + uuid + '\'' +
+                    ", reason='" + reason + '\'' +
                     '}';
         }
     }

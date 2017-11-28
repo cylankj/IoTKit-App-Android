@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">Aggiornamento software dispositivo</string>
   <string name="DEVICE_UPGRADE_TIPS">Il dispositivo deve essere rimbalzo per aggiornare il software.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi On-line</string>
+  <string name="DEVICE_WIRED_CONNECTION">Connessione via cavo</string>
   <string name="DEViCE_NAME">Inserire nome dispositivo</string>
   <string name="DIRECTION_180">Inversione (ruota 180°)</string>
   <string name="DIRECTION_NORMAL">Normale</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Nota: il segnale WiFi 5Ghz non è ancora supportato</string>
   <string name="WIFI_SET_RS">Andare in \"Settings\"->\"WLAN\",scegliere \"RS-CAM-******\" collegare il telefono,password è 11111111</string>
   <string name="WIFI_SET_VER">Andare in \"Settings\"->\"WLAN\",scegliere \"%s\" collegare il telefono,password è 11111111</string>
+  <string name="WIRED_GUIDE">Usare un cavo di rete per collegare il dispositivo e router, assicurarsi dispositivo e APP utilizzare stessa rete</string>
   <string name="WIRED_MODE_CONNECTED">Collegato</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Selezionare CID dispositivo</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">CID dispositivo</string>
   <string name="WONDER_TODAY_H_M">Oggi HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ieri HH:mm</string>
   <string name="WeChat">WeChat</string>

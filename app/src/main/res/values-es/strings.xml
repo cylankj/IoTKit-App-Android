@@ -148,6 +148,7 @@
   <string name="DEVICE_UPGRADE">mejoras de equipo</string>
   <string name="DEVICE_UPGRADE_TIPS">El dispositivo debe ser de rebote para actualizar el software.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFionline</string>
+  <string name="DEVICE_WIRED_CONNECTION">Conexión por cable</string>
   <string name="DEViCE_NAME">Introduzca el nombre del dispositivo</string>
   <string name="DIRECTION_180">Invertido (girado 180 °)</string>
   <string name="DIRECTION_NORMAL">Defecto</string>
@@ -1129,7 +1130,10 @@
   <string name="WIFI_SET_5GTIPS">Nota:No es compatible con el WiFi 5G</string>
   <string name="WIFI_SET_RS">Ajustes de phone ->Red de área local inalámbrica,elija RS-CAM****** entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WIFI_SET_VER">Ajustes de phone ->Red de área local inalámbrica,elija %s entre,si necesitan contraseña, introduzca 11111111</string>
+  <string name="WIRED_GUIDE">Utilice cable de red para conectar el dispositivo y el router, asegúrese de dispositivo y la aplicación Utilizar misma red</string>
   <string name="WIRED_MODE_CONNECTED">Conectado</string>
+  <string name="WIRED_SELECT_DEVICE_CID">Seleccionar dispositivo CID</string>
+  <string name="WIRED_SELECT_DEVICE_CID_TIPS">dispositivo CID</string>
   <string name="WONDER_TODAY_H_M">Hoy HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ayer HH:mm</string>
   <string name="WeChat">WeChat</string>
