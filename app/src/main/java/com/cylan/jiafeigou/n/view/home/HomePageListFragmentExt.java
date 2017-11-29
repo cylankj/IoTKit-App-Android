@@ -67,8 +67,6 @@ import com.google.gson.Gson;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
-import com.mikepenz.fastadapter.commons.utils.DiffCallbackImpl;
-import com.mikepenz.fastadapter.commons.utils.FastAdapterDiffUtil;
 
 import java.io.File;
 import java.util.List;
@@ -242,7 +240,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
                     AppLogger.w("IndexOutOfBoundsException");
-                    rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
+//                    rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
                 }
             }
         });
@@ -250,7 +248,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         FastAdapter<HomeItem> itemFastAdapter = new FastAdapter<>();
         itemFastAdapter.withOnClickListener(this);
         itemFastAdapter.withOnLongClickListener(this);
-        mItemAdapter.withComparator(null);
         rVDevicesList.setAdapter(mItemAdapter.wrap(itemFastAdapter));
         enableNestedScroll();
     }
@@ -364,17 +361,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    private Runnable runnable = this::updateImmediately;
-
     @UiThread
     @Override
     public void onItemsRsp(List<Device> resultList) {
-        refreshFinish = true;
-//        this.resultList = resultList;
-//        if (!getUserVisibleHint()) return;
-        ItemAdapter<HomeItem> set = FastAdapterDiffUtil.set(mItemAdapter, MiscUtils.getHomeItemListFromDevice(resultList), new DiffCallbackImpl<>(), true);
-        onRefreshFinish();
+        mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(resultList));
         emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        onRefreshFinish();
     }
 
     private void enableNestedScroll() {
@@ -418,7 +410,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onItemUpdate(int index) {
         if (mItemAdapter != null
                 && MiscUtils.isInRange(0, mItemAdapter.getItemCount(), index)) {
-            mItemAdapter.notifyItemChanged(index);
+            srLayoutMainContentHolder.removeCallbacks(notifyRunnable);
+            srLayoutMainContentHolder.post(notifyRunnable);
         }
     }
 
@@ -513,18 +506,21 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+    private Runnable notifyRunnable = () -> {
+        mItemAdapter.notifyDataSetChanged();
+        if (srLayoutMainContentHolder.isRefreshing()) {
+            srLayoutMainContentHolder.setRefreshing(false);
+            srLayoutMainContentHolder.clearAnimation();
+            enableNestedScroll();
+            AppLogger.w("stop refreshing ui");
+        }
+    };
+
     @Override
     public void onRefreshFinish() {
-        mItemAdapter.notifyDataSetChanged();
-        srLayoutMainContentHolder.postDelayed(() -> {
-            if (srLayoutMainContentHolder.isRefreshing()) {
-                srLayoutMainContentHolder.setRefreshing(false);
-                srLayoutMainContentHolder.clearAnimation();
-                enableNestedScroll();
-                AppLogger.w("stop refreshing ui");
-            }
-
-        }, 1500);
+        refreshFinish = true;
+        srLayoutMainContentHolder.removeCallbacks(notifyRunnable);
+        srLayoutMainContentHolder.postDelayed(notifyRunnable, 1500);
     }
 
     @Override

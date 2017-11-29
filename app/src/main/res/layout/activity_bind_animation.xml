@@ -34,6 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_main_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/y20"
+        android:layout_marginStart="@dimen/y20"
         android:layout_marginTop="@dimen/y15"
         android:gravity="center"
         android:text="@string/Tap1_AddDevice_CameraTips"

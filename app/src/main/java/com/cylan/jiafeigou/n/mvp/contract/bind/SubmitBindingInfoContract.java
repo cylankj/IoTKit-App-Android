@@ -36,6 +36,7 @@ public interface SubmitBindingInfoContract {
     }
 
     interface Presenter extends BasePresenter {
-        void clean();
+
+        void sendBindRequest();
     }
 }

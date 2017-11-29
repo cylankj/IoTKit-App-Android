@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.jiafeigou.base.module.BaseForwardHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -23,6 +22,7 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -159,7 +159,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void subUuidList() {
         List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
         AppLogger.w("subUuidList?" + ListUtils.getSize(list));
-        getView().onItemsRsp(list);
+        getView().onItemsRsp(new ArrayList<>(list));
         getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 

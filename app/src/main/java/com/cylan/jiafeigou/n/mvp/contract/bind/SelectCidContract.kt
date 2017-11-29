@@ -14,10 +14,16 @@ interface SelectCidContract {
         fun onScanDogWiFiFinished(result: MutableList<APObserver.ScanResult>)
 
         fun onScanDogWiFiTimeout()
+
+        fun onSendDogConfigFinished()
+
+        fun onSendDogConfigError()
     }
 
     interface Presenter : JFGPresenter {
 
         fun refreshDogWiFi()
+
+        fun sendDogConfig(scanResult: APObserver.ScanResult)
     }
 }

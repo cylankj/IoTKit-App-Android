@@ -584,7 +584,15 @@ public class JFGRules {
             String os = loader.property(pid, "OS");
             try {
                 Integer intOS = Integer.valueOf(os);
-                hasMicFeature = intOS != 84;
+                switch (intOS) {
+                    case 84:
+                    case 92:
+                        hasMicFeature = false;
+                        break;
+                    default:
+                        hasMicFeature = true;
+                }
+//                hasMicFeature = intOS != 84;
             } catch (Exception e) {
             }
         }

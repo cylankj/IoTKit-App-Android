@@ -4,7 +4,8 @@
     style="@style/ripple_background"
     android:layout_width="match_parent"
     android:layout_height="@dimen/y54"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
     <RadioButton
         android:id="@+id/rbtn_item_check"

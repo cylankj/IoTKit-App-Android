@@ -58,7 +58,8 @@ public class HookHelper {
                     new Class<?>[]{iActivityManagerInterface}, new HookHandler(rawIActivityManager));
             mInstanceField.set(gDefault, proxy);
         } catch (Exception e) {
-            throw new RuntimeException("hookAMS Failed", e);
+            e.printStackTrace();
+//            throw new RuntimeException("hookAMS Failed", e);
         }
     }
 

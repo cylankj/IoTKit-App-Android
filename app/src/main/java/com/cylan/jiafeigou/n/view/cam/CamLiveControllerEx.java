@@ -620,7 +620,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         updateDoorLock();
 
         if (JFGRules.shouldObserverAP()) {//需要监听是否局域网在线
-            Subscription subscribe = APObserver.INSTANCE.scan(uuid).timeout(5, TimeUnit.SECONDS)
+            Subscription subscribe = APObserver.scan(uuid)
+                    .timeout(5, TimeUnit.SECONDS)
                     .subscribe(ret -> {
                         updateDoorLockFromPing(true);
                     }, e -> {

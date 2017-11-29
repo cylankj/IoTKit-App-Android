@@ -367,8 +367,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnBindDevRsp(int i, String s, String s1) {
-        AppLogger.w("onBindDev: " + i + " uuid:" + s);
-        RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s, s1));
+        AppLogger.w("onBindDev: " + i + " uuid:" + s + ",reason:" + s1);
+        RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(i, s, s1));
         PreferencesUtils.putString(JConstant.BINDING_DEVICE, "");
     }
 
