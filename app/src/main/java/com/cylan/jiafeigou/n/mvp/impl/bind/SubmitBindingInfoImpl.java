@@ -157,13 +157,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     simulatePercent.setOnAction(onAction);
                     simulatePercent.start();
                 })
-                .doOnTerminate(() -> {
-                    if (simulatePercent != null) {
-                        simulatePercent.stop();
-                        simulatePercent.setOnAction(null);
-                    }
-                    simulatePercent = null;
-                })
                 .flatMap(success -> Observable.fromEmitter((Action1<Emitter<Boolean>>) emitter -> {
                     if (success) {
                         simulatePercent.boost(() -> {
@@ -176,6 +169,13 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     }
                 }, Emitter.BackpressureMode.BUFFER))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate(() -> {
+                    if (simulatePercent != null) {
+                        simulatePercent.stop();
+                        simulatePercent.setOnAction(null);
+                    }
+                    simulatePercent = null;
+                })
                 .subscribe(success -> {
                     //绑定成功了
                     if (success) {

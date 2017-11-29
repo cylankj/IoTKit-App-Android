@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind
 
+import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpUtils
@@ -23,7 +24,7 @@ import javax.inject.Inject
  */
 class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : BasePresenter<SelectCidContract.View>(view), SelectCidContract.Presenter {
     override fun sendDogConfig(scanResult: APObserver.ScanResult) {
-        if (true) {
+        if (BuildConfig.DEBUG) {
             mock(scanResult)
             return
         }

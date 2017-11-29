@@ -25,14 +25,13 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
         SelectCidContract.View, PickCidDialog.PickerCallback {
     override fun onSendDogConfigFinished() {
         AppLogger.w("onSendDogConfigFinished")
-        next_step.viewZoomSmall {
-            val intent = Intent(context, SubmitBindingInfoActivity::class.java)
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, selectedScanResult?.uuid)
-            intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, BindDeviceActivity::class.java.name)
-            intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME))
-            startActivity(intent)
-            activity.finish()
-        }
+        next_step.viewZoomSmall(null)
+        val intent = Intent(context, SubmitBindingInfoActivity::class.java)
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, selectedScanResult?.uuid)
+        intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, BindDeviceActivity::class.java.name)
+        intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME))
+        startActivity(intent)
+        activity.finish()
     }
 
     override fun onSendDogConfigError() {
