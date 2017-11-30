@@ -6,9 +6,9 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -38,7 +38,7 @@ public class MineShareDeviceAdapter extends SuperAdapter<JFGShareListInfo> {
 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final JFGShareListInfo item) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(item.cid);
+        Device device = DataSourceManager.getInstance().getDevice(item.cid);
         int iconRes = JConstant.getOnlineIcon(device.pid);
         //昵称
         holder.setText(R.id.tv_share_device_name, TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);

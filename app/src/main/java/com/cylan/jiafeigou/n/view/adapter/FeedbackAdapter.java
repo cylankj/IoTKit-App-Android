@@ -11,11 +11,11 @@ import android.widget.TextView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.FeedbackManager;
 import com.cylan.jiafeigou.base.module.IManager;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -64,12 +64,12 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
                            IMulItemViewType<FeedBackBean> mulItemViewType) {
         super(context, items, mulItemViewType);
         manager = FeedbackManager.getInstance();
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         portraitUrl = account == null ? "" : account.getPhotoUrl();
     }
 
     private void refreshUrl() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         portraitUrl = account == null ? "" : account.getPhotoUrl();
     }
 

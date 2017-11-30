@@ -15,7 +15,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
@@ -24,7 +23,7 @@ import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.headset.HeadsetObserver;
@@ -230,7 +229,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void cancelViewer() {
-        Subscription subscribe =stopViewer()
+        Subscription subscribe = stopViewer()
                 .subscribe(ret -> {
                 }, AppLogger::e);
         addStopSubscription(subscribe);
@@ -271,8 +270,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     byte[] screenshot = appCmd.screenshot(false);
                     appCmd.stopPlay(viewHandler);
                     if (screenshot != null) {
-                        int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
-                        int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+                        int w = Command.videoWidth;
+                        int h = Command.videoHeight;
                         saveBitmap(JfgUtils.byte2bitmap(w, h, screenshot));
                     }
                 } catch (Exception e) {
@@ -423,7 +422,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchSpeaker() {
-        Subscription subscribe =setSpeaker(!liveStreamAction.speakerOn)
+        Subscription subscribe = setSpeaker(!liveStreamAction.speakerOn)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
                     if (mView != null) {
@@ -438,7 +437,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchMicrophone() {
-        Subscription subscribe =  setMicrophone(liveStreamAction.microphoneOn)
+        Subscription subscribe = setMicrophone(liveStreamAction.microphoneOn)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
                     if (mView != null) {

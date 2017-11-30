@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendScanAddBinding;
 import com.cylan.jiafeigou.misc.LinkManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
@@ -63,7 +63,7 @@ public class MineFriendQRScanFragment extends IBaseFragment<MineFriendScanAddCon
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         scanAddBinding.qrScanView.startCamera();
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         if (account != null && account.getAccount() != null) {
             rx.Observable.just("go")
                     .subscribeOn(Schedulers.io())
@@ -150,7 +150,7 @@ public class MineFriendQRScanFragment extends IBaseFragment<MineFriendScanAddCon
     @Override
     public void handleResult(final Result rawResult) {
         scanAddBinding.qrScanView.postDelayed(resumeRunnable, 2000);
-        String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
+        String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
 
         if (NetUtils.getJfgNetType() == 0) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));

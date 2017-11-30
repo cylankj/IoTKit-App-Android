@@ -29,6 +29,19 @@ import java.util.List;
  */
 
 public class BaseDPTaskFactory implements IDPTaskFactory {
+    private static BaseDPTaskFactory instance;
+
+    public static BaseDPTaskFactory getInstance() {
+        if (instance == null) {
+            synchronized (BaseDPTaskFactory.class) {
+                if (instance == null) {
+                    instance = new BaseDPTaskFactory();
+                }
+            }
+        }
+        return instance;
+    }
+
     @Override
     public IDPTask getTask(DBAction action, boolean multi, Object initValue) {
         try {

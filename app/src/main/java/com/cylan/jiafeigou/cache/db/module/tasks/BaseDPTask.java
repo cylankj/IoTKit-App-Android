@@ -27,10 +27,6 @@ import rx.Observable;
 public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTask<T>, IDPMultiTask<T> {
     protected IDPEntity entity;
     protected List<IDPEntity> multiEntity;
-    protected IDBHelper dpHelper;
-    protected JFGSourceManager sourceManager;
-    protected IPropertyParser propertyParser;
-    protected AppCmd appCmd;
     protected static Gson parser = new Gson();
     public static final long GLOBAL_NET_OPERATION_TIME_OUT = 30;
 
@@ -45,26 +41,6 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     public <R extends IDPSingleTask<T>> R init(IDPEntity cache) throws Exception {
         this.entity = cache;
         return (R) this;
-    }
-
-    @Override
-    public void setDBHelper(IDBHelper helper) {
-        this.dpHelper = helper;
-    }
-
-    @Override
-    public void setSourceManager(JFGSourceManager sourceManager) {
-        this.sourceManager = sourceManager;
-    }
-
-    @Override
-    public void setPropertyParser(IPropertyParser propertyParser) {
-        this.propertyParser = propertyParser;
-    }
-
-    @Override
-    public void setAppCmd(AppCmd appCmd) {
-        this.appCmd = appCmd;
     }
 
     //以 make 开头的是和 DP 打交道的,因此是有网操作

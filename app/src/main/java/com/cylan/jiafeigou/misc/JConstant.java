@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -603,7 +603,7 @@ public class JConstant {
         String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
         if (TextUtils.isEmpty(serviceKey)) {
 
-            long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
+            long seq =  Command.getInstance().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
             RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .first()
@@ -621,10 +621,10 @@ public class JConstant {
     }
 
     public static String blockPutFileToCloud(String localPath, String remotePath, int regionType) throws Exception {
-        int seq = BaseApplication.getAppComponent().getCmd().putFileToCloud(remotePath, localPath);
+        int seq =  Command.getInstance().putFileToCloud(remotePath, localPath);
         JFGMsgHttpResult result = RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).first(rsp -> rsp.requestId == seq).timeout(15, TimeUnit.SECONDS).toBlocking().first();
         if (result.ret == 200) {
-            return BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(regionType, remotePath);
+            return  Command.getInstance().getSignedCloudUrl(regionType, remotePath);
         }
         return null;
     }

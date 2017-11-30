@@ -9,7 +9,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -68,7 +68,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().addFriend(account, mesg);
+                        Command.getInstance().addFriend(account, mesg);
                         isSendReq = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -116,7 +116,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
+                        Command.getInstance().checkFriendAccount(s);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

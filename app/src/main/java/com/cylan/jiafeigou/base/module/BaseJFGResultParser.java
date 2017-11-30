@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.MethodFilter;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
@@ -22,7 +23,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -41,20 +41,20 @@ BaseJFGResultParser {
     public BaseJFGResultParser() {
     }
 
-    public Subscription initSubscription() {
-        return RxBus.getCacheInstance().toObservable(JFGResult.class)
-                .subscribeOn(Schedulers.io())
-                .retry((integer, throwable) -> true)
-                .subscribe(ret -> {
-                    try {
-                        parserResult(ret);
-                    } catch (Throwable throwable) {
-                    }
-                }, AppLogger::e);
+    private static BaseJFGResultParser instance;
+
+    public static BaseJFGResultParser getInstance() {
+        if (instance == null) {
+            synchronized (BaseJFGResultParser.class) {
+                if (instance == null) {
+                    instance = new BaseJFGResultParser();
+                }
+            }
+        }
+        return instance;
     }
 
-
-    private void parserResult(JFGResult jfgResult) {
+    public void parserResult(JFGResult jfgResult) {
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
@@ -71,7 +71,7 @@ BaseJFGResultParser {
                 //最短3s种一次。
                 if (MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
                     if (login) {
-                        BaseApplication.getAppComponent().getCmd().getAccount();
+                        Command.getInstance().getAccount();
                         PushPickerIntentService.start();
                         Schedulers.io().createWorker().schedule(() -> {
                             new FetchFriendsTask().call("");

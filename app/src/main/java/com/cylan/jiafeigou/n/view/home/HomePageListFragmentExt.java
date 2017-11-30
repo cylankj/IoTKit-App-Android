@@ -32,7 +32,9 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -40,7 +42,6 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
@@ -141,7 +142,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //            if (isVisibleToUser && isResumed() && getActivity() != null) {
 //            }        appbar.addOnOffsetChangedListener(this);
             srLayoutMainContentHolder.setOnRefreshListener(this);
-            onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+            onItemsRsp(DataSourceManager.getInstance().getAllDevice());
             updateAccount.run();
             presenter.fetchDeviceList(false);
         } else {
@@ -152,7 +153,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private void need2ShowUseCase() {
         boolean showUserCase = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
         boolean showTipAnimation = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_ANIMATION, true);
-//        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+//        JFGSourceManager sourceManager = DataSourceManager.getInstance();
 //        Account account = sourceManager.getAccount();
 //        if (account != null && account.isAvailable()) {
         if (showUserCase) {
@@ -274,7 +275,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
@@ -441,7 +442,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         public void run() {
 //            if (!isAdded()) return;
 
-            JFGAccount greetBean = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            JFGAccount greetBean = DataSourceManager.getInstance().getJFGAccount();
             tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
@@ -465,7 +466,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * @return
      */
     private String getBeautifulAlias(JFGAccount account) {
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             return "";
         }
         if (account == null) {
@@ -535,7 +536,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void autoLoginTip(int code) {
         if (code == JError.ERROR_LOGIN_TIME_OUT) {
-            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+            if (DataSourceManager.getInstance().isOnline()) {
                 ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
@@ -686,7 +687,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             .setAction(DBAction.UNBIND))
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
-                            .flatMap(i -> BaseApplication.getAppComponent().getTaskDispatcher().perform(i))
+                            .flatMap(i -> BaseDPTaskDispatcher.getInstance().perform(i))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(rsp -> {
                                 ToastUtil.showToast(getString(R.string.DELETED_SUC));

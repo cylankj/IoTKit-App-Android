@@ -1,11 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind
 
-import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.misc.JFGRules
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.n.mvp.contract.bind.SelectCidContract
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
@@ -24,10 +23,10 @@ import javax.inject.Inject
  */
 class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : BasePresenter<SelectCidContract.View>(view), SelectCidContract.Presenter {
     override fun sendDogConfig(scanResult: APObserver.ScanResult) {
-        if (BuildConfig.DEBUG) {
-            mock(scanResult)
-            return
-        }
+//        if (BuildConfig.DEBUG) {
+//            mock(scanResult)
+//            return
+//        }
 
         val subscribe = BindHelper.sendServerConfig(scanResult.uuid, scanResult.mac, JFGRules.getLanguageType())
                 .timeout(5, TimeUnit.SECONDS, Observable.just(null))
@@ -96,7 +95,7 @@ class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : Bas
     fun getDevicdPid(sn: String) {
         Observable.create<Long> { subscriber ->
             val data = DpUtils.pack(sn)
-            val seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(1, data)
+            val seq = Command.getInstance().sendUniservalDataSeq(1, data)
             subscriber.onNext(seq)
             subscriber.onCompleted()
         }

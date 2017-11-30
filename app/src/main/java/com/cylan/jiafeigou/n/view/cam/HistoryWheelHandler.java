@@ -7,11 +7,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -110,7 +110,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 playPreciseByTime((Long) value);
             }
         });
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         fragment.setTimeZone(JFGRules.getDeviceTimezone(device));
         fragment.setTimeFocus(getWheelCurrentFocusTime());
         fragment.setDateList(presenter.getFlattenDateList());

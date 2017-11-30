@@ -7,7 +7,6 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
@@ -136,12 +135,6 @@ public interface JFGSourceManager {
     Observable<String> unBindDevice(String uuid);
 
     ArrayList<Long> getHisDateList(String uuid);
-
-    void setDBHelper(IDBHelper dbHelper);
-
-    void setPropertyParser(IPropertyParser parser);
-
-    void setAppCmd(AppCmd appCmd);
 
     void initFromDB();
 

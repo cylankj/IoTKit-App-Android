@@ -1,18 +1,12 @@
 package com.cylan.jiafeigou.dagger.component
 
 import android.content.Context
-import com.cylan.jfgapp.interfases.AppCmd
-import com.cylan.jiafeigou.base.module.*
-import com.cylan.jiafeigou.base.view.IPropertyParser
-import com.cylan.jiafeigou.base.view.JFGSourceManager
-import com.cylan.jiafeigou.cache.db.view.IDBHelper
-import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher
+import com.cylan.jiafeigou.base.module.IHttpApi
 import com.cylan.jiafeigou.dagger.annotation.ContextLife
 import com.cylan.jiafeigou.dagger.annotation.Named
 import com.cylan.jiafeigou.dagger.module.ActivityModule
 import com.cylan.jiafeigou.dagger.module.CommonModule
 import com.cylan.jiafeigou.dagger.module.FragmentModule
-import com.cylan.jiafeigou.misc.pty.IProperty
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.support.badge.TreeHelper
 import com.danikula.videocache.HttpProxyCacheServer
@@ -49,30 +43,9 @@ interface AppComponent : AndroidInjector<BaseApplication> {
     @ContextLife()
     fun getAppContext(): Context
 
-    fun getSourceManager(): JFGSourceManager
-
-    fun getDBHelper(): IDBHelper
-
-
-    fun getTaskDispatcher(): IDPTaskDispatcher
-
-    fun getPropertyParser(): IPropertyParser
-
-    fun getBasePresenterInjector(): BasePresenterInjector
-
-    fun getInitializationManager(): BaseInitializationManager
-
-    fun getCmd(): AppCmd
-
     fun getHttpProxyCacheServer(): HttpProxyCacheServer
 
-    fun getHttpApiHelper(): BasePanoramaApiHelper
-
-    fun getDeviceInformationFetcher(): BaseDeviceInformationFetcher
-
     fun getOkHttpClient(): OkHttpClient
-
-    fun getProductProperty(): IProperty
 
     @Named("LogPath")
     fun getLogPath(): String

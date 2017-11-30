@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -11,6 +12,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -52,8 +54,8 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
 
     private void loadParameters() {
         try {
-            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
-                BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid);
+            if (DataSourceManager.getInstance().isOnline()) {
+                DataSourceManager.getInstance().syncDeviceProperty(uuid);
             }
         } catch (Exception e) {
         }
@@ -92,7 +94,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -111,7 +113,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
-                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
+                        Command.getInstance().robotSetData(uuid, ipList);
                         isInitSd = true;
                     } catch (Exception e) {
                         AppLogger.e("format sd： " + e.getLocalizedMessage());
@@ -177,9 +179,9 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public void updateAlias(Device device) {
         addSubscription(Observable.just(device)
                 .map(device1 -> {
-                    BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
+                    DataSourceManager.getInstance().updateDevice(device);
                     try {
-                        BaseApplication.getAppComponent().getCmd().setAliasByCid(device.uuid, device.alias);
+                        Command.getInstance().setAliasByCid(device.uuid, device.alias);
                         AppLogger.d("update alias suc");
                     } catch (JfgException e) {
                         AppLogger.e("err: set up remote alias failed: " + new Gson().toJson(device));

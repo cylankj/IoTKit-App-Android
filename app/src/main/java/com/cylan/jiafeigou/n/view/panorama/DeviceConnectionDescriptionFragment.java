@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.FragmentDeviceConnectionDescriptionBinding;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -46,7 +46,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
 
     private void setUpAP(View view) {
         AppLogger.d("将配置户外模式");
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
         intent.putExtra("PanoramaConfigure", "OutDoor");
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
@@ -56,7 +56,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
 
     private void setUpWiFi(View view) {
         AppLogger.d("将配置家居模式");
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
         intent.putExtra("PanoramaConfigure", "Family");
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);

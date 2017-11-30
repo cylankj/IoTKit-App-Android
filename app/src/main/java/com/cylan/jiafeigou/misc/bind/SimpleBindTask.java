@@ -1,11 +1,12 @@
 package com.cylan.jiafeigou.misc.bind;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
@@ -28,21 +29,20 @@ public class SimpleBindTask extends AbstractTask {
 
     @Override
     protected boolean successCondition() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(submitResult.uuid);
+        Device device = DataSourceManager.getInstance().getDevice(submitResult.uuid);
         return JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
     }
 
     @Override
     protected Func1<String, Boolean> sendInfo() {
         return s -> {
-            Device device = BaseApplication.getAppComponent()
-                    .getSourceManager().getDevice(submitResult.uuid);
+            Device device = DataSourceManager.getInstance().getDevice(submitResult.uuid);
             String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
             UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
             AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
             try {
                 if (portrait != null && device == null) {
-                    BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                    Command.getInstance().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                 }
                 return true;
             } catch (JfgException e) {

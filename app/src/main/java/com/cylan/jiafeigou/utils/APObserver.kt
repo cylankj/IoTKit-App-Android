@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.dp.DpUtils.unpackData
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.misc.bind.UdpConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -38,7 +38,6 @@ object APObserver {
     fun scan() {
 
     }
-
 
 
     @JvmStatic
@@ -89,11 +88,11 @@ object APObserver {
             subscriber.add(subscribe)
             subscribe = Schedulers.io().createWorker().schedulePeriodically({
 
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.FPing().toBytes())
 
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
 
             }, 0, 1, TimeUnit.SECONDS)
             subscriber.add(subscribe)

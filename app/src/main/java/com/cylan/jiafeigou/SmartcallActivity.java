@@ -19,12 +19,12 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.ads.AdsActivity;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -76,13 +76,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (Build.VERSION.SDK_INT >= 23) {
-            SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-        } else {
-            showWriteStoragePermissions();
-        }
+    protected void onResume() {
+        super.onResume();
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     /**
@@ -90,7 +86,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
      */
     private void goAheadAfterPermissionGranted() {
         //是否登录
-        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
+        int state = DataSourceManager.getInstance().getLoginState();
         if (state == LogState.STATE_ACCOUNT_ON) {
             Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
             startActivity(new Intent(this, NewHomeActivity.class), bundle);
@@ -270,15 +266,13 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
-//        if (AppLogger.permissionGranted) return;
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
+        presenter.startInitialization();
         if (initSub == null || initSub.isUnsubscribed()) {
             initSub = Observable.just("init")
                     .observeOn(Schedulers.io())
                     .map(cmd -> {
-                        BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
-                        BaseApplication.getAppComponent().getInitializationManager().initialization();
                         return cmd;
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -321,7 +315,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         super.onActivityResult(requestCode, resultCode, data);//接入了友盟登录功能,必须调用 super
         switch (requestCode) {
             case JConstant.CODE_AD_FINISH:
-                if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_ON) {
+                if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {
                     Intent intent = new Intent(this, NewHomeActivity.class);
                     PerformanceUtils.stopTrace("smartCall2LogResult");
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

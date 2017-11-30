@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
@@ -134,7 +135,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
+        device = DataSourceManager.getInstance().getDevice(this.uuid);
         BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
     }
 
@@ -142,7 +143,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
@@ -153,7 +154,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         //移动侦测
         swMotionDetection.setChecked(f);
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            Device aDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            Device aDevice = DataSourceManager.getInstance().getDevice(uuid);
             DpMsgDefine.DPSdStatus sdcard = aDevice.$(204, new DpMsgDefine.DPSdStatus());
             if (!isChecked) {
                 if (!JFGRules.hasSdcard(sdcard)) {
@@ -221,7 +222,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
      * @Deprecated 需要根据设备属性表
      */
     private void showDetail(boolean show) {
-        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        IProperty property = PropertiesLoader.getInstance();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean protection = property.hasProperty(device.pid, "PROTECTION");
         boolean warmsound = property.hasProperty(device.pid, "WARMSOUND");
@@ -280,7 +281,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> !isDetached())
                 .subscribe(what -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
                     //提示音
                     DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
                     fLayoutProtectionWarnEffect.setSubTitle(getString(notificationInfo.notification == 0
@@ -358,7 +359,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 TimePickDialogFragment timePickDialogFragment = TimePickDialogFragment.newInstance(getBundle(getString(R.string.FROME)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.timeStart != (int) value) {
                             info.timeStart = (int) value;
@@ -378,7 +379,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 TimePickDialogFragment timePickDialogFragment = TimePickDialogFragment.newInstance(getBundle(getString(R.string.TO)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.timeEnd != (int) value) {
                             info.timeEnd = (int) value;
@@ -401,7 +402,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     ToastUtil.showToast("good?" + value);
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.day != result) {
                             info.day = result;
@@ -450,7 +451,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((id, value) -> {
                     if (value != null && value instanceof Integer) {
                         Integer result = (Integer) value;
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
                         int info = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);
                         if (info != result) {
                             info = result;

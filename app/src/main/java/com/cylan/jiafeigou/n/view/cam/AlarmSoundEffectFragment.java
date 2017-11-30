@@ -11,11 +11,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamAlarmPresenterImpl;
@@ -92,7 +92,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         if (notificationInfo == null) {
             notificationInfo = new DpMsgDefine.DPNotificationInfo();
@@ -112,7 +112,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         setCache(notificationInfo);
     }
@@ -126,7 +126,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
 
     @OnClick({R.id.sv_mode_mute, R.id.sv_mode_bark, R.id.sv_mode_alarm, R.id.sv_warn_repeat_mode})
     public void onClick(View view) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
         switch (view.getId()) {
             case R.id.sv_mode_mute:

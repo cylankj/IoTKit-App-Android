@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.n.view.cam.FaceListContact
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
@@ -50,11 +50,11 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
             try {
                 var vid = Security.getVId()
-                vid="0001"
+                vid = "0001"
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
+                val sessionId = Command.getInstance().sessionId
                 val account = DataSourceManager.getInstance().account.account
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
@@ -144,11 +144,11 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         val subscribe = Observable.create<DpMsgDefine.FaceQueryResponse> { subscriber ->
             try {
                 var vid = Security.getVId()
-                vid="0001"
+                vid = "0001"
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
+                val sessionId = Command.getInstance().sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {
@@ -221,8 +221,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map {
-                    BaseApplication.getAppComponent().getCmd()
-                            .sendUniservalDataSeq(5, DpUtils.pack(DpMsgDefine.ReqContent(uuid, System.currentTimeMillis())))
+                    Command.getInstance().sendUniservalDataSeq(5, DpUtils.pack(DpMsgDefine.ReqContent(uuid, System.currentTimeMillis())))
                 }
                 .flatMap { seq ->
                     RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java)

@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -98,10 +98,10 @@ public class PanFUUpdate extends BaseFUUpdate {
                             }
                         });
         try {
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
+            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
             AppLogger.d("send fping :" + UdpConstant.IP);
         } catch (JfgException e) {
             e.printStackTrace();
@@ -132,8 +132,8 @@ public class PanFUUpdate extends BaseFUUpdate {
         resetRspRecv(true);
         makeUpdateRspRecv(5 * 60);//5分钟
         try {
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
+            Command.getInstance().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
+            Command.getInstance().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
         } catch (JfgException e) {
             AppLogger.e("发送升级包失败?" + MiscUtils.getErr(e));
         }

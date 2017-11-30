@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -16,7 +17,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -78,8 +79,8 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         int net = NetUtils.getJfgNetType();
         if (net != 0) {
             AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
-            BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
-            BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
+            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
             PerformanceUtils.stopTrace(TAG_NET_RECOVERY_FLOW);
             PerformanceUtils.startTrace(TAG_NET_LOGIN_FLOW);
         }
@@ -91,7 +92,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
      */
     private void finalSetSome() {
         Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
             //303,501
             long seq;
             try {
@@ -117,7 +118,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 }
                 list.add(_timeZone);
                 AppLogger.d("设置睿视属性?" + isRs);
-                seq = BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
+                seq = Command.getInstance().robotSetData(uuid, list);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (Exception e) {
@@ -135,7 +136,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
 
     @Override
     public void sendBindRequest() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
         UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
         AppLogger.d("设备画像为:" + new Gson().toJson(portrait));
@@ -159,6 +160,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 })
                 .flatMap(success -> Observable.fromEmitter((Action1<Emitter<Boolean>>) emitter -> {
                     if (success) {
+                        finalSetSome();
                         simulatePercent.boost(() -> {
                             emitter.onNext(true);
                             emitter.onCompleted();
@@ -179,7 +181,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 .subscribe(success -> {
                     //绑定成功了
                     if (success) {
-                        finalSetSome();
                         if (mView != null) {
                             mView.onBindSuccess();
                         }
@@ -213,6 +214,10 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                 }
                             }
                             break;
+                        }
+                    } else if (error instanceof IllegalArgumentException) {
+                        if (mView != null) {
+                            mView.onBindFailed();
                         }
                     }
                 });

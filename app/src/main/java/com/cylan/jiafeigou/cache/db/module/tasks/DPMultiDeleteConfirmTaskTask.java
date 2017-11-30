@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -18,7 +19,7 @@ public class DPMultiDeleteConfirmTaskTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.from(multiEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(entity -> dpHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null))
+                .flatMap(entity -> BaseDBHelper.getInstance().deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null))
                 .buffer(multiEntity.size())
                 .map(items -> new BaseDPTaskResult().setResultCode(0).setResultResponse(items));
     }

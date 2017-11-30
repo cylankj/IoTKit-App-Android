@@ -24,14 +24,4 @@ public interface IDPTaskDispatcher {
     Observable<IDPTaskResult> perform(IDPEntity entity);
 
     Observable<IDPTaskResult> perform(List<? extends IDPEntity> entities);
-
-    void setDBHelper(IDBHelper helper);
-
-    void setSourceManager(JFGSourceManager manager);
-
-    void setTaskFactory(IDPTaskFactory taskFactory);
-
-    void setPropertyParser(IPropertyParser parser);
-
-    void setAppCmd(AppCmd appCmd);
 }

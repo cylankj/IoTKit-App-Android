@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
@@ -106,8 +107,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        IProperty property = BaseApplication.getAppComponent().getProductProperty();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        IProperty property = PropertiesLoader.getInstance();
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
 
         //每个条目一个字段,有就显示没有就不显示,只有一个条目就显示 switch
         boolean record24 = property.hasProperty(device.pid, "24RECORD");
@@ -215,7 +216,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     }
 
     private void onSwitcherModeMotion(CompoundButton button, boolean checked) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (checked) {
             if (status == null || !status.hasSdcard) {//先提示没有 sd卡再提示关闭移动侦测
@@ -255,7 +256,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     @Override
     public void onDetach() {
         super.onDetach();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         int a = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         if (oldOption != a && oldOption != -1) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
@@ -306,12 +307,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     }
 
     private boolean alarmDisable() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         return device.$(ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     private boolean hasSdcard() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         return status != null && status.hasSdcard && status.err == 0;
     }

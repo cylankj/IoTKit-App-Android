@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -52,7 +52,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
                 .subscribeOn(Schedulers.io())
                 .subscribe(account -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().consentAddFriend(account);
+                        Command.getInstance().consentAddFriend(account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -89,7 +89,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
                 .subscribeOn(Schedulers.io())
                 .subscribe(mineAddReqBean -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().addFriend(mineAddReqBean.account, "");
+                        Command.getInstance().addFriend(mineAddReqBean.account, "");
                         isAddReqBack = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -108,7 +108,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getAddReqList -> {
                     // TODO: 2017/6/29
-//                    ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+//                    ArrayList<FriendsReqBean> arrayList = DataSourceManager.getInstance().getFriendsReqList();
 //                    if (ListUtils.getSize(arrayList) == 0) {
 //                        // 未向我发送过请求
 //                        if (getView() != null) getView().jump2AddReqFragment();
@@ -129,7 +129,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
         return rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
-                    BaseApplication.getAppComponent().getCmd().getFriendRequestList();
+                    Command.getInstance().getFriendRequestList();
                 }, AppLogger::e);
     }
 

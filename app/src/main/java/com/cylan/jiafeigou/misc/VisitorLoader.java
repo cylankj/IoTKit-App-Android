@@ -4,7 +4,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -44,14 +44,13 @@ public class VisitorLoader {
     }
 
     public static Observable<byte[]> getDataByte(final String uuid, int msgType, long timeSec) {
-        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+        final String sessionId = Command.getInstance().getSessionId();
         AppLogger.d("sessionId:" + sessionId);
         try {
             DpMsgDefine.ReqContent reqContent = new DpMsgDefine.ReqContent();
             reqContent.uuid = uuid;
             reqContent.timeSec = timeSec;
-            final long seq = BaseApplication.getAppComponent()
-                    .getCmd().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
+            final long seq =  Command.getInstance().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
             return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .map(ret -> {

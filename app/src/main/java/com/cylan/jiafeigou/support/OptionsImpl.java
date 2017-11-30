@@ -9,7 +9,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -99,7 +99,7 @@ public class OptionsImpl {
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        return BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(12, DpUtils.pack(new DpMsgDefine.GetRobotServerReq(cid, vid)));
+                        return Command.getInstance().sendUniservalDataSeq(12, DpUtils.pack(new DpMsgDefine.GetRobotServerReq(cid, vid)));
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

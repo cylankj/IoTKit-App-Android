@@ -10,7 +10,8 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -71,7 +72,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().setFriendMarkName(friendContextItem.friendAccount.account, newName);
+                        Command.getInstance().setFriendMarkName(friendContextItem.friendAccount.account, newName);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -83,7 +84,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                 .doOnSubscribe(() -> getView().showSendReqPro())
                 .doOnTerminate(() -> getView().hideSendReqPro())
                 .subscribe(result -> {
-                    ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                    ArrayList<JFGFriendAccount> friendsList = DataSourceManager.getInstance().getFriendsList();
                     if (friendsList != null) {
                         for (JFGFriendAccount friendAccount : friendsList) {
                             if (TextUtils.equals(friendAccount.account, friendContextItem.friendAccount.account)) {

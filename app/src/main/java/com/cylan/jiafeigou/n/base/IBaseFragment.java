@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.base;
 import android.content.Context;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -39,7 +40,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends BaseFragmen
     }
 
     public Device getDevice() {
-        return BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+        return DataSourceManager.getInstance().getDevice(uuid());
     }
 
     @Override

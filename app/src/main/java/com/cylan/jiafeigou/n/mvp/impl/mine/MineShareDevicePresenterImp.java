@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -56,7 +56,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             cids.add(device.uuid);
                         }
                     }
-                    BaseApplication.getAppComponent().getCmd().getShareList(cids);
+                    Command.getInstance().getShareList(cids);
                     return ret;
                 })
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class).first())

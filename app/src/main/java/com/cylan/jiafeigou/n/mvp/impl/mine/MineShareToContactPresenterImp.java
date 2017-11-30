@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -143,7 +143,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().shareDevice(uuid, shareContactItem.getAccount());
+                        Command.getInstance().shareDevice(uuid, shareContactItem.getAccount());
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
@@ -171,7 +171,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(item.getAccount());
+                        Command.getInstance().checkFriendAccount(item.getAccount());
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -186,7 +186,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     FriendContextItem friendContextItem = null;
                     boolean accountExist = true;
                     if (result != null) {
-                        JFGSourceManager manager = BaseApplication.getAppComponent().getSourceManager();
+                        JFGSourceManager manager = DataSourceManager.getInstance();
                         if (result.isFriend) {
                             ArrayList<JFGFriendAccount> friendsList = manager.getFriendsList();
                             JFGFriendAccount friendAccount = null;

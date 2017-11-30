@@ -1,13 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import android.util.Log;
-
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.ads.AdsStrategy;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -21,7 +17,6 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
@@ -47,7 +42,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 //                .observeOn(Schedulers.io())
                 .subscribe(event -> AutoSignIn.getInstance().autoLogin(), AppLogger::e);
         addSubscription(subscribe);
-        BaseApplication.getAppComponent().getInitializationManager().observeInitFinish();
     }
 
     @Override
@@ -94,22 +88,25 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 
     @Override
     public void reEnableSmartcallLog() {
-        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class).map(event -> true)
-                .first()
-                .observeOn(Schedulers.io())
-                .subscribe(event -> {
-                    try {
-                        Log.d("initAppCmd", "reEnableSmartcallLog start");
-                        BaseApplication.getAppComponent()
-                                .getCmd().enableLog(false, BaseApplication.getAppComponent().getLogPath());
-                        BaseApplication.getAppComponent()
-                                .getCmd().enableLog(true, BaseApplication.getAppComponent().getLogPath());
-                        throw new RxEvent.HelperBreaker("reEnableLog");
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                }, AppLogger::e);
-        addSubscription(subscribe);
+//        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class).map(event -> true)
+//                .first()
+//                .observeOn(Schedulers.io())
+//                .subscribe(event -> {
+//                    try {
+//                        Log.d("initAppCmd", "reEnableSmartcallLog start");
+//                        Command.getInstance().enableLog(false, BaseApplication.getAppComponent().getLogPath());
+//                        Command.getInstance().enableLog(true, BaseApplication.getAppComponent().getLogPath());
+//                        throw new RxEvent.HelperBreaker("reEnableLog");
+//                    } catch (JfgException e) {
+//                        e.printStackTrace();
+//                    }
+//                }, AppLogger::e);
+//        addSubscription(subscribe);
+    }
+
+    @Override
+    public void startInitialization() {
+        AppLogger.d("startInitialization");
     }
 }
 

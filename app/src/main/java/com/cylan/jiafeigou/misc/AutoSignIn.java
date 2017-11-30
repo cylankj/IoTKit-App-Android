@@ -6,7 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -128,10 +129,10 @@ public class AutoSignIn {
                             if (signType.type == 1) {
                                 clear_2x();
                                 Log.d(TAG, "will auto login:");
-                                BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, true);
+                                Command.getInstance().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, true);
                             } else if (signType.type >= 3) {
                                 clear_2x();
-                                BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
+                                Command.getInstance().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
                             } else if (signType.type == 0) {
                                 PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
@@ -146,7 +147,7 @@ public class AutoSignIn {
                     PerformanceUtils.stopTrace("autoLogin");
                     if (NetUtils.getNetType(ContextUtils.getContext()) == -1 && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
                         Log.d(TAG, "无网络连接,将进行离线登录");
-                        BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                        DataSourceManager.getInstance().initFromDB();
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));
                     }
                     return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
@@ -157,8 +158,8 @@ public class AutoSignIn {
                             if (hasPswError) {
                                 return new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass);
                             } else {
-                                Log.d(TAG, "   BaseApplication.getAppComponent().getSourceManager().initFromDB();");
-                                BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                Log.d(TAG, "   DataSourceManager.getInstance().initFromDB();");
+                                DataSourceManager.getInstance().initFromDB();
                                 return new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN);
                             }
                         })

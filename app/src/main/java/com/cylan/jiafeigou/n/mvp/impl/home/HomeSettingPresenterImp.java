@@ -29,7 +29,7 @@ import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.NotifyManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -97,10 +97,10 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         int loginType = DataSourceManager.getInstance().getLoginType();
         PreferencesUtils.remove(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.SINA.toString());
         UMShareAPI.get(activity).deleteOauth(activity, parseLoginType(loginType), null);
-        BaseApplication.getAppComponent().getSourceManager().logout()
+        DataSourceManager.getInstance().logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(retAccount -> {
-                    BaseApplication.getAppComponent().getCmd().logout();
+                    Command.getInstance().logout();
                     AutoSignIn.getInstance().autoLogout();
                     NotifyManager.getNotifyManager().clearAll();
                     RxBus.getCacheInstance().removeAllStickyEvents();
@@ -204,8 +204,8 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.resetFlag();
                 userInfo.setEnablePush(aBoolean);
                 try {
-                    BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
-                    BaseApplication.getAppComponent().getSourceManager().setJfgAccount(userInfo);
+                    Command.getInstance().setAccount(userInfo);
+                    DataSourceManager.getInstance().setJfgAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -215,7 +215,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.resetFlag();
                 userInfo.setEnableSound(aBoolean);
                 try {
-                    BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
+                    Command.getInstance().setAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -225,7 +225,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.resetFlag();
                 userInfo.setEnableVibrate(aBoolean);
                 try {
-                    BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
+                    Command.getInstance().setAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }

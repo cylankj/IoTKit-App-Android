@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.FeedbackManager;
 import com.cylan.jiafeigou.base.module.IManager;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
@@ -120,7 +121,7 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
         if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ThirdLoginTab.class)) {
             return PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
         }
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         return account != null ? account.getPhotoUrl() : "";
     }
 
@@ -147,7 +148,7 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
         return rx.Observable.just(bean)
                 .subscribeOn(Schedulers.io())
                 .map(ret -> {
-                    JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
                     FeedbackManager.SubmitFeedbackTask task = new FeedbackManager.SubmitFeedbackTask(account.getAccount(), bean);
                     pushManager.submitTask(task);
                     return true;

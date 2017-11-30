@@ -232,7 +232,7 @@ public class AddFriendReqDetailFragment extends IBaseFragment<MineFriendAddReqDe
     @Override
     public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
         // TODO: 2017/6/29 AAAAAAAAAAAAAAAAA 
-//        ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+//        ArrayList<FriendsReqBean> arrayList = DataSourceManager.getInstance().getFriendsReqList();
 //        for (FriendsReqBean bean : arrayList) {
 //            if (bean.account.equals(addRequestItems.account)) {
 //                // 向我发送过请求

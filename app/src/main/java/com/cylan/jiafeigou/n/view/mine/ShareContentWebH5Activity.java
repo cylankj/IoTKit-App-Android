@@ -16,12 +16,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.databinding.FragmentShareContentH5DetailBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -96,7 +96,7 @@ public class ShareContentWebH5Activity extends BaseActivity {
         subscribe = Observable.just(shareItem)
                 .map(items -> new DPEntity(null, 606, items.version, DBAction.DELETED, null))
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BaseApplication.getAppComponent().getTaskDispatcher().perform(ret))
+                .flatMap(ret -> BaseDPTaskDispatcher.getInstance().perform(ret))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     AppLogger.d("取消分享返回结果为:" + new Gson().toJson(result));

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNewPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -44,7 +44,7 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                         AppLogger.d("openLoginRegister:" + token);
                         int bindType = TextUtils.isEmpty(token) ? JConstant.TYPE_EMAIL : JConstant.TYPE_PHONE;
                         String bindToken = TextUtils.isEmpty(token) ? "" : token;
-                        BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, bindType, bindToken);
+                        Command.getInstance().setPwdWithBindAccount(pwd, bindType, bindToken);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

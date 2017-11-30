@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -111,9 +111,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(o -> {
                     try {
                         countUp(phone);
-                        int ret = BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                        int ret = Command.getInstance().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                         AppLogger.d("getCodeByPhone?" + ret);
-                    } catch (JfgException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     AppLogger.d("phone:" + phone);
@@ -136,7 +136,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, code, token);
+                        Command.getInstance().verifySMS(phone, code, token);
                         isRegSms = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -155,7 +155,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(ret -> {
                     try {
-                        return BaseApplication.getAppComponent().getCmd().checkAccountRegState(ret);
+                        return Command.getInstance().checkAccountRegState(ret);
                     } catch (JfgException e) {
                         return -1;
                     }
@@ -339,9 +339,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Subscription subscribe = Observable.create(subscriber -> {
             try {
                 if (loginType >= 3) {//第三方登录
-                    BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account, password, loginType);
+                    Command.getInstance().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account, password, loginType);
                 } else {//账号密码登录
-                    BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
+                    Command.getInstance().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
                 }
                 subscriber.onNext("登录开始了");
                 Log.d("", "登录过程开始了..." + "username:" + account + ",password:" + password + ",loginType:" + loginType);

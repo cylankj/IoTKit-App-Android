@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -75,7 +75,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                 .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
-                        int i = BaseApplication.getAppComponent().getCmd().changePassword(account, oldPass, newPass);
+                        int i = Command.getInstance().changePassword(account, oldPass, newPass);
                         AppLogger.d("sendChangePassReq:" + i);
                     } catch (JfgException e) {
                         e.printStackTrace();

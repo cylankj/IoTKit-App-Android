@@ -3,10 +3,11 @@ package com.cylan.jiafeigou.misc.ver;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.DevUpgradeInfo;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -59,11 +60,11 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.getCid());
+                    Device device = DataSourceManager.getInstance().getDevice(portrait.getCid());
                     final String currentVersion = device.$(207, "");
                     AppLogger.d("current version: " + currentVersion);
                     try {
-                        seq = BaseApplication.getAppComponent().getCmd()
+                        seq =  Command.getInstance()
                                 .checkDevVersion(device.pid, device.getUuid(), currentVersion);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());

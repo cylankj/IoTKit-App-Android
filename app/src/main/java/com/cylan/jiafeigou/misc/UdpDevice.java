@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -37,9 +37,9 @@ public class UdpDevice {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(ip,
+                        Command.getInstance().sendLocalMessage(ip,
                                 UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(ip,
+                        Command.getInstance().sendLocalMessage(ip,
                                 UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -79,8 +79,8 @@ public class UdpDevice {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, new JfgUdpMsg.Ping().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, new JfgUdpMsg.Ping().toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, new JfgUdpMsg.Ping().toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, new JfgUdpMsg.Ping().toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -103,8 +103,8 @@ public class UdpDevice {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, new JfgUdpMsg.FPing().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, new JfgUdpMsg.FPing().toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, new JfgUdpMsg.FPing().toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -131,9 +131,9 @@ public class UdpDevice {
                 .flatMap(s -> {
                     try {
                         JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(portrait.uuid, portrait.mac, ssid, pwd);
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, setWifi.toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, setWifi.toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(host, port, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(host, port, setWifi.toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

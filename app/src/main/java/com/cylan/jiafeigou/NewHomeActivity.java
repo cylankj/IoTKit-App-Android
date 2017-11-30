@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
@@ -141,7 +142,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onStart() {
         super.onStart();
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_OFF) {
+        if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_OFF) {
             finish();
             Intent intent = new Intent(this, SmartcallActivity.class);
             intent.putExtra(JConstant.FROM_LOG_OUT, true);

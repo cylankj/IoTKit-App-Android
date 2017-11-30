@@ -11,8 +11,9 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -86,7 +87,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
+                        Command.getInstance().checkFriendAccount(account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -98,7 +99,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                     if (result != null && result.code == JError.ErrorOK) {
                         if (result.isFriend) {
                             JFGFriendAccount friendAccount = null;
-                            ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                            ArrayList<JFGFriendAccount> friendsList = DataSourceManager.getInstance().getFriendsList();
                             if (friendsList != null) {
                                 for (JFGFriendAccount friend : friendsList) {
                                     if (TextUtils.equals(friend.account, result.account)) {

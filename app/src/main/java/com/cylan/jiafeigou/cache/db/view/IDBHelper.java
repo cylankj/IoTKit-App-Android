@@ -4,8 +4,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.jiafeigou.base.view.IPropertyParser;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -108,10 +106,6 @@ public interface IDBHelper {
     void clearMsg(String uuid, Integer msgId);
 
     void clearDevice();
-
-    void setDataSourceManager(JFGSourceManager manager);
-
-    void setPropertyParser(IPropertyParser parser);
 
     void deleteDpSync(String account, String uuid, int msdId);
 

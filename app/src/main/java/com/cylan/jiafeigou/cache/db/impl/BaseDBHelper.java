@@ -11,8 +11,8 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.base.view.IPropertyParser;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -67,10 +67,8 @@ public class BaseDBHelper implements IDBHelper {
     private AccountDao accountDao;
     private DeviceDao deviceDao;
     private HistoryFileDao historyFileDao;
-    private IPropertyParser propertyParser;
     private Account dpAccount;
     private DaoSession daoSession;
-    private JFGSourceManager sourceManager;
 
     private static BaseDBHelper instance;
 
@@ -133,7 +131,7 @@ public class BaseDBHelper implements IDBHelper {
             }
             Set<DPEntity> result = new HashSet<>();
             DPEntity dpEntity = null;
-            Device device = sourceManager.getDevice(uuid);
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
                 long select = HashStrategyFactory.INSTANCE.select(uuid, msg.id, msg.version);
                 if (device != null && device.available()) {
@@ -150,8 +148,8 @@ public class BaseDBHelper implements IDBHelper {
                 }
                 dpEntity.setAction(DBAction.SAVED);
                 dpEntity.setState(DBState.SUCCESS);
-                if (propertyParser.isProperty((int) msg.id)) {
-                    DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                if (BasePropertyParser.getInstance().isProperty((int) msg.id)) {
+                    DataPoint dataPoint = BasePropertyParser.getInstance().parser((int) msg.id, msg.packValue, msg.version);
                     dpEntity.setValue(dataPoint, msg.packValue, msg.version);
                     if (device != null && device.available()) {
                         device.updateProperty((int) msg.id, dpEntity);
@@ -178,7 +176,7 @@ public class BaseDBHelper implements IDBHelper {
 //            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
 //            PropertyItem item = null;
-            Device device = sourceManager.getDevice(dataRsp.identity);
+            Device device = DataSourceManager.getInstance().getDevice(dataRsp.identity);
 
             CacheHolderKt.saveProperty(dataRsp.identity, (Map<Long, List<?>>) (Object) dataRsp.map, HashStrategyFactory.INSTANCE::select);
 
@@ -207,8 +205,8 @@ public class BaseDBHelper implements IDBHelper {
                     }
                     dpEntity.setAction(DBAction.SAVED);
                     dpEntity.setState(DBState.SUCCESS);
-                    if (propertyParser.isProperty((int) msg.id)) {
-                        DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                    if (BasePropertyParser.getInstance().isProperty((int) msg.id)) {
+                        DataPoint dataPoint = BasePropertyParser.getInstance().parser((int) msg.id, msg.packValue, msg.version);
                         dpEntity.setValue(dataPoint, msg.packValue, msg.version);
                         if (device != null && device.available()) {
                             device.updateProperty((int) msg.id, dpEntity);
@@ -289,7 +287,6 @@ public class BaseDBHelper implements IDBHelper {
     public Device getJFGDevice(String uuid) {
         QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
         Device device = queryBuilder.unique();
-        device.setPropertyParser(propertyParser);
         return device;
     }
 
@@ -347,16 +344,6 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
-    public void setDataSourceManager(JFGSourceManager manager) {
-        this.sourceManager = manager;
-    }
-
-    @Override
-    public void setPropertyParser(IPropertyParser parser) {
-        this.propertyParser = parser;
-    }
-
-    @Override
     public void deleteDpSync(String account, String uuid, int msdId) {
         List<DPEntity> list = mEntityDao.queryBuilder()
                 .where(DPEntityDao.Properties.Account.eq(account))
@@ -389,7 +376,7 @@ public class BaseDBHelper implements IDBHelper {
         builder.limit(limit);
         List<DPEntity> list = builder.list();
         for (DPEntity entity : list) {
-            entity.setValue(propertyParser.parser(entity.getMsgId(), entity.getBytes(), entity.getVersion()), entity.getBytes(), entity.getVersion());
+            entity.setValue(BasePropertyParser.getInstance().parser(entity.getMsgId(), entity.getBytes(), entity.getVersion()), entity.getBytes(), entity.getVersion());
         }
         return list;
     }
@@ -594,7 +581,6 @@ public class BaseDBHelper implements IDBHelper {
                         if (dpDevice.action() == DBAction.UNBIND) {
                             option.lastLowBatteryTime = 0;
                         }
-                        dpDevice.setPropertyParser(propertyParser);
                         result.add(dpDevice);
                     }
                     deviceDao.insertOrReplaceInTx(result);
@@ -605,7 +591,6 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Device> updateDevice(Device device) {
         return deviceDao.rx().save(device).map(dev -> {
-            dev.setPropertyParser(propertyParser);
             return dev;
         });
     }
@@ -617,7 +602,6 @@ public class BaseDBHelper implements IDBHelper {
                 return null;
             }
             Device device = items.get(0);
-            device.setPropertyParser(propertyParser);
             return device;
         });
     }
@@ -630,7 +614,6 @@ public class BaseDBHelper implements IDBHelper {
             }
             clearMsg(uuid, null);
             Device device = items.get(0);
-            device.setPropertyParser(propertyParser);
             deviceDao.delete(device);
             return device;
         });
@@ -647,7 +630,6 @@ public class BaseDBHelper implements IDBHelper {
                     device.setAction(DBAction.UNBIND);
                     device.setState(DBState.SUCCESS);
                     result.add(device);
-                    device.setPropertyParser(propertyParser);
                     clearMsg(device.getUuid(), null);
                 }
             }
@@ -672,7 +654,6 @@ public class BaseDBHelper implements IDBHelper {
                             item.setAction(action);
                             item.setState(state);
                             item.setOption(option);
-                            item.setPropertyParser(propertyParser);
                         }
                     }
                     deviceDao.updateInTx(items);
@@ -687,9 +668,6 @@ public class BaseDBHelper implements IDBHelper {
                 .rx().list().map(devices -> {
                             if (devices == null) {
                                 return null;
-                            }
-                            for (Device device : devices) {
-                                device.setPropertyParser(propertyParser);
                             }
                             return devices;
                         }

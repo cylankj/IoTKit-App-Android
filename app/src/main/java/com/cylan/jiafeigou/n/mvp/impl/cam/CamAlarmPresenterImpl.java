@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.media.MediaPlayer;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -29,7 +29,7 @@ public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.Vie
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }

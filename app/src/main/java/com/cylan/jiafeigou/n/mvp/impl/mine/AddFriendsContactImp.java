@@ -18,7 +18,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.AddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -51,7 +51,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
 
     public AddFriendsContactImp(AddFriendContract.View view) {
         super(view);
-        helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        helper =BaseDBHelper.getInstance();
     }
 
     @Override
@@ -178,7 +178,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     public void getFriendListData() {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .subscribe(o -> BaseApplication.getAppComponent().getCmd().getFriendList(),
+                .subscribe(o -> Command.getInstance().getFriendList(),
                         throwable -> AppLogger.e("getFriendListData" + throwable.getLocalizedMessage()));
     }
 
@@ -191,7 +191,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     public Subscription getFriendListDataCallBack() {
 //        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
 //                .flatMap(getFriendList -> {
-//                    ArrayList<FriendBean> list = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+//                    ArrayList<FriendBean> list = DataSourceManager.getInstance().getFriendsList();
 //                    if (ListUtils.getSize(list) != 0) {
 //                        return Observable.just(list);
 //                    } else {
@@ -220,7 +220,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
+                        Command.getInstance().checkFriendAccount(account);
                         isCheckAcc = true;
                     } catch (JfgException e) {
                         e.printStackTrace();

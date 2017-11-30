@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
@@ -19,7 +19,7 @@ public class LinkManager {
 
 
     public static String getQrCodeLink() {
-        JFGAccount jfgaccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgaccount = DataSourceManager.getInstance().getJFGAccount();
         if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) {
             return "";
         }

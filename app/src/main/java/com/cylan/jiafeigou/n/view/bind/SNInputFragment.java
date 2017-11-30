@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SnPresenter;
@@ -117,7 +117,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                List<Device> deviceList = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+                List<Device> deviceList = DataSourceManager.getInstance().getAllDevice();
                 if (deviceList != null) {
                     for (Device device : deviceList) {
                         if (device != null && TextUtils.equals(device.getUuid(), etInputBox.getText().toString().trim())) {

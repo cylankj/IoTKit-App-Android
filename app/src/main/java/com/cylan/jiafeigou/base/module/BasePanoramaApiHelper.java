@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -67,7 +66,7 @@ public class BasePanoramaApiHelper {
                     ResponseBody body = proceed.body();
                     String string = body.string();
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-                   return proceed.newBuilder().body(new RealResponseBody(body.contentType().toString(),body.contentLength(), new Buffer().writeString(string, Charsets.UTF_8))).build();
+                    return proceed.newBuilder().body(new RealResponseBody(body.contentType().toString(), body.contentLength(), new Buffer().writeString(string, Charsets.UTF_8))).build();
                 })
                 .connectTimeout(120, TimeUnit.SECONDS)//这里设置的长一点,在距离的 API 里再设置超时时间
                 .readTimeout(120, TimeUnit.SECONDS)
@@ -86,7 +85,7 @@ public class BasePanoramaApiHelper {
     }
 
     public String getFilePath(String uuid, String fileName) {
-        return File.separator + BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount() + File.separator + uuid + File.separator + fileName;
+        return File.separator + DataSourceManager.getInstance().getAccount().getAccount() + File.separator + uuid + File.separator + fileName;
     }
 
     private Observable<RxEvent.PanoramaApiAvailable> getAvailableApi(String uuid) {

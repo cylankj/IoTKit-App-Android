@@ -4,11 +4,9 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -17,33 +15,32 @@ import org.msgpack.type.Value;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import rx.Subscription;
-import rx.schedulers.Schedulers;
-
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /**
  * Created by yanzhendong on 2017/4/14.
  */
-@Singleton
 public class BaseUdpMsgParser {
-    @Inject
+    private static BaseUdpMsgParser instance;
+
+    public static BaseUdpMsgParser getInstance() {
+        if (instance == null) {
+            synchronized (BaseUdpMsgParser.class) {
+                if (instance == null) {
+                    instance = new BaseUdpMsgParser();
+                }
+            }
+        }
+        return instance;
+    }
+
     public BaseUdpMsgParser() {
     }
 
+
     public static final String TAG = "LOCAL_UDP:";
 
-    public Subscription initSubscription() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                .subscribeOn(Schedulers.io())
-                .retry((integer, throwable) -> true)
-                .subscribe(this::parserUdpMessage, AppLogger::e);
-    }
-
-    private void parserUdpMessage(RxEvent.LocalUdpMsg localUdpMsg) {
+    public void parserUdpMessage(RxEvent.LocalUdpMsg localUdpMsg) {
         JfgUdpMsg.UdpRecvHeard header = null;
         try {
             header = unpackData(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
@@ -65,7 +62,7 @@ public class BaseUdpMsgParser {
                     break;
                 }
                 case UdpConstant.DOORBELL_RING: {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(header.cid);
+                    Device device = DataSourceManager.getInstance().getDevice(header.cid);
                     if (device != null && device.available()) {//说明当前账号有这个设备
 //                        JFGDoorBellCaller caller = new JFGDoorBellCaller();
 //                        caller.cid = header.cid;

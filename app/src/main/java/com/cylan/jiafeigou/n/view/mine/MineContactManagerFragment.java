@@ -24,12 +24,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentMineShareToContactBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.LinkManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
@@ -101,7 +101,7 @@ public class MineContactManagerFragment extends IBaseFragment implements MineSha
             @Override
             public void onClick(View v, int position, FastAdapter<ShareContactItem> fastAdapter, ShareContactItem item) {
                 AppLogger.d("点击了联系人");
-                Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+                Account account = DataSourceManager.getInstance().getAccount();
                 if (account != null && TextUtils.equals(account.getAccount(), item.getAccount())) {
                     ToastUtil.showToast(contactType == 0 ? getString(R.string.Tap3_ShareDevice_NotYourself) : getString(R.string.Tap3_FriendsAdd_NotYourself));
                     return;

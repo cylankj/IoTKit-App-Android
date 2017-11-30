@@ -6,10 +6,11 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
@@ -92,7 +93,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
      */
     @Override
     public JFGAccount getUserInfoBean() {
-        return BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        return DataSourceManager.getInstance().getJFGAccount();
     }
 
     /**
@@ -173,7 +174,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                                     alias = split[0];
                                 }
                             }
-                            BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
+                            Command.getInstance().updateAccountPortrait(resource.getAbsolutePath());
                             AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
                             if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
                                 accountArrived.jfgAccount.setAlias(alias);
@@ -181,7 +182,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                                     AppLogger.d("正在设置第三方登录昵称" + alias);
                                     accountArrived.jfgAccount.resetFlag();
                                     accountArrived.jfgAccount.setPhoto(true);
-                                    BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
+                                    Command.getInstance().setAccount(accountArrived.jfgAccount);
                                 } catch (JfgException e) {
                                     e.printStackTrace();
                                 }

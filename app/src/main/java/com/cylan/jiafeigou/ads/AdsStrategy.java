@@ -16,8 +16,8 @@ import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -61,7 +61,7 @@ public class AdsStrategy {
             Observable.just("go and get ads")
                     .subscribeOn(Schedulers.io())
                     .map(s -> {
-                        AppCmd cmd = BaseApplication.getAppComponent().getCmd();
+                        AppCmd cmd =  Command.getInstance();
                         if (cmd != null) {//必须要等待sdk init完成,也即是load dex完成后,才能调用.
                             RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
                                     .first()

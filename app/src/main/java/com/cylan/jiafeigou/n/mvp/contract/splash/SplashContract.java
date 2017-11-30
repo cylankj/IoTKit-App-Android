@@ -25,6 +25,8 @@ public interface SplashContract {
         Observable<AdsStrategy.AdsDescription> showAds();
 
         void reEnableSmartcallLog();
+
+        void startInitialization();
     }
 
 }

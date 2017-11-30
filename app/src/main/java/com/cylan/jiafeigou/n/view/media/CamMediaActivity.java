@@ -29,13 +29,13 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
@@ -106,7 +106,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         ButterKnife.bind(this);
         camMessageBean = getIntent().getParcelableExtra(KEY_BUNDLE);
 
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        device = DataSourceManager.getInstance().getDevice(uuid);
         presenter = new CamMediaPresenterImpl(this, uuid);
 
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());

@@ -134,7 +134,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         if (device != null && !isPrimaryAccount(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_share, GONE);
         } else {
-            if (BaseApplication.getAppComponent().getSourceManager().isDeviceSharedTo(uuid)) {
+            if (DataSourceManager.getInstance().isDeviceSharedTo(uuid)) {
                 holder.setVisibility(R.id.img_device_state_share, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_share, R.drawable.home_icon_net_link);
             } else {
@@ -261,7 +261,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
      * @return
      */
     private String getPanOnlineMode(final String uuid) {
-        boolean serverOnline = BaseApplication.getAppComponent().getSourceManager().isOnline();
+        boolean serverOnline = DataSourceManager.getInstance().isOnline();
         Device device = getDevice();
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         if (JFGRules.isAPDirect(device.uuid, getDevice().$(202, ""))) {

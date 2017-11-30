@@ -17,11 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
@@ -203,7 +203,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         }
         zxVScan.stopCamera();
         try {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(info.sn);
+            Device device = DataSourceManager.getInstance().getDevice(info.sn);
             if (device != null && device.available()) {
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_AddedDeviceTips));
                 HandlerThreadUtils.postDelay(() -> {

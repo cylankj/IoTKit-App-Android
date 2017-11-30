@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -152,7 +153,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     }
 
     private String getAccount() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         return account != null && !TextUtils.isEmpty(account.getAccount()) ? account.getAccount() : "default";
     }
 

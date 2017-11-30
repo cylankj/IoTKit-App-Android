@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -34,7 +34,7 @@ public class SnPresenter extends AbstractFragmentPresenter<SnContract.View> impl
                 .map(s -> {
                     try {
                         byte[] data = DpUtils.pack(sn);
-                        return BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(1, data);
+                        return Command.getInstance().sendUniservalDataSeq(1, data);
                     } catch (JfgException e) {
                         unSubscribe("getPid");
                         return -1L;

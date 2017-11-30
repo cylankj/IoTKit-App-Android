@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.utils;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -44,10 +44,10 @@ public class JFGFaceGlideURL extends GlideUrl {
             String urlV2;
             if (stranger) {
 //                urlV2 = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, faceId);
+                urlV2 = Command.getInstance().getSignedCloudUrl(this.regionType, faceId);
             } else {
 //                urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, account, cid, faceId);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, faceId);
+                urlV2 = Command.getInstance().getSignedCloudUrl(this.regionType, faceId);
             }
             return urlV2;
         } catch (Exception e) {

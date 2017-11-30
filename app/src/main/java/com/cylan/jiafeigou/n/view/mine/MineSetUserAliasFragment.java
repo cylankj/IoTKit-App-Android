@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
@@ -84,7 +84,7 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
     }
 
     private void initEditText() {
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         if (jfgAccount != null) {
             etMinePersonalInformationNewName.setText(TextUtils.isEmpty(jfgAccount.getAlias()) ? "" : jfgAccount.getAlias());
         }

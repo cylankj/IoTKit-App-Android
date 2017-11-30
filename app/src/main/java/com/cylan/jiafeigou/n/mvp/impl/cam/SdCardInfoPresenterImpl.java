@@ -9,10 +9,11 @@ import com.cylan.entity.JfgEvent;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -48,7 +49,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     public void start() {
         super.start();
-        BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
+        DataSourceManager.getInstance().syncDeviceProperty(uuid, 204);
         addSubscription(getSDCardStateMonitor());
     }
 
@@ -90,7 +91,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                                 mView.initSdUseDetailRsp(status, false);
                                 break;
                             } else if (msg.id == 222) {
-                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                DpMsgDefine.DPSdcardSummary summary = BasePropertyParser.getInstance().parser((int) msg.id, msg.packValue, msg.version);
                                 hasSDCard = summary != null && summary.errCode == 0 && summary.hasSdcard;
                                 if (!hasSDCard) {
                                     mView.showSdPopDialog();
@@ -135,7 +136,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
      */
     @Override
     public boolean getSdcardState() {
-        DpMsgDefine.DPSdStatus sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         //sd卡状态
         if (sdStatus != null) {
             if (!sdStatus.hasSdcard && sdStatus.err != 0) {

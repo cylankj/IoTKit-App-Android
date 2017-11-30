@@ -11,10 +11,11 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -55,7 +56,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        long req = BaseApplication.getAppComponent().getCmd().checkFriendAccount(phone);
+                        long req = Command.getInstance().checkFriendAccount(phone);
                         Log.d(TAG, "校验手机号码: " + req);
                     } catch (JfgException e) {
                         AppLogger.e(e.getMessage());
@@ -76,8 +77,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .map(ret -> {
                     try {
                         //获取验证码
-                        BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
-                    } catch (JfgException e) {
+                        Command.getInstance().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                    } catch (Exception e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
                     }
@@ -139,7 +140,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .map(cmd -> {
                     try {
                         String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
-                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, token);
+                        Command.getInstance().verifySMS(phone, inputCode, token);
                         AppLogger.d("验证 短信:" + token);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -160,7 +161,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                         String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
                         jfgAccount.resetFlag();
                         jfgAccount.setPhone(phone, token);
-                        int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
+                        int req = Command.getInstance().setAccount(jfgAccount);
                         AppLogger.d("sendChangePhoneReq:" + req + ":" + phone + ":" + token);
                     } catch (JfgException e) {
                         AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
@@ -205,7 +206,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public boolean isOpenLogin() {
-        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
+        return DataSourceManager.getInstance().getAccount().getLoginType() >= 3;
     }
 
     /**

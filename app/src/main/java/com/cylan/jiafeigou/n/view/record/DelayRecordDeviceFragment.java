@@ -111,7 +111,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
-//            JFGCameraDevice device = BaseApplication.getAppComponent().getSourceManager().getDevice(item);
+//            JFGCameraDevice device = DataSourceManager.getInstance().getDevice(item);
 //            boolean online = device.net != null && (device.net.net != 0 && device.net.net != -1);
 //            holder.setEnabled(R.id.item_device_container, online);
 //            holder.setText(R.id.item_device_alias, device.alias);

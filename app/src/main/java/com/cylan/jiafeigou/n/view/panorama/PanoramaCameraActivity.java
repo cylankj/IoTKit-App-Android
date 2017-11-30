@@ -59,6 +59,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -343,7 +344,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initPanoramaVideoView();
 
-        BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, surfaceView);
+        Command.getInstance().enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         liveFlowSpeedText.setVisibility(View.VISIBLE);
         liveFlowSpeedText.setText("0K/s");
@@ -496,7 +497,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     private void updateHint() {
         try {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
             if (JFGRules.isPanoramaCamera(device.pid)) {
                 return;
             }

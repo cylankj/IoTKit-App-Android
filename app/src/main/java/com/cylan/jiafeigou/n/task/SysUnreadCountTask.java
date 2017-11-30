@@ -4,6 +4,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.home.SystemMessageFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -76,7 +77,7 @@ public class SysUnreadCountTask implements Action1<Object> {
                 list.add(msg1);
                 list.add(msg2);
                 list.add(msg3);
-                long seq = BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
+                long seq = Command.getInstance().robotGetData("", list, 10, false, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
                 AppLogger.d("fetchNewInfo:");

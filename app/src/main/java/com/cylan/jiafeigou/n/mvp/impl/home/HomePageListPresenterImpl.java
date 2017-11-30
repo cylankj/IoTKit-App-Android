@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -157,10 +157,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        List<Device> list = DataSourceManager.getInstance().getAllDevice();
         AppLogger.w("subUuidList?" + ListUtils.getSize(list));
         getView().onItemsRsp(new ArrayList<>(list));
-        getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+        getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 
     /**
@@ -187,10 +187,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public void fetchDeviceList(boolean manually) {
         addSubscription(Schedulers.io().createWorker().schedule(() -> {
             if (manually) {
-                BaseApplication.getAppComponent().getCmd().refreshDevList();
+                Command.getInstance().refreshDevList();
             }
         }), "refresh_manually");
-        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
+        int state = DataSourceManager.getInstance().getLoginState();
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }

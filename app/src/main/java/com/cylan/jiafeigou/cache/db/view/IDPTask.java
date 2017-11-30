@@ -15,12 +15,4 @@ public interface IDPTask<T extends IDPTaskResult> {
     Observable<T> performLocal();
 
     Observable<T> performServer();
-
-    void setDBHelper(IDBHelper helper);
-
-    void setSourceManager(JFGSourceManager manager);
-
-    void setPropertyParser(IPropertyParser parser);
-
-    void setAppCmd(AppCmd appCmd);
 }

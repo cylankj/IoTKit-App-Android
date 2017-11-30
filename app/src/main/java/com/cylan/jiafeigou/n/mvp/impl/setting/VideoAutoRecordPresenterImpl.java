@@ -7,11 +7,11 @@ package com.cylan.jiafeigou.n.mvp.impl.setting;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -46,7 +46,7 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
+                       DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }

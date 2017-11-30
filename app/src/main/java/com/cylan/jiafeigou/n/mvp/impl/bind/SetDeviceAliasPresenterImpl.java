@@ -1,9 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -46,9 +47,9 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                         if (NetUtils.getJfgNetType() == 0) {
                             throw new RxEvent.HelperBreaker("无网络");
                         }
-                        int ret = BaseApplication.getAppComponent().getCmd().setAliasByCid(uuid, alias);
+                        int ret = Command.getInstance().setAliasByCid(uuid, alias);
                         AppLogger.i("setup alias: " + alias + ",ret:" + ret);
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
                         device.setAlias(alias);
                         return ret;
                     } catch (JfgException e) {

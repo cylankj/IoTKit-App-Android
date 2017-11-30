@@ -13,7 +13,7 @@ import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.misc.JError
 import com.cylan.jiafeigou.misc.JFGRules
 import com.cylan.jiafeigou.misc.bind.UdpConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.OptionsImpl
@@ -51,8 +51,8 @@ object BindHelper {
 //                    }
             val setWifi = JfgUdpMsg.DoSetWifi(uuid, mac, ssid, password)
             setWifi.security = security
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
+            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
             subscriber.onNext(JfgUdpMsg.DoSetWifiAck())
             subscriber.onCompleted()
         }
@@ -73,18 +73,18 @@ object BindHelper {
             //设置服务器
             val setServer = JfgUdpMsg.SetServer(uuid, mac, serverAddress, port, 80)
             //增加绑定随机数.
-            val bindCode = BaseApplication.getAppComponent().getSourceManager().jfgAccount.account + System.currentTimeMillis()
+            val bindCode = DataSourceManager.getInstance().jfgAccount.account + System.currentTimeMillis()
             val code = JfgUdpMsg.FBindDeviceCode(uuid, mac, bindCode)
             for (i in 0..1) {
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes())
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, code.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, code.toBytes())
             }
             for (i in 0..2) {
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setServer.toBytes())
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setServer.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setServer.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setServer.toBytes())
 
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setLanguage.toBytes())
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setLanguage.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setLanguage.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setLanguage.toBytes())
             }
             val json = PreferencesUtils.getString(JConstant.BINDING_DEVICE)
             val gson = Gson()
@@ -102,26 +102,46 @@ object BindHelper {
     @JvmStatic
     fun sendBindConfig(uuid: String, bindCode: String, mac: String, bindFlag: Int): Observable<Boolean> {
         return Observable.create<Boolean>({ subscriber: Subscriber<in Boolean> ->
-            var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent::class.java)
+            val bindSubscriber = Schedulers.io().createWorker().schedulePeriodically({
+                var ret: Int = -1
+                try {
+                    //需要检查参数合法性
+                    if (uuid.isEmpty() || bindCode.isEmpty() || mac.isEmpty()) {
+                        AppLogger.e("无效的绑定参数: uuid:$uuid,bindCode:$bindCode,mac:$mac,bindFlag:$bindFlag")
+                        subscriber.onError(IllegalArgumentException("无效的绑定参数: uuid:$uuid,bindCode:$bindCode,mac:$mac,bindFlag:$bindFlag"))
+                        return@schedulePeriodically
+                    }
+                    ret = Command.getInstance().bindDevice(uuid, bindCode, mac, bindFlag)
+                    AppLogger.w("正在发送绑定请求:uuid:$uuid,bindCode:$bindCode,mac:$mac,bindFlag:$bindFlag,ret:$ret")
+                } catch (e: JfgException) {
+                    AppLogger.w("发送绑定请求失败了:uuid:$uuid,bindCode:$bindCode,mac:$mac,bindFlag:$bindFlag,ret:$ret")
+                    e.printStackTrace()
+                    AppLogger.e(e)
+                }
+            }, 1, INTERVAL.toLong(), TimeUnit.SECONDS)
+            subscriber.add(bindSubscriber)
+
+            val subscribe = RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent::class.java)
                     .observeOn(Schedulers.io())
                     .filter { bindDeviceEvent ->
+                        bindSubscriber.unsubscribe()
                         if (bindDeviceEvent.bindResult != JError.ErrorOK) {
                             subscriber.onError(RxEvent.HelperBreaker(bindDeviceEvent))
                         }
                         bindDeviceEvent.bindResult == JError.ErrorOK
                     }
+                    .flatMap { _ -> Observable.interval(INTERVAL.toLong(), TimeUnit.SECONDS) }
                     .map { _ ->
                         var seq: Long = -1
                         try {
                             val params = ArrayList<JFGDPMsg>(1)
                             val msg = JFGDPMsg(201, 0)
                             params.add(msg)
-                            seq = BaseApplication.getAppComponent().getCmd().robotGetData(uuid, params, 1, false, 0)
+                            seq = Command.getInstance().robotGetData(uuid, params, 1, false, 0)
                         } catch (e: Exception) {
                             e.printStackTrace()
                             AppLogger.e(e)
                         }
-
                         seq
                     }
                     .flatMap { seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { rsp -> rsp.seq == seq } }
@@ -136,21 +156,10 @@ object BindHelper {
                             }
                         }
                     }) { e ->
+                        subscriber.onError(e)
                         e.printStackTrace()
                         AppLogger.e(e)
                     }
-
-            subscriber.add(subscribe)
-
-            subscribe = Schedulers.io().createWorker().schedulePeriodically({
-                try {
-                    val ret = BaseApplication.getAppComponent().getCmd().bindDevice(uuid, bindCode, mac, bindFlag)
-                    AppLogger.w("正在发送绑定请求:uuid:$uuid,bindCode:$bindCode,mac:$mac,bindFlag:$bindFlag,ret:$ret")
-                } catch (e: JfgException) {
-                    e.printStackTrace()
-                    AppLogger.e(e)
-                }
-            }, 0, INTERVAL.toLong(), TimeUnit.SECONDS)
             subscriber.add(subscribe)
         })
                 .timeout(TIME_OUT, TimeUnit.MILLISECONDS, Observable.just(false))

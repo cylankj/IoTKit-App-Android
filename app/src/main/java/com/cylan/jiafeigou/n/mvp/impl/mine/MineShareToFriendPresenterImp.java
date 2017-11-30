@@ -7,7 +7,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareFriendItem;
@@ -50,7 +50,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                             accounts[i] = friendItems.get(i).friendAccount.account;
                         }
                         // TODO: 2017/7/12 现在是先传 account 数组,再传 cid 数组,目前是可行的
-                        BaseApplication.getAppComponent().getCmd().multiShareDevices(new String[]{cid}, accounts);
+                        Command.getInstance().multiShareDevices(new String[]{cid}, accounts);
                         AppLogger.d(": cid:" + cid + ",:" + accounts[0]);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -96,7 +96,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .map(ret -> {
                     try {
                         AppLogger.d("getCanShareFriendsList:" + uuid);
-                        BaseApplication.getAppComponent().getCmd().getUnShareListByCid(uuid);
+                        Command.getInstance().getUnShareListByCid(uuid);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

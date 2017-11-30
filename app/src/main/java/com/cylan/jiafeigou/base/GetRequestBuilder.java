@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.base;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -76,9 +76,9 @@ public class GetRequestBuilder extends AbstractRequestBuilder<RobotoGetDataRsp> 
                 params.add(msg);
                 long seq = -1;
                 if (type == 0) {
-                    seq = BaseApplication.getAppComponent().getCmd().robotGetData(uuid, params, limit, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+                    seq =  Command.getInstance().robotGetData(uuid, params, limit, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
                 } else if (type == 1) {
-                    seq = BaseApplication.getAppComponent().getCmd().robotGetDataByTime(uuid, params, 0);
+                    seq =  Command.getInstance().robotGetDataByTime(uuid, params, 0);
                 }
                 if (seq <= 0) {
                     throw new JfgException("内部错误");

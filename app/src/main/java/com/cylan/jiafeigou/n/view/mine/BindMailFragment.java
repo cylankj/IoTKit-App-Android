@@ -15,9 +15,9 @@ import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.BindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.BindMailPresenterImpl;
@@ -69,7 +69,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
             if (code == JError.ErrorOK) {
                 //区分第三方登录
                 if (presenter.isOpenLogin()) {
-                    JFGAccount userAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    JFGAccount userAccount = DataSourceManager.getInstance().getJFGAccount();
                     AppLogger.d("bindmail2:" + userAccount.getPhone());
                     if (TextUtils.isEmpty(userAccount.getPhone())) {
                         jump2SetPasswordFragment(getEditText());
@@ -127,7 +127,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     }
 
     private void initMailEdit() {
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         if (jfgAccount != null) {
             mETMailBox.setText(jfgAccount.getEmail());
         }

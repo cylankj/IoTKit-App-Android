@@ -20,7 +20,9 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
@@ -38,8 +40,8 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.push.BellPuller;
@@ -116,7 +118,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void start() {
         super.start();
-        BaseApplication.getAppComponent().getSourceManager()
+        DataSourceManager.getInstance()
                 .syncAllProperty(uuid, 204, 222);
     }
 
@@ -163,7 +165,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
                                 option.lastLowBatteryTime = System.currentTimeMillis();
                                 device.setOption(option);
-                                BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
+                                DataSourceManager.getInstance().updateDevice(device);
                                 mView.onBatteryDrainOut();
                             }
 //                            mView.onBatteryDrainOut();
@@ -184,7 +186,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     mView.showFirmwareDialog();
                 }, AppLogger::e);
         AbstractVersion<AbstractVersion.BinVersion> version = new DeviceVersionChecker();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.setShowCondition(() -> {
             DpMsgDefine.DPNet dpNet = getDevice().$(201, new DpMsgDefine.DPNet());
@@ -326,7 +328,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return false;
         }
         makeTimeDelayForList();
-        Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
+        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
                 .subscribe();
         unSubscribe("getHistoryList");
         addSubscription(subscription, "getHistoryList");
@@ -422,7 +424,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return;
         }
         mView.onLivePrepare(getLiveStream().type);
-        boolean sdkOnlineStatus = BaseApplication.getAppComponent().getSourceManager().isOnline();
+        boolean sdkOnlineStatus = DataSourceManager.getInstance().isOnline();
         if (!sdkOnlineStatus) {
             String routeMac = NetUtils.getRouterMacAddress();
             String deviceMac = getDevice().$(202, "");
@@ -435,13 +437,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 boolean switchInterface = false;
                 // 历史播放中，需要停止,不能保证上次是播放的是历史还是直播，所以直接断开。
                 if (getLiveStream().playState == PLAY_STATE_PLAYING) {
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);  // 先停止播放
+                    Command.getInstance().stopPlay(uuid);  // 先停止播放
                     switchInterface = true;
                 }
                 // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
                 getLiveStream().playStartTime = System.currentTimeMillis() / 1000;
 //                getLiveStream().playStartTime = System.currentTimeMillis();
-                ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+                ret = Command.getInstance().playVideo(uuid);
 
                 AppLogger.d("play video ret :" + ret + "," + switchInterface);
 
@@ -725,10 +727,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 getLiveStream().time = time;
                 getHotSeatStateMaintainer().saveRestore();
                 if (getLiveStream().playState != PLAY_STATE_PLAYING) {
-//                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+//                    Command.getInstance().playVideo(uuid);
 //                    AppLogger.i(" stop video .first......");
                 }
-                ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
+                ret = Command.getInstance().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BellPuller.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
@@ -757,7 +759,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .flatMap((String s) -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().stopPlay(s);
+                        Command.getInstance().stopPlay(s);
                         getHotSeatStateMaintainer().reset();
                         updateLiveStream(getLiveStream().type, -1, reasonOrState);
                         BellPuller.getInstance().currentCaller(null);
@@ -829,7 +831,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     DpMsgDefine.DPPrimary<Integer> dpPrimary = new DpMsgDefine.DPPrimary<>(integer);
                     try {
                         AppLogger.e("还需要发送局域网消息");
-                        return Observable.just(BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, dpPrimary, 513));
+                        return Observable.just(DataSourceManager.getInstance().updateValue(uuid, dpPrimary, 513));
                     } catch (IllegalAccessException e) {
                         return Observable.just(false);
                     }
@@ -868,7 +870,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public ArrayList<Long> getFlattenDateList() {
-        return BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
+        return DataSourceManager.getInstance().getHisDateList(uuid);
     }
 
     @Override
@@ -878,7 +880,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public boolean needShowHistoryWheelView() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         boolean show = JFGRules.isDeviceOnline(net)
@@ -896,7 +898,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -1121,7 +1123,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         public Pair<Bitmap, String> call(Object o) {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             PerformanceUtils.startTrace("takeCapture");
-            byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
+            byte[] data = Command.getInstance().screenshot(false);
             if (data == null) {
                 if (forPopWindow && weakReference.get() != null) {
                     weakReference.get().onTakeSnapShot(null);//弹窗
@@ -1132,8 +1134,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
                 return null;
             }
-            int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
-            int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+            int w = Command.videoWidth;
+            int h = Command.videoHeight;
             Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
             if (forPopWindow && weakReference.get() != null) {
                 weakReference.get().onTakeSnapShot(bitmap);//弹窗
@@ -1208,7 +1210,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                         item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                         item.cid = uuid;
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
                         item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                         item.fileName = time / 1000 + ".jpg";
                         item.time = (int) (time / 1000);
@@ -1216,11 +1218,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 .setUuid(uuid)
                                 .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                                 .setVersion(System.currentTimeMillis())
-                                .setAccount(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount())
+                                .setAccount(DataSourceManager.getInstance().getAccount().getAccount())
                                 .setAction(DBAction.SHARED)
                                 .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                                 .setBytes(item.toBytes());
-                        BaseApplication.getAppComponent().getTaskDispatcher().perform(entity)
+                       BaseDPTaskDispatcher.getInstance().perform(entity)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(ret -> {
                                 }, AppLogger::e);
@@ -1398,7 +1400,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         // 参数与实际调用不一定是正确的 // modify
         private void setupRemoteAudio(boolean mic, boolean speaker) {
             if (presenterWeakReference.get().getLiveStream().playState == PLAY_STATE_PLAYING) {
-                BaseApplication.getAppComponent().getCmd().setAudio(false, speaker, mic);
+                Command.getInstance().setAudio(false, speaker, mic);
                 AppLogger.d(String.format(Locale.getDefault(), "remoteMic:%s,remoteSpeaker:%s", speaker, mic));
                 AppLogger.d("切换远程:mic:" + speaker + ",speaker:" + mic);
             }
@@ -1435,7 +1437,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.d("切换本地:mic:" + localMic + ",speaker:" + localSpeaker);
             // 有视频直播中才能操作。
             if (presenterWeakReference.get().getLiveStream().playState == PLAY_STATE_PLAYING) {
-                BaseApplication.getAppComponent().getCmd().setAudio(true, localMic, localSpeaker);
+                Command.getInstance().setAudio(true, localMic, localSpeaker);
             }
             if (presenterWeakReference.get().isEarpiecePlug()) {
                 presenterWeakReference.get().switchEarpiece(true);

@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -70,7 +70,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     try {
                         JFGFriendAccount account = shareListInfo.friends.get(position);
                         AppLogger.e("正在取消分享:" + account.account);
-                        seq = BaseApplication.getAppComponent().getCmd().unShareDevice(uuid, account.account);
+                        seq = Command.getInstance().unShareDevice(uuid, account.account);
                     } catch (Exception e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());

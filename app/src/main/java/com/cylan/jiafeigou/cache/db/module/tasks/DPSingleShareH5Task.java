@@ -2,12 +2,14 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -39,7 +41,7 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                 JFGDPMsg msg602 = new JFGDPMsg(606, entity.getVersion());
                 msg602.packValue = entity.getBytes();
                 req.add(msg602);
-                result = appCmd.robotSetDataByTime("", req);
+                result = Command.getInstance().robotSetDataByTime("", req);
                 AppLogger.w("正在执行分享操作步骤一:设置606 DP消息" + result);
             } catch (Exception e) {
                 AppLogger.w("分享操作步骤一操作失败!!!" + e.getMessage());
@@ -66,7 +68,7 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                                 shareItem.cid + //cid
                                 "/" +
                                 shareItem.fileName;
-                        result = appCmd.putFileToCloud(remotePath, option.filePath);
+                        result = Command.getInstance().putFileToCloud(remotePath, option.filePath);
 
                     } catch (Exception e) {
                         AppLogger.d("分享操作步骤二操作失败,错误信息为:" + e.getMessage());
@@ -85,7 +87,7 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                         throw new BaseDPTaskException(rsp.ret, "分享步骤二失败");
                     }
                     AppLogger.w("分享操作步骤二执行成功,正在更新本地数据Version" + new Gson().toJson(entity));
-                    return dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
+                    return BaseDBHelper.getInstance().findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
                             .map(dpEntity -> {
                                 AppLogger.w("更新本地数据成功");
                                 dpEntity.setState(DBState.SUCCESS);
@@ -101,8 +103,8 @@ public class DPSingleShareH5Task extends BaseDPTask<BaseDPTaskResult> {
                         AppLogger.d("分享任务出错了,正在清理本地数据" + e.getMessage());
                         ArrayList<JFGDPMsg> p606 = new ArrayList<>(1);
                         p606.add(new JFGDPMsg(606, entity.getVersion()));
-                        appCmd.robotDelData("", p606, 0);
-                        dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
+                        Command.getInstance().robotDelData("", p606, 0);
+                        BaseDBHelper.getInstance().findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
                     } catch (JfgException e1) {
                         AppLogger.d(e1.getMessage());
                     }

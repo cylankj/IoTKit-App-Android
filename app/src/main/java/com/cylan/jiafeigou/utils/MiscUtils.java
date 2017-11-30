@@ -24,6 +24,7 @@ import android.view.View;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -34,7 +35,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.SchemeResolver;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
@@ -667,7 +667,7 @@ public class MiscUtils {
                 .setUuid(uuid)
                 .setVersion(version)
                 .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
-                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
         return list;
     }
 
@@ -758,7 +758,7 @@ public class MiscUtils {
                     .setAction(action)
                     .setVersion(version)
                     .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
-                    .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
             return this;
         }
 
@@ -832,7 +832,7 @@ public class MiscUtils {
         if (TextUtils.isEmpty(uuid) && BuildConfig.DEBUG) {
             throw new IllegalArgumentException("uuid is  null");
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean isApDirect = JFGRules.isAPDirect(uuid, device.$(202, ""));
         if (isApDirect) {//Ap
             return true;

@@ -50,7 +50,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     protected void initViewAndListener() {
         super.initViewAndListener();
         managerBinding.setListener(this);
-        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        List<Device> list = DataSourceManager.getInstance().getAllDevice();
         boolean showShareContent = false;
         if (!ListUtils.isEmpty(list)) {
             for (Device d : list) {

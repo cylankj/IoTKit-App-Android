@@ -7,10 +7,10 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -197,7 +197,7 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     @NonNull
     @Override
     public Device getDevice() {
-        return BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        return DataSourceManager.getInstance().getDevice(uuid);
     }
 
     @Override

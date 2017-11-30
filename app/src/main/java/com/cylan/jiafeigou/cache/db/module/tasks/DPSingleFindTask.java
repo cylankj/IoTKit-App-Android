@@ -2,9 +2,11 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -34,7 +36,7 @@ public class DPSingleFindTask extends BaseDPTask<BaseDPTaskResult> {
                 ArrayList<JFGDPMsg> params = new ArrayList<>(1);
                 JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
                 params.add(msg);
-                long seq = appCmd.robotGetDataByTime(entity.getUuid(), params, 0);
+                long seq = Command.getInstance().robotGetDataByTime(entity.getUuid(), params, 0);
                 AppLogger.w("正在检查DP消息, uuid为:" + entity.getUuid() + ",msgId为:" + entity.getMsgId() + ",version 为:" + entity.getVersion() + ",seq 为:" + seq);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
@@ -49,7 +51,7 @@ public class DPSingleFindTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeGetDataRspResponse)
                 .map(rsp -> {
                     AppLogger.w("收到从服务器返回数据!!!");
-                    DataPoint dataPoint = sourceManager.getValue(entity.getUuid(), entity.getMsgId(), null);
+                    DataPoint dataPoint = DataSourceManager.getInstance().getValue(entity.getUuid(), entity.getMsgId(), null);
                     Object result = null;
                     if (dataPoint == null) {
                         result = null;

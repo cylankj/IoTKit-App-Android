@@ -23,12 +23,12 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -130,8 +130,8 @@ public class BeforeLoginFragment extends Fragment {
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
-        BaseApplication.getAppComponent().getSourceManager().setLoginState(new LogState(STATE_GUEST));
-        BaseApplication.getAppComponent().getSourceManager().clear();
+        DataSourceManager.getInstance().setLoginState(new LogState(STATE_GUEST));
+        DataSourceManager.getInstance().clear();
         if (getView() != null) {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_look_around));
         }

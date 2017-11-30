@@ -4,8 +4,9 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -76,10 +77,10 @@ public class OptionalBindFlow extends AFullBind {
         setWifi.security = type;
         //发送wifi配置
         try {
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+            Command.getInstance().sendLocalMessage(UdpConstant.IP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
             AppLogger.d(TAG + new Gson().toJson(setWifi));
@@ -118,7 +119,7 @@ public class OptionalBindFlow extends AFullBind {
                                 port,
                                 80);
                         //增加绑定随机数.
-                        String bindCode = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount() + System.currentTimeMillis();
+                        String bindCode = DataSourceManager.getInstance().getJFGAccount().getAccount() + System.currentTimeMillis();
                         bindCode = MD5Util.lowerCaseMD5(bindCode);//cast to md5
                         ret.bindCode = bindCode;
                         JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
@@ -126,9 +127,9 @@ public class OptionalBindFlow extends AFullBind {
                         try {
                             final boolean isRs = false;
                             for (int i = 0; i < 2; i++) {
-                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
                                         UdpConstant.PORT, code.toBytes());
-                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
                                         UdpConstant.PORT, code.toBytes());
                             }
                         } catch (JfgException e) {
@@ -139,16 +140,16 @@ public class OptionalBindFlow extends AFullBind {
                         AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
                         try {
                             for (int i = 0; i < 3; i++) {
-                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
                                         UdpConstant.PORT,
                                         setServer.toBytes());
-                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
                                         UdpConstant.PORT,
                                         setLanguage.toBytes());
-                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
                                         UdpConstant.PORT,
                                         setServer.toBytes());
-                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
                                         UdpConstant.PORT,
                                         setLanguage.toBytes());
                             }
@@ -194,10 +195,10 @@ public class OptionalBindFlow extends AFullBind {
             subscriptionMap.add(sub, "PingAck");
             try {
                 for (int i = 0; i < 2; i++) {
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.Ping().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.Ping().toBytes());
                 }
@@ -233,10 +234,10 @@ public class OptionalBindFlow extends AFullBind {
             subscriptionMap.add(sub, "FPingAck");
             try {
                 for (int i = 0; i < 2; i++) {
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.FPing().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.FPing().toBytes());
                 }

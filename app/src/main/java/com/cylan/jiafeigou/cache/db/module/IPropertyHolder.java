@@ -25,5 +25,4 @@ public interface IPropertyHolder {
 
     void updateProperty(int msgId, DPEntity entity);
 
-    void setPropertyParser(IPropertyParser parser);
 }

@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.task;
 
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import rx.Observable;
@@ -22,7 +22,7 @@ public class FetchFeedbackTask implements Action1<Object> {
             } catch (Exception e) {
                 subscriber.onError(e);
             }
-        }).subscribe(getFeedBackRsp -> BaseApplication.getAppComponent().getCmd().getFeedbackList(), AppLogger::e);
+        }).subscribe(getFeedBackRsp -> Command.getInstance().getFeedbackList(), AppLogger::e);
     }
 
 }

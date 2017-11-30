@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData;
 import com.cylan.jiafeigou.rtmp.youtube.util.YouTubeApi;
@@ -118,7 +119,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         AppLogger.w("ctrl is " + ctrl.toString());
                         JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
-                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                        return Command.getInstance().robotSetData(uuid, params);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(MiscUtils.getErr(e));
@@ -156,7 +157,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             AppLogger.w("ctrl is " + ctrl.toString());
                             JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                             params.add(msg);
-                            BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                            Command.getInstance().robotSetData(uuid, params);
                         } catch (JfgException e1) {
                             e.printStackTrace();
                             AppLogger.e(MiscUtils.getErr(e));
@@ -214,7 +215,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         AppLogger.w("ctrl is " + ctrl.toString());
                         JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
-                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                        return Command.getInstance().robotSetData(uuid, params);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(MiscUtils.getErr(e));
@@ -330,7 +331,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         AppLogger.w("ctrl is " + ctrl.toString());
                         JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
-                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                        return Command.getInstance().robotSetData(uuid, params);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(MiscUtils.getErr(e));
@@ -392,7 +393,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         AppLogger.w("ctrl is " + ctrl.toString());
                         JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
-                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                        return Command.getInstance().robotSetData(uuid, params);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(MiscUtils.getErr(e));
@@ -466,7 +467,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         AppLogger.w("ctrl is " + ctrl.toString());
                         JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
-                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                        return Command.getInstance().robotSetData(uuid, params);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(MiscUtils.getErr(e));
@@ -513,7 +514,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         AppLogger.w("ctrl is " + ctrl.toString());
                         JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
-                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                        return Command.getInstance().robotSetData(uuid, params);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(MiscUtils.getErr(e));
@@ -838,10 +839,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     throw new RxEvent.HelperBreaker(version);
                 }, AppLogger::e);
         AbstractVersion<PanDeviceVersionChecker.BinVersion> version = new PanDeviceVersionChecker();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.setShowCondition(() -> {
-            Device d = BaseApplication.getAppComponent().getSourceManager().
+            Device d = DataSourceManager.getInstance().
                     getDevice(uuid);
             DpMsgDefine.DPNet dpNet = d.$(201, new DpMsgDefine.DPNet());
             //设备离线就不需要弹出来
@@ -1083,7 +1084,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             try {
                                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                                 params.add(new JFGDPMsg(517, 0, new byte[]{0}));
-                                return BaseApplication.getAppComponent().getCmd().robotGetData(uuid, params, 1, false, 0);
+                                return Command.getInstance().robotGetData(uuid, params, 1, false, 0);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }

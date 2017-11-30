@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -200,7 +200,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 });
         try {
             String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
-            BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
+            Command.getInstance().checkClientVersion(vid);
         } catch (Throwable e) {
             AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
         }
