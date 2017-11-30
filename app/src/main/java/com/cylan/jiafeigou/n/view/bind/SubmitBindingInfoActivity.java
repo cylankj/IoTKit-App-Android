@@ -150,28 +150,22 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     @Override
     public void onRebindRequired(UdpConstant.UdpDevicePortrait portrait, String reason) {
         AppLogger.d("onRebindRequired,reason:" + reason + ",portrait:" + portrait);
-        switch (portrait.pid) {
-            case 84: {// TODO: 2017/11/28 DC 11 不支持强绑 ,DC11没有 WiFi 模块
-                AppLogger.d("设备已被其他用户绑定:" + reason);
-                progressLoading.setVisibility(View.INVISIBLE);
-                vsLayoutSwitch.setDisplayedChild(1);
-                tvBindFailedText.setText(getString(R.string.Tap3_UserMessage_DeviceUnbind, reason));
-                if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
-                        && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS), getString(R.string._720PanoramicCamera))) {
-                    ivExplainGray.setVisibility(View.VISIBLE);
-                }
+        if (TextUtils.isEmpty(reason)) {
+            getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        //强绑提示按钮,
+                        onBindNext();
+                    }, false);
+        } else {
+            AppLogger.d("设备已被其他用户绑定:" + reason);
+            progressLoading.setVisibility(View.INVISIBLE);
+            vsLayoutSwitch.setDisplayedChild(1);
+            tvBindFailedText.setText(getString(R.string.Tap3_UserMessage_DeviceUnbind, reason));
+            if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                    && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS), getString(R.string._720PanoramicCamera))) {
+                ivExplainGray.setVisibility(View.VISIBLE);
             }
-            break;
-            default: {
-                getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
-                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                            //强绑提示按钮,
-                            onBindNext();
-                        }, false);
-            }
-            break;
         }
-
     }
 
     @Override

@@ -58,7 +58,7 @@ public class UdpConstant {
         public int net;
         public String bindCode;
         public int pid;
-        public int bindFlag = 1;//默认强绑,又改了.
+        public int bindFlag = 1;//默认强绑,0:不强行绑定,1:强行绑定
 
         @Override
         public String toString() {

@@ -92,6 +92,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/y39"
+                android:layout_marginEnd="@dimen/y20"
+                android:layout_marginStart="@dimen/y20"
                 android:gravity="center"
                 android:text="@string/NO_NETWORK_2"
                 android:textColor="@color/color_333333"

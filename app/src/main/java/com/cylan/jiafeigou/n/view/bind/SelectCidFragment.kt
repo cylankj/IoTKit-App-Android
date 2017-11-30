@@ -88,7 +88,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
             devicePortrait.pid = os
             devicePortrait.version = version
             devicePortrait.uuid = uuid
-            devicePortrait.bindFlag = 1//不强绑
+            devicePortrait.bindFlag = 0//不强绑
             PreferencesUtils.putString(JConstant.BINDING_DEVICE, Gson().toJson(devicePortrait))
             presenter.sendDogConfig(this)
         }
