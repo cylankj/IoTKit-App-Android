@@ -25,11 +25,10 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -94,24 +93,24 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
      */
     @Override
     public void logOut(String account, Activity activity) {
-        int loginType = DataSourceManager.getInstance().getLoginType();
-        PreferencesUtils.remove(JConstant.OPEN_LOGIN_MAP + SHARE_MEDIA.SINA.toString());
+        int loginType = LoginHelper.getLoginType();
         UMShareAPI.get(activity).deleteOauth(activity, parseLoginType(loginType), null);
-        DataSourceManager.getInstance().logout()
-                .subscribeOn(Schedulers.io())
-                .subscribe(retAccount -> {
-                    Command.getInstance().logout();
-                    AutoSignIn.getInstance().autoLogout();
-                    NotifyManager.getNotifyManager().clearAll();
-                    RxBus.getCacheInstance().removeAllStickyEvents();
-                    AutoSignIn.getInstance().clearPsw();
-                    //emit failed event.
-                    //是三方登录获取绑定的手机或者邮箱用于登录页回显
-                    if (isOpenLogin) {
-                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(retAccount.getPhone()) ? (TextUtils.isEmpty(retAccount.getEmail()) ? "" : retAccount.getEmail()) : retAccount.getPhone());
-                    }
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
-                }, AppLogger::e);
+        LoginHelper.performLogout();
+        NotifyManager.getNotifyManager().clearAll();
+        RxBus.getCacheInstance().removeAllStickyEvents();
+//        DataSourceManager.getInstance().logout()
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(retAccount -> {
+//                    Command.getInstance().logout();
+//                    AutoSignIn.getInstance().autoLogout();
+//                    AutoSignIn.getInstance().clearPsw();
+//                    //emit failed event.
+//                    //是三方登录获取绑定的手机或者邮箱用于登录页回显
+//                    if (isOpenLogin) {
+//                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(retAccount.getPhone()) ? (TextUtils.isEmpty(retAccount.getEmail()) ? "" : retAccount.getEmail()) : retAccount.getPhone());
+//                    }
+//                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
+//                }, AppLogger::e);
     }
 
 

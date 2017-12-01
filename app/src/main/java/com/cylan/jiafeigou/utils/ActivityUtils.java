@@ -254,4 +254,16 @@ public class ActivityUtils {
                 .replace(id, fragment, fragment.getClass().getSimpleName())
                 .commit();
     }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    public static void replaceFragmentNoAnimation(FragmentManager fragmentManager, Fragment fragment, int id, boolean addStack) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
+                .replace(id, fragment, fragment.getClass().getSimpleName());
+        if (addStack) {
+            transaction.addToBackStack(fragment.getClass().getName());
+        }
+        transaction.commit();
+    }
 }

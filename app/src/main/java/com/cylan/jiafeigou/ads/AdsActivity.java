@@ -8,11 +8,10 @@ import android.widget.ImageView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.AdsTimerView;
@@ -36,7 +35,7 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
         ButterKnife.bind(this);
         imvAdsTimer.setBoomer(() -> {//跳转主页
             Intent intent = null;
-            if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {
+            if (LoginHelper.isLoginSuccessful()) {
                 intent = new Intent(this, NewHomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -88,7 +87,7 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
                 //跳转主页
                 Intent intent = new Intent(this, NewHomeActivity.class);
                 finishExt();
-                if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {
+                if (LoginHelper.isLoginSuccessful()) {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 } else {

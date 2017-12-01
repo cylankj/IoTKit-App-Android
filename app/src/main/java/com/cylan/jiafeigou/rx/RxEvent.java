@@ -1206,6 +1206,7 @@ public class RxEvent {
 //    }
 
     public static class HelperBreaker extends RuntimeException {
+        public int breakerCode;
         public RxEvent.LocalUdpMsg localUdpMsg;
 
         public Object object;
@@ -1220,6 +1221,16 @@ public class RxEvent {
 
         public HelperBreaker(Object o) {
             this.object = o;
+        }
+
+        public HelperBreaker(int breakerCode) {
+            this.breakerCode = breakerCode;
+        }
+
+
+        public HelperBreaker(int breakerCode, Object breaker) {
+            this.breakerCode = breakerCode;
+            this.object = breaker;
         }
 
         public HelperBreaker(String detailMessage) {

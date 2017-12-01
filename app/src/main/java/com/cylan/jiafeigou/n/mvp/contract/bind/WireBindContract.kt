@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.utils.APObserver
 interface WireBindContract {
     interface View : JFGView {
 
-        fun onScanDogWiFiFinished(it: MutableList<APObserver.ScanResult>)
+        fun onScanDogWiFiFinished(it: MutableList<APObserver.ScanResult>?)
 
         fun onScanDogWiFiTimeout()
     }

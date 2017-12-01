@@ -23,7 +23,7 @@ class WireBindActivity : BindAnimationActivity(),
         AppLogger.w("onScanDogWiFiTimeout")
     }
 
-    override fun onScanDogWiFiFinished(it: MutableList<APObserver.ScanResult>) {
+    override fun onScanDogWiFiFinished(it: MutableList<APObserver.ScanResult>?) {
         AppLogger.w("onScanDogWiFiFinished:$it")
         val selectCidFragment = SelectCidFragment.newInstance(ArrayList(it))
         ActivityUtils.addFragmentSlideInFromRight(supportFragmentManager, selectCidFragment, android.R.id.content)

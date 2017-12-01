@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -82,7 +81,6 @@ public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
 
     private int storageType;
-    private LogState logState;
     private Map<String, Object> deviceState = new HashMap<>();
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
@@ -100,8 +98,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
     private static DataSourceManager instance;
-    private int loginType;
-
     public static DataSourceManager getInstance() {
         if (instance == null) {
             synchronized (DataSourceManager.class) {
@@ -214,11 +210,6 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Object getDeviceState(String uuid) {
         return deviceState.get(uuid);
-    }
-
-    @Override
-    public int getLoginType() {
-        return loginType;
     }
 
     private void queryForwardInformation() {
@@ -483,7 +474,6 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Observable<Account> logout() {
         clear();
-        setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
         return BaseDBHelper.getInstance().logout();
     }
 
@@ -706,18 +696,6 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void setLoginState(LogState loginState) {
-        PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
-        if (loginState.state == LogState.STATE_NONE) {
-            setJfgAccount(null);
-        } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
-        } else {
-
-        }
-        AppLogger.w("logState update: " + loginState.state);
-    }
-
-    @Override
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
         if (this.account != null) {
@@ -815,16 +793,6 @@ public class DataSourceManager implements JFGSourceManager {
         return false;
     }
 
-    @Override
-    public int getLoginState() {
-        JFGAccount account = this.getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) {
-            return 0;//无账号
-        } else {
-            return PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, 0);
-        }
-    }
-
 
     @Override
     public int getStorageType() {
@@ -846,11 +814,6 @@ public class DataSourceManager implements JFGSourceManager {
                             this.account = dpAccount;
                             this.account.setOnline(true);
                             setJfgAccount(event.account);
-                            if (jfgAccount != null) {
-                                setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
-                            } else {
-                                AppLogger.w("jfgAccount is null");
-                            }
                             RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
                             accountArrived.jfgAccount = event.account;
                             if (!BaseApplication.isBackground()) {
@@ -1189,12 +1152,6 @@ public class DataSourceManager implements JFGSourceManager {
                 //可能是本地的
                 .filter(ret -> isOnline())
                 .subscribe(ret -> {
-                    try {
-                        AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
-                        loginType = signType == null ? 0 : signType.type;
-                    } catch (Exception e) {
-
-                    }
                 }, AppLogger::e);
     }
 

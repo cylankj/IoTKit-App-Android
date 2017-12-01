@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -190,8 +191,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 Command.getInstance().refreshDevList();
             }
         }), "refresh_manually");
-        int state = DataSourceManager.getInstance().getLoginState();
-        if (state != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             getView().onLoginState(false);
         }
         addSubscription(AndroidSchedulers.mainThread().createWorker().schedule(() -> {

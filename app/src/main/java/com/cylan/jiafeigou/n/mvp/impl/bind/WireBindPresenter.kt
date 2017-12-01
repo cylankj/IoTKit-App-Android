@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind
 
 import com.cylan.jiafeigou.R
+import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader
 import com.cylan.jiafeigou.n.mvp.contract.bind.WireBindContract
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.APObserver
@@ -19,6 +21,12 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
     override fun scanDogWiFi() {
         AppLogger.w("scanDogWiFi")
         val subscribe = APObserver.scanDogWiFi()
+                .map {
+                    it?.filter {
+                        PropertiesLoader.getInstance().hasProperty(it.os, "WIREDMODE")
+                                && !DataSourceManager.getInstance().getDevice(it.uuid).available()
+                    }?.toMutableList()
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(R.string.addvideo_searching))

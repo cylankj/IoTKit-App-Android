@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
@@ -84,11 +83,6 @@ public interface JFGSourceManager {
     JFGShareListInfo getShareListByCid(String cid);
 
     void cacheShareList(ArrayList<JFGShareListInfo> arrayList);
-
-    void setLoginState(LogState loginState);
-
-    int getLoginState();
-
     int getStorageType();
 
     void setStorageType(int type);
@@ -162,6 +156,4 @@ public interface JFGSourceManager {
     void removeDeviceState(String uuid);
 
     Object getDeviceState(String uuid);
-
-    int getLoginType();
 }

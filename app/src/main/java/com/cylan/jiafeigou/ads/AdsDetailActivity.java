@@ -17,12 +17,11 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
@@ -132,7 +131,7 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
      */
     public void onClick() {
         Intent intent = new Intent(this, NewHomeActivity.class);
-        if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {
+        if (LoginHelper.isLoginSuccessful()) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else {

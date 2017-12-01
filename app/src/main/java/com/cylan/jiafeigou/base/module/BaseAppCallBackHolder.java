@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.module.message.MIDHeader;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -113,8 +114,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnLogoutByServer(int i) {
         AppLogger.w("OnLogoutByServer:" + i);
+        LoginHelper.performLogout();
         RxBus.getCacheInstance().post(new RxEvent.PwdHasResetEvent(i));
-        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
 
     @Override

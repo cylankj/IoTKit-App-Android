@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
@@ -267,7 +268,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             //刷新账号
             //需要等动画完成,否则 homeMine 会有闪烁
             JfgAppCmd.getInstance().getAccount();
-        },1000);
+        }, 1000);
     }
 
     private void initSwitchBtnListener() {
@@ -315,7 +316,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                     return;
                 }
                 //第三方账号需要绑定手机/邮箱
-                int type = DataSourceManager.getInstance().getLoginType();
+                int type = LoginHelper.getLoginType();
                 if (type >= 3 && account != null) {
                     //字符串相加
                     if (TextUtils.isEmpty(account.getEmail() + account.getPhone())) {
@@ -382,7 +383,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
                     getString(R.string.Tap2_Index_Open_NoDeviceOption),
                     (DialogInterface dialog, int which) -> {
-                        int i = DataSourceManager.getInstance().getLoginType();
+                        int i = LoginHelper.getLoginType();
                         if (i == 3 || i == 4) {
                             int language = JFGRules.getLanguageType(ContextUtils.getContext());
                             if (language == LANGUAGE_TYPE_SIMPLE_CHINESE) {

@@ -59,7 +59,8 @@ object APObserver {
                                             port = it.port,
                                             updateTime = it.time,
                                             mac = fPingAck.mac,
-                                            version = fPingAck.version
+                                            version = fPingAck.version,
+                                            os = fPingAck.os
                                     )
                                 }
                                 TextUtils.equals(secondaryHeard.cmd, UdpConstant.PING_ACK) -> {
@@ -68,7 +69,8 @@ object APObserver {
                                             uuid = pingAck.cid,
                                             ip = it.ip,
                                             port = it.port,
-                                            updateTime = it.time
+                                            updateTime = it.time,
+                                            net = pingAck.net
                                     )
                                 }
                                 else -> null

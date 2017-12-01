@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.module
 import android.Manifest
 import android.graphics.Bitmap
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import com.cylan.constants.JfgConstants
 import com.cylan.entity.jniCall.JFGAccount
@@ -32,7 +33,9 @@ import java.util.*
  */
 class Command : AppCmd {
 
+
     companion object {
+        val TAG = Command::class.java.simpleName
         @JvmField
         val appcallback: BaseAppCallBackHolder = BaseAppCallBackHolder()
         var isOnTop = true
@@ -41,6 +44,7 @@ class Command : AppCmd {
         @JvmField
         var videoHeight: Int = 0
         private var command: Command? = null
+        @JvmStatic
         private var isLogEnabled = false
         private var initSuccess: Boolean = false
         private val logPath = JConstant.WORKER_PATH
@@ -51,9 +55,10 @@ class Command : AppCmd {
                 "gaiD63d8yeq8YDOYSwIDAQAB\n" +
                 "-----END PUBLIC KEY-----"
 
+
         init {
             try {
-                AppLogger.d("正在初始化 SDK ")
+                Log.d(TAG, "正在初始化 SDK ")
                 System.loadLibrary("jfgsdk")
                 JfgConstants.ADDR = OptionsImpl.getServer()
                 ensureNativeParams()
@@ -90,6 +95,7 @@ class Command : AppCmd {
                 }
             } catch (e: Exception) {
                 initSuccess = false
+                e.printStackTrace()
                 AppLogger.e("初始化出现错误!!!" + e.message + "vid:" + Security.getVId() + ",vkey:" + Security.getVKey() + ",serverAddress:" + OptionsImpl.getServer() + ",logPath:" + logPath)
             }
         }

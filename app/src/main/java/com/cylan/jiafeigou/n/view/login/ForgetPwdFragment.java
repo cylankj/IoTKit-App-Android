@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
+import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -114,7 +115,6 @@ public class ForgetPwdFragment extends IBaseFragment<ForgetPwdContract.Presenter
      * {0}请输入手机号/邮箱 {1}请输入邮箱
      */
     private int acceptType = 0;
-    private ForgetPwdContract.Presenter presenter;
     private CountDownTimer countDownTimer;
     private static final String DIALOG_KEY = "dialogFragment";
 
@@ -123,6 +123,7 @@ public class ForgetPwdFragment extends IBaseFragment<ForgetPwdContract.Presenter
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         acceptType = bundle.getInt(JConstant.KEY_LOCALE);
+        presenter = new ForgetPwdPresenterImpl(this);
     }
 
     @Override
@@ -167,7 +168,6 @@ public class ForgetPwdFragment extends IBaseFragment<ForgetPwdContract.Presenter
         ButterKnife.bind(this, view);
         return view;
     }
-
 
 
     @Override

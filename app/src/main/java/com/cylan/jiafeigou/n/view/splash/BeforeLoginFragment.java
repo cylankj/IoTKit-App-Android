@@ -24,30 +24,16 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.LoadingDialog;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
-import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
 
 
 /**
@@ -91,46 +77,43 @@ public class BeforeLoginFragment extends Fragment {
         });
     }
 
-    private Subscription subscription;
-
     @Override
     public void onResume() {
         super.onResume();
-        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.InitFrom2x.class)) {
-            if (AutoSignIn.getInstance().isNotEmpty()) {
-                subscription = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                        .subscribeOn(Schedulers.io())
-                        .delay(1, TimeUnit.SECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnError(throwable -> {
-                            btnToLogin.setEnabled(true);
-                            btnToRegister.setEnabled(true);
-                            btnLookAround.setEnabled(true);
-                            LoadingDialog.dismissLoading();
-                        })
-                        .subscribe(ret -> {
-                            btnToLogin.setEnabled(true);
-                            btnToRegister.setEnabled(true);
-                            btnLookAround.setEnabled(true);
-                            LoadingDialog.dismissLoading();
-                            if (ret.code == JError.ErrorOK) {
-                                startActivity(new Intent(getActivity(), NewHomeActivity.class));
-                                getActivity().finish();
-                                RxBus.getCacheInstance().removeStickyEvent(RxEvent.InitFrom2x.class);
-                            }
-                        }, AppLogger::e);
-                AutoSignIn.getInstance().autoLogin();
-                btnToLogin.setEnabled(false);
-                btnToRegister.setEnabled(false);
-                btnLookAround.setEnabled(false);
-                LoadingDialog.showLoading(getActivity(), getString(R.string.PLEASE_WAIT), true);
-            }
-        }
+//        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.InitFrom2x.class)) {
+//            if (AutoSignIn.getInstance().isNotEmpty()) {
+//                subscription = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+//                        .subscribeOn(Schedulers.io())
+//                        .delay(1, TimeUnit.SECONDS)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .doOnError(throwable -> {
+//                            btnToLogin.setEnabled(true);
+//                            btnToRegister.setEnabled(true);
+//                            btnLookAround.setEnabled(true);
+//                            LoadingDialog.dismissLoading();
+//                        })
+//                        .subscribe(ret -> {
+//                            btnToLogin.setEnabled(true);
+//                            btnToRegister.setEnabled(true);
+//                            btnLookAround.setEnabled(true);
+//                            LoadingDialog.dismissLoading();
+//                            if (ret.code == JError.ErrorOK) {
+//                                startActivity(new Intent(getActivity(), NewHomeActivity.class));
+//                                getActivity().finish();
+//                                RxBus.getCacheInstance().removeStickyEvent(RxEvent.InitFrom2x.class);
+//                            }
+//                        }, AppLogger::e);
+//                AutoSignIn.getInstance().autoLogin();
+//                btnToLogin.setEnabled(false);
+//                btnToRegister.setEnabled(false);
+//                btnLookAround.setEnabled(false);
+//                LoadingDialog.showLoading(getActivity(), getString(R.string.PLEASE_WAIT), true);
+//            }
+//        }
     }
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
-        DataSourceManager.getInstance().setLoginState(new LogState(STATE_GUEST));
         DataSourceManager.getInstance().clear();
         if (getView() != null) {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_look_around));

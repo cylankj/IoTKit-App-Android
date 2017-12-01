@@ -6,8 +6,6 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 
-import rx.Subscription;
-
 /**
  * Created by lxh on 16-6-24.
  */
@@ -38,12 +36,7 @@ public interface LoginContract {
 
         void verifyCodeResult(int code);
 
-        /**
-         * 登陆结果
-         *
-         * @param code , 只需要关注BeanInfoLogin 中的ret 和session . ret 为0才有session
-         */
-        void loginResult(int code);
+        void resetView();
 
         /**
          * @param result:查阅 error_define.md
@@ -80,6 +73,20 @@ public interface LoginContract {
         Activity getActivityContext();
 
         void onAuthenticationResult(int code);
+
+        void onLoginSuccess();
+
+        void onAccountNotExist();
+
+        void onInvalidPassword();
+
+        void onOpenLoginInvalidToken();
+
+        void onConnectError();
+
+        void onLoginFailed(int errorCode);
+
+        void onLoginTimeout();
     }
 
     interface Presenter extends BasePresenter {
@@ -116,7 +123,7 @@ public interface LoginContract {
          *
          * @return
          */
-        Subscription reShowAccount();
+        void reShowAccount();
 
         void performLogin(String account, String password);
 

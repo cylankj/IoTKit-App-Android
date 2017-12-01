@@ -30,14 +30,12 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -192,7 +190,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     }
 
 
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -322,6 +319,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (!TextUtils.isEmpty(etRegisterInputBox.getText().toString().trim())) {
             tvRegisterSubmit.setEnabled(JConstant.PHONE_REG.matcher(etRegisterInputBox.getText().toString().trim()).find());
         }
+        presenter.reShowAccount();
     }
 
     /**
@@ -598,40 +596,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
     }
 
-    @Override
-    public void loginResult(int code) {
-        if (code == JError.ErrorOK) {
-            hideLoading();
-            if (!(getActivity() instanceof NewHomeActivity)) {
-                getActivity().finish();
-            } else {
-                getActivity().getSupportFragmentManager().popBackStack();
-                ((NewHomeActivity) getActivity()).showHomeListFragment();
-//                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
-                return;
-            }
-            getActivity().finish();
-            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-        } else {
-            if (code == JError.ErrorAccountNotExist) {
-                //账号未注册
-                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
-            } else if (code == JError.ErrorLoginInvalidPass) {
-                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            } else if (code == JError.ErrorOpenLoginInvalidToken) {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
-            } else if (code == JError.ErrorConnect) {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
-            } else if (code == JError.ErrorP2PSocket) {
-                ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
-            } else {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":" + code);
-            }
-            resetView();
-            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");
-        }
-    }
-
     /**
      * 弹框，{fragment}
      */
@@ -652,7 +616,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     /**
      * 登录超时，或者失败后动画复位
      */
-    private void resetView() {
+    @Override
+    public void resetView() {
         lbLogin.viewZoomBig();
         AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
         AnimatorUtils.viewTranslationY(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? rLayoutLoginThirdParty : rLayoutLoginThirdPartyAbroad, true, 100, 800, 0, 200);
@@ -1101,5 +1066,54 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_DeleteSucces));
             hideLoading();
         }
+    }
+
+    @Override
+    public void onLoginSuccess() {
+        AppLogger.d("onLoginSuccess");
+        hideLoading();
+        if ((getActivity() instanceof NewHomeActivity)) {
+            getActivity().getSupportFragmentManager().popBackStack();
+            ((NewHomeActivity) getActivity()).showHomeListFragment();
+        } else {
+            startActivity(new Intent(getContext(), NewHomeActivity.class));
+        }
+    }
+
+
+    @Override
+    public void onAccountNotExist() {
+        AppLogger.d("onAccountNotExist");
+        ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+    }
+
+    @Override
+    public void onInvalidPassword() {
+        AppLogger.d("onInvalidPassword");
+        ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+    }
+
+    @Override
+    public void onOpenLoginInvalidToken() {
+        AppLogger.d("onOpenLoginInvalidToken");
+        ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
+    }
+
+    @Override
+    public void onConnectError() {
+        AppLogger.d("onConnectError");
+        ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+    }
+
+    @Override
+    public void onLoginFailed(int errorCode) {
+        AppLogger.d("onLoginFailed");
+        ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":" + errorCode);
+    }
+
+    @Override
+    public void onLoginTimeout() {
+        AppLogger.d("onLoginTimeout");
+        ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
     }
 }

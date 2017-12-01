@@ -199,6 +199,7 @@ public class JConstant {
     public static final String SHOW_MONITOR_AREA_TIPS = "SHOW_MONITOR_AREA_TIPS";
     public static final String MONITOR_AREA_PICTURE = "MONITOR_AREA_PICTURE";
 
+
     public static String getFaceText(String[] face_id, Map<String, String> faceMap, String defaultText) {
         if (face_id == null || faceMap == null || faceMap.size() == 0) {
             return defaultText;
@@ -417,7 +418,7 @@ public class JConstant {
         if (pid == 84) {
             return R.drawable.image_cam_outdoor;
         }
-        if (pid==92){
+        if (pid == 92) {
             return R.drawable.image_cam_hemisphere;
         }
         if (JFGRules.isCatEeyBell(pid)) {
@@ -538,6 +539,7 @@ public class JConstant {
     public static final String KEY_PHONE = "PhoneNum";//2.x account key
     public static final String SESSIONID = "sessid";// 2.x sessid key
     public static final String KEY_PSW = "PSW";     //2.x pwd key
+    public static final String KEY_SIGN_TYPE = "sign_type";
     public static final String UPDATAE_AUTO_LOGIN = "update_auto_login";
     public static final String CLIENT_UPDATAE_TAB = "client_update_tab";
     public static final String CLIENT_UPDATAE_TIME_TAB = "client_update_time_tab";
@@ -603,7 +605,7 @@ public class JConstant {
         String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
         if (TextUtils.isEmpty(serviceKey)) {
 
-            long seq =  Command.getInstance().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
+            long seq = Command.getInstance().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
             RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .first()
@@ -621,10 +623,10 @@ public class JConstant {
     }
 
     public static String blockPutFileToCloud(String localPath, String remotePath, int regionType) throws Exception {
-        int seq =  Command.getInstance().putFileToCloud(remotePath, localPath);
+        int seq = Command.getInstance().putFileToCloud(remotePath, localPath);
         JFGMsgHttpResult result = RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).first(rsp -> rsp.requestId == seq).timeout(15, TimeUnit.SECONDS).toBlocking().first();
         if (result.ret == 200) {
-            return  Command.getInstance().getSignedCloudUrl(regionType, remotePath);
+            return Command.getInstance().getSignedCloudUrl(regionType, remotePath);
         }
         return null;
     }

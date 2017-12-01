@@ -15,6 +15,8 @@ import android.widget.TextView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
+import com.cylan.jiafeigou.base.module.DataSourceManager
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.APObserver
 import com.cylan.jiafeigou.utils.DensityUtils
@@ -126,6 +128,12 @@ class PickCidDialog : DialogFragment() {
         AppLogger.d("refreshDogWiFi")
         subscribe?.unsubscribe()
         subscribe = APObserver.scanDogWiFi()
+                .map {
+                    it.filter {
+                        PropertiesLoader.getInstance().hasProperty(it.os, "WIREDMODE")
+                                && !DataSourceManager.getInstance().getDevice(it.uuid).available()
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { refresh_switcher.displayedChild = 1 }
                 .doOnTerminate { refresh_switcher.displayedChild = 0 }
