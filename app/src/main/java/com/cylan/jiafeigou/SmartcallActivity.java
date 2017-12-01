@@ -234,7 +234,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(BeforeLoginFragment.class.getSimpleName());
         if (fragment == null) {
             fragment = BeforeLoginFragment.newInstance(null);
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.welcome_frame_container);
+            ActivityUtils.replaceFragmentNoAnimation(R.id.welcome_frame_container, getSupportFragmentManager(), fragment);
 
         }
         fragment = getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
@@ -255,7 +255,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             getSupportFragmentManager().beginTransaction().show(fragment).commit();
         } else {
             fragment = BeforeLoginFragment.newInstance(null);
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.welcome_frame_container);
+            ActivityUtils.replaceFragmentNoAnimation(R.id.welcome_frame_container, getSupportFragmentManager(), fragment);
         }
     }
 

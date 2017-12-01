@@ -70,6 +70,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
@@ -98,6 +100,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
     private static DataSourceManager instance;
+
     public static DataSourceManager getInstance() {
         if (instance == null) {
             synchronized (DataSourceManager.class) {
@@ -107,6 +110,25 @@ public class DataSourceManager implements JFGSourceManager {
             }
         }
         return instance;
+    }
+
+    private static SerializedSubject<Object, Object> bus;
+
+    static {
+        bus = PublishSubject.create().toSerialized();
+        bus.ofType(RxEvent.SerializeCacheAccountEvent.class)
+                .subscribe();
+        bus.ofType(RxEvent.SerializeCacheDeviceEvent.class)
+                .subscribe();
+        bus.ofType(RxEvent.SerializeCacheGetDataEvent.class)
+                .subscribe();
+        bus.ofType(RxEvent.SerializeCacheSyncDataEvent.class)
+                .subscribe();
+
+    }
+
+    public static void publish(Object event) {
+        bus.onNext(event);
     }
 
     public DataSourceManager() {

@@ -7,12 +7,10 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.MethodFilter;
-import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
-import com.cylan.jiafeigou.push.PushPickerIntentService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -71,18 +69,15 @@ BaseJFGResultParser {
                 //最短3s种一次。
                 if (MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
                     if (login) {
-                        Command.getInstance().getAccount();
-                        PushPickerIntentService.start();
                         Schedulers.io().createWorker().schedule(() -> {
                             new FetchFriendsTask().call("");
                             new FetchFeedbackTask().call("");
                             new SysUnreadCountTask().call("");
                         });
-
                         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
                         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                     }
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
+                    RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
                 }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:

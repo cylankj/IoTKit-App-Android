@@ -26,7 +26,6 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -85,6 +84,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.w("OnUpdateAccount :" + gson.toJson(jfgAccount));
+
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheAccountEvent(jfgAccount));
     }
 

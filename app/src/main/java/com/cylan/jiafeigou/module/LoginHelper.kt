@@ -2,11 +2,13 @@ package com.cylan.jiafeigou.module
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.misc.JError
 import com.cylan.jiafeigou.misc.JFGRules
+import com.cylan.jiafeigou.push.PushPickerIntentService
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit
 data class User(var username: String, var password: String, var signType: Int, var display: String? = if (signType == 1) username else "")
 
 object LoginHelper {
+    private val TAG = LoginHelper::class.java.simpleName
     @JvmStatic
     var loginType: Int = -1
         private set
@@ -78,9 +81,12 @@ object LoginHelper {
             var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin::class.java)
                     .subscribe({
                         if (it.code == 0) {
+                            Log.d(JConstant.CYLAN_TAG, "performLogin:login successful,starting get account with username:$username")
                             Command.getInstance().account
+                            PushPickerIntentService.start()
                         } else {
                             if (it.code == JError.ErrorLoginInvalidPass) {
+                                Log.d(JConstant.CYLAN_TAG, "performLogin: login failed,the username or password is invalid,username is:$username")
                                 clearPassword()
                             }
                             subscriber.onError(RxEvent.HelperBreaker(it.code, it))
@@ -97,6 +103,7 @@ object LoginHelper {
             subscribe = RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived::class.java)
                     .first { TextUtils.equals(it.account.account, username) }
                     .subscribe({
+                        Log.d(JConstant.CYLAN_TAG, "performLogin:account is arrived,login process is completed.the account is:$it")
                         loginType = signType
                         subscriber.onNext(it)
                         subscriber.onCompleted()
@@ -111,22 +118,30 @@ object LoginHelper {
 
             when {
                 TextUtils.isEmpty(username) || TextUtils.isEmpty(password) -> {
+                    Log.d(JConstant.CYLAN_TAG, "performLogin error:username or password is empty," +
+                            "username is:$username,password is:$password,signType is:$signType")
+
                     subscriber.onError(IllegalArgumentException("performLogin error:username or password is empty," +
                             "username is:$username,password is:$password,signType is:$signType"))
                 }
                 NetUtils.getNetType(ContextUtils.getContext()) == -1 -> {
+                    Log.d(JConstant.CYLAN_TAG, "performLogin network offline,starting offline login")
                     DataSourceManager.getInstance().initFromDB()
                 }
                 signType >= 3 -> {
+                    Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password")
                     Command.getInstance().openLogin(languageType, username!!, password!!, signType)
                     subscribe = Schedulers.io().createWorker().schedule({
+                        Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
                         DataSourceManager.getInstance().initFromDB()
                     }, 5, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
                 }
                 else -> {
+                    Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password")
                     Command.getInstance().login(languageType, username!!, password!!, true)
                     subscribe = Schedulers.io().createWorker().schedule({
+                        Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
                         DataSourceManager.getInstance().initFromDB()
                     }, 5, TimeUnit.SECONDS)
                     subscriber.add(subscribe)

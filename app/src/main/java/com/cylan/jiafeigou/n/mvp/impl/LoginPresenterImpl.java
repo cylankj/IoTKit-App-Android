@@ -313,6 +313,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         LoginHelper.saveUser(account, password, loginType);
                         getView().onLoginSuccess();
                     } else {
+                        getView().resetView();
                         getView().onLoginTimeout();
                     }
                 }, error -> {

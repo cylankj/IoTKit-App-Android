@@ -634,7 +634,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             if (!(getActivity() instanceof NewHomeActivity)) {
                 getActivity().finish();
             }
-            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+            Intent intent = new Intent(getContext(), NewHomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            getContext().startActivity(intent);
+            getActivity().finish();
         }
     }
 
@@ -1076,7 +1079,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             getActivity().getSupportFragmentManager().popBackStack();
             ((NewHomeActivity) getActivity()).showHomeListFragment();
         } else {
-            startActivity(new Intent(getContext(), NewHomeActivity.class));
+            Intent intent = new Intent(getContext(), NewHomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().finish();
         }
     }
 

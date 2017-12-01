@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant
 import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
-import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.udpMsgPack.JfgUdpMsg
 import com.google.gson.Gson
 import org.msgpack.MessagePack
@@ -46,7 +45,7 @@ object APObserver {
             var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
                     .map {
                         if (BuildConfig.DEBUG) {
-                            Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:${Gson().toJson(it)},解压后数据为:${MessagePack().read(it.data)}")
+                            Log.d(JConstant.CYLAN_TAG, "正在解析 UDP 消息:${Gson().toJson(it)},解压后数据为:${MessagePack().read(it.data)}")
                         }
                         return@map try {
                             val secondaryHeard = unpackData<JfgUdpMsg.UdpHeader>(it.data, JfgUdpMsg.UdpHeader::class.java)
@@ -82,7 +81,7 @@ object APObserver {
                     }
                     .filter { it != null }
                     .subscribe({
-                        AppLogger.w("scan result:$it")
+                        Log.d(JConstant.CYLAN_TAG, "scan result:$it")
                         subscriber.onNext(it)
                     }) {
                         it.printStackTrace()
