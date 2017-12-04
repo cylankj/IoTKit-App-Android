@@ -1,12 +1,9 @@
 @file:Suppress("unused")
 
-package com.example.yzd.helloworld
+package com.cylan.jiafeigou.module
 
 import android.support.v4.util.LongSparseArray
 import android.util.Log
-import com.cylan.jiafeigou.module.DP
-import com.cylan.jiafeigou.module.DPList
-import com.cylan.jiafeigou.module.DPPrimary
 import org.msgpack.MessagePack
 import org.msgpack.packer.Packer
 import org.msgpack.template.AbstractTemplate
@@ -18,10 +15,24 @@ import java.util.*
  */
 object PropertySupervisor {
     private val TAG = PropertySupervisor::class.java.simpleName
-    @JvmStatic
     private val properties = LongSparseArray<DP>()
-    @JvmStatic
     private val msgPack = MessagePack()
+    private val hookers = mutableListOf<PropertyHooker>()
+
+    interface PropertyHooker {
+        fun hookGet()
+        fun hookSet()
+    }
+
+    fun addHooker(hooker: PropertyHooker) {
+        Log.d(TAG, "add hooker:$hooker")
+        hookers.add(hooker)
+    }
+
+    fun removeHooker(hooker: PropertyHooker) {
+        Log.d(TAG, "remove hooker:$hooker")
+        hookers.remove(hooker)
+    }
 
     init {
         msgPack.register(DPPrimary::class.java, DPPrimaryTemplate())
@@ -104,16 +115,24 @@ object PropertySupervisor {
                 val msgId = unPacker.readInt()
                 val version = unPacker.readLong()
                 val bytes = unPacker.readByteArray()
-                val dpPrimary = DPPrimary(bytes, msgId, version)
-                dpList.add(dpPrimary)
+                val message = DPMessage(bytes, msgId, version)
+                dpList.add(message)
                 unPacker.readArrayEnd()
             }
             unPacker.readArrayEnd()
             return dpList
         }
 
-        override fun write(packer: Packer, v: DPList?, required: Boolean) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        override fun write(packer: Packer, v: DPList, required: Boolean) {
+            packer.writeArrayBegin(v.size)
+            for (dpMessage in v) {
+                packer.writeArrayBegin(3)
+                packer.write(dpMessage.msgId)
+                packer.write(dpMessage.version)
+                packer.write(dpMessage.value)
+                packer.writeArrayEnd()
+            }
+            packer.writeArrayEnd()
         }
 
     }

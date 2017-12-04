@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.LoginHelper;
+import com.cylan.jiafeigou.n.engine.AppServices;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -64,7 +65,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         super.initViewAndListener();
         PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
-
+        startService(new Intent(this, AppServices.class));
     }
 
     @Override

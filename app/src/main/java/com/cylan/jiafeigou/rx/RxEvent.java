@@ -649,6 +649,16 @@ public class RxEvent {
         public ArrayList<JFGDPMsg> dpList;
         public ArrayList<Long> idList;
         public String uuid;
+
+        public DeviceSyncRsp() {
+
+        }
+
+        public DeviceSyncRsp(ArrayList<JFGDPMsg> dpList, ArrayList<Long> idList, String uuid) {
+            this.dpList = dpList;
+            this.idList = idList;
+            this.uuid = uuid;
+        }
     }
 
     public static class DeleteDataRsp {
