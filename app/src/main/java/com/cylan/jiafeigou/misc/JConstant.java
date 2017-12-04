@@ -19,6 +19,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -205,17 +207,22 @@ public class JConstant {
             return defaultText;
         }
         String information;
-        StringBuilder result = new StringBuilder();
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < face_id.length; i++) {
             information = faceMap.get(face_id[i]);
-            if (information != null) {
-                result.append(information);
-                if (i != face_id.length - 1) {
-                    result.append(", ");
-                }
+            if (information != null && !result.contains(information)) {
+                result.add(information);
             }
         }
-        return result.toString();
+        StringBuilder retValue = new StringBuilder();
+        for (int i = 0; i < result.size(); i++) {
+            information = result.get(i);
+            retValue.append(information);
+            if (i != result.size() - 1) {
+                retValue.append(", ");
+            }
+        }
+        return retValue.toString();
         // TODO: 2017/10/14  看原型是怎么样的了
 //        String temp = result.toString();
 //        return TextUtils.isEmpty(temp) ? defaultText : temp;

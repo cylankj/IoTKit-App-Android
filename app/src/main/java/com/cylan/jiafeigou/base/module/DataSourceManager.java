@@ -70,14 +70,13 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
 
 /**
  * @Deprecated 不推荐使用缓存了, 很多问题,每次直接查询服务器就行了
+ * 即将删除
  */
 public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
@@ -110,25 +109,6 @@ public class DataSourceManager implements JFGSourceManager {
             }
         }
         return instance;
-    }
-
-    private static SerializedSubject<Object, Object> bus;
-
-    static {
-        bus = PublishSubject.create().toSerialized();
-        bus.ofType(RxEvent.SerializeCacheAccountEvent.class)
-                .subscribe();
-        bus.ofType(RxEvent.SerializeCacheDeviceEvent.class)
-                .subscribe();
-        bus.ofType(RxEvent.SerializeCacheGetDataEvent.class)
-                .subscribe();
-        bus.ofType(RxEvent.SerializeCacheSyncDataEvent.class)
-                .subscribe();
-
-    }
-
-    public static void publish(Object event) {
-        bus.onNext(event);
     }
 
     public DataSourceManager() {

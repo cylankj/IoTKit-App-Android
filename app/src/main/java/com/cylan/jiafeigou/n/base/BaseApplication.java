@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
 import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
 import com.cylan.jiafeigou.module.Command;
@@ -101,6 +102,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             viewCount = 0;
             //Dagger2 依赖注入
             boxStore = MyObjectBox.builder().androidContext(this).build();
+            DataSourceManager.getInstance();//以后会去掉 datasource
             propertyItemBox = boxStore.boxFor(PropertyItem.class);
             deviceBox = boxStore.boxFor(Device.class);
             OkGo.init(this);
