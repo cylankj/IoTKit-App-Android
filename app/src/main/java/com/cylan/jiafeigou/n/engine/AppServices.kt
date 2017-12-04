@@ -55,9 +55,11 @@ class AppServices() : Service() {
 
     private class AppDeviceHooker : DeviceSupervisor.DeviceHooker {
         private val TAG = AppDeviceHooker::class.java.simpleName
-        override fun hook(device: Device, uuid: String, msgId: Int): Boolean {
-            Log.d(TAG, "App still alive and hooke a getValue request,device:$device,uuid:$uuid,msgId:$msgId")
-            return false
+
+        override fun <T> hook(device: Device, uuid: String, msgId: Int, value: T): T {
+            Log.d(TAG, "App still alive and hooke a getValue request,device:$device,uuid:$uuid,msgId:$msgId,value:$value")
+            return value
         }
+
     }
 }

@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.module
 import android.util.Log
 import com.cylan.jiafeigou.support.log.AppLogger
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.jvmErasure
 
 /**
  * Created by yzd on 17-12-2.
@@ -14,7 +13,7 @@ object DeviceSupervisor {
     private val hookers = mutableListOf<DeviceHooker>()
 
     interface DeviceHooker {
-        fun hook(device: Device, uuid: String, msgId: Int): Boolean
+        fun <T> hook(device: Device, uuid: String, msgId: Int, value: T): T
     }
 
     init {
@@ -52,25 +51,21 @@ object DeviceSupervisor {
     @JvmStatic
     fun <T> getValue(device: Device, property: KProperty<*>): T {
         val msgId = (property.annotations.first { it is MsgId } as MsgId).msgId
-        if (!performHooker(device, device.box.uuid, msgId)) {
-            val value = PropertySupervisor.getValue<DP>(device.box.uuid, msgId)
-            return if (property.returnType.jvmErasure == value::class) {
-                value as T
-            } else {
-                throw ClassCastException("getProperty from Device(uuid=${device.box.uuid}) for property id:$msgId," +
-                        "property name:${property.name},property type:${property.returnType} failed." +
-                        "value:$value cannot cast to ${property.returnType}")
-            }
-        } else {
-            throw IllegalAccessException("cannot get value for device:$device,uuid:${device.box.uuid},msgId:$msgId,it is hooked," +
-                    "make sure you have the permission")
-        }
+        val value = PropertySupervisor.getValue<DP>(device.box.uuid, msgId)
+        val hooker = performHooker(device, device.box.uuid, msgId, value)
+        return hooker as T
     }
 
-    private fun performHooker(device: Device, uuid: String, msgId: Int): Boolean {
-        val hooked = hookers.any { it.hook(device, uuid, msgId) }
-        Log.d(TAG, "performHooker finished.the hooker result for device:$device,uuid:$uuid,msgId$msgId is:$hooked")
-        return hooked
+    private fun <T> performHooker(device: Device, uuid: String, msgId: Int, value: T?): T? {
+        var retValue = value
+        for (hooker in hookers) {
+            retValue = hooker.hook(device, uuid, msgId, value)
+            if (retValue != value) {
+                break
+            }
+        }
+        Log.d(TAG, "performHooker finished.the hooker result for device:$device,uuid:$uuid,msgId$msgId is:${retValue != value}")
+        return retValue
     }
 
     @JvmStatic
