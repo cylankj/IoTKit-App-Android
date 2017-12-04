@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.MyObjectBox;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
@@ -20,7 +21,6 @@ import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.server.cache.Device;
-import com.cylan.jiafeigou.server.cache.MyObjectBox;
 import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.hook.HookHelper;
@@ -101,7 +101,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appInit");
             viewCount = 0;
             //Dagger2 依赖注入
-            boxStore = MyObjectBox.builder().androidContext(this).build();
+            boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
             DataSourceManager.getInstance();//以后会去掉 datasource
             propertyItemBox = boxStore.boxFor(PropertyItem.class);
             deviceBox = boxStore.boxFor(Device.class);
