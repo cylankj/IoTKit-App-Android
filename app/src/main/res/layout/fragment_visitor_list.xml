@@ -11,20 +11,20 @@
         app:vp_need_wrap="true" />
 
     <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/face_header"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
+    <!--android:id="@+id/face_header"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"/>-->
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cam_message_indicator_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vp_default"
-        android:layout_marginTop="@dimen/y18"
-        android:visibility="gone"
         android:layout_marginBottom="@dimen/y13"
+        android:layout_marginTop="@dimen/y18"
         android:paddingEnd="@dimen/y15"
-        android:paddingStart="@dimen/y15">
+        android:paddingStart="@dimen/y15"
+        android:visibility="gone">
 
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/y53"
             android:text="-/-"
-            android:textColor="@color/color_adadad"
+            android:textColor="@color/color_666666"
             android:textSize="@dimen/sp12"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -55,7 +55,7 @@
             android:gravity="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="@color/color_999999"
+            android:textColor="@color/color_666666"
             android:textSize="@dimen/sp12"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

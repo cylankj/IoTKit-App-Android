@@ -31,7 +31,7 @@ class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : Bas
         val subscribe = BindHelper.sendServerConfig(scanResult.uuid, scanResult.mac, JFGRules.getLanguageType())
                 .timeout(5, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING))
+                .compose(applyLoading(false,R.string.LOADING))
                 .subscribe({
                     when (it) {
                         null -> {
@@ -53,7 +53,7 @@ class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : Bas
         val subscribe = Observable.zip(BindHelper.sendWiFiConfig(scanResult.uuid, scanResult.mac, "Xiaomi_ACF2", "88888888")
                 , BindHelper.sendServerConfig(scanResult.uuid, scanResult.mac, JFGRules.getLanguageType()), { _, t2 -> t2 })
                 .timeout(7, TimeUnit.SECONDS, Observable.just(null))
-                .compose(applyLoading(R.string.LOADING))
+                .compose(applyLoading(false,R.string.LOADING))
                 .subscribe({
                     when (it) {
                         null -> {
@@ -75,7 +75,7 @@ class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : Bas
         val subscribe = APObserver.scanDogWiFi()
                 .timeout(7, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.addvideo_searching))
+                .compose(applyLoading(false,R.string.addvideo_searching))
                 .subscribe({
                     when (it) {
                         null -> {

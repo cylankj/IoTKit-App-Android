@@ -90,7 +90,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING,method))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe(result -> {
                     mView.onShareContentResponse(result, refresh);
                 }, e -> {

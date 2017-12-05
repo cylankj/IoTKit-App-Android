@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.view.cam
 
 
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,7 +13,11 @@ import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -230,7 +236,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         when (type) {
             FILTER_TYPE_ALL -> {
                 if (TextUtils.isEmpty(faceId)) {
-                    cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_SUM, count.toString()) }
+                    val string = SpannableString(getString(R.string.MESSAGES_FACE_VISIT_SUM, count.toString()))
+                    val index = string.indexOf("%s")
+                    string.setSpan(ForegroundColorSpan(Color.parseColor("#4B95D5")), index, index + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    string.setSpan(StyleSpan(Typeface.BOLD), index, index + 2, index + 2)
+                    cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = string }
                 }
 
             }
@@ -238,7 +248,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 val faceId1 = strangerAdapter.dataItems.getOrNull(currentPosition)?.strangerVisitor?.faceId
                 AppLogger.w("actual face id:$faceId1")
                 if (TextUtils.equals(faceId, faceId1)) {
-                    cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString()) }
+                    val string = SpannableString(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString()))
+                    val index = string.indexOf("%s")
+                    string.setSpan(ForegroundColorSpan(Color.parseColor("#4B95D5")), index, index + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    string.setSpan(StyleSpan(Typeface.BOLD), index, index + 2, index + 2)
+                    cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = string }
                 } else {
                     AppLogger.w("来访次数丢失了!!!!!!!")
                 }

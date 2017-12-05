@@ -46,7 +46,7 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.CREATING))
+                .compose(applyLoading(false,R.string.CREATING))
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     if (it == null) {
@@ -109,7 +109,7 @@ class YouTubeLiveCreatePresenter @Inject constructor(view: YouTubeLiveCreateCont
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.CREATING))
+                .compose(applyLoading(false,R.string.CREATING))
                 .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     if (it == null) {

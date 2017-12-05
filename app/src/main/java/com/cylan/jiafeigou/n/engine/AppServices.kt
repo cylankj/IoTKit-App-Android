@@ -14,6 +14,7 @@ class AppServices() : Service() {
     private val TAG = "AppServices"
     private val bellerHooker = AppBellerHooker()
     private val deviceHooker = AppDeviceHooker()
+    private val propertyHooker = AppPropertyHooker()
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -23,6 +24,7 @@ class AppServices() : Service() {
         super.onCreate()
         BellerSupervisor.addHooker(bellerHooker)
         DeviceSupervisor.addHooker(deviceHooker)
+        PropertySupervisor.addHooker(propertyHooker)
         monitorSyncMessage()
     }
 
@@ -30,6 +32,7 @@ class AppServices() : Service() {
         super.onDestroy()
         BellerSupervisor.removeHooker(bellerHooker)
         DeviceSupervisor.removeHooker(deviceHooker)
+        PropertySupervisor.removeHooker(propertyHooker)
     }
 
     private fun monitorSyncMessage() {
@@ -47,19 +50,26 @@ class AppServices() : Service() {
 
     private class AppBellerHooker : BellerSupervisor.BellerHooker {
         private val TAG = AppBellerHooker::class.java.simpleName
-        override fun hook(cid: String, time: Long, url: String): Boolean {
-            Log.d(TAG, "App still alive and received a beller:$cid")
-            return false
+        override fun hook(action: Supervisor.Action<BellerSupervisor.BellerParameter>, parameter: BellerSupervisor.BellerParameter): BellerSupervisor.BellerParameter? {
+            Log.d(TAG, "App still alive and received a beller:${parameter.cid}")
+            return action.process(parameter)
         }
     }
 
     private class AppDeviceHooker : DeviceSupervisor.DeviceHooker {
         private val TAG = AppDeviceHooker::class.java.simpleName
-
-        override fun <T> hook(device: Device, uuid: String, msgId: Int, value: T): T {
-            Log.d(TAG, "App still alive and hooke a getValue request,device:$device,uuid:$uuid,msgId:$msgId,value:$value")
-            return value
+        override fun hook(action: Supervisor.Action<DeviceSupervisor.DeviceParameter>, parameter: DeviceSupervisor.DeviceParameter): DeviceSupervisor.DeviceParameter? {
+            Log.d(TAG, "App still alive and hooke a getDevice request," +
+                    "device:${parameter.device},uuid:${parameter.uuid}")
+            return action.process(parameter)
         }
+    }
 
+    private class AppPropertyHooker : PropertySupervisor.PropertyHooker {
+        private val TAG = AppPropertyHooker::class.java.simpleName
+        override fun hook(action: Supervisor.Action<PropertySupervisor.PropertyParameter>, parameter: PropertySupervisor.PropertyParameter): PropertySupervisor.PropertyParameter? {
+            Log.d(TAG, "App still alive and hooker a property request: uuid:${parameter.uuid},msgId:${parameter.msgId},version:${parameter.version},value:${parameter.value},bytes:${parameter.bytes}")
+            return action.process(parameter)
+        }
     }
 }

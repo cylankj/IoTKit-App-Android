@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -96,14 +97,13 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
 
     @Override
     public void openDoorLock(String password) {
-        String method = method();
         if (!liveStreamAction.hasStarted) {
             startViewer();
         }
-        DoorLockHelper.INSTANCE.openDoor(uuid, password)
+        Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoadingFocus(R.string.DOOR_OPENING, method))
+                .compose(applyLoading(false, R.string.DOOR_OPENING))
                 .subscribe(success -> {
                     if (success == null) {
                         mView.onOpenDoorLockTimeOut();
@@ -119,5 +119,6 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                     e.printStackTrace();
                     AppLogger.e(e);
                 });
+        addDestroySubscription(subscribe);
     }
 }

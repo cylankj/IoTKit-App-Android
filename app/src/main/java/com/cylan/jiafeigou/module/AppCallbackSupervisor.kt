@@ -24,10 +24,40 @@ import java.util.*
  */
 
 
-object AppCallbackSupervisor : AppCallBack {
+object AppCallbackSupervisor : AppCallBack, Supervisor {
     private val TAG = AppCallbackSupervisor::class.java.simpleName
     private val publisher = PublishSubject.create<Any>().toSerialized()
     private val gson = Gson()
+
+    private fun publish(event: Any) {
+        HookerSupervisor.performHooker(this, PublishAction(), PublishParameter(event))
+    }
+
+    private fun <T> observe(eventType: Class<T>): Observable<T> {
+        return HookerSupervisor.performHooker(this, ObserverAction(), ObserverParameter<T>(publisher.ofType(eventType)))?.observable!!
+    }
+
+    interface PublishHooker : Supervisor.Hooker<PublishParameter>
+
+    class PublishParameter(var event: Any) : Supervisor.Parameter
+
+    class PublishAction : Supervisor.Action<PublishParameter> {
+        override fun process(parameter: PublishParameter): PublishParameter? {
+            publisher.onNext(parameter.event)
+            return parameter
+        }
+    }
+
+    interface ObserverHooker : Supervisor.Hooker<ObserverParameter<*>>
+
+    class ObserverParameter<T>(var observable: Observable<T>) : Supervisor.Parameter
+
+    class ObserverAction<T> : Supervisor.Action<ObserverParameter<T>> {
+        override fun process(parameter: ObserverParameter<T>): ObserverParameter<T>? {
+            return parameter
+        }
+
+    }
 
     data class LocalMessageEvent(var s: String, var i: Int, var bytes: ByteArray)
 
@@ -675,5 +705,14 @@ object AppCallbackSupervisor : AppCallBack {
     @JvmStatic
     fun observeUniversalDataRsp(): Observable<UniversalDataRspEvent> {
         return publisher.ofType(UniversalDataRspEvent::class.java)
+    }
+
+
+    fun addHooker() {
+
+    }
+
+    fun removeHooker() {
+
     }
 }

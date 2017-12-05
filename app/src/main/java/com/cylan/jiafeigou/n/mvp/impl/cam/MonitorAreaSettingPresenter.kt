@@ -157,7 +157,7 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                 }
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING))
+                .compose(applyLoading(false,R.string.LOADING))
                 .subscribe({
                     AppLogger.d("设置侦测区域返回值为:$it")
                     when (it) {

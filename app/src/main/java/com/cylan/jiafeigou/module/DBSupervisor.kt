@@ -26,7 +26,7 @@ object DBSupervisor {
     }
 
     @JvmStatic
-    fun putProperty(hash: Long, uuid: String, msgId: Int, version: Long, bytes: ByteArray) {
+    fun putProperty(hash: Long, uuid: String, msgId: Int, version: Long, bytes: ByteArray?) {
         Log.d(TAG, "DBSupervisor.putProperty for key:$hash,uuid is:$uuid,msgId is:$msgId,version is:$version,bytes is:${Arrays.toString(bytes)}")
     }
 

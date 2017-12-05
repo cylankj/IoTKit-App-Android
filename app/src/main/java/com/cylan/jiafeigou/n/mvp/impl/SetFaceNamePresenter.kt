@@ -95,7 +95,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING, method))
+                .compose(applyLoading(false,R.string.LOADING))
                 .subscribe({ rsp ->
                     if (rsp != null && rsp.ret == 0) {
                         mView.onSetFaceNameSuccess(faceName)

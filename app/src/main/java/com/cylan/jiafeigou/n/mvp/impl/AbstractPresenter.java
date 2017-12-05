@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.view.misc.MapSubscription;
+import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
@@ -24,7 +24,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 一个基本模型的Presenter
@@ -46,14 +45,6 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     public void addSubscription(String tag, Subscription s) {
         addSubscription(s, tag);
     }
-
-//    public AbstractPresenter(T view, String uuid) {
-//        super(view);
-//        mView = view;
-//        this.uuid = mView.uuid();
-//        setSubscriptionManager(BaseApplication.getAppComponent().getSubscriptionManager());
-//    }
-
 
     @Override
     public void pause() {
@@ -94,23 +85,6 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null) {
-            compositeSubscription.unsubscribe();
-        }
-        compositeSubscription = new CompositeSubscription();
-        if (refCacheMap != null) {
-            refCacheMap.unsubscribe();
-        }
-        refCacheMap = new MapSubscription();
-        Subscription[] subs = register();
-        if (subs != null) {
-            for (Subscription s : subs) {
-                if (s != null) {
-                    compositeSubscription.add(s);
-                }
-            }
-        }
-        AppLogger.w(TAG + ": register: " + compositeSubscription.isUnsubscribed() + ",:" + refCacheMap.isUnsubscribed());
         String[] action = registerNetworkAction();
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);
@@ -128,40 +102,26 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     }
 
     protected void addSubscription(Subscription subscription) {
-        if (compositeSubscription == null) {
-            compositeSubscription = new CompositeSubscription();
-        }
-        if (refCacheMap == null) {
-            refCacheMap = new MapSubscription();
-        }
-        if (subscription != null) {
-            compositeSubscription.add(subscription);
-        }
+        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, subscription.toString(), subscription);
     }
 
     protected void addSubscription(Subscription subscription, String tag) {
-        if (subscription != null) {
-            refCacheMap.add(subscription, tag);
-        }
+        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag, subscription);
     }
 
-    protected boolean isunSubscribed(String tag) {
-        Subscription subscription = refCacheMap.getSub(tag);
+    protected boolean isunSubscribed(@NonNull String tag) {
+        Subscription subscription = SubscriptionSupervisor.get(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag);
         return subscription == null || subscription.isUnsubscribed();
     }
 
     @Override
-    public boolean unSubscribe(String tag) {
-        refCacheMap.remove(tag);
+    public boolean unSubscribe(@NonNull String tag) {
+        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag);
         return true;
     }
 
-    public boolean containsSubscription(final String tag) {
-        return refCacheMap.hasSubscription(tag);
-    }
-
-    public void unSubscribeAllTag() {
-        refCacheMap.clear();
+    public boolean containsSubscription(@NonNull final String tag) {
+        return SubscriptionSupervisor.get(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag) != null;
     }
 
     @CallSuper
@@ -169,14 +129,7 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     public void stop() {
         super.stop();
         Log.d("stop", "stop: " + this.getClass().getSimpleName());
-        unSubscribe(refCacheMap);
-        unSubscribe(compositeSubscription);
-        if (compositeSubscription != null) {
-            compositeSubscription.clear();
-        }
-        if (refCacheMap != null) {
-            refCacheMap.clear();
-        }
+        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, null);
         NetMonitor.getNetMonitor().unregister(this);
         unRegisterHeadSetObservable();
         abandonAudioFocus();

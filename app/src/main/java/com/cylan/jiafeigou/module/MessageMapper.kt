@@ -61,7 +61,7 @@ annotation class MsgId(val msgId: Int)
 
 
 data class Device(val box: DeviceBox) {
-    private operator fun <T> getValue(device: Device, property: KProperty<*>) = DeviceSupervisor.getValue<T>(device, property)
+    private operator fun <T : DP> getValue(device: Device, property: KProperty<*>) = DeviceSupervisor.getValue<T>(device, property)
 }
 
 data class Account(val box: AccountBox)

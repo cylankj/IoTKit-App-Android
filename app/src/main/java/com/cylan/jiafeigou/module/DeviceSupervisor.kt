@@ -7,14 +7,9 @@ import kotlin.reflect.KProperty
 /**
  * Created by yzd on 17-12-2.
  */
-object DeviceSupervisor {
+object DeviceSupervisor : Supervisor {
     private val TAG = DeviceSupervisor::class.java.simpleName
     private val devices: MutableMap<String, Device> = mutableMapOf()
-    private val hookers = mutableListOf<DeviceHooker>()
-
-    interface DeviceHooker {
-        fun <T> hook(device: Device, uuid: String, msgId: Int, value: T): T
-    }
 
     init {
         monitorReportDevices()
@@ -48,25 +43,22 @@ object DeviceSupervisor {
         return device
     }
 
-    @JvmStatic
-    fun <T> getValue(device: Device, property: KProperty<*>): T {
-        val msgId = (property.annotations.first { it is MsgId } as MsgId).msgId
-        val value = PropertySupervisor.getValue<DP>(device.box.uuid, msgId)
-        val hooker = performHooker(device, device.box.uuid, msgId, value)
-        return hooker as T
+    data class DeviceParameter(var uuid: String, var device: Device) : Supervisor.Parameter
+
+    interface DeviceHooker : Supervisor.Hooker<DeviceParameter>
+
+    class DeviceAction : Supervisor.Action<DeviceParameter> {
+        override fun process(parameter: DeviceParameter): DeviceParameter? {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
     }
 
-    private fun <T> performHooker(device: Device, uuid: String, msgId: Int, value: T?): T? {
-        var retValue = value
-        for (hooker in hookers) {
-            retValue = hooker.hook(device, uuid, msgId, value)
-            if (retValue != value) {
-                break
-            }
-        }
-        Log.d(TAG, "performHooker finished.the hooker result for device:$device,uuid:$uuid,msgId$msgId is:${retValue != value}")
-        return retValue
+    @JvmStatic
+    fun <T : DP> getValue(device: Device, property: KProperty<*>): T? {
+        val msgId = (property.annotations.first { it is MsgId } as MsgId).msgId
+        return PropertySupervisor.getValue(device.box.uuid, msgId)
     }
+
 
     @JvmStatic
     fun getDevices(): List<Device> {
@@ -78,14 +70,12 @@ object DeviceSupervisor {
 
     @JvmStatic
     fun addHooker(hooker: DeviceHooker) {
-        Log.d(TAG, "add hooker:$hooker")
-        hookers.add(hooker)
+        HookerSupervisor.addHooker(this, DeviceParameter::class.java, hooker)
     }
 
     @JvmStatic
     fun removeHooker(hooker: DeviceHooker) {
-        Log.d(TAG, "remove hooker:$hooker")
-        hookers.remove(hooker)
+        HookerSupervisor.removeHooker(this, DeviceParameter::class.java, hooker)
     }
 
 }
