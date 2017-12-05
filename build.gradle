@@ -1,14 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext. objectBoxVersion = "0.9.13"
+    ext.objectBoxVersion = "0.9.13"
     repositories {
         jcenter()
-//        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url "http://objectbox.net/beta-repo/" }
-        maven { url "https://jitpack.io" }
-        maven { url "http://yf.cylan.com.cn:82/artifactory/libs-snapshot-local" }
-
     }
     dependencies {
         //要对应java1.8，2.2.0才能使用unit测试。idea/misc.xml
@@ -28,6 +26,8 @@ allprojects {
     repositories {
         jcenter()
 
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven {
 //              审核通过之后,可以注释掉
             url 'https://dl.bintray.com/cylan/maven/'
@@ -36,7 +36,6 @@ allprojects {
             url 'https://dl.bintray.com/cylan/Iot'
         }
         maven { url "https://jitpack.io" }
-        maven { url "https://maven.google.com" }
         maven { url "http://objectbox.net/beta-repo/" }
         maven { url "http://yf.cylan.com.cn:82/artifactory/libs-snapshot-local" }
     }
@@ -55,7 +54,7 @@ ext {
     minSdkVersion = 19
     compileSdkVersion = 25
     targetSdkVersion = 23
-    buildToolsVersion = '25.0.0'
+    buildToolsVersion = '26.0.2'
     ////////////////////////////////////////////////////
     testRobolectric = 'org.robolectric:robolectric:3.1.2'
     testAssertj = 'com.squareup.assertj:assertj-android:1.1.0'

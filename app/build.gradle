@@ -501,8 +501,7 @@ android.variantFilter { variant ->
     }
 }
 /////////////////////////////////////////////////////
-//谷歌推送
-//apply plugin: 'com.google.gms.google-services'
+
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
@@ -510,4 +509,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         suppressWarnings = true
         kotlinOptions.suppressWarnings = true
     }
+
+    //谷歌推送
+//    apply plugin: 'com.google.gms.google-services'
 }
