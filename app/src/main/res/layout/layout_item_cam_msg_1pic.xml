@@ -76,7 +76,7 @@
 
                 <ImageView
                     android:id="@+id/imgV_cam_message_pic0"
-                    android:layout_width="@dimen/y161"
+                    android:layout_width="@dimen/y208"
                     android:layout_height="@dimen/y120"
                     android:layout_marginEnd="@dimen/x2"
                     android:layout_marginStart="@dimen/x2"

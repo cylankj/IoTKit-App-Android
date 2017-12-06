@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.module
 
 import android.util.Log
+import com.cylan.entity.jniCall.JFGAccount
 import com.cylan.jiafeigou.support.log.AppLogger
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -18,27 +19,26 @@ object AccountSupervisor {
     }
 
     private fun monitorAccount() {
-        AppCallbackSupervisor.observeUpdateAccount().subscribe(AccountSupervisor::updateAccount) {
+        AppCallbackSupervisor.observe(JFGAccount::class.java).subscribe(AccountSupervisor::updateAccount) {
             it.printStackTrace()
             AppLogger.e(it)
             monitorAccount()
         }
     }
 
-    private fun updateAccount(accountEvent: AppCallbackSupervisor.UpdateAccountEvent) {
-        Log.d(TAG, "account update:${accountEvent.jfgAccount}")
-        val jfgAccount = accountEvent.jfgAccount
-        val token = jfgAccount.token
-        val alias = jfgAccount.alias
-        val enablePush = if (jfgAccount.isEnablePush) 1 else 0
-        val enableSound = if (jfgAccount.isEnableSound) 1 else 0
-        val email = jfgAccount.email
-        val enableVibrate = if (jfgAccount.isEnableVibrate) 1 else 0
-        val phone = jfgAccount.phone
-        val photoUrl = jfgAccount.photoUrl
-        val account = jfgAccount.account
-        val wxPush = jfgAccount.wxPush
-        val wxOpenID = jfgAccount.wxOpenID
+    private fun updateAccount(accountEvent: JFGAccount) {
+        Log.d(TAG, "account update:${accountEvent}")
+        val token = accountEvent.token
+        val alias = accountEvent.alias
+        val enablePush = if (accountEvent.isEnablePush) 1 else 0
+        val enableSound = if (accountEvent.isEnableSound) 1 else 0
+        val email = accountEvent.email
+        val enableVibrate = if (accountEvent.isEnableVibrate) 1 else 0
+        val phone = accountEvent.phone
+        val photoUrl = accountEvent.photoUrl
+        val account = accountEvent.account
+        val wxPush = accountEvent.wxPush
+        val wxOpenID = accountEvent.wxOpenID
         val accountBox = AccountBox(0, token, alias, enablePush, enableSound, email, enableVibrate, phone, photoUrl, account, wxPush, wxOpenID)
         DBSupervisor.saveAccount(accountBox)
         AccountSupervisor.account = Account(accountBox)

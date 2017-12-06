@@ -10,6 +10,7 @@ import org.msgpack.template.AbstractTemplate
 import org.msgpack.unpacker.Unpacker
 import java.util.*
 
+@Suppress("ArrayInDataClass")
 /**
  * Created by yzd on 17-12-2.
  */
@@ -18,79 +19,105 @@ object PropertySupervisor : Supervisor {
     private val properties = LongSparseArray<DP>()
     private val msgPack = MessagePack()
 
-    fun addHooker(hooker: PropertyHooker) {
-        Log.d(TAG, "add hooker:$hooker")
-        HookerSupervisor.addHooker(this, PropertyParameter::class.java, hooker)
-    }
-
-    fun removeHooker(hooker: PropertyHooker) {
-        Log.d(TAG, "remove hooker:$hooker")
-        HookerSupervisor.removeHooker(this, PropertyParameter::class.java, hooker)
-    }
+    private var hashGenerator: HashGenerator = DefaultHashGenerator()
 
     init {
-        addHooker(NullPropertyHooker())
+        HookerSupervisor.addHooker(NullPropertyHooker())
         msgPack.register(DPPrimary::class.java, DPPrimaryTemplate())
         msgPack.register(DPList::class.java, DPListTemplate())
     }
 
 
-    private class NullPropertyHooker : PropertyHooker {
+    private class NullPropertyHooker : PropertyHooker() {
         private val TAG = NullPropertyHooker::class.java.simpleName
-        override fun hook(action: Supervisor.Action<PropertyParameter>, parameter: PropertyParameter): PropertyParameter? {
-            if (parameter.value == null) {
-                Log.d(TAG, "value is null, uuid is :${parameter.uuid},msgId is:${parameter.msgId},version is:${parameter.version},bytes is:${parameter.bytes}")
+
+        override fun doGetHooker(action: Supervisor.Action, parameter: GetParameter) {
+            if (parameter.retValue == null) {
+                Log.d(TAG, "get value is null, uuid is :${parameter.uuid},msgId is:${parameter.msgId}")
             }
-            return action.process(parameter)
+            super.doGetHooker(action, parameter)
+        }
+
+        override fun doSetHooker(action: Supervisor.Action, parameter: SetParameter) {
+            if (parameter.bytes == null) {
+                Log.d(TAG, "set value bytes is null,uuid is:${parameter.uuid},msgId is:${parameter.msgId},version is:${parameter.version}")
+            }
+            super.doSetHooker(action, parameter)
         }
     }
 
 
     @JvmStatic
     fun <T : DP> getValue(uuid: String, msgId: Int): T? {
-        val key = "$uuid:$msgId".toLong()
-        var retValue = properties[key]
-        var version: Long = retValue?.version ?: 0
-        if (retValue == null) {
-            Log.d(TAG, "PropertySupervisor.getValue:memory cache for property is miss for key:$key," +
-                    "uuid:$uuid,msgId:$msgId,trying to get from disk.")
-            val property = DBSupervisor.getProperty(key)
-            version = property?.version ?: 0
-            val type = PropertyTypes.getType(msgId)
-            if (property != null && type != null) {
-                try {
-                    val readValue = msgPack.read(property.bytes, type)
-                    retValue = readValue as?DP ?: DPPrimary(readValue, property.msgId, property.version)
-                } catch (e: Exception) {
-                    Log.d(TAG, "read msgpack value error:${e.message},uuid:$uuid,msgId:$msgId,property:$property,type:$type")
-                }
-            }
-        }
-        return HookerSupervisor.performHooker(this, PropertyAction(), PropertyParameter(key, uuid, msgId, version, retValue, null)) as T
+        return (HookerSupervisor.performHooker(PropertyAction(GetParameter(uuid, msgId))) as? GetParameter)?.retValue as? T
     }
 
     @JvmStatic
-    fun setValue(uuid: String, msgId: Int, version: Long, value: ByteArray) {
-        val key = 99L
-        val type = PropertyTypes.getType(msgId)
-        val property: DP? = try {
-            val readValue = msgPack.read(value, type)
-            readValue as? DP ?: DPPrimary(readValue, msgId, version)
-        } catch (e: Exception) {
-            Log.d(TAG, "read msgpack value error:${e.message},uuid:$uuid,msgId:$msgId,version:$version,value:${Arrays.toString(value)}")
-            null
-        }
-        HookerSupervisor.performHooker(this, PropertyAction(false), PropertyParameter(key, uuid, msgId, version, property, value))
+    fun setValue(uuid: String, msgId: Int, version: Long, value: ByteArray?) {
+        HookerSupervisor.performHooker(PropertyAction(SetParameter(uuid, msgId, version, value)))
     }
 
-    interface PropertyHooker : Supervisor.Hooker<PropertyParameter>
+    abstract class PropertyHooker : Supervisor.Hooker {
+        override fun parameterType(): Array<Class<*>> = arrayOf(GetParameter::class.java, SetParameter::class.java)
 
-    data class PropertyParameter(var key: Long, var uuid: String, var msgId: Int, var version: Long, var value: DP?, var bytes: ByteArray?) : Supervisor.Parameter
+        override fun hooker(action: Supervisor.Action, parameter: Any) {
+            when (parameter) {
+                is GetParameter -> doGetHooker(action, parameter)
+                is SetParameter -> doSetHooker(action, parameter)
+                else -> action.process()
+            }
+        }
 
-    class PropertyAction(var get: Boolean = true) : Supervisor.Action<PropertyParameter> {
-        override fun process(parameter: PropertyParameter): PropertyParameter? {
-            properties.put(parameter.key, parameter.value)
-            DBSupervisor.putProperty(parameter.key, parameter.uuid, parameter.msgId, parameter.version, parameter.bytes)
+        open protected fun doGetHooker(action: Supervisor.Action, parameter: GetParameter) = action.process()
+
+
+        open protected fun doSetHooker(action: Supervisor.Action, parameter: SetParameter) = action.process()
+
+    }
+
+    data class GetParameter(var uuid: String, var msgId: Int, var retValue: DP? = null)
+
+    data class SetParameter(var uuid: String, var msgId: Int, var version: Long, var bytes: ByteArray?)
+
+    private class PropertyAction<out T : Any>(val parameter: T) : Supervisor.Action {
+        override fun parameter() = parameter
+
+        override fun process(): T? {
+            when (parameter) {
+                is GetParameter -> {
+                    val hash = hashGenerator.generate(parameter.uuid, parameter.msgId)
+                    if (parameter.retValue == null) {
+                        parameter.retValue = properties[hash]
+                    }
+                    if (parameter.retValue == null) {
+                        Log.d(TAG, "PropertySupervisor.getValue:memory cache for property is miss for key:$hash," +
+                                "uuid:${parameter.uuid},msgId:${parameter.msgId},trying to get from disk.")
+                        val property = DBSupervisor.getProperty(hash)
+                        val type = PropertyTypes.getType(parameter.msgId)
+                        if (property != null && type != null) {
+                            try {
+                                val readValue = msgPack.read(property.bytes, type)
+                                parameter.retValue = readValue as?DP ?: DPPrimary(readValue, property.msgId, property.version)
+                            } catch (e: Exception) {
+                                Log.d(TAG, "read msgpack value error:${e.message},uuid:${parameter.uuid},msgId:${parameter.msgId},property:$property,type:$type")
+                            }
+                        }
+                    }
+                }
+
+                is SetParameter -> {
+                    val hash = hashGenerator.generate(parameter.uuid, parameter.msgId, parameter.version)
+                    val type = PropertyTypes.getType(parameter.msgId)
+                    try {
+                        val readValue = msgPack.read(parameter.bytes, type)
+                        val property = readValue as? DP ?: DPPrimary(readValue, parameter.msgId, parameter.version)
+                        properties.put(hash, property)
+                        DBSupervisor.putProperty(PropertyBox(hash, parameter.uuid, parameter.msgId, parameter.version, parameter.bytes))
+                    } catch (e: Exception) {
+                        Log.d(TAG, "read msgpack value error:${e.message},uuid:${parameter.uuid},msgId:${parameter.msgId},version:${parameter.version},value:${Arrays.toString(parameter.bytes)}")
+                    }
+                }
+            }
             return parameter
         }
     }
@@ -110,6 +137,17 @@ object PropertySupervisor : Supervisor {
         Log.d(TAG, "unpackValue error:${e.message},bytes:${Arrays.toString(bytes)},type:$type")
         null
     }
+
+    interface HashGenerator {
+        fun generate(uuid: String, msgId: Int, version: Long = 0): Long
+    }
+
+    private class DefaultHashGenerator : HashGenerator {
+        override fun generate(uuid: String, msgId: Int, version: Long): Long {
+            return "$uuid:$msgId".hashCode().toLong()
+        }
+    }
+
 
     private class DPPrimaryTemplate : AbstractTemplate<DPPrimary<*>>() {
         override fun read(unPacker: Unpacker, to: DPPrimary<*>?, required: Boolean): DPPrimary<*> {

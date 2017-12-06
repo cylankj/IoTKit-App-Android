@@ -13,8 +13,8 @@ import android.support.v4.widget.PopupWindowCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -237,9 +237,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             FILTER_TYPE_ALL -> {
                 if (TextUtils.isEmpty(faceId)) {
                     val string = SpannableString(getString(R.string.MESSAGES_FACE_VISIT_SUM, count.toString()))
-                    val index = string.indexOf("%s")
-                    string.setSpan(ForegroundColorSpan(Color.parseColor("#4B95D5")), index, index + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    string.setSpan(StyleSpan(Typeface.BOLD), index, index + 2, index + 2)
+                    val matcher = "\\d+".toPattern().matcher(string)
+                    if (matcher.find()) {
+                        val start = matcher.start()
+                        val end = matcher.end()
+                        val span = ForegroundColorSpan(Color.parseColor("#4B9Fd5"))
+                        string.setSpan(StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                        string.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
                     cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = string }
                 }
 
@@ -249,9 +254,20 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 AppLogger.w("actual face id:$faceId1")
                 if (TextUtils.equals(faceId, faceId1)) {
                     val string = SpannableString(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString()))
-                    val index = string.indexOf("%s")
-                    string.setSpan(ForegroundColorSpan(Color.parseColor("#4B95D5")), index, index + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    string.setSpan(StyleSpan(Typeface.BOLD), index, index + 2, index + 2)
+                    val matcher = "\\d+".toPattern().matcher(string)
+                    if (matcher.find()) {
+                        val start = matcher.start()
+                        val end = matcher.end()
+                        val span = ForegroundColorSpan(Color.parseColor("#4B9Fd5"))
+                        string.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                    if (matcher.find()) {
+                        val start = matcher.start()
+                        val end = matcher.end()
+                        val span = ForegroundColorSpan(Color.parseColor("#4B9Fd5"))
+                        string.setSpan(StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                        string.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
                     cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = string }
                 } else {
                     AppLogger.w("来访次数丢失了!!!!!!!")

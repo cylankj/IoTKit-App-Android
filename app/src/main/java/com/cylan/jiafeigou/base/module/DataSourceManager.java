@@ -13,6 +13,7 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
@@ -36,6 +37,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.module.AppCallbackSupervisor;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
@@ -849,92 +851,93 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheDeviceSub() {
-        return getCacheInstance().toObservable(RxEvent.SerializeCacheDeviceEvent.class)
-                .onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap(event -> {
-                    Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
-                    JFGDevice device;
-                    for (int i = 0; i < event.devices.length; i++) {
-                        device = event.devices[i];
-                        result.remove(device.uuid);
-                    }
-
-                    AppLogger.w("已删除的设备数:" + result.size());
-                    return BaseDBHelper.getInstance().updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
-                })
-                .map(devices -> {
-                    try {
-                        DBOption.DeviceOption option;
-//                        mCachedDeviceMap.clear();
-                        rawDeviceOrder.clear();
-                        ArrayList<String> uuidList = new ArrayList<>();
-                        synchronized (DataSourceManager.class) {
-//                            mCachedDeviceMap.clear();
-                            rawDeviceOrder.clear();
-                            for (Device device : devices) {
-                                option = device.option(DBOption.DeviceOption.class);
-                                if (mCachedDeviceMap.get(device.getUuid()) == null) {
-                                    mCachedDeviceMap.put(device.getUuid(), device);
-                                }
-                                rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
-                                if (!JFGRules.isShareDevice(device)) {
-                                    uuidList.add(device.getUuid());
-                                }
+        return
+                AppCallbackSupervisor.INSTANCE.observe(JFGDevice[].class)
+                        .onBackpressureBuffer()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .flatMap(event -> {
+                            Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
+                            JFGDevice device;
+                            for (int i = 0; i < event.length; i++) {
+                                device = event[i];
+                                result.remove(device.uuid);
                             }
-                        }
-                        syncHomeProperty();
-                        if (!BaseApplication.isBackground()) {
-                            getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
-                        }
-                    } catch (Exception e) {
-                        AppLogger.d(e.getMessage());
-                        e.printStackTrace();
-                    }
-                    return "多线程真心麻烦";
-                })
-                .retry((i, e) -> true)
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
+                            AppLogger.w("已删除的设备数:" + result.size());
+                            return BaseDBHelper.getInstance().updateDevice(event).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
+                        })
+                        .map(devices -> {
+                            try {
+                                DBOption.DeviceOption option;
+//                        mCachedDeviceMap.clear();
+                                rawDeviceOrder.clear();
+                                ArrayList<String> uuidList = new ArrayList<>();
+                                synchronized (DataSourceManager.class) {
+//                            mCachedDeviceMap.clear();
+                                    rawDeviceOrder.clear();
+                                    for (Device device : devices) {
+                                        option = device.option(DBOption.DeviceOption.class);
+                                        if (mCachedDeviceMap.get(device.getUuid()) == null) {
+                                            mCachedDeviceMap.put(device.getUuid(), device);
+                                        }
+                                        rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
+                                        if (!JFGRules.isShareDevice(device)) {
+                                            uuidList.add(device.getUuid());
+                                        }
+                                    }
+                                }
+                                syncHomeProperty();
+                                if (!BaseApplication.isBackground()) {
+                                    getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+                                }
+                            } catch (Exception e) {
+                                AppLogger.d(e.getMessage());
+                                e.printStackTrace();
+                            }
+                            return "多线程真心麻烦";
+                        })
+                        .retry((i, e) -> true)
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        AppLogger.d(e.getMessage());
-                    }
+                            }
 
-                    @Override
-                    public void onNext(String s) {
-                        request(1);
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                AppLogger.d(e.getMessage());
+                            }
 
-                    @Override
-                    public void onStart() {
-                        request(1);
-                    }
-                });
+                            @Override
+                            public void onNext(String s) {
+                                request(1);
+                            }
+
+                            @Override
+                            public void onStart() {
+                                request(1);
+                            }
+                        });
     }
 
 
     private Subscription makeCacheGetDataSub() {
-        return getCacheInstance().toObservable(RxEvent.SerializeCacheGetDataEvent.class)
+        return AppCallbackSupervisor.INSTANCE.observe(RobotoGetDataRsp.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(event -> {
-                    long seq = event.getDataRsp == null ? -1 : event.getDataRsp.seq;
+                    long seq = event == null ? -1 : event.seq;
                     if (dpSeqRspInterceptor.containsKey(seq)) {
                         Interceptors interceptors = dpSeqRspInterceptor.get(seq);
-                        interceptors.handleInterception(event.getDataRsp);
+                        interceptors.handleInterception(event);
                         dpSeqRspInterceptor.remove(seq);
                     }
-                    return BaseDBHelper.getInstance().saveDPByteInTx(event.getDataRsp).map(dpEntities -> event);
+                    return BaseDBHelper.getInstance().saveDPByteInTx(event).map(dpEntities -> event);
                 })
                 .retry((i, e) -> true)
-                .subscribe(new Subscriber<RxEvent.SerializeCacheGetDataEvent>() {
+                .subscribe(new Subscriber<RobotoGetDataRsp>() {
                     @Override
                     public void onCompleted() {
 
@@ -946,8 +949,8 @@ public class DataSourceManager implements JFGSourceManager {
                     }
 
                     @Override
-                    public void onNext(RxEvent.SerializeCacheGetDataEvent event) {
-                        RxBus.getCacheInstance().post(event.getDataRsp);
+                    public void onNext(RobotoGetDataRsp event) {
+                        RxBus.getCacheInstance().post(event);
                         request(1);
                     }
 
@@ -959,21 +962,21 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheSyncDataSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SerializeCacheSyncDataEvent.class)
+        return AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.RobotSyncDataEvent.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> BaseDBHelper.getInstance().saveDPByteInTx(event.s, event.arrayList)
+                .flatMap(event -> BaseDBHelper.getInstance().saveDPByteInTx(event.getUuid(), event.getDpList())
                         .map(dpEntities -> {
                             ArrayList<Long> updateIdList = new ArrayList<>();
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
                             }
                             if (!BaseApplication.isBackground()) {
-                                RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
+                                RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.getUuid(), updateIdList, event.getDpList()));
                             }
-                            AppLogger.w("收到设备同步消息:" + event.arrayList);
-                            handleSystemNotification(event.arrayList, event.s);
+                            AppLogger.w("收到设备同步消息:" + event.getDpList());
+                            handleSystemNotification(event.getDpList(), event.getUuid());
                             return "多线程真是麻烦";
                         }))
                 .retry((i, e) -> true)

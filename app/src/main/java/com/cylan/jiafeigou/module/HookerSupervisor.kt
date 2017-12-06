@@ -2,73 +2,71 @@
 
 package com.cylan.jiafeigou.module
 
+import java.util.concurrent.ConcurrentHashMap
+
 /**
  * Created by yanzhendong on 2017/12/5.
  */
 object HookerSupervisor : Supervisor {
-    private val TAG = HookerSupervisor::class.java.simpleName
-    private val hookers = mutableMapOf<String, MutableMap<String, MutableList<Supervisor.Hooker<Supervisor.Parameter>>>>()
+    private val hookers = ConcurrentHashMap<Class<*>, MutableList<Supervisor.Hooker>>()
 
     @JvmStatic
-    fun <T : Supervisor.Parameter> addHooker(target: Any, parameterType: Class<T>, hooker: Supervisor.Hooker<T>) {
-        var hookerTarget = hookers[target.javaClass.name]
-        if (hookerTarget == null) {
-            synchronized(HookerSupervisor::class) {
-                if (hookerTarget == null) {
-                    val map = mutableMapOf<String, MutableList<Supervisor.Hooker<Supervisor.Parameter>>>()
-                    hookers[target.javaClass.name] = map
-                    hookerTarget = map
+    fun addHooker(hooker: Supervisor.Hooker) {
+        val parameterType = hooker.parameterType()
+        parameterType.forEach {
+            var hookers = hookers[it]
+            if (hookers == null) {
+                synchronized(HookerSupervisor::class) {
+                    if (hookers == null) {
+                        hookers = mutableListOf()
+                        this.hookers[it] = hookers!!
+                    }
                 }
             }
-        }
-        var hooker1 = hookerTarget!![parameterType.javaClass.name]
-        if (hooker1 == null) {
-            synchronized(HookerSupervisor::class) {
-                if (hooker1 == null) {
-                    val list = mutableListOf<Supervisor.Hooker<Supervisor.Parameter>>()
-                    hookerTarget!![parameterType.javaClass.name] = list
-                    hooker1 = list
-                }
-            }
-        }
-        hooker1!!.add(hooker as Supervisor.Hooker<Supervisor.Parameter>)
-    }
-
-    @JvmStatic
-    fun <T : Supervisor.Parameter> removeHooker(target: Any, parameterType: Class<T>, hooker: Supervisor.Hooker<T>) {
-        hookers[target.javaClass.name]?.apply {
-            this[parameterType.javaClass.name]?.apply {
-                this.remove(hooker as Supervisor.Hooker<Supervisor.Parameter>)
-            }
+            hookers!!.add(hooker)
         }
     }
 
     @JvmStatic
-    fun <T : Supervisor.Parameter> performHooker(target: Any, action: Supervisor.Action<T>, parameter: T): T? {
-        return HookerAction<T>(target::javaClass.name).hook(action, parameter)
+    fun removeHooker(hooker: Supervisor.Hooker) {
+        hooker.parameterType().forEach { this.hookers[it]?.remove(hooker) }
     }
 
-    private class HookerAction<T : Supervisor.Parameter>(
-            private val tag: String
-    ) : Supervisor.Action<T>, Supervisor.Hooker<T> {
-        private var action: Supervisor.Action<T>? = null
-        private var parameter: T? = null
-        private var index: Int = 0
-        override fun hook(action: Supervisor.Action<T>, parameter: T): T? {
-            this.action = if (this.action == null) action else this.action
-            this.parameter = if (this.action == null) parameter else this.parameter
-            val hookerTarget = hookers[tag]
-            val hooker = hookerTarget?.get(parameter.javaClass.name)
-            val hooker1 = hooker?.getOrNull(index++)
-            return if (hooker1 != null) {
-                hooker1.hook(this as Supervisor.Action<Supervisor.Parameter>, parameter) as T
+    @JvmStatic
+    fun performHooker(action: Supervisor.Action): Any? {
+        return HookerAction(HookerActionParameter(action)).process()
+    }
+
+    open class ActionHooker : Supervisor.Hooker {
+        override fun parameterType(): Array<Class<*>> = arrayOf(HookerActionParameter::class.java)
+        override fun hooker(action: Supervisor.Action, parameter: Any): Any? {
+            return when (parameter) {
+                is HookerActionParameter -> doHookerActionHooker(action, parameter)
+                else -> action.process()
+            }
+        }
+
+        open protected fun doHookerActionHooker(action: Supervisor.Action, parameter: HookerActionParameter): Any? = action.process()
+    }
+
+    private class HookerAction(val hookerParameter: HookerActionParameter) : Supervisor.Action {
+        private var parameter: Any = hookerParameter
+        private var index = 0
+        override fun parameter(): Any = hookerParameter
+        override fun process(): Any? {
+            var hooker = hookers[parameter::class.java]?.getOrNull(index++)
+            if (hooker == null && parameter is HookerActionParameter) {
+                index = 0
+                parameter = (parameter as HookerActionParameter).action.parameter()
+                hooker = hookers[parameter::class.java]?.getOrNull(index++)
+            }
+            return if (hooker != null) {
+                return hooker.hooker(this, parameter)
             } else {
-                action.process(parameter)
+                hookerParameter.action.process()
             }
         }
-
-        override fun process(parameter: T): T? {
-            return hook(this, parameter)
-        }
     }
+
+    data class HookerActionParameter(val action: Supervisor.Action)
 }

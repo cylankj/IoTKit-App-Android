@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.module
 
 import android.util.Log
 import com.cylan.jiafeigou.misc.bind.UdpConstant
+import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.udpMsgPack.JfgUdpMsg
 import org.msgpack.annotation.Index
@@ -44,15 +45,15 @@ object UDPMessageSupervisor {
             @field:Index(2) @JvmField var bytes: ByteArray
     ) : JfgUdpMsg.UdpRecvHeard()
 
-    private fun resolveLocalMessage(message: AppCallbackSupervisor.LocalMessageEvent) {
+    private fun resolveLocalMessage(message: RxEvent.LocalUdpMsg) {
         Log.d(TAG, "resolveLocalMessage:")
         try {
-            val udpHeader = PropertySupervisor.unpackValue(message.bytes, JfgUdpMsg.UdpHeader::class.java)
+            val udpHeader = PropertySupervisor.unpackValue(message.data, JfgUdpMsg.UdpHeader::class.java)
             val udpEvent = when (udpHeader?.cmd) {
-                UdpConstant.F_PING_ACK -> PropertySupervisor.unpackValue(message.bytes, FPingAckEvent::class.java)
-                UdpConstant.PING_ACK -> PropertySupervisor.unpackValue(message.bytes, PingAckEvent::class.java)
-                UdpConstant.DOORBELL_RING -> PropertySupervisor.unpackValue(message.bytes, DoorBellRingEvent::class.java)
-                UdpConstant.REPORT_MSG -> PropertySupervisor.unpackValue(message.bytes, ReportMsgEvent::class.java)
+                UdpConstant.F_PING_ACK -> PropertySupervisor.unpackValue(message.data, FPingAckEvent::class.java)
+                UdpConstant.PING_ACK -> PropertySupervisor.unpackValue(message.data, PingAckEvent::class.java)
+                UdpConstant.DOORBELL_RING -> PropertySupervisor.unpackValue(message.data, DoorBellRingEvent::class.java)
+                UdpConstant.REPORT_MSG -> PropertySupervisor.unpackValue(message.data, ReportMsgEvent::class.java)
                 else -> null
             }
             publish.onNext(udpEvent ?: message)
@@ -63,7 +64,7 @@ object UDPMessageSupervisor {
     }
 
     private fun monitorLocalMessage() {
-        AppCallbackSupervisor.observeLocalMessage().subscribe(UDPMessageSupervisor::resolveLocalMessage) {
+        AppCallbackSupervisor.observe(RxEvent.LocalUdpMsg::class.java).subscribe(UDPMessageSupervisor::resolveLocalMessage) {
             it.printStackTrace()
             AppLogger.e(it)
             monitorLocalMessage()

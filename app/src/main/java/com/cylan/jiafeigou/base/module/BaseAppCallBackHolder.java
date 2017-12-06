@@ -76,7 +76,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //                device.pid = 21;
 //            }
 //        }
-        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
+//        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
 
 //        CacheHolderKt.saveDevices(jfgDevices);
     }
@@ -156,7 +156,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.w("OnRobotGetDataRsp :" + gson.toJson(robotoGetDataRsp));
-        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
+//        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
         if (robotoGetDataRsp != null && robotoGetDataRsp.map != null && robotoGetDataRsp.map.size() > 0) {
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
                 if (entry.getKey() == 201 && entry.getValue().size() > 0) {
@@ -176,7 +176,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         robotoGetDataRsp.identity = s;
         robotoGetDataRsp.seq = l;
         robotoGetDataRsp.put(-1, arrayList);//key在这种情况下无用
-        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
+//        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
         AppLogger.w("OnRobotGetDataExRsp :" + s + "," + gson.toJson(arrayList));
     }
 
@@ -246,7 +246,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         AppLogger.w("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
+//        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
 
         /*过渡性使用,将来会废弃*/
         CacheHolderKt.saveProperty(s, arrayList, null);
@@ -469,7 +469,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
                     }
                     rsp.map.put(msgId, msgList);
                 }
-                RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
+//                RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
             }
 
 //            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.RECORD_END_EVENT::select);

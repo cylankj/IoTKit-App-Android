@@ -67,8 +67,9 @@ public class ApSettingsPresenter extends AbstractPresenter<ApSettingContract.Vie
                         DpMsgDefine.DPNet net = new DpMsgDefine.DPNet(1, mView.getHotSpotName());
                         ArrayList<JFGDPMsg> arrayList = new ArrayList<>();
                         arrayList.add(new JFGDPMsg(201L, System.currentTimeMillis(), DpUtils.pack(net)));
-                        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(true,
-                                uuid, arrayList));
+                        ArrayList<Long> dps=new ArrayList<>();
+                        RxBus.getCacheInstance().post(new RxEvent.DeviceSyncRsp(arrayList, null,
+                                uuid));
                         throw new RxEvent.HelperBreaker("good");
                     }
                     return aBoolean;

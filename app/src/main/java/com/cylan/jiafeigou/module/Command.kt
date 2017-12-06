@@ -16,7 +16,6 @@ import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jfgapp.interfases.CallBack
 import com.cylan.jfgapp.jni.JfgAppCallBack
 import com.cylan.jfgapp.jni.JfgAppJni
-import com.cylan.jiafeigou.base.module.BaseAppCallBackHolder
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
@@ -37,10 +36,10 @@ class Command : AppCmd {
     companion object {
         val TAG = Command::class.java.simpleName
         @JvmField
-        val appcallback: BaseAppCallBackHolder = BaseAppCallBackHolder()
+        val appcallback = AppCallbackSupervisor
         var isOnTop = true
         @JvmField
-        var videoWidth: Int = 0
+         var videoWidth: Int = 0
         @JvmField
         var videoHeight: Int = 0
         private var command: Command? = null

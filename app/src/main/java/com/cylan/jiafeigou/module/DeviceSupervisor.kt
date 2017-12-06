@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.module
 
 import android.util.Log
+import com.cylan.entity.jniCall.JFGDevice
+import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
 import kotlin.reflect.KProperty
 
@@ -11,20 +13,22 @@ object DeviceSupervisor : Supervisor {
     private val TAG = DeviceSupervisor::class.java.simpleName
     private val devices: MutableMap<String, Device> = mutableMapOf()
 
-    init {
-        monitorReportDevices()
-    }
-
-    private fun monitorReportDevices() {
-        AppCallbackSupervisor.observeReportDevice().subscribe(DeviceSupervisor::receiveReportDevices) {
+    @JvmStatic
+    fun monitorReportDevices() {
+        val subscribe = AppCallbackSupervisor.observe(Array<JFGDevice>::class.java).subscribe(DeviceSupervisor::receiveReportDevices) {
             it.printStackTrace()
             AppLogger.e(it)
             monitorReportDevices()
         }
+        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "monitorReportDevices", subscribe)
     }
 
-    private fun receiveReportDevices(event: AppCallbackSupervisor.ReportDeviceEvent) {
-        Log.d(TAG, "receive report devices:${event.devices}")
+    private fun receiveReportDevices(event: Array<JFGDevice>) {
+        Log.d(TAG, "receive report devices:$devices")
+        event.map { DeviceBox(it.uuid.toLong(), it.uuid, it.sn, it.alias, it.shareAccount, it.pid, it.vid, it.regionType) }
+                .apply {
+                    DBSupervisor.putDevices(this)
+                }
     }
 
 
@@ -43,14 +47,29 @@ object DeviceSupervisor : Supervisor {
         return device
     }
 
-    data class DeviceParameter(var uuid: String, var device: Device) : Supervisor.Parameter
+    data class DeviceParameter(var uuid: String, var device: Device)
 
-    interface DeviceHooker : Supervisor.Hooker<DeviceParameter>
+    abstract class DeviceHooker : Supervisor.Hooker {
+        override fun parameterType(): Array<Class<*>> = arrayOf(DeviceParameter::class.java)
 
-    class DeviceAction : Supervisor.Action<DeviceParameter> {
-        override fun process(parameter: DeviceParameter): DeviceParameter? {
+        override fun hooker(action: Supervisor.Action, parameter: Any) {
+            when (parameter) {
+                is DeviceParameter -> doHooker(action, parameter)
+                else -> action.process()
+            }
+        }
+
+        open protected fun doHooker(action: Supervisor.Action, parameter: DeviceParameter) = action.process()
+
+    }
+
+    class DeviceAction(uuid: String, device: Device) : Supervisor.Action {
+        override fun process(): Any? {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
+
+        private val parameter = DeviceParameter(uuid, device)
+        override fun parameter() = parameter
     }
 
     @JvmStatic
@@ -69,13 +88,17 @@ object DeviceSupervisor : Supervisor {
     }
 
     @JvmStatic
-    fun addHooker(hooker: DeviceHooker) {
-        HookerSupervisor.addHooker(this, DeviceParameter::class.java, hooker)
+    fun monitorSyncMessages() {
+        val subscribe = AppCallbackSupervisor.observe(RxEvent.DeviceSyncRsp::class.java).subscribe(this::receiveSyncMessage) {
+            it.printStackTrace()
+            AppLogger.e(it)
+            monitorSyncMessages()
+        }
+        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "monitorSyncMessages", subscribe)
     }
 
-    @JvmStatic
-    fun removeHooker(hooker: DeviceHooker) {
-        HookerSupervisor.removeHooker(this, DeviceParameter::class.java, hooker)
+    private fun receiveSyncMessage(event: RxEvent.DeviceSyncRsp) {
+        Log.d(TAG, "receive sync message,uuid:${event.uuid},messages:${event.dpList}")
+        event.dpList?.forEach { PropertySupervisor.setValue(event.uuid, it.id.toInt(), it.version, it.packValue) }
     }
-
 }

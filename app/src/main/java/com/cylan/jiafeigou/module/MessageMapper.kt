@@ -22,7 +22,7 @@ data class PropertyBox(
         @io.objectbox.annotation.Index var uuid: String = "",
         @io.objectbox.annotation.Index var msgId: Int = 0,
         @io.objectbox.annotation.Index var version: Long = 0,
-        var bytes: ByteArray = byteArrayOf()
+        var bytes: ByteArray? = byteArrayOf()
 )
 
 @Entity
@@ -61,14 +61,19 @@ annotation class MsgId(val msgId: Int)
 
 
 data class Device(val box: DeviceBox) {
-    private operator fun <T : DP> getValue(device: Device, property: KProperty<*>) = DeviceSupervisor.getValue<T>(device, property)
+    @MsgId(PropertyTypes.NET_201)
+    val net: DPNet? by this
+    @MsgId(PropertyTypes.SDCARD_STORAGE_204)
+    val sdcard: DPSdStatus? by this
+
+    private operator fun <T : DP> getValue(device: Device, property: KProperty<*>): T? = DeviceSupervisor.getValue(device, property)
 }
 
 data class Account(val box: AccountBox)
 
 @Message
-open class DP(@Ignore val msgId: Int = 0,
-              @Ignore var version: Long = 0)
+open class DP(@field:Ignore @JvmField val msgId: Int = 0,
+              @field:Ignore @JvmField var version: Long = 0)
 
 
 @Message

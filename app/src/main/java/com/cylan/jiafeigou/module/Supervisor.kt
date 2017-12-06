@@ -4,14 +4,14 @@ package com.cylan.jiafeigou.module
  * Created by yanzhendong on 2017/12/5.
  */
 interface Supervisor {
-    interface Hooker<T : Parameter> {
-        fun hook(action: Action<T>, parameter: T): T?
+    interface Hooker {
+        fun parameterType(): Array<Class<*>>
+        fun hooker(action: Action, parameter: Any):Any?
     }
 
-    interface Parameter
 
-    interface Action<T : Parameter> {
-        fun process(parameter: T): T?
+    interface Action {
+        fun parameter(): Any
+        fun process(): Any?
     }
-
 }

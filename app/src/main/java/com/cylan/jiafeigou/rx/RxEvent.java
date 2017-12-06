@@ -949,39 +949,39 @@ public class RxEvent {
         }
     }
 
-    //DataSouManager 专用,其他场景不要用这个类
-    public static final class SerializeCacheDeviceEvent {
-
-        public final JFGDevice[] devices;
-
-        public SerializeCacheDeviceEvent(JFGDevice[] jfgDevices) {
-            this.devices = jfgDevices;
-        }
-    }
-
-    //DataSouManager 专用,其他场景不要用这个类
-    public static final class SerializeCacheGetDataEvent {
-
-        public final RobotoGetDataRsp getDataRsp;
-
-        public SerializeCacheGetDataEvent(RobotoGetDataRsp robotoGetDataRsp) {
-            this.getDataRsp = robotoGetDataRsp;
-        }
-    }
-
-    //DataSouManager 专用,其他场景不要用这个类
-    public static final class SerializeCacheSyncDataEvent {
-
-        public final boolean b;
-        public final String s;
-        public final ArrayList<JFGDPMsg> arrayList;
-
-        public SerializeCacheSyncDataEvent(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-            this.b = b;
-            this.s = s;
-            this.arrayList = arrayList;
-        }
-    }
+//    //DataSouManager 专用,其他场景不要用这个类
+//    public static final class SerializeCacheDeviceEvent {
+//
+//        public final JFGDevice[] devices;
+//
+//        public SerializeCacheDeviceEvent(JFGDevice[] jfgDevices) {
+//            this.devices = jfgDevices;
+//        }
+//    }
+//
+//    //DataSouManager 专用,其他场景不要用这个类
+//    public static final class SerializeCacheGetDataEvent {
+//
+//        public final RobotoGetDataRsp getDataRsp;
+//
+//        public SerializeCacheGetDataEvent(RobotoGetDataRsp robotoGetDataRsp) {
+//            this.getDataRsp = robotoGetDataRsp;
+//        }
+//    }
+//
+//    //DataSouManager 专用,其他场景不要用这个类
+//    public static final class SerializeCacheSyncDataEvent {
+//
+//        public final boolean b;
+//        public final String s;
+//        public final ArrayList<JFGDPMsg> arrayList;
+//
+//        public SerializeCacheSyncDataEvent(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
+//            this.b = b;
+//            this.s = s;
+//            this.arrayList = arrayList;
+//        }
+//    }
 
 //    /**
 //     * {@link com.cylan.jfgapp.interfases.AppCallBack#OnRobotSyncData(boolean, String, ArrayList)}

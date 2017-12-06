@@ -55,7 +55,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
@@ -624,6 +623,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (JFGRules.shouldObserverAP()) {//需要监听是否局域网在线
             Subscription subscribe = APObserver.scan(uuid)
                     .timeout(5, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
                         updateDoorLockFromPing(true);
                     }, e -> {

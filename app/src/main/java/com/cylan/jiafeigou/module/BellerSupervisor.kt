@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.cylan.entity.jniCall.JFGDoorBellCaller
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity
@@ -18,45 +19,63 @@ object BellerSupervisor : Supervisor {
     private val TAG = BellerSupervisor::class.java.simpleName
 
     init {
-        addHooker(OwnerHooker())
-        addHooker(RepeatHooker())
+        HookerSupervisor.addHooker(OwnerHooker())
+        HookerSupervisor.addHooker(RepeatHooker())
+
+    }
+
+    fun monitorBeller() {
         listenForLocal()
         listenForRemote()
     }
 
-    interface BellerHooker : Supervisor.Hooker<BellerParameter>
+    abstract class BellerHooker : Supervisor.Hooker {
+        override fun parameterType(): Array<Class<*>> = arrayOf(BellerParameter::class.java)
 
-    private class RepeatHooker : BellerHooker {
+        override fun hooker(action: Supervisor.Action, parameter: Any) {
+            when (parameter) {
+                is BellerParameter -> doHooker(action, parameter)
+                else -> action.process()
+            }
+        }
+
+        open protected fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
+            action.process()
+        }
+    }
+
+    private class RepeatHooker : BellerHooker() {
+        private val TAG = RepeatHooker::class.java.simpleName
         private val record = mutableMapOf<String, Long>()
         private val CALL_DURATION: Long = 30
-        private val TAG = RepeatHooker::class.java.simpleName
-
-        override fun hook(action: Supervisor.Action<BellerParameter>, parameter: BellerParameter): BellerParameter? {
+        override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
             val lastTime = record[parameter.cid] ?: 0
             record[parameter.cid] = parameter.time
-            return if (parameter.time - lastTime < CALL_DURATION) {
+            if (parameter.time - lastTime < CALL_DURATION) {
                 Log.d(TAG, "the bell call(caller:${parameter.cid},time:${parameter.time},url:${parameter.url}) is in call duration,skip it")
-                parameter
             } else {
-                action.process(parameter)
+                action.process()
             }
         }
     }
 
-    private class OwnerHooker : BellerHooker {
-        override fun hook(action: Supervisor.Action<BellerParameter>, parameter: BellerParameter): BellerParameter? {
-            return if (DeviceSupervisor.getDevice(parameter.cid) == null) {
-                parameter
-            } else {
-                action.process(parameter)
+
+    private class OwnerHooker : BellerHooker() {
+        override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
+            if (DeviceSupervisor.getDevice(parameter.cid) != null) {
+                action.process()
             }
         }
     }
 
-    class BellerParameter(var cid: String, var time: Long, var url: String) : Supervisor.Parameter
+    class BellerParameter(var cid: String, var time: Long, var url: String)
 
-    private class BellerAction : Supervisor.Action<BellerParameter> {
-        override fun process(parameter: BellerParameter): BellerParameter? {
+    private class BellerAction(cid: String, time: Long, url: String) : Supervisor.Action {
+        private val parameter: BellerParameter = BellerParameter(cid, time, url)
+
+        override fun parameter() = parameter
+
+        override fun process(): Any? {
             Log.d(TAG, "performLauncher,cid:${parameter.cid},time:${parameter.time},url:${parameter.url}")
             val intent = Intent(ContextUtils.getContext(), BellLiveActivity::class.java)
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, parameter.cid)
@@ -88,18 +107,18 @@ object BellerSupervisor : Supervisor {
     }
 
     private fun listenForRemote() {
-        AppCallbackSupervisor.observeDoorBellCall().subscribe(BellerSupervisor::receiveRemoteBeller) {
+        AppCallbackSupervisor.observe(JFGDoorBellCaller::class.java).subscribe(BellerSupervisor::receiveRemoteBeller) {
             it.printStackTrace()
             AppLogger.e(it)
             listenForRemote()
         }
     }
 
-    private fun receiveRemoteBeller(event: AppCallbackSupervisor.DoorBellCallEvent) {
+    private fun receiveRemoteBeller(event: JFGDoorBellCaller) {
         Log.d(TAG, "receive remote beller:$event")
-        val caller = event.bellCaller.cid
-        val time = event.bellCaller.time
-        val regionType = event.bellCaller.regionType
+        val caller = event.cid
+        val time = event.time
+        val regionType = event.regionType
         val device = DeviceSupervisor.getDevice(caller)
         val V2 = device?.box?.vid?.isEmpty() == true
         val url = if (V2) {
@@ -122,18 +141,6 @@ object BellerSupervisor : Supervisor {
     }
 
     private fun performLauncher(cid: String, time: Long = System.currentTimeMillis() / 1000L, url: String = "") {
-        HookerSupervisor.performHooker(this, BellerAction(), BellerParameter(cid, time, url))
-    }
-
-
-    @JvmStatic
-    fun addHooker(hooker: BellerHooker) {
-        HookerSupervisor.addHooker(this, BellerParameter::class.java, hooker)
-    }
-
-    @JvmStatic
-    fun removeHooker(hooker: BellerHooker) {
-        Log.d(TAG, "hooker:$hooker is removed")
-        HookerSupervisor.removeHooker(this, BellerParameter::class.java, hooker)
+        HookerSupervisor.performHooker(BellerAction(cid, time, url))
     }
 }

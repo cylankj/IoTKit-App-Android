@@ -5,7 +5,6 @@ package com.cylan.jiafeigou.module
 import android.util.Log
 import io.objectbox.Box
 import io.objectbox.BoxStore
-import java.util.*
 
 /**
  * Created by yzd on 17-12-3.
@@ -26,8 +25,8 @@ object DBSupervisor {
     }
 
     @JvmStatic
-    fun putProperty(hash: Long, uuid: String, msgId: Int, version: Long, bytes: ByteArray?) {
-        Log.d(TAG, "DBSupervisor.putProperty for key:$hash,uuid is:$uuid,msgId is:$msgId,version is:$version,bytes is:${Arrays.toString(bytes)}")
+    fun putProperty(property: PropertyBox) {
+        propertyBox.put(property)
     }
 
     @JvmStatic
@@ -49,8 +48,9 @@ object DBSupervisor {
     }
 
     @JvmStatic
-    fun putAllDevices() {
+    fun putDevices(devices: Collection<DeviceBox>) {
         Log.d(TAG, "")
+        deviceBox.put(devices)
     }
 
     @JvmStatic
