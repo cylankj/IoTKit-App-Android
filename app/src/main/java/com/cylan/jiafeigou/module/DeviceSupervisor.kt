@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.module
 
 import android.util.Log
 import com.cylan.entity.jniCall.JFGDevice
-import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
 import kotlin.reflect.KProperty
 
@@ -52,7 +51,8 @@ object DeviceSupervisor : Supervisor {
     abstract class DeviceHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(DeviceParameter::class.java)
 
-        override fun hooker(action: Supervisor.Action, parameter: Any) {
+        override fun hooker(action: Supervisor.Action) {
+            val parameter = action.parameter()
             when (parameter) {
                 is DeviceParameter -> doHooker(action, parameter)
                 else -> action.process()
@@ -63,13 +63,16 @@ object DeviceSupervisor : Supervisor {
 
     }
 
-    class DeviceAction(uuid: String, device: Device) : Supervisor.Action {
+    private data class DeviceAction(private val parameter: DeviceParameter) : Supervisor.Action {
         override fun process(): Any? {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        private val parameter = DeviceParameter(uuid, device)
         override fun parameter() = parameter
+        override fun toString(): String {
+            return "DeviceAction(parameter=$parameter)"
+        }
+
     }
 
     @JvmStatic
@@ -85,20 +88,5 @@ object DeviceSupervisor : Supervisor {
                 .associateBy { it.box.uuid }
         devices.putAll(map)
         return devices.values.toList()
-    }
-
-    @JvmStatic
-    fun monitorSyncMessages() {
-        val subscribe = AppCallbackSupervisor.observe(RxEvent.DeviceSyncRsp::class.java).subscribe(this::receiveSyncMessage) {
-            it.printStackTrace()
-            AppLogger.e(it)
-            monitorSyncMessages()
-        }
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "monitorSyncMessages", subscribe)
-    }
-
-    private fun receiveSyncMessage(event: RxEvent.DeviceSyncRsp) {
-        Log.d(TAG, "receive sync message,uuid:${event.uuid},messages:${event.dpList}")
-        event.dpList?.forEach { PropertySupervisor.setValue(event.uuid, it.id.toInt(), it.version, it.packValue) }
     }
 }

@@ -41,13 +41,13 @@ import com.lzy.okgo.cache.CacheMode;
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.msgpack.packer.BufferPacker;
 import org.msgpack.packer.Packer;
 import org.msgpack.template.AbstractTemplate;
-import org.msgpack.type.Value;
 import org.msgpack.unpacker.BufferUnpacker;
 import org.msgpack.unpacker.Unpacker;
 
@@ -470,7 +470,6 @@ public class DP {
     }
 
 
-
     @Test
     public void testFetch() throws Exception {
         byte[] bytes = new byte[]{-107, -84, 50, 57, 48, 49, 48, 48, 48, 48, 48, 48, 48, 51, 2, -38, 0, 32, 50, 48, 49, 55, 49, 48, 51, 49, 49, 55, 49, 55, 49, 53, 118, 76, 54, 80, 103, 80, 77, 55, 49, 120, 120, 118, 120, 100, 69, 106, 80, 98, 0, -111, -109, -51, 1, -7, -49, 0, 0, 1, 95, 96, -33, 85, 80, -38, 0, 49, -104, -50, 89, -13, -17, 114, 0, 0, 1, -95, 48, -112, 0, -111, -38, 0, 32, 50, 48, 49, 55, 49, 48, 50, 56, 49, 48, 52, 54, 49, 48, 76, 116, 76, 80, 87, 97, 115, 113, 57, 113, 79, 97, 71, 104, 49, 113, 98, 110
@@ -545,7 +544,7 @@ public class DP {
         byte[] bytes = packer.toByteArray();
         response.rawBytes = bytes;
         BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
-        DpUtils.mp.register(DPList.class, new MyListTemplate());
+//        DpUtils.mp.register(DPList.class, new MyListTemplate());
 //        RobotGetDataResponse convert = new RobotGetDataRequest().convert(response);
 //        System.out.println(convert);
 
@@ -614,7 +613,7 @@ public class DP {
         RobotForwardDataV3Request robotForwardDataV3Request = new RobotForwardDataV3Request("sss", "ssdd", 32, dpList);
         byte[] bytes = pack.write(robotForwardDataV3Request);
         System.out.println(Arrays.toString(bytes));
-        System.out.println(pack.createBufferUnpacker(bytes).readValue().toString());
+        System.out.println(pack.createBufferUnpacker(bytes).read(RobotForwardDataV3Request.class).toString());
         BufferUnpacker unpacker = pack.createBufferUnpacker(bytes);
         RobotForwardDataV3Response read = unpacker.read(RobotForwardDataV3Response.class);
         System.out.println(read);
@@ -622,12 +621,17 @@ public class DP {
 
     @Test
     public void testV31() throws IOException {
-        Value read = new MessagePack().read(new byte[]{-106, -51, 79, 0, -96, -84, 50, 56, 48, 53, 48, 48, 48, 48, 48, 48, 49, 56, -45, -80, 100, 98, 63, 64, 28, -126, 30, 41, -111, -109, -51, 2, 9, 0, -95, -61});
-        System.out.println(read.toString());
+        DpMsgDefine.DPChangeLockPassword dpChangeLockPassword = new DpMsgDefine.DPChangeLockPassword("DDDD", "SSSSS");
+        byte[] pack = DpUtils.pack(dpChangeLockPassword);
+        System.out.println(Arrays.toString(pack));
+//        byte[] pack1 = DpUtils.pack(new DPMessage(4, 9, pack));
+//        DPMessage dpMessage = DpUtils.unpackData(pack1, DPMessage.class);
+//        System.out.println(DpUtils.unpack(dpMessage.getValue()));
     }
 
+
     @Test
-    public void testV3Action(){
+    public void testV3Action() {
         System.out.println(DoorLockHelper.OPEN_DOOR_LOCK_ACTION);
     }
 

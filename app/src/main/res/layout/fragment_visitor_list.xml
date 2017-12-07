@@ -4,22 +4,22 @@
     android:layout_height="wrap_content">
 
 
-    <com.cylan.jiafeigou.widget.page.EViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/vp_default"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:vp_need_wrap="true" />
-
-    <!--<android.support.v7.widget.RecyclerView-->
-    <!--android:id="@+id/face_header"-->
+    <!--<com.cylan.jiafeigou.widget.page.EViewPager xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/vp_default"-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:vp_need_wrap="true" />-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/face_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cam_message_indicator_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vp_default"
+        android:layout_below="@+id/face_header"
         android:layout_marginBottom="@dimen/y13"
         android:layout_marginTop="@dimen/y18"
         android:paddingEnd="@dimen/y15"
@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/cam_message_indicator_holder"
-        android:layout_alignTop="@+id/vp_default"
+        android:layout_alignTop="@+id/face_header"
         android:alpha="0.7"
         android:background="@color/color_white"
         android:clickable="true"

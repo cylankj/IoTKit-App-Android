@@ -852,20 +852,20 @@ public class DataSourceManager implements JFGSourceManager {
 
     private Subscription makeCacheDeviceSub() {
         return
-                AppCallbackSupervisor.INSTANCE.observe(JFGDevice[].class)
+                AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.ReportDeviceEvent.class)
                         .onBackpressureBuffer()
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
                         .flatMap(event -> {
                             Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
                             JFGDevice device;
-                            for (int i = 0; i < event.length; i++) {
-                                device = event[i];
+                            for (int i = 0; i < event.getDevices().length; i++) {
+                                device = event.getDevices()[i];
                                 result.remove(device.uuid);
                             }
 
                             AppLogger.w("已删除的设备数:" + result.size());
-                            return BaseDBHelper.getInstance().updateDevice(event).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
+                            return BaseDBHelper.getInstance().updateDevice(event.getDevices()).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                         })
                         .map(devices -> {
                             try {

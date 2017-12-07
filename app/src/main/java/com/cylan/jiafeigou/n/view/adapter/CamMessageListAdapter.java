@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
@@ -384,6 +383,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private String getFinalTimeContentSD(CamMessageBean bean) {
         String tContent = TimeUtils.getHH_MM(bean.message.getVersion()) + " ";
+        String[]DDD=null;
+        if (DDD instanceof String[]){
+
+        }
         switch ((int) bean.message.getMsgId()) {
             case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
 
@@ -391,6 +394,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case DpMsgMap.ID_401_BELL_CALL_STATE: {
                 return tContent + getContext().getString(R.string.MSG_WARNING);
             }
+
             case DpMsgMap.ID_518_CAM_SETFACEIDSTATUS:{
                 return tContent + getContext().getString(R.string.MSG_WARNING);
             }

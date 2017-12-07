@@ -168,9 +168,9 @@ public class PanoramicViewFragment extends IBaseFragment {
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
-            if (target != null) {
-                GlideApp.with(this).clear(target);
-            }
+        if (target != null) {
+            GlideApp.with(this).clear(target);
+        }
 
         //填满
         GlideApp.with(this)
@@ -190,8 +190,11 @@ public class PanoramicViewFragment extends IBaseFragment {
                     @Override
                     public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                         try {
-                            if (resource != null && !resource.isRecycled()) {
-                                panoramicView.loadImage(resource);
+                            //View 会自己回收 bitmap 导致 Glide 出错
+                            Bitmap bitmap = resource.copy(resource.getConfig(), true);
+
+                            if (bitmap != null && !bitmap.isRecycled()) {
+                                panoramicView.loadImage(bitmap);
                             } else {
                                 AppLogger.e("bitmap is recycled");
                             }

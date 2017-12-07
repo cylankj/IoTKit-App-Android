@@ -6,7 +6,7 @@ package com.cylan.jiafeigou.module
 interface Supervisor {
     interface Hooker {
         fun parameterType(): Array<Class<*>>
-        fun hooker(action: Action, parameter: Any):Any?
+        fun hooker(action: Action): Any?
     }
 
 

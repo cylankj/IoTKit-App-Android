@@ -86,9 +86,11 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     override fun bindView(holder: FaceItemViewHolder, payloads: MutableList<Any>?) {
         super.bindView(holder, payloads)
         //todo 全部是默认图,陌生人是组合图片,需要特殊处理
+        val scale = if (isSelected) 1.2f else 1.0f
+        holder.icon.animate().scaleX(scale).scaleY(scale).start()
+
         when (itemType) {
             FACE_TYPE_ALL -> {
-                GlideApp.with(holder.itemView.context).clear(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 //todo UI图导入
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_ALL)
@@ -96,9 +98,12 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
+                GlideApp.with(holder.itemView.context)
+                        .load(R.drawable.news_icon_all_selector)
+                        .dontAnimate()
+                        .into(holder.icon)
             }
             FACE_TYPE_STRANGER -> {
-                GlideApp.with(holder.itemView.context).clear(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
                 holder.strangerIcon.visibility = View.GONE
@@ -106,6 +111,11 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.setImageResource(R.drawable.news_icon_stranger)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
+
+                GlideApp.with(holder.itemView.context)
+                        .load(R.drawable.news_icon_stranger)
+                        .dontAnimate()
+                        .into(holder.icon)
             }
         //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {

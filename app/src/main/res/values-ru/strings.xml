@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">Рыбий</string>
   <string name="H5_Panoramic">панорамный</string>
   <string name="H5_VR_mode">Режим VR</string>
+  <string name="HALF_CAMERA">Половина сферической камеры</string>
+  <string name="HALF_CAMERA_ADD_TIPS">Длительное нажатие 3 секунды</string>
   <string name="HOME">Главная</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">Не удается подключиться к горячим точкам</string>
   <string name="HOTSPOT_CONNECT_FAILED">Не удалось подключиться, повторите попытку</string>

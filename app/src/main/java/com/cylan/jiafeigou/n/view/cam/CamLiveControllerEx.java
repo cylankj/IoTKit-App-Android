@@ -558,7 +558,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
                 PerformanceUtils.stopTrace("takeShotFromLocalView");
                 onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                presenter.saveAndShareBitmap(bitmap);
+                presenter.saveAndShareBitmap(bitmap, true);
             }
         });
         //issue: 过早 add 进去会导致黑块!!!!!
@@ -964,7 +964,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             setLoadingState(null, null);
-            if (livePlayState == PLAY_STATE_PLAYING) {
+            if (livePlayState != PLAY_STATE_LOADING_FAILED) {
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
 
@@ -1094,7 +1094,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
 
     private void setLoadingState(String content, String subContent) {
-        layoutC.setState(livePlayState, content, subContent);
+        int state = livePlayState;
+        if (isLand()) state = PLAY_STATE_IDLE;
+        layoutC.setState(state, content, subContent);
         if (!TextUtils.isEmpty(content) || !TextUtils.isEmpty(subContent)) {
             layoutC.setVisibility(VISIBLE);
         }
@@ -1981,17 +1983,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放
-                if (MiscUtils.isLand() && isActionBarHide()) {
-                    return;
-                }
+//                if (MiscUtils.isLand() && isActionBarHide()) {
+//                    return;
+//                }
                 if (playClickListener != null) {
                     playClickListener.onClick(v);
                 }
                 break;
             case R.id.tv_live://直播中,按钮disable.历史录像:enable
-                if (MiscUtils.isLand() && isActionBarHide()) {
-                    return;
-                }
+//                if (MiscUtils.isLand() && isActionBarHide()) {
+//                    return;
+//                }
                 if (liveTextClick != null) {
                     liveTextClick.onClick(v);
                 }

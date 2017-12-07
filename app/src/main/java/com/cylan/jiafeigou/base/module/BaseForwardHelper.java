@@ -5,10 +5,10 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -34,20 +34,22 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  */
 @Singleton
 public class BaseForwardHelper {
-    private AppCmd appCmd = null;
     private static BaseForwardHelper instance;
 
     public static BaseForwardHelper getInstance() {
+        if (instance == null) {
+            synchronized (BaseForwardHelper.class) {
+                if (instance == null) {
+                    instance = new BaseForwardHelper();
+                }
+            }
+        }
         return instance;
     }
 
     @Inject
     public BaseForwardHelper() {
         instance = this;
-    }
-
-    public void setAppCmd(AppCmd appCmd) {
-        this.appCmd = appCmd;
     }
 
     public Observable<BaseForwardHelper> getApi() {
@@ -78,12 +80,12 @@ public class BaseForwardHelper {
                         }
                         AppLogger.w("正在向设备发送透传消息:" + new Gson().toJson(forward) + ":" + new Gson().toJson(msg));
                         if (forwardType == 0) {
-                            int ret = appCmd.SendForwardData(pack(forward));
+                            int ret = Command.getInstance().SendForwardData(pack(forward));
                             AppLogger.w("透传消息返回值:" + ret);
                         } else if (forwardType == 1) {
                             DeviceInformation information = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
                             if (information != null && information.ip != null) {
-                                appCmd.sendLocalMessage(information.ip, (short) information.port, pack(forward));
+                                Command.getInstance().sendLocalMessage(information.ip, (short) information.port, pack(forward));
                             }
                         }
                     } catch (Exception e) {
@@ -106,7 +108,7 @@ public class BaseForwardHelper {
                 JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
                 dpMsg.packValue = DpUtils.pack(value);
                 params.add(dpMsg);
-                Long seq = appCmd.robotSetData(uuid, params);
+                Long seq = Command.getInstance().robotSetData(uuid, params);
                 AppLogger.w("正在向服务器发送 dp消息:" + msgId);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
@@ -144,7 +146,7 @@ public class BaseForwardHelper {
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
                 params.add(dpMsg);
-                Long seq = appCmd.robotGetData(uuid, params, limit, false, 0);
+                Long seq = Command.getInstance().robotGetData(uuid, params, limit, false, 0);
                 AppLogger.w("正在向服务器发送 dp消息:" + msgId);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

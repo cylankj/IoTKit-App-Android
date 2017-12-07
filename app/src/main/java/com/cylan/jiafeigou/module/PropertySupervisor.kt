@@ -60,7 +60,8 @@ object PropertySupervisor : Supervisor {
     abstract class PropertyHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(GetParameter::class.java, SetParameter::class.java)
 
-        override fun hooker(action: Supervisor.Action, parameter: Any) {
+        override fun hooker(action: Supervisor.Action) {
+            val parameter = action.parameter()
             when (parameter) {
                 is GetParameter -> doGetHooker(action, parameter)
                 is SetParameter -> doSetHooker(action, parameter)
@@ -120,6 +121,12 @@ object PropertySupervisor : Supervisor {
             }
             return parameter
         }
+
+        override fun toString(): String {
+            return "PropertyAction(parameter=$parameter)"
+        }
+
+
     }
 
     @JvmStatic

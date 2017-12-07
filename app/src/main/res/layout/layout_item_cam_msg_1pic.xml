@@ -76,10 +76,11 @@
 
                 <ImageView
                     android:id="@+id/imgV_cam_message_pic0"
-                    android:layout_width="@dimen/y208"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/y120"
                     android:layout_marginEnd="@dimen/x2"
                     android:layout_marginStart="@dimen/x2"
+                    android:minWidth="@dimen/y208"
                     android:scaleType="fitXY"
                     android:src="@drawable/wonderful_pic_place_holder" />
 

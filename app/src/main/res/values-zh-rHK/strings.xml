@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">全景</string>
   <string name="H5_Panoramic">更多</string>
   <string name="H5_VR_mode">小行星</string>
+  <string name="HALF_CAMERA">半球攝像機</string>
+  <string name="HALF_CAMERA_ADD_TIPS">已長按3秒</string>
   <string name="HOME">主頁</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">無法連接到熱點</string>
   <string name="HOTSPOT_CONNECT_FAILED">連接失敗，請重試</string>

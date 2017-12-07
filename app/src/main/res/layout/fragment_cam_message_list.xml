@@ -1,13 +1,11 @@
-<com.cylan.jiafeigou.widget.ViewPagerSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/srLayout_cam_list_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:background="@color/color_white">
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/c_layout_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -16,7 +14,10 @@
             android:id="@+id/apl_cam_message_appbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_white">
+            android:background="@color/color_white"
+            app:layout_behavior="com.cylan.jiafeigou.widget.FaceItemAppbarBehavior">
+
+            
 
             <RelativeLayout
                 android:id="@+id/cl_header_container"
@@ -111,26 +112,24 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <android.support.v4.widget.NestedScrollView
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
             android:id="@+id/lLayout_no_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
-            app:layout_behavior="com.cylan.jiafeigou.widget.AlwaysCenterBehavior">
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/y16"
+            android:drawableTop="@drawable/pic_nomessage"
+            android:gravity="center_horizontal"
+            android:text="@string/NO_CONTENTS_1"
+            android:textColor="#aaaaaa"
+            android:textSize="@dimen/sp15"
+            app:layout_behavior="com.cylan.jiafeigou.widget.AlwaysCenterBehavior" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:drawablePadding="@dimen/y16"
-                android:drawableTop="@drawable/pic_nomessage"
-                android:gravity="center_horizontal"
-                android:text="@string/NO_CONTENTS_1"
-                android:textColor="#aaaaaa"
-                android:textSize="@dimen/sp15" />
-
-        </android.support.v4.widget.NestedScrollView>
 
         <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
             android:id="@+id/fLayout_cam_message_list_timeline"
@@ -180,4 +179,4 @@
                 android:textColor="@color/common_btn_color_state" />
         </FrameLayout>
     </android.support.design.widget.CoordinatorLayout>
-</com.cylan.jiafeigou.widget.ViewPagerSwipeRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

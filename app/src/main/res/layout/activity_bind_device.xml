@@ -131,6 +131,17 @@
                 hunt:textSize="@dimen/sp16" />
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_half_camera"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/home_icon_hemisphere"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/HALF_CAMERA"
+                hunt:textColor="@color/color_666666"
+                hunt:textSize="@dimen/sp16" />
+
+            <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/v_to_bind_consumer_cam"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y67"

@@ -70,8 +70,10 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
+                .timeout(30, TimeUnit.SECONDS)
+                .subscribe(visitorList -> mView.onVisitorListReady(visitorList),e->{
+                    e.printStackTrace();
+                });
         addSubscription(subscription, FETCH_VISITOR_LIST);
     }
 

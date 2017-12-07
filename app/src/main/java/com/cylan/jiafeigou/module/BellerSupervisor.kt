@@ -32,7 +32,8 @@ object BellerSupervisor : Supervisor {
     abstract class BellerHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(BellerParameter::class.java)
 
-        override fun hooker(action: Supervisor.Action, parameter: Any) {
+        override fun hooker(action: Supervisor.Action) {
+            val parameter = action.parameter()
             when (parameter) {
                 is BellerParameter -> doHooker(action, parameter)
                 else -> action.process()
@@ -68,10 +69,9 @@ object BellerSupervisor : Supervisor {
         }
     }
 
-    class BellerParameter(var cid: String, var time: Long, var url: String)
+    data class BellerParameter(var cid: String, var time: Long, var url: String)
 
-    private class BellerAction(cid: String, time: Long, url: String) : Supervisor.Action {
-        private val parameter: BellerParameter = BellerParameter(cid, time, url)
+    private data class BellerAction(private val parameter: BellerParameter) : Supervisor.Action {
 
         override fun parameter() = parameter
 
@@ -91,6 +91,11 @@ object BellerSupervisor : Supervisor {
             ContextUtils.getContext().startActivity(intent)
             return parameter
         }
+
+        override fun toString(): String {
+            return "BellerAction(parameter=$parameter)"
+        }
+
     }
 
     private fun listenForLocal() {
@@ -140,7 +145,17 @@ object BellerSupervisor : Supervisor {
         performLauncher(cid, time, url)
     }
 
+    @JvmStatic
+    fun receiveRemoteDoorBeller() {
+
+    }
+
+    @JvmStatic
+    fun receiveLocalDoorBeller() {
+
+    }
+
     private fun performLauncher(cid: String, time: Long = System.currentTimeMillis() / 1000L, url: String = "") {
-        HookerSupervisor.performHooker(BellerAction(cid, time, url))
+        HookerSupervisor.performHooker(BellerAction(BellerParameter(cid, time, url)))
     }
 }

@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ListUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.google.gson.Gson
+import org.msgpack.MessagePack
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.util.*
@@ -30,18 +31,19 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     private val publisher = PublishSubject.create<Any>().toSerialized()
     private fun publish(event: Any) {
         Log.d(TAG, "publish a event:$event")
-        HookerSupervisor.performHooker(PublishAction(event))
+        HookerSupervisor.performHooker(PublishAction(PublishParameter(event)))
     }
 
     fun <T> observe(eventType: Class<T>): Observable<T> {
         Log.d(TAG, "observe a event:$eventType")
-        return (HookerSupervisor.performHooker(ObserverAction(eventType)) as? ObserverParameter<T>)?.observable ?: Observable.empty()
+        return (HookerSupervisor.performHooker(ObserverAction(ObserverParameter(eventType, publisher.ofType(eventType)))) as? ObserverParameter<T>)?.observable ?: Observable.empty()
     }
 
     abstract class PublishHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(PublishParameter::class.java)
 
-        override fun hooker(action: Supervisor.Action, parameter: Any) {
+        override fun hooker(action: Supervisor.Action) {
+            val parameter = action.parameter()
             when (parameter) {
                 is PublishParameter -> doPublishHooker(action, parameter)
                 else -> action.process()
@@ -52,14 +54,13 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     }
 
-    class PublishParameter(var event: Any)
+    data class PublishParameter(var event: Any)
 
-    class PublishAction<out T : Any>(val event: T) : Supervisor.Action {
-        private val parameter = PublishParameter(event)
+    private data class PublishAction(val parameter: PublishParameter) : Supervisor.Action {
         override fun parameter() = parameter
 
         override fun process(): Any? {
-            publisher.onNext(event)
+            publisher.onNext(parameter.event)
             return parameter
         }
     }
@@ -67,7 +68,8 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     abstract class ObserverHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(ObserverParameter::class.java)
 
-        override fun hooker(action: Supervisor.Action, parameter: Any) {
+        override fun hooker(action: Supervisor.Action) {
+            val parameter = action.parameter()
             when (parameter) {
                 is ObserverParameter<*> -> doObserverHooker(action, parameter)
                 else -> action.process()
@@ -78,11 +80,10 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     }
 
-    class ObserverParameter<T>(val clazz: Class<T>, var observable: Observable<T> = Observable.empty())
+    data class ObserverParameter<T>(val clazz: Class<T>, var observable: Observable<T> = Observable.empty())
 
 
-    class ObserverAction<T>(var clazz: Class<T>) : Supervisor.Action {
-        private val parameter = ObserverParameter(clazz, publisher.ofType(clazz))
+    private data class ObserverAction<T>(private val parameter: ObserverParameter<T>) : Supervisor.Action {
         override fun parameter() = parameter
 
         override fun process(): Any? {
@@ -102,11 +103,11 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         RxBus.getCacheInstance().post(localUdpMsg)
     }
 
+    data class ReportDeviceEvent(val devices: Array<JFGDevice>)
 
     override fun OnReportJfgDevices(jfgDevices: Array<JFGDevice>) {
         AppLogger.w("OnReportJfgDevices" + gson.toJson(jfgDevices))
-//        RxBus.getCacheInstance().post(RxEvent.SerializeCacheDeviceEvent(jfgDevices))
-        publish(jfgDevices)
+        publish(ReportDeviceEvent(jfgDevices))
     }
 
     override fun OnUpdateAccount(jfgAccount: JFGAccount) {
@@ -181,7 +182,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         robotoGetDataRsp.identity = s
         robotoGetDataRsp.seq = l
         robotoGetDataRsp.put(-1, arrayList)//key在这种情况下无用
-//        RxBus.getCacheInstance().post(RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp))
+        RxBus.getCacheInstance().post(robotoGetDataRsp)
         publish(robotoGetDataRsp)
         AppLogger.w("OnRobotGetDataExRsp :" + s + "," + gson.toJson(arrayList))
     }
@@ -238,7 +239,8 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     override fun OnRobotSyncData(b: Boolean, s: String, arrayList: ArrayList<JFGDPMsg>) {
         AppLogger.w("OnRobotSyncData :" + b + " " + s + " " + Gson().toJson(arrayList))
-//        RxBus.getCacheInstance().post(RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList))
+        val ids = arrayList.map { it.id }
+        RxBus.getCacheInstance().post(RxEvent.DeviceSyncRsp(arrayList, ArrayList(ids), s))
         val dpIDs = java.util.ArrayList<Long>(arrayList.size)
         arrayList.forEach { dpIDs.add(it.id) }
         publish(RxEvent.DeviceSyncRsp(arrayList, dpIDs, s))
@@ -362,6 +364,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     }
 
     override fun OnForwardData(bytes: ByteArray) {
+        AppLogger.d("OnForwardData:" + MessagePack().read(bytes).toString())
         val midHeader = DpUtils.unpackDataWithoutThrow(bytes, MIDHeader::class.java, null)
         if (midHeader == null) {
             AppLogger.w("解析透传消息失败:" + DpUtils.unpack(bytes)!!)
@@ -420,11 +423,10 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
                     }
                     rsp.map.put(msgId, msgList)
                 }
-//                RxBus.getCacheInstance().post(RxEvent.SerializeCacheGetDataEvent(rsp))
+                RxBus.getCacheInstance().post(rsp)
                 publish(rsp)
             }
 
-            //            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.RECORD_END_EVENT::select);
             Log.d("OnRobotGetMultiDataRsp", "size: " + count)
         }
     }

@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">Balık gözü</string>
   <string name="H5_Panoramic">panoramik</string>
   <string name="H5_VR_mode">VR modu</string>
+  <string name="HALF_CAMERA">Yarım küresel kamera</string>
+  <string name="HALF_CAMERA_ADD_TIPS">Uzun basma 3 saniye</string>
   <string name="HOME">Ev</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">Etkin noktalara bağlanılamıyor</string>
   <string name="HOTSPOT_CONNECT_FAILED">Bağlantı başarısız oldu, lütfen tekrar deneyin.</string>

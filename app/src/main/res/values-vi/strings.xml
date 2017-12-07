@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">Fisheye</string>
   <string name="H5_Panoramic">Toàn cảnh</string>
   <string name="H5_VR_mode">Chế độ VR</string>
+  <string name="HALF_CAMERA">camera nửa hình cầu</string>
+  <string name="HALF_CAMERA_ADD_TIPS">Nhấn lâu 3 giây</string>
   <string name="HOME">Home</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">Không thể kết nối với các điểm nóng</string>
   <string name="HOTSPOT_CONNECT_FAILED">Kết nối không thành công, hãy thử lại</string>

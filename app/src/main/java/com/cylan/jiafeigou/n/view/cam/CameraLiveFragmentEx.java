@@ -502,7 +502,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                                     public void onSucceed(Bitmap bitmap) {
                                         PerformanceUtils.stopTrace("takeShotFromLocalView");
                                         camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                                        presenter.saveAndShareBitmap(bitmap);
+                                        presenter.saveAndShareBitmap(bitmap, true);
                                     }
 
                                     @Override
@@ -517,9 +517,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     }
                 });
         camLiveControlLayer.setPlayBtnListener(v -> {
-            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) {
-                return;
-            }
+//            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) {
+//                return;
+//            }
             CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
             if (prePlayType.playState == PLAY_STATE_PLAYING) {
                 // 暂停
@@ -834,9 +834,22 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return true;
         } else {
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 stop 延迟调用");
+            Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
+                @Override
+                public void onSucceed(Bitmap bitmap) {
+                    PerformanceUtils.stopTrace("takeShotFromLocalView");
+                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
+                    presenter.saveAndShareBitmap(bitmap,false);
+                }
+
+                @Override
+                public void onFailure(String s) {
+
+                }
+            });
             presenter.stopPlayVideo(true).subscribe(ret -> {
-//            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
+
             return false;
         }
     }

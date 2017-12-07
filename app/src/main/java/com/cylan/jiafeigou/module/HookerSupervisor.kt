@@ -39,7 +39,8 @@ object HookerSupervisor : Supervisor {
 
     open class ActionHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(HookerActionParameter::class.java)
-        override fun hooker(action: Supervisor.Action, parameter: Any): Any? {
+        override fun hooker(action: Supervisor.Action): Any? {
+            val parameter = action.parameter()
             return when (parameter) {
                 is HookerActionParameter -> doHookerActionHooker(action, parameter)
                 else -> action.process()
@@ -61,11 +62,16 @@ object HookerSupervisor : Supervisor {
                 hooker = hookers[parameter::class.java]?.getOrNull(index++)
             }
             return if (hooker != null) {
-                return hooker.hooker(this, parameter)
+                return hooker.hooker(this)
             } else {
                 hookerParameter.action.process()
             }
         }
+
+        override fun toString(): String {
+            return "HookerAction(hookerParameter=$hookerParameter)"
+        }
+
     }
 
     data class HookerActionParameter(val action: Supervisor.Action)

@@ -9,7 +9,6 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.module.BaseForwardHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
@@ -44,16 +43,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                getShareDevicesListRsp(),
-                devicesUpdate(),
-                internalUpdateUuidList(),
-                robotDeviceDataSync(),
-                JFGAccountUpdate(),
-                deviceRecordStateSub(),
-                deviceUnbindSub()
-        };
+    public void start() {
+        super.start();
+        addSubscription(getShareDevicesListRsp());
+        addSubscription(devicesUpdate());
+        addSubscription(internalUpdateUuidList());
+        addSubscription(robotDeviceDataSync());
+        addSubscription(JFGAccountUpdate());
+        addSubscription(deviceRecordStateSub());
+        addSubscription(deviceUnbindSub());
     }
 
     private void initDeviceRecordState() {
