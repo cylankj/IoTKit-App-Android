@@ -2,10 +2,12 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
@@ -327,8 +329,24 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             holder.setOnClickListener(id, onClickListener);
         }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
+        holder.setOnClickListener(R.id.tv_cam_message_item_more_text, onClickListener);
         Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.message.version));
         holder.setVisibility(R.id.tv_jump_next, showHistoryButton(item) ? View.VISIBLE : View.GONE);
+        TextView date = holder.getView(R.id.tv_cam_message_item_date);
+        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.INVISIBLE);
+        holder.setTag(R.id.tv_cam_message_item_more_text, getFinalTimeContent(item));
+        Layout l = date.getLayout();
+        if (l != null) {
+            int lines = l.getLineCount();
+            if (lines > 0) {
+                if (l.getEllipsisCount(lines - 1) > 0) {
+                    holder.setVisibility(R.id.tv_cam_message_item_more_text, View.VISIBLE);
+                }
+            }
+            Log.d(TAG, "Text is ellipsized");
+        }
+        //just for test
+        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.INVISIBLE);
     }
 
     private View.OnClickListener onClickListener;
@@ -383,8 +401,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private String getFinalTimeContentSD(CamMessageBean bean) {
         String tContent = TimeUtils.getHH_MM(bean.message.getVersion()) + " ";
-        String[]DDD=null;
-        if (DDD instanceof String[]){
+        String[] DDD = null;
+        if (DDD instanceof String[]) {
 
         }
         switch ((int) bean.message.getMsgId()) {
@@ -395,7 +413,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 return tContent + getContext().getString(R.string.MSG_WARNING);
             }
 
-            case DpMsgMap.ID_518_CAM_SETFACEIDSTATUS:{
+            case DpMsgMap.ID_518_CAM_SETFACEIDSTATUS: {
                 return tContent + getContext().getString(R.string.MSG_WARNING);
             }
         }

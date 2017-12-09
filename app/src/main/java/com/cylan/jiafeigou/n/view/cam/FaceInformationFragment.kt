@@ -36,11 +36,11 @@ class FaceInformationFragment : BaseFragment<JFGPresenter>() {
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        visitor = arguments.getParcelable("visitor")
+        visitor = arguments!!.getParcelable("visitor")
         faceName = visitor?.personName
         personId = visitor?.personId
         custom_toolbar.setBackAction {
-            fragmentManager.popBackStack()
+            fragmentManager?.popBackStack()
         }
         setting_item_face_name.subTitle = faceName
         face_name.text = faceName

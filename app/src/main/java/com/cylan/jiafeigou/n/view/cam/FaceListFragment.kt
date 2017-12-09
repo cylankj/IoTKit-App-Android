@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.cam.item.FaceListHeaderItem
 import com.cylan.jiafeigou.n.view.cam.item.FaceListItem
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -65,12 +64,12 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     override fun onMoveFaceToPersonSuccess(personId: String) {
         AppLogger.w("移动面孔成功了")
         ToastUtil.showToast(getString(R.string.PWD_OK_2))
-        fragmentManager.popBackStack()
+        fragmentManager?.popBackStack()
 
         if (targetFragment != null) {
             val intent = Intent()
             intent.putExtra("person_id", personId)
-            targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+            targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
         }
 
         resultCallback?.invoke(personId, "todo:还不知道要传多少个参数", "todo:还不知道要传多少个参数")
@@ -173,7 +172,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         face_list_items.adapter = adapter
         face_list_items.layoutManager = layoutManager
 
-        custom_toolbar.setBackAction { fragmentManager.popBackStack() }
+        custom_toolbar.setBackAction { fragmentManager?.popBackStack() }
         custom_toolbar.setRightAction { moveFaceTo() }
 
     }

@@ -31,7 +31,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
         intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, BindDeviceActivity::class.java.name)
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME))
         startActivity(intent)
-        activity.finish()
+        activity!!.finish()
     }
 
     override fun onSendDogConfigError() {
@@ -67,7 +67,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
     override fun initViewAndListener() {
         super.initViewAndListener()
 
-        val list = arguments.getParcelableArrayList<APObserver.ScanResult>("results")
+        val list: java.util.ArrayList<APObserver.ScanResult> = arguments?.getParcelableArrayList<APObserver.ScanResult>("results")!!
         scanResults.clear()
         scanResults.addAll(list)
         selectedScanResult = list?.getOrNull(0)
@@ -96,7 +96,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
 
     fun back() {
         AppLogger.w("back")
-        fragmentManager.popBackStack()
+        fragmentManager?.popBackStack()
     }
 
     @OnClick(R.id.device_cid)

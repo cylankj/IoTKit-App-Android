@@ -40,7 +40,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         AppLogger.w("创建面孔返回值为:$personId")
         ToastUtil.showToast(getString(R.string.PWD_OK_2))
         resultCallback?.invoke(personId)
-        fragmentManager.popBackStack()
+        fragmentManager?.popBackStack()
 
     }
 
@@ -61,7 +61,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        strangerVisitor = arguments.getParcelable("strangerVisitor")
+        strangerVisitor = arguments!!.getParcelable("strangerVisitor")
         faceId = strangerVisitor?.faceId ?: ""
         GlideApp.with(this)
                 .load(JFGFaceGlideURL("", strangerVisitor?.image_url, strangerVisitor?.ossType ?: 0, true))
@@ -86,7 +86,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         custom_toolbar.setRightEnable(!TextUtils.isEmpty(name.text.toString().trim()))
         custom_toolbar.setBackAction {
             sendResultIfNeed()
-            fragmentManager.popBackStack()
+            fragmentManager?.popBackStack()
         }
         name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {

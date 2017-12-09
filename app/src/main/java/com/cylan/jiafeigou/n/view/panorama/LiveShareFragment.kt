@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.support.share.ShareManager
 import kotlinx.android.synthetic.main.layout_live_share.*
 
 /**
@@ -16,11 +15,11 @@ import kotlinx.android.synthetic.main.layout_live_share.*
 class LiveShareFragment : DialogFragment() {
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.layout_live_share, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewAndListener()
     }

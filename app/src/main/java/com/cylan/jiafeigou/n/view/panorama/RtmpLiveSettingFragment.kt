@@ -61,17 +61,17 @@ class RtmpLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>() {
     private lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
 
     private fun initKeyBoard() {
-        listener = KeyboardUtil.attach(activity, activity.panel_root, { isShowing ->
+        listener = KeyboardUtil.attach(activity, activity?.panel_root, { isShowing ->
             if (isShowing) {
                 val focused = rtmp_et_miyao.isFocused
-                activity.live_setting_scroller.fullScroll(ScrollView.FOCUS_DOWN)
+                activity?.live_setting_scroller?.fullScroll(ScrollView.FOCUS_DOWN)
                 if (focused) {
                     rtmp_et_miyao.post { rtmp_et_miyao.requestFocus() }
                 }
 
             }
         })
-        KPSwitchConflictUtil.attach(activity.panel_root, rtmp_et_miyao)
+        KPSwitchConflictUtil.attach(activity!!.panel_root, rtmp_et_miyao)
     }
 
     companion object {

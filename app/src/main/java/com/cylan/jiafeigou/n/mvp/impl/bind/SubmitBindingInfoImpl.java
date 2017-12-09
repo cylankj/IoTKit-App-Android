@@ -33,11 +33,9 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
-import rx.Emitter;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_LOGIN_FLOW;
 import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_RECOVERY_FLOW;
@@ -158,18 +156,19 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     simulatePercent.setOnAction(onAction);
                     simulatePercent.start();
                 })
-                .flatMap(success -> Observable.fromEmitter((Action1<Emitter<Boolean>>) emitter -> {
-                    if (success) {
-                        finalSetSome();
-                        simulatePercent.boost(() -> {
-                            emitter.onNext(true);
-                            emitter.onCompleted();
-                        });
-                    } else {
-                        emitter.onNext(false);
-                        emitter.onCompleted();
-                    }
-                }, Emitter.BackpressureMode.BUFFER))
+                .flatMap(success ->
+                        Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+                            if (success) {
+                                finalSetSome();
+                                simulatePercent.boost(() -> {
+                                    subscriber.onNext(true);
+                                    subscriber.onCompleted();
+                                });
+                            } else {
+                                subscriber.onNext(false);
+                                subscriber.onCompleted();
+                            }
+                        }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate(() -> {
                     if (simulatePercent != null) {

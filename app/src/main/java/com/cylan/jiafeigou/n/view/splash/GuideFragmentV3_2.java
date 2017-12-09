@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.rd.PageIndicatorView;
 import com.rd.animation.type.AnimationType;
 
@@ -52,6 +52,7 @@ public class GuideFragmentV3_2 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SimpleAdapter viewAdapter = new SimpleAdapter(getFragmentManager());
         viewPager.setOffscreenPageLimit(4);
+        viewPager.setLocked(false);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override

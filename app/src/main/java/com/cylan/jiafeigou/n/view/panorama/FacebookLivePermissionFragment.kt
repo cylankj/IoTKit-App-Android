@@ -41,7 +41,7 @@ class FacebookLivePermissionFragment : BaseFragment<LivePremissionContract.Prese
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        custom_toolbar.setBackAction { activity.onBackPressed() }
+        custom_toolbar.setBackAction { activity?.onBackPressed() }
         initSelectedPermission()
         fragment_facebook_live_permission.setOnCheckedChangeListener { _, checkId ->
             when (checkId) {

@@ -90,7 +90,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        personId = arguments.getString("person_id")
+        personId = arguments!!.getString("person_id")
 
         val layoutManager = GridLayoutManager(context, 4)
         face_manager_items.layoutManager = layoutManager
@@ -133,7 +133,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
 
         /// 默认是不可点击的,等有数据后才能点击
 //        custom_toolbar.setRightEnable(false)
-        custom_toolbar.setBackAction { fragmentManager.popBackStack() }
+        custom_toolbar.setBackAction { fragmentManager?.popBackStack() }
     }
 
     @OnClick(R.id.tv_msg_full_select)
@@ -161,14 +161,14 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
-        view.findViewById(R.id.delete).setOnClickListener {
+        view.findViewById<View>(R.id.delete).setOnClickListener {
             AppLogger.w("面孔管理:删除")
             popupWindow.dismiss()
             adapter.select(position)
             presenter.deleteFace(personId, listOf(faceManagerItem.faceInformation?.face_id ?: ""))
         }
 
-        view.findViewById(R.id.move_to).setOnClickListener {
+        view.findViewById<View>(R.id.move_to).setOnClickListener {
             AppLogger.w("面孔管理:移动到")
             popupWindow.dismiss()
             val fragment = FaceListFragment.newInstance(DataSourceManager.getInstance().account.account, uuid,
@@ -179,7 +179,7 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
             }
             ActivityUtils.addFragmentSlideInFromRight(fragmentManager, fragment, android.R.id.content)
         }
-        PopupWindowCompat.showAsDropDown(popupWindow, v, 0, 0, Gravity.TOP)
+        PopupWindowCompat.showAsDropDown(popupWindow, v!!, 0, 0, Gravity.TOP)
     }
 
     private fun isEditMode(): Boolean {

@@ -34,7 +34,7 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
         val intent = Intent()
         intent.putExtra("name", faceName)
         setResult(Activity.RESULT_OK, intent)
-        fragmentManager.popBackStack()
+        fragmentManager?.popBackStack()
     }
 
     private var personId: String? = null
@@ -49,12 +49,12 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        personId = arguments.getString("person_id")
-        oldName = arguments.getString("old_name")
+        personId = arguments?.getString("person_id")
+        oldName = arguments?.getString("old_name")
         edit_face_name.setText(oldName)
         custom_toolbar.setRightEnable(!TextUtils.isEmpty(edit_face_name.text.toString()))
         custom_toolbar.setRightAction { setFaceName() }
-        custom_toolbar.setBackAction { fragmentManager.popBackStack() }
+        custom_toolbar.setBackAction { fragmentManager?.popBackStack() }
         edit_face_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 

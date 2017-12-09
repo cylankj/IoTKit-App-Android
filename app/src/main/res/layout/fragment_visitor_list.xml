@@ -1,75 +1,66 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/visitor_content_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_scrollFlags="scroll|enterAlways">
 
-
-    <!--<com.cylan.jiafeigou.widget.page.EViewPager xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/vp_default"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:vp_need_wrap="true" />-->
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/face_header"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_menu">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cam_message_indicator_holder"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/face_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadeScrollbars="true"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:verticalScrollbarPosition="right" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/bottom_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/face_header"
-        android:layout_marginBottom="@dimen/y13"
-        android:layout_marginTop="@dimen/y18"
-        android:paddingEnd="@dimen/y15"
-        android:paddingStart="@dimen/y15"
-        android:visibility="gone">
-
-
-        <TextView
-            android:id="@+id/cam_message_indicator_page_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="@dimen/y53"
-            android:text="-/-"
-            android:textColor="@color/color_666666"
-            android:textSize="@dimen/sp12"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cam_message_indicator_watcher_text"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginEnd="@dimen/y15" />
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/cam_message_indicator_watcher_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="end"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/y15"
             android:ellipsize="end"
             android:gravity="end"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/color_666666"
-            android:textSize="@dimen/sp12"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cam_message_indicator_page_text"
-            app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+            android:textSize="@dimen/sp12" />
+
+        <ImageView
+            android:id="@+id/expand_arrow"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/y12"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/btn_put_away" />
+
+    </FrameLayout>
 
     <View
         android:id="@+id/cover_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/cam_message_indicator_holder"
-        android:layout_alignTop="@+id/face_header"
+        android:layout_alignParentTop="true"
         android:alpha="0.7"
         android:background="@color/color_white"
         android:clickable="true"
