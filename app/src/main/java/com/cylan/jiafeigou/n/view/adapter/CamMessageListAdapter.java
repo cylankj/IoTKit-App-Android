@@ -346,7 +346,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             Log.d(TAG, "Text is ellipsized");
         }
         //just for test
-        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.INVISIBLE);
+        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.VISIBLE);
     }
 
     private View.OnClickListener onClickListener;

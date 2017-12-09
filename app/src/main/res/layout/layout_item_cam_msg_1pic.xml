@@ -63,7 +63,7 @@
                 android:layout_width="@dimen/y181"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:gravity="center"
+                android:gravity="start|center_vertical"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/color_666666"

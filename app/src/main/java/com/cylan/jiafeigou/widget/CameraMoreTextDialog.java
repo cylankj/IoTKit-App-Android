@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by yanzhendong on 2017/12/9.
@@ -58,6 +59,11 @@ public class CameraMoreTextDialog extends BaseDialog {
         layoutParams.height = Math.min(layoutParams.height, getResources().getDimensionPixelOffset(R.dimen.y232));
         view.setLayoutParams(layoutParams);
         getDialog().getWindow().setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    @OnClick(R.id.ok)
+    public void clickedOk() {
+        dismiss();
     }
 
     public static CameraMoreTextDialog newInstance(String text) {

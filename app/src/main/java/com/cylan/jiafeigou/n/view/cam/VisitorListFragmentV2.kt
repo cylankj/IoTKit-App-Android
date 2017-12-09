@@ -132,6 +132,15 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     private fun makeContentView(items: MutableList<FaceItem>, isNormalView: Boolean) {
+        if (items.size > 3) {
+            //两行了
+            val layoutParams = view!!.layoutParams
+            val size = resources.getDimensionPixelSize(R.dimen.y245)
+            if (layoutParams.height < size) {
+                layoutParams.height = resources.getDimensionPixelSize(R.dimen.y245)
+                view!!.layoutParams = layoutParams
+            }
+        }
         if (isNormalView) {
             visitorItems.addAll(items)
             faceAdapter.isNormalView = true
