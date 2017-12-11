@@ -37,6 +37,7 @@ import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,8 +60,8 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     private ObservableBoolean empty = new ObservableBoolean(true);
 
     private FastAdapter fastAdapter;
-    private ItemAdapter friendRequestAdapter;
-    private ItemAdapter friendAccountAdapter;
+    private ItemAdapter<FriendContextItem> friendRequestAdapter;
+    private ItemAdapter<FriendContextItem> friendAccountAdapter;
 
 
     public static MineFriendsFragment newInstance() {
@@ -84,7 +85,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fastAdapter = new FastAdapter();
+//        fastAdapter = new FastAdapter();
         mineFriendsBinding.setEmpty(empty);
         mineFriendsBinding.friends.setLayoutManager(new LinearLayoutManager(getContext()));
         friendRequestAdapter = new ItemAdapter() {
@@ -94,8 +95,6 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             }
         };
         friendRequestAdapter.withUseIdDistributor(true);
-        friendRequestAdapter.wrap(fastAdapter);
-
         friendAccountAdapter = new ItemAdapter() {
             @Override
             public int getOrder() {
@@ -103,8 +102,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             }
         };
         friendAccountAdapter.withUseIdDistributor(true);
-        friendAccountAdapter.wrap(friendRequestAdapter);
-
+        fastAdapter = FastAdapter.with(Arrays.asList(friendRequestAdapter, friendAccountAdapter));
         fastAdapter.withOnLongClickListener(this::onFriendItemLongClick);
         fastAdapter.withOnClickListener(this::onFriendItemClick);
         fastAdapter.withEventHook(new ClickEventHook() {
@@ -125,7 +123,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 return super.onBind(viewHolder);
             }
         });
-        mineFriendsBinding.friends.setAdapter(friendAccountAdapter);
+        mineFriendsBinding.friends.setAdapter(fastAdapter);
     }
 
     private boolean onFriendItemClick(View view, IAdapter iAdapter, IItem item, int position) {
@@ -261,13 +259,13 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         friendAccountAdapter.clear();
         if (request != null && request.size() > 0) {
             FriendContextHeader requestHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsAdd_Request));
-            friendRequestAdapter.add(requestHeader);
+            ((ItemAdapter) friendRequestAdapter).add(requestHeader);
             friendRequestAdapter.add(request);
         }
 
         if (friends != null && friends.size() > 0) {
             FriendContextHeader friendHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsList));
-            friendAccountAdapter.add(friendHeader);
+            ((ItemAdapter) friendAccountAdapter).add(friendHeader);
             friendAccountAdapter.add(friends);
         }
         empty.set(fastAdapter.getItemCount() == 0);
@@ -332,7 +330,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 FriendContextItem friendContextItem = new FriendContextItem(new JFGFriendAccount(item.friendRequest.account, null, item.friendRequest.alias));
                 if (friendAccountAdapter.getAdapterItemCount() == 0) {
                     FriendContextHeader friendHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsList));
-                    friendAccountAdapter.add(friendHeader);
+                    ((ItemAdapter) friendAccountAdapter).add(friendHeader);
                 }
                 friendAccountAdapter.add(friendAccountAdapter.getGlobalPosition(1), friendContextItem);
                 break;

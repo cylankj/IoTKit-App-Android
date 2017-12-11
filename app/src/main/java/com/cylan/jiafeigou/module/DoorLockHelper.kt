@@ -45,7 +45,7 @@ object DoorLockHelper {
 
     fun openDoor(uuid: String, password: String): Observable<Boolean> {
         val dpList = DPList()
-        val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockStatusReq(password, 66))
+        val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockStatusReq(password, 1))
         dpList.add(DPMessage(DpMsgMap.ID_407_BELL_CHANGE_LOCK_STATUS, 0, bytes))
         return RobotForwardDataV3Request(callee = uuid, action = OPEN_DOOR_LOCK_ACTION, values = dpList)
                 .execute()

@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">Arkadaşlar arkadaşları</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Sadece ben</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">kamu</string>
+  <string name="FACE_COLLAPSE">Çöküş</string>
   <string name="FAQ_SINA_WEIBO">Sina Weibo canlı video desteklemez</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, hesap Sina gerçek adı kimlik doğrulaması Weibo ve bir kara liste hesabı değil emin olmak için.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, mevcut Sina canlı sadece Çin anakara IP destekler.</string>

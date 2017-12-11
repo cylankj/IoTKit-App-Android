@@ -65,9 +65,10 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
-import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
-import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
+import com.mikepenz.fastadapter.listeners.OnLongClickListener;
 
 import java.io.File;
 import java.util.List;
@@ -84,7 +85,7 @@ import rx.schedulers.Schedulers;
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
-        FastAdapter.OnClickListener<HomeItem>, FastAdapter.OnLongClickListener<HomeItem>, BaseDialog.BaseDialogAction {
+        OnClickListener<HomeItem>, OnLongClickListener<HomeItem>, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
@@ -116,7 +117,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     LinearLayout emptyViewState;
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;
-    private ItemAdapter<HomeItem> mItemAdapter;
+    private FastItemAdapter<HomeItem> mItemAdapter;
     private boolean refreshFinish = true;
     private AnimatorSet set;
 
@@ -245,11 +246,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 }
             }
         });
-        mItemAdapter = new ItemAdapter<>();
-        FastAdapter<HomeItem> itemFastAdapter = new FastAdapter<>();
-        itemFastAdapter.withOnClickListener(this);
-        itemFastAdapter.withOnLongClickListener(this);
-        rVDevicesList.setAdapter(mItemAdapter.wrap(itemFastAdapter));
+        mItemAdapter = new FastItemAdapter<>();
+        mItemAdapter.withOnClickListener(this);
+        mItemAdapter.withOnLongClickListener(this);
+        rVDevicesList.setAdapter(mItemAdapter);
         enableNestedScroll();
     }
 

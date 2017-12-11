@@ -60,11 +60,12 @@
 
             <TextView
                 android:id="@+id/tv_cam_message_item_date"
-                android:layout_width="@dimen/y181"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="start|center_vertical"
                 android:maxLines="1"
+                android:maxWidth="@dimen/y181"
                 android:singleLine="true"
                 android:textColor="@color/color_666666"
                 android:textSize="@dimen/sp13" />
@@ -73,11 +74,10 @@
                 android:id="@+id/tv_cam_message_item_more_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/tv_cam_message_item_date"
                 android:text="@string/Tap1_Menu_More"
                 android:textColor="@color/color_4b9fd5_selector"
-                android:textSize="@dimen/sp11"
-                android:visibility="invisible" />
+                android:textSize="@dimen/sp11" />
 
             <LinearLayout
                 android:id="@+id/lLayout_cam_msg_pics_container"

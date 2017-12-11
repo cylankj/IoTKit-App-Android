@@ -58,7 +58,11 @@ class CameraMessageAppBarBehavior(context: Context, attrs: AttributeSet) : AppBa
                 super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
             }
         } else {
-            super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+            if (dy < 0 && !target.canScrollHorizontally(-1)) {
+                super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+            } else {
+                super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+            }
         }
     }
 

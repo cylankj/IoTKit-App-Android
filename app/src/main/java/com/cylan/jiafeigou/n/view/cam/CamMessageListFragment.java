@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,6 +64,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CameraMessageAppBarBehavior;
 import com.cylan.jiafeigou.widget.CameraMoreTextDialog;
+import com.cylan.jiafeigou.widget.InterceptSwipeRefreshLayout;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 import com.daimajia.androidanimations.library.Techniques;
@@ -103,7 +106,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @BindView(R.id.rv_cam_message_list)
     RecyclerView rvCamMessageList;
     @BindView(R.id.srLayout_cam_list_refresh)
-    SwipeRefreshLayout srLayoutCamListRefresh;
+    InterceptSwipeRefreshLayout srLayoutCamListRefresh;
     @BindView(R.id.fLayout_cam_message_list_timeline)
     WonderIndicatorWheelView fLayoutCamMessageListTimeline;
     @BindView(R.id.fLayout_cam_msg_edit_bar)
@@ -143,6 +146,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private String personId;
     private boolean hasFirstRequested = false;
     private CameraMessageAppBarBehavior behavior;
+    private Rect appbarRect = new Rect();
+    private Rect messageRect = new Rect();
+    private Rect headerRect = new Rect();
+    private boolean hasExpanded = false;
 
     public CamMessageListFragment() {
         // Required empty public constructor
@@ -193,13 +200,23 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //        this.tvCamMessageListEdit.setEnabled(false);
         srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF));
         srLayoutCamListRefresh.setOnRefreshListener(this);
-//        srLayoutCamListRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
-//            @Override
-//            public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
-//
-//                return false;
-//            }
-//        });
+        srLayoutCamListRefresh.setInterceptListener(ev -> {
+            int rawX = (int) ev.getRawX();
+            int rawY = (int) ev.getRawY();
+            messageRect.set(rvCamMessageList.getLeft(), rvCamMessageList.getTop(), rvCamMessageList.getRight(), rvCamMessageList.getBottom());
+            headerRect.set(rLayoutCamMessageListTop.getLeft(), rLayoutCamMessageListTop.getTop(), rLayoutCamMessageListTop.getRight(), rLayoutCamMessageListTop.getBottom());
+            appbarRect.set(aplCamMessageAppbar.getLeft(), aplCamMessageAppbar.getTop(), aplCamMessageAppbar.getRight(), aplCamMessageAppbar.getBottom());
+            aplCamMessageAppbar.getGlobalVisibleRect(appbarRect);
+            int appbarTop = aplCamMessageAppbar.getTop();
+            if (messageRect.contains(rawX, rawY) || headerRect.contains(rawX, rawY)) {
+                boolean scrollVertically = rvCamMessageList.canScrollVertically(-1);
+                return !scrollVertically && appbarTop >= 0;
+            }
+            if (appbarRect.contains(rawX, rawY)) {
+                return appbarTop >= 0 && !(visitorFragment != null && visitorFragment.canScrollVertically(-1));
+            }
+            return true;
+        });
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
         layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
             @Override
@@ -295,6 +312,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         visitorFragment.setVisitorListener(new VisitorListFragmentV2.VisitorListener() {
             @Override
             public void onExpanded(boolean expanded) {
+                hasExpanded = expanded;
                 ViewGroup.LayoutParams layoutParams = aplCamMessageAppbar.getLayoutParams();
                 layoutParams.height = expanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
                 aplCamMessageAppbar.setLayoutParams(layoutParams);
@@ -419,6 +437,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
         Log.i("onMessageAppbarScrolled", "offset is:" + offset + ",total is:" + appBarLayout.getTotalScrollRange());
 //        srLayoutCamListRefresh.setEnabled(offset == 0 && !rvCamMessageList.canScrollVertically(-1));
+
         if (Math.abs(offset) == appBarLayout.getTotalScrollRange()) {
             // TODO: 2017/9/29 更新箭头
             if (hasFaceHeader && isPendendingAnimationFinished && ibQuickTop.getTranslationY() != 0) {
@@ -463,6 +482,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void decideRefresh() {
+        if (hasFaceHeader && hasExpanded) {
+            if (visitorFragment != null) {
+                visitorFragment.refreshContent();
+            }
+            return;
+        }
         if (hasFaceHeader && pageType == FaceItem.FACE_TYPE_ALL) {
             //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
             //等 header 数据回来后会自动调用 startRequest 的
@@ -977,8 +1002,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (JFGRules.isFaceFragment(getDevice().pid)) {
                     //面孔消息人名很多,需要弹窗查看
                     CameraMoreTextDialog dialog = CameraMoreTextDialog.newInstance(v.getTag().toString());
-                    dialog.show(getFragmentManager(), "CameraMoreTextDialog");
-
+                    FragmentManager fragmentManager = getFragmentManager();
+                    if (fragmentManager != null) {
+                        dialog.show(getFragmentManager(), "CameraMoreTextDialog");
+                    }
                 }
             }
             default:
@@ -1013,27 +1040,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @OnClick(R.id.tv_msg_delete)
     public void onClick() {
     }
-
-//    @OnClick(R.id.iv_cam_message_arrow)
-//    public void onMessageArrowClick() {
-//        if (TextUtils.equals((CharSequence) arrow.getTag(), "arrow_down")) {
-//            arrow.setImageResource(R.drawable.btn_unfolded);
-//            arrow.setTag("arrow_up");
-//            if (JFGRules.isFaceFragment(getDevice().pid)) {
-////                aplCamMessageAppbar.setExpanded(false, true);
-//
-//            }
-//
-//        } else {
-//            arrow.setImageResource(R.drawable.btn_put_away);
-//            arrow.setTag("arrow_down");
-//            if (JFGRules.isFaceFragment(getDevice().pid)) {
-////                aplCamMessageAppbar.setExpanded(true, true);
-//                layoutManager.scrollToPosition(0);
-//            }
-//        }
-//    }
-
 
     public void hookEdit(TextView tvToolbarRight) {
         this.mockView = tvToolbarRight;

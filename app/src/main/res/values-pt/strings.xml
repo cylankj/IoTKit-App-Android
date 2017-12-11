@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">Amigos de amigos</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Só eu</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Público</string>
+  <string name="FACE_COLLAPSE">Colapso</string>
   <string name="FAQ_SINA_WEIBO">Não suporte o vídeo ao vivo do Sina Weibo</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, para garantir que a conta tenha a autenticação de nomes reais do Weibo Sina e não seja uma conta na lista negra.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, o atual Sina Live só é compatível com o IP continental da China.</string>

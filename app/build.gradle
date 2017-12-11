@@ -94,6 +94,10 @@ android {
         _doby {
             java.srcDirs = ['src/_doby/java']
         }
+        _aidemo {
+            res.srcDirs = ['src/_aidemo/res']
+            java.srcDirs = ['src/_aidemo/java']
+        }
 //        _cell_c {
 //            java.srcDirs = ['src/_cell_c/java']
 //        }
@@ -398,12 +402,10 @@ dependencies {
 
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
-    compile('com.mikepenz:fastadapter:2.6.2@aar') {
-        transitive = true
-    }
-    compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
-    compile 'com.mikepenz:materialize:1.0.3@aar'
-    compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
+    compile('com.mikepenz:fastadapter:3.0.4@aar')
+    compile 'com.mikepenz:fastadapter-commons:3.0.3@aar'
+    compile 'com.mikepenz:materialize:1.1.2'
+    compile 'com.mikepenz:fastadapter-extensions:3.0.3@aar'
     compile 'com.cylan.ext:annotations:0.1.0'
     kapt project(':processor')
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'

@@ -44,7 +44,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 
     @Override
     public void performAutoLogin() {
-        Subscription subscribe = LoginHelper.performAutoLogin()
+        Subscription subscribe = Observable.zip(Observable.just("").delay(2, TimeUnit.SECONDS), LoginHelper.performAutoLogin(), (t, t1) -> t1)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountArrived -> {

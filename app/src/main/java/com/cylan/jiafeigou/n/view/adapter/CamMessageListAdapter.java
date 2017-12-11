@@ -328,25 +328,32 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     .into((ImageView) holder.getView(id));
             holder.setOnClickListener(id, onClickListener);
         }
-        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
+        TextView tvCameraMessageItemDate = holder.getView(R.id.tv_cam_message_item_date);
+        tvCameraMessageItemDate.setText(getFinalTimeContent(item));
+//        tvCameraMessageItemDate.setText("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         holder.setOnClickListener(R.id.tv_cam_message_item_more_text, onClickListener);
         Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.message.version));
         holder.setVisibility(R.id.tv_jump_next, showHistoryButton(item) ? View.VISIBLE : View.GONE);
         TextView date = holder.getView(R.id.tv_cam_message_item_date);
         holder.setVisibility(R.id.tv_cam_message_item_more_text, View.INVISIBLE);
-        holder.setTag(R.id.tv_cam_message_item_more_text, getFinalTimeContent(item));
-        Layout l = date.getLayout();
-        if (l != null) {
-            int lines = l.getLineCount();
-            if (lines > 0) {
-                if (l.getEllipsisCount(lines - 1) > 0) {
-                    holder.setVisibility(R.id.tv_cam_message_item_more_text, View.VISIBLE);
+        holder.setOnClickListener(R.id.tv_cam_message_item_more_text, onClickListener);
+        holder.setTag(R.id.tv_cam_message_item_more_text, tvCameraMessageItemDate.getText());
+        tvCameraMessageItemDate.setTag(tvCameraMessageItemDate.getText());
+        tvCameraMessageItemDate.post(() -> {
+            Layout l = date.getLayout();
+            if (l != null) {
+                int lines = l.getLineCount();
+                if (lines > 0) {
+                    if (l.getEllipsisCount(lines - 1) > 0) {
+                        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.VISIBLE);
+                    }
                 }
+                Log.d(TAG, "Text is ellipsized");
             }
-            Log.d(TAG, "Text is ellipsized");
-        }
-        //just for test
-        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.VISIBLE);
+        });
+
+//        //just for test
+//        holder.setVisibility(R.id.tv_cam_message_item_more_text, View.VISIBLE);
     }
 
     private View.OnClickListener onClickListener;

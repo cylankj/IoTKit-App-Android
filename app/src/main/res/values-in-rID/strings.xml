@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">Teman teman</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Hanya aku</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Publik</string>
+  <string name="FACE_COLLAPSE">Jatuh</string>
   <string name="FAQ_SINA_WEIBO">Jangan mendukung Sina Weibo live video</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, untuk memastikan bahwa akun tersebut memiliki autentikasi nama asli Sina Weibo, dan bukan akun daftar hitam.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, Sina saat ini tinggal hanya mendukung IP daratan China.</string>

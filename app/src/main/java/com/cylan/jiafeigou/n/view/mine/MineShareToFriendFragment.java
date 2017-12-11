@@ -25,8 +25,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,7 @@ import java.util.ArrayList;
 public class MineShareToFriendFragment extends IBaseFragment implements MineShareToFriendContract.View {
     private static final int MAX_SHARE_NUMBER = 5;
     private MineShareToFriendContract.Presenter presenter;
-    private ItemAdapter<ShareFriendItem> shareToFriendsAdapter;
+    private FastItemAdapter<ShareFriendItem> shareToFriendsAdapter;
     private FragmentMineShareToFriendBinding shareToFriendBinding;
     private ObservableBoolean empty = new ObservableBoolean(true);
     private ObservableInt sharedNumber = new ObservableInt();
@@ -67,16 +66,14 @@ public class MineShareToFriendFragment extends IBaseFragment implements MineShar
         shareToFriendBinding.btnToAdd.setOnClickListener(this::onClick);
         shareToFriendBinding.setEmpty(empty);
         shareToFriendBinding.setSharedNumber(sharedNumber);
-        shareToFriendsAdapter = new ItemAdapter<>();
-        FastAdapter<ShareFriendItem> fastAdapter = new FastAdapter<>();
-        fastAdapter.withSelectable(true);
-        fastAdapter.withMultiSelect(true);
-        fastAdapter.withAllowDeselection(true);
-        fastAdapter.withSelectWithItemUpdate(true);
-        fastAdapter.withSelectionListener((item, selected) -> addShareWithNumberCheck(item));
+        shareToFriendsAdapter = new FastItemAdapter<>();
+        shareToFriendsAdapter.withSelectable(true);
+        shareToFriendsAdapter.withMultiSelect(true);
+        shareToFriendsAdapter.withAllowDeselection(true);
+        shareToFriendsAdapter.withSelectWithItemUpdate(true);
+        shareToFriendsAdapter.withSelectionListener((item, selected) -> addShareWithNumberCheck(item));
         shareListInfo = DataSourceManager.getInstance().getShareListByCid(uuid);
         shareToFriendBinding.setHasSharedNumber(shareListInfo == null ? 0 : shareListInfo.friends.size());
-        shareToFriendsAdapter.wrap(fastAdapter);
         shareToFriendBinding.rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToFriendBinding.rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
         initPresenter();
@@ -111,7 +108,7 @@ public class MineShareToFriendFragment extends IBaseFragment implements MineShar
                 if (NetUtils.getNetType(getContext()) == -1) {
                     ToastUtil.showNegativeToast(getString(R.string.Item_ConnectionFail));
                 } else {
-                    presenter.shareDeviceToFriend(uuid, new ArrayList<>(shareToFriendsAdapter.getFastAdapter().getSelectedItems()));
+                    presenter.shareDeviceToFriend(uuid, new ArrayList<>(shareToFriendsAdapter.getSelectedItems()));
                 }
                 break;
             }
@@ -132,10 +129,10 @@ public class MineShareToFriendFragment extends IBaseFragment implements MineShar
 
     private void addShareWithNumberCheck(ShareFriendItem item) {
         int hasSharedNumber = shareListInfo == null ? 0 : shareListInfo.friends.size();
-        int selectedNumber = shareToFriendsAdapter.getFastAdapter().getSelectedItems().size();
+        int selectedNumber = shareToFriendsAdapter.getSelectedItems().size();
         if (hasSharedNumber + selectedNumber > MAX_SHARE_NUMBER) {
-            int position = shareToFriendsAdapter.getFastAdapter().getPosition(item);
-            shareToFriendsAdapter.getFastAdapter().deselect(position);
+            int position = shareToFriendsAdapter.getPosition(item);
+            shareToFriendsAdapter.deselect(position);
             ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_Tips));
         } else {
             sharedNumber.set(selectedNumber);
@@ -178,7 +175,7 @@ public class MineShareToFriendFragment extends IBaseFragment implements MineShar
         builder.setTitle(title);
         builder.setPositiveButton(getString(R.string.TRY_AGAIN), (dialog, which) -> {
             dialog.dismiss();
-            presenter.shareDeviceToFriend(uuid, new ArrayList<>(shareToFriendsAdapter.getFastAdapter().getSelectedItems()));
+            presenter.shareDeviceToFriend(uuid, new ArrayList<>(shareToFriendsAdapter.getSelectedItems()));
         });
         builder.setNegativeButton(getString(R.string.MAGNETISM_OFF), null);
         AlertDialogManager.getInstance().showDialog("showShareResultDialog", getActivity(), builder);
