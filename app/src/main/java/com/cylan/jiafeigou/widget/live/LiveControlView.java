@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -72,6 +73,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         this.state = state;
         switch (state) {
             case PLAY_STATE_PREPARE:
+                setVisibility(VISIBLE);
                 tvHelp.setVisibility(GONE);
                 imageView.setVisibility(GONE);
                 if (!TextUtils.isEmpty(content)) {
@@ -85,6 +87,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 simpleProgressBar.bringToFront();
                 break;
             case PLAY_STATE_PLAYING:
+                setVisibility(VISIBLE);
                 imageView.bringToFront();
                 imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_pause);
@@ -101,6 +104,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case PLAY_STATE_LOADING_FAILED:
+                setVisibility(VISIBLE);
                 imageView.setVisibility(VISIBLE);
                 imageView.bringToFront();
                 imageView.setImageResource(R.drawable.btn_video_retry);
@@ -114,6 +118,9 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                     tvHelp.setText(help);
                 }
                 break;
+            case PLAY_STATE_IDLE: {
+                setVisibility(GONE);
+            }
         }
         Log.d("setState", "setState: " + state);
     }

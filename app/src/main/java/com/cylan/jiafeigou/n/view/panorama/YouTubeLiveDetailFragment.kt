@@ -39,8 +39,8 @@ class YouTubeLiveDetailFragment : BaseFragment<BasePresenter<JFGView>>() {
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        custom_toolbar.setBackAction { activity.onBackPressed() }
-        custom_toolbar.setRightAction { activity.onBackPressed() }
+        custom_toolbar.setBackAction { activity?.onBackPressed() }
+        custom_toolbar.setRightAction { activity?.onBackPressed() }
 
         youtube_detail_title.text = youtubeEvent?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT)
         youtube_detail_description.text = youtubeEvent?.event?.snippet?.description ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT)

@@ -35,7 +35,7 @@ class FaceCameraMessageListFragment : IBaseFragment<BasePresenter>() {
     private lateinit var messageAdapter: FastItemAdapter<*>
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_cam_message_face, container, false)
         ButterKnife.bind(this, view)
         initViewAndListener()

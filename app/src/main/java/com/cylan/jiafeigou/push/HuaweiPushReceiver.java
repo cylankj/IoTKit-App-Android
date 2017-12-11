@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.cylan.jiafeigou.module.BellerSupervisor;
 import com.huawei.hms.support.api.push.PushReceiver;
 
 import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
@@ -45,6 +46,7 @@ public class HuaweiPushReceiver extends PushReceiver {
         String pushMessage = new String(bytes);
         System.out.println(PUSH_TAG + "收到华为推送消息:" + pushMessage + "," + bundle + ",context:" + context.getApplicationContext().getPackageName() + ",\n" + context.getApplicationInfo().processName);
         BellPuller.getInstance().fireBellCalling(context, pushMessage, bundle);
+        BellerSupervisor.receivePushBeller(context, pushMessage, bundle);
         return super.onPushMsg(context, bytes, bundle);
     }
 

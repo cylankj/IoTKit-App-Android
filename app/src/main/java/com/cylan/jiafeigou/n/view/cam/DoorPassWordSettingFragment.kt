@@ -39,7 +39,7 @@ class DoorPassWordSettingFragment : BaseFragment<DoorPassWordSettingContact.Pres
     @OnClick(R.id.tv_toolbar_icon)
     fun onBackClick() {
         AppLogger.w("")
-        fragmentManager.popBackStack()
+        fragmentManager?.popBackStack()
     }
 
     @OnClick(R.id.tv_toolbar_right)
@@ -75,12 +75,12 @@ class DoorPassWordSettingFragment : BaseFragment<DoorPassWordSettingContact.Pres
 
     override fun onChangePasswordSuccess() {
         AppLogger.w("onChangePasswordSuccess")
-        ToastUtil.showToast(context.getString(R.string.PWD_OK_1))
-        fragmentManager.popBackStack()
+        ToastUtil.showToast(context?.getString(R.string.PWD_OK_1))
+        fragmentManager?.popBackStack()
     }
 
     override fun onChangePasswordError() {
         AppLogger.w("onChangePasswordError")
-        ToastUtil.showToast(context.getString(R.string.SETTINGS_FAILED))
+        ToastUtil.showToast(context!!.getString(R.string.SETTINGS_FAILED))
     }
 }

@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -353,7 +355,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onResume() {
         super.onResume();
         Log.d("isResumed", "isResumed: " + getUserVisibleHint());
-        camLiveControlLayer.onActivityResume(presenter,DataSourceManager.getInstance().getDevice(uuid()), isUserVisible());
+        camLiveControlLayer.onActivityResume(presenter, DataSourceManager.getInstance().getDevice(uuid()), isUserVisible());
         if (presenter != null) {
             if (!judge() || presenter.getLiveStream().playState == PLAY_STATE_STOP) {
                 return;//还没开始播放
@@ -493,8 +495,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                             }
                             if (camLiveControlLayer != null && camLiveControlLayer.getLiveViewWithThumbnail() != null &&
                                     camLiveControlLayer.getLiveViewWithThumbnail().getVideoView() != null) {
-                                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView()
-                                        .takeSnapshot(true);
+//                                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView()
+//                                        .takeSnapshot(true);
+                                Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
+                                    @Override
+                                    public void onSucceed(Bitmap bitmap) {
+                                        PerformanceUtils.stopTrace("takeShotFromLocalView");
+                                        camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
+                                        presenter.saveAndShareBitmap(bitmap, true);
+                                    }
+
+                                    @Override
+                                    public void onFailure(String s) {
+
+                                    }
+                                });
                             }
                             PerformanceUtils.startTrace("takeShotFromLocalView");
 //                            presenter.takeSnapShot(true);
@@ -502,9 +517,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     }
                 });
         camLiveControlLayer.setPlayBtnListener(v -> {
-            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) {
-                return;
-            }
+//            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) {
+//                return;
+//            }
             CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
             if (prePlayType.playState == PLAY_STATE_PLAYING) {
                 // 暂停
@@ -819,9 +834,22 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return true;
         } else {
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 stop 延迟调用");
+            Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
+                @Override
+                public void onSucceed(Bitmap bitmap) {
+                    PerformanceUtils.stopTrace("takeShotFromLocalView");
+                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
+                    presenter.saveAndShareBitmap(bitmap,false);
+                }
+
+                @Override
+                public void onFailure(String s) {
+
+                }
+            });
             presenter.stopPlayVideo(true).subscribe(ret -> {
-//            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
+
             return false;
         }
     }

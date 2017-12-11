@@ -858,11 +858,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public void saveAndShareBitmap(Bitmap bitmap) {
+    public void saveAndShareBitmap(Bitmap bitmap, boolean forPopWindow) {
         AppLogger.d("take shot initSubscription");
         Observable.just(bitmap)
                 .subscribeOn(Schedulers.io())
-                .map(new TakeSnapShootHelper(uuid, true, mView))
+                .map(new TakeSnapShootHelper(uuid, forPopWindow, mView))
                 .observeOn(Schedulers.io())
                 .subscribe(pair -> {
                 }, AppLogger::e, () -> AppLogger.d("take screen finish"));
@@ -1084,7 +1084,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             PerformanceUtils.startTrace("takeCapture");
             Bitmap bitmap = (Bitmap) o;
-            if (weakReference.get() != null) {
+            if (weakReference.get() != null && forPopWindow) {
                 weakReference.get().onTakeSnapShot(bitmap);//弹窗
             }
             final String fileName = "." + uuid + System.currentTimeMillis();
@@ -1222,7 +1222,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 .setAction(DBAction.SHARED)
                                 .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                                 .setBytes(item.toBytes());
-                       BaseDPTaskDispatcher.getInstance().perform(entity)
+                        BaseDPTaskDispatcher.getInstance().perform(entity)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(ret -> {
                                 }, AppLogger::e);

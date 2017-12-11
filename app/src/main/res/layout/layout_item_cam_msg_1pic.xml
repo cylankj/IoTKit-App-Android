@@ -60,11 +60,24 @@
 
             <TextView
                 android:id="@+id/tv_cam_message_item_date"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/y181"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:textColor="@color/color_666666"
                 android:textSize="@dimen/sp13" />
+
+            <TextView
+                android:id="@+id/tv_cam_message_item_more_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/Tap1_Menu_More"
+                android:textColor="@color/color_4b9fd5_selector"
+                android:textSize="@dimen/sp11"
+                android:visibility="invisible" />
 
             <LinearLayout
                 android:id="@+id/lLayout_cam_msg_pics_container"
@@ -76,10 +89,11 @@
 
                 <ImageView
                     android:id="@+id/imgV_cam_message_pic0"
-                    android:layout_width="@dimen/y161"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/y120"
                     android:layout_marginEnd="@dimen/x2"
                     android:layout_marginStart="@dimen/x2"
+                    android:minWidth="@dimen/y208"
                     android:scaleType="fitXY"
                     android:src="@drawable/wonderful_pic_place_holder" />
 

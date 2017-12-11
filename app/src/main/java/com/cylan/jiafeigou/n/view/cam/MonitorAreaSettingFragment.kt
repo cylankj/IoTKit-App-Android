@@ -49,8 +49,8 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
         effect_container.setSizeUpdateListener(this::onMonitorAreaChanged)
         effect_container.setOnSystemUiVisibilityChangeListener { ViewUtils.setSystemUiVisibility(monitor_picture, false) }
-        monitorWidth = context.resources.getDimensionPixelSize(R.dimen.y206)
-        monitorHeight = context.resources.getDimensionPixelSize(R.dimen.y136)
+        monitorWidth = context!!.resources.getDimensionPixelSize(R.dimen.y206)
+        monitorHeight = context!!.resources.getDimensionPixelSize(R.dimen.y136)
         presenter.loadMonitorAreaSetting()
     }
 
@@ -61,7 +61,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     private fun onMonitorAreaChanged(shaper: Shaper?, width: Int, height: Int) {
         AppLogger.w("onMonitorAreaChanged:width:$width,height:$height")
-        val hintView = shaper?.shaper?.findViewById(R.id.effect_hint)
+        val hintView = shaper?.shaper?.findViewById<View>(R.id.effect_hint)
         if (hintView != null) {
             //长和宽 任何一个小于默认尺寸,则隐藏提示文字
 //            hintView.visibility = if (width >= monitorWidth && height >= monitorHeight) View.VISIBLE else View.GONE
@@ -131,7 +131,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         if (monitorPictureReady) {
             ToastUtil.showToast(getString(R.string.DETECTION_AREA_FAILED_LOAD))
         } else {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage(R.string.DETECTION_AREA_FAILED_LOAD_RETRY)
                     .setCancelable(false)
                     .setPositiveButton(R.string.WELL_OK, { _, _ -> exitToParent() })
@@ -237,7 +237,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     fun exitToParent() {
         AppLogger.w("点击了返回按钮")
         back.post { ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
-        back.post { fragmentManager.popBackStack() }
+        back.post { fragmentManager?.popBackStack() }
     }
 
     @OnClick(R.id.monitor_toggle)

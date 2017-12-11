@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">Fisheye</string>
   <string name="H5_Panoramic">panoramique</string>
   <string name="H5_VR_mode">Mode VR</string>
+  <string name="HALF_CAMERA">Caméra demi-sphérique</string>
+  <string name="HALF_CAMERA_ADD_TIPS">Appuyez longuement 3 secondes</string>
   <string name="HOME">Accueil</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">Impossible de se connecter à des points chauds</string>
   <string name="HOTSPOT_CONNECT_FAILED">La connexion a échoué, réessayez</string>

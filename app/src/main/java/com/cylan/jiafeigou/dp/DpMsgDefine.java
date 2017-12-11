@@ -11,6 +11,7 @@ import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
+import org.msgpack.template.FieldOption;
 import org.msgpack.type.Value;
 
 import java.util.ArrayList;
@@ -2681,7 +2682,7 @@ public class DpMsgDefine {
         public boolean enable;
     }
 
-    @Message
+    @Message(FieldOption.IGNORE)
     public static class DPChangeLockPassword extends BaseDataPoint {
         @Index(0)
         public String oldPassWord;
@@ -2720,7 +2721,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static class DPCameraTakePicture extends BaseDataPoint{
+    public static class DPCameraTakePicture extends BaseDataPoint {
 
     }
 

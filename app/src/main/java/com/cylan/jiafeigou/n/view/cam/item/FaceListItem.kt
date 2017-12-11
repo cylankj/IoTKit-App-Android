@@ -96,9 +96,9 @@ class FaceListItem : AbstractItem<FaceListItem, FaceListItem.FaceListViewHolder>
 
 
     class FaceListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var header: TextView = view.findViewById(R.id.header) as TextView
-        var icon: CircleImageView = view.findViewById(R.id.icon) as CircleImageView
-        var name: TextView = view.findViewById(R.id.name) as TextView
-        var radio: RadioButton = view.findViewById(R.id.radio) as RadioButton
+        var header: TextView = view.findViewById(R.id.header)
+        var icon: CircleImageView = view.findViewById(R.id.icon)
+        var name: TextView = view.findViewById(R.id.name)
+        var radio: RadioButton = view.findViewById(R.id.radio)
     }
 }

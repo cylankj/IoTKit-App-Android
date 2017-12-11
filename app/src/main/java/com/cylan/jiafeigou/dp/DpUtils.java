@@ -103,7 +103,8 @@ public class DpUtils {
         try {
             return mp.write(o);
         } catch (Exception e) {
-            AppLogger.e("msgpack err: " + e.getLocalizedMessage());
+            e.printStackTrace();
+//            AppLogger.e("msgpack err: " + e.getLocalizedMessage());
             return null;
         }
     }

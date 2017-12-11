@@ -29,7 +29,7 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.addvideo_searching))
+                .compose(applyLoading(false,R.string.addvideo_searching))
                 .timeout(7, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
                     when (it) {

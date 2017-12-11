@@ -205,7 +205,7 @@ public interface CamLiveContract {
          */
         void saveAlarmFlag(boolean flag);
 
-        void saveAndShareBitmap(Bitmap bitmap);
+        void saveAndShareBitmap(Bitmap bitmap, boolean b);
 
         /**
          * @return <Integer:天数,Long:时间戳>

@@ -84,7 +84,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING, method))
+                .compose(applyLoading(true, R.string.LOADING))
                 .subscribe({ response ->
                     when {
                         response == null -> {

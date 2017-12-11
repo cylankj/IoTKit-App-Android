@@ -13,21 +13,22 @@ import rx.Observable
  */
 object DoorLockHelper {
     const val CHANGE_PASSWORD_ACTION =
-            +1 shl 0/*转发给对端:0-否，1-是*/ +
-                    +1 shl 1/*get/set:0-get，1-set*/ +
-                    +0 shl 2 /*对端应答:0-否，1-是*/ +
-                    +0 shl 3/*多终端同步:0-否，1-是*/
+            +(1 shl 0)/*转发给对端:0-否，1-是*/ +
+                    +(1 shl 1)/*get/set:0-get，1-set*/ +
+                    +(1 shl 2) /*对端应答:0-否，1-是*/ +
+                    +(0 shl 3)/*多终端同步:0-否，1-是*/
 
     const val OPEN_DOOR_LOCK_ACTION =
-            +1 shl 0 /*转发给对端*/ +
-                    +1 shl 1 /*set*/ +
-                    +1 shl 2/*需要对端应答*/
+            +(1 shl 0) /*转发给对端*/ +
+                    +(0 shl 1) + /*set*/
+                    +(1 shl 2) +/*需要对端应答*/
+                    +(0 shl 4)
 
     const val SET_MONITOR_AREA_ACTION =
-            +1 shl 0/*转发给对端:0-否，1-是*/ +
-                    +1 shl 1/*get/set:0-get，1-set*/ +
-                    +1 shl 2 /*对端应答:0-否，1-是*/ +
-                    +1 shl 3/*多终端同步:0-否，1-是*/
+            +(1 shl 0)/*转发给对端:0-否，1-是*/ +
+                    +(1 shl 1)/*get/set:0-get，1-set*/ +
+                    +(1 shl 2) /*对端应答:0-否，1-是*/ +
+                    +(1 shl 3)/*多终端同步:0-否，1-是*/
 
 
     fun changePassword(uuid: String, oldPassword: String, newPassword: String): Observable<Boolean> {
@@ -44,7 +45,7 @@ object DoorLockHelper {
 
     fun openDoor(uuid: String, password: String): Observable<Boolean> {
         val dpList = DPList()
-        val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockStatusReq(password, 1))
+        val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockStatusReq(password, 66))
         dpList.add(DPMessage(DpMsgMap.ID_407_BELL_CHANGE_LOCK_STATUS, 0, bytes))
         return RobotForwardDataV3Request(callee = uuid, action = OPEN_DOOR_LOCK_ACTION, values = dpList)
                 .execute()

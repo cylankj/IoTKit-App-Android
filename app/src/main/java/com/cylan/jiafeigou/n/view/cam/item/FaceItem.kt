@@ -86,9 +86,14 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     override fun bindView(holder: FaceItemViewHolder, payloads: MutableList<Any>?) {
         super.bindView(holder, payloads)
         //todo 全部是默认图,陌生人是组合图片,需要特殊处理
+        if (isSelected) {
+            holder.icon.animate().scaleX(1.2f).scaleY(1.2f).start()
+        } else {
+            holder.icon.scaleX = 1f
+            holder.icon.scaleY = 1f
+        }
         when (itemType) {
             FACE_TYPE_ALL -> {
-                GlideApp.with(holder.itemView.context).clear(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 //todo UI图导入
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_ALL)
@@ -96,16 +101,25 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
+                GlideApp.with(holder.itemView.context)
+                        .load(R.drawable.news_icon_all_selector)
+                        .dontAnimate()
+                        .into(holder.icon)
+
             }
             FACE_TYPE_STRANGER -> {
-                GlideApp.with(holder.itemView.context).clear(holder.icon)
                 holder.itemView.visibility = View.VISIBLE
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(true)
                 holder.icon.setImageResource(R.drawable.news_icon_stranger)
-                holder.icon.showBorder(isSelected)
+                holder.icon.showBorder(false)
                 holder.icon.showHint(markHint)
+
+                GlideApp.with(holder.itemView.context)
+                        .load(R.drawable.news_icon_stranger)
+                        .dontAnimate()
+                        .into(holder.icon)
             }
         //todo 可能会有猫狗车辆行人,这些都是预制的图片,需要判断
             FACE_TYPE_ACQUAINTANCE -> {
@@ -130,7 +144,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
             }
             FACE_TYPE_STRANGER_SUB -> {
                 holder.itemView.visibility = View.VISIBLE
-                var url = JFGFaceGlideURL(uuid, strangerVisitor?.image_url, strangerVisitor?.ossType!!, true)
+                val url = JFGFaceGlideURL(uuid, strangerVisitor?.image_url, strangerVisitor?.ossType!!, true)
                 holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
@@ -154,9 +168,9 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     }
 
     class FaceItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val icon: CircleImageView = view.findViewById(R.id.img_item_face_selection) as CircleImageView
-        val text: TextView = view.findViewById(R.id.text_item_face_selection) as TextView
-        val strangerIcon: ImageView = view.findViewById(R.id.stranger_icon) as ImageView
+        val icon: CircleImageView = view.findViewById<CircleImageView>(R.id.img_item_face_selection) as CircleImageView
+        val text: TextView = view.findViewById<TextView>(R.id.text_item_face_selection) as TextView
+        val strangerIcon: ImageView = view.findViewById<ImageView>(R.id.stranger_icon) as ImageView
 
     }
 

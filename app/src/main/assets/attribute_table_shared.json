@@ -647,7 +647,7 @@
       "VIEW_MODE": "0",
       "WARMSOUND": "0",
       "WIFI": "0",
-      "WIFI_INFO": "0",
+      "WIFI_INFO": "1",
       "WIREDMODE": "0"
     },
     {
@@ -2437,5 +2437,5 @@
       1564
     ]
   },
-  "version": "20171201"
+  "version": "20171207"
 }

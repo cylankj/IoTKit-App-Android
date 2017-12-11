@@ -28,7 +28,7 @@ public class AlwaysCenterBehavior extends CoordinatorLayout.Behavior {
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
-        return dependency instanceof AppBarLayout;
+        return dependency instanceof AppBarLayout || "CAMERA_MESSAGE_HEADER".equals(dependency.getTag());
     }
 
     @Override
@@ -62,8 +62,4 @@ public class AlwaysCenterBehavior extends CoordinatorLayout.Behavior {
         return true;
     }
 
-    @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child, View directTargetChild, View target, int nestedScrollAxes) {
-        return super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
-    }
 }

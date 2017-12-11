@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">Ojo de pez</string>
   <string name="H5_Panoramic">panorámico</string>
   <string name="H5_VR_mode">Modo VR</string>
+  <string name="HALF_CAMERA">Cámara semiesférica</string>
+  <string name="HALF_CAMERA_ADD_TIPS">Pulsación larga de 3 segundos</string>
   <string name="HOME">Página de inicio</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">No se puede conectar a puntos de acceso</string>
   <string name="HOTSPOT_CONNECT_FAILED">Se ha producido un error en la conexión.</string>

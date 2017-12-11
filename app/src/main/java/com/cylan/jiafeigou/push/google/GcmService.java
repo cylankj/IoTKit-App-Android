@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.module.BellerSupervisor;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -48,6 +49,7 @@ public class GcmService extends GcmListenerService {
          */
         sendNotification(message);
         BellPuller.getInstance().fireBellCalling(getApplicationContext(), message, data);
+        BellerSupervisor.receivePushBeller(getApplicationContext(), message, data);
         // [END_EXCLUDE]
     }
     // [END receive_message]

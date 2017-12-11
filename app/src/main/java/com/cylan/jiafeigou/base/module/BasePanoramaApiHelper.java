@@ -46,6 +46,13 @@ public class BasePanoramaApiHelper {
     private static BasePanoramaApiHelper apiHelper;
 
     public static BasePanoramaApiHelper getInstance() {
+        if (apiHelper == null) {
+            synchronized (BasePanoramaApiHelper.class) {
+                if (apiHelper == null) {
+                    apiHelper = new BasePanoramaApiHelper();
+                }
+            }
+        }
         return apiHelper;
     }
 

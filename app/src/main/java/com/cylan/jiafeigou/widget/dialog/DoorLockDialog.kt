@@ -23,7 +23,7 @@ class DoorLockDialog : BaseDialog<String>() {
     lateinit var uuid: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.uuid = arguments.getString(JConstant.KEY_DEVICE_ITEM_UUID)
+        this.uuid = arguments!!.getString(JConstant.KEY_DEVICE_ITEM_UUID)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,7 +32,7 @@ class DoorLockDialog : BaseDialog<String>() {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
 

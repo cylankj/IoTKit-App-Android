@@ -80,7 +80,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                 setting_youtube_account_item.subTitle = getString(R.string.LIVE_ACCOUNT_UNBOUND)
                 setting_youtube_option_container.visibility = View.GONE
                 PreferencesUtils.remove(JConstant.YOUTUBE_PREF_ACCOUNT_NAME)
-                AuthStateManager.getInstance(context).replace(AuthState())
+                AuthStateManager.getInstance(context!!).replace(AuthState())
                 PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid)
             } else {
                 setting_youtube_account_item.subTitle = field
@@ -155,11 +155,11 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
             val youtubeCreateFragment = YouTubeLiveCreateFragment.newInstance(uuid)
             youtubeCreateFragment.listener = {
                 loadLiveBroadCast()
-                fragmentManager.popBackStack()
+                fragmentManager?.popBackStack()
             }
             ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeCreateFragment, android.R.id.content)
         } else {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage(R.string.LIVE_CREATE_NEW_LIVE)
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { dialog, _ ->
@@ -167,7 +167,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                         val youtubeCreateFragment = YouTubeLiveCreateFragment.newInstance(uuid)
                         youtubeCreateFragment.listener = {
                             loadLiveBroadCast()
-                            fragmentManager.popBackStack()
+                            fragmentManager?.popBackStack()
                         }
                         ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeCreateFragment, android.R.id.content)
                     })
@@ -274,7 +274,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         manager.current.performActionWithFreshTokens(authorizationService, { accessToken, idToken, ex ->
             if (ex != null) {
                 AppLogger.e("Token refresh failed when fetching user info")
-                activity.runOnUiThread { account = null }
+                activity?.runOnUiThread { account = null }
                 return@performActionWithFreshTokens
             }
 
@@ -285,7 +285,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                 userInfoEndpoint = URL(discovery!!.userinfoEndpoint!!.toString())
             } catch (urlEx: MalformedURLException) {
                 AppLogger.e("Failed to construct user info endpoint URL" + urlEx)
-                activity.runOnUiThread { account = null }
+                activity?.runOnUiThread { account = null }
                 return@performActionWithFreshTokens
             }
 
@@ -312,9 +312,9 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     }
 
-    private val authorizationService: AuthorizationService by lazy { AuthorizationService(context) }
-    private val configuration: Configuration by lazy { Configuration.getInstance(context) }
-    private val manager: AuthStateManager by lazy { AuthStateManager.getInstance(context) }
+    private val authorizationService: AuthorizationService by lazy { AuthorizationService(context!!) }
+    private val configuration: Configuration by lazy { Configuration.getInstance(context!!) }
+    private val manager: AuthStateManager by lazy { AuthStateManager.getInstance(context!!) }
 
     /**
      * Attempts to set the account used with the API credentials. If an account
@@ -330,7 +330,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     fun chooseAccount() {
         if (account != null) {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_YOUTUBE)))
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { _, _ ->
@@ -422,7 +422,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
      * @return true if the device has a network connection, false otherwise.
      */
     private fun isDeviceOnline(): Boolean {
-        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connMgr = context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
     }

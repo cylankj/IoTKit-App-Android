@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">Fisheye</string>
   <string name="H5_Panoramic">Panorama</string>
   <string name="H5_VR_mode">Mode VR</string>
+  <string name="HALF_CAMERA">Setengah kamera sferis</string>
+  <string name="HALF_CAMERA_ADD_TIPS">Tekan lama 3 detik</string>
   <string name="HOME">Rumah</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">Tidak dapat terhubung ke hotspot</string>
   <string name="HOTSPOT_CONNECT_FAILED">Sambungan gagal, coba lagi</string>

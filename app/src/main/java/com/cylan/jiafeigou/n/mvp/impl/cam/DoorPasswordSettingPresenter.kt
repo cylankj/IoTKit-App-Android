@@ -21,7 +21,7 @@ class DoorPasswordSettingPresenter @Inject constructor(view: DoorPassWordSetting
         val subscribe = DoorLockHelper.changePassword(uuid, oldPassword, newPassword)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING, method))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({
                     when (it) {
                         true -> {

@@ -1,14 +1,10 @@
 @file:Suppress("MemberVisibilityCanPrivate")
 
-package com.example.yzd.helloworld
+package com.cylan.jiafeigou.module
 
 import android.util.Log
-import com.cylan.jiafeigou.module.AccountBox
-import com.cylan.jiafeigou.module.DeviceBox
-import com.cylan.jiafeigou.module.PropertyBox
 import io.objectbox.Box
 import io.objectbox.BoxStore
-import java.util.*
 
 /**
  * Created by yzd on 17-12-3.
@@ -29,19 +25,20 @@ object DBSupervisor {
     }
 
     @JvmStatic
-    fun putProperty(hash: Long, uuid: String, msgId: Int, version: Long, bytes: ByteArray) {
-        Log.d(TAG, "DBSupervisor.putProperty for key:$hash,uuid is:$uuid,msgId is:$msgId,version is:$version,bytes is:${Arrays.toString(bytes)}")
+    fun putProperty(property: PropertyBox) {
+        propertyBox.put(property)
     }
 
     @JvmStatic
     fun getDevice(uuid: String): DeviceBox? {
-        Log.d(TAG, "")
+        Log.d(TAG, "getDevice:$uuid")
         return null
     }
 
     @JvmStatic
     fun putDevice(device: DeviceBox) {
-        Log.d(TAG, "")
+        Log.d(TAG, "putDevice:$device")
+        deviceBox.put(device)
     }
 
     @JvmStatic
@@ -51,13 +48,21 @@ object DBSupervisor {
     }
 
     @JvmStatic
-    fun putAllDevices() {
+    fun putDevices(devices: Collection<DeviceBox>) {
         Log.d(TAG, "")
+        deviceBox.put(devices)
     }
 
+    @JvmStatic
     fun getAccount(): AccountBox? {
         Log.d(TAG, "getAccount")
         return accountBox.query().build().findFirst()
+    }
+
+    @JvmStatic
+    fun saveAccount(account: AccountBox) {
+        Log.d(TAG, "saveAccount:$account")
+        accountBox.put(account)
     }
 
 }

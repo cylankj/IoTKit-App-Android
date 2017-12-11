@@ -70,8 +70,10 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
-                .timeout(10, TimeUnit.SECONDS)
-                .subscribe(visitorList -> mView.onVisitorListReady(visitorList), AppLogger::e);
+                .timeout(30, TimeUnit.SECONDS)
+                .subscribe(visitorList -> mView.onVisitorListReady(visitorList),e->{
+                    e.printStackTrace();
+                });
         addSubscription(subscription, FETCH_VISITOR_LIST);
     }
 
@@ -300,7 +302,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     .subscribeOn(Schedulers.io())
                     .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .compose(applyLoading(R.string.LOADING, method))
+                    .compose(applyLoading(false, R.string.LOADING))
                     .subscribe(rsp -> {
                         if (rsp != null) {
                             Integer result = DpUtils.unpackDataWithoutThrow(rsp.data, int.class, -1);

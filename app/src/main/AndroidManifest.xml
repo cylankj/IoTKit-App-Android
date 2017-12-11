@@ -213,13 +213,6 @@
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <service
-            android:name=".n.engine.DaemonService"
-            android:enabled="true"
-            android:exported="true" />
-        <!-- <service android:name=".n.engine.DaemonService$InnerAssistService" /> -->
-
         <activity
             android:name=".n.view.activity.BindDeviceActivity"
             android:configChanges="locale|orientation|keyboardHidden"
@@ -380,24 +373,6 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!-- 进程保活 Start -->
-        <service
-            android:name=".DaemonService1"
-            android:process=":process1" />
-
-        <receiver
-            android:name=".DaemonReceiver1"
-            android:process=":process1" />
-
-        <service
-            android:name=".DaemonService2"
-            android:process=":process2" />
-
-        <receiver
-            android:name=".DaemonReceiver2"
-            android:process=":process2" />
-        <!-- 进程保活 End -->
-
         <receiver android:name=".push.HuaweiPushReceiver">
             <intent-filter>
 
@@ -445,8 +420,6 @@
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
 
-
-        <!-- <service android:name=".n.engine.DataSourceService" /> -->
 
         <activity
             android:name=".n.view.activity.BindCamActivity"
@@ -497,10 +470,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
-        <service
-            android:name=".push.WakeupService"
-            android:enabled="true" />
 
         <provider
             android:name="com.umeng.facebook.FacebookContentProvider"

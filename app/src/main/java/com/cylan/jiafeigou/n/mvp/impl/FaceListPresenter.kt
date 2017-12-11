@@ -106,7 +106,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING, method))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({ rsp ->
                     AppLogger.d("修改面孔信息返回的结果为:$rsp,person id is :$personId, face id is :$faceId, uuid is:$uuid")
                     when {
@@ -202,7 +202,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING, method))
+                .compose(applyLoading(false,R.string.LOADING))
                 .subscribe({ rsp ->
                     if (rsp != null && rsp.ret == 0) {
                         mView.onFaceInformationReady(rsp.data)
@@ -234,7 +234,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 .first()
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(R.string.LOADING, method))
+                .compose(applyLoading(false,R.string.LOADING))
                 .subscribe({
 
                     mView.onVisitorInformationReady(it)

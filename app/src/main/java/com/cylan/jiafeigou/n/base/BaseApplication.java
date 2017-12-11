@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
 import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.n.engine.AppServices;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -93,6 +95,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             injectIfNecessary();
         }
         super.onCreate();
+
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             //设计师不需要这个固定通知栏.20170531
@@ -108,14 +111,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
             OkGo.init(this);
             initializationManager.initialization();
 
-//            if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                Schedulers.io().createWorker().schedule(() -> initializationManager.initAppCmd());
-//            }
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);
-//            startService(new Intent(this, DataSourceService.class));
-
             PerformanceUtils.stopTrace("appInit");
             PerformanceUtils.startTrace("app2SmartCall");
         }

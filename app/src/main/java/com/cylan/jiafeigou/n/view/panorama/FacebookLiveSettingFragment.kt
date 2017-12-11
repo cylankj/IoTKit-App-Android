@@ -126,13 +126,13 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     fun selectAccount() {
         when {
             LoginHelper.loginType == 7 -> {
-                AlertDialog.Builder(context)
+                AlertDialog.Builder(context!!)
                         .setMessage(getString(R.string.LIVE_UNABLE_UNBIND, getString(R.string.app_name), getString(R.string.LIVE_PLATFORM_FACEBOOK)))
                         .setCancelable(false)
                         .setPositiveButton(R.string.OK, null)
                         .show()
             }
-            account != null -> AlertDialog.Builder(context)
+            account != null -> AlertDialog.Builder(context!!)
                     .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_FACEBOOK)))
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { _, _ ->

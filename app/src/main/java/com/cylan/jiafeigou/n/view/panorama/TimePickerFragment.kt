@@ -25,11 +25,11 @@ class TimePickerFragment : DialogFragment() {
     private lateinit var calendar: Calendar
     private lateinit var minCalendar: Calendar
     private lateinit var tempCalendar: Calendar
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.layout_time_picker, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewAndListener()
     }
@@ -39,7 +39,7 @@ class TimePickerFragment : DialogFragment() {
         minCalendar = Calendar.getInstance()
         tempCalendar = Calendar.getInstance()
 
-        minCalendar.timeInMillis = arguments.getLong("minTime", minCalendar.timeInMillis)
+        minCalendar.timeInMillis = arguments!!.getLong("minTime", minCalendar.timeInMillis)
         title.text = arguments?.getString("title", getString(R.string.Tap1_CameraFun_Timelapse_StartTime))
 
         isCancelable = false

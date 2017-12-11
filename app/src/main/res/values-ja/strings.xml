@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">フィッシュアイ</string>
   <string name="H5_Panoramic">パノラマ</string>
   <string name="H5_VR_mode">VRモード</string>
+  <string name="HALF_CAMERA">ドームカメラ</string>
+  <string name="HALF_CAMERA_ADD_TIPS">已長按3秒</string>
   <string name="HOME">ホーム</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">ホットスポットに接続できません</string>
   <string name="HOTSPOT_CONNECT_FAILED">接続に失敗しました。再試行してください。</string>

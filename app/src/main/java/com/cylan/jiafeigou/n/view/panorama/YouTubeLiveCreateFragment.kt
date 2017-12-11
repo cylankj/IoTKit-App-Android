@@ -38,14 +38,14 @@ import pub.devrel.easypermissions.EasyPermissions
 class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Presenter>(), YouTubeLiveCreateContract.View {
     override fun onAuthorizationException() {
         AppLogger.w("无效的授权信息")
-        AuthStateManager.getInstance(context).replace(AuthState())
+        AuthStateManager.getInstance(context!!).replace(AuthState())
         PreferencesUtils.remove(JConstant.YOUTUBE_PREF_ACCOUNT_NAME)
         PreferencesUtils.remove(JConstant.YOUTUBE_PREF_CONFIGURE + ":" + uuid)
         ToastUtil.showToast(getString(R.string.LIVE_AUTHO_FAILED))
         if (listener != null) {
             listener!!.invoke()
         } else {
-            fragmentManager.popBackStack()
+            fragmentManager?.popBackStack()
         }
     }
 
@@ -55,7 +55,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        custom_toolbar.setBackAction { activity.onBackPressed() }
+        custom_toolbar.setBackAction { activity?.onBackPressed() }
         custom_toolbar.setRightAction { createLiveEvent() }
     }
 
@@ -131,7 +131,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
 
 
         val credential = GoogleAccountCredential.usingOAuth2(
-                activity.applicationContext, YouTubeScopes.all())
+                activity?.applicationContext, YouTubeScopes.all())
                 .setBackOff(ExponentialBackOff())
         credential.selectedAccountName = account
         credential
@@ -201,7 +201,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     fun chooseAccount() {
         if (account != null) {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_YOUTUBE)))
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { _, _ ->
@@ -253,7 +253,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
      * @return true if the device has a network connection, false otherwise.
      */
     private fun isDeviceOnline(): Boolean {
-        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connMgr = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
     }
@@ -304,7 +304,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         if (listener != null) {
             listener!!.invoke()
         } else {
-            fragmentManager.popBackStack()
+            fragmentManager?.popBackStack()
         }
     }
 

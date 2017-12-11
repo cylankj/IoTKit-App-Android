@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.n.base.IBaseFragment
 import com.cylan.jiafeigou.n.mvp.BasePresenter
@@ -26,19 +25,19 @@ class WeekFragment : IBaseFragment<BasePresenter>() {
 
     private var selected: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater!!.inflate(R.layout.fragment_week, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var toolbar: CustomToolbar = view?.findViewById(R.id.custom_toolbar) as CustomToolbar
+        var toolbar: CustomToolbar = view?.findViewById(R.id.custom_toolbar)
         toolbar.setBackAction({
-            activity.supportFragmentManager.popBackStack()
+            activity?.supportFragmentManager?.popBackStack()
         })
-        selected = arguments.getInt("index")
+        selected = arguments!!.getInt("index")
         for (i in 0..8) {
             val layout = (view as ViewGroup).getChildAt(i)
             if (layout is FrameLayout) {

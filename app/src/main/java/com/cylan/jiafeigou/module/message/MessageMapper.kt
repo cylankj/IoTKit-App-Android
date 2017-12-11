@@ -74,48 +74,7 @@ open class DPMessage(
         @field:Index(0) var msgId: Int = 0,
         @field:Index(1) var version: Long = 0L,
         @field:Index(2) var value: ByteArray = byteArrayOf()
-) : Parcelable {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is DPMessage) return false
-
-        if (msgId != other.msgId) return false
-        if (version != other.version) return false
-        if (!Arrays.equals(value, other.value)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = msgId
-        result = 31 * result + version.hashCode()
-        result = 31 * result + Arrays.hashCode(value)
-        return result
-    }
-
-    override fun toString(): String = "DPMessage(msgId=$msgId, version=$version, value=${Arrays.toString(value)})"
-
-    constructor(source: Parcel) : this(
-            source.readInt(),
-            source.readLong(),
-            source.createByteArray()
-    )
-
-    override fun describeContents() = 0
-
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeInt(msgId)
-        writeLong(version)
-        writeByteArray(value)
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<DPMessage> = object : Parcelable.Creator<DPMessage> {
-            override fun createFromParcel(source: Parcel): DPMessage = DPMessage(source)
-            override fun newArray(size: Int): Array<DPMessage?> = arrayOfNulls(size)
-        }
-    }
+) {
 
 }
 

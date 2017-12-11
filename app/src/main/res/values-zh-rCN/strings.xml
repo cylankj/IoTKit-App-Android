@@ -297,6 +297,8 @@
   <string name="H5_Fisheye">鱼眼</string>
   <string name="H5_Panoramic">全景</string>
   <string name="H5_VR_mode">VR模式</string>
+  <string name="HALF_CAMERA">半球摄像机</string>
+  <string name="HALF_CAMERA_ADD_TIPS">已长按3秒</string>
   <string name="HOME">主页</string>
   <string name="HOTSPOTS_CONNECT_TIMEOUT_TIPS">无法连接到热点</string>
   <string name="HOTSPOT_CONNECT_FAILED">连接失败，请重试</string>

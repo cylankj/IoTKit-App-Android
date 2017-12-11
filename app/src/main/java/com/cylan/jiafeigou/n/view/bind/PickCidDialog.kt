@@ -52,15 +52,15 @@ class PickCidDialog : DialogFragment() {
         dialog.window.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.layout_fragment_dialog_wifi_list, container, false)
         ButterKnife.bind(this, view)
         return view
     }
 
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        list_title.text = context.getString(R.string.WIRED_SELECT_DEVICE_CID)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        list_title.text = context!!.getString(R.string.WIRED_SELECT_DEVICE_CID)
         scanAdapter = FastItemAdapter()
         scanAdapter.withSelectable(true)
         scanAdapter.withMultiSelect(false)
@@ -82,8 +82,8 @@ class PickCidDialog : DialogFragment() {
         rv_wifi_list.adapter = scanAdapter
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv_wifi_list.layoutManager = layoutManager
-        val list = arguments.getParcelableArrayList<APObserver.ScanResult>("results")
-        selectedCid = arguments.getString("selected_cid")
+        val list = arguments!!.getParcelableArrayList<APObserver.ScanResult>("results")
+        selectedCid = arguments!!.getString("selected_cid")
         updateList(list)
     }
 
@@ -177,8 +177,8 @@ class PickCidDialog : DialogFragment() {
         }
 
         class ViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
-            var item_check: RadioButton = itemview.findViewById(R.id.rbtn_item_check) as RadioButton
-            var item_ssid: TextView = itemview.findViewById(R.id.tv_item_ssid) as TextView
+            var item_check: RadioButton = itemview.findViewById(R.id.rbtn_item_check)
+            var item_ssid: TextView = itemview.findViewById(R.id.tv_item_ssid)
         }
 
     }

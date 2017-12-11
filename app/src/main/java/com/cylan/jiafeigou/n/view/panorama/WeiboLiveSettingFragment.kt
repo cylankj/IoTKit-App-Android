@@ -99,13 +99,13 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
     fun selectAccount() {
         when {
             LoginHelper.loginType == 4 -> {
-                AlertDialog.Builder(context)
+                AlertDialog.Builder(context!!)
                         .setMessage(getString(R.string.LIVE_UNABLE_UNBIND, getString(R.string.app_name), getString(R.string.LIVE_PLATFORM_WEIBO)))
                         .setCancelable(false)
                         .setPositiveButton(R.string.OK, null)
                         .show()
             }
-            account != null -> AlertDialog.Builder(context)
+            account != null -> AlertDialog.Builder(context!!)
                     .setMessage(getString(R.string.LIVE_UNBIND_ACCOUNT, getString(R.string.LIVE_PLATFORM_WEIBO)))
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, { _, _ ->

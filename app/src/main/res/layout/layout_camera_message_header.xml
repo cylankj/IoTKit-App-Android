@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rLayout_cam_message_list_top"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:visibility="gone">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y1"
+        android:layout_gravity="bottom"
+        android:background="@color/color_d2d2d2" />
+
+
+    <TextView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:enabled="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/x15"
+        android:paddingRight="@dimen/x15"
+        android:text="@string/BACK"
+        android:textColor="@color/common_btn_color_state"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_cam_message_list_date"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:clickable="false"
+        android:drawablePadding="@dimen/x10"
+        android:enabled="false"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/tv_cam_message_list_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_gravity="end|center_vertical"
+        android:layout_toStartOf="@+id/iv_cam_message_arrow"
+        android:enabled="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/x15"
+        android:paddingRight="@dimen/x15"
+        android:text="@string/EDIT_THEME"
+        android:textColor="@color/common_btn_color_state" />
+
+    <ImageView
+        android:id="@+id/iv_cam_message_arrow"
+        android:layout_width="@dimen/y42"
+        android:layout_height="@dimen/y42"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/y8"
+        android:src="@drawable/btn_unfolded"
+        android:tag="arrow_up" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y1"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/color_d2d2d2" />
+</RelativeLayout>
