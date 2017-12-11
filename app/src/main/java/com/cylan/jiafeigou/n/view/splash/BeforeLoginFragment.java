@@ -80,36 +80,6 @@ public class BeforeLoginFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.InitFrom2x.class)) {
-//            if (AutoSignIn.getInstance().isNotEmpty()) {
-//                subscription = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-//                        .subscribeOn(Schedulers.io())
-//                        .delay(1, TimeUnit.SECONDS)
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .doOnError(throwable -> {
-//                            btnToLogin.setEnabled(true);
-//                            btnToRegister.setEnabled(true);
-//                            btnLookAround.setEnabled(true);
-//                            LoadingDialog.dismissLoading();
-//                        })
-//                        .subscribe(ret -> {
-//                            btnToLogin.setEnabled(true);
-//                            btnToRegister.setEnabled(true);
-//                            btnLookAround.setEnabled(true);
-//                            LoadingDialog.dismissLoading();
-//                            if (ret.code == JError.ErrorOK) {
-//                                startActivity(new Intent(getActivity(), NewHomeActivity.class));
-//                                getActivity().finish();
-//                                RxBus.getCacheInstance().removeStickyEvent(RxEvent.InitFrom2x.class);
-//                            }
-//                        }, AppLogger::e);
-//                AutoSignIn.getInstance().autoLogin();
-//                btnToLogin.setEnabled(false);
-//                btnToRegister.setEnabled(false);
-//                btnLookAround.setEnabled(false);
-//                LoadingDialog.showLoading(getActivity(), getString(R.string.PLEASE_WAIT), true);
-//            }
-//        }
     }
 
     @OnClick(R.id.btn_look_around)
@@ -203,7 +173,6 @@ public class BeforeLoginFragment extends Fragment {
     private static class Event {
         private int count;
         private long time;
-        private Toast toast;
 
         private boolean click(Context context) {
             if (time == 0) {
@@ -212,22 +181,11 @@ public class BeforeLoginFragment extends Fragment {
             if (System.currentTimeMillis() - time > 1000) {
                 count = 0;
                 time = 0;
-                if (toast != null) {
-                    toast.cancel();
-                }
             } else {
                 time = System.currentTimeMillis();
                 count++;
-                if (toast != null) {
-                    toast.cancel();
-                }
-                if (count < 6) {
-                    return false;
-                }
-                toast = Toast.makeText(context, String.format("现在只需再执行%s步操作即可", 10 - count), Toast.LENGTH_SHORT);
-//                toast.show();
             }
-            if (count > 20) {
+            if (count > 2) {
                 time = 0;
                 count = 0;
                 return true;
