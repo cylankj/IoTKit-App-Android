@@ -328,6 +328,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
                 camMessageListAdapter.onStrangerInformationReady(visitorList);
                 pageType = FaceItem.FACE_TYPE_STRANGER_SUB;
+                if (hasExpanded) {
+                    srLayoutCamListRefresh.setRefreshing(false);
+                }
 //                justForDemo(false);
 
             }
@@ -335,6 +338,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             @Override
             public void onVisitorReady(@NotNull List<FaceItem> visitorList) {
                 camMessageListAdapter.onVisitorInformationReady(visitorList);
+                if (hasExpanded) {
+                    srLayoutCamListRefresh.setRefreshing(false);
+                }
 //                justForDemo(true);
             }
         });
