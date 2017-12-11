@@ -400,6 +400,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onVisitorListReady(visitorList: MutableList<FaceItem>, version: Long) {
         AppLogger.e("访客数据已经就绪")
+
         footerAdapter.clear()
         face_header.postDelayed({
             if (version == 0L) {
