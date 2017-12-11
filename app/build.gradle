@@ -119,9 +119,6 @@ android {
 
         debug {
             v2SigningEnabled true
-
-
-
             Properties properties = new Properties()
             File localProperties = project.rootProject.file('local.properties')
             if (localProperties.exists()) {
@@ -503,8 +500,7 @@ android.variantFilter { variant ->
     }
 }
 /////////////////////////////////////////////////////
-//谷歌推送
-//apply plugin: 'com.google.gms.google-services'
+
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
@@ -512,4 +508,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         suppressWarnings = true
         kotlinOptions.suppressWarnings = true
     }
+
+    //谷歌推送
+//    apply plugin: 'com.google.gms.google-services'
 }
