@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">友達の友達</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">私だけ</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">公開</string>
+  <string name="FACE_COLLAPSE">折りたたむ</string>
   <string name="FAQ_SINA_WEIBO">シーナブログのライブビデオをサポートしていない</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1、アカウントがシーナのブログの実名認証を持っていることを確認し、ブラックリストアカウントではありません。</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2、現在のシーナは中国本土のIPをサポートしています。</string>

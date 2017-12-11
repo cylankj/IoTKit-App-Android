@@ -29,7 +29,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
-import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
 import java.util.ArrayList;
@@ -43,12 +43,11 @@ import java.util.Set;
 
 public class HomeMineShareContentFragment extends BaseFragment<MineShareContentContract.Presenter> implements MineShareContentContract.View, SwipeRefreshLayout.OnRefreshListener {
     private FragmentHomeMineShareContentBinding shareContentBinding;
-    private ItemAdapter<ShareContentItem> adapter;
+    private FastItemAdapter<ShareContentItem> adapter;
     private LinearLayoutManager manager;
     private ObservableBoolean editMode = new ObservableBoolean(false);
     private ObservableInt selectNumber = new ObservableInt(0);
     private ObservableBoolean empty = new ObservableBoolean(true);
-
 
 
     @Nullable
@@ -75,17 +74,16 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         shareContentBinding.setIsEmpty(empty);
         shareContentBinding.sharedRefresh.setOnRefreshListener(this);
         manager = new LinearLayoutManager(getContext());
-        adapter = new ItemAdapter<>();
-        FastAdapter<ShareContentItem> fastAdapter = new FastAdapter<>();
-        fastAdapter.withSelectable(true);
-        fastAdapter.withMultiSelect(true);
-        fastAdapter.withAllowDeselection(true);
-        fastAdapter.withOnPreClickListener(this::onEnterShareDetail);
-        fastAdapter.withSelectWithItemUpdate(true);
-        fastAdapter.withItemEvent(new ShareContentItemHook());
-        fastAdapter.withSelectionListener((item, selected) -> selectNumber.set(adapter.getFastAdapter().getSelectedItems().size()));
+        adapter = new FastItemAdapter<>();
 
-        adapter.wrap(fastAdapter);
+        adapter.withSelectable(true);
+        adapter.withMultiSelect(true);
+        adapter.withAllowDeselection(true);
+        adapter.withOnPreClickListener(this::onEnterShareDetail);
+        adapter.withSelectWithItemUpdate(true);
+        adapter.withItemEvent(new ShareContentItemHook());
+        adapter.withSelectionListener((item, selected) -> selectNumber.set(adapter.getSelectedItems().size()));
+
 
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         shareContentBinding.sharedContentList.setLayoutManager(manager);
@@ -97,7 +95,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
 
 
     private void deleteSelection(View view) {
-        Set<ShareContentItem> items = adapter.getFastAdapter().getSelectedItems();
+        Set<ShareContentItem> items = adapter.getSelectedItems();
         List<DpMsgDefine.DPShareItem> item = new ArrayList<>();
         for (ShareContentItem contentItem : items) {
             item.add(contentItem.shareItem);
@@ -105,7 +103,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         if (NetUtils.getNetType(getContext()) == -1) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));//无网络不可删除
         } else {
-            unShareWithAlert(item, adapter.getFastAdapter().getSelections());
+            unShareWithAlert(item, adapter.getSelections());
         }
     }
 
@@ -163,10 +161,10 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         TextView textView = (TextView) view;
         if (TextUtils.equals(getString(R.string.SELECT_ALL), textView.getText())) {
             textView.setText(R.string.CANCEL);
-            adapter.getFastAdapter().select();
+            adapter.select();
         } else {
             textView.setText(R.string.SELECT_ALL);
-            adapter.getFastAdapter().deselect();
+            adapter.deselect();
         }
     }
 
@@ -189,7 +187,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         AppLogger.w("点击了编辑按钮");
         editMode.set(!editMode.get());
         if (!editMode.get()) {
-            adapter.getFastAdapter().deselect();
+            adapter.deselect();
         }
     }
 
@@ -209,10 +207,10 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     @Override
     public void onUnShareContentResponse(int resultCode, Iterable<Integer> selection) {
         if (resultCode == 0) {
-            adapter.getFastAdapter().select(selection);
-            adapter.getFastAdapter().deleteAllSelectedItems();
+            adapter.select(selection);
+            adapter.deleteAllSelectedItems();
         } else {
-            adapter.getFastAdapter().deselect();
+            adapter.deselect();
             ToastUtil.showNegativeToast(getString(R.string.Tips_DeleteFail));
         }
         empty.set(adapter.getItemCount() == 0);

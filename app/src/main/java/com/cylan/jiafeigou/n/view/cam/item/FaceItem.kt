@@ -87,7 +87,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         super.bindView(holder, payloads)
         //todo 全部是默认图,陌生人是组合图片,需要特殊处理
         if (isSelected) {
-            holder.icon.animate().scaleX(1.2f).scaleY(1.2f).start()
+            holder.icon.animate().scaleX(1.1f).scaleY(1.1f).start()
         } else {
             holder.icon.scaleX = 1f
             holder.icon.scaleY = 1f
@@ -207,7 +207,8 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         const val FACE_TYPE_ACQUAINTANCE: Int = 1//熟人
 
         const val FACE_TYPE_STRANGER_SUB: Int = 2
-        const val FACE_TYPE_EMPTY = 3;
+        const val FACE_TYPE_EMPTY = 3
+        const val FACE_TYPE_MORE = 4
 
         @JvmField
         val CREATOR: Parcelable.Creator<FaceItem> = object : Parcelable.Creator<FaceItem> {

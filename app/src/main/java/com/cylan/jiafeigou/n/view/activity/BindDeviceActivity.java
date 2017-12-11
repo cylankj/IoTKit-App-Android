@@ -124,7 +124,9 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             R.id.v_to_bind_bell_battery,
             R.id.v_to_bind_bell_no_battery,
             R.id.v_to_bind_cam_outdoor,
-            R.id.v_to_bind_cat_eye_cam})
+            R.id.v_to_bind_cat_eye_cam,
+            R.id.v_to_bind_half_camera
+    })
     public void onClickBind(View view) {
         Intent intent = new Intent(this, BindAnimationActivity.class);
         intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
@@ -192,6 +194,17 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 break;
+            case R.id.v_to_bind_half_camera: {
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_hemisphere);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bell_doby);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.HALF_CAMERA));
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
+                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+            }
+            break;
             default:
                 break;
         }

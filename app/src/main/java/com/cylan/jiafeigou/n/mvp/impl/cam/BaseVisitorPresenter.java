@@ -51,8 +51,8 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     }
 
     @Override
-    public void fetchVisitorList() {
-        Subscription subscription = VisitorLoader.loadAllVisitorList(uuid)
+    public void fetchVisitorList(long version) {
+        Subscription subscription = VisitorLoader.loadAllVisitorList(uuid,version)
                 .subscribeOn(Schedulers.io())
                 .map(ret -> {
                     List<FaceItem> result = new ArrayList<>();
@@ -71,7 +71,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
                 .timeout(30, TimeUnit.SECONDS)
-                .subscribe(visitorList -> mView.onVisitorListReady(visitorList),e->{
+                .subscribe(visitorList -> mView.onVisitorListReady(visitorList,version), e -> {
                     e.printStackTrace();
                 });
         addSubscription(subscription, FETCH_VISITOR_LIST);
@@ -87,11 +87,8 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     private static final String FETCH_STRANGER_VISITOR_LIST = "fetchStrangerVisitorList";
 
     @Override
-    public void fetchStrangerVisitorList() {
-//        if (containsSubscription(FETCH_STRANGER_VISITOR_LIST)) {
-//            return;
-//        }
-        Subscription subscription = VisitorLoader.loadAllStrangerList(uuid)
+    public void fetchStrangerVisitorList(long version) {
+        Subscription subscription = VisitorLoader.loadAllStrangerList(uuid, version)
                 .subscribeOn(Schedulers.io())
                 .map(ret -> {
                     List<FaceItem> result = new ArrayList<>();
@@ -110,7 +107,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
-                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList), AppLogger::e);
+                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList,version), AppLogger::e);
         addSubscription(subscription, FETCH_STRANGER_VISITOR_LIST);
     }
 

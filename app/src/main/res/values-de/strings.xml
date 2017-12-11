@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">Freunde von Freunden</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Nur ich</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Öffentlich</string>
+  <string name="FACE_COLLAPSE">Kollaps</string>
   <string name="FAQ_SINA_WEIBO">Nicht unterstützen Sina Weibo Live Video</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, um sicherzustellen, dass das Konto hat die Sina Weibo Real-Name-Authentifizierung, und ist kein Blacklist-Konto.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, die aktuelle Sina leben nur unterstützen China Festland IP.</string>

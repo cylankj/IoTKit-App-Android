@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">好友的好友</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">仅自己</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">公开</string>
+  <string name="FACE_COLLAPSE">收起</string>
   <string name="FAQ_SINA_WEIBO">新浪微博无法直播</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1、确保所绑定的账号已完成新浪微博的实名认证，并且不是黑名单账户。</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2、目前微博直播只支持中国大陆地区IP直播。</string>

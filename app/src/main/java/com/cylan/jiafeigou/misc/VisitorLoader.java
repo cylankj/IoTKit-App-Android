@@ -50,7 +50,7 @@ public class VisitorLoader {
             DpMsgDefine.ReqContent reqContent = new DpMsgDefine.ReqContent();
             reqContent.uuid = uuid;
             reqContent.timeSec = timeSec;
-            final long seq =  Command.getInstance().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
+            final long seq = Command.getInstance().sendUniservalDataSeq(msgType, DpUtils.pack(reqContent));
             return RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .map(ret -> {
@@ -69,13 +69,13 @@ public class VisitorLoader {
      *
      * @return
      */
-    public static Observable<DpMsgDefine.VisitorList> loadAllVisitorList(final String uuid) {
+    public static Observable<DpMsgDefine.VisitorList> loadAllVisitorList(final String uuid, long version) {
 //        final DpMsgDefine.VisitorList visitorList = new DpMsgDefine.VisitorList();
 //        visitorList.total = -1;
         return Observable.just("")
                 .flatMap(s -> {
 //                    final long timeSec = getMaxTimeFromList(visitorList);
-                    return getDataByte(uuid, 5, 0)
+                    return getDataByte(uuid, 5, version)
                             .flatMap(bytes -> {
                                 DpMsgDefine.VisitorList list = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.VisitorList.class, null);
                                 AppLogger.d("收到数据？" + (BuildConfig.DEBUG ? list : null));
@@ -105,13 +105,13 @@ public class VisitorLoader {
     }
 
     public static Observable<DpMsgDefine.StrangerVisitorList>
-    loadAllStrangerList(String uuid) {
+    loadAllStrangerList(String uuid, long version) {
 //        final DpMsgDefine.StrangerVisitorList visitorList = new DpMsgDefine.StrangerVisitorList();
 //        visitorList.total = -1;
         return Observable.just("")
                 .flatMap(s -> {
 //                    final long timeSec = getMaxTimeFromList(visitorList);
-                    return getDataByte(uuid, 6, 0)
+                    return getDataByte(uuid, 6, version)
                             .flatMap(bytes -> {
                                 DpMsgDefine.StrangerVisitorList list = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.StrangerVisitorList.class, null);
 //                                if (list != null && list.total > 0) {

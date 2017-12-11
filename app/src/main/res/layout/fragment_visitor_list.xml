@@ -6,26 +6,20 @@
     android:orientation="vertical"
     app:layout_scrollFlags="scroll|enterAlways">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_layout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/face_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_menu">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/face_header"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadeScrollbars="true"
-            android:scrollbarStyle="insideOverlay"
-            android:scrollbars="vertical"
-            android:verticalScrollbarPosition="right" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_above="@+id/bottom_menu"
+        android:fadeScrollbars="true"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="vertical"
+        android:verticalScrollbarPosition="right" />
 
     <FrameLayout
         android:id="@+id/bottom_menu"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/y28"
         android:layout_alignParentBottom="true"
         android:background="@color/color_white"
         android:clickable="true"
@@ -34,25 +28,29 @@
         <TextView
             android:id="@+id/cam_message_indicator_watcher_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/y15"
             android:ellipsize="end"
-            android:gravity="end"
+            android:gravity="center_vertical"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/color_666666"
             android:textSize="@dimen/sp12" />
 
-        <ImageView
-            android:id="@+id/expand_arrow"
-            android:layout_width="@dimen/y26"
-            android:layout_height="@dimen/y26"
+        <TextView
+            android:id="@+id/more_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="@dimen/y12"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/btn_put_away" />
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/y15"
+            android:paddingStart="@dimen/y15"
+            android:text="@string/Tap1_Menu_More"
+            android:textColor="@color/color_4b9fd5_selector"
+            android:textSize="@dimen/sp14" />
 
     </FrameLayout>
 

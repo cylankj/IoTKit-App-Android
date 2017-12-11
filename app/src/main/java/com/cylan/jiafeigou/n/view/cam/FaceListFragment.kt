@@ -20,8 +20,8 @@ import com.cylan.jiafeigou.utils.ToastUtil
 import com.github.promeg.pinyinhelper.Pinyin
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IItem
-import com.mikepenz.fastadapter.adapters.HeaderAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import kotlinx.android.synthetic.main.fragment_facelist.*
 
@@ -44,13 +44,13 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         visitors?.map {
             FaceListItem().withVisitorInformation(it)
         }?.apply {
-            itemAdapter.setNewList(this)
+            adapter.setNewList(this)
             when {
-                itemAdapter.adapterItemCount == 0 -> {
+                adapter.adapterItemCount == 0 -> {
                     empty_view.visibility = View.VISIBLE
                     headerAdapter.clear()
                 }
-                itemAdapter.adapterItemCount > 0 -> {
+                adapter.adapterItemCount > 0 -> {
                     empty_view.visibility = View.GONE
                     if (headerAdapter.adapterItemCount == 0) {
                         headerAdapter.add(FaceListHeaderItem())
@@ -83,8 +83,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         AppLogger.w("onFaceInformationReady")
     }
 
-    lateinit var adapter: FastAdapter<*>
-    private lateinit var itemAdapter: ItemAdapter<FaceListItem>
+    lateinit var adapter: FastItemAdapter<FaceListItem>
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,7 +93,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
 
     lateinit var layoutManager: LinearLayoutManager
 
-    private lateinit var headerAdapter: HeaderAdapter<FaceListHeaderItem>
+    private lateinit var headerAdapter: ItemAdapter<FaceListHeaderItem>
 
     override fun initViewAndListener() {
         super.initViewAndListener()
@@ -112,16 +111,14 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             }
         }
 
-        adapter = FastAdapter<IItem<*, *>>()
+        adapter = FastItemAdapter()
 
-        headerAdapter = HeaderAdapter()
+        headerAdapter = ItemAdapter()
         headerAdapter.withUseIdDistributor(true)
 
-        itemAdapter = ItemAdapter()
+        (adapter as FastItemAdapter<IItem<*, *>>).addAdapter(0, headerAdapter as ItemAdapter<IItem<*, *>>)
 
-        itemAdapter.wrap(headerAdapter.wrap(adapter))
-
-        itemAdapter.withUseIdDistributor(true)
+        adapter.withUseIdDistributor(true)
 
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
@@ -130,7 +127,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         }
 
         custom_toolbar.setRightEnable(false)
-        itemAdapter.withComparator { item1, item2 ->
+        adapter.itemAdapter.withComparator { item1, item2 ->
             val char1 = getPinYinLatter(item1.visitor?.personName)
             val char2 = getPinYinLatter(item2.visitor?.personName)
             val i = char1.compareTo(char2, true)
@@ -143,7 +140,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             }
         }
 
-        itemAdapter.fastAdapter.withEventHook(object : ClickEventHook<FaceListItem>() {
+        adapter.withEventHook(object : ClickEventHook<FaceListItem>() {
 
             override fun onBindMany(viewHolder: RecyclerView.ViewHolder): MutableList<View>? {
                 if (viewHolder is FaceListItem.FaceListViewHolder) {
@@ -188,7 +185,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
     }
 
     private fun moveFaceTo() {
-        val selections = itemAdapter.fastAdapter.selectedItems
+        val selections = adapter.selectedItems
         if (selections != null && selections.size > 0) {
             val item = selections.elementAt(0)
             when {

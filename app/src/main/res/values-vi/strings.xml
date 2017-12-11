@@ -262,6 +262,7 @@
   <string name="FACEBOOK_PERMISSIONS_FRIENDS_OF_FRIENDS">Bạn của bạn bè</string>
   <string name="FACEBOOK_PERMISSIONS_ONLYME">chỉ tôi</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Công cộng</string>
+  <string name="FACE_COLLAPSE">Sập</string>
   <string name="FAQ_SINA_WEIBO">Không hỗ trợ Sina Weibo video trực tiếp</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, để đảm bảo rằng tài khoản có xác thực Sina tên Weibo, và không phải là một tài khoản danh sách đen.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, hiện tại Sina sống chỉ hỗ trợ Trung Quốc đại lục IP.</string>
