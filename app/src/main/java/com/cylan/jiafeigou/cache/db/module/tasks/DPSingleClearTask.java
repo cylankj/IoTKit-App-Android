@@ -2,10 +2,12 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBState;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import rx.schedulers.Schedulers;
 public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getMsgId(), null)
+        return BaseDBHelper.getInstance().deleteDPMsgWithConfirm(entity.getUuid(), entity.getMsgId(), null)
                 .map(items -> {
                     DPEntity entity = null;
                     if (items != null && items.size() > 0) {
@@ -40,7 +42,7 @@ public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             params.add(request);
             try {
-                long seq = appCmd.robotDelData(entity.getUuid(), params, 0);
+                long seq = Command.getInstance().robotDelData(entity.getUuid(), params, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -53,7 +55,7 @@ public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeDeleteDataRspResponse)
                 .flatMap(rsp -> {
                     if (rsp.resultCode == 0) {
-                        return dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+                        return BaseDBHelper.getInstance().deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                                 .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));
                     } else {
                         return Observable.just(new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));

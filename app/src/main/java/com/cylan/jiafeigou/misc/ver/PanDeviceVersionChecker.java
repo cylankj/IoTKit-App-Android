@@ -4,10 +4,11 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.DevUpgradeInfo;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -65,11 +66,11 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.getCid());
+                    Device device = DataSourceManager.getInstance().getDevice(portrait.getCid());
                     final String currentVersion = device.$(207, "");
                     AppLogger.d("current version: " + currentVersion);
                     try {
-                        seq = BaseApplication.getAppComponent().getCmd()
+                        seq =  Command.getInstance()
                                 .CheckTagDeviceVersion(portrait.getCid());
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
@@ -87,7 +88,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                     oldVersion = ret.getVersion();
                     oldVersion.setLastShowTime(time);
                     oldVersion.setTotalSize(totalSize(oldVersion));
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.getCid());
+                    Device device = DataSourceManager.getInstance().getDevice(portrait.getCid());
                     final String newVersion = binVersion.getTagVersion();
                     final String currentVersion = device.$(207, "");
                     if (BindUtils.versionCompare(newVersion, currentVersion) > 0) {

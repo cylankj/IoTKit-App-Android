@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
@@ -44,7 +44,7 @@ public class PushResultReceiver extends BroadcastReceiver {
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
                         try {
-                            BaseApplication.getAppComponent().getCmd().setPushToken(ret, context.getPackageName(), 10);
+                            Command.getInstance().setPushToken(ret, context.getPackageName(), 10);
                             AppLogger.e("需要填type");
                         } catch (JfgException e) {
                             AppLogger.e("err:" + MiscUtils.getErr(e));

@@ -13,13 +13,13 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -64,7 +64,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         presenter = new SdCardInfoPresenterImpl(this, uuid);
         customToolbar.setBackAction(o -> onBackPressed());
         initDetailData();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean http = JFGRules.isPan720(device.pid);
         if (http) {
             BaseDeviceInformationFetcher.getInstance().init(uuid);
@@ -113,7 +113,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
             ToastUtil.showToast(getString(R.string.NoNetworkTips));
             return;
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(dpNet) && !JFGRules.isAPDirect(uuid, device.$(DpMsgMap.ID_202_MAC, ""))) {
             ToastUtil.showToast(getString(R.string.RET_EUNONLINE_CID));
@@ -165,7 +165,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         switch (code) {
             case 0:
                 ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
-                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 initSdUseDetailRsp(status, true);
                 break;
@@ -181,7 +181,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     @Override
     public void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus, boolean alert) {
         if (sdStatus == null) {
-            sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
+            sdStatus = DataSourceManager.getInstance().getDevice(uuid)
                     .$(204, new DpMsgDefine.DPSdStatus());
         }
         if (sdStatus == null && alert) {
@@ -219,7 +219,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 //                    getString(R.string.OK), (DialogInterface dialog, int which) -> finishExt());
 //            return;
 //        }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
+        Device device = DataSourceManager.getInstance().getDevice(this.uuid);
         //仅3G摄像头显示此栏
         if (device != null && JFGRules.is3GCam(device.pid)) {
             tvClearRestart.setVisibility(View.VISIBLE);

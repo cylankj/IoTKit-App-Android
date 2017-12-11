@@ -766,8 +766,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <service
-            android:name=".server.MyService"
-            android:enabled="false"
+            android:name=".n.engine.AppServices"
             android:exported="false" />
 
         <activity android:name=".n.view.activity.ApSettingActivity">

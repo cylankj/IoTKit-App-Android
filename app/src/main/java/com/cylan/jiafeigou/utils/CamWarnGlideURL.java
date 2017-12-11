@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.net.MalformedURLException;
@@ -41,7 +41,7 @@ public class CamWarnGlideURL extends JFGGlideURL {
                 String acc = account == null ? "" : account.getAccount();
 
                 urlV2 = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, acc, cid, timestamp);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+                urlV2 =  Command.getInstance().getSignedCloudUrl(this.regionType, urlV2);
                 return urlV2;
             } catch (Exception e) {
                 AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));

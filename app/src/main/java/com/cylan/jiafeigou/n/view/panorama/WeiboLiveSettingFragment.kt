@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import butterknife.OnClick
 import butterknife.OnTextChanged
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.module.LoginHelper
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.google.gson.Gson
@@ -98,7 +98,7 @@ class WeiboLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAuthL
     @OnClick(R.id.setting_weibo_account_item)
     fun selectAccount() {
         when {
-            DataSourceManager.getInstance().loginType == 4 -> {
+            LoginHelper.loginType == 4 -> {
                 AlertDialog.Builder(context)
                         .setMessage(getString(R.string.LIVE_UNABLE_UNBIND, getString(R.string.app_name), getString(R.string.LIVE_PLATFORM_WEIBO)))
                         .setCancelable(false)

@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -19,6 +19,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -197,24 +199,30 @@ public class JConstant {
     public static final String ROBOT_SERVICES_KEY = "ROBOT_SERVICES_KEY";
     public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
     public static final String SHOW_MONITOR_AREA_TIPS = "SHOW_MONITOR_AREA_TIPS";
-    public static final String MONITOR_AREA_PICTURE="MONITOR_AREA_PICTURE";
+    public static final String MONITOR_AREA_PICTURE = "MONITOR_AREA_PICTURE";
+
 
     public static String getFaceText(String[] face_id, Map<String, String> faceMap, String defaultText) {
         if (face_id == null || faceMap == null || faceMap.size() == 0) {
             return defaultText;
         }
         String information;
-        StringBuilder result = new StringBuilder();
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < face_id.length; i++) {
             information = faceMap.get(face_id[i]);
-            if (information != null) {
-                result.append(information);
-                if (i != face_id.length - 1) {
-                    result.append(", ");
-                }
+            if (information != null && !result.contains(information)) {
+                result.add(information);
             }
         }
-        return result.toString();
+        StringBuilder retValue = new StringBuilder();
+        for (int i = 0; i < result.size(); i++) {
+            information = result.get(i);
+            retValue.append(information);
+            if (i != result.size() - 1) {
+                retValue.append(", ");
+            }
+        }
+        return retValue.toString();
         // TODO: 2017/10/14  看原型是怎么样的了
 //        String temp = result.toString();
 //        return TextUtils.isEmpty(temp) ? defaultText : temp;
@@ -417,6 +425,9 @@ public class JConstant {
         if (pid == 84) {
             return R.drawable.image_cam_outdoor;
         }
+        if (pid == 92) {
+            return R.drawable.image_cam_hemisphere;
+        }
         if (JFGRules.isCatEeyBell(pid)) {
             return R.drawable.me_icon_intelligent_eye;
         }
@@ -449,6 +460,9 @@ public class JConstant {
         if (pid == 84) {
             return R.drawable.home_icon_outcam;
         }
+        if (pid == 92) {
+            return R.drawable.home_icon_hemisphere;
+        }
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_online;
         }
@@ -471,6 +485,9 @@ public class JConstant {
         }
         if (pid == 84) {
             return R.drawable.home_icon_outcam_disabled;
+        }
+        if (pid == 92) {
+            return R.drawable.home_icon_hemisphere_disabled;
         }
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_offline;
@@ -529,6 +546,7 @@ public class JConstant {
     public static final String KEY_PHONE = "PhoneNum";//2.x account key
     public static final String SESSIONID = "sessid";// 2.x sessid key
     public static final String KEY_PSW = "PSW";     //2.x pwd key
+    public static final String KEY_SIGN_TYPE = "sign_type";
     public static final String UPDATAE_AUTO_LOGIN = "update_auto_login";
     public static final String CLIENT_UPDATAE_TAB = "client_update_tab";
     public static final String CLIENT_UPDATAE_TIME_TAB = "client_update_time_tab";
@@ -594,7 +612,7 @@ public class JConstant {
         String serviceKey = PreferencesUtils.getString(JConstant.ROBOT_SERVICES_KEY, null);
         if (TextUtils.isEmpty(serviceKey)) {
 
-            long seq = BaseApplication.getAppComponent().getCmd().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
+            long seq = Command.getInstance().sendUniservalDataSeq(4, DpUtils.pack(Security.getVId()));
             RxEvent.UniversalDataRsp dataRsp = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .first()
@@ -612,10 +630,10 @@ public class JConstant {
     }
 
     public static String blockPutFileToCloud(String localPath, String remotePath, int regionType) throws Exception {
-        int seq = BaseApplication.getAppComponent().getCmd().putFileToCloud(remotePath, localPath);
+        int seq = Command.getInstance().putFileToCloud(remotePath, localPath);
         JFGMsgHttpResult result = RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).first(rsp -> rsp.requestId == seq).timeout(15, TimeUnit.SECONDS).toBlocking().first();
         if (result.ret == 200) {
-            return BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(regionType, remotePath);
+            return Command.getInstance().getSignedCloudUrl(regionType, remotePath);
         }
         return null;
     }

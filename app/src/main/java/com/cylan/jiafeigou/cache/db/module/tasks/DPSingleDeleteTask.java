@@ -2,7 +2,10 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
@@ -19,10 +22,10 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        if (!sourceManager.isOnline()) {
+        if (!DataSourceManager.getInstance().isOnline()) {
             return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
         }
-        return dpHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+        return BaseDBHelper.getInstance().deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                 .map(dpEntity -> new BaseDPTaskResult().setResultCode(0).setResultResponse(dpEntity));
     }
 
@@ -33,7 +36,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
             JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
             params.add(msg);
             try {
-                long seq = appCmd.robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
+                long seq = Command.getInstance().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 if (seq <= 0) {
                     throw new JfgException("内部错误!");
                 }
@@ -50,7 +53,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeDeleteDataRspResponse)
                 .flatMap(rsp -> {
                             if (rsp.resultCode == 0) {
-                                return dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+                                return BaseDBHelper.getInstance().deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                                         .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));
                             } else {
                                 return Observable.just(new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));

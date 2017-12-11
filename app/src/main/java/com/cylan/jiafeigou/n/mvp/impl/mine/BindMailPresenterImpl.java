@@ -9,10 +9,11 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.BindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -55,7 +56,7 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
                 .map(cmd -> {
                     try {
                         // TODO: 2017/8/28 需要检查是否已经被使用
-                        long req = BaseApplication.getAppComponent().getCmd().checkFriendAccount(newEmail);
+                        long req = Command.getInstance().checkFriendAccount(newEmail);
                         Log.d(TAG, "校验邮箱是否被注册: " + req);
                     } catch (JfgException e) {
                         AppLogger.e(e.getMessage());
@@ -76,9 +77,9 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
                 })
                 .map(cmd -> {
                     try {
-                        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
                         jfgAccount.setEmail(newEmail);
-                        int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
+                        int req = Command.getInstance().setAccount(jfgAccount);
                         AppLogger.d("send_setAcc:" + req);
                     } catch (JfgException e) {
                         AppLogger.e("send_setAcc:" + e.getLocalizedMessage());
@@ -101,7 +102,7 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
      */
     @Override
     public Account getUserAccount() {
-        return BaseApplication.getAppComponent().getSourceManager().getAccount();
+        return DataSourceManager.getInstance().getAccount();
     }
 
 
@@ -113,7 +114,7 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
 
     @Override
     public boolean isOpenLogin() {
-        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
+        return DataSourceManager.getInstance().getAccount().getLoginType() >= 3;
     }
 
     @Override

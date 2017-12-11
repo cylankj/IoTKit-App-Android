@@ -3,11 +3,8 @@ package com.cylan.jiafeigou.dagger.module;
 import android.content.Context;
 
 import com.cylan.jfgapp.interfases.AppCmd;
-import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.base.module.BaseAppCallBackHolder;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
-import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.DeviceInformation;
@@ -25,6 +22,7 @@ import com.cylan.jiafeigou.dagger.annotation.Named;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.ILoadingManager;
 import com.cylan.jiafeigou.module.ISubscriptionManager;
 import com.cylan.jiafeigou.module.LoadingManager;
@@ -126,21 +124,8 @@ public abstract class CommonModule {
 
     @Provides
     @Singleton
-    public static BasePresenterInjector provideBasePresenterInject(JFGSourceManager manager, IDPTaskDispatcher dispatcher, AppCmd appCmd) {
-        return new BasePresenterInjector(manager, dispatcher, appCmd);
-    }
-
-
-    @Provides
-    @Singleton
-    public static BaseAppCallBackHolder provideAppCallBackHolder() {
-        return new BaseAppCallBackHolder();
-    }
-
-    @Provides
-    @Singleton
     public static AppCmd provideAppCmd() {
-        return JfgAppCmd.getInstance();
+        return Command.getInstance();
     }
 
     @Provides
@@ -195,7 +180,7 @@ public abstract class CommonModule {
                     ResponseBody body = proceed.body();
                     String string = body.string();
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-                    return proceed.newBuilder().body(new RealResponseBody(body.contentType().toString(),body.contentLength(), new Buffer().writeString(string, Charset.forName("UTF-8")))).build();
+                    return proceed.newBuilder().body(new RealResponseBody(body.contentType().toString(), body.contentLength(), new Buffer().writeString(string, Charset.forName("UTF-8")))).build();
                 })
                 .connectTimeout(120, TimeUnit.SECONDS)//sd 卡格式化需要120 秒的超时
                 .readTimeout(120, TimeUnit.SECONDS)

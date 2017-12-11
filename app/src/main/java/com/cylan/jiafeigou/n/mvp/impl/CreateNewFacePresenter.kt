@@ -6,7 +6,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.n.view.cam.CreateFaceContact
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
@@ -36,13 +36,13 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
         val subscribe = Observable.create<DpMsgDefine.GenericResponse> { subscriber ->
             val account = DataSourceManager.getInstance().account.account
             var vid = Security.getVId()
-            vid="0001"
+            vid = "0001"
             val serviceKey = OptionsImpl.getServiceKey(vid)
             val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
             val seceret = OptionsImpl.getServiceSeceret(vid)
             var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
-            imageUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
-            val sessionId = BaseApplication.getAppComponent().getCmd().sessionId
+            imageUrl = Command.getInstance().getSignedCloudUrl(DataSourceManager.getInstance().storageType, imageUrl)
+            val sessionId = Command.getInstance().sessionId
             if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                 throw IllegalArgumentException("ServiceKey或Seceret为空")
             }

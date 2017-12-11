@@ -13,8 +13,8 @@ import android.view.View;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -94,17 +94,17 @@ public class NotifyManager implements INotify {
     }
 
     private boolean enablePush() {
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         return account != null && account.getEnablePush();
     }
 
     private boolean enableSound() {
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         return account != null && account.getEnableSound();
     }
 
     private boolean enableVibrate() {
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         return account != null && account.getEnableVibrate();
     }
 

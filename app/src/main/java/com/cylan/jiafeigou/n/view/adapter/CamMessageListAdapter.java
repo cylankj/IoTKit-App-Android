@@ -69,13 +69,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private boolean hasSdcard() {
-        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
 
         return this.status = status.hasSdcard && status.err == 0;
     }
 
     private boolean online() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         return net != null && net.net > 0;
     }
@@ -247,7 +247,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         //考虑这个bean的条件.
         // TODO: 2017/8/16  不光要看 hasSDCard 还要看 err 是否为0 #118051
         // TODO: 2017/8/16 Android（1.1.0.534）720设备 报警中心界面 提示"检车到新的Micro SD卡，需要先初始化才能存储视频" 右下角没有查看详情 按钮
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
 //        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         boolean hasSdcard;
         int err = -1;
@@ -259,7 +259,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             }
             break;
             default: {
-//                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+//                Device device = DataSourceManager.getInstance().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 hasSdcard = status.hasSdcard;
                 err = status.err;

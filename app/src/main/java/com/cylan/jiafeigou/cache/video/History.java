@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -142,7 +142,7 @@ public class History {
 
     public void queryHistory(String uuid, int endTime, int way, int count) {
         try {
-            int ret = BaseApplication.getAppComponent().getCmd().getVideoListV2(uuid,
+            int ret = Command.getInstance().getVideoListV2(uuid,
                     endTime, way, count);
             rspIndexMap.put(uuid, ret == 0);
             AppLogger.d(String.format("ret:%s,uuid:%s,startTime:%s,way:%s,count:%s", ret, uuid, endTime, way, count));

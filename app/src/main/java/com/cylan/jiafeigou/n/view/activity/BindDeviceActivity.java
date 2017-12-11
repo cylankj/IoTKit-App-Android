@@ -94,7 +94,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_lan_mode: {
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, WireBindActivity.class);
-
+                intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_wired);
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.DEVICE_WIRED_CONNECTION));
+                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.WIRED_GUIDE));
+                intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.WIRED_MODE_CONNECTED));
                 startActivity(intent);
             }
             break;

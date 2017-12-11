@@ -25,6 +25,7 @@ public class UdpConstant {
     public static final String BIND_TAG = "bindTag:";
     public static final String DOORBELL_RING = "doorbell_ring";
     public static final String REPORT_MSG = "report_msg";
+    public static final CharSequence SET_WIFI_ACK="";
 
 
     public static final class PingAckT {
@@ -57,7 +58,7 @@ public class UdpConstant {
         public int net;
         public String bindCode;
         public int pid;
-        public int bindFlag = 1;//默认强绑,又改了.
+        public int bindFlag = 1;//默认强绑,0:不强行绑定,1:强行绑定
 
         @Override
         public String toString() {

@@ -16,7 +16,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.FragmentMineShareManagerBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -50,7 +50,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     protected void initViewAndListener() {
         super.initViewAndListener();
         managerBinding.setListener(this);
-        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        List<Device> list = DataSourceManager.getInstance().getAllDevice();
         boolean showShareContent = false;
         if (!ListUtils.isEmpty(list)) {
             for (Device d : list) {
@@ -86,7 +86,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
 //                    return;
 //                }
 
-                if (manager.getLoginType() >= 3 && TextUtils.isEmpty(manager.getAccount().getEmail()) &&
+                if (LoginHelper.getLoginType() >= 3 && TextUtils.isEmpty(manager.getAccount().getEmail()) &&
                         TextUtils.isEmpty(manager.getAccount().getPhone())) {
                     showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
                     return;

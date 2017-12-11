@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.VisitorLoader;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
@@ -117,15 +117,14 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         //msgType = 7
         //req=msgpack(cid, type, id)
         //rsp=msgpack(cid, type, id, count)
-        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+        final String sessionId = Command.getInstance().getSessionId();
         AppLogger.d("sessionId:" + sessionId);
         try {
             DpMsgDefine.VisitsTimesReq reqContent = new DpMsgDefine.VisitsTimesReq();
             reqContent.cid = uuid;
             reqContent.faceId = faceId;
             reqContent.msgType = type;
-            final long seq = BaseApplication.getAppComponent()
-                    .getCmd().sendUniservalDataSeq(7, DpUtils.pack(reqContent));
+            final long seq = Command.getInstance().sendUniservalDataSeq(7, DpUtils.pack(reqContent));
             Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .subscribeOn(Schedulers.io())
@@ -153,8 +152,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     public Observable<RxEvent.UniversalDataRsp> deleteFaceByDp(int type, String id, int delMsg) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                long seq = BaseApplication.getAppComponent()
-                        .getCmd().sendUniservalDataSeq(9, DpUtils.pack(new DpMsgDefine.DelVisitorReq(uuid, type, id, delMsg)));
+                long seq = Command.getInstance().sendUniservalDataSeq(9, DpUtils.pack(new DpMsgDefine.DelVisitorReq(uuid, type, id, delMsg)));
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -175,7 +173,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 String serviceKey = OptionsImpl.getServiceKey(vid);
                 String timestamp = String.valueOf((System.currentTimeMillis() / 1000));//这里的时间是秒
                 String seceret = OptionsImpl.getServiceSeceret(vid);
-                String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+                String sessionId = Command.getInstance().getSessionId();
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
                 } else {
@@ -228,7 +226,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 String serviceKey = OptionsImpl.getServiceKey(vid);
                 String timestamp = String.valueOf((System.currentTimeMillis() / 1000));//这里的时间是秒
                 String seceret = OptionsImpl.getServiceSeceret(vid);
-                String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+                String sessionId = Command.getInstance().getSessionId();
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(new IllegalArgumentException("ServiceKey或Seceret为空"));
                 } else {

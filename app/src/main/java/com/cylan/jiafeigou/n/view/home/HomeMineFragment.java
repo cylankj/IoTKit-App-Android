@@ -33,11 +33,11 @@ import com.cylan.helper.ScriptC_tint;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -72,7 +72,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
-import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
 @Badge(parentTag = "NewHomeActivity")
 public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
@@ -121,7 +120,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.lazyLoad();
         presenter.fetchNewInfo();
         boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             GlideApp.with(this)
                     .load(R.drawable.me_bg_top_image)
                     .error(R.drawable.me_bg_top_image)
@@ -143,7 +142,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人头像
      */
     public void portrait() {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -157,7 +156,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     public void friendItem(View view) {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             needStartLoginFragment();
             return;
         }
@@ -201,7 +200,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void settingsItem(View view) {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             needStartLoginFragment();
             return;
         }
@@ -217,7 +216,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void shareItem(View view) {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             needStartLoginFragment();
             return;
         }
@@ -247,13 +246,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public boolean checkOpenLogin() {
-        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
+        return DataSourceManager.getInstance().getAccount().getLoginType() >= 3;
     }
 
     @Override
     public void setUserImageHeadByUrl(String url) {
         AppLogger.w("user_img:" + url);
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         url = isDefaultPhoto(url) && checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : url;
         if (TextUtils.isEmpty(url)) {
             return;//空 不需要加载
@@ -330,7 +329,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     private void portraitBlur(String url) {
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         GlideApp.with(this)
                 .load(url)
                 .error(R.drawable.me_bg_top_image)
@@ -342,7 +341,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     private boolean needStartLoginFragment() {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
+        if (!LoginHelper.isLoginSuccessful() && RxBus.getCacheInstance().hasObservers()) {
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return true;
         }
@@ -406,7 +405,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -423,7 +422,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转到消息界面
      */
     private void jump2MesgFragment() {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -439,7 +438,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人昵称
      */
     private void jump2UserInfo() {
-        if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;

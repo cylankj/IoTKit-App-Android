@@ -5,12 +5,13 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -36,9 +37,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private static final int DAYS = 7;
 
     public DPCamDateQueryTask() {
-        if (sourceManager == null) {
-            sourceManager = BaseApplication.getAppComponent().getSourceManager();
-        }
+
     }
 
     @Override
@@ -60,7 +59,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     return Observable.from(will);
                 })
                 .flatMap(aLong -> {
-                    QueryBuilder<DPEntity> builder = dpHelper.getDpEntityQueryBuilder();
+                    QueryBuilder<DPEntity> builder = BaseDBHelper.getInstance().getDpEntityQueryBuilder();
                     String account = entity.getAccount();
                     if (!TextUtils.isEmpty(account)) {
                         builder.where(DPEntityDao.Properties.Account.eq(account));//设置 dpAccount 约束
@@ -124,7 +123,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     }
                     ArrayList<JFGDPMsg> list = (ArrayList<JFGDPMsg>) MiscUtils.getCamDateVersionList(todayTimeStamp, queryDays);
                     try {
-                        long ret = appCmd.robotGetData(entity.getUuid(), list, 1, true, 0);
+                        long ret = Command.getInstance().robotGetData(entity.getUuid(), list, 1, true, 0);
                         return Observable.just(ret);
                     } catch (JfgException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());

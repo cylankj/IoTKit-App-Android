@@ -57,9 +57,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:drawablePadding="@dimen/y5"
-                    android:drawableTop="@drawable/icon_sn"
+                    android:drawableTop="@drawable/icon_wired"
                     android:gravity="center"
-                    android:text="语言包:有线模式"
+                    android:text="@string/Cable_Mode"
                     android:textColor="@color/color_333333" />
 
                 <TextView

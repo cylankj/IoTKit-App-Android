@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -58,7 +58,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .map(path1 -> {
                     long req = -1;
                     try {
-                        req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path1);
+                        req = Command.getInstance().updateAccountPortrait(path1);
                         AppLogger.d("upLoadUserHeadImag:" + req + ",:" + path1);
                     } catch (JfgException e) {
                         AppLogger.e(e.getMessage());
@@ -86,7 +86,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                         try {
                             jfgAccount.resetFlag();
                             jfgAccount.setPhoto(true);
-                            int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
+                            int req = Command.getInstance().setAccount(jfgAccount);
                             AppLogger.d("sendResetUrl:" + req);
                         } catch (JfgException e) {
                             e.printStackTrace();

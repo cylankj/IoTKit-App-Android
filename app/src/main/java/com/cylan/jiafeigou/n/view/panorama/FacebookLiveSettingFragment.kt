@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
-import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.view.JFGView
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.module.LoginHelper
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
@@ -125,7 +125,7 @@ class FacebookLiveSettingFragment : BaseFragment<BasePresenter<JFGView>>(), UMAu
     @OnClick(R.id.setting_facebook_account_item)
     fun selectAccount() {
         when {
-            DataSourceManager.getInstance().loginType == 7 -> {
+            LoginHelper.loginType == 7 -> {
                 AlertDialog.Builder(context)
                         .setMessage(getString(R.string.LIVE_UNABLE_UNBIND, getString(R.string.app_name), getString(R.string.LIVE_PLATFORM_FACEBOOK)))
                         .setCancelable(false)

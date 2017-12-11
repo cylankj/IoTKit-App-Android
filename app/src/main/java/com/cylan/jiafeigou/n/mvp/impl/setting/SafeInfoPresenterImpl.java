@@ -58,7 +58,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
+                       DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -69,7 +69,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
 
     @Override
     public String getRepeatMode(Context context) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
@@ -114,7 +114,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RobotoGetDataRsp update) -> {
-                    getView().deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
+                    getView().deviceUpdate(DataSourceManager.getInstance().getDevice(uuid));
                     return null;
                 })
                 .subscribe(ret -> {

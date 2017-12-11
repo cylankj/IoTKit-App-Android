@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
@@ -141,14 +140,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onStart() {
         super.onStart();
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_OFF) {
-            finish();
-            Intent intent = new Intent(this, SmartcallActivity.class);
-            intent.putExtra(JConstant.FROM_LOG_OUT, true);
-            intent.putExtra("PSWC", true);
-            startActivity(intent);
-            return;
-        }
         Subscription subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.NeedUpdateGooglePlayService.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action(this), AppLogger::e);

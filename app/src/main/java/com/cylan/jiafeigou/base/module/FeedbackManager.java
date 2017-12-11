@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBeanDao;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -69,7 +70,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
         if (arrayList == null) {
             return;
         }
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return;
         }
@@ -106,16 +107,16 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
 
     @Override
     public Observable<List<FeedBackBean>> getNewList() {
-        boolean isOnline = BaseApplication.getAppComponent().getSourceManager().isOnline();
+        boolean isOnline = DataSourceManager.getInstance().isOnline();
         if (isOnline) {
-            BaseApplication.getAppComponent().getCmd().getFeedbackList();
+            Command.getInstance().getFeedbackList();
         }
         return loadFromLocal();
     }
 
     private Observable<List<FeedBackBean>> loadFromLocal() {
-        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        BaseDBHelper helper = BaseDBHelper.getInstance();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return Observable.just(new ArrayList<>());
         }
@@ -137,20 +138,20 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
 
     @Override
     public Observable<Iterable<FeedBackBean>> saveToCache(List<FeedBackBean> arrayList) {
-        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        BaseDBHelper helper = BaseDBHelper.getInstance();
         return helper.getDaoSession().getFeedBackBeanDao().rx().saveInTx(arrayList)
                 .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Observable<Void> deleteCache(List<FeedBackBean> arrayList) {
-        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        BaseDBHelper helper = BaseDBHelper.getInstance();
         return helper.getDaoSession().getFeedBackBeanDao().rx().deleteInTx(arrayList);
     }
 
     @Override
     public Observable<Void> deleteAllCache() {
-        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        BaseDBHelper helper = BaseDBHelper.getInstance();
         return helper.getDaoSession().getFeedBackBeanDao().rx().deleteAll();
     }
 
@@ -211,7 +212,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
             } else {
                 taskState = TASK_STATE_SUCCESS;
             }
-            BaseApplication.getAppComponent().getCmd().sendFeedback(backBean.getMsgTime() / 1000, backBean.getContent(), hasLog);
+            Command.getInstance().sendFeedback(backBean.getMsgTime() / 1000, backBean.getContent(), hasLog);
         }
 
         private void sendLog() {
@@ -295,7 +296,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                 final String fileName = backBean.getMsgTime() / 1000 + ".zip";
                 final String remoteUrl = "/log/" + Security.getVId() + "/" + account + "/" + fileName;
                 AppLogger.d("upload log:" + remoteUrl);
-                return BaseApplication.getAppComponent().getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
+                return Command.getInstance().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             } catch (JfgException e) {
                 return -1;
             }
@@ -316,7 +317,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                                 AppLogger.d("清理 日志");
                                 AppLogger.permissionGranted = false;
                                 try {
-                                    BaseApplication.getAppComponent().getCmd().enableLog(false, BaseApplication.getAppComponent().getLogPath());
+                                    Command.getInstance().enableLog(false, BaseApplication.getAppComponent().getLogPath());
                                 } catch (Exception e) {
                                 }
                                 for (File file : finalClean.localOldFiles) {
@@ -324,7 +325,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                                 }
                                 AppLogger.permissionGranted = true;
                                 try {
-                                    BaseApplication.getAppComponent().getCmd().enableLog(true, BaseApplication.getAppComponent().getLogPath());
+                                    Command.getInstance().enableLog(true, BaseApplication.getAppComponent().getLogPath());
                                 } catch (Exception e) {
                                 }
                             }

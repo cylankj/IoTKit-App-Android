@@ -2,9 +2,9 @@ package com.cylan.jiafeigou.module.request
 
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.jiafeigou.dp.DpUtils
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.module.message.DPList
 import com.cylan.jiafeigou.module.message.MIDHeader
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -137,7 +137,7 @@ class RobotGetDataRequest(
         @JvmField @field:Index(7) var equal: Boolean = false
 ) : AbstractRequest<RobotGetDataResponse>(20200, caller, callee, seq) {
     override fun execute(): Observable<RobotGetDataResponse> {
-        BaseApplication.getAppComponent().getCmd().robotGetData(caller, null, limit, asc, 0)
+        Command.getInstance().robotGetData(caller, arrayListOf(), limit, asc, 0)
         return Observable.empty()
     }
 }
@@ -158,7 +158,7 @@ class RobotSetDataRequest(
             reqList.map {
                 JFGDPMsg(it.msgId, it.version, it.value)
             }.apply {
-                val seq = BaseApplication.getAppComponent().getCmd().robotSetData(caller, this as ArrayList<JFGDPMsg>?)
+                val seq = Command.getInstance().robotSetData(caller, this as ArrayList<JFGDPMsg>)
                 RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp::class.java)
                         .first { it.seq == seq }
                         .subscribe {
@@ -195,7 +195,7 @@ class RobotForwardDataV3Request(
                 subscriber.onError(it)
             }
             subscriber.add(subscribe)
-            val appCmd = BaseApplication.getAppComponent().getCmd()
+            val appCmd = Command.getInstance()
             val bytes = DpUtils.pack(this@RobotForwardDataV3Request)
             AppLogger.w("正在发送 RobotForwardDataV3Request,原始 bytes 为:${Arrays.toString(bytes)}")
             appCmd.SendForwardData(bytes)

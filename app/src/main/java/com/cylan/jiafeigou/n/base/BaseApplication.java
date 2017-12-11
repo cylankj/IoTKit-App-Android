@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.base;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
@@ -12,14 +11,16 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.MyObjectBox;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
 import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.server.cache.Device;
-import com.cylan.jiafeigou.server.cache.MyObjectBox;
 import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.hook.HookHelper;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.lzy.okgo.OkGo;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +42,6 @@ import dagger.android.HasFragmentInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
-import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -100,13 +101,16 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appInit");
             viewCount = 0;
             //Dagger2 依赖注入
-            boxStore = MyObjectBox.builder().androidContext(this).build();
+            boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
+            DataSourceManager.getInstance();//以后会去掉 datasource
             propertyItemBox = boxStore.boxFor(PropertyItem.class);
             deviceBox = boxStore.boxFor(Device.class);
+            OkGo.init(this);
             initializationManager.initialization();
-            if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Schedulers.io().createWorker().schedule(() -> initializationManager.initAppCmd());
-            }
+
+//            if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                Schedulers.io().createWorker().schedule(() -> initializationManager.initAppCmd());
+//            }
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);
@@ -166,13 +170,14 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
         viewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
-        cancelReportTask();
+
         RxBus.getCacheInstance().post(new RxEvent.ActivityStartEvent());
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         AppLogger.i("life:onActivityResumed " + activity.getClass().getSimpleName());
+        cancelReportTask();
     }
 
     @Override
@@ -196,7 +201,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
      * 退出后台3分钟,将向sdkReport网络状态
      */
     private void prepareReportTask() {
-        if (getAppComponent().getCmd() != null) {
+        if (Command.getInstance() != null) {
             if (reportTask != null) {
                 reportTask.unsubscribe();
             }
@@ -205,10 +210,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
                     .delay(3, TimeUnit.MINUTES)
                     .subscribe(ret -> {
                         AppLogger.d("timeout for report");
-                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+                        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     }, throwable -> {
                         AppLogger.d("timeout for report");
-                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+                        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     });
         }
     }
@@ -217,7 +222,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         if (reportTask != null) {
             reportTask.unsubscribe();
         }
-        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
+        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 
     public static boolean isBackground() {

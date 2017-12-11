@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -80,7 +80,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().resetPassword(account, newPassword, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                        Command.getInstance().resetPassword(account, newPassword, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -110,7 +110,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .delay(200, TimeUnit.MILLISECONDS)
                 .map(cmd -> {
                     try {
-                        long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(phone);
+                        long req = Command.getInstance().checkAccountRegState(phone);
                         Log.d(TAG, "校验手机号码: " + req);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -130,8 +130,8 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .map(ret -> {
                     try {
                         //获取验证码
-                        BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
-                    } catch (JfgException e) {
+                        Command.getInstance().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                    } catch (Exception e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
                     }
@@ -163,7 +163,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        long req = BaseApplication.getAppComponent().getCmd()
+                        long req = Command.getInstance()
                                 .checkAccountRegState(phone);
                         AppLogger.d("校验手机号码: " + req);
                         return Observable.just(req);
@@ -186,7 +186,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .map(ret -> {
                     try {
                         String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
-                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, code, token);
+                        Command.getInstance().verifySMS(phone, code, token);
                         AppLogger.d("验证 短信:" + token);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -229,7 +229,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(mail);
+                        long req = Command.getInstance().checkAccountRegState(mail);
                         AppLogger.d("校验邮箱: " + req);
                     } catch (JfgException e) {
                     }
@@ -249,7 +249,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .observeOn(Schedulers.io())
                 .map(ret -> {
                     try {
-                        int seq = BaseApplication.getAppComponent().getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), mail);
+                        int seq = Command.getInstance().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), mail);
                         AppLogger.d("邮箱 忘记密码 :" + seq);
                     } catch (JfgException e) {
                         e.printStackTrace();

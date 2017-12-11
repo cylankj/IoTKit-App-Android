@@ -8,10 +8,12 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -104,16 +106,16 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
         setWifi.security = security;
         //发送wifi配置
         try {
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+            Command.getInstance().sendLocalMessage(UdpConstant.IP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+            Command.getInstance().sendLocalMessage(UdpConstant.IP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
-            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
             AppLogger.i(TAG + new Gson().toJson(setWifi));
@@ -126,7 +128,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
      * 每次fping都是为了得到最新的mac
      */
     private String getLatestMac() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         String m = device.$(202, "");
         if (JConstant.MAC_REG.matcher(m).find()) {
             AppLogger.i("get mac from local: " + m);

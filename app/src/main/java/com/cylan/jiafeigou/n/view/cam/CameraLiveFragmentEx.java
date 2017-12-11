@@ -38,7 +38,6 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
@@ -354,8 +353,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onResume() {
         super.onResume();
         Log.d("isResumed", "isResumed: " + getUserVisibleHint());
-        camLiveControlLayer.onActivityResume(presenter, BaseApplication.getAppComponent()
-                .getSourceManager().getDevice(uuid()), isUserVisible());
+        camLiveControlLayer.onActivityResume(presenter,DataSourceManager.getInstance().getDevice(uuid()), isUserVisible());
         if (presenter != null) {
             if (!judge() || presenter.getLiveStream().playState == PLAY_STATE_STOP) {
                 return;//还没开始播放
@@ -445,7 +443,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     getString(R.string.CANCEL), null);
         }
         if (msgId == 509) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+            Device device = DataSourceManager.getInstance().getDevice(uuid());
             String _509 = device.$(509, "1");
             if (device.pid == 39 || device.pid == 49) {
                 _509 = "0";
@@ -481,7 +479,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onLiveStarted(int type) {
         enableSensor(true);
         camLiveControlLayer.setKeepScreenOn(true);//需要保持屏幕常亮
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+        Device device = DataSourceManager.getInstance().getDevice(uuid());
         camLiveControlLayer.onLiveStart(presenter, device);
         camLiveControlLayer.setHotSeatListener(mic -> CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrant_MicWithCheck(this),
                 speaker -> CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrant_SpeakerWithCheck(this),
@@ -530,7 +528,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+        Device device = DataSourceManager.getInstance().getDevice(uuid());
         camLiveControlLayer.orientationChanged(presenter, device, this.getResources().getConfiguration().orientation);
     }
 
@@ -575,7 +573,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public boolean judge() {
         //待机模式
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+        Device device = DataSourceManager.getInstance().getDevice(uuid());
         camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
         if (presenter.isDeviceStandby()) {
             return false;
@@ -606,7 +604,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (!isAdded()) {
             return;
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+        Device device = DataSourceManager.getInstance().getDevice(uuid());
         if (getView() != null) {
             getView().postDelayed(() -> {
 //                if (getView() != null) {

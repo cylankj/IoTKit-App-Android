@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -27,7 +28,6 @@ import com.cylan.jiafeigou.misc.ver.IFUUpdate;
 import com.cylan.jiafeigou.misc.ver.NormalFUUpdate;
 import com.cylan.jiafeigou.misc.ver.PanFUUpdate;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
@@ -362,7 +362,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 return;
             }
             //开始升级
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid());
+            Device device = DataSourceManager.getInstance().getDevice(uuid());
             BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
             if (JFGRules.isPan720(device.pid)) {
                 update = new PanFUUpdate(uuid(), getFileNameList());

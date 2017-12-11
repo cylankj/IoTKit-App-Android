@@ -130,7 +130,6 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
             custom_toolbar.setRightEnable(adapter.selections.size > 0)
         }
 
-        BaseApplication.getAppComponent().getCmd().sessionId
         custom_toolbar.setRightEnable(false)
         itemAdapter.withComparator { item1, item2 ->
             val char1 = getPinYinLatter(item1.visitor?.personName)

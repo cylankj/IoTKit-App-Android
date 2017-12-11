@@ -6,7 +6,7 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpUtils
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.rtmp.youtube.util.YouTubeApi
 import com.cylan.jiafeigou.rx.RxBus
@@ -66,7 +66,7 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
     override fun getLiveFromDevice() {
         val subscribe =
                 Observable.create<RobotoGetDataRsp> { subscriber ->
-                    val seq = BaseApplication.getAppComponent().getCmd()
+                    val seq = Command.getInstance()
                             .robotGetData(uuid, arrayListOf(JFGDPMsg(517, 0, byteArrayOf(0))), 1, false, 0)
                     RxBus.getCacheInstance().toObservable(RobotoGetDataRsp::class.java).filter { it.seq == seq }.subscribe {
                         subscriber.onNext(it)

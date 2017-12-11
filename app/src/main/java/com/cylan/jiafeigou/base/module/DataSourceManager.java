@@ -14,30 +14,29 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
@@ -77,15 +76,12 @@ import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
 
 /**
  * @Deprecated 不推荐使用缓存了, 很多问题,每次直接查询服务器就行了
+ * 即将删除
  */
 public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
 
-    private IDBHelper dbHelper;
-    private IPropertyParser propertyParser;
-    private AppCmd appCmd;
     private int storageType;
-    private LogState logState;
     private Map<String, Object> deviceState = new HashMap<>();
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
@@ -103,7 +99,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
     private static DataSourceManager instance;
-    private int loginType;
 
     public static DataSourceManager getInstance() {
         if (instance == null) {
@@ -118,12 +113,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     public DataSourceManager() {
         instance = this;
+        initSubscription();
     }
 
     @Override
     public void initFromDB() {//根据需要初始化
-
-        dbHelper.getActiveAccount()
+        BaseDBHelper.getInstance().getActiveAccount()
                 .observeOn(Schedulers.io())
                 .filter(account -> account != null)
                 .map(dpAccount -> {
@@ -143,7 +138,7 @@ public class DataSourceManager implements JFGSourceManager {
                     AppLogger.w("正在从数据库初始化...");
                     return dpAccount;
                 })
-                .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
+                .flatMap(account -> BaseDBHelper.getInstance().getAccountDevice(account.getAccount()))
                 .flatMap(Observable::from)
                 .map(device -> {
                     DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
@@ -151,12 +146,12 @@ public class DataSourceManager implements JFGSourceManager {
                     rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
                     return device;
                 })
-                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
+                .flatMap(device -> BaseDBHelper.getInstance().queryDPMsgByUuid(device.uuid)
                         .map(ret -> {
                             if (ret != null) {
                                 DataPoint dataPoint;
                                 for (DPEntity dpEntity : ret) {
-                                    dataPoint = propertyParser.parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
+                                    dataPoint = BasePropertyParser.getInstance().parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
                                     dpEntity.setValue(dataPoint, dpEntity.getBytes(), dpEntity.getVersion());
                                     device.updateProperty(dpEntity.getMsgId(), dpEntity);
                                 }
@@ -219,11 +214,6 @@ public class DataSourceManager implements JFGSourceManager {
         return deviceState.get(uuid);
     }
 
-    @Override
-    public int getLoginType() {
-        return loginType;
-    }
-
     private void queryForwardInformation() {
         //这里尝试从 udp 获取设备属性
         try {
@@ -249,8 +239,8 @@ public class DataSourceManager implements JFGSourceManager {
                 AppLogger.w("所有的设备属性为:" + new Gson().toJson(queryParameters));
                 AppLogger.w("正在向设备发送透传消息:" + new Gson().toJson(forward));
             }
-            appCmd.sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, messagePack.write(forward));
-            appCmd.sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, messagePack.write(forward));
+            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, messagePack.write(forward));
+            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, messagePack.write(forward));
         } catch (Exception e) {
             AppLogger.e(e.getMessage());
         }
@@ -284,7 +274,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (device == null) {
             device = new Device();
         }
-        device.setPropertyParser(propertyParser);
         return device;//给一个默认的 device, 防止出现空指针
     }
 
@@ -393,7 +382,7 @@ public class DataSourceManager implements JFGSourceManager {
         }
         try {
             for (int i = 0; i < ListUtils.getSize(mapList); i++) {
-                appCmd.robotGetMultiData(mapList.get(i), 1, false, 0);
+                Command.getInstance().robotGetMultiData(mapList.get(i), 1, false, 0);
             }
             AppLogger.w("多查询");
         } catch (Exception e) {
@@ -406,7 +395,7 @@ public class DataSourceManager implements JFGSourceManager {
         /**
          * 设备分享列表
          */
-        appCmd.getShareList(uuidList);
+        Command.getInstance().getShareList(uuidList);
     }
 
     @Override
@@ -439,7 +428,7 @@ public class DataSourceManager implements JFGSourceManager {
         }
         map.put(uuid, array);
         try {
-            appCmd.robotGetMultiData(map, 1, false, 0);
+            Command.getInstance().robotGetMultiData(map, 1, false, 0);
             AppLogger.w("多查询");
         } catch (Exception e) {
             e.printStackTrace();
@@ -448,7 +437,7 @@ public class DataSourceManager implements JFGSourceManager {
         /**
          * 设备分享列表
          */
-        appCmd.getShareList(uuidList);
+        Command.getInstance().getShareList(uuidList);
         return true;
     }
 
@@ -475,7 +464,7 @@ public class DataSourceManager implements JFGSourceManager {
             }
             map.put(uuid, array);
             try {
-                appCmd.robotGetMultiData(map, 1, false, 0);
+                Command.getInstance().robotGetMultiData(map, 1, false, 0);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -487,8 +476,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Observable<Account> logout() {
         clear();
-        setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
-        return dbHelper.logout();
+        return BaseDBHelper.getInstance().logout();
     }
 
     @Override
@@ -503,21 +491,6 @@ public class DataSourceManager implements JFGSourceManager {
         return History.getHistory().getDateList(uuid);
     }
 
-    @Override
-    public void setDBHelper(IDBHelper dbHelper) {
-        this.dbHelper = dbHelper;
-
-    }
-
-    @Override
-    public void setPropertyParser(IPropertyParser parser) {
-        this.propertyParser = parser;
-    }
-
-    @Override
-    public void setAppCmd(AppCmd appCmd) {
-        this.appCmd = appCmd;
-    }
 
     private Observable<Iterable<String>> unBindDevices(Iterable<String> uuids) {
         return Observable.just(uuids)
@@ -567,7 +540,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (device != null) {
             try {
                 AppLogger.w(String.format(Locale.getDefault(), "uuid:%s,version:%s,asc:%s,count:%s", uuid, version, asc, count));
-                return appCmd.robotGetDataEx(uuid, asc, version, new long[]{505L, 222L, 512L, 401L}, 0);
+                return Command.getInstance().robotGetDataEx(uuid, asc, version, new long[]{505L, 222L, 512L, 401L}, 0);
             } catch (Exception e) {
                 AppLogger.w("bad ,uuid may be null");
                 return -1;
@@ -620,7 +593,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = device.getQueryParams();
             try {
-                appCmd.robotGetData(uuid, parameters, 1, false, 0);
+                Command.getInstance().robotGetData(uuid, parameters, 1, false, 0);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -640,7 +613,7 @@ public class DataSourceManager implements JFGSourceManager {
                 parameters.add(msg);
             }
             try {
-                appCmd.robotGetData(uuid, parameters, 1, false, 0);
+                Command.getInstance().robotGetData(uuid, parameters, 1, false, 0);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -725,18 +698,6 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void setLoginState(LogState loginState) {
-        PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
-        if (loginState.state == LogState.STATE_NONE) {
-            setJfgAccount(null);
-        } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
-        } else {
-
-        }
-        AppLogger.w("logState update: " + loginState.state);
-    }
-
-    @Override
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
         if (this.account != null) {
@@ -747,7 +708,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public boolean updateDevice(Device device) {
-        dbHelper.updateDevice(device).subscribe(ret -> {
+        BaseDBHelper.getInstance().updateDevice(device).subscribe(ret -> {
         }, AppLogger::e);
         return true;
     }
@@ -784,7 +745,7 @@ public class DataSourceManager implements JFGSourceManager {
 
                         }
                         List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
-                        BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
+                        BaseDPTaskDispatcher.getInstance().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(AppLogger::e)
                                 .subscribe(ret -> {
@@ -815,7 +776,7 @@ public class DataSourceManager implements JFGSourceManager {
                         }
                         try {
                             List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
-                            BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
+                            BaseDPTaskDispatcher.getInstance().perform(multiUpdateList)
                                     .subscribe(ret -> {
                                         for (int i : msgIdList) {
                                             device.updateProperty(i, null);
@@ -834,16 +795,6 @@ public class DataSourceManager implements JFGSourceManager {
         return false;
     }
 
-    @Override
-    public int getLoginState() {
-        JFGAccount account = this.getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) {
-            return 0;//无账号
-        } else {
-            return PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, 0);
-        }
-    }
-
 
     @Override
     public int getStorageType() {
@@ -860,16 +811,11 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> dbHelper.updateAccount(event.account)
+                .flatMap(event -> BaseDBHelper.getInstance().updateAccount(event.account)
                         .map(dpAccount -> {
                             this.account = dpAccount;
                             this.account.setOnline(true);
                             setJfgAccount(event.account);
-                            if (jfgAccount != null) {
-                                setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
-                            } else {
-                                AppLogger.w("jfgAccount is null");
-                            }
                             RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
                             accountArrived.jfgAccount = event.account;
                             if (!BaseApplication.isBackground()) {
@@ -916,7 +862,7 @@ public class DataSourceManager implements JFGSourceManager {
                     }
 
                     AppLogger.w("已删除的设备数:" + result.size());
-                    return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
+                    return BaseDBHelper.getInstance().updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
                     try {
@@ -985,7 +931,7 @@ public class DataSourceManager implements JFGSourceManager {
                         interceptors.handleInterception(event.getDataRsp);
                         dpSeqRspInterceptor.remove(seq);
                     }
-                    return dbHelper.saveDPByteInTx(event.getDataRsp).map(dpEntities -> event);
+                    return BaseDBHelper.getInstance().saveDPByteInTx(event.getDataRsp).map(dpEntities -> event);
                 })
                 .retry((i, e) -> true)
                 .subscribe(new Subscriber<RxEvent.SerializeCacheGetDataEvent>() {
@@ -1017,7 +963,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
+                .flatMap(event -> BaseDBHelper.getInstance().saveDPByteInTx(event.s, event.arrayList)
                         .map(dpEntities -> {
                             ArrayList<Long> updateIdList = new ArrayList<>();
                             for (DPEntity entity : dpEntities) {
@@ -1100,13 +1046,13 @@ public class DataSourceManager implements JFGSourceManager {
                     try {
                         List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
-                        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+                        BaseDPTaskDispatcher.getInstance().perform(idpEntities)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
                                     if (getAccount() == null || !getJFGAccount().isEnablePush()) {
                                         return;
                                     }
-                                    Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                                    Device dd = DataSourceManager.getInstance().getDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
                                     INotify.NotifyBean bean = new INotify.NotifyBean();
@@ -1128,7 +1074,7 @@ public class DataSourceManager implements JFGSourceManager {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 } else if (msgId == 401) {
-                    DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
+                    DpMsgDefine.DPBellCallRecord dataPoint = BasePropertyParser.getInstance().parser((int) msgId, msg.packValue, msg.version);
                     if (dataPoint.isOK == 1) {
                         return; //已接听了,不需要发送通知了
                     }
@@ -1140,7 +1086,7 @@ public class DataSourceManager implements JFGSourceManager {
                         List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
-                        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+                        BaseDPTaskDispatcher.getInstance().perform(idpEntities)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
                                     if (getAccount() == null || !getJFGAccount().isEnablePush()) {
@@ -1178,7 +1124,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void initAccount() {
-        dbHelper.getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
+        BaseDBHelper.getInstance().getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -1208,12 +1154,6 @@ public class DataSourceManager implements JFGSourceManager {
                 //可能是本地的
                 .filter(ret -> isOnline())
                 .subscribe(ret -> {
-                    try {
-                        AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
-                        loginType = signType == null ? 0 : signType.type;
-                    } catch (Exception e) {
-
-                    }
                 }, AppLogger::e);
     }
 

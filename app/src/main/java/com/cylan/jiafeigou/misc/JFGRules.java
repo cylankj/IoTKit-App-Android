@@ -15,7 +15,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -154,17 +154,17 @@ public class JFGRules {
      * @return
      */
     public static boolean showSoftAp(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "AP", share);
+        return PropertiesLoader.getInstance().hasProperty(pid, "AP", share);
     }
 
     public static boolean isPanoramaCamera(int pid) {
-        final String p = BaseApplication.getAppComponent().getProductProperty().property(pid,
+        final String p = PropertiesLoader.getInstance().property(pid,
                 "DEVICE");
         return p != null && p.contains("DOG-5W");
     }
 
     public static boolean showNTSCVLayout(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "ntsc", share);
+        return PropertiesLoader.getInstance().hasProperty(pid, "ntsc", share);
     }
 
 
@@ -199,7 +199,7 @@ public class JFGRules {
 
 
     public static boolean isRS(int pid) {
-        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid, "value");
+        final String value = PropertiesLoader.getInstance().property(pid, "value");
         return !TextUtils.isEmpty(value) && value.contains("RS");//不是下划线,直接去掉
     }
 
@@ -208,11 +208,11 @@ public class JFGRules {
      * @return
      */
     public static boolean isCamera(int pid) {
-        return BaseApplication.getAppComponent().getProductProperty().isSerial("cam", pid);
+        return PropertiesLoader.getInstance().isSerial("cam", pid);
     }
 
     public static boolean isBell(int pid) {
-        return BaseApplication.getAppComponent().getProductProperty().isSerial("bell", pid);
+        return PropertiesLoader.getInstance().isSerial("bell", pid);
     }
 
     /**
@@ -234,7 +234,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSdcard(int pid) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "SD");
     }
 
@@ -242,7 +242,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSdcard(Device device) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(device.pid,
+        return PropertiesLoader.getInstance().hasProperty(device.pid,
                 "SD") && !JFGRules.isShareDevice(device);
     }
 
@@ -250,7 +250,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSight(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "VIEWANGLE", share);
     }
 
@@ -258,7 +258,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showRotate(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "hangup", share);
     }
 
@@ -278,7 +278,7 @@ public class JFGRules {
                         for (int i = 0; i < 3; i++) {
                             JfgUdpMsg.UdpSetApReq req = new JfgUdpMsg.UdpSetApReq(uuid, finalMac);
                             req.model = s;
-                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                            Command.getInstance().sendLocalMessage(UdpConstant.IP,
                                     UdpConstant.PORT, req.toBytes());
                         }
                         AppLogger.d("send UdpSetApReq :" + uuid + "," + finalMac);
@@ -316,7 +316,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showStandbyItem(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "standby", share);
     }
 
@@ -324,7 +324,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSdHd(int pid, String version, boolean share) {
-        String sdContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
+        String sdContent = PropertiesLoader.getInstance().property(pid, "SD/HD");
         if (TextUtils.isEmpty(sdContent) || TextUtils.equals(sdContent, "0")) {
             return false;
         }
@@ -347,7 +347,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showBattery(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "battery", share);
     }
 
@@ -359,7 +359,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean popPowerDrainOut(int pid) {
-        String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
+        String pContent = PropertiesLoader.getInstance().property(pid, "POWER");
         if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) {
             return false;
         }
@@ -378,7 +378,7 @@ public class JFGRules {
      */
 
     public static int popPowerDrainOutLevel(int pid) {
-        String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
+        String pContent = PropertiesLoader.getInstance().property(pid, "POWER");
         if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) {
             return -1;
         }
@@ -407,7 +407,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showLedIndicator(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "led", share);
     }
 
@@ -421,7 +421,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showIp(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "IP", share);
     }
 
@@ -429,12 +429,12 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showWiredMode(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "wired", share);
     }
 
     public static boolean hasProperty(int pid, final String tag) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 tag, false);
     }
 
@@ -442,7 +442,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showEnableAp(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "enableAP", share);
     }
 
@@ -450,7 +450,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showFirmware(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "fu", share);
     }
 
@@ -458,7 +458,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSoftWare(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "softVersion", share);
     }
 
@@ -466,7 +466,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showTimeZone(int pid, boolean share) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+        return PropertiesLoader.getInstance().hasProperty(pid,
                 "tz", share);
     }
 
@@ -485,7 +485,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean hasProtection(int pid, boolean share) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         return productProperty.hasProperty(pid, "PROTECTION", false);
     }
 
@@ -493,7 +493,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean hasHistory(int pid, boolean share) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         return productProperty.hasProperty(pid, "AUTORECORD", share);
     }
 
@@ -530,22 +530,22 @@ public class JFGRules {
     }
 
     public static int getOSType(String content) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         return productProperty.getOSType(content);
     }
 
     public static boolean hasWarmSound(int pid) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         return productProperty.hasProperty(pid, "WARMSOUND");
     }
 
     public static boolean hasSDFeature(int pid) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         return productProperty.hasProperty(pid, "SD");
     }
 
     public static boolean isNeedTankView(int pid) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         String property = productProperty.property(pid, "VIEW");
         return !TextUtils.isEmpty(property) && property.contains("切掉上下部分");
     }
@@ -564,13 +564,13 @@ public class JFGRules {
     }
 
     public static boolean isFaceFragment(int pid) {
-        boolean hasFaceFeature = (pid == 83 || pid == 84);
+        boolean hasFaceFeature = (pid == 83 || pid == 84 || pid == 92);
         if (!hasFaceFeature) {
             PropertiesLoader loader = PropertiesLoader.getInstance();
             String os = loader.property(pid, "OS");
             try {
                 Integer intOS = Integer.valueOf(os);
-                hasFaceFeature = (intOS == 83 || intOS == 84);
+                hasFaceFeature = (intOS == 83 || intOS == 84 || intOS == 92);
             } catch (Exception e) {
             }
         }
@@ -584,7 +584,15 @@ public class JFGRules {
             String os = loader.property(pid, "OS");
             try {
                 Integer intOS = Integer.valueOf(os);
-                hasMicFeature = intOS != 84;
+                switch (intOS) {
+                    case 84:
+                    case 92:
+                        hasMicFeature = false;
+                        break;
+                    default:
+                        hasMicFeature = true;
+                }
+//                hasMicFeature = intOS != 84;
             } catch (Exception e) {
             }
         }
@@ -673,7 +681,7 @@ public class JFGRules {
         if (TextUtils.isEmpty(uuid)) {
             return false;
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         return device != null && device.available() && !TextUtils.isEmpty(device.shareAccount);
     }
 
@@ -690,7 +698,7 @@ public class JFGRules {
     }
 
     public static boolean isRoundRadio(int pid) {
-        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        IProperty property = PropertiesLoader.getInstance();
         String view = property.property(pid, "VIEW");
         return !TextUtils.isEmpty(view) && (view.contains("圆形") || view.contains("鱼缸"));
     }
@@ -729,20 +737,17 @@ public class JFGRules {
      * @return
      */
     public static boolean isConsumerCam(int pid) {
-        final String value = BaseApplication.getAppComponent()
-                .getProductProperty().property(pid, "value");
+        final String value = PropertiesLoader.getInstance().property(pid, "value");
         return !TextUtils.isEmpty(value) && value.startsWith("RS_CAM");//不是下划线,直接去掉
     }
 
     public static boolean isCloudCam(int pid) {
-        final String value = BaseApplication.getAppComponent()
-                .getProductProperty().property(pid, "value");
+        final String value = PropertiesLoader.getInstance().property(pid, "value");
         return !TextUtils.isEmpty(value) && value.startsWith("house");//不是下划线,直接去掉
     }
 
     public static boolean isCatEeyBell(int pid) {
-        final String value = BaseApplication.getAppComponent()
-                .getProductProperty().property(pid, "product");
+        final String value = PropertiesLoader.getInstance().property(pid, "product");
         return !TextUtils.isEmpty(value) && value.contains("猫眼");//不是下划线,直接去掉
     }
 
@@ -753,8 +758,7 @@ public class JFGRules {
      * @return
      */
     public static boolean isNoPowerBell(int pid) {
-        final String value = BaseApplication.getAppComponent()
-                .getProductProperty().property(pid, "product");
+        final String value = PropertiesLoader.getInstance().property(pid, "product");
         return !TextUtils.isEmpty(value) && value.contains("有源");//不是下划线,直接去掉
     }
 

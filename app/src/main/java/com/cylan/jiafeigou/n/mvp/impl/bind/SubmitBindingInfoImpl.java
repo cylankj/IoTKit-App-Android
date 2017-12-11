@@ -17,33 +17,28 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindHelper;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
+import rx.Emitter;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
-import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
-import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_FINAL_FLOW;
 import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_LOGIN_FLOW;
 import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_RECOVERY_FLOW;
 
@@ -53,7 +48,20 @@ import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_RECOVERY_FLOW;
 
 public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoContract.View>
         implements SubmitBindingInfoContract.Presenter {
-    private BindResultTask task;
+    private SimulatePercent simulatePercent;
+    private SimulatePercent.OnAction onAction = new SimulatePercent.OnAction() {
+        @Override
+        public void actionDone() {
+
+        }
+
+        @Override
+        public void actionPercent(int percent) {
+            if (mView != null) {
+                mView.onCounting(percent);
+            }
+        }
+    };
 
     public SubmitBindingInfoImpl(SubmitBindingInfoContract.View view, String uuid) {
         super(view);
@@ -71,252 +79,148 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         int net = NetUtils.getJfgNetType();
         if (net != 0) {
             AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
-            BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
-            BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
+            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
             PerformanceUtils.stopTrace(TAG_NET_RECOVERY_FLOW);
             PerformanceUtils.startTrace(TAG_NET_LOGIN_FLOW);
         }
     }
 
-    @Override
-    public void clean() {
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
-        if (task != null) {
-            task.clean();
-        }
+
+    /**
+     * 绑定成功需要设置一些信息
+     */
+    private void finalSetSome() {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            //303,501
+            long seq;
+            try {
+                DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
+                timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
+                timeZone.timezone = TimeZone.getDefault().getID();
+                ArrayList<JFGDPMsg> list = new ArrayList<>();
+                JFGDPMsg _timeZone = new JFGDPMsg(214, System.currentTimeMillis());
+                _timeZone.packValue = timeZone.toBytes();
+                boolean isRs = JFGRules.isRS(device.pid);
+                if (isRs) {
+                    JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
+                    _303.packValue = DpUtils.pack(2);
+                    JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
+                    _501.packValue = DpUtils.pack(false);
+                    list.add(_303);
+                    list.add(_501);
+                }
+                if (device.pid == 42) {//康凯斯门铃
+                    JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
+                    _501.packValue = DpUtils.pack(false);
+                    list.add(_501);
+                }
+                list.add(_timeZone);
+                AppLogger.d("设置睿视属性?" + isRs);
+                seq = Command.getInstance().robotSetData(uuid, list);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                e.printStackTrace();
+                AppLogger.e(e);
+                subscriber.onError(e);
+            }
+        }).subscribe(ret -> {
+        }, e -> {
+            e.printStackTrace();
+            AppLogger.e(e);
+        });
+        addDestroySubscription(subscribe);
     }
 
     @Override
-    public void start() {
-        super.start();
-        if (task == null) {
-
-            task = new BindResultTask(uuid, mView, this);
-            task.call(uuid);
-        } else {
-            if (task.getBindState() == BIND_TIME_OUT) {
-                //超时
-            } else if (task.getBindState() == BIND_SUC) {
-                //失败
-            } else {
-                task.setListener(mView);
+    public void sendBindRequest() {
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
+        String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
+        UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+        AppLogger.d("设备画像为:" + new Gson().toJson(portrait));
+        if (portrait == null || account == null || TextUtils.isEmpty(portrait.uuid)) {
+            AppLogger.w("当前情况下无法进行绑定!!!!!");
+            if (mView != null) {
+                mView.onBindFailed();
             }
-        }
-    }
-
-
-    private static final class BindResultTask implements Action1<String>, SimulatePercent.OnAction {
-        private WeakReference<SubmitBindingInfoContract.View> viewWeakReference;
-        private WeakReference<SubmitBindingInfoContract.Presenter> presenterWeakReference;
-        private SimulatePercent simulatePercent;
-        private int bindState;
-        private Subscription subscription;
-        private Subscription subscriptionBindResult;
-        private static final long TIME_OUT = 90 * 1000;
-        private String uuid;
-        private UdpConstant.UdpDevicePortrait portrait;
-        //        private boolean sendBindInfo;
-        private static final int INTERVAL = 3;
-
-        public void clean() {
-            if (subscriptionBindResult != null) {
-                subscriptionBindResult.unsubscribe();
-            }
-            if (subscription != null) {
-                subscription.unsubscribe();
-            }
+            return;
         }
 
-        public int getBindState() {
-            return bindState;
-        }
+        Subscription subscribe = BindHelper.sendBindConfig(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag)
+                .doOnSubscribe(() -> {
+                    if (simulatePercent != null) {
+                        simulatePercent.stop();
+                        simulatePercent.setOnAction(null);
+                    }
+                    simulatePercent = new SimulatePercent();
+                    simulatePercent.setOnAction(onAction);
+                    simulatePercent.start();
+                })
+                .flatMap(success -> Observable.fromEmitter((Action1<Emitter<Boolean>>) emitter -> {
+                    if (success) {
+                        finalSetSome();
+                        simulatePercent.boost(() -> {
+                            emitter.onNext(true);
+                            emitter.onCompleted();
+                        });
+                    } else {
+                        emitter.onNext(false);
+                        emitter.onCompleted();
+                    }
+                }, Emitter.BackpressureMode.BUFFER))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate(() -> {
+                    if (simulatePercent != null) {
+                        simulatePercent.stop();
+                        simulatePercent.setOnAction(null);
+                    }
+                    simulatePercent = null;
+                })
+                .subscribe(success -> {
+                    //绑定成功了
+                    if (success) {
+                        if (mView != null) {
+                            mView.onBindSuccess();
+                        }
+                    } else {
+                        if (mView != null) {
+                            mView.onBindTimeout();
+                        }
+                    }
+                }, error -> {
+                    error.printStackTrace();
+                    AppLogger.e(error);
+                    if (error instanceof RxEvent.HelperBreaker) {
+                        RxEvent.BindDeviceEvent bindDeviceEvent = (RxEvent.BindDeviceEvent) ((RxEvent.HelperBreaker) error).object;
 
-        public BindResultTask(String uuid, SubmitBindingInfoContract.View v, SubmitBindingInfoContract.Presenter p) {
-            this.uuid = uuid;
-            this.viewWeakReference = new WeakReference<>(v);
-            this.presenterWeakReference = new WeakReference<>(p);
-            simulatePercent = new SimulatePercent();
-            simulatePercent.setOnAction(this);
-            simulatePercent.start();
-        }
-
-        public void setListener(SubmitBindingInfoContract.View view) {
-            this.viewWeakReference = new WeakReference<>(view);
-        }
-
-        @Override
-        public void call(String s) {
-            clean();
-            subscription = submitBindDeviceSub();
-            subscriptionBindResult = bindResultSub();
-        }
-
-
-        /**
-         * 绑定结果
-         *
-         * @return
-         */
-        private Subscription bindResultSub() {
-            return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
-                    .filter(ret -> viewWeakReference.get() != null)
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
-                        switch (ret.bindResult) {
-                            case JError.ErrorOK: {
-                                //绑定成功了
-                                viewWeakReference.get().onBindSuccess();
-                            }
-                            break;
+                        switch (bindDeviceEvent.bindResult) {
                             case BindUtils.BIND_FAILED: {
-                                viewWeakReference.get().onBindFailed();
+                                if (mView != null) {
+                                    mView.onBindFailed();
+                                }
                             }
                             break;
                             case JError.ErrorCIDBinded: {
-                                viewWeakReference.get().onRebindRequired(portrait, ret.reason);
+                                if (mView != null) {
+                                    mView.onRebindRequired(portrait, bindDeviceEvent.reason);
+                                }
                             }
                             break;
                             case BindUtils.BIND_NULL: {
-                                viewWeakReference.get().onBindCidNotExist();
+                                if (mView != null) {
+                                    mView.onBindCidNotExist();
+                                }
                             }
                             break;
                         }
-                        if (subscription != null) {
-                            subscription.unsubscribe();
+                    } else if (error instanceof IllegalArgumentException) {
+                        if (mView != null) {
+                            mView.onBindFailed();
                         }
-//                        }
-                    }, AppLogger::e);
-        }
-
-
-        private Subscription submitBindDeviceSub() {
-            JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-            String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-            portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-            if (portrait == null || account == null || TextUtils.isEmpty(portrait.uuid)) {
-                AppLogger.w("当前情况下无法进行绑定!!!!!");
-                return Observable.empty().subscribe();
-            }
-            return Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.io())
-                    .flatMap(aLong -> {
-                        if (INTERVAL * aLong * 1000 >= TIME_OUT) {
-                            throw new RxEvent.HelperBreaker("timeout");
-                        }
-                        try {
-                            AppLogger.d("设备画像为:" + new Gson().toJson(portrait));
-                            int ret = BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                            AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait) + "," + ret);
-                            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.uuid);
-                            if (device != null && device.available()) {
-                                //没有 Device 发送查询请求有什么用?
-                                ArrayList<JFGDPMsg> params = new ArrayList<>(1);
-                                JFGDPMsg msg = new JFGDPMsg(201, 0);
-                                params.add(msg);
-                                BaseApplication.getAppComponent().getCmd().robotGetData(portrait.uuid, params, 1, false, 0);
-
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.uuid);
-                        DpMsgDefine.DPNet net;
-                        net = device.$(201, new DpMsgDefine.DPNet());
-                        AppLogger.d("正在查询设备网络状态:" + new Gson().toJson(net));
-                        if (JFGRules.isDeviceOnline(net)) {
-                            //成功了
-                            // TODO: 2017/8/17 绑定成功了同步所有的属性
-                            AppLogger.d("绑定成功了!" + new Gson().toJson(portrait));
-                            DataSourceManager.getInstance().syncAllProperty(device.uuid);
-                            bindState = BIND_SUC;
-                            throw new RxEvent.HelperBreaker("good");
-                        }
-                        return null;
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                    }, throwable -> {
-                        if (throwable instanceof RxEvent.HelperBreaker) {
-                            if (TextUtils.equals(throwable.getMessage(), "good")) {
-                                AppLogger.d("绑定成功,网络状态为:");
-                                finalSetSome();
-                                simulatePercent.boost();
-                                PerformanceUtils.stopTrace(TAG_NET_FINAL_FLOW);
-                            } else {
-                                //timeout失败
-                                bindState = BIND_TIME_OUT;
-                                simulatePercent.stop();
-                                if (viewWeakReference.get() != null) {
-                                    viewWeakReference.get().onBindTimeout();
-                                }
-                                AppLogger.e("绑定设备超时");
-                            }
-                        }
-                    });
-        }
-
-        /**
-         * 绑定成功需要设置一些信息
-         */
-        private void finalSetSome() {
-            Observable.just("go")
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(s -> {
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                        //303,501
-                        try {
-                            DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
-                            timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
-                            timeZone.timezone = TimeZone.getDefault().getID();
-                            ArrayList<JFGDPMsg> list = new ArrayList<>();
-                            JFGDPMsg _timeZone = new JFGDPMsg(214, System.currentTimeMillis());
-                            _timeZone.packValue = timeZone.toBytes();
-                            boolean isRs = JFGRules.isRS(device.pid);
-                            if (isRs) {
-                                JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
-                                _303.packValue = DpUtils.pack(2);
-                                JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
-                                _501.packValue = DpUtils.pack(false);
-                                list.add(_303);
-                                list.add(_501);
-                            }
-                            if (device.pid == 42) {//康凯斯门铃
-                                JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
-                                _501.packValue = DpUtils.pack(false);
-                                list.add(_501);
-                            }
-                            list.add(_timeZone);
-                            AppLogger.d("设置睿视属性?" + isRs);
-                            BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }, AppLogger::e);
-        }
-
-        @Override
-        public void actionDone() {
-            if (viewWeakReference.get() != null) {
-                switch (bindState) {
-                    case BIND_SUC: {
-                        viewWeakReference.get().onBindSuccess();
                     }
-                    break;
-                    case BIND_TIME_OUT: {
-                        viewWeakReference.get().onBindTimeout();
-                    }
-                    break;
-                }
-
-            }
-        }
-
-        @Override
-        public void actionPercent(int percent) {
-            if (viewWeakReference.get() != null) {
-                viewWeakReference.get().onCounting(percent);
-            }
-        }
+                });
+        addDestroySubscription(subscribe);
     }
-
 }

@@ -24,10 +24,13 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.LinkManager;
+import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
@@ -265,7 +268,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             //刷新账号
             //需要等动画完成,否则 homeMine 会有闪烁
             JfgAppCmd.getInstance().getAccount();
-        },1000);
+        }, 1000);
     }
 
     private void initSwitchBtnListener() {
@@ -295,7 +298,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         svVibrateContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             presenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
         });
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         //已经关注公众号
         boolean BizProfile = jfgAccount != null && jfgAccount.getWxPush() == 1 && !TextUtils.isEmpty(jfgAccount.getWXOpenID());
         svHomeSettingWechat.setChecked(BizProfile);
@@ -306,14 +309,14 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         //开关 微信推送通知
         svHomeSettingWechat.setVisibility(getResources().getBoolean(R.bool.show_wechat_entrance) ? View.VISIBLE : View.GONE);
         svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            final JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            final JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
             if (isChecked) {
                 if (NetUtils.getJfgNetType() == 0) {
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
                 //第三方账号需要绑定手机/邮箱
-                int type = BaseApplication.getAppComponent().getSourceManager().getLoginType();
+                int type = LoginHelper.getLoginType();
                 if (type >= 3 && account != null) {
                     //字符串相加
                     if (TextUtils.isEmpty(account.getEmail() + account.getPhone())) {
@@ -327,7 +330,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 if (account != null && !TextUtils.isEmpty(account.getWXOpenID())) {
                     try {
                         account.setWXPush(1);
-                        BaseApplication.getAppComponent().getCmd().setAccount(account);
+                        Command.getInstance().setAccount(account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -343,7 +346,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             svHomeSettingWechat.setChecked(false);
                             try {
                                 account.setWXPush(0);
-                                BaseApplication.getAppComponent().getCmd().setAccount(account);
+                                Command.getInstance().setAccount(account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
@@ -380,7 +383,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
                     getString(R.string.Tap2_Index_Open_NoDeviceOption),
                     (DialogInterface dialog, int which) -> {
-                        int i = BaseApplication.getAppComponent().getSourceManager().getLoginType();
+                        int i = LoginHelper.getLoginType();
                         if (i == 3 || i == 4) {
                             int language = JFGRules.getLanguageType(ContextUtils.getContext());
                             if (language == LANGUAGE_TYPE_SIMPLE_CHINESE) {
@@ -455,7 +458,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
         Log.d("getOpenID", "getOpenID: " + new Gson().toJson(map));
-//        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+//        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
 //        account.
         // {"unionid":"opmVqv7ftlm_34oAF2Q231o8zaRM","screen_name":"test","city":"","accessToken":"1oY6MJhWyiCpeqfxQht8FX8PcO1iG1N0q3ijat4Xp0fAzUhY8YX5pPukTUGJ4v9WRuI4DUhDlQJJaBOrEx3uLZjZlYcPiGGRqXLemmTui1U","refreshToken":"Bewb12Zh-kL6S5knI54clzIib2nYUw-JX_xXyGvPEq2N_32CuIwQgJ-VvD_hqWwXlT2b_xzkT0a8rQb_oxtybtdjXXsUavCMiTyzKY1SnnI","gender":"0","province":"","openid":"ol0PtwnLAXeret_wLZNxGihc546I","profile_image_url":"http://wx.qlogo.cn/mmopen/iatA0oGrrscZV14ibGqUDlKEJ82XxVEhYefw0vepGricPDWEJw1aWdwNMVgKft1jwiaKzhuicOicABxXvDkMLiaOwOflwYicQIicsiaZax/0","country":"中国","access_token":"1oY6MJhWyiCpeqfxQht8FX8PcO1iG1N0q3ijat4Xp0fAzUhY8YX5pPukTUGJ4v9WRuI4DUhDlQJJaBOrEx3uLZjZlYcPiGGRqXLemmTui1U","iconurl":"http://wx.qlogo.cn/mmopen/iatA0oGrrscZV14ibGqUDlKEJ82XxVEhYefw0vepGricPDWEJw1aWdwNMVgKft1jwiaKzhuicOicABxXvDkMLiaOwOflwYicQIicsiaZax/0","name":"test","uid":"opmVqv7ftlm_34oAF2Q231o8zaRM","expiration":"1496930699855","language":"zh_CN","expires_in":"1496930699855"}
         ToastUtil.showToast("成功了." + map.get("openid"));
@@ -502,7 +505,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         AlertDialogManager.getInstance().showDialog(getActivity(),
                 "showLogOutDialog", getString(R.string.LOGOUT_INFO),
                 getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
-                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
                     if (jfgAccount != null) {
                         presenter.logOut(jfgAccount.getAccount(), getActivity());
                         //进入登陆页 login page

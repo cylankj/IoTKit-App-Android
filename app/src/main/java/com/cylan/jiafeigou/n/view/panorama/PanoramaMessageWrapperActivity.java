@@ -3,9 +3,9 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.os.Bundle;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -51,7 +51,7 @@ public class PanoramaMessageWrapperActivity extends BaseActivity {
 
     private void removeHint() {
         try {
-            BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
+            DataSourceManager.getInstance().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -10,8 +10,10 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -80,15 +82,15 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap(cmd -> {
-                    BaseApplication.getAppComponent().getCmd().getFriendRequestList();
+                    Command.getInstance().getFriendRequestList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class).first();
                 })
                 .flatMap(ret -> {
-                    BaseApplication.getAppComponent().getCmd().getFriendList();
+                    Command.getInstance().getFriendList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class).first();
                 })
                 .map(ret -> {
-                    JFGSourceManager manager = BaseApplication.getAppComponent().getSourceManager();
+                    JFGSourceManager manager = DataSourceManager.getInstance();
                     ArrayList<JFGFriendRequest> friendsReqList = manager.getFriendsReqList();
                     ArrayList<JFGFriendAccount> friendsList = manager.getFriendsList();
                     FriendContextItem contextItem;
@@ -130,7 +132,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().delAddFriendMsg(item.friendRequest.account);
+                        Command.getInstance().delAddFriendMsg(item.friendRequest.account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
@@ -142,9 +144,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             if (ret.jfgResult.code == JError.ErrorOK) {
                                 // TODO: 2017/6/29 删除数据库中的数据
                                 AppLogger.d("需要更新缓存");
-                                ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                                ArrayList<JFGFriendAccount> friendsList = DataSourceManager.getInstance().getFriendsList();
                                 friendsList.remove(item.friendAccount);
-                                ArrayList<JFGFriendRequest> friendsReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                                ArrayList<JFGFriendRequest> friendsReqList = DataSourceManager.getInstance().getFriendsReqList();
                                 TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                                 TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
                                 node.setCacheData(new CacheObject().setCount(friendsReqList == null ? 0 : ListUtils.getSize(friendsReqList)).setObject(friendsList));
@@ -178,7 +180,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().consentAddFriend(item.friendRequest.account);
+                        Command.getInstance().consentAddFriend(item.friendRequest.account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());

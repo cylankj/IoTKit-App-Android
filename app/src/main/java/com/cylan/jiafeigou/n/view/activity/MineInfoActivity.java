@@ -19,13 +19,13 @@ import android.view.View;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineInfoBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
@@ -87,7 +87,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
     private void initInformationLayout() {
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        Account account = DataSourceManager.getInstance().getAccount();
         if (account != null && account.isAvailable()) {
             if (account.getLoginType() >= 3) {
                 //openlogin
@@ -238,7 +238,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         Bundle bundle = new Bundle();
         MineSetUserAliasFragment setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
         setUserNameFragment.setCallBack(t -> {
-            initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getAccount());
+            initPersonalInformation(DataSourceManager.getInstance().getAccount());
         });
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), setUserNameFragment,
                 android.R.id.content);
@@ -249,7 +249,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
      */
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         if (jfgAccount != null) {
             bundle.putString("imageUrl", isDefaultPhoto(jfgAccount.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl());
         }
@@ -265,7 +265,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
     @Override
     public void initPersonalInformation(Account account) {
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         String url = null;
         if (jfgAccount != null) {
             url = isDefaultPhoto(jfgAccount.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl();

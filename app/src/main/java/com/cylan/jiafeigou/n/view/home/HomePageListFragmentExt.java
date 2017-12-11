@@ -32,7 +32,8 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -40,7 +41,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
@@ -67,8 +68,6 @@ import com.google.gson.Gson;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
-import com.mikepenz.fastadapter.commons.utils.DiffCallbackImpl;
-import com.mikepenz.fastadapter.commons.utils.FastAdapterDiffUtil;
 
 import java.io.File;
 import java.util.List;
@@ -143,7 +142,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //            if (isVisibleToUser && isResumed() && getActivity() != null) {
 //            }        appbar.addOnOffsetChangedListener(this);
             srLayoutMainContentHolder.setOnRefreshListener(this);
-            onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+            onItemsRsp(DataSourceManager.getInstance().getAllDevice());
             updateAccount.run();
             presenter.fetchDeviceList(false);
         } else {
@@ -154,7 +153,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private void need2ShowUseCase() {
         boolean showUserCase = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
         boolean showTipAnimation = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_ANIMATION, true);
-//        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+//        JFGSourceManager sourceManager = DataSourceManager.getInstance();
 //        Account account = sourceManager.getAccount();
 //        if (account != null && account.isAvailable()) {
         if (showUserCase) {
@@ -242,7 +241,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
                     AppLogger.w("IndexOutOfBoundsException");
-                    rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
+//                    rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
                 }
             }
         });
@@ -250,7 +249,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         FastAdapter<HomeItem> itemFastAdapter = new FastAdapter<>();
         itemFastAdapter.withOnClickListener(this);
         itemFastAdapter.withOnLongClickListener(this);
-        mItemAdapter.withComparator(null);
         rVDevicesList.setAdapter(mItemAdapter.wrap(itemFastAdapter));
         enableNestedScroll();
     }
@@ -277,7 +275,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
@@ -364,17 +362,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    private Runnable runnable = this::updateImmediately;
-
     @UiThread
     @Override
     public void onItemsRsp(List<Device> resultList) {
-        refreshFinish = true;
-//        this.resultList = resultList;
-//        if (!getUserVisibleHint()) return;
-        ItemAdapter<HomeItem> set = FastAdapterDiffUtil.set(mItemAdapter, MiscUtils.getHomeItemListFromDevice(resultList), new DiffCallbackImpl<>(), true);
-        onRefreshFinish();
+        mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(resultList));
         emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        onRefreshFinish();
     }
 
     private void enableNestedScroll() {
@@ -418,7 +411,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onItemUpdate(int index) {
         if (mItemAdapter != null
                 && MiscUtils.isInRange(0, mItemAdapter.getItemCount(), index)) {
-            mItemAdapter.notifyItemChanged(index);
+            srLayoutMainContentHolder.removeCallbacks(notifyRunnable);
+            srLayoutMainContentHolder.post(notifyRunnable);
         }
     }
 
@@ -448,7 +442,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         public void run() {
 //            if (!isAdded()) return;
 
-            JFGAccount greetBean = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            JFGAccount greetBean = DataSourceManager.getInstance().getJFGAccount();
             tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
@@ -472,7 +466,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * @return
      */
     private String getBeautifulAlias(JFGAccount account) {
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             return "";
         }
         if (account == null) {
@@ -513,18 +507,21 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+    private Runnable notifyRunnable = () -> {
+        mItemAdapter.notifyDataSetChanged();
+        if (srLayoutMainContentHolder.isRefreshing()) {
+            srLayoutMainContentHolder.setRefreshing(false);
+            srLayoutMainContentHolder.clearAnimation();
+            enableNestedScroll();
+            AppLogger.w("stop refreshing ui");
+        }
+    };
+
     @Override
     public void onRefreshFinish() {
-        mItemAdapter.notifyDataSetChanged();
-        srLayoutMainContentHolder.postDelayed(() -> {
-            if (srLayoutMainContentHolder.isRefreshing()) {
-                srLayoutMainContentHolder.setRefreshing(false);
-                srLayoutMainContentHolder.clearAnimation();
-                enableNestedScroll();
-                AppLogger.w("stop refreshing ui");
-            }
-
-        }, 1500);
+        refreshFinish = true;
+        srLayoutMainContentHolder.removeCallbacks(notifyRunnable);
+        srLayoutMainContentHolder.postDelayed(notifyRunnable, 1500);
     }
 
     @Override
@@ -539,7 +536,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void autoLoginTip(int code) {
         if (code == JError.ERROR_LOGIN_TIME_OUT) {
-            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+            if (DataSourceManager.getInstance().isOnline()) {
                 ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
@@ -690,7 +687,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             .setAction(DBAction.UNBIND))
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
-                            .flatMap(i -> BaseApplication.getAppComponent().getTaskDispatcher().perform(i))
+                            .flatMap(i -> BaseDPTaskDispatcher.getInstance().perform(i))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(rsp -> {
                                 ToastUtil.showToast(getString(R.string.DELETED_SUC));

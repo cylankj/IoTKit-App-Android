@@ -18,10 +18,6 @@ import java.util.ArrayList;
  * @Deprecated Use Device Instead
  */
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
-
-    @Deprecated //使用 ValueResolver 来解析,反射效率比较低
-    protected transient IPropertyParser propertyParser;
-
     protected transient SparseArray<DPEntity> properties = new SparseArray<>();
 
     private static final Object lock = new Object();
@@ -52,11 +48,6 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
                 return defaultValue;
             }
         }
-    }
-
-    @Override
-    public void setPropertyParser(IPropertyParser propertyParser) {
-        this.propertyParser = propertyParser;
     }
 
     @Override

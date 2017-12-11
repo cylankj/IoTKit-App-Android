@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.n.task;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -30,8 +32,8 @@ public class FetchFriendsTask implements Action1<Object> {
     public void call(Object o) {
         AppLogger.d("需要查询db");
         Observable.zip(getFriendListObservable(), getFriendReqListObservable(), (getFriendList, getAddReqList) -> {
-            ArrayList<JFGFriendAccount> fList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
-            ArrayList<JFGFriendRequest> fReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+            ArrayList<JFGFriendAccount> fList = DataSourceManager.getInstance().getFriendsList();
+            ArrayList<JFGFriendRequest> fReqList = DataSourceManager.getInstance().getFriendsReqList();
             TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
             //需要替换数据库
             try {
@@ -64,7 +66,7 @@ public class FetchFriendsTask implements Action1<Object> {
         return Observable.just("goGet")
                 .subscribeOn(Schedulers.io())
                 .flatMap(s -> {
-                    BaseApplication.getAppComponent().getCmd().getFriendList();
+                    Command.getInstance().getFriendList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class);
                 }).first();
     }
@@ -78,7 +80,7 @@ public class FetchFriendsTask implements Action1<Object> {
         return Observable.just("goGet")
                 .subscribeOn(Schedulers.io())
                 .flatMap(s -> {
-                    BaseApplication.getAppComponent().getCmd().getFriendRequestList();
+                    Command.getInstance().getFriendRequestList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class);
                 }).first();
     }

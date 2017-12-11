@@ -1,10 +1,12 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 
@@ -39,7 +41,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 .filter(ret -> ListUtils.getSize(multiEntity) > 0)
                 .subscribeOn(Schedulers.io())
                 .flatMap(idpEntity -> {
-                    dpHelper.saveOrUpdate(idpEntity.getAccount(), null, idpEntity.getUuid(),
+                    BaseDBHelper.getInstance().saveOrUpdate(idpEntity.getAccount(), null, idpEntity.getUuid(),
                             idpEntity.getVersion(), idpEntity.getMsgId(), idpEntity.getBytes(), null, null, null);
                     return Observable.just(idpEntity.getVersion());
                 })
@@ -72,7 +74,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                     jfgdpMsg.packValue = entity.getBytes();
                     list.add(jfgdpMsg);
                 }
-                long seq = appCmd.robotSetData(uuid, list);
+                long seq = Command.getInstance().robotSetData(uuid, list);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
                 AppLogger.w("更新server dp,seq:" + seq + "," + list);

@@ -14,9 +14,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -79,7 +79,7 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         getDialog().setCanceledOnTouchOutside(false);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         final int count = rgSensitivity.getChildCount();
         int defaultLevel = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 1);
         for (int i = 0; i < count; i++) {

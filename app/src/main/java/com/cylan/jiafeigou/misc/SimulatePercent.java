@@ -40,6 +40,7 @@ public class SimulatePercent implements Handler.Callback {
     }
 
     private OnAction onAction;
+    private Runnable finishAction;
 
     public void setOnAction(OnAction onAction) {
         this.onAction = onAction;
@@ -64,6 +65,11 @@ public class SimulatePercent implements Handler.Callback {
         handler.removeMessages(MSG_STEP_0);
         delay = index == 100 ? 1 : 2000 / (100 - index);//2s内完成
         handler.sendEmptyMessage(MSG_STEP_1);
+    }
+
+    public void boost(Runnable finishAction) {
+        this.finishAction = finishAction;
+        boost();
     }
 
     public int getProgress() {
@@ -104,6 +110,9 @@ public class SimulatePercent implements Handler.Callback {
                     if (onAction != null) {
                         onAction.actionPercent(index);
                         onAction.actionDone();
+                    }
+                    if (finishAction != null) {
+                        finishAction.run();
                     }
                     handler.removeMessages(MSG_STEP_1);
                     return true;

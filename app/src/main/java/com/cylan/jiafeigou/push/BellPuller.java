@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AutoSignIn;
@@ -56,13 +57,7 @@ public class BellPuller {
      */
     public void fireBellCalling(Context context, String response, Bundle bundle) {
         System.out.println(PUSH_TAG + "fireBellCalling start:" + context.getPackageName());
-        if (!BaseApplication.getAppComponent().getInitializationManager().isHasInitFinished()) {
-            BaseApplication.getAppComponent().getInitializationManager().initialization();//在这里做初始化
-        }
-        if (!BaseApplication.getAppComponent().getInitializationManager().isHasAppCmdInitFinished()) {
-            BaseApplication.getAppComponent().getInitializationManager().initAppCmd();
-        }
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        JFGSourceManager sourceManager = DataSourceManager.getInstance();
         System.out.println(PUSH_TAG + "fireBellCalling end" + sourceManager.getAccount());
         final boolean isBellCall = isBellCall(response);
         System.out.println(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response + "," + isBellCall);
@@ -122,7 +117,7 @@ public class BellPuller {
         String[] items = response.split(",");
         String cid = items[1].replace("\'", "");
         long time = Long.parseLong(items[3]);
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        JFGSourceManager sourceManager = DataSourceManager.getInstance();
         Device device = sourceManager.getDevice(cid);
         System.out.println(PUSH_TAG + "device," + device + "," + device.available());
         if (device == null || !device.available()) {

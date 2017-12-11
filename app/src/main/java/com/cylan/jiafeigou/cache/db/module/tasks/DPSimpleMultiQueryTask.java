@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -11,7 +13,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -33,9 +35,6 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private DBOption.SimpleMultiDpQueryOption option;
 
     public DPSimpleMultiQueryTask() {
-        if (sourceManager == null) {
-            sourceManager = BaseApplication.getAppComponent().getSourceManager();
-        }
     }
 
     @Override
@@ -45,16 +44,16 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
             list.add(entity.getMsgId());
             Log.d("DPSimpleMultiQueryTask", "pre DPSimpleMultiQueryTask: " + entity);
         }
-        QueryBuilder<DPEntity> builder = ((BaseDBHelper) dpHelper).buildDPMsgQueryBuilder(multiEntity.get(0).getAccount(),
+        QueryBuilder<DPEntity> builder = BaseDBHelper.getInstance().buildDPMsgQueryBuilder(multiEntity.get(0).getAccount(),
                 OptionsImpl.getServer(), multiEntity.get(0).getUuid(), null, null,
                 list, null, null, null);
-        return dpHelper.queryMultiDpMsg(builder)
+        return BaseDBHelper.getInstance().queryMultiDpMsg(builder)
                 .map(rList -> {
                     List<DataPoint> dpEntities = new ArrayList<>(ListUtils.getSize(rList));
                     if (rList != null) {
                         for (DPEntity entity : rList) {
                             if (DBAction.AVAILABLE.accept(entity.action())) {
-                                DataPoint result = propertyParser.parser(entity.getMsgId(), entity.getBytes(), entity.getVersion());
+                                DataPoint result = BasePropertyParser.getInstance().parser(entity.getMsgId(), entity.getBytes(), entity.getVersion());
                                 dpEntities.add(result);
                             }
                         }
@@ -77,7 +76,7 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     params.add(msg);
                 }
                 long seq = -1;
-                seq = appCmd.robotGetData(uuid, params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+                seq = Command.getInstance().robotGetData(uuid, params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

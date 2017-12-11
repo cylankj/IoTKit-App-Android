@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -130,7 +129,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                 getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                 getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
@@ -151,7 +150,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
 
     @Override
     public void attributeUpdate() {
-        Device mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device mDevice = DataSourceManager.getInstance().getDevice(uuid);
         boolean isAp = JFGRules.isAPDirect(mDevice.uuid, mDevice.$(202, ""));
         if (isAp) {
             svSettingDeviceWifi.setSubTitle(getString(R.string.Tap1_Setting_Unopened));

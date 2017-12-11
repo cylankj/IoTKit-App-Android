@@ -16,9 +16,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendAddByNumBinding;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
@@ -82,7 +82,7 @@ public class MineFriendSearchFragment extends IBaseFragment implements MineFrien
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         etAddByNumber.setOnKeyListener((v, keyCode, event) -> {
             if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
+                String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
                 if (TextUtils.isEmpty(getInputNum())
                         || (!JConstant.PHONE_REG.matcher(getInputNum()).matches()
                         && !JConstant.EMAIL_REG.matcher(getInputNum()).matches())) {

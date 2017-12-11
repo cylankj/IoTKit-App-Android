@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
@@ -161,7 +161,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
             return;
         }
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         if (jfgAccount != null) {
             presenter.sendChangePassReq(jfgAccount.getAccount(), getOldPassword(), getNewPassword());
         }
@@ -191,7 +191,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
-            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount(), 1,
+            AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getAccount().getAccount(), 1,
                     getNewPassword(), true);
             AutoSignIn.getInstance().autoLogin();
             getActivity().getSupportFragmentManager().popBackStack();

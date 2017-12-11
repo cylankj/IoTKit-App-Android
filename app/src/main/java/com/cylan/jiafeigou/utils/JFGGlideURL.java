@@ -5,8 +5,9 @@ import android.util.Log;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -29,7 +30,7 @@ public class JFGGlideURL extends GlideUrl {
 
     public JFGGlideURL(String cid, String fileName, int type) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(cid);
+        Device device = DataSourceManager.getInstance().getDevice(cid);
         this.vid = Security.getVId();
         this.regionType = type;
         if (device != null) {
@@ -53,10 +54,10 @@ public class JFGGlideURL extends GlideUrl {
             String urlV2;
             if (V2) {
                 urlV2 = String.format(Locale.getDefault(), "/%s/%s", cid, timestamp);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+                urlV2 = Command.getInstance().getSignedCloudUrl(this.regionType, urlV2);
             } else {
                 urlV2 = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
-                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+                urlV2 = Command.getInstance().getSignedCloudUrl(this.regionType, urlV2);
             }
             AppLogger.d("图片 URLV2:" + V2 + ",regionType:" + regionType + "," + urlV2);
             return urlV2;

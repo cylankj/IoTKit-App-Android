@@ -11,11 +11,11 @@ import android.widget.TextView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -85,7 +85,7 @@ public class MyQRCodeDialog extends BaseDialog {
 
     private void initView() {
         if (isopenlogin) {
-            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+            Account account = DataSourceManager.getInstance().getAccount();
             tvUserAlias.setText(account == null ? "" : account.getAlias() == null ? account.getAccount() : account.getAlias());
             GlideApp.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
                     .circleCrop()
@@ -95,7 +95,7 @@ public class MyQRCodeDialog extends BaseDialog {
                     .into(ivUserIcon);
             return;
         }
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         tvUserAlias.setText(jfgAccount.getAlias());
         GlideApp.with(getContext()).load(jfgAccount.getPhotoUrl())
                 .circleCrop()

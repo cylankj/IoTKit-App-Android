@@ -36,8 +36,6 @@ public class BindAnimationActivity extends BaseBindActivity {
         setContentView(R.layout.activity_bind_animation);
         ButterKnife.bind(this);
         int gifId = getIntent().getIntExtra(JConstant.KEY_ANIM_GIF, -1);
-//        GlideDrawableImageViewTarget imageViewTarget =
-//                new GlideDrawableImageViewTarget(imvGifContainer);
         GlideApp.with(this).load(gifId).into(imvGifContainer);
         customToolbar.setBackAction(v -> finishExt());
         tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));

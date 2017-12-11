@@ -38,6 +38,7 @@ import com.cylan.jiafeigou.misc.UdpDevice;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -171,11 +172,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
-        initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
-        deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
+        initProductLayout(DataSourceManager.getInstance().getDevice(this.uuid));
+        deviceUpdate(DataSourceManager.getInstance().getDevice(this.uuid));
         AppLogger.d("检查升级包");
 
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean http = JFGRules.isPan720(device.pid);
         if (http) {
             BaseDeviceInformationFetcher.getInstance().init(uuid);
@@ -183,7 +184,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void initProductLayout(Device device) {
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
         svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
         svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
@@ -281,7 +282,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         DeviceInfoDetailFragment fragment = DeviceInfoDetailFragment.newInstance(null);
         fragment.setCallBack((Object t) -> {
-            deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
+            deviceUpdate(DataSourceManager.getInstance().getDevice(uuid));
         });
         Bundle bundle = new Bundle();
         bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
@@ -321,7 +322,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
                 AlertDialogManager.getInstance().showDialog(this, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                         getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                         getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
@@ -340,7 +341,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-                    deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
+                    deviceUpdate(DataSourceManager.getInstance().getDevice(uuid));
                 });
 
             }
@@ -352,7 +353,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-                    deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
+                    deviceUpdate(DataSourceManager.getInstance().getDevice(uuid));
                 });
             }
             break;
@@ -376,7 +377,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
             //bell
             case R.id.sv_setting_device_sd_card:
-                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 String statusContent = getSdcardState(status.hasSdcard, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -490,8 +491,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     speaker = Math.max(speaker, 0);
                     speaker = Math.min(speaker, 10);
                     try {
-                        int i = BaseApplication.getAppComponent()
-                                .getCmd().setTargetLeveledBFS(mic, speaker);
+                        int i =Command.getInstance().setTargetLeveledBFS(mic, speaker);
                         AppLogger.d("正在设置 TargetLevel:" + mic + ",result:" + i);
                         if (i == 0) {
                             runOnUiThread(() -> ToastUtil.showToast("设置成功"));
@@ -508,7 +508,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void attributeUpdate() {
-        Device mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device mDevice = DataSourceManager.getInstance().getDevice(uuid);
         boolean isAp = JFGRules.isAPDirect(mDevice.uuid, mDevice.$(202, ""));
         if (isAp) {
             svSettingDeviceHomeMode.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
@@ -588,7 +588,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * @param justConnectAp 720设备，配置手机热点时，需要停止下一步
      */
     private void handleJumpToConfig(boolean justSend, boolean justConnectAp) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         if (device == null) {
             finishExt();
             return;
@@ -750,14 +750,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 svSettingDeviceStandbyMode.setVisibility(View.GONE);
             }
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                Device device1 = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                Device device1 = DataSourceManager.getInstance().getDevice(uuid);
                 DpMsgDefine.DPNet dpNet = device1.$(201, new DpMsgDefine.DPNet());
                 if (dpNet.net == -1 && isChecked) {
                     buttonView.setChecked(false);
                     return;
                 }
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
-                DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+                DpMsgDefine.DPStandby standby = DataSourceManager.getInstance().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
                 standby.standby = isChecked;
                 standby.version = System.currentTimeMillis();
                 triggerStandby(standby);
@@ -783,7 +783,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 svSettingDeviceLedIndicator.setChecked(false);
             }
             svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+                DpMsgDefine.DPStandby standby = DataSourceManager.getInstance().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
                 if (standby != null && standby.standby) {
                     return;//开启待机模式引起的
                 }
@@ -945,7 +945,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         presenter.addSub(subscription, "enableAp");
                     }, getString(R.string.CANCEL), null, false);
         });
-        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        IProperty productProperty = PropertiesLoader.getInstance();
         //SD 卡的显示与隐藏
         if (productProperty.hasProperty(device.pid, "SD")) {
             svSettingDeviceSDCard.setVisibility(View.VISIBLE);
@@ -1086,7 +1086,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case DpMsgMap.ID_223_MOBILE_NET:
             case ID_209_LED_INDICATOR:
             case DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE:
-                deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
+                deviceUpdate(DataSourceManager.getInstance().getDevice(uuid));
                 //	0 未知, 1 没卡, 2 user'account PIN, 3 user'account PUK, 4 network PIN, 5 正常
                 break;
             case DpMsgMap.ID_204_SDCARD_STORAGE:
@@ -1111,7 +1111,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     status.total = statusInt.total;
                 }
                 if (status == null) {
-                    status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
+                    status = DataSourceManager.getInstance().getDevice(uuid)
                             .$(204, new DpMsgDefine.DPSdStatus());
                 }
                 if (status == null) {
@@ -1145,7 +1145,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private boolean ledPreState() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         return device.$(ID_209_LED_INDICATOR, false);
     }
 
@@ -1155,12 +1155,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * @return
      */
     private boolean alarmPreState() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         return device.$(ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     private int autoRecordPreState() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
     }
 
@@ -1261,7 +1261,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         Log.d("CamSettingActivity", "......");
         UdpDevice.pingDevice(UdpConstant.IP, uuid)
                 .subscribe(s -> AppLogger.d("............." + s), AppLogger::e);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
             //wifi直连，客户端连接了设备
             startActivity(new Intent(this, ApSettingActivity.class)

@@ -7,11 +7,12 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
+import com.cylan.jiafeigou.module.User;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -19,7 +20,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -34,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -55,8 +55,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return new Subscription[]{
                 resultVerifyCodeSub(),
                 switchBoxSub(),
-                loginPopBackSub(),
-                reShowAccount()
+                loginPopBackSub()
         };
     }
 
@@ -111,9 +110,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(o -> {
                     try {
                         countUp(phone);
-                        int ret = BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                        int ret = Command.getInstance().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                         AppLogger.d("getCodeByPhone?" + ret);
-                    } catch (JfgException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     AppLogger.d("phone:" + phone);
@@ -136,7 +135,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, code, token);
+                        Command.getInstance().verifySMS(phone, code, token);
                         isRegSms = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -155,7 +154,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(ret -> {
                     try {
-                        return BaseApplication.getAppComponent().getCmd().checkAccountRegState(ret);
+                        return Command.getInstance().checkAccountRegState(ret);
                     } catch (JfgException e) {
                         return -1;
                     }
@@ -207,40 +206,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     @Override
-    public Subscription reShowAccount() {
-        return Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<Object, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(Object o) {
-                        try {
-                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                            if (TextUtils.isEmpty(aesAccount)) {
-                                AppLogger.d("reShowAccount:aes account is null");
-                                return Observable.just(null);
-                            }
-                            String decryption = AESUtil.decrypt(aesAccount);
-                            AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
-                            AppLogger.d("Login:" + signType.toString());
-                            if (signType.type != 1) {
-                                //显示绑定的手机和邮箱
-                                String re_show = PreferencesUtils.getString(JConstant.THIRD_RE_SHOW, "");
-                                return Observable.just(TextUtils.isEmpty(re_show) ? "" : re_show);
-                            } else {
-                                return Observable.just(signType.account);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
-                    if (s != null && !TextUtils.isEmpty(s)) {
-                        getView().reShowAccount(s);
-                    }
-                }, AppLogger::e);
+    public void reShowAccount() {
+        User user = LoginHelper.getUser();
+        if (user != null) {
+            getView().reShowAccount(user.getDisplay());
+        }
     }
 
     @Override
@@ -296,7 +266,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);//不需要,服务器会自己获取的
             }
             int loginType = parseLoginType(share_media);
-//            AutoSignIn.getInstance().autoSave(account, loginType, token);
             performLoginInternal(loginType, account, token);
             if (mView != null) {
                 mView.onAuthenticationResult(0);
@@ -336,56 +305,52 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     private void performLoginInternal(int loginType, String account, String password) {
-        Subscription subscribe = Observable.create(subscriber -> {
-            try {
-                if (loginType >= 3) {//第三方登录
-                    BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account, password, loginType);
-                } else {//账号密码登录
-                    BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
-                }
-                subscriber.onNext("登录开始了");
-                Log.d("", "登录过程开始了..." + "username:" + account + ",password:" + password + ",loginType:" + loginType);
-                subscriber.onCompleted();
-            } catch (JfgException e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class).first())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(result -> {
-                    AppLogger.d("获取到登录结果:" + new Gson().toJson(result));
-                    if (result == null || result.code != 0) {
-                        getView().loginResult(result == null ? JError.ErrorConnect : result.code);
-                        return false;
-                    }
-                    return true;
-                })
-                .flatMap(result -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).first())
+        Subscription subscription = LoginHelper.performLogin(account, MD5Util.lowerCaseMD5(password), loginType)
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    if (result != null) {
-                        AppLogger.w("已经获取到账号信息,正在保存用户名密码和登录类型");
-                        AutoSignIn.getInstance().autoSave(account, loginType, password);
-                        result.account.setLoginType(loginType);
-                        if (getView() != null) {
-                            getView().loginResult(JError.ErrorOK);
-                        }
+                .subscribe(accountArrived -> {
+                    if (accountArrived != null) {
+                        LoginHelper.saveUser(account, password, loginType);
+                        getView().onLoginSuccess();
                     } else {
-                        if (getView() != null) {
-                            getView().loginResult(JError.ErrorConnect);
-                        }
+                        getView().resetView();
+                        getView().onLoginTimeout();
                     }
-                }, e -> {
-                    AppLogger.e("获取登录结果失败:" + MiscUtils.getErr(e));
-                    if (getView() != null) {
-                        getView().loginResult(JError.ErrorConnect);
+                }, error -> {
+                    error.printStackTrace();
+                    AppLogger.e(error);
+                    if (error instanceof RxEvent.HelperBreaker) {
+                        int breakerCode = ((RxEvent.HelperBreaker) error).breakerCode;
+//                        LoginHelper.saveUser(account, "", 1);
+                        getView().resetView();
+                        switch (breakerCode) {
+                            case JError.ErrorAccountNotExist: {
+                                getView().onAccountNotExist();
+                            }
+                            break;
+                            case JError.ErrorLoginInvalidPass: {
+                                getView().onInvalidPassword();
+                            }
+                            break;
+                            case JError.ErrorOpenLoginInvalidToken: {
+                                getView().onOpenLoginInvalidToken();
+                            }
+                            break;
+                            case JError.ErrorConnect: {
+                                getView().onConnectError();
+                            }
+                            break;
+                            case JError.ErrorP2PSocket: {
+                                getView().onConnectError();
+                            }
+                            break;
+                            default: {
+                                getView().onLoginFailed(breakerCode);
+                            }
+                        }
                     }
                 });
-        addSubscription(subscribe);
+        addDestroySubscription(subscription);
     }
 
 }

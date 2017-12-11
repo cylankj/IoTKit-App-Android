@@ -6,7 +6,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
@@ -49,7 +49,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                 val serviceKey = OptionsImpl.getServiceKey(vid)
                 val timestamp = (System.currentTimeMillis() / 1000).toString()//这里的时间是秒
                 val seceret = OptionsImpl.getServiceSeceret(vid)
-                val accessToken = BaseApplication.getAppComponent().getCmd().sessionId
+                val accessToken = Command.getInstance().sessionId
                 if (TextUtils.isEmpty(serviceKey) || TextUtils.isEmpty(seceret)) {
                     subscriber.onError(IllegalArgumentException("ServiceKey或Seceret为空"))
                 } else {

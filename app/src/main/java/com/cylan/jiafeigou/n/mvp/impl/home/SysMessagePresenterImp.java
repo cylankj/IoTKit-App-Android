@@ -7,13 +7,16 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.home.SysMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -81,7 +84,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         ArrayList<JFGDPMsg> params = new ArrayList<>();
                         params.add(msg1);
                         params.add(msg4);
-                        seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 15, false, 0);
+                        seq = Command.getInstance().robotGetData("", params, 15, false, 0);
                         Log.d(TAG, "getMesgDpData:" + seq);
                     } catch (Exception e) {
                         AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
@@ -143,7 +146,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        BaseApplication.getAppComponent().getDBHelper().saveDPByteInTx(robotoGetDataRsp).subscribe();
+                        BaseDBHelper.getInstance().saveDPByteInTx(robotoGetDataRsp).subscribe();
                         return Observable.just(results);
                     }
                 })
@@ -163,11 +166,11 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
     }
 
     private void clearALLFromDB() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return;
         }
-        QueryBuilder<DPEntity> builder = BaseApplication.getAppComponent().getDBHelper().getDpEntityQueryBuilder();
+        QueryBuilder<DPEntity> builder = BaseDBHelper.getInstance().getDpEntityQueryBuilder();
         builder.whereOr(DPEntityDao.Properties.MsgId.eq(601), DPEntityDao.Properties.MsgId.eq(701))
                 .where(DPEntityDao.Properties.Account.eq(account.getAccount()));
         builder.buildDelete().executeDeleteWithoutDetachingEntities();
@@ -215,11 +218,11 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
      * @return
      */
     public Observable<ArrayList<SysMsgBean>> findAllFromDb() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return null;
         }
-        QueryBuilder<DPEntity> builder = BaseApplication.getAppComponent().getDBHelper().getDpEntityQueryBuilder();
+        QueryBuilder<DPEntity> builder = BaseDBHelper.getInstance().getDpEntityQueryBuilder();
         builder.whereOr(DPEntityDao.Properties.MsgId.eq(601), DPEntityDao.Properties.MsgId.eq(701))
                 .where(DPEntityDao.Properties.Account.eq(account.getAccount()));
         List<DPEntity> list = builder
@@ -281,11 +284,11 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
      */
     @Override
     public void deleteAllRecords() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
         if (account != null && !TextUtils.isEmpty(account.getAccount())) {
-            BaseApplication.getAppComponent().getDBHelper()
+            BaseDBHelper.getInstance()
                     .deleteDpSync(account.getAccount(), null, 601);
-            BaseApplication.getAppComponent().getDBHelper()
+            BaseDBHelper.getInstance()
                     .deleteDpSync(account.getAccount(), null, 701);
         }
     }
@@ -305,7 +308,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         ArrayList<JFGDPMsg> params = new ArrayList<>();
                         params.add(msg1);
                         params.add(msg4);
-                        seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 15, false, 0);
+                        seq = Command.getInstance().robotGetData("", params, 15, false, 0);
                         Log.d(TAG, "getMesgDpData:" + seq);
                     } catch (Exception e) {
                         AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
@@ -371,10 +374,10 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     removeFromServer(o);
-                    JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
                     if (!TextUtils.isEmpty(account.getAccount())) {
                         for (SysMsgBean bean : o) {
-                            BaseApplication.getAppComponent().getDBHelper().deleteDPMsgForce(
+                            BaseDBHelper.getInstance().deleteDPMsgForce(
                                     account.getAccount(), null, null, bean.getTime(), bean.getType())
                                     .subscribeOn(Schedulers.io())
                                     .subscribe(ret -> AppLogger.d("本地删除"),
@@ -394,7 +397,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
             entity.setAction(DBAction.DELETED);
             dpEntities.add(entity);
         }
-        BaseApplication.getAppComponent().getTaskDispatcher()
+        BaseDPTaskDispatcher.getInstance()
                 .perform(dpEntities)
                 .subscribeOn(Schedulers.io())
                 .subscribe(ret -> AppLogger.d("从服务器删除"),
@@ -433,7 +436,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 list.add(msg1);
                 list.add(msg2);
                 list.add(msg3);
-                long req = BaseApplication.getAppComponent().getCmd().robotSetData("", list);
+                long req = Command.getInstance().robotSetData("", list);
                 AppLogger.d("mine_markHasRead:" + req);
             } catch (JfgException e) {
                 AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());

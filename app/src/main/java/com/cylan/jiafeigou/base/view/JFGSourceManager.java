@@ -7,13 +7,11 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
@@ -85,11 +83,6 @@ public interface JFGSourceManager {
     JFGShareListInfo getShareListByCid(String cid);
 
     void cacheShareList(ArrayList<JFGShareListInfo> arrayList);
-
-    void setLoginState(LogState loginState);
-
-    int getLoginState();
-
     int getStorageType();
 
     void setStorageType(int type);
@@ -137,12 +130,6 @@ public interface JFGSourceManager {
 
     ArrayList<Long> getHisDateList(String uuid);
 
-    void setDBHelper(IDBHelper dbHelper);
-
-    void setPropertyParser(IPropertyParser parser);
-
-    void setAppCmd(AppCmd appCmd);
-
     void initFromDB();
 
     void setOnline(boolean online);
@@ -169,6 +156,4 @@ public interface JFGSourceManager {
     void removeDeviceState(String uuid);
 
     Object getDeviceState(String uuid);
-
-    int getLoginType();
 }

@@ -26,13 +26,12 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.module.message.MIDHeader;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -63,7 +62,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
 //        AppLogger.d("OnLocalMessage :" + account + ",i:" + i);
-        RxBus.getCacheInstance().post(new RxEvent.LocalUdpMsg(System.currentTimeMillis(), s, (short) i, bytes));
+        RxEvent.LocalUdpMsg localUdpMsg = new RxEvent.LocalUdpMsg(System.currentTimeMillis(), s, (short) i, bytes);
+        BaseUdpMsgParser.getInstance().parserUdpMessage(localUdpMsg);
+        RxBus.getCacheInstance().post(localUdpMsg);
     }
 
     @Override
@@ -83,18 +84,19 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.w("OnUpdateAccount :" + gson.toJson(jfgAccount));
+
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheAccountEvent(jfgAccount));
     }
 
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
         AppLogger.w("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size());
-        BaseApplication.getAppComponent().getSourceManager().cacheHistoryDataList(jfgHistoryVideo);
+        DataSourceManager.getInstance().cacheHistoryDataList(jfgHistoryVideo);
     }
 
     @Override
     public void OnUpdateHistoryVideoV2(byte[] bytes) {
-        BaseApplication.getAppComponent().getSourceManager().cacheHistoryDataList(bytes);
+        DataSourceManager.getInstance().cacheHistoryDataList(bytes);
     }
 
     @Override
@@ -112,8 +114,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnLogoutByServer(int i) {
         AppLogger.w("OnLogoutByServer:" + i);
+        LoginHelper.performLogout();
         RxBus.getCacheInstance().post(new RxEvent.PwdHasResetEvent(i));
-        BaseApplication.getAppComponent().getSourceManager().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
 
     @Override
@@ -197,16 +199,17 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnlineStatus(boolean b) {
-        if (b != BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+        if (b != DataSourceManager.getInstance().isOnline()) {
             AppLogger.w("OnlineStatus :" + b);
             RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
-            BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
+            DataSourceManager.getInstance().setOnline(b);//设置用户在线信息
         }
     }
 
     @Override
     public void OnResult(JFGResult jfgResult) {
         RxBus.getCacheInstance().post(jfgResult);
+        BaseJFGResultParser.getInstance().parserResult(jfgResult);
         AppLogger.w("jfgResult [" + jfgResult.event + ":" + jfgResult.code + "]");
     }
 
@@ -268,7 +271,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            req.markName = "zi lai?";
 //            arrayList.add(req);
 //        }
-        BaseApplication.getAppComponent().getSourceManager().setFriendsList(arrayList);
+        DataSourceManager.getInstance().setFriendsList(arrayList);
     }
 
     @Override
@@ -284,7 +287,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            req.time = System.currentTimeMillis() - RandomUtils.getRandom(30) * 3600 * 1000;
 //            arrayList.add(req);
 //        }
-        BaseApplication.getAppComponent().getSourceManager().setFriendsReqList(arrayList);
+        DataSourceManager.getInstance().setFriendsReqList(arrayList);
     }
 
     @Override
@@ -314,7 +317,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.w("OnGetShareListRsp :" + i);
-        BaseApplication.getAppComponent().getSourceManager().cacheShareList(arrayList);
+        DataSourceManager.getInstance().cacheShareList(arrayList);
     }
 
     @Override
@@ -354,7 +357,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
             return;
         }
         FeedbackManager.getInstance().cachePush(arrayList);
-        BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
+        DataSourceManager.getInstance().handleSystemNotification(arrayList);
     }
 
 
@@ -362,13 +365,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnNotifyStorageType(int i) {
         AppLogger.w("OnNotifyStorageType:" + i);
         //此event是全局使用,不需要删除.因为在DataSourceManager需要用到.
-        BaseApplication.getAppComponent().getSourceManager().setStorageType(i);
+        DataSourceManager.getInstance().setStorageType(i);
     }
 
     @Override
     public void OnBindDevRsp(int i, String s, String s1) {
-        AppLogger.w("onBindDev: " + i + " uuid:" + s);
-        RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s, s1));
+        AppLogger.w("onBindDev: " + i + " uuid:" + s + ",reason:" + s1);
+        RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(i, s, s1));
         PreferencesUtils.putString(JConstant.BINDING_DEVICE, "");
     }
 

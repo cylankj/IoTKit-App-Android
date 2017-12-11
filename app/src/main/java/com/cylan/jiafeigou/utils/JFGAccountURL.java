@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.utils;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -34,7 +34,7 @@ public class JFGAccountURL extends GlideUrl {
     public String toStringUrl() {
         String url = null;
         try {
-            url = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(storageType, String.format(Locale.getDefault(), "/image/%s.jpg", account));
+            url = Command.getInstance().getSignedCloudUrl(storageType, String.format(Locale.getDefault(), "/image/%s.jpg", account));
 
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));

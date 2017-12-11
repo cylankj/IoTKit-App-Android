@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.text.TextUtils;
 
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseCallablePresenter;
@@ -16,8 +15,8 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
@@ -56,8 +55,8 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                 .map(cmd -> {
                     byte[] screenshot = appCmd.screenshot(false);
                     if (screenshot != null) {
-                        int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
-                        int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+                        int w = Command.videoWidth;
+                        int h = Command.videoHeight;
                         Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
                         AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onTakeSnapShotSuccess(bitmap));
                         String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();

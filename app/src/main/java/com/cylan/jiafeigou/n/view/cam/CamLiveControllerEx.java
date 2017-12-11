@@ -42,6 +42,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -53,6 +54,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
@@ -342,7 +344,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .setNegativeButton(R.string.CANCEL, null)
                     .setPositiveButton(R.string.OK, (dialog, which) -> {
                         try {
-                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<String>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                            DataSourceManager.getInstance().updateValue(uuid, new DpMsgDefine.DPPrimary<String>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                         } catch (IllegalAccessException e) {
                             AppLogger.e("err: ");
                         }
@@ -432,7 +434,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .setVersion(0)
                 .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
                 .subscribeOn(Schedulers.io())
-                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
+                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
                 .map(ret -> {
                     try {
                         DpMsgDefine.DPSdStatus sdStatus = ret.getResultResponse();
@@ -535,7 +537,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamTriggerCapture.setEnabled(false);
         imgVCamZoomToFullScreen.setEnabled(false);
         tvLive.setEnabled(false);
-        this.device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        this.device = DataSourceManager.getInstance().getDevice(uuid);
         this.isRSCam = JFGRules.isRS(device.pid);
         this.isShareAccount = !TextUtils.isEmpty(device.shareAccount);
         this.pid = device.pid;
@@ -620,7 +622,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         updateDoorLock();
 
         if (JFGRules.shouldObserverAP()) {//需要监听是否局域网在线
-            Subscription subscribe = APObserver.INSTANCE.scan(uuid).timeout(5, TimeUnit.SECONDS)
+            Subscription subscribe = APObserver.scan(uuid)
+                    .timeout(5, TimeUnit.SECONDS)
                     .subscribe(ret -> {
                         updateDoorLockFromPing(true);
                     }, e -> {
@@ -764,7 +767,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      */
     private void showHistoryWheel(boolean show) {
         //处理显示逻辑
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         //4.被分享用户不显示
         if (JFGRules.isShareDevice(device)) {
             AppLogger.d("is share device");
@@ -997,7 +1000,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (!layoutE.isShown()) {
                 layoutE.setVisibility(VISIBLE);//
             }
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
@@ -1437,7 +1440,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     ToastUtil.showNegativeToast(getContext().getString(R.string.NoNetworkTips));
                     return;
                 }
-                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
                 if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
                     ToastUtil.showNegativeToast(getContext().getString(R.string.OFFLINE_ERR));
                     return;
@@ -1503,7 +1506,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onResolutionRsp(JFGMsgVideoResolution resolution) {
         AppLogger.d("收到分辨率消息,正在准备直播");
         try {
-            BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, (View) liveViewWithThumbnail.getVideoView());
+            Command.getInstance().enableRenderSingleRemoteView(true, (View) liveViewWithThumbnail.getVideoView());
         } catch (JfgException e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
@@ -1595,7 +1598,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private boolean isStandBy() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         return standby.standby;
     }

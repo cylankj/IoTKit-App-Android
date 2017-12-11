@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.misc.bind.IBindResult;
 import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -92,7 +91,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     AppLogger.w(BIND_TAG + "last state");
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
+                    Device device = DataSourceManager.getInstance().getDevice(udpDevicePortrait.uuid);
                     if (device.available()) {
                         device.setValue(201, new DpMsgDefine.DPNet());//先清空防止过早绑定成功
                     }
@@ -112,7 +111,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(s -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
                     String mac = device.$(202, "");
                     aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
                             .subscribe(ret -> {

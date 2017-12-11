@@ -8,8 +8,9 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -93,7 +94,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> ListUtils.getSize(ret) > 0)
                 .subscribe(cidList -> {
-                    BaseApplication.getAppComponent().getCmd().getShareList(cidList);
+                    Command.getInstance().getShareList(cidList);
                 }, AppLogger::e);
     }
 
@@ -112,7 +113,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 .subscribe(deviceBeen -> {
                     for (DeviceBean bean : deviceBeen) {
                         try {
-                            BaseApplication.getAppComponent().getCmd().shareDevice(bean.uuid, friendItem.friendAccount.account);
+                            Command.getInstance().shareDevice(bean.uuid, friendItem.friendAccount.account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -181,7 +182,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        List<Device> devices = DataSourceManager.getInstance().getAllDevice();
         for (Device info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
@@ -205,7 +206,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
                 .flatMap(getShareListCallBack -> {
                     ArrayList<JFGShareListInfo> list =
-                            BaseApplication.getAppComponent().getSourceManager().getShareList();
+                            DataSourceManager.getInstance().getShareList();
                     if (ListUtils.getSize(list) > 0) {
                         //每个设备已分享的亲友集合
                         hasShareFriendList.clear();

@@ -75,7 +75,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             AppLogger.e("what the hell uuid is null");
             finishExt();
         }
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        device = DataSourceManager.getInstance().getDevice(uuid);
         boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
 //        //just for test
 //        hasNewMsg = true;
@@ -231,7 +231,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid());
             AbstractVersion.BinVersion version = new Gson().fromJson(content, AbstractVersion.BinVersion.class);
             final String newVersion = version.getTagVersion();
-            final String currentVersion = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid()).$(207, "");
+            final String currentVersion = DataSourceManager.getInstance().getDevice(uuid()).$(207, "");
             if (BindUtils.versionCompare(currentVersion, newVersion) < 0) {
                 PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid());
                 return false;
@@ -310,7 +310,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private void removeHint() {
         try {
-            BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
+            DataSourceManager.getInstance().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
             if (vIndicator == null) {
                 return;
             }

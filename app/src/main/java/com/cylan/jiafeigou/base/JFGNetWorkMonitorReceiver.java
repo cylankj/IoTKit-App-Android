@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 
 public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
 
@@ -15,7 +15,7 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        JFGSourceManager sourceManager = DataSourceManager.getInstance();
 //        if (sourceManager.monitorPersonInformation() == null) {//只在有账号信息的情况下发送网络状态变化通知
 //            return;
 //        }

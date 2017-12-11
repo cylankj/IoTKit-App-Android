@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
@@ -197,7 +197,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     @Override
     public void onStart() {
         super.onStart();
-        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
         if (jfgAccount != null) {
             presenter.isBindOrChange(jfgAccount);
         }
@@ -223,7 +223,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                     AppLogger.d("暂时去掉");
                     // TODO: 2017/7/24 以下这个判断有 bug
-//                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+//                    JFGAccount jfgAccount = DataSourceManager.getInstance().getJFGAccount();
 //                    if (jfgAccount != null && (TextUtils.equals(jfgAccount.getPhone(), getInputPhone()) ||
 //                            TextUtils.equals(jfgAccount.getAccount(), getInputPhone()))) {
 //                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
@@ -382,7 +382,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @Override
     public void handlerResetPhoneResult(int code) {
-        JFGAccount userinfo = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        JFGAccount userinfo = DataSourceManager.getInstance().getJFGAccount();
         if (userinfo != null && !TextUtils.isEmpty(getInputPhone())) {
             if (code == JError.ErrorOK) {
                 if (presenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {

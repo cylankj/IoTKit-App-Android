@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
-import com.cylan.jiafeigou.push.PushPickerIntentService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -22,7 +21,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -41,20 +39,20 @@ BaseJFGResultParser {
     public BaseJFGResultParser() {
     }
 
-    public Subscription initSubscription() {
-        return RxBus.getCacheInstance().toObservable(JFGResult.class)
-                .subscribeOn(Schedulers.io())
-                .retry((integer, throwable) -> true)
-                .subscribe(ret -> {
-                    try {
-                        parserResult(ret);
-                    } catch (Throwable throwable) {
-                    }
-                }, AppLogger::e);
+    private static BaseJFGResultParser instance;
+
+    public static BaseJFGResultParser getInstance() {
+        if (instance == null) {
+            synchronized (BaseJFGResultParser.class) {
+                if (instance == null) {
+                    instance = new BaseJFGResultParser();
+                }
+            }
+        }
+        return instance;
     }
 
-
-    private void parserResult(JFGResult jfgResult) {
+    public void parserResult(JFGResult jfgResult) {
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
@@ -71,23 +69,20 @@ BaseJFGResultParser {
                 //最短3s种一次。
                 if (MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
                     if (login) {
-                        BaseApplication.getAppComponent().getCmd().getAccount();
-                        PushPickerIntentService.start();
                         Schedulers.io().createWorker().schedule(() -> {
                             new FetchFriendsTask().call("");
                             new FetchFeedbackTask().call("");
                             new SysUnreadCountTask().call("");
                         });
-
                         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
                         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                     }
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
+                    RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
                 }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
-                RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult.code));
+//                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));

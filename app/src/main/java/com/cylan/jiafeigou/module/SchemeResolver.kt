@@ -9,7 +9,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.dp.BaseDataPoint
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpMsgMap
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.log.AppLogger
 import java.net.URL
@@ -60,7 +59,7 @@ object SchemeResolver {
         override fun toStringUrl() = try {
             val parse = Uri.parse(schema)
             val regionType = parse.getQueryParameter(REGION_TYPE).toIntOrNull() ?: 0
-            val appCmd = BaseApplication.getAppComponent().getCmd()
+            val appCmd = Command.getInstance()
             val signedCloudUrl = appCmd.getSignedCloudUrl(regionType, parse.path)
             AppLogger.w("SchemeResolver:cylan scheme:$schema, signed: $signedCloudUrl")
             signedCloudUrl

@@ -2,14 +2,13 @@ package com.cylan.jiafeigou.cache.db.module;
 
 import android.support.annotation.NonNull;
 
-import com.cylan.jiafeigou.base.view.IPropertyParser;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -39,7 +38,6 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     private String option;//json 格式的字符串
 
     private transient DataPoint dataPointValue;//bytes 转换好了会放在这里,这样就不用每次都转换了
-    private static IPropertyParser propertyParser = BaseApplication.getAppComponent().getPropertyParser();
     /**
      * Used to resolve relations
      */
@@ -55,7 +53,7 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     public <V> V getValue(V defaultValue) {
         if (this.dataPointValue == null) {
             if (bytes != null) {
-                dataPointValue = propertyParser.parser(msgId, bytes, version);
+                dataPointValue = BasePropertyParser.getInstance().parser(msgId, bytes, version);
             }
         }
         if (this.dataPointValue == null) {

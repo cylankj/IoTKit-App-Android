@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.content.Context;
 
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -44,7 +44,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public boolean checkOpenLogin() {
-        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
+        return DataSourceManager.getInstance().getAccount().getLoginType() >= 3;
     }
 
 }

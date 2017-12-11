@@ -6,6 +6,8 @@ import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -19,7 +21,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -98,19 +100,19 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(505)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(512)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
 
         //adapter for doorbell
         list.add(new DPEntity()
@@ -118,13 +120,13 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(DpMsgMap.ID_518_CAM_SETFACEIDSTATUS)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
 
         return list;
     }
@@ -141,7 +143,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         try {
             boolean isMax = TimeUtils.getSpecificDayEndTime(timeStart) == timeStart;
             boolean useMaxLimit = !JFGRules.isFaceFragment(getDevice().pid);
-            return BaseApplication.getAppComponent().getTaskDispatcher().perform(buildEntity(timeStart, asc, isMax, useMaxLimit));
+            return BaseDPTaskDispatcher.getInstance().perform(buildEntity(timeStart, asc, isMax, useMaxLimit));
         } catch (Exception e) {
             return Observable.just(BaseDPTaskResult.ERROR);
         }
@@ -248,7 +250,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         for (CamMessageBean bean : beanList) {
             DPEntity dpEntity = new DPEntity();
             dpEntity.setUuid(uuid);
-            dpEntity.setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount());
+            dpEntity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
             dpEntity.setMsgId((int) bean.message.msgId);
             dpEntity.setVersion(bean.message.version);
             dpEntity.setAction(DBAction.DELETED);
@@ -259,7 +261,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entity) {
-        return BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);
+        return BaseDPTaskDispatcher.getInstance().perform(entity);
     }
 
     @Override
@@ -268,7 +270,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             return;
         }
         List<IDPEntity> list = buildMultiEntities(beanList);
-        Subscription subscription = BaseApplication.getAppComponent().getTaskDispatcher().perform(list)
+        Subscription subscription = BaseDPTaskDispatcher.getInstance().perform(list)
                 .subscribeOn(Schedulers.io())
                 .filter(result -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -307,8 +309,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      */
     private Observable<IDPTaskResult> getDateListQuery() {
         DPEntity entity = new DPEntity();
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         entity.setAccount(account == null ? "" : account.getAccount());
         entity.setUuid(uuid);
 //        if (device.available()) {
@@ -325,7 +327,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 //        }
         entity.setAction(DBAction.CAM_DATE_QUERY);
         try {
-            return BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);
+            return BaseDPTaskDispatcher.getInstance().perform(entity);
         } catch (Exception e) {
             return Observable.just(BaseDPTaskResult.ERROR);
         }
@@ -333,7 +335,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void refreshDateList(boolean needToLoadList) {
-        BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
+        DataSourceManager.getInstance().syncDeviceProperty(uuid, 204);
         Subscription subscription = getDateListQuery()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -396,7 +398,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        final String sessionId = BaseApplication.getAppComponent().getCmd().getSessionId();
+                        final String sessionId = Command.getInstance().getSessionId();
                         AppLogger.d("sessionId:" + sessionId);
                         String person = id == null ? "" : id;
                         DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
@@ -404,8 +406,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         reqContent.faceId = person;
                         reqContent.msgType = type;
                         reqContent.seq = refresh ? 0 : sec;
-                        return BaseApplication.getAppComponent()
-                                .getCmd().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
+                        return  Command.getInstance().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
                     } catch (Exception e) {
                         AppLogger.e(MiscUtils.getErr(e));
                         throw new RuntimeException(e);

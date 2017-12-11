@@ -4,7 +4,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -46,7 +46,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
+                        Command.getInstance().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

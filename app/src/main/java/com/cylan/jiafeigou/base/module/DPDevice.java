@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.base.module;
 import android.support.annotation.IntDef;
 
 import com.cylan.jiafeigou.misc.pty.IProperty;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -44,7 +44,7 @@ public enum DPDevice {
     }
 
     public static DPDevice belong(int pid) {
-        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        IProperty property = PropertiesLoader.getInstance();
         DPDevice result = CAMERA;
         if (property != null) {
             result = property.isSerial("BELL", pid) ? DOORBELL : CAMERA;

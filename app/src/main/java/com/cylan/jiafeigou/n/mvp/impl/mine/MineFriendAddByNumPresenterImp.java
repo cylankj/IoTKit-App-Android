@@ -12,7 +12,9 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -70,7 +72,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
+                        Command.getInstance().checkFriendAccount(account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -82,7 +84,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                     if (result != null && result.code == JError.ErrorOK) {
                         if (result.isFriend) {
                             JFGFriendAccount friendAccount = null;
-                            ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                            ArrayList<JFGFriendAccount> friendsList = DataSourceManager.getInstance().getFriendsList();
                             if (friendsList != null) {
                                 for (JFGFriendAccount friend : friendsList) {
                                     if (TextUtils.equals(friend.account, result.account)) {
@@ -98,7 +100,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                         } else {
                             JFGFriendRequest friendRequest = null;
 
-                            ArrayList<JFGFriendRequest> friendsReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                            ArrayList<JFGFriendRequest> friendsReqList = DataSourceManager.getInstance().getFriendsReqList();
                             if (friendsReqList != null) {//这里我们判断当前是否有该好友的添加请求
                                 for (JFGFriendRequest request : friendsReqList) {
                                     if (TextUtils.equals(request.account, result.account)) {

@@ -4,7 +4,9 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -29,8 +31,6 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
-
 /**
  * Created by hds on 2017/3/2.
  * 现在服务器一次回复有N条,定义为集合A{},db中可能有>N条数据,定义为集合B.由于加上了拦截器,处理掉了
@@ -51,9 +51,6 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) throws Exception {
         this.option = cache.get(0).option(DBOption.MultiQueryOption.class);
-        if (sourceManager == null) {
-            sourceManager = getAppComponent().getSourceManager();
-        }
         return super.init(cache);
     }
 
@@ -78,14 +75,14 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         AppLogger.w("let'account go for local cache:" + option);
         AppLogger.w("let'account go for local versionMin:" + versionMin);
         AppLogger.w("let'account go for local versionMax:" + versionMax);
-        return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
+        return BaseDBHelper.getInstance().queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
                 versionMin, option.useMaxLimit ? versionMax : Long.MAX_VALUE/*面孔页面没有天数限制了,所以要区别对待*/, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
                     @Override
                     public Observable<BaseDPTaskResult> call(List<DPEntity> items) {
                         List<DataPoint> result = new ArrayList<>();
                         for (DPEntity item : items) {
-                            DataPoint parse = propertyParser.parser(item.getMsgId(), item.getBytes(), item.getVersion());
+                            DataPoint parse = BasePropertyParser.getInstance().parser(item.getMsgId(), item.getBytes(), item.getVersion());
                             if (parse != null) {
                                 parse.setVersion(item.getVersion());
                                 parse.setMsgId(item.getMsgId());
@@ -108,33 +105,33 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
             try {
                 //需要先清空这一天的.
                 AppLogger.w("let'account go for server cache:" + option);
-                long seq = sourceManager.syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
+                long seq = DataSourceManager.getInstance().syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
-                getAppComponent().getSourceManager()
+                DataSourceManager.getInstance()
                         .addInterceptor(seq, new DataSourceManager.Interceptors<RobotoGetDataRsp>() {
                             @Override
                             public void handleInterception(RobotoGetDataRsp data) {
                                 //麻痹的.没有diff,很麻烦,这里肯定是  505,512,222消息了.
                                 AppLogger.w("开始处理 拦截器");
                                 if (data != null && data.map != null) {
-                                    String account = getAppComponent().getSourceManager().getAccount().getAccount();
+                                    String account = DataSourceManager.getInstance().getAccount().getAccount();
                                     String uuid = data.identity;
                                     if (data.map.size() == 0) {
                                         AppLogger.w("没有数据");
                                         //需要根据option,的逻辑来删除本地数据.
                                         if (option.asc) {//向前查询.
                                             long timeEnd = TimeUtils.getSpecificDayEndTime(option.timeStart);
-                                            dpHelper.deleteDpSync(account, uuid, 505, option.timeStart, timeEnd);
-                                            dpHelper.deleteDpSync(account, uuid, 512, option.timeStart, timeEnd);
-                                            dpHelper.deleteDpSync(account, uuid, 222, option.timeStart, timeEnd);
-                                            dpHelper.deleteDpSync(account, uuid, 401, option.timeStart, timeEnd);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 505, option.timeStart, timeEnd);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 512, option.timeStart, timeEnd);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 222, option.timeStart, timeEnd);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 401, option.timeStart, timeEnd);
                                         } else {
                                             long timeStart = TimeUtils.getSpecificDayStartTime(option.timeStart);
-                                            dpHelper.deleteDpSync(account, uuid, 505, timeStart, option.timeStart);
-                                            dpHelper.deleteDpSync(account, uuid, 512, timeStart, option.timeStart);
-                                            dpHelper.deleteDpSync(account, uuid, 222, timeStart, option.timeStart);
-                                            dpHelper.deleteDpSync(account, uuid, 401, timeStart, option.timeStart);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 505, timeStart, option.timeStart);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 512, timeStart, option.timeStart);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 222, timeStart, option.timeStart);
+                                            BaseDBHelper.getInstance().deleteDpSync(account, uuid, 401, timeStart, option.timeStart);
                                         }
                                         return;
                                     }
@@ -165,10 +162,10 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             AppLogger.w("只有一条数据");
                                         }
                                         //有多条数据,先清空本地这个时间段内的数据.再插入.
-                                        dpHelper.deleteDpSync(account, uuid, 505, timeMax, timeMin);
-                                        dpHelper.deleteDpSync(account, uuid, 512, timeMax, timeMin);
-                                        dpHelper.deleteDpSync(account, uuid, 222, timeMax, timeMin);
-                                        dpHelper.deleteDpSync(account, uuid, 401, timeMax, timeMin);
+                                        BaseDBHelper.getInstance().deleteDpSync(account, uuid, 505, timeMax, timeMin);
+                                        BaseDBHelper.getInstance().deleteDpSync(account, uuid, 512, timeMax, timeMin);
+                                        BaseDBHelper.getInstance().deleteDpSync(account, uuid, 222, timeMax, timeMin);
+                                        BaseDBHelper.getInstance().deleteDpSync(account, uuid, 401, timeMax, timeMin);
                                         PerformanceUtils.stopTrace("deleteDpSync");
                                     } catch (Exception e) {
                                         AppLogger.e("err:" + MiscUtils.getErr(e));
@@ -210,7 +207,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                             for (JFGDPMsg msg : entry.getValue()) {
                                 if (!option.useMaxLimit || (msg.version >= versionMin && msg.version <= versionMax)) {
                                     // TODO: 2017/10/13 人脸识别不分天了,所以需要区别对待了
-                                    DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                                    DataPoint point = BasePropertyParser.getInstance().parser((int) msg.id, msg.packValue, msg.version);
                                     result.add(point);
                                 }
                             }

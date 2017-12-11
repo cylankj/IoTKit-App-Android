@@ -13,10 +13,10 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.widget.SafeCheckBox;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
@@ -77,7 +77,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     private void initView() {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        device = DataSourceManager.getInstance().getDevice(uuid);
         alarmInfo = device.$(502, new DpMsgDefine.DPAlarmInfo());
         checkedSerial = alarmInfo.day;
         final int checkBoxCount = lLayoutWeek.getChildCount();//应该是7

@@ -6,14 +6,14 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.jiafeigou.base.module.BaseForwardHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -157,10 +158,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        List<Device> list = DataSourceManager.getInstance().getAllDevice();
         AppLogger.w("subUuidList?" + ListUtils.getSize(list));
-        getView().onItemsRsp(list);
-        getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+        getView().onItemsRsp(new ArrayList<>(list));
+        getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 
     /**
@@ -187,11 +188,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public void fetchDeviceList(boolean manually) {
         addSubscription(Schedulers.io().createWorker().schedule(() -> {
             if (manually) {
-                BaseApplication.getAppComponent().getCmd().refreshDevList();
+                Command.getInstance().refreshDevList();
             }
         }), "refresh_manually");
-        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
-        if (state != LogState.STATE_ACCOUNT_ON) {
+        if (!LoginHelper.isLoginSuccessful()) {
             getView().onLoginState(false);
         }
         addSubscription(AndroidSchedulers.mainThread().createWorker().schedule(() -> {

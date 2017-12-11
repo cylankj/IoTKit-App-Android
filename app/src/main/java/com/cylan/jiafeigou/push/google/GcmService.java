@@ -3,8 +3,8 @@ package com.cylan.jiafeigou.push.google;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -26,7 +26,7 @@ public class GcmService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        JFGSourceManager sourceManager = DataSourceManager.getInstance();
         Log.d(TAG, "From: " + from + ",login?" + (sourceManager == null));
         Log.d(TAG, "DpMessage: " + message);
         if (from.startsWith("/topics/")) {

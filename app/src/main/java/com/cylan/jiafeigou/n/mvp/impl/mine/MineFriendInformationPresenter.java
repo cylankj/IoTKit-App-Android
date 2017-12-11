@@ -10,8 +10,9 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendInformationContact;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -84,7 +85,7 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().delFriend(friendContextItem.friendAccount.account);
+                        Command.getInstance().delFriend(friendContextItem.friendAccount.account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -127,7 +128,7 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().consentAddFriend(friendContextItem.friendRequest.account);
+                        Command.getInstance().consentAddFriend(friendContextItem.friendRequest.account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
@@ -159,7 +160,7 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
 
     @Override
     public int getOwnerDeviceCount() {
-        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        List<Device> devices = DataSourceManager.getInstance().getAllDevice();
         int ownerDeviceCount = 0;
         if (devices != null) {
             for (Device device : devices) {
