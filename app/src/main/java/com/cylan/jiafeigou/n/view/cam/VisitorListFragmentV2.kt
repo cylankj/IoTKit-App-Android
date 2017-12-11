@@ -146,14 +146,18 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             faceAdapter.set(visitorItems)
             faceAdapter.select(0)
             presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
-            visitorListener?.onLoadItemInformation(visitorItems[currentPosition])
+            if (!isExpanded) {
+                visitorListener?.onLoadItemInformation(visitorItems[currentPosition])
+            }
         } else if (!isNormalView && !faceAdapter.isNormalView) {
             currentPosition = 0
             faceAdapter.set(strangerItems)
             faceAdapter.select(0)
             strangerItems.getOrNull(0)?.apply {
                 presenter.fetchVisitsCount(strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
-                visitorListener?.onLoadItemInformation(strangerItems[currentPosition])
+                if (!isExpanded) {
+                    visitorListener?.onLoadItemInformation(strangerItems[currentPosition])
+                }
             }
         }
         resizeContentHeight()
@@ -225,9 +229,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                             Log.d("tag", "tag.....load more")
                             isLoadingFinished = false
                             face_header.post {
-                                footerAdapter.clear()
                                 if (isExpanded) {
-                                    footerAdapter.add(moreItem)
+                                    if (footerAdapter.adapterItemCount == 0)
+                                        footerAdapter.add(moreItem)
                                 }
                                 onLoadMore()
                             }
@@ -395,20 +399,22 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     override fun onVisitorListReady(visitorList: MutableList<FaceItem>, version: Long) {
-
         AppLogger.e("访客数据已经就绪")
-        if (version == 0L) {
-            visitorItems.clear()
-            visitorItems.addAll(preloadItems)
-        }
-        visitorItems.addAll(visitorList)
-        visitorListener?.onVisitorReady(visitorList)
-        makeContentView(true)
         footerAdapter.clear()
+        face_header.postDelayed({
+            if (version == 0L) {
+                visitorItems.clear()
+                visitorItems.addAll(preloadItems)
+            }
+            visitorItems.addAll(visitorList)
+            makeContentView(true)
+            isLoadingFinished = true
+        }, 500)
+        visitorListener?.onVisitorReady(visitorList)
 //        if (isExpanded) {
 //            footerAdapter.add(moreItem)
 //        }
-        isLoadingFinished = true
+
     }
 
     private fun decideShowFooter() {
@@ -428,14 +434,17 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onStrangerVisitorListReady(visitorList: MutableList<FaceItem>, version: Long) {
         AppLogger.e("陌生人列表已就绪")
-        if (version == 0L) {
-            strangerItems.clear()
-        }
-        strangerItems.addAll(visitorList)
-        visitorListener?.onStrangerVisitorReady(visitorList)
-        makeContentView(false)
         footerAdapter.clear()
-        isLoadingFinished = true
+        face_header.postDelayed({
+            if (version == 0L) {
+                strangerItems.clear()
+            }
+            strangerItems.addAll(visitorList)
+            makeContentView(false)
+            isLoadingFinished = true
+        }, 500)
+        visitorListener?.onStrangerVisitorReady(visitorList)
+
     }
 
     open fun refreshContent() {

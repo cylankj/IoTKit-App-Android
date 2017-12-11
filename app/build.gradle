@@ -94,10 +94,6 @@ android {
         _doby {
             java.srcDirs = ['src/_doby/java']
         }
-        _aidemo {
-            res.srcDirs = ['src/_aidemo/res']
-            java.srcDirs = ['src/_aidemo/java']
-        }
 //        _cell_c {
 //            java.srcDirs = ['src/_cell_c/java']
 //        }

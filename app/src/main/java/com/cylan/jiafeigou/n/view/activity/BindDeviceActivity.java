@@ -195,7 +195,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 break;
             case R.id.v_to_bind_half_camera: {
-                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_hemisphere);
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bell_doby);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.HALF_CAMERA));
