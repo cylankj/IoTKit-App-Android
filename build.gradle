@@ -7,8 +7,6 @@ buildscript {
     repositories {
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         jcenter()
-//        maven { url 'https://maven.google.com' }
-//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url "http://objectbox.net/beta-repo/" }
     }
     dependencies {
@@ -30,13 +28,9 @@ allprojects {
         jcenter()
 
         maven { url 'https://dl.google.com/dl/android/maven2/' }
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven {
 //              审核通过之后,可以注释掉
             url 'https://dl.bintray.com/cylan/maven/'
-        }
-        maven {
-            url 'https://dl.bintray.com/cylan/Iot'
         }
         maven { url "https://jitpack.io" }
         maven { url "http://objectbox.net/beta-repo/" }
@@ -55,7 +49,7 @@ task clean(type: Delete) {
 ext {
     //update by hds 2016-07-27 ordered by lzp
     minSdkVersion = 19
-    compileSdkVersion = 27
+    compileSdkVersion = 26
     targetSdkVersion = 23
     buildToolsVersion = '26.0.2'
     ////////////////////////////////////////////////////

@@ -115,9 +115,6 @@ android {
 
         debug {
             v2SigningEnabled true
-
-
-
             Properties properties = new Properties()
             File localProperties = project.rootProject.file('local.properties')
             if (localProperties.exists()) {
