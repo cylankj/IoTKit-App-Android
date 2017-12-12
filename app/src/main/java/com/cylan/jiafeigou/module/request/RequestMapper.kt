@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.module.request
 import android.util.Log
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.jiafeigou.dp.DpUtils
+import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.module.message.DPList
 import com.cylan.jiafeigou.module.message.MIDHeader
@@ -183,12 +184,15 @@ class RobotForwardDataV3Request(
         callee: String = "",
         @JvmField @field:Index(4) var action: Int = 0,
         @JvmField @field:Index(5) var values: DPList = DPList()
-) : AbstractRequest<RobotForwardDataV3Response>(20224, caller, callee, Math.abs(Random().nextLong())) {
+) : AbstractRequest<RobotForwardDataV3Response>(20224, caller, callee, Math.abs(Random().nextInt()).toLong()) {
 
     override fun executeFromServer(): Observable<RobotForwardDataV3Response> {
         return Observable.create<RobotForwardDataV3Response> { subscriber ->
-            val subscribe = RxBus.getCacheInstance().toObservable(MIDHeader::class.java).first { it.seq == seq }.subscribe({
-                Log.d("RobotForwardDataV3", "receive response:$it,bytes:${DpUtils.unpack(it.rawBytes)}")
+            val subscribe = RxBus.getCacheInstance().toObservable(MIDHeader::class.java).first {
+                Log.d(JConstant.CYLAN_TAG, "RobotForwardDataV3Request,receive seq:${it.seq},except seq:$seq")
+                it.seq == seq
+            }.subscribe({
+                Log.d(JConstant.CYLAN_TAG, "RobotForwardDataV3Request:receive response:$it,bytes:${DpUtils.unpack(it.rawBytes)}")
                 val dataV3Response = convert(it)
                 subscriber.onNext(dataV3Response)
                 subscriber.onCompleted()
@@ -199,7 +203,7 @@ class RobotForwardDataV3Request(
             subscriber.add(subscribe)
             val appCmd = Command.getInstance()
             val bytes = DpUtils.pack(this@RobotForwardDataV3Request)
-            AppLogger.w("正在发送 RobotForwardDataV3Request,原始 bytes 为:${Arrays.toString(bytes)}")
+            AppLogger.w("正在发送 RobotForwardDataV3Request,seq 为:$seq, 原始 bytes 为:${Arrays.toString(bytes)}")
             appCmd.SendForwardData(bytes)
         }.subscribeOn(Schedulers.io())
     }

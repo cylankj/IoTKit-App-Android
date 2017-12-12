@@ -199,7 +199,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         Device device = sourceManager.getDevice(uuid);
         if (device == null) return;
 
-        if (JFGRules.hasDoorLock(device.pid)) {
+        if (JFGRules.hasDoorLock(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
             bellDoorLock.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgvBellLiveCapture.getLayoutParams();
             layoutParams.removeRule(RelativeLayout.ALIGN_TOP);
@@ -601,6 +601,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onOpenDoorLockTimeOut() {
         ToastUtil.showFailureToast(getString(R.string.DOOR_OPEN_FAIL));
+    }
+
+    @Override
+    public void onOpenDoorLockPasswordError() {
+        ToastUtil.showFailureToast(getString(R.string.DOOR_WRONG_PSW));
     }
 
     @Override

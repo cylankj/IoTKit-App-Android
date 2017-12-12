@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.module
 
+import android.util.Log
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpMsgMap
 import com.cylan.jiafeigou.dp.DpUtils
+import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.module.message.DPList
 import com.cylan.jiafeigou.module.message.DPMessage
 import com.cylan.jiafeigou.module.request.RobotForwardDataV3Request
@@ -38,20 +40,24 @@ object DoorLockHelper {
         return RobotForwardDataV3Request(callee = uuid, action = CHANGE_PASSWORD_ACTION, values = dpList)
                 .execute()
                 .map {
-                    it.values.singleOrNull { it.msgId == DpMsgMap.ID_406_BELL_CHANGE_LOCK_PASSWORD_RSP }
-                            .let { DpUtils.unpackDataWithoutThrow(it?.value, Int::class.java, -1) } == 0
+                    val dpMessage = it.values.firstOrNull { it.msgId == DpMsgMap.ID_406_BELL_CHANGE_LOCK_PASSWORD_RSP }
+                    val success = DpUtils.unpackDataWithoutThrow(dpMessage?.value, Int::class.java, -1)
+                    Log.d(JConstant.CYLAN_TAG, "DoorLockHelper,openDoor:changePassword:$success")
+                    success == 0
                 }
     }
 
-    fun openDoor(uuid: String, password: String): Observable<Boolean> {
+    fun openDoor(uuid: String, password: String): Observable<Int> {
         val dpList = DPList()
         val bytes = DpUtils.pack(DpMsgDefine.DPChangeLockStatusReq(password, 1))
         dpList.add(DPMessage(DpMsgMap.ID_407_BELL_CHANGE_LOCK_STATUS, 0, bytes))
         return RobotForwardDataV3Request(callee = uuid, action = OPEN_DOOR_LOCK_ACTION, values = dpList)
                 .execute()
                 .map {
-                    it.values.singleOrNull { it.msgId == DpMsgMap.ID_408_BELL_CHANGE_LOCK_STATUS_RSP }
-                            .let { DpUtils.unpackDataWithoutThrow(it?.value, Int::class.java, 1) } == 0
+                    val dpMessage = it.values.firstOrNull { it.msgId == DpMsgMap.ID_408_BELL_CHANGE_LOCK_STATUS_RSP }
+                    val success = DpUtils.unpackDataWithoutThrow(dpMessage?.value, Int::class.java, 1)
+                    Log.d(JConstant.CYLAN_TAG, "DoorLockHelper,openDoor:result:$success")
+                    success
                 }
     }
 }

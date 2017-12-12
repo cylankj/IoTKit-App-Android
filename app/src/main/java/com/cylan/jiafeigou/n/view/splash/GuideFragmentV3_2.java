@@ -52,7 +52,7 @@ public class GuideFragmentV3_2 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SimpleAdapter viewAdapter = new SimpleAdapter(getFragmentManager());
         viewPager.setOffscreenPageLimit(4);
-        viewPager.setLocked(false);
+        viewPager.setEnabled(false);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override

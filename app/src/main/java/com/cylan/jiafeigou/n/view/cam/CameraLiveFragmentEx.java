@@ -72,6 +72,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.CYLAN_TAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -820,6 +821,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ToastUtil.showToast(getString(R.string.OPEN_DOOR_SUCCE_MSG));
     }
 
+    @Override
+    public void onOpenDoorPasswordError() {
+        Log.d(CYLAN_TAG,"开门密码错误");
+        ToastUtil.showToast(getString(R.string.DOOR_WRONG_PSW));
+    }
+
     public void removeVideoView() {
         if (!isUserVisible() && camLiveControlLayer != null)//可以解决退出activity,TransitionAnimation，出现黑屏
         {
@@ -838,7 +845,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 @Override
                 public void onSucceed(Bitmap bitmap) {
                     PerformanceUtils.stopTrace("takeShotFromLocalView");
-                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
+//                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
                     presenter.saveAndShareBitmap(bitmap,false);
                 }
 

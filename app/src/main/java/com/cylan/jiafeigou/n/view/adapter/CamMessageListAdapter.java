@@ -581,8 +581,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     public boolean showCachedVisitorList(String personId) {
-        List<CamMessageBean> list = visitorMaps.get(personId);
         clear();
+        List<CamMessageBean> list = visitorMaps.get(personId);
         if (list != null) {
             addAll(list);
         }

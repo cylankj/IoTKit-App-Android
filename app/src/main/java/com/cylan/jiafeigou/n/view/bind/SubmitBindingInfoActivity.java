@@ -161,6 +161,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             progressLoading.setVisibility(View.INVISIBLE);
             vsLayoutSwitch.setDisplayedChild(1);
             tvBindFailedText.setText(getString(R.string.Tap3_UserMessage_DeviceUnbind, reason));
+            btnBindRepeat.setText(R.string.OK);
             if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
                     && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS), getString(R.string._720PanoramicCamera))) {
                 ivExplainGray.setVisibility(View.VISIBLE);

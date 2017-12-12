@@ -19,7 +19,6 @@ import javax.inject.Inject
 class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BasePresenter<WireBindContract.View>(view)
         , WireBindContract.Presenter {
     override fun scanDogWiFi() {
-        AppLogger.w("scanDogWiFi")
         val subscribe = APObserver.scanDogWiFi()
                 .map {
                     it?.filter {
@@ -27,10 +26,10 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
                                 && !DataSourceManager.getInstance().getDevice(it.uuid).available()
                     }?.toMutableList()
                 }
+                .timeout(7, TimeUnit.SECONDS, Observable.just(null))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(false,R.string.addvideo_searching))
-                .timeout(7, TimeUnit.SECONDS, Observable.just(null))
+                .compose(applyLoading(false, R.string.addvideo_searching))
                 .subscribe({
                     when (it) {
                         null -> {
@@ -44,6 +43,7 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
                     it.printStackTrace()
                     AppLogger.e(it)
                 }
+        AppLogger.w("scanDogWiFi")
         addStopSubscription(subscribe)
     }
 

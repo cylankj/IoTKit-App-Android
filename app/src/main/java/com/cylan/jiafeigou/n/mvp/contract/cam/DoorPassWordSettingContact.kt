@@ -11,6 +11,7 @@ interface DoorPassWordSettingContact {
     interface View : JFGView {
         fun onChangePasswordSuccess()
         fun onChangePasswordError()
+        fun onOldPasswordError()
     }
 
     interface Presenter : JFGPresenter {

@@ -54,6 +54,8 @@ public class LoadingDialog extends AppCompatDialog {
         final LoadingDialog dialog = loadingDialog;
         loadingDialog = null;
         if (dialog != null) {
+            dialog.setOnCancelListener(null);
+            dialog.setOnDismissListener(null);
             dialog.dismiss();
         }
         loadingDialog = new LoadingDialog(context);
@@ -65,6 +67,7 @@ public class LoadingDialog extends AppCompatDialog {
         LoadingDialog dialog = getLoadingDialog(context);
         dialog.setMessageText(content);
         dialog.setCanceledOnTouchOutside(dismissTouchOutside);
+        dialog.setCancelable(dismissTouchOutside);
         dialog.setOnCancelListener(listener);
         dialog.show();
     }
@@ -73,6 +76,7 @@ public class LoadingDialog extends AppCompatDialog {
         LoadingDialog dialog = getLoadingDialog(context);
         dialog.setMessageText(content);
         dialog.setCanceledOnTouchOutside(dismissTouchOutside);
+        dialog.setCancelable(dismissTouchOutside);
         dialog.setOnCancelListener(listener);
         dialog.setOnShowListener(showListener);
         dialog.show();
@@ -94,6 +98,8 @@ public class LoadingDialog extends AppCompatDialog {
 
     public static void dismissLoading() {
         if (loadingDialog != null) {
+            loadingDialog.setOnCancelListener(null);
+            loadingDialog.setOnDismissListener(null);
             loadingDialog.dismiss();
             loadingDialog = null;
         }

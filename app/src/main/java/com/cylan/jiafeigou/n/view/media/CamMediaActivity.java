@@ -252,11 +252,11 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
 
-                CamWarnGlideURL camWarnUrl = MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1);
+                String warnUrlV2 = MiscUtils.getCamWarnUrlV2(uuid, camMessageBean, currentIndex + 1);
                 GlideApp.with(this)
                         .downloadOnly()
-                        .load(camWarnUrl)
-                        .onlyRetrieveFromCache(true)
+                        .load(warnUrlV2)
+//                        .onlyRetrieveFromCache(true)
                         .into(new SimpleTarget<File>() {
                             @Override
                             public void onResourceReady(File resource, Transition<? super File> transition) {
@@ -416,7 +416,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
         if (presenter != null) {
-            presenter.saveImage(MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1));
+            presenter.saveImage(MiscUtils.getCamWarnUrlV2(uuid, camMessageBean, currentIndex + 1));
         }
     }
 

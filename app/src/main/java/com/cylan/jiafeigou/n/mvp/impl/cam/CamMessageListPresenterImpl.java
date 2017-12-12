@@ -113,21 +113,32 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
                 .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
-
-        //adapter for doorbell
-        list.add(new DPEntity()
-                .setMsgId(401)
-                .setUuid(uuid)
-                .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
-        list.add(new DPEntity()
-                .setMsgId(DpMsgMap.ID_518_CAM_SETFACEIDSTATUS)
-                .setUuid(uuid)
-                .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
-                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
-
+        if (JFGRules.isBell(getDevice().pid)) {
+            //adapter for doorbell
+            list.add(new DPEntity()
+                    .setMsgId(401)
+                    .setUuid(uuid)
+                    .setAction(DBAction.CAM_MULTI_QUERY)
+                    .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
+                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        }
+        if (JFGRules.isFaceFragment(getDevice().pid)) {
+            list.add(new DPEntity()
+                    .setMsgId(DpMsgMap.ID_518_CAM_SETFACEIDSTATUS)
+                    .setUuid(uuid)
+                    .setAction(DBAction.CAM_MULTI_QUERY)
+                    .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
+                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        }
+        if (JFGRules.hasDoorLock(getDevice().pid)) {
+            // TODO: 2017/12/12 加入门锁消息 DP id
+//            list.add(new DPEntity()
+//                    .setMsgId(DpMsgMap.ID_518_CAM_SETFACEIDSTATUS)
+//                    .setUuid(uuid)
+//                    .setAction(DBAction.CAM_MULTI_QUERY)
+//                    .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime, useMaxLimit))
+//                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        }
         return list;
     }
 
