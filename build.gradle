@@ -34,7 +34,7 @@ allprojects {
         }
         maven { url "https://jitpack.io" }
         maven { url "http://objectbox.net/beta-repo/" }
-        maven { url "http://yf.cylan.com.cn:82/artifactory/libs-snapshot-local" }
+        maven { url "http://yf.cylan.com.cn:82/artifactory/libs-release-local" } // 改为release 地址
     }
 }
 

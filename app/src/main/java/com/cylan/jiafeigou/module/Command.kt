@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.module
 
 import android.Manifest
 import android.graphics.Bitmap
+import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -16,6 +17,7 @@ import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jfgapp.interfases.CallBack
 import com.cylan.jfgapp.jni.JfgAppCallBack
 import com.cylan.jfgapp.jni.JfgAppJni
+import com.cylan.jiafeigou.BuildConfig
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
@@ -86,7 +88,11 @@ class Command : AppCmd {
                         synchronized(Command::class.java) {
                             if (!isLogEnabled) {
                                 isLogEnabled = true
-                                JfgAppJni.EnableLog(true, logPath)
+                                var path = logPath
+                                if(BuildConfig.DEBUG){
+                                    path+="|logcat"
+                                }
+                                JfgAppJni.EnableLog(true, path)
                             }
                         }
                         AppLogger.permissionGranted = true

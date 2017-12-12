@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBeanDao;
@@ -316,8 +317,12 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                             if (finalClean.localOldFiles != null) {
                                 AppLogger.d("清理 日志");
                                 AppLogger.permissionGranted = false;
+                                String path = BaseApplication.getAppComponent().getLogPath();
+                                if (BuildConfig.DEBUG) {
+                                    path += "|logcat";
+                                }
                                 try {
-                                    Command.getInstance().enableLog(false, BaseApplication.getAppComponent().getLogPath());
+                                    Command.getInstance().enableLog(false, path);
                                 } catch (Exception e) {
                                 }
                                 for (File file : finalClean.localOldFiles) {
@@ -325,7 +330,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                                 }
                                 AppLogger.permissionGranted = true;
                                 try {
-                                    Command.getInstance().enableLog(true, BaseApplication.getAppComponent().getLogPath());
+                                    Command.getInstance().enableLog(true, path);
                                 } catch (Exception e) {
                                 }
                             }
