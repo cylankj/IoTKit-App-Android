@@ -65,6 +65,13 @@ public class History {
         }
     };
 
+    private static final ThreadLocal<SimpleDateFormat> SAFE_FORMAT__CURRENT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+        }
+    };
+
     private static final ThreadLocal<SimpleDateFormat> SAFE_FORMAT_ = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
@@ -116,6 +123,10 @@ public class History {
 
     public synchronized static String parseLiveTime(long time) {
         return SAFE_FORMAT_LIVE_TIME.get().format(new Date(time));
+    }
+
+    public synchronized static String parseLiveRealTime(long time) {
+        return SAFE_FORMAT__CURRENT.get().format(new Date(time));
     }
 
     public synchronized static String date2String(long time) {
