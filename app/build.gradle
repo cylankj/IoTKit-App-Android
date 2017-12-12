@@ -465,9 +465,8 @@ dependencies {
     compile 'com.trello:rxlifecycle-components:1.0'
     kapt 'com.github.bumptech.glide:compiler:4.3.1'
     compile 'com.github.bumptech.glide:okhttp3-integration:4.3.1'
-//    compile 'com.cylan.library:iotsdk:1.0-20171130.031331-35'
+    compile 'com.cylan.library:iotsdk:1.1.253' // 留意查看最新的版本号
 // If you want to use Kotlin syntax with Android Lifecycle
-//    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20171019.084208-15', ext: 'pom')
 }
 
 /////////////////编译过滤器/////////////////////////////////
