@@ -847,11 +847,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             showHistoryWheel(true);
             removeCallbacks(portHideRunnable);
-            postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
             svSwitchStream.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false) ? VISIBLE : GONE);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
+                postDelayed(portHideRunnable, 3000);
             }
             Log.d("wahat", "portShowRunnable");
         }
@@ -1094,8 +1094,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
 
     private void setLoadingState(String content, String subContent) {
+        if (isLand()) {
+            layoutC.setVisibility(GONE);
+            return;
+        }
         int state = livePlayState;
-        if (isLand()) state = PLAY_STATE_IDLE;
         layoutC.setState(state, content, subContent);
         if (!TextUtils.isEmpty(content) || !TextUtils.isEmpty(subContent)) {
             layoutC.setVisibility(VISIBLE);
@@ -1110,6 +1113,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(INVISIBLE);
                 break;
         }
+
     }
 
     @Override
