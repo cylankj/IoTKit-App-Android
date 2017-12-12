@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/tv_cam_message_item_date"
-                android:text="@string/Tap1_Menu_More"
+                android:text="@string/MESSAGES_FILTER_ALL"
                 android:textColor="@color/color_4b9fd5_selector"
                 android:textSize="@dimen/sp11" />
 
