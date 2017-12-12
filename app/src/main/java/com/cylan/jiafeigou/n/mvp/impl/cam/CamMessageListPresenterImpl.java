@@ -222,22 +222,18 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null && ret != null)
-                .map(result -> {
-//                    if (refresh) {
-//                        mView.onListInsert(result.first, 0);
-//                    } else
-                    if (result.second) {
-                        mView.onListAppend(result.first);
-                    } else {
-                        mView.onListInsert(result.first, 0);
-                    }
-                    return result;
-                })
                 .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> mView.loadingDismiss(),
+                .doOnTerminate(() -> mView.loadingDismiss())
+                .subscribe(result -> {
+                            if (result.second) {
+                                mView.onListAppend(result.first);
+                            } else {
+                                mView.onListInsert(result.first, 0);
+                            }
+                        },
                         throwable -> {
                             AppLogger.e("err: " + throwable.getLocalizedMessage());
                             mView.onErr();
@@ -406,7 +402,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         reqContent.faceId = person;
                         reqContent.msgType = type;
                         reqContent.seq = refresh ? 0 : sec;
-                        return  Command.getInstance().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
+                        return Command.getInstance().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
                     } catch (Exception e) {
                         AppLogger.e(MiscUtils.getErr(e));
                         throw new RuntimeException(e);

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.module.request
 
+import android.util.Log
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.module.Command
@@ -187,6 +188,7 @@ class RobotForwardDataV3Request(
     override fun executeFromServer(): Observable<RobotForwardDataV3Response> {
         return Observable.create<RobotForwardDataV3Response> { subscriber ->
             val subscribe = RxBus.getCacheInstance().toObservable(MIDHeader::class.java).first { it.seq == seq }.subscribe({
+                Log.d("RobotForwardDataV3", "receive response:$it,bytes:${DpUtils.unpack(it.rawBytes)}")
                 val dataV3Response = convert(it)
                 subscriber.onNext(dataV3Response)
                 subscriber.onCompleted()

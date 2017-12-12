@@ -469,7 +469,7 @@ public class JConstant {
             return R.drawable.icon_home_camera_online;
         }
         AppLogger.e("bad pid: " + pid);
-        return R.mipmap.ic_launcher;
+        return R.drawable.icon_home_camera_online;
     }
 
     public static int getOfflineIcon(int pid) {
@@ -495,7 +495,7 @@ public class JConstant {
             return R.drawable.icon_home_camera_offline;
         }
         AppLogger.e("bad pid: " + pid);
-        return R.mipmap.ic_launcher;
+        return R.drawable.icon_home_camera_offline;
     }
 
     public static final String KEY_BIND_DEVICE = "BIND_DEVICE";

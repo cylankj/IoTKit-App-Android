@@ -62,7 +62,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.CameraMessageAppBarBehavior;
 import com.cylan.jiafeigou.widget.CameraMoreTextDialog;
 import com.cylan.jiafeigou.widget.InterceptSwipeRefreshLayout;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -145,7 +144,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private int pageType = FaceItem.FACE_TYPE_ALL;
     private String personId;
     private boolean hasFirstRequested = false;
-    private CameraMessageAppBarBehavior behavior;
     private Rect appbarRect = new Rect();
     private Rect messageRect = new Rect();
     private Rect headerRect = new Rect();
@@ -186,12 +184,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) aplCamMessageAppbar.getLayoutParams();
-        CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
-        if (behavior instanceof CameraMessageAppBarBehavior) {
-            this.behavior = (CameraMessageAppBarBehavior) behavior;
-        }
         if (mockView != null) {
             this.tvCamMessageListEdit.setVisibility(View.INVISIBLE);
             this.tvCamMessageListEdit = mockView;
@@ -654,6 +646,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean reset = tvCamMessageListDate.getTag() == null ||
                     ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
+            camMessageListAdapter.notifyDataSetHasChanged();
             final int count = beanArrayList == null ? 0 : beanArrayList.size();
             if (count == 0 && camMessageListAdapter.getCount() > 0) {
                 ToastUtil.showToast(getString(R.string.Loaded));
