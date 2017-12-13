@@ -163,7 +163,11 @@ public class MiscUtils {
         switch ((int) bean.message.getMsgId()) {
             case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
                 DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) bean.message;
-                fileName = dpAlarm.version / 1000 + "_" + index + ".jpg";
+                if (dpAlarm.face_id == null || dpAlarm.face_id.length == 0) {
+                    fileName = dpAlarm.version / 1000 + "_" + index + ".jpg";
+                } else {
+                    fileName = dpAlarm.version / 1000 + ".jpg";
+                }
             }
             break;
             case DpMsgMap.ID_401_BELL_CALL_STATE: {

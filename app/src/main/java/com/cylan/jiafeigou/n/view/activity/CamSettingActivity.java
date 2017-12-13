@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
@@ -200,11 +199,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
         sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
         sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
-
-        //for test only
-        if (BuildConfig.DEBUG) {
-            sivDeviceDoorLock.setVisibility(View.VISIBLE);
-        }
 
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
@@ -491,7 +485,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     speaker = Math.max(speaker, 0);
                     speaker = Math.min(speaker, 10);
                     try {
-                        int i =Command.getInstance().setTargetLeveledBFS(mic, speaker);
+                        int i = Command.getInstance().setTargetLeveledBFS(mic, speaker);
                         AppLogger.d("正在设置 TargetLevel:" + mic + ",result:" + i);
                         if (i == 0) {
                             runOnUiThread(() -> ToastUtil.showToast("设置成功"));

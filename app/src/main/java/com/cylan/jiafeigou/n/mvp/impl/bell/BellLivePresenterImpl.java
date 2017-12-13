@@ -108,9 +108,12 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                     if (success == null) {
                         mView.onOpenDoorLockTimeOut();
                         AppLogger.e("开门超时了");
-                    } else if (success) {
+                    } else if (success == 0) {
                         mView.onOpenDoorLockSuccess();
                         AppLogger.d("开门成功了");
+                    } else if (success == 2) {
+                        mView.onOpenDoorLockPasswordError();
+                        AppLogger.d("开门密码错误");
                     } else {
                         mView.onOpenDoorLockFailure();
                         AppLogger.d("开门失败了");

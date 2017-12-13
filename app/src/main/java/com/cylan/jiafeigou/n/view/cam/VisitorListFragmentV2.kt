@@ -41,6 +41,7 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.ToastUtil
+import com.cylan.jiafeigou.utils.ViewUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mikepenz.fastadapter.IItem
@@ -145,20 +146,10 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             currentPosition = 0
             faceAdapter.set(visitorItems)
             faceAdapter.select(0)
-            presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
-            if (!isExpanded) {
-                visitorListener?.onLoadItemInformation(visitorItems[currentPosition])
-            }
         } else if (!isNormalView && !faceAdapter.isNormalView) {
             currentPosition = 0
             faceAdapter.set(strangerItems)
             faceAdapter.select(0)
-            strangerItems.getOrNull(0)?.apply {
-                presenter.fetchVisitsCount(strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
-                if (!isExpanded) {
-                    visitorListener?.onLoadItemInformation(strangerItems[currentPosition])
-                }
-            }
         }
         resizeContentHeight()
     }
@@ -166,7 +157,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     private fun resizeContentHeight() {
         val layoutParams = view!!.layoutParams
         val oldHeight = layoutParams.height
-        layoutParams.height = if (faceAdapter.adapterItemCount > 3 || isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else resources.getDimensionPixelSize(R.dimen.y144)
+        layoutParams.height = when {
+            faceAdapter.adapterItemCount > 3 || isExpanded -> ViewGroup.LayoutParams.MATCH_PARENT
+            faceAdapter.adapterItemCount > 0 -> resources.getDimensionPixelSize(R.dimen.y144)
+            else -> resources.getDimensionPixelSize(R.dimen.y0)
+        }
         if (oldHeight != layoutParams.height) {
             view!!.layoutParams = layoutParams
         }
@@ -193,8 +188,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view)
         faceAdapter = FaceAdapter(true)
-//        refresh_layout.isEnabled = false
-//        refresh_layout.setColorSchemeColors(resources.getColor(R.color.color_36BDFF))
         gridLayoutManager = GridLayoutManager(context, 3)
         face_header.layoutManager = gridLayoutManager
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -242,18 +235,25 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
         })
         faceAdapter.withOnClickListener { v, adapter, item, position ->
-            visitorListener?.onLoadItemInformation(item)
             when (item.getFaceType()) {
                 FaceItem.FACE_TYPE_ALL -> {
+                    currentPosition = 0
                     presenter.fetchVisitorList(0)
                     cam_message_indicator_watcher_text.visibility = View.VISIBLE
                     presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
+                    visitorListener?.onLoadItemInformation(item.getFaceType(), "")
                 }
                 FaceItem.FACE_TYPE_STRANGER -> {
+                    currentPosition = 0
                     cam_message_indicator_watcher_text.visibility = View.GONE
                     faceAdapter.isNormalView = false
-                    makeContentView(false)
+//                    makeContentView(false)
+                    faceAdapter.set(strangerItems)
+                    faceAdapter.select(0)
+                    resizeContentHeight()
+                    visitorListener?.onLoadItemInformation(FaceItem.FACE_TYPE_STRANGER, strangerItems.getOrNull(0)?.strangerVisitor?.faceId ?: "")
                     presenter.fetchStrangerVisitorList(0)
+
                 }
                 FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                     val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_ACQUAINTANCE) item.visitor?.personId else item.strangerVisitor?.faceId
@@ -261,19 +261,25 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     cam_message_indicator_watcher_text.visibility = View.VISIBLE
 
                     presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_ACQUAINTANCE)
+                    visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
+                    setExpanded(false)
                 }
                 FaceItem.FACE_TYPE_STRANGER_SUB -> {
                     val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_STRANGER_SUB) item.strangerVisitor?.faceId else item.visitor?.personId
                     AppLogger.w("主列表的 faceId?personId")
                     cam_message_indicator_watcher_text.visibility = View.VISIBLE
                     presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_STRANGER)
+                    visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
+                    setExpanded(false)
                 }
             }
             return@withOnClickListener true
         }
 
         faceAdapter.withOnLongClickListener { v, adapter, item, position ->
-
+            if (true) {
+                return@withOnLongClickListener true
+            }
             //            visitorListener?.onLoadItemInformation(item)
             if (item.getFaceType() != FaceItem.FACE_TYPE_ALL && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER) {
                 showHeaderFacePopMenu(item, position, v, item.getFaceType())
@@ -301,8 +307,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
     }
 
-    fun onLoadMore() {
-        Log.d("VisitorListFragmentV2", "onLoadMore")
+    private val moreRunnable = Runnable {
         if (faceAdapter.isNormalView) {
             visitorItems.lastOrNull()?.apply {
                 if (getFaceType() == FaceItem.FACE_TYPE_ACQUAINTANCE) {
@@ -316,23 +321,35 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
     }
 
+    fun onLoadMore() {
+        Log.d("VisitorListFragmentV2", "onLoadMore")
+        face_header.removeCallbacks(moreRunnable)
+        face_header.postDelayed(moreRunnable, 500)
+    }
+
     @OnClick(R.id.more_text)
     fun clickedExpandArrow() {
         Log.d("VisitorFragment", "clickedExpandArrow")
         isExpanded = !isExpanded
-//        refresh_layout.isRefreshing = false
-//        refresh_layout.isEnabled = isExpanded
+        setExpanded(isExpanded)
+    }
+
+    private fun setExpanded(expanded: Boolean) {
+        this.isExpanded = expanded
         visitorListener?.onExpanded(isExpanded)
-        resizeContentHeight()
-        more_text.setText(if (isExpanded) R.string.FACE_COLLAPSE else R.string.Tap1_Menu_More)
-        if (!isExpanded) {
+        if (isExpanded) {
+            more_text.setText(R.string.FACE_COLLAPSE)
+            ViewUtils.setDrawablePadding(more_text, R.drawable.btn_unfolded, 2)
+
+        } else {
+            more_text.setText(R.string.Tap1_Menu_More)
+            ViewUtils.setDrawablePadding(more_text, R.drawable.btn_put_away, 2)
             footerAdapter.clear()
             faceAdapter.selections.firstOrNull()?.apply {
-                gridLayoutManager.scrollToPosition(this)
+                face_header.postDelayed({ gridLayoutManager.scrollToPosition(this) }, 200)
             }
-        } else {
-            //
         }
+        resizeContentHeight()
     }
 
     private fun makeVisitorCount(count: Int, forAllVisitor: Boolean) {
@@ -400,22 +417,34 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onVisitorListReady(visitorList: MutableList<FaceItem>, version: Long) {
         AppLogger.e("访客数据已经就绪")
-
-        footerAdapter.clear()
-        face_header.postDelayed({
-            if (version == 0L) {
-                visitorItems.clear()
-                visitorItems.addAll(preloadItems)
-            }
+        if (version == 0L) {
+            visitorItems.clear()
+            visitorItems.addAll(preloadItems)
             visitorItems.addAll(visitorList)
-            makeContentView(true)
+            faceAdapter.set(visitorItems)
+            faceAdapter.select(currentPosition)
+        } else {
+            //append
+            visitorItems.addAll(visitorList)
+            if (!faceAdapter.isNormalView) {
+                faceAdapter.set(visitorItems)
+            } else {
+                faceAdapter.notifyAdapterDataSetChanged()
+            }
+        }
+        resizeContentHeight()
+//        makeContentView(true)
+        visitorListener?.onVisitorReady(visitorList)
+        val id = visitorItems.getOrNull(currentPosition)?.visitor?.personId ?: ""
+        presenter.fetchVisitsCount(id, FILTER_TYPE_ALL)
+        if (!isExpanded) {
+            val faceItem = visitorItems[currentPosition]
+            visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.visitor?.personId ?: "")
+        }
+        face_header.postDelayed({
+            footerAdapter.clear()
             isLoadingFinished = true
         }, 500)
-        visitorListener?.onVisitorReady(visitorList)
-//        if (isExpanded) {
-//            footerAdapter.add(moreItem)
-//        }
-
     }
 
     private fun decideShowFooter() {
@@ -428,31 +457,65 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     open fun exitStranger() {
         faceAdapter.isNormalView = true
-        makeContentView(true)
+        currentPosition = 0
+        faceAdapter.set(visitorItems)
+        faceAdapter.select(currentPosition)
+        gridLayoutManager.scrollToPosition(0)
+        resizeContentHeight()
+//        makeContentView(true)
         makeVisitorCount(0, true)
-//        presenter.fetchVisitorList()
+        presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
+        if (!isExpanded) {
+            val faceItem = visitorItems[currentPosition]
+            visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.visitor?.personId ?: "")
+        }
     }
 
     override fun onStrangerVisitorListReady(visitorList: MutableList<FaceItem>, version: Long) {
         AppLogger.e("陌生人列表已就绪")
-        footerAdapter.clear()
-        face_header.postDelayed({
-            if (version == 0L) {
-                strangerItems.clear()
-            }
+        if (version == 0L) {
+            strangerItems.clear()
             strangerItems.addAll(visitorList)
-            makeContentView(false)
+            faceAdapter.set(strangerItems)
+            faceAdapter.select(currentPosition)
+        } else {
+            //append
+            strangerItems.addAll(visitorList)
+            if (faceAdapter.isNormalView) {
+                faceAdapter.set(strangerItems)
+            } else {
+                faceAdapter.notifyAdapterDataSetChanged()
+            }
+        }
+        resizeContentHeight()
+//        strangerItems.addAll(visitorList)
+//        makeContentView(false)
+        strangerItems.getOrNull(currentPosition)?.apply {
+            presenter.fetchVisitsCount(strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
+            if (!isExpanded) {
+                val faceItem = strangerItems[currentPosition]
+                visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.strangerVisitor?.faceId ?: "")
+            }
+        }
+        visitorListener?.onStrangerVisitorReady(visitorList)
+        isLoadingFinished = true
+        face_header.postDelayed({
+            footerAdapter.clear()
             isLoadingFinished = true
         }, 500)
-        visitorListener?.onStrangerVisitorReady(visitorList)
-
     }
 
     open fun refreshContent() {
         if (faceAdapter.isNormalView) {
-            face_header.post { presenter?.fetchVisitorList(0) }
+            face_header.post {
+                currentPosition = 0
+                presenter?.fetchVisitorList(0)
+            }
         } else {
-            face_header.post { presenter?.fetchStrangerVisitorList(0) }
+            face_header.post {
+                currentPosition = 0
+                presenter?.fetchStrangerVisitorList(0)
+            }
         }
     }
 
@@ -521,9 +584,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        popupWindow.showAsDropDown(faceItem.findViewById(R.id.img_item_face_selection))
         val anchor = faceItem.findViewById<View>(R.id.img_item_face_selection)
 //        showAsDropDown(popupWindow, anchor, 0, 0)
-        var position = IntArray(2)
-        anchor.getLocationOnScreen(position)
-        popupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, position[0], position[1] + anchor.measuredHeight)
+//        var position = IntArray(2)
+//        anchor.getLocationOnScreen(position)
+//        popupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, position[0], position[1] + anchor.measuredHeight)
         PopupWindowCompat.showAsDropDown(popupWindow, anchor, 0, 0, Gravity.NO_GRAVITY)
     }
 
@@ -600,7 +663,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     interface VisitorListener {
-        fun onLoadItemInformation(item: FaceItem)
+        fun onLoadItemInformation(faceType: Int, personOrFaceId: String)
         fun onStrangerVisitorReady(visitorList: MutableList<FaceItem>)
         fun onVisitorReady(visitorList: MutableList<FaceItem>)
         fun onExpanded(expanded: Boolean)

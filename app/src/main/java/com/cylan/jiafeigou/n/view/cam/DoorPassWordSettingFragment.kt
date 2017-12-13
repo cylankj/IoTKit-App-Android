@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +46,13 @@ class DoorPassWordSettingFragment : BaseFragment<DoorPassWordSettingContact.Pres
     @OnClick(R.id.tv_toolbar_right)
     fun done() {
         AppLogger.w("done")
-        presenter.changePassWord(password1.getEditer().text.toString().trim(), password2.getEditer().text.toString().trim())
+        val oldPassword = password1.getEditer().text.toString().trim()
+        val newPassword = password2.getEditer().text.toString().trim()
+        if (TextUtils.equals(oldPassword, newPassword)) {
+            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME))
+        } else {
+            presenter.changePassWord(oldPassword, newPassword)
+        }
     }
 
     override fun initViewAndListener() {
@@ -82,5 +89,10 @@ class DoorPassWordSettingFragment : BaseFragment<DoorPassWordSettingContact.Pres
     override fun onChangePasswordError() {
         AppLogger.w("onChangePasswordError")
         ToastUtil.showToast(context!!.getString(R.string.SETTINGS_FAILED))
+    }
+
+    override fun onOldPasswordError() {
+        AppLogger.w("onOldPasswordError")
+        ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR))
     }
 }

@@ -121,6 +121,8 @@ public interface CamLiveContract {
         void onOpenDoorError();
 
         void onOpenDoorSuccess();
+
+        void onOpenDoorPasswordError();
     }
 
     interface Presenter extends BasePresenter {

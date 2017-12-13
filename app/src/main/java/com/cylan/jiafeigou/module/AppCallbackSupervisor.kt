@@ -379,6 +379,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
                 BaseForwardHelper.getInstance().dispatcherForward<Any>(rawRspMsg)
             }
             else -> {
+                Log.d(JConstant.CYLAN_TAG, "send mid header:$midHeader,seq:${midHeader.seq}")
                 RxBus.getCacheInstance().post(midHeader)
             }
         }

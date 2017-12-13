@@ -29,6 +29,8 @@ public interface BellLiveContract {
         void onOpenDoorLockFailure();
 
         void onOpenDoorLockTimeOut();
+
+        void onOpenDoorLockPasswordError();
     }
 
     interface Presenter extends CallablePresenter {

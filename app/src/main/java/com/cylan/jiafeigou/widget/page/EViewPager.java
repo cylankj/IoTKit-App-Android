@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.widget.page;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -35,6 +34,7 @@ public class EViewPager extends ViewPager {
 
     @Override
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+        if (isLocked) return false;
         if (v != this && v instanceof ViewPager) {
             int currentItem = ((ViewPager) v).getCurrentItem();
             int countItem = ((ViewPager) v).getAdapter().getCount();
@@ -106,7 +106,7 @@ public class EViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        switch (event.getAction() & MotionEventCompat.ACTION_MASK) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
                 if (isConsumedOutside(event)) {
                     return false;

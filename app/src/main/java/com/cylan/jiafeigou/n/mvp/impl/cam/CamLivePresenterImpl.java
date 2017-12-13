@@ -355,8 +355,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(success -> {
                     if (success == null) {
                         mView.onOpenDoorError();
-                    } else if (success) {
+                    } else if (success == 0) {
                         mView.onOpenDoorSuccess();
+                    } else if (success == 2) {
+                        mView.onOpenDoorPasswordError();
                     } else {
                         mView.onOpenDoorError();
                     }
@@ -1084,9 +1086,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             PerformanceUtils.startTrace("takeCapture");
             Bitmap bitmap = (Bitmap) o;
-            if (weakReference.get() != null && forPopWindow) {
-                weakReference.get().onTakeSnapShot(bitmap);//弹窗
-            }
+
             final String fileName = "." + uuid + System.currentTimeMillis();
             final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
             removeLastPreview();
@@ -1095,7 +1095,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             //需要删除之前的一条记录.
             BitmapUtils.saveBitmap2file(bitmap, filePath);
             MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
-            shareSnapshot(true, filePath);//最后一步处理分享
+            if (weakReference.get() != null && forPopWindow) {
+                weakReference.get().onTakeSnapShot(bitmap);//弹窗
+                shareSnapshot(true, filePath);//最后一步处理分享
+            }
             return new Pair<>(bitmap, filePath);
         }
     }

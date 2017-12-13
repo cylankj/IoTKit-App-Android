@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.DeviceInformation;
@@ -430,7 +429,7 @@ public class JFGRules {
      */
     public static boolean showWiredMode(int pid, boolean share) {
         return PropertiesLoader.getInstance().hasProperty(pid,
-                "wired", share);
+                "WIREDMODE", share);
     }
 
     public static boolean hasProperty(int pid, final String tag) {
@@ -585,6 +584,7 @@ public class JFGRules {
             try {
                 Integer intOS = Integer.valueOf(os);
                 switch (intOS) {
+                    case 83:
                     case 84:
                     case 92:
                         hasMicFeature = false;
@@ -604,10 +604,6 @@ public class JFGRules {
         PropertiesLoader loader = PropertiesLoader.getInstance();
         String door_lock = loader.property(pid, "DOOR_LOCK");
         hasDoorLockFeature = TextUtils.equals(door_lock, "1");
-//        //just for test
-        if (BuildConfig.DEBUG) {
-            hasDoorLockFeature = true;
-        }
         return hasDoorLockFeature;
     }
 

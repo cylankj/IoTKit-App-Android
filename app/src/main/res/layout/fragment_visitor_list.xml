@@ -44,6 +44,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
             android:clickable="true"
+            android:drawableEnd="@drawable/btn_put_away"
             android:focusable="true"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y15"
@@ -53,6 +54,12 @@
             android:textSize="@dimen/sp14" />
 
     </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y1"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_d2d2d2" />
 
     <View
         android:id="@+id/cover_layer"

@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.bind
 
+import android.support.v7.app.AlertDialog
 import android.view.View
+import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.n.mvp.contract.bind.WireBindContract
 import com.cylan.jiafeigou.n.mvp.impl.bind.WireBindPresenter
 import com.cylan.jiafeigou.n.view.activity.BindAnimationActivity
@@ -31,6 +33,16 @@ class WireBindActivity : BindAnimationActivity(),
 
     override fun onClick(view: View) {
         mPresenter.scanDogWiFi()
+    }
+
+    override fun performBackIntercept(willExit: Boolean): Boolean {
+        AlertDialog.Builder(this)
+                .setMessage(R.string.Tap1_AddDevice_tips)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, { _, _ -> finishExt() })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show()
+        return true
     }
 
 }

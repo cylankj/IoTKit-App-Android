@@ -1,12 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -24,10 +23,10 @@ import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
@@ -65,10 +64,10 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void saveImage(CamWarnGlideURL glideURL) {
+    public void saveImage(String url) {
         GlideApp.with(getView().getContext())//注意contxt
                 .asBitmap()
-                .load(glideURL)
+                .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -95,7 +94,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         .setVersion(v602)//错了
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
-                .flatMap(task ->BaseDPTaskDispatcher.getInstance().perform(task))
+                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
                 .map(ret -> new DPEntity()
                         .setUuid(uuid)
                         .setVersion(finalVersion)
@@ -143,35 +142,49 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     public void collect(int index, long version, CamMessageBean bean) {
         long finalVersion = MiscUtils.getFinalVersion(bean, index + 1);
         Log.d("finalVersion", "collect finalVersion:" + finalVersion + ",index:" + index);
-        Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
-            DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-            item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-            item.cid = uuid;
-            Device device = DataSourceManager.getInstance().getDevice(uuid);
-            item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            item.fileName = MiscUtils.getFileName(bean, index + 1);
-            item.time = (int) (finalVersion / 1000);
-            FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                    .load(MiscUtils.getCamWarnUrl(uuid, bean, index + 1))
-                    .downloadOnly(100, 100);
-            String filePath = null;
-            try {
-                filePath = future.get().getAbsolutePath();
-            } catch (Exception e) {
-                AppLogger.e("err:" + MiscUtils.getErr(e));
-            }
-            IDPEntity entity = new DPEntity()
-                    .setUuid(uuid)
-                    .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                    .setVersion(System.currentTimeMillis())
-                    .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
-                    .setAction(DBAction.SHARED)
-                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
-                    .setBytes(item.toBytes());
-            subscriber.onNext(entity);
-            subscriber.onCompleted();
+
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<File>) subscriber -> {
+            GlideApp.with(ContextUtils.getContext())
+                    .downloadOnly()
+                    .load(MiscUtils.getCamWarnUrlV2(uuid, bean, index + 1))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                            Log.d("CamMediaPresenterImpl", "onResourceReady:" + resource);
+                            subscriber.onNext(resource);
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
+                            Log.d("CamMediaPresenterImpl", "onLoadFailed");
+                            subscriber.onError(new RxEvent.HelperBreaker());
+                        }
+                    });
+
+
         })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(file -> {
+                    DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+                    item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+                    item.cid = uuid;
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                    item.fileName = MiscUtils.getFileName(bean, index + 1);
+                    item.time = (int) (finalVersion / 1000);
+                    return new DPEntity()
+                            .setUuid(uuid)
+                            .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                            .setVersion(System.currentTimeMillis())
+                            .setOption(new DBOption.SingleSharedOption(1, 1, file.getAbsolutePath()))
+                            .setAction(DBAction.SHARED)
+                            .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
+                            .setBytes(item.toBytes());
+                })
                 .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -181,8 +194,14 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     if (e != null && e instanceof BaseDPTaskException) {
                         getView().onCollectingRsp(((BaseDPTaskException) e).getErrorCode());
                         AppLogger.e("err: " + e.getLocalizedMessage());
+                    } else {
+                        getView().onCollectingRsp(-1);
+                    }
+                    if (e != null) {
+                        e.printStackTrace();
                     }
                 });
+        addStopSubscription(subscribe);
     }
 
     @Override

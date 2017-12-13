@@ -612,10 +612,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         // TODO: 2017/10/11
         boolean hasMicFeature = JFGRules.hasMicFeature(device.pid);
         boolean hasDoorLock = JFGRules.hasDoorLock(device.pid);
-
+        boolean isShareAccount = !TextUtils.isEmpty(device.shareAccount);
         imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
         imgVLandCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
-        ivCamDoorLock.setVisibility(hasDoorLock ? VISIBLE : GONE);
+        ivCamDoorLock.setVisibility(hasDoorLock && !isShareAccount ? VISIBLE : GONE);
         imgVCamTriggerMic.setImageResource(hasDoorLock ? portBellMicRes[0] : portMicRes[0]);
 
         updateDoorLock();
@@ -1484,7 +1484,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isWheelBusy = historyWheelHandler.isBusy();
         //拖动的时候，拒绝外部设置时间。
         if (!isWheelBusy && JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
-            liveTimeLayout.setContent(type, timestamp);
+            liveTimeLayout.setContent(type, livePlayType == TYPE_LIVE ? 0 : timestamp);
         }
         if (type == TYPE_HISTORY && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
@@ -1766,7 +1766,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 boolean capture, boolean captureEnable) {
         ImageView pMic = (ImageView) imgVCamTriggerMic;
         pMic.setEnabled(micEnable);
-        pMic.setImageResource(JFGRules.hasDoorLock(getDevice().pid) ? portBellMicRes[mic ? 1 : 0] : portMicRes[mic ? 1 : 0]);
+        boolean hasDoorLock = JFGRules.hasDoorLock(getDevice().pid);
+        boolean isShareAccount = !TextUtils.isEmpty(getDevice().shareAccount);
+        pMic.setImageResource(hasDoorLock && !isShareAccount ? portBellMicRes[mic ? 1 : 0] : portMicRes[mic ? 1 : 0]);
         ImageView lMic = (ImageView) imgVLandCamTriggerMic;
         lMic.setEnabled(micEnable);
         lMic.setImageResource(landMicRes[mic ? 1 : 0]);
