@@ -22,7 +22,6 @@ import java.util.List;
  */
 
 public class Switcher extends LinearLayout {
-
     private TextView viewFirst;
     private TextView viewSecond;
     private TextView viewThird;
@@ -164,5 +163,13 @@ public class Switcher extends LinearLayout {
         viewThird.setText(getResources().getString(sId[mode]));
         viewFirst.setText(getResources().getString(list.get(0)));
         viewSecond.setText(getResources().getString(list.get(1)));
+    }
+
+    public void setOnDismissListener() {
+
+    }
+
+    public interface OnDismiss {
+        void onSwitcherDismiss();
     }
 }

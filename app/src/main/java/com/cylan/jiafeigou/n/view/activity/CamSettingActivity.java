@@ -126,7 +126,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
     @BindView(R.id.sv_setting_device_wired_mode)
-    SettingItemView1 svSettingDeviceWiredMode;
+    SettingItemView0 svSettingDeviceWiredMode;
     @BindView(R.id.sv_setting_device_soft_ap)
     SettingItemView0 svSettingDeviceSoftAp;
     @BindView(R.id.sv_setting_device_sd_card)
@@ -874,33 +874,33 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //有线模式
         svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid, false) ? View.VISIBLE : View.GONE);
         boolean wiredModeEnable = device.$(225, 0) == 1;
-        svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
+//        svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
         boolean wiredModeOnline = device.$(226, 0) == 1;
         if (wiredModeOnline) {
             svSettingDeviceWifi.setEnabled(false);
             svSettingDeviceWifi.setSubTitle("");
         }
-        svSettingDeviceWiredMode.setChecked(wiredModeEnable);
-        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            if (NetUtils.getJfgNetType() == 0) {
-                ToastUtil.showToast(getString(R.string.NoNetworkTips));
-                return;
-            }
-            if (!isChecked) {
-                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", getString(R.string.Cable_Mode_Switch_Cancel),
-                        getString(R.string.OK), (dialog, which) -> {
-                            svSettingDeviceWiredMode.setChecked(false);
-                            svSettingDeviceWifi.setEnabled(true);
-                            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(0), 226);
-                        }, getString(R.string.CANCEL), (dialog, which) -> {
-                            svSettingDeviceWiredMode.setChecked(false);
-                        }, false);
-                return;
-            }
-            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
-            //wifi配置开启,,关闭
-            svSettingDeviceWifi.setEnabled(false);
-        });
+        svSettingDeviceWiredMode.setSubTitle(wiredModeEnable ? getString(R.string.WIRED_MODE_CONNECTED) : getString(R.string.DOOR_NOT_CONNECT));
+//        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+//            if (NetUtils.getJfgNetType() == 0) {
+//                ToastUtil.showToast(getString(R.string.NoNetworkTips));
+//                return;
+//            }
+//            if (!isChecked) {
+//                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", getString(R.string.Cable_Mode_Switch_Cancel),
+//                        getString(R.string.OK), (dialog, which) -> {
+//                            svSettingDeviceWiredMode.setChecked(false);
+//                            svSettingDeviceWifi.setEnabled(true);
+//                            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(0), 226);
+//                        }, getString(R.string.CANCEL), (dialog, which) -> {
+//                            svSettingDeviceWiredMode.setChecked(false);
+//                        }, false);
+//                return;
+//            }
+//            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
+//            //wifi配置开启,,关闭
+//            svSettingDeviceWifi.setEnabled(false);
+//        });
         svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid, false) ? View.VISIBLE : View.GONE);
         //总的条件:相同的ssid名字
         if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {

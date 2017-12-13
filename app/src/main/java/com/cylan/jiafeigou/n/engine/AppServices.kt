@@ -1,17 +1,24 @@
 package com.cylan.jiafeigou.n.engine
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION
 import android.os.IBinder
 import android.util.Log
 import com.cylan.entity.jniCall.JFGDoorBellCaller
 import com.cylan.jiafeigou.module.*
 import com.cylan.jiafeigou.rx.RxEvent
+import com.cylan.jiafeigou.support.network.NetMonitor
+import com.cylan.jiafeigou.support.network.NetworkCallback
 
 /**
  * Created by yanzhendong on 2017/12/1.
  */
-class AppServices() : Service() {
+class AppServices() : Service(), NetworkCallback {
+
+
     companion object {
         const val TAG = "CYLAN_TAG:AppServices:"
     }
@@ -26,11 +33,20 @@ class AppServices() : Service() {
         HookerSupervisor.addHooker(appHooker)
         DeviceSupervisor.monitorReportDevices()
         BellerSupervisor.monitorBeller()
+        NetMonitor.getNetMonitor().registerNet(this, arrayOf(ConnectivityManager.CONNECTIVITY_ACTION, NETWORK_STATE_CHANGED_ACTION))
+    }
+
+    override fun onNetworkChanged(context: Context?, intent: Intent) {
+        Log.d(TAG, "网络状态发生了变化,正在执行自动登录")
+        val subscribe = LoginHelper.performAutoLogin().subscribe()
+        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "LoginHelper.performAutoLogin()", subscribe)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         HookerSupervisor.removeHooker(appHooker)
+        NetMonitor.getNetMonitor().unregister(this)
+        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "LoginHelper.performAutoLogin()")
     }
 
     private class AppHooker : HookerSupervisor.ActionHooker() {
