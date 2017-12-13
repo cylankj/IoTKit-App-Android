@@ -910,23 +910,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
 
         @Override
-        public void onOrientationChanged(int orientation) {
+        public void onOrientationChanged(int o) {
 
             // TODO: 2017/8/30 只能从一个方向旋转到另一个方向,不能从一个方向旋转回自己的方向
 
-            if (((orientation >= 0) && (orientation < 45)) || (orientation > 315)) {//设置竖屏
+            if (((o >= 0) && (o < 45)) || (o > 315)) {//设置竖屏
 //                    Log.d(TAG, "设置竖屏");
                 this.orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-            } else if (orientation > 225 && orientation < 315) { //设置横屏
+            } else if (o > 225 && o < 315) { //设置横屏
 //                Log.d(TAG, "设置横屏");
                 this.orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
-            } else if (orientation > 45 && orientation < 135) {// 设置反向横屏
+            } else if (o > 45 && o < 135) {// 设置反向横屏
 //                Log.d(TAG, "反向横屏");
                 this.orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
 
-            } else if (orientation > 135 && orientation < 225) {
+            } else if (o > 135 && o < 225) {
                 this.orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
 //                Log.d(TAG, "反向竖屏");
             }
