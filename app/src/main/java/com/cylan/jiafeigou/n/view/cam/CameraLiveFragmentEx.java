@@ -828,7 +828,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑");
         presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
-//            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
         }, AppLogger::e);
         AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
                 getString(R.string.OK), (dialog, which) -> {
@@ -984,11 +983,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (fromUser) {
                 customOrientation = orientation;
                 ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
+                camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
             } else {
                 if (customOrientation != requestedOrientation) {
                     customOrientation = -1;
                     if (requestedOrientation != getActivity().getRequestedOrientation()) {
                         ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
+                        camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
                     }
                 }
             }

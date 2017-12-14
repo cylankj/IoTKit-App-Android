@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget.live;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -35,6 +36,14 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     private ImageView imageView;
     private Action action;
 
+    boolean isLandscape;
+
+    private static final int SCREEN_ORIENTATION_LANDSCAPE = 0;
+    private static final int SCREEN_ORIENTATION_PORTRAIT = 1;
+    private static final int SCREEN_ORIENTATION_REVERSE_LANDSCAPE = 8;
+    private static final int SCREEN_ORIENTATION_REVERSE_PORTRAIT = 9;
+
+
     public LiveControlView(Context context) {
         this(context, null);
     }
@@ -55,6 +64,13 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         textView.setOnClickListener(this);
     }
 
+
+    @Override
+    public void setOrientationState(int o) {
+        isLandscape = (o == SCREEN_ORIENTATION_LANDSCAPE || o == SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+        setImageViewVisibility(imageView.getVisibility(), isLandscape);
+    }
+
     @Override
     public int getState() {
         return state;
@@ -63,6 +79,15 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     @Override
     public void setState(int state, CharSequence content) {
         setState(state, content, null);
+    }
+
+
+    private void setImageViewVisibility(int visibility, boolean isLandscape) {
+        if (isLandscape) {
+            imageView.setVisibility(GONE);
+        } else {
+            imageView.setVisibility(visibility);
+        }
     }
 
     @Override
@@ -75,7 +100,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
             case PLAY_STATE_PREPARE:
                 setVisibility(VISIBLE);
                 tvHelp.setVisibility(GONE);
-                imageView.setVisibility(GONE);
+                setImageViewVisibility(GONE, isLandscape);
                 if (!TextUtils.isEmpty(content)) {
                     textView.setVisibility(VISIBLE);
                     textView.setText(content);
@@ -89,7 +114,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
             case PLAY_STATE_PLAYING:
                 setVisibility(VISIBLE);
                 imageView.bringToFront();
-                imageView.setVisibility(VISIBLE);
+                setImageViewVisibility(VISIBLE, isLandscape);
                 imageView.setImageResource(R.drawable.camera_icon_pause);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
@@ -97,7 +122,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 break;
             case PLAY_STATE_STOP:
                 imageView.bringToFront();
-                imageView.setVisibility(VISIBLE);
+                setImageViewVisibility(VISIBLE, isLandscape);
                 imageView.setImageResource(R.drawable.camera_icon_play);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);

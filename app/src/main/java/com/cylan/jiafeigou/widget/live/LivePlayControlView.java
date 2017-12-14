@@ -58,6 +58,12 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
         textView.setOnClickListener(this);
     }
 
+
+    @Override
+    public void setOrientationState(int o) {
+
+    }
+
     @Override
     public int getState() {
         return state;
