@@ -937,8 +937,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                             customOrientation = -1;
                         }, 2000);//2秒只允许摇一摇一次
                     }
-
-
                 }
             }
         }
@@ -983,13 +981,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (fromUser) {
                 customOrientation = orientation;
                 ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
+                camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
             } else {
                 if (customOrientation != requestedOrientation) {
                     customOrientation = -1;
                     if (requestedOrientation != getActivity().getRequestedOrientation()) {
                         ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                        camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
+                        camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
                     }
                 }
             }
