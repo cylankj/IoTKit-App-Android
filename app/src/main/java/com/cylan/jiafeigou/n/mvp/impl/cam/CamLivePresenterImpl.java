@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -17,6 +18,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
@@ -42,6 +44,7 @@ import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
+import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.push.BellPuller;
@@ -232,7 +235,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public String getThumbnailKey() {
-        return PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
+        return PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_FILE + uuid);
     }
 
     @Override
@@ -752,10 +755,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 || liveStream.playState == PLAY_STATE_STOP) {
             return Observable.just(false);
         }
-        if (getLiveStream().playState == PLAY_STATE_PLAYING) {
-            //暂停播放了，还需要截图
-            takeSnapShot(false);
-        }
+
         resolutionW = resolutionH = 0;
         return Observable.just(uuid)
                 .subscribeOn(Schedulers.io())
@@ -844,13 +844,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     //forPopWindow false:直播断开,退出界面.
     @Override
     public void takeSnapShot(boolean forPopWindow) {
-        AppLogger.d("take shot initSubscription");
+   /*     AppLogger.i("takeSnapShot forPopWindow:" + forPopWindow);
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .map(new TakeSnapShootLogicHelper(uuid, forPopWindow, mView))
+                .map(new TakeSnapShootHelper(uuid, forPopWindow, mView))
                 .observeOn(Schedulers.io())
                 .subscribe(pair -> {
-                }, AppLogger::e, () -> AppLogger.d("take screen finish"));
+                }, AppLogger::e, () -> AppLogger.d("take screen finish"));*/
     }
 
 
@@ -860,11 +860,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public void saveAndShareBitmap(Bitmap bitmap, boolean forPopWindow) {
-        AppLogger.d("take shot initSubscription");
+    public void saveAndShareBitmap(Bitmap bitmap, boolean forPopWindow, boolean save) {
+        AppLogger.i("take shot saveAndShareBitmap");
         Observable.just(bitmap)
                 .subscribeOn(Schedulers.io())
-                .map(new TakeSnapShootHelper(uuid, forPopWindow, mView))
+                .map(new TakeSnapShootHelper(uuid, forPopWindow, mView, save))
                 .observeOn(Schedulers.io())
                 .subscribe(pair -> {
                 }, AppLogger::e, () -> AppLogger.d("take screen finish"));
@@ -1075,10 +1075,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
     }
 
-    private static class TakeSnapShootHelper extends TakeSnapShootLogicHelper {
+    private static class TakeSnapShootHelper implements Func1<Object, Pair<Bitmap, String>> {
+        WeakReference<CamLiveContract.View> weakReference;
+        boolean forPopWindow;
+        String uuid;
+        boolean save;
 
-        TakeSnapShootHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
-            super(uuid, forPopWindow, v);
+        TakeSnapShootHelper(String uuid, boolean forPopWindow, CamLiveContract.View v, boolean save) {
+            this.uuid = uuid;
+            this.forPopWindow = forPopWindow;
+            this.weakReference = new WeakReference<>(v);
+            this.save = save;
         }
 
         @Override
@@ -1086,154 +1093,31 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             PerformanceUtils.startTrace("takeCapture");
             Bitmap bitmap = (Bitmap) o;
-
-            final String fileName = "." + uuid + System.currentTimeMillis();
-            final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
-            removeLastPreview();
-            SimpleCache.getInstance().addCache(filePath, bitmap);
-            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
-            //需要删除之前的一条记录.
-            BitmapUtils.saveBitmap2file(bitmap, filePath);
-            MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
-            if (weakReference.get() != null && forPopWindow) {
-                weakReference.get().onTakeSnapShot(bitmap);//弹窗
-                shareSnapshot(true, filePath);//最后一步处理分享
-            }
-            return new Pair<>(bitmap, filePath);
-        }
-    }
-
-    /**
-     * 静态内部类
-     */
-    private static class TakeSnapShootLogicHelper implements Func1<Object, Pair<Bitmap, String>> {
-
-        WeakReference<CamLiveContract.View> weakReference;
-        boolean forPopWindow;
-        String uuid;
-
-        TakeSnapShootLogicHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
-            weakReference = new WeakReference<>(v);
-            this.forPopWindow = forPopWindow;
-            this.uuid = uuid;
-        }
-
-        private void doNext() {
-
-        }
-
-        @Override
-        public Pair<Bitmap, String> call(Object o) {
-            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-            PerformanceUtils.startTrace("takeCapture");
-            byte[] data = Command.getInstance().screenshot(false);
-            if (data == null) {
-                if (forPopWindow && weakReference.get() != null) {
-                    weakReference.get().onTakeSnapShot(null);//弹窗
-                }
-                AppLogger.e("截图失败,data为空");
-
-                // TODO: 2017/8/29 做一次尝试用 VideoView 截图
-
+            if (bitmap == null) {
+                AppLogger.e("takesnapshot bitmap is null ..");
                 return null;
             }
-            int w = Command.videoWidth;
-            int h = Command.videoHeight;
-            Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
-            if (forPopWindow && weakReference.get() != null) {
-                weakReference.get().onTakeSnapShot(bitmap);//弹窗
-            }
-            PerformanceUtils.stopTrace("takeCapture");
-            String filePath;
-            String fileName = "";
-            if (forPopWindow) {
-                fileName = System.currentTimeMillis() + ".png";
-                filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+            final String fileName = uuid + System.currentTimeMillis() + ".png";
+            final String cover = JConstant.MEDIA_PATH + File.separator + uuid + "_cover.png";
+            final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+            //需要删除之前的一条记录.
+            if (save) {
+                BitmapUtils.saveBitmap2file(bitmap, filePath);
+                AppLogger.e("save bitmap to sdcard " + filePath);
             } else {
-                filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
-                removeLastPreview();
-//                SimpleCache.getInstance().addCache(filePath, bitmap);
-                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
-                //需要删除之前的一条记录.
+                BitmapUtils.saveBitmap2file(bitmap, cover);
+                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
+                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_FILE + uuid, cover);
+
             }
-            BitmapUtils.saveBitmap2file(bitmap, filePath);
-            if (forPopWindow) {//添加到相册
-                MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+            if (weakReference.get() != null && forPopWindow) {
+                weakReference.get().onTakeSnapShot(bitmap);//弹窗
+//                shareSnapshot(true, filePath);//最后一步处理分享 // 先不分享到 每日精彩
             }
-//            MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
-            if (weakReference.get() != null && !forPopWindow) {
-                weakReference.get().onPreviewResourceReady(bitmap);
-            }
-            shareSnapshot(forPopWindow, filePath);//最后一步处理分享
             return new Pair<>(bitmap, filePath);
         }
-
-        protected void removeLastPreview() {
-            final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-            try {
-                if (SimpleCache.getInstance().getPreviewKeyList() != null) {
-                    List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
-                    for (String key : list) {
-                        if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
-                            SimpleCache.getInstance().removeCache(key);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-            }
-            String[] file = new File(JConstant.MEDIA_PATH).list((dir, name) -> !TextUtils.isEmpty(name) && name.contains(uuid));
-            if (file.length == 0) {
-                return;
-            }
-            Observable.just(file)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(ret -> {
-                        for (String fileName : ret) {
-                            FileUtils.deleteFile(JConstant.MEDIA_PATH + File.separator + fileName);
-                        }
-                    }, AppLogger::e);
-        }
-
-        /**
-         * 保存和分享,这是一个后台任务,用一个静态类,避免持有引用
-         *
-         * @param needShare
-         */
-        protected void shareSnapshot(boolean needShare, String localPath) {
-            Observable.just(localPath)
-                    .subscribeOn(Schedulers.io())
-                    .filter(path -> {
-                        AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
-                        return path != null && needShare;
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(filePath -> {
-                        long time = System.currentTimeMillis();
-                        AppLogger.d("save bitmap to disk performance:" + (System.currentTimeMillis() - time));
-                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                        item.cid = uuid;
-                        Device device = DataSourceManager.getInstance().getDevice(uuid);
-                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                        item.fileName = time / 1000 + ".jpg";
-                        item.time = (int) (time / 1000);
-                        IDPEntity entity = new DPEntity()
-                                .setUuid(uuid)
-                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                                .setVersion(System.currentTimeMillis())
-                                .setAccount(DataSourceManager.getInstance().getAccount().getAccount())
-                                .setAction(DBAction.SHARED)
-                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
-                                .setBytes(item.toBytes());
-                        BaseDPTaskDispatcher.getInstance().perform(entity)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(ret -> {
-                                }, AppLogger::e);
-                        AppLogger.d("take shot step collect ");
-                    }, throwable -> AppLogger.e("shareSnapshot:" + throwable.getLocalizedMessage()));
-        }
-
     }
+
 
     private HotSeatStateMaintainer hotSeatStateMaintainer;
 

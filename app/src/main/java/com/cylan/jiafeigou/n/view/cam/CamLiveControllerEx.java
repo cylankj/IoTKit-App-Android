@@ -558,7 +558,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
                 PerformanceUtils.stopTrace("takeShotFromLocalView");
                 onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                presenter.saveAndShareBitmap(bitmap, true);
+                presenter.saveAndShareBitmap(bitmap, true,false);
             }
         });
         //issue: 过早 add 进去会导致黑块!!!!!

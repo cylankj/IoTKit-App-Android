@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -256,6 +257,7 @@ public class BitmapUtils {
             PerformanceUtils.stopTrace("saveBitmap2file:" + filename);
         } catch (Exception e) {
             PerformanceUtils.stopTrace("saveBitmap2file:" + filename);
+            AppLogger.e(e);
             return false;
         }
         return isSave;

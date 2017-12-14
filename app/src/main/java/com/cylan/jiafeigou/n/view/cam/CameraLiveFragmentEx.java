@@ -27,6 +27,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -159,9 +160,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop
-                        presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
-//                            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
-                        }, AppLogger::e);
+                        Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
+                            @Override
+                            public void onSucceed(Bitmap bitmap) {
+                                AppLogger.i("暂停截图");
+                                presenter.saveAndShareBitmap(bitmap, false, false);
+                                presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+                                }, AppLogger::e);
+                            }
+
+                            @Override
+                            public void onFailure(String s) {
+                                AppLogger.i("暂停截图失败.... " + s);
+                                presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+                                }, AppLogger::e);
+                            }
+                        });
+
                         break;
                 }
                 AppLogger.i("clickImage:" + state);
@@ -503,7 +518,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                                     public void onSucceed(Bitmap bitmap) {
                                         PerformanceUtils.stopTrace("takeShotFromLocalView");
                                         camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                                        presenter.saveAndShareBitmap(bitmap, true);
+                                        presenter.saveAndShareBitmap(bitmap, true, true);
                                     }
 
                                     @Override
@@ -524,9 +539,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
             if (prePlayType.playState == PLAY_STATE_PLAYING) {
                 // 暂停
-                presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
-//                    camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
-                }, AppLogger::e);
+                Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
+                    @Override
+                    public void onSucceed(Bitmap bitmap) {
+                        AppLogger.i("暂停截图");
+                        presenter.saveAndShareBitmap(bitmap, false, false);
+                        presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+                        }, AppLogger::e);
+                    }
+
+                    @Override
+                    public void onFailure(String s) {
+                        AppLogger.i("暂停截图失败.... " + s);
+                        presenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+                        }, AppLogger::e);
+                    }
+                });
+
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
             } else {
                 AppLogger.i("start play!!");
@@ -823,7 +852,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onOpenDoorPasswordError() {
-        Log.d(CYLAN_TAG,"开门密码错误");
+        Log.d(CYLAN_TAG, "开门密码错误");
         ToastUtil.showToast(getString(R.string.DOOR_WRONG_PSW));
     }
 
@@ -846,7 +875,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 public void onSucceed(Bitmap bitmap) {
                     PerformanceUtils.stopTrace("takeShotFromLocalView");
 //                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                    presenter.saveAndShareBitmap(bitmap,false);
+                    presenter.saveAndShareBitmap(bitmap, false, false);
                 }
 
                 @Override
