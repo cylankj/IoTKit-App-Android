@@ -1484,7 +1484,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isWheelBusy = historyWheelHandler.isBusy();
         //拖动的时候，拒绝外部设置时间。
         if (!isWheelBusy && JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
-            liveTimeLayout.setContent(type, timestamp);
+            liveTimeLayout.setContent(type, livePlayType == TYPE_LIVE ? 0 : timestamp);
         }
         if (type == TYPE_HISTORY && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
