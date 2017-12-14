@@ -146,8 +146,8 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
         Subscription subscribe = Observable.create((Observable.OnSubscribe<File>) subscriber -> {
             GlideApp.with(ContextUtils.getContext())
                     .downloadOnly()
+                    .onlyRetrieveFromCache(true)
                     .load(MiscUtils.getCamWarnUrlV2(uuid, bean, index + 1))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(new SimpleTarget<File>() {
                         @Override
                         public void onResourceReady(File resource, Transition<? super File> transition) {

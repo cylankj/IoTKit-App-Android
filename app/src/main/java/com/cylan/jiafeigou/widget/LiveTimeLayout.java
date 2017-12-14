@@ -41,6 +41,10 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
         return History.parseLiveTime(TimeUtils.wrapToLong(time));
     }
 
+    private String getRealLiveTime(long time) {
+        return History.parseLiveRealTime(time);
+    }
+
     @Override
     public void setContent(int liveType, long liveTime) {
         if (!isShown()) {
@@ -55,7 +59,7 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
             String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback) + "|%s", getTime(liveTime == 0 ? System.currentTimeMillis() : liveTime * 1000L));
             textView.setText(content);
         } else if (liveType == CamLiveContract.TYPE_LIVE) {
-            String content = String.format(getContext().getString(R.string.Tap1_Camera_VideoLive) + "|%s", getTime(System.currentTimeMillis()));
+            String content = String.format(getContext().getString(R.string.Tap1_Camera_VideoLive) + "|%s", getRealLiveTime(System.currentTimeMillis()));
             textView.setText(content);
         }
     }

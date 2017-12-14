@@ -82,6 +82,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     }
 
 
+
     private void setImageViewVisibility(int visibility, boolean isLandscape) {
         if (isLandscape) {
             imageView.setVisibility(GONE);
@@ -90,11 +91,73 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         }
     }
 
+
+    public void showLoadingView() {
+        setVisibility(VISIBLE);
+        tvHelp.setVisibility(GONE);
+        imageView.setVisibility(GONE);
+        textView.setVisibility(GONE);
+        simpleProgressBar.setVisibility(VISIBLE);
+        simpleProgressBar.bringToFront();
+    }
+
+    public void showLoadingViewWithHint(String hint) {
+        setVisibility(VISIBLE);
+        tvHelp.setVisibility(GONE);
+        imageView.setVisibility(GONE);
+        if (!TextUtils.isEmpty(hint)) {
+            textView.setVisibility(VISIBLE);
+            textView.setText(hint);
+        } else {
+            textView.setVisibility(GONE);
+        }
+
+        simpleProgressBar.setVisibility(VISIBLE);
+        simpleProgressBar.bringToFront();
+    }
+
+    public void showHelpView(String content, String subContent) {
+        setVisibility(VISIBLE);
+        imageView.setVisibility(VISIBLE);
+        imageView.bringToFront();
+        imageView.setImageResource(R.drawable.btn_video_retry);
+        simpleProgressBar.setVisibility(GONE);
+        textView.setVisibility(VISIBLE);
+        if (!TextUtils.isEmpty(content)) {
+            textView.setText(content);
+        }
+        if (!TextUtils.isEmpty(subContent)) {
+            tvHelp.setVisibility(VISIBLE);
+            tvHelp.setText(subContent);
+        }
+    }
+
+    public void hide() {
+        setVisibility(GONE);
+    }
+
+    public void showPlayView() {
+        imageView.setVisibility(VISIBLE);
+        imageView.setImageResource(R.drawable.camera_icon_play);
+        textView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
+        simpleProgressBar.setVisibility(GONE);
+        imageView.bringToFront();
+    }
+
+    public void showPauseView() {
+        setVisibility(VISIBLE);
+        imageView.bringToFront();
+        imageView.setVisibility(VISIBLE);
+        imageView.setImageResource(R.drawable.camera_icon_pause);
+        textView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
+        simpleProgressBar.setVisibility(GONE);
+    }
+
+
     @Override
     public void setState(int state, CharSequence content, String help) {
-        if (this.state == state) {
-            return;
-        }
         this.state = state;
         switch (state) {
             case PLAY_STATE_PREPARE:

@@ -95,7 +95,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         if (!editMode) {
             selectedMap.clear();
         }
-        updateItemFrom(lastVisiblePosition);
+        notifyDataSetChanged();
+//        updateItemFrom(lastVisiblePosition);
     }
 
     /**

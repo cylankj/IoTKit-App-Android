@@ -52,6 +52,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     TextView tvCopyRight;
     @BindView(R.id.welcome_switcher)
     ViewSwitcher welcomeSwitcher;
+    boolean hasDecided = false;
 
     @Override
     protected boolean onSetContentView() {
@@ -66,12 +67,12 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
         startService(new Intent(this, AppServices.class));
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     @Override
@@ -142,6 +143,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
+//        deciderFirstAction();
         if (!AdsStrategy.hasAdsChecked()) {
             presenter.deciderShowAdvert();
         } else {
@@ -212,6 +214,10 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
 
     public void deciderFirstAction() {
         AppLogger.d("deciderFirstAction");
+//        if (hasDecided) {
+//            return;
+//        }
+//        hasDecided = true;
         if (LoginHelper.isFirstUseApp()) {
             //第一次使用 APP 需要进入引导页
             enterUserGuide();
@@ -263,15 +269,16 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     public void enterUserGuide() {
         AppLogger.d("enterUserGuide");
         welcomeSwitcher.setDisplayedChild(1);
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(GuideFragmentV3_2.class.getSimpleName());
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction().show(fragment).commit();
-        } else {
-            Bundle bundle = new Bundle();
-            bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.welcome_frame_container);
-            fragment = GuideFragmentV3_2.newInstance();
-            fragment.setArguments(bundle);
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.welcome_frame_container);
-        }
+//        Fragment fragment = getSupportFragmentManager().findFragmentByTag(GuideFragmentV3_2.class.getSimpleName());
+//        if (fragment != null) {
+//            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+//        } else {
+        Bundle bundle = new Bundle();
+        bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.welcome_frame_container);
+        GuideFragmentV3_2 fragment = GuideFragmentV3_2.newInstance();
+        fragment.setArguments(bundle);
+        ActivityUtils.replaceFragmentNoAnimation(R.id.welcome_frame_container, getSupportFragmentManager(), fragment);
+//        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.welcome_frame_container);
+//        }
     }
 }

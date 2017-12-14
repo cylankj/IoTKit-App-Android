@@ -132,8 +132,10 @@ object LoginHelper {
                     Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password")
                     Command.getInstance().openLogin(languageType, username!!, password!!, signType)
                     subscribe = Schedulers.io().createWorker().schedule({
-                        Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
-                        DataSourceManager.getInstance().initFromDB()
+                        if (!isLoginSuccessful()) {
+                            Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
+                            DataSourceManager.getInstance().initFromDB()
+                        }
                     }, 5, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
                 }
@@ -141,9 +143,11 @@ object LoginHelper {
                     Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password")
                     Command.getInstance().login(languageType, username!!, password!!, true)
                     subscribe = Schedulers.io().createWorker().schedule({
-                        Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
-                        DataSourceManager.getInstance().initFromDB()
-                    }, 5, TimeUnit.SECONDS)
+                        if (!isLoginSuccessful()) {
+                            Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
+                            DataSourceManager.getInstance().initFromDB()
+                        }
+                    }, 7, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
                 }
             }
@@ -167,6 +171,7 @@ object LoginHelper {
     fun isFirstUseApp(): Boolean {
         return ContextUtils.getContext().resources.getBoolean(R.bool.show_guide) && PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true)
     }
+
 
     @JvmStatic
     fun performLogout() {

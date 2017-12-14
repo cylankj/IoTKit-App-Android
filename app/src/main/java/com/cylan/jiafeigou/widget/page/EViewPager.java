@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.widget.page;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -37,11 +38,17 @@ public class EViewPager extends ViewPager {
         if (isLocked) return false;
         if (v != this && v instanceof ViewPager) {
             int currentItem = ((ViewPager) v).getCurrentItem();
-            int countItem = ((ViewPager) v).getAdapter().getCount();
-            if ((currentItem == (countItem - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
+            PagerAdapter adapter = ((ViewPager) v).getAdapter();
+            if (adapter != null) {
+                int count = adapter.getCount();
+                if ((currentItem == (count - 1) && dx < 0) || (currentItem == 0 && dx > 0)) {
+                    return false;
+                }
                 return true;
+            } else {
+                super.canScroll(v, checkV, dx, x, y);
             }
-            return true;
+
         }
         return super.canScroll(v, checkV, dx, x, y);
     }

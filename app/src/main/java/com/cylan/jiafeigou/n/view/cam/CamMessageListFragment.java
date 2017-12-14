@@ -815,20 +815,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 }
                 String content = ((TextView) view).getText().toString();
                 boolean toEdit = TextUtils.equals(content, getString(R.string.EDIT_THEME));
-                if (toEdit) {
-                    tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
-                }
-                camMessageListAdapter.reverseMode(toEdit, lPos);
-                if (camMessageListAdapter.isEditMode()) {
-                    AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
-                } else {
-                    AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-                }
-                if (visitorFragment != null) {
-                    visitorFragment.disable(toEdit);
-                }
-                ((TextView) view).setText(getString(toEdit ? R.string.CANCEL
-                        : R.string.EDIT_THEME));
+                setEditerMode(toEdit);
                 break;
             case R.id.tv_msg_full_select://全选
                 boolean selectAll = TextUtils.equals(tvMsgFullSelect.getText(), getString(R.string.SELECT_ALL));
@@ -853,9 +840,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             if (presenter != null) {
                                 presenter.removeItems(list);
                             }
-                            camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
-                            AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-                            tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                            setEditerMode(false);
                             LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), false, null);
                         })
                         .setNegativeButton(R.string.CANCEL, null)
@@ -1029,20 +1014,25 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         return super.performBackIntercept(willExit);
     }
 
-    private boolean exitEditMode() {
-        if (camMessageListAdapter.isEditMode()) {
+    private boolean setEditerMode(boolean editerMode) {
+        boolean editMode = camMessageListAdapter.isEditMode();
+        camMessageListAdapter.reverseMode(editerMode, 0);
+        tvCamMessageListEdit.setText(editerMode ? getString(R.string.CANCEL) : getString(R.string.EDIT_THEME));
+        tvMsgFullSelect.setText(camMessageListAdapter.getSelectedItems().size() > 0 ? getString(R.string.CANCEL) : getString(R.string.SELECT_ALL));
+        tvMsgDelete.setEnabled(editerMode);
+        tvMsgFullSelect.setEnabled(editerMode);
+        visitorFragment.disable(editerMode);
+        ibQuickTop.setVisibility(editerMode ? View.GONE : View.VISIBLE);
+        if (editerMode && !editMode) {
+            AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
+        } else if (!editerMode && editMode) {
             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-            tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-            tvMsgDelete.setEnabled(false);
-            final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
-                    .findLastVisibleItemPosition();
-            camMessageListAdapter.reverseMode(false, lPos);
-            if (visitorFragment != null) {
-                visitorFragment.disable(false);
-            }
-            return true;//拦截掉
         }
-        return false;
+        return editerMode != editMode;
+    }
+
+    private boolean exitEditMode() {
+        return setEditerMode(false);
     }
 
     private boolean exitDateSelectMode() {

@@ -577,25 +577,25 @@ public class JFGRules {
     }
 
     public static boolean hasMicFeature(int pid) {
-        boolean hasMicFeature = pid != 84;
-        if (!hasMicFeature) {
-            PropertiesLoader loader = PropertiesLoader.getInstance();
-            String os = loader.property(pid, "OS");
-            try {
-                Integer intOS = Integer.valueOf(os);
-                switch (intOS) {
-                    case 83:
-                    case 84:
-                    case 92:
-                        hasMicFeature = false;
-                        break;
-                    default:
-                        hasMicFeature = true;
-                }
-//                hasMicFeature = intOS != 84;
-            } catch (Exception e) {
+        boolean hasMicFeature = true;
+//        if (!hasMicFeature) {
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String os = loader.property(pid, "OS");
+        try {
+            Integer intOS = Integer.valueOf(os);
+            switch (intOS) {
+                case 83:
+                case 84:
+                case 92:
+                    hasMicFeature = false;
+                    break;
+                default:
+                    hasMicFeature = true;
             }
+//                hasMicFeature = intOS != 84;
+        } catch (Exception e) {
         }
+//        }
         return hasMicFeature;
     }
 

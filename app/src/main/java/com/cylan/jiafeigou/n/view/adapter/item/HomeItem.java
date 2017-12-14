@@ -179,7 +179,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         if (showWiredIcon) {
             boolean wiredModeEnable = device.$(225, 0) == 1;
             boolean wiredModeOnline = device.$(226, 0) == 1;
-            AppLogger.e("缺图标");
+            AppLogger.d("缺图标");
             holder.setVisibility(R.id.img_device_wired, wiredModeEnable && wiredModeOnline ? VISIBLE : GONE);
             holder.setImageResource(R.id.img_device_wired, R.drawable.home_icon_wired);
         } else {
