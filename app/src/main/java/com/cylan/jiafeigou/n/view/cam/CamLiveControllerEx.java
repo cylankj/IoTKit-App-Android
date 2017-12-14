@@ -1110,8 +1110,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean online = JFGRules.isDeviceOnline(dpNet);
         boolean noNet = NetUtils.getNetType(getContext()) == -1;
         if (standby.standby && online && !isLand()) {
-//            post(portHideRunnable);
-//            post(landHideRunnable);
             performLayoutAnimation(false);
             performLiveControllerViewAction(null, null);
         }
@@ -1657,8 +1655,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Log.d(TAG, "performLandLayoutAnimation,showLayout:" + showLayout);
         if (showLayout) {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(1).withStartAction(() -> {
-                liveLoadingBar.setVisibility(livePlayState == PLAY_STATE_LOADING_FAILED
-                        || livePlayState == PLAY_STATE_PREPARE ? VISIBLE : INVISIBLE
+                liveLoadingBar.setVisibility(!isStandBy() && (livePlayState == PLAY_STATE_LOADING_FAILED
+                        || livePlayState == PLAY_STATE_PREPARE) ? VISIBLE : INVISIBLE
                 );//全屏直播门铃 1.需要去掉中间播放按钮
             }).start();
             svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
@@ -1708,8 +1706,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .translationY(livePlayState == PLAY_STATE_LOADING_FAILED
                             || livePlayState == PLAY_STATE_PREPARE ? 1 : 0)
                     .withEndAction(() -> {
-                        liveLoadingBar.setVisibility(livePlayState == PLAY_STATE_LOADING_FAILED
-                                || livePlayState == PLAY_STATE_PREPARE
+                        liveLoadingBar.setVisibility(!isStandBy() && (livePlayState == PLAY_STATE_LOADING_FAILED
+                                || livePlayState == PLAY_STATE_PREPARE)
                                 ? VISIBLE : INVISIBLE
                         );
                     }).start();
@@ -1749,7 +1747,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Log.d(TAG, "performPortLayoutAnimation,showLayout:" + showLayout);
         if (showLayout) {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
-                liveLoadingBar.setVisibility(VISIBLE);
+                liveLoadingBar.setVisibility(isStandBy() ? INVISIBLE : VISIBLE);
             }).start();
 
             liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
@@ -1780,7 +1778,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         } else {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(livePlayState == PLAY_STATE_PLAYING ? 0 : 1).translationY(0).withEndAction(() -> {
-                liveLoadingBar.setVisibility(livePlayState == PLAY_STATE_PLAYING ? INVISIBLE : VISIBLE);
+                liveLoadingBar.setVisibility(isStandBy() || (livePlayState == PLAY_STATE_PLAYING) ? INVISIBLE : VISIBLE);
             }).start();
             svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(0).withEndAction(() -> {
                 svSwitchStream.setVisibility(INVISIBLE);
