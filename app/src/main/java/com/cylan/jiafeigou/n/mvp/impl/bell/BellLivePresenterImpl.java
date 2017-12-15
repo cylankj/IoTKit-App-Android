@@ -106,7 +106,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
         }
         AppLogger.i("pwd: " + password);
         Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
-                .timeout(20, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.DOOR_OPENING))
                 .subscribe(success -> {
