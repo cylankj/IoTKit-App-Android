@@ -42,6 +42,7 @@ import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
+import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.push.BellPuller;
@@ -106,6 +107,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
     private volatile boolean ignoreTimeStamp;
+    private AbstractVersion<AbstractVersion.BinVersion> version;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
@@ -185,7 +187,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
                     mView.showFirmwareDialog();
                 }, AppLogger::e);
-        AbstractVersion<AbstractVersion.BinVersion> version = new DeviceVersionChecker();
+        version = new DeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.setShowCondition(() -> {
@@ -1446,6 +1448,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 presenterWeakReference.get().switchEarpiece(true);
             }
             return true;
+        }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (version!=null){
+            SubscriptionSupervisor.unsubscribe(version,SubscriptionSupervisor.CATEGORY_DEFAULT,"DeviceVersionChecker.startCheck");
         }
     }
 }

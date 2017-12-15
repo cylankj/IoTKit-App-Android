@@ -612,6 +612,14 @@ public class JFGRules {
         return true;
     }
 
+    public static boolean isHalfCamera(int pid) {
+        return pid == 92;
+    }
+
+    public static boolean isOutDoorCamera(int pid) {
+        return pid == 84 || pid == 82;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

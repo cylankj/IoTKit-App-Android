@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -56,7 +58,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
             return;
         }
         final String uuid = portrait.getCid();
-        Observable.just("go").subscribeOn(Schedulers.io())
+        Subscription subscribe = Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
@@ -64,7 +66,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                     final String currentVersion = device.$(207, "");
                     AppLogger.d("current version: " + currentVersion);
                     try {
-                        seq =  Command.getInstance()
+                        seq = Command.getInstance()
                                 .checkDevVersion(device.pid, device.getUuid(), currentVersion);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
@@ -88,6 +90,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);
+        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck", subscribe);
     }
 
     @Override

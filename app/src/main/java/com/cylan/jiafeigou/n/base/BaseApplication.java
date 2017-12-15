@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
 import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.n.engine.AppServices;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -67,7 +65,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
 
     //    private static AppComponent appComponent;
-    private static int viewCount = 0;
+    private static int stopViewCount = 0;
+    private static int pauseViewCount = 0;
     private static BoxStore boxStore;
 
     private static Box<PropertyItem> propertyItemBox;
@@ -102,7 +101,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 //            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
             PerformanceUtils.startTrace("appInit");
-            viewCount = 0;
+            stopViewCount = 0;
             //Dagger2 依赖注入
             boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
             DataSourceManager.getInstance();//以后会去掉 datasource
@@ -166,28 +165,34 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onActivityStarted(Activity activity) {
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
-        viewCount++;
+        stopViewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
 
         RxBus.getCacheInstance().post(new RxEvent.ActivityStartEvent());
     }
 
+    public static int getPauseViewCount() {
+        return pauseViewCount;
+    }
+
     @Override
     public void onActivityResumed(Activity activity) {
         AppLogger.i("life:onActivityResumed " + activity.getClass().getSimpleName());
+        pauseViewCount++;
         cancelReportTask();
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         AppLogger.i("life:onActivityPaused " + activity.getClass().getSimpleName());
+        pauseViewCount--;
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
-        viewCount--;
-        if (viewCount == 0) {
+        stopViewCount--;
+        if (stopViewCount == 0) {
             GlobalResetPwdSource.getInstance().currentActivity(null);
             prepareReportTask();
         }
@@ -199,21 +204,19 @@ public class BaseApplication extends MultiDexApplication implements Application.
      * 退出后台3分钟,将向sdkReport网络状态
      */
     private void prepareReportTask() {
-        if (Command.getInstance() != null) {
-            if (reportTask != null) {
-                reportTask.unsubscribe();
-            }
-            reportTask = Observable.just("report")
-                    .subscribeOn(Schedulers.io())
-                    .delay(3, TimeUnit.MINUTES)
-                    .subscribe(ret -> {
-                        AppLogger.d("timeout for report");
-                        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
-                    }, throwable -> {
-                        AppLogger.d("timeout for report");
-                        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
-                    });
+        if (reportTask != null) {
+            reportTask.unsubscribe();
         }
+        reportTask = Observable.just("report")
+                .subscribeOn(Schedulers.io())
+                .delay(3, TimeUnit.MINUTES)
+                .subscribe(ret -> {
+                    AppLogger.d("timeout for report");
+                    Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+                }, throwable -> {
+                    AppLogger.d("timeout for report");
+                    Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+                });
     }
 
     private void cancelReportTask() {
@@ -224,7 +227,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     public static boolean isBackground() {
-        return viewCount == 0;
+        return stopViewCount == 0;
     }
 
     @Override

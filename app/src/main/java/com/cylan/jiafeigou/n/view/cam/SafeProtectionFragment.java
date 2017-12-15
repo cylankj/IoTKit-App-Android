@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -230,15 +229,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
         boolean infrared_enhanced_recognition = property.hasProperty(device.pid, "INFRARED_ENHANCED_RECOGNITION");
         boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE_SETTING");
-        //先隐藏
-        if (BuildConfig.DEBUG) {
-            detection_zone_setting = true;
-        }
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
         }
-
 
         tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
         flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);

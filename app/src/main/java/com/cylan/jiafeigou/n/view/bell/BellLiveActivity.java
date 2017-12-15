@@ -56,7 +56,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.Switcher;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DoorLockDialog;
@@ -115,16 +114,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     CustomToolbar customToolbar;
     @BindView(R.id.act_bell_live_back)
     TextView landBack;
-    @BindView(R.id.root_view)
-    ViewGroup rootView;
+    //    @BindView(R.id.root_view)
+//    ViewGroup rootView;
     @BindView(R.id.bottom_menu_switcher)
     ViewSwitcher bottomMenuSwitcher;
     @BindView(R.id.imgv_bell_door_lock)
     ImageView bellDoorLock;
-    @BindView(R.id.sv_switch_stream)
-    Switcher streamSwitcher;
     @BindView(R.id.cover)
     View cover;
+    @BindView(R.id.fLayout_bell_live_holder)
+    FrameLayout flBellLiveHolder;
     /**
      * 水平方向的view
      */
@@ -135,7 +134,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private RoundCardPopup roundCardPopup;
     @Inject
     protected JFGSourceManager sourceManager;
-    private float ratio;
+    private float ratio = 0.0f;
     private boolean isSpeakerON = false;
     private boolean onUserLeaveHint = false;
 
@@ -162,13 +161,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         registSreenStatusReceiver();
         initHeadSetEventReceiver();
         Device device = sourceManager.getDevice(uuid);
-        if (device != null) {
-            mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            //判断是否有分辨率切换
-            boolean showSdHd = JFGRules.showSdHd(device.pid, device.$(207, ""), false);
-            streamSwitcher.setVisibility(showSdHd ? View.VISIBLE : View.GONE);
-        }
-        streamSwitcher.setSwitcherListener(this::switchStreamMode);
+//        if (device != null) {
+//            mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+//            //判断是否有分辨率切换
+//            boolean showSdHd = JFGRules.showSdHd(device.pid, device.$(207, ""), false);
+//            streamSwitcher.setVisibility(showSdHd ? View.VISIBLE : View.GONE);
+//        }
+//        streamSwitcher.setSwitcherListener(this::switchStreamMode);
         decideBottomLayout();
         customToolbar.setToolbarLeftTitle(mLiveTitle);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
@@ -305,12 +304,17 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onStart() {
         super.onStart();
         onUserLeaveHint = false;
-        //在这里初始化默认的 radio,bug:#120567
-        float videoHeight = mVideoViewContainer.getMeasuredHeight();
-        float videoWidth = mVideoViewContainer.getMeasuredWidth();
-        ratio = videoHeight / videoWidth;
-
+        flBellLiveHolder.post(new Runnable() {
+            @Override
+            public void run() {
+                //在这里初始化默认的 radio,bug:#120567,需要 post 一下 不 post 在这里获取的长和宽都为0
+                float videoHeight = flBellLiveHolder.getMeasuredHeight();
+                float videoWidth = flBellLiveHolder.getMeasuredWidth();
+                ratio = videoHeight / videoWidth;
+            }
+        });
     }
+
 
     @Override
     protected void onResume() {
@@ -388,7 +392,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             landBack.setVisibility(View.GONE);
             if (ratio != 0) {
                 //进一步确认不会无故更新 radio
-                ViewUtils.updateViewHeight(mVideoViewContainer, ratio);
+                ViewUtils.updateViewHeight(flBellLiveHolder, ratio);
             }
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
             cover.setVisibility(View.VISIBLE);
@@ -399,7 +403,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            setHideBackMargin();
             customToolbar.setVisibility(View.GONE);
             landBack.setVisibility(View.VISIBLE);
-            ViewUtils.updateViewMatchScreenHeight(mVideoViewContainer);
+            ViewUtils.updateViewMatchScreenHeight(flBellLiveHolder);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
             cover.setVisibility(View.GONE);
         }
@@ -432,7 +436,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
         View v = findViewById(R.id.fLayout_bell_live_land_layer);
         if (v == null) {
-            rootView.addView(fLayoutLandHolderRef.get());
+            flBellLiveHolder.addView(fLayoutLandHolderRef.get());
         }
     }
 

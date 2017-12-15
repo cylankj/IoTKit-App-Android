@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
@@ -194,13 +195,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 DpMsgDefine.DPSdStatus dpSdStatus = device.$(204, new DpMsgDefine.DPSdStatus());
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
                 boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-
-
                 //先判断是否关闭了自动录像,关闭了提示 :若关闭，“侦测到异常时”将不启用录像
-
                 //若自动录像未关闭 则提示:关闭“移动侦测”，将停止“侦测报警录像”
-
-
                 //无卡不需要显示 //oldOption 不等于2 说明没有关闭自动录像则提示:关闭“移动侦测”，将停止“侦测报警录像”
                 if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard && dpSdStatus.err == 0) {
                     AlertDialogManager.getInstance().showDialog(getActivity(),
@@ -274,33 +270,32 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    protected void lazyLoad() {
-        super.lazyLoad();
+    public void onStart() {
+        super.onStart();
         Log.d("isResumed", "start isResumed: " + getUserVisibleHint());
         Device device = presenter.getDevice();
         camLiveControlLayer.onActivityStart(presenter, device);
     }
 
+    private Runnable backgroundCheckerRunnable = () -> {
+        if (BaseApplication.getPauseViewCount() == 0) {
+            //延迟700 毫秒后没有新的 Activity 被开启,说明 APP 进入了后台
+            //不能使用 onStop 因为 onStop 在7.0 上会延迟10秒调用
+            presenter.stopPlayVideo(STOP_MAUNALLY);
+        }
+    };
+
     @Override
     public void onPause() {
         super.onPause();
-//        presenter.saveHotSeatState();
         enableSensor(false);
         if (presenter != null) {
             presenter.stopPlayVideo(true).subscribe(ret -> {
 //                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
         }
+        camLiveControlLayer.postDelayed(backgroundCheckerRunnable, 800);//延迟700 毫秒后检测 APP 是否处于后台
     }
-
-//    @Override
-//    public void stop() {
-//        super.stop();
-//        enableSensor(false);
-//        if (presenter != null)
-//            presenter.stopPlayVideo(true).subscribe(ret -> {
-//            }, AppLogger::e);
-//    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -356,6 +351,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onResume() {
         super.onResume();
         Log.d("isResumed", "isResumed: " + getUserVisibleHint());
+        camLiveControlLayer.removeCallbacks(backgroundCheckerRunnable);
         camLiveControlLayer.onActivityResume(presenter, DataSourceManager.getInstance().getDevice(uuid()), isUserVisible());
         if (presenter != null) {
             if (!judge() || presenter.getLiveStream().playState == PLAY_STATE_STOP) {
@@ -363,6 +359,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
 //            presenter.restoreHotSeatState();
         }
+
     }
 
     @Override
@@ -373,11 +370,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        if ((isVisible && isPrepared && onBackPressed()) || willExit) {
-            removeVideoView();
+        if (isPrepared && isUserVisible()) {
+            return onBackPressed();
+        } else if (willExit) {
+            onBackPressed();
         }
         return super.performBackIntercept(willExit);
     }
+
 
     @Override
     public void onDeviceInfoChanged(JFGDPMsg msg) throws IOException {
@@ -823,7 +823,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onOpenDoorPasswordError() {
-        Log.d(CYLAN_TAG,"开门密码错误");
+        Log.d(CYLAN_TAG, "开门密码错误");
         ToastUtil.showToast(getString(R.string.DOOR_WRONG_PSW));
     }
 
@@ -841,17 +841,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return true;
         } else {
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 stop 延迟调用");
+            removeVideoView();
             Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
                 @Override
                 public void onSucceed(Bitmap bitmap) {
-                    PerformanceUtils.stopTrace("takeShotFromLocalView");
-//                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                    presenter.saveAndShareBitmap(bitmap,false);
+                    presenter.saveAndShareBitmap(bitmap, false);
                 }
 
                 @Override
                 public void onFailure(String s) {
-
                 }
             });
             presenter.stopPlayVideo(true).subscribe(ret -> {

@@ -112,7 +112,8 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     override fun OnUpdateAccount(jfgAccount: JFGAccount) {
         AppLogger.w("OnUpdateAccount :" + gson.toJson(jfgAccount))
-        RxBus.getCacheInstance().post(RxEvent.SerializeCacheAccountEvent(jfgAccount))
+        RxBus.getCacheInstance().post(jfgAccount)
+        publish(jfgAccount)
     }
 
     override fun OnUpdateHistoryVideoList(jfgHistoryVideo: JFGHistoryVideo) {
@@ -127,11 +128,13 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnUpdateHistoryErrorCode(jfgHistoryVideoErrorInfo: JFGHistoryVideoErrorInfo) {
         AppLogger.w("OnUpdateHistoryErrorCode :" + gson.toJson(jfgHistoryVideoErrorInfo))
         RxBus.getCacheInstance().post(jfgHistoryVideoErrorInfo)
+        publish(jfgHistoryVideoErrorInfo)
     }
 
     override fun OnServerConfig(jfgServerCfg: JFGServerCfg) {
         AppLogger.w("OnServerConfig :" + gson.toJson(jfgServerCfg))
         RxBus.getCacheInstance().post(jfgServerCfg)
+        publish(jfgServerCfg)
     }
 
     override fun OnLogoutByServer(i: Int) {
@@ -143,6 +146,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnVideoDisconnect(jfgMsgVideoDisconn: JFGMsgVideoDisconn) {
         AppLogger.w("OnVideoDisconnect :" + gson.toJson(jfgMsgVideoDisconn))
         RxBus.getCacheInstance().post(jfgMsgVideoDisconn)
+        publish(jfgMsgVideoDisconn)
     }
 
     override fun OnVideoNotifyResolution(jfgMsgVideoResolution: JFGMsgVideoResolution) {
@@ -150,21 +154,25 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         Command.videoWidth = jfgMsgVideoResolution.width
         Command.videoHeight = jfgMsgVideoResolution.height
         RxBus.getCacheInstance().post(jfgMsgVideoResolution)
+        publish(jfgMsgVideoResolution)
     }
 
     override fun OnVideoNotifyRTCP(jfgMsgVideoRtcp: JFGMsgVideoRtcp) {
         Log.w("", "OnVideoNotifyRTCP" + gson.toJson(jfgMsgVideoRtcp))
         RxBus.getCacheInstance().post(jfgMsgVideoRtcp)
+        publish(jfgMsgVideoRtcp)
     }
 
     override fun OnHttpDone(jfgMsgHttpResult: JFGMsgHttpResult) {
         AppLogger.w("OnHttpDone :" + gson.toJson(jfgMsgHttpResult))
         RxBus.getCacheInstance().post(jfgMsgHttpResult)
+        publish(jfgMsgHttpResult)
     }
 
     override fun OnRobotTransmitMsg(robotMsg: RobotMsg) {
         AppLogger.w("OnRobotTransmitMsg :" + gson.toJson(robotMsg))
         RxBus.getCacheInstance().post(robotMsg)
+        publish(robotMsg)
     }
 
     override fun OnRobotMsgAck(i: Int) {
@@ -190,6 +198,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnRobotSetDataRsp(l: Long, uuid: String, arrayList: ArrayList<JFGDPMsgRet>) {
         AppLogger.w("OnRobotSetDataRsp :" + l + gson.toJson(arrayList))
         RxBus.getCacheInstance().post(RxEvent.SetDataRsp(l, uuid, arrayList))
+        publish(RxEvent.SetDataRsp(l, uuid, arrayList))
     }
 
     override fun OnRobotGetDataTimeout(l: Long, s: String) {
@@ -211,6 +220,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     override fun OnResult(jfgResult: JFGResult) {
         RxBus.getCacheInstance().post(jfgResult)
+        publish(jfgResult)
         BaseJFGResultParser.getInstance().parserResult(jfgResult)
         AppLogger.w("jfgResult [" + jfgResult.event + ":" + jfgResult.code + "]")
     }
@@ -223,6 +233,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnOtherClientAnswerCall(s: String) {
         AppLogger.w("OnOtherClientAnswerCall:" + s)
         RxBus.getCacheInstance().post(RxEvent.CallResponse(false))
+        publish(RxEvent.CallResponse(false))
     }
 
     override fun OnRobotCountDataRsp(l: Long, s: String, arrayList: ArrayList<JFGDPMsgCount>) {
@@ -232,6 +243,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnRobotDelDataRsp(l: Long, s: String, i: Int) {
         AppLogger.w("OnRobotDelDataRsp :$l uuid:$s i:$i")
         RxBus.getCacheInstance().post(RxEvent.DeleteDataRsp(l, s, i))
+        publish(RxEvent.DeleteDataRsp(l, s, i))
     }
 
     data class RobotSyncDataEvent(var fromDevice: Boolean, var uuid: String, var dpList: ArrayList<JFGDPMsg>)
@@ -251,6 +263,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         //store the token .
         PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, s)
         RxBus.getCacheInstance().post(RxEvent.SmsCodeResult(i, s))
+        publish(RxEvent.SmsCodeResult(i, s))
     }
 
     override fun OnGetFriendListRsp(ret: Int, arrayList: ArrayList<JFGFriendAccount>) {
@@ -284,21 +297,25 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnGetFriendInfoRsp(i: Int, jfgFriendAccount: JFGFriendAccount) {
         AppLogger.w("OnLocalMessage :" + Gson().toJson(jfgFriendAccount))
         RxBus.getCacheInstance().post(RxEvent.GetFriendInfoCall(i, jfgFriendAccount))
+        publish(RxEvent.GetFriendInfoCall(i, jfgFriendAccount))
     }
 
     override fun OnCheckFriendAccountRsp(i: Int, s: String, s1: String, b: Boolean) {
         AppLogger.w("OnCheckFriendAccountRsp :")
         RxBus.getCacheInstance().post(RxEvent.CheckAccountCallback(i, s, s1, b))
+        publish(RxEvent.CheckAccountCallback(i, s, s1, b))
     }
 
     override fun OnShareDeviceRsp(i: Int, s: String, s1: String) {
         AppLogger.w("OnShareDeviceRsp :$i:$s:$s1")
         RxBus.getCacheInstance().post(RxEvent.ShareDeviceCallBack(i, s, s1))
+        publish(RxEvent.ShareDeviceCallBack(i, s, s1))
     }
 
     override fun OnUnShareDeviceRsp(i: Int, s: String, s1: String) {
         AppLogger.w("OnUnShareDeviceRsp :$i,$s,$s1")
         RxBus.getCacheInstance().post(RxEvent.UnShareDeviceCallBack(i, s, s1))
+        publish(RxEvent.UnShareDeviceCallBack(i, s, s1))
     }
 
     override fun OnGetShareListRsp(i: Int, arrayList: ArrayList<JFGShareListInfo>) {
@@ -309,6 +326,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnGetUnShareListByCidRsp(i: Int, arrayList: ArrayList<JFGFriendAccount>) {
         AppLogger.w("UnShareListByCidEvent :")
         RxBus.getCacheInstance().post(RxEvent.UnShareListByCidEvent(i, arrayList))
+        publish(RxEvent.UnShareListByCidEvent(i, arrayList))
     }
 
     override fun OnUpdateNTP(l: Int) {
@@ -319,6 +337,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnForgetPassByEmailRsp(i: Int, s: String) {
         AppLogger.w("OnForgetPassByEmailRsp :" + s)
         RxBus.getCacheInstance().post(RxEvent.ForgetPwdByMail(s).setRet(i))
+        publish(RxEvent.ForgetPwdByMail(s).setRet(i))
     }
 
     override fun OnGetAliasByCidRsp(i: Int, s: String) {
@@ -352,6 +371,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         AppLogger.w("onBindDev: $i uuid:$s,reason:$s1")
         RxBus.getCacheInstance().post(RxEvent.BindDeviceEvent(i, s, s1))
         PreferencesUtils.putString(JConstant.BINDING_DEVICE, "")
+        publish(RxEvent.BindDeviceEvent(i, s, s1))
     }
 
     override fun OnUnBindDevRsp(i: Int, s: String) {
@@ -361,6 +381,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnGetVideoShareUrl(s: String) {
         AppLogger.w(String.format(Locale.getDefault(), "OnGetVideoShareUrl:%s", s))
         RxBus.getCacheInstance().post(RxEvent.GetVideoShareUrlEvent(s))
+        publish(RxEvent.GetVideoShareUrlEvent(s))
     }
 
     override fun OnForwardData(bytes: ByteArray) {
@@ -388,10 +409,12 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnMultiShareDevices(i: Int, s: String, s1: String) {
         AppLogger.w(String.format(Locale.getDefault(), "check OnMultiShareDevices:%d,%s,%s", i, s, s1))
         RxBus.getCacheInstance().post(RxEvent.MultiShareDeviceEvent(i, s, s1))
+        publish(RxEvent.MultiShareDeviceEvent(i, s, s1))
     }
 
     override fun OnCheckClientVersion(i: Int, s: String, i1: Int) {
         RxBus.getCacheInstance().post(RxEvent.ClientCheckVersion(i, s, i1))
+        publish(RxEvent.ClientCheckVersion(i, s, i1))
     }
 
     override fun OnRobotCountMultiDataRsp(l: Long, o: Any) {
@@ -440,6 +463,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         //        picUrl = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
         RxBus.getCacheInstance().postSticky(RxEvent.AdsRsp().setPicUrl(picUrl).setTagUrl(tagUrl)
                 .setRet(i).setTime(l))
+        publish(RxEvent.AdsRsp().setPicUrl(picUrl).setTagUrl(tagUrl).setRet(i).setTime(l))
     }
 
     //final boolean hasNew, final String url, final String version,
@@ -469,6 +493,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         version.list = arrayList
         version.tagVersion = tagVersion
         RxBus.getCacheInstance().post(RxEvent.VersionRsp().setUuid(cid).setVersion(version))
+        publish(RxEvent.VersionRsp().setUuid(cid).setVersion(version))
     }
 
 
@@ -494,6 +519,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         version.setList(arrayList)
         version.setTagVersion(tagVersion)
         RxBus.getCacheInstance().post(RxEvent.VersionRsp().setUuid(cid).setVersion(version))
+        publish(RxEvent.VersionRsp().setUuid(cid).setVersion(version))
     }
 
     override fun OnUniversalDataRsp(l: Long, i: Int, bytes: ByteArray) {
@@ -505,5 +531,6 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         //        }
 
         RxBus.getCacheInstance().post(RxEvent.UniversalDataRsp(l, i, bytes))
+        publish(RxEvent.UniversalDataRsp(l, i, bytes))
     }
 }

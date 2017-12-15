@@ -40,8 +40,6 @@ import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
 import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.gson.Gson;
 
-import java.util.logging.Logger;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -90,17 +88,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 stop 延迟调用 bug #118078
-        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
-            ((CameraLiveFragmentEx) fragment).onBackPressed();
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         AppLogger.d("onSaveInstanceState");
@@ -120,6 +107,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         makeNewMsgSub();
     }
+
 
 
     private void makeNewMsgSub() {
@@ -403,10 +391,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             if (position == 0) {
                 return CameraLiveFragmentEx.newInstance(bundle);
             } else {
-                // TODO: 2017/9/29 人脸和普通是两个 Fragment ,需要判断
-
-                Device device = DataSourceManager.getInstance().getDevice(uuid);
-
                 return CamMessageListFragment.newInstance(bundle);
             }
         }

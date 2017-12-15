@@ -136,7 +136,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             if (!presenter.checkRequestAvailable(friendContextItem)) {
                 AppLogger.d("请求已过期,将删除过期请求");
                 presenter.deleteFriendRequest(friendContextItem, false);
-                friendContextItem.friendRequest.sayHi = null;
+                friendContextItem.friendRequest.sayHi = "";
                 friendContextItem.friendRequest.time = System.currentTimeMillis();
             }
         }

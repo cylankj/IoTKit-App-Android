@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -27,6 +28,8 @@ import rx.schedulers.Schedulers;
  * Created by yanzhendong on 2017/3/11.
  */
 public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingContact.View> implements PanoramaSettingContact.Presenter {
+
+    private AbstractVersion<AbstractVersion.BinVersion> version;
 
     @Inject
     public PanoramaSettingPresenter(PanoramaSettingContact.View view) {
@@ -49,17 +52,25 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     throw new RxEvent.HelperBreaker(version);
                 }, AppLogger::e);
         addStopSubscription(subscribe);
-        AbstractVersion<PanDeviceVersionChecker.BinVersion> version = new PanDeviceVersionChecker();
+        version = new PanDeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.startCheck();
     }
 
     @Override
+    public void stop() {
+        super.stop();
+        if (version != null) {
+            SubscriptionSupervisor.unsubscribe(version, SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
+        }
+    }
+
+    @Override
     public void unBindDevice() {
         Subscription subscribe = Observable.just(new DPEntity()
-                        .setUuid(uuid)
-                        .setAction(DBAction.UNBIND))
+                .setUuid(uuid)
+                .setAction(DBAction.UNBIND))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)

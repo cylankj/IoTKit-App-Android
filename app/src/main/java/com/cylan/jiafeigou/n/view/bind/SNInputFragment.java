@@ -158,9 +158,10 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
         } else if (JFGRules.isPanoramaCamera(pid)) {
             getActivity().findViewById(R.id.v_to_bind_panorama_camera)
                     .performClick();
-        } else if (JFGRules.isCamera(pid)) {
-            getActivity().findViewById(R.id.v_to_bind_camera)
-                    .performClick();
+        } else if (JFGRules.isHalfCamera(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_half_camera).performClick();
+        } else if (JFGRules.isOutDoorCamera(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_cam_outdoor).performClick();
         } else if (JFGRules.isCatEeyBell(pid)) {
             getActivity().findViewById(R.id.v_to_bind_cat_eye_cam)
                     .performClick();
@@ -169,6 +170,9 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
                     .performClick();
         } else if (JFGRules.isBell(pid)) {
             getActivity().findViewById(R.id.v_to_bind_bell_battery)
+                    .performClick();
+        } else if (JFGRules.isCamera(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_camera)
                     .performClick();
         }
     }

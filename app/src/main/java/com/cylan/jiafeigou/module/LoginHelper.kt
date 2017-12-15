@@ -81,8 +81,11 @@ object LoginHelper {
             var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin::class.java)
                     .subscribe({
                         if (it.code == 0) {
-                            Log.d(JConstant.CYLAN_TAG, "performLogin:login successful,starting get account with username:$username")
-                            Command.getInstance().account
+                            val subscription = Schedulers.io().createWorker().schedulePeriodically({
+                                val account = Command.getInstance().account
+                                Log.d(JConstant.CYLAN_TAG, "performLogin:login successful,starting get account with username:$username,ret:$account")
+                            }, 0, 2, TimeUnit.SECONDS)
+                            subscriber.add(subscription)
                             PushPickerIntentService.start()
                         } else {
                             if (it.code == JError.ErrorLoginInvalidPass) {
@@ -101,7 +104,8 @@ object LoginHelper {
             subscriber.add(subscribe)
 
             subscribe = RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived::class.java)
-                    .first { TextUtils.equals(it.account.account, username) }
+//                    .first { TextUtils.equals(it.account.account, username) }
+                    .first()
                     .subscribe({
                         Log.d(JConstant.CYLAN_TAG, "performLogin:account is arrived,login process is completed.the account is:$it")
                         loginType = signType

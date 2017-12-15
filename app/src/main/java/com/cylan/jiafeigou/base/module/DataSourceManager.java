@@ -809,17 +809,17 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheAccountSub() {
-        return getCacheInstance().toObservable(RxEvent.SerializeCacheAccountEvent.class)
+        return getCacheInstance().toObservable(JFGAccount.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> BaseDBHelper.getInstance().updateAccount(event.account)
+                .flatMap(event -> BaseDBHelper.getInstance().updateAccount(event)
                         .map(dpAccount -> {
                             this.account = dpAccount;
                             this.account.setOnline(true);
-                            setJfgAccount(event.account);
+                            setJfgAccount(event);
                             RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
-                            accountArrived.jfgAccount = event.account;
+                            accountArrived.jfgAccount = event;
                             if (!BaseApplication.isBackground()) {
                                 getCacheInstance().post(account);
                                 getCacheInstance().postSticky(accountArrived);

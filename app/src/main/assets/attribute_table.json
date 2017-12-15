@@ -509,7 +509,7 @@
       "BATTERY": "0",
       "CIDPREFIX": "2901",
       "CLOUD_STORAGE": "0",
-      "DETECTION_ZONE": "1",
+      "DETECTION_ZONE": "0",
       "DEVICE": "DOG-10W",
       "DOOR_LOCK": "0",
       "EMPTIED": "0",
@@ -524,7 +524,7 @@
       "LED": "1",
       "MAC": "1",
       "NEVER": "1",
-      "NTSC": "1",
+      "NTSC": "0",
       "OS": "83",
       "PID": "1494",
       "POWER": "0",
@@ -559,7 +559,7 @@
       "BATTERY": "0",
       "CIDPREFIX": "2902",
       "CLOUD_STORAGE": "0",
-      "DETECTION_ZONE": "1",
+      "DETECTION_ZONE": "0",
       "DEVICE": "DOG-11W",
       "DOOR_LOCK": "0",
       "EMPTIED": "0",
@@ -574,7 +574,7 @@
       "LED": "0",
       "MAC": "1",
       "NEVER": "1",
-      "NTSC": "1",
+      "NTSC": "0",
       "OS": "84",
       "PID": "1495",
       "POWER": "0",
@@ -609,7 +609,7 @@
       "BATTERY": "0",
       "CIDPREFIX": "2903",
       "CLOUD_STORAGE": "0",
-      "DETECTION_ZONE": "1",
+      "DETECTION_ZONE": "0",
       "DEVICE": "DOG-13W",
       "DOOR_LOCK": "0",
       "EMPTIED": "0",
@@ -624,7 +624,7 @@
       "LED": "0",
       "MAC": "1",
       "NEVER": "1",
-      "NTSC": "1",
+      "NTSC": "0",
       "OS": "92",
       "PID": "1564",
       "POWER": "0",
@@ -2477,5 +2477,5 @@
       1564
     ]
   },
-  "version": "20171211"
+  "version": "20171214"
 }

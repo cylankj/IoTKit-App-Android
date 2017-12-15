@@ -517,7 +517,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     success = camMessageListAdapter.showCachedVisitorList("stranger");
                     lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                     tvCamMessageListEdit.setEnabled(success);
-                    presenter.fetchVisitorMessageList(1, "", time, refresh);
+//                    presenter.fetchVisitorMessageList(1, "", time, refresh);
                     break;
                 case FaceItem.FACE_TYPE_ACQUAINTANCE:
                     srLayoutCamListRefresh.setRefreshing(refresh);
@@ -1019,7 +1019,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         camMessageListAdapter.reverseMode(editerMode, 0);
         tvCamMessageListEdit.setText(editerMode ? getString(R.string.CANCEL) : getString(R.string.EDIT_THEME));
         tvMsgFullSelect.setText(camMessageListAdapter.getSelectedItems().size() > 0 ? getString(R.string.CANCEL) : getString(R.string.SELECT_ALL));
-        tvMsgDelete.setEnabled(editerMode);
+        tvMsgDelete.setEnabled(camMessageListAdapter.getSelectedItems().size() > 0);
         tvMsgFullSelect.setEnabled(editerMode);
         visitorFragment.disable(editerMode);
         ibQuickTop.setVisibility(editerMode ? View.GONE : View.VISIBLE);

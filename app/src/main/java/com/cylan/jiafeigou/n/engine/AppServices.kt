@@ -7,14 +7,14 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION
 import android.os.IBinder
 import android.util.Log
+import com.cylan.entity.JfgEnum
 import com.cylan.entity.jniCall.JFGDoorBellCaller
 import com.cylan.jiafeigou.module.*
+import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.network.NetMonitor
 import com.cylan.jiafeigou.support.network.NetworkCallback
 import com.cylan.jiafeigou.utils.NetUtils
-import rx.Observable
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by yanzhendong on 2017/12/1.
@@ -39,25 +39,15 @@ class AppServices() : Service(), NetworkCallback {
         NetMonitor.getNetMonitor().registerNet(this, arrayOf(ConnectivityManager.CONNECTIVITY_ACTION, NETWORK_STATE_CHANGED_ACTION))
     }
 
-    private var hasLoginAction = false
 
     override fun onNetworkChanged(context: Context?, intent: Intent) {
         if (NetUtils.isNetworkAvailable(context)) {
             Log.d(TAG, "网络状态发生了变化,正在执行自动登录")
-            if (hasLoginAction) {
-                hasLoginAction = false
-                val subscribe = Observable.just("").delay(2, TimeUnit.SECONDS)
-                        .flatMap { LoginHelper.performAutoLogin() }
-                        .subscribe({
-                            Log.d(TAG, "登录成功了")
-                        }) {
-                            it.printStackTrace()
-                            Log.d(TAG, "登录失败了:${it.message}")
-                        }
-                SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "LoginHelper.performAutoLogin()", subscribe)
+            if (!BaseApplication.isBackground()) {
+                Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED)
             }
         } else {
-            hasLoginAction = true
+            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST)
         }
 
     }

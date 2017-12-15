@@ -117,7 +117,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
                 .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(result -> {
-                    getView().onInitRequestAndFriendList(result == null ? null : result.first, result == null ? null : result.second);
+                    getView().onInitRequestAndFriendList(result == null ? null : new ArrayList<>(result.first), result == null ? null : new ArrayList<>(result.second));
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
