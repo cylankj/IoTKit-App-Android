@@ -200,6 +200,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
     }
 
     companion object {
+        const val FACE_TYPE_DP = -2
         const val FACE_TYPE_ALL: Int = -1
 
         const val FACE_TYPE_STRANGER: Int = 0//陌生人

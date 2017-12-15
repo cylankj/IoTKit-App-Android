@@ -141,7 +141,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private VisitorListFragmentV2 visitorFragment;
 
     private boolean hasFaceHeader = false;
-    private int pageType = FaceItem.FACE_TYPE_ALL;
+    private int pageType = FaceItem.FACE_TYPE_DP;
     private String personId;
     private boolean hasFirstRequested = false;
     private Rect appbarRect = new Rect();
@@ -170,6 +170,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         presenter = new CamMessageListPresenterImpl(this, uuid);
         hasFaceHeader = JFGRules.isFaceFragment(getDevice().pid);
+        pageType = hasFaceHeader ? FaceItem.FACE_TYPE_ALL : FaceItem.FACE_TYPE_DP;
     }
 
     @Override
@@ -540,6 +541,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 case FaceItem.FACE_TYPE_ALL:
                     srLayoutCamListRefresh.setRefreshing(refresh);
                     lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+                    presenter.fetchVisitorMessageList(3, "", time, refresh);
+                    break;
+                case FaceItem.FACE_TYPE_DP:
                     presenter.fetchMessageListByFaceId(time, false, refresh);
                     break;
                 default:

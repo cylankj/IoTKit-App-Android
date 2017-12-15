@@ -377,7 +377,19 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-                if (dpAlarm.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
+                if (dpAlarm.face_names != null) {
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < dpAlarm.face_names.length; i++) {
+                        builder.append(dpAlarm.face_names[i]);
+                        if (i != dpAlarm.face_names.length - 1) {
+                            builder.append(",");
+                        }
+                    }
+                    String faceText = builder.toString();
+                    return tContent + (TextUtils.isEmpty(faceText) ?
+                            getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
+                            : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
+                } else if (dpAlarm.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
                     String faceText = JConstant.getFaceText(dpAlarm.face_id, personMaps, null);
 
                     return tContent + (TextUtils.isEmpty(faceText) ?

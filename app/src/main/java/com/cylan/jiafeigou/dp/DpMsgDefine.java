@@ -586,6 +586,9 @@ public class DpMsgDefine {
         @Optional
         @Index(7)
         public String[] face_id;
+        @Optional
+        @Index(8)
+        public String[] face_names;
 
         @Ignore
         public static DPAlarm empty = new DPAlarm();

@@ -11,7 +11,7 @@ if [ ! -d "$CleverDog" ]; then
    git clone -b master http://120.24.247.124:10080/Sam01/CleverDog.git
 fi
 cd ${CleverDog}
-git checkout -B master
+git checkout -f master
 git pull
 
 if [ ! -d "./Language" ]; then
