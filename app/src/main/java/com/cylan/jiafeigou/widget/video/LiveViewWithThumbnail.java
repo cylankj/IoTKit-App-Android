@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -134,6 +135,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             return;
         }
         //todo GLIDE
+        AppLogger.i("load uri: " + glideUrl);
         GlideApp.with(context)
                 .asBitmap()
                 .load(glideUrl)

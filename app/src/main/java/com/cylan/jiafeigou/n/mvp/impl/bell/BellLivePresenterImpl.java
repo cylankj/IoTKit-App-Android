@@ -60,29 +60,33 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                         int h = Command.videoHeight;
                         Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
                         AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onTakeSnapShotSuccess(bitmap));
-                        String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
-                        String fileName = System.currentTimeMillis() + ".png";
-                        MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+                        String fileName = uuid + System.currentTimeMillis() + ".png";
+                        String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+//                        String fileName = System.currentTimeMillis() + ".png";
                         BitmapUtils.saveBitmap2file(bitmap, filePath);
+//                        MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+
                         MediaScannerConnection.scanFile(mView.activity(), new String[]{filePath}, null, null);
                         AppLogger.e("截图文件地址:" + filePath);
-                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                        item.cid = uuid;
-                        Device device = sourceManager.getDevice(uuid);
-                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                        long time = System.currentTimeMillis();
-                        item.fileName = time / 1000 + ".jpg";
-                        item.time = (int) (time / 1000);
-                        IDPEntity entity = new DPEntity()
-                                .setUuid(uuid)
-                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                                .setVersion(System.currentTimeMillis())
-                                .setAccount(sourceManager.getAccount().getAccount())
-                                .setAction(DBAction.SHARED)
-                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
-                                .setBytes(item.toBytes());
-                        return entity;
+                        // 先不分享到 每日精彩
+
+//                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+//                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+//                        item.cid = uuid;
+//                        Device device = sourceManager.getDevice(uuid);
+//                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+//                        long time = System.currentTimeMillis();
+//                        item.fileName = time / 1000 + ".jpg";
+//                        item.time = (int) (time / 1000);
+//                        IDPEntity entity = new DPEntity()
+//                                .setUuid(uuid)
+//                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+//                                .setVersion(System.currentTimeMillis())
+//                                .setAccount(sourceManager.getAccount().getAccount())
+//                                .setAction(DBAction.SHARED)
+//                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
+//                                .setBytes(item.toBytes());
+                        return null;
                     } else {
                         AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onTakeSnapShotFailed());
                         return null;
@@ -90,7 +94,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
 
                 })
                 .filter(ret -> ret != null)
-                .flatMap(entity -> mTaskDispatcher.perform(entity))
+//                .flatMap(entity -> mTaskDispatcher.perform(entity))
                 .subscribe(result -> {
                 }, e -> AppLogger.d(e.getMessage()));
     }
