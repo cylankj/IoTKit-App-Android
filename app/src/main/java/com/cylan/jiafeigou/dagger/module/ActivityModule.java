@@ -4,7 +4,6 @@ import com.cylan.jiafeigou.base.wrapper.DaggerActivity;
 import com.cylan.jiafeigou.dagger.annotation.ActivityScope;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellRecordDetailActivity;
-import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.bind.WireBindActivity;
 import com.cylan.jiafeigou.n.view.mine.ShareContentWebH5Activity;
 import com.cylan.jiafeigou.n.view.panorama.LiveSettingActivity;
@@ -53,9 +52,9 @@ public abstract class ActivityModule {
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract BellRecordDetailActivity bellRecordDetailActivity();
 
-    @ActivityScope
-    @ContributesAndroidInjector(modules = MVPModule2.class)
-    abstract DoorBellHomeActivity doorBellHomeActivity();
+//    @ActivityScope
+//    @ContributesAndroidInjector(modules = MVPModule2.class)
+//    abstract DoorBellHomeActivity doorBellHomeActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)

@@ -88,19 +88,9 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 //        fastAdapter = new FastAdapter();
         mineFriendsBinding.setEmpty(empty);
         mineFriendsBinding.friends.setLayoutManager(new LinearLayoutManager(getContext()));
-        friendRequestAdapter = new ItemAdapter() {
-            @Override
-            public int getOrder() {
-                return 1500;
-            }
-        };
+        friendAccountAdapter = new ItemAdapter<>();
         friendRequestAdapter.withUseIdDistributor(true);
-        friendAccountAdapter = new ItemAdapter() {
-            @Override
-            public int getOrder() {
-                return 3000;
-            }
-        };
+        friendAccountAdapter = new ItemAdapter<>();
         friendAccountAdapter.withUseIdDistributor(true);
         fastAdapter = FastAdapter.with(Arrays.asList(friendRequestAdapter, friendAccountAdapter));
         fastAdapter.withOnLongClickListener(this::onFriendItemLongClick);

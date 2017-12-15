@@ -431,7 +431,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             if (!faceAdapter.isNormalView) {
                 faceAdapter.set(visitorItems)
             } else {
-                faceAdapter.notifyAdapterDataSetChanged()
+                faceAdapter.add(visitorList)
             }
         }
         resizeContentHeight()
@@ -486,7 +486,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             if (faceAdapter.isNormalView) {
                 faceAdapter.set(strangerItems)
             } else {
-                faceAdapter.notifyAdapterDataSetChanged()
+                faceAdapter.add(visitorList)
             }
         }
         resizeContentHeight()
