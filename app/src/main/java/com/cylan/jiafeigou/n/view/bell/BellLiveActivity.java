@@ -161,12 +161,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         registSreenStatusReceiver();
         initHeadSetEventReceiver();
         Device device = sourceManager.getDevice(uuid);
-//        if (device != null) {
-//            mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+        if (device != null) {
+            mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
 //            //判断是否有分辨率切换
 //            boolean showSdHd = JFGRules.showSdHd(device.pid, device.$(207, ""), false);
 //            streamSwitcher.setVisibility(showSdHd ? View.VISIBLE : View.GONE);
-//        }
+        }
 //        streamSwitcher.setSwitcherListener(this::switchStreamMode);
         decideBottomLayout();
         customToolbar.setToolbarLeftTitle(mLiveTitle);
@@ -512,8 +512,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
 
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        ratio = JFGRules.isNeedNormalRadio(device.pid) ? (float) resolution.height / resolution.width : 1.0f;
-        ViewUtils.updateViewHeight(mVideoViewContainer, ratio);
+        ratio = JFGRules.isNeedNormalRadio(device.pid) ? (float) resolution.height / resolution.width : ratio;
+        ViewUtils.updateViewHeight(flBellLiveHolder, ratio);
     }
 
     @Override
