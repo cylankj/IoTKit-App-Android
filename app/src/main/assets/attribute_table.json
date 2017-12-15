@@ -2401,6 +2401,56 @@
       "WIFI": "1",
       "WIFI_INFO": "1",
       "WIREDMODE": "0"
+    },
+    {
+      "24RECORD": "0",
+      "AI_RECOGNITION": "0",
+      "AP": "0",
+      "APCONNECTTING": "0",
+      "AUTORECORD": "0",
+      "BATTERY": "1",
+      "CIDPREFIX": "6018",
+      "CLOUD_STORAGE": "0",
+      "DETECTION_ZONE": "0",
+      "DEVICE": "HS-BELL",
+      "DOOR_LOCK": "1",
+      "EMPTIED": "1",
+      "FACE_RECOGNITION": "0",
+      "FU": "1",
+      "HANGUP": "0",
+      "HOME_LOWBATTERY": "0",
+      "INFRAREDVISION": "0",
+      "INFRARED_ENHANCED_RECOGNITION": "0",
+      "INTERVAL_ALARM": "0",
+      "IP": "0",
+      "LED": "0",
+      "MAC": "1",
+      "NEVER": "0",
+      "NTSC": "0",
+      "OS": "55",
+      "PID": "1546",
+      "POWER": "1,20",
+      "PRODUCT": "环梭门铃",
+      "PROTECTION": "0",
+      "REMOTE_VIEW": "0",
+      "SD": "0",
+      "SD/HD": "0",
+      "SN": "智能门铃（电池版）",
+      "SOFTVERSION": "0",
+      "SSID": "DOG-ML-",
+      "STANDBY": "0",
+      "SYSVERSION": "1",
+      "TZ": "0",
+      "UPTIME": "1",
+      "VALUE": "RING_SHUTTLE_DOORBELL",
+      "VIDEO": "0",
+      "VIEW": "矩形",
+      "VIEWANGLE": "0",
+      "VIEW_MODE": "0",
+      "WARMSOUND": "0",
+      "WIFI": "1",
+      "WIFI_INFO": "1",
+      "WIREDMODE": "0"
     }
   ],
   "serialMap": {
@@ -2417,6 +2467,7 @@
       46,
       50,
       52,
+      55,
       59,
       1093,
       1094,
@@ -2427,6 +2478,7 @@
       1345,
       1378,
       1379,
+      1546,
       1558
     ],
     "CAM": [
@@ -2477,5 +2529,5 @@
       1564
     ]
   },
-  "version": "20171214"
+  "version": "20171215"
 }
