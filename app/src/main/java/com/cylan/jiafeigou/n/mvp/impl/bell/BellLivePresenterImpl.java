@@ -104,6 +104,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
         if (!liveStreamAction.hasStarted) {
             startViewer();
         }
+        AppLogger.i("pwd: " + password);
         Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,13 +115,13 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                         AppLogger.e("开门超时了");
                     } else if (success == 0) {
                         mView.onOpenDoorLockSuccess();
-                        AppLogger.d("开门成功了");
+                        AppLogger.i("开门成功了");
                     } else if (success == 2) {
                         mView.onOpenDoorLockPasswordError();
-                        AppLogger.d("开门密码错误");
+                        AppLogger.i("开门密码错误");
                     } else {
                         mView.onOpenDoorLockFailure();
-                        AppLogger.d("开门失败了");
+                        AppLogger.i("开门失败了");
                     }
                 }, e -> {
                     e.printStackTrace();

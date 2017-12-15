@@ -197,7 +197,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private void decideBottomLayout() {
         Device device = sourceManager.getDevice(uuid);
         if (device == null) return;
-
+        if (device.pid == 6) {
+            device.pid = 1558;
+        }
         if (JFGRules.hasDoorLock(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
             bellDoorLock.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgvBellLiveCapture.getLayoutParams();
