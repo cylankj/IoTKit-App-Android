@@ -121,7 +121,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onTerminate() {
         super.onTerminate();
-        AppLogger.d("进程已被销毁!!!!");
+        AppLogger.i("进程已被销毁!!!!");
         initializationManager.clean();
     }
 
@@ -143,7 +143,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
-                Log.d(TAG, "onTrimMemory: " + level);
+                AppLogger.i( "onTrimMemory: " + level);
                 RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
                 break;
         }
@@ -153,8 +153,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-
-        Log.d(TAG, "onLowMemory: ");
+        AppLogger.i( "onLowMemory: ");
     }
 
     @Override
