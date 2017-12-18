@@ -984,13 +984,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (fromUser) {
                 customOrientation = orientation;
                 ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
+                camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
             } else {
                 if (customOrientation != requestedOrientation) {
                     customOrientation = -1;
                     if (requestedOrientation != getActivity().getRequestedOrientation()) {
                         ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                        camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
+                        camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
                     }
                 }
             }
