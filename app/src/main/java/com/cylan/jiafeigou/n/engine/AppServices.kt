@@ -34,7 +34,7 @@ class AppServices() : Service(), NetworkCallback {
     override fun onCreate() {
         super.onCreate()
         HookerSupervisor.addHooker(appHooker)
-        DeviceSupervisor.monitorReportDevices()
+//        DeviceSupervisor.monitorReportDevices()
         BellerSupervisor.monitorBeller()
         NetMonitor.getNetMonitor().registerNet(this, arrayOf(ConnectivityManager.CONNECTIVITY_ACTION, NETWORK_STATE_CHANGED_ACTION))
     }
@@ -88,7 +88,7 @@ class AppServices() : Service(), NetworkCallback {
         }
 
         private fun doHookerSyncMessages(syncEvent: RxEvent.DeviceSyncRsp) {
-            syncEvent.dpList.forEach { PropertySupervisor.setValue(syncEvent.uuid, it.id.toInt(), it.version, it.packValue) }
+//            syncEvent.dpList.forEach { PropertySupervisor.setValue(syncEvent.uuid, it.id.toInt(), it.version, it.packValue) }
         }
     }
 }

@@ -4,54 +4,51 @@ package com.cylan.jiafeigou.module
 
 import android.os.Parcel
 import android.os.Parcelable
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
 import org.msgpack.annotation.Ignore
 import org.msgpack.annotation.Index
 import org.msgpack.annotation.Message
 import org.msgpack.annotation.Optional
-import kotlin.reflect.KProperty
 
 /**
  * Created by yzd on 17-12-2.
  */
 @Suppress("ArrayInDataClass")
-@Entity
-data class PropertyBox(
-        @Id(assignable = true) var hash: Long = 0,
-        @io.objectbox.annotation.Index var uuid: String = "",
-        @io.objectbox.annotation.Index var msgId: Int = 0,
-        @io.objectbox.annotation.Index var version: Long = 0,
-        var bytes: ByteArray? = byteArrayOf()
-)
-
-@Entity
-data class DeviceBox(
-        @Id(assignable = true) var hash: Long = 0,
-        @io.objectbox.annotation.Index var uuid: String = "",
-        var sn: String = "",
-        var alias: String = "",
-        @io.objectbox.annotation.Index var shareAccount: String,
-        @io.objectbox.annotation.Index var pid: Int = -1,
-        var vid: String = "",
-        var regionType: Int = 0
-)
-
-@Entity
-data class AccountBox(
-        @Id(assignable = true) var hash: Long = 0,
-        var token: String,
-        var alias: String,
-        var enablePush: Int,
-        var enableSound: Int,
-        @io.objectbox.annotation.Index var email: String,
-        var enableVibrate: Int,
-        @io.objectbox.annotation.Index var phone: String,
-        var photoUrl: String,
-        @io.objectbox.annotation.Index var account: String,
-        var wxPush: Int,
-        var wxopenid: String
-)
+////@Entity
+//data class PropertyBox(
+//        @Id(assignable = true) var hash: Long = 0,
+//        @io.objectbox.annotation.Index var uuid: String = "",
+//        @io.objectbox.annotation.Index var msgId: Int = 0,
+//        @io.objectbox.annotation.Index var version: Long = 0,
+//        var bytes: ByteArray? = byteArrayOf()
+//)
+//
+//@Entity
+//data class DeviceBox(
+//        @Id(assignable = true) var hash: Long = 0,
+//        @io.objectbox.annotation.Index var uuid: String = "",
+//        var sn: String = "",
+//        var alias: String = "",
+//        @io.objectbox.annotation.Index var shareAccount: String,
+//        @io.objectbox.annotation.Index var pid: Int = -1,
+//        var vid: String = "",
+//        var regionType: Int = 0
+//)
+//
+//@Entity
+//data class AccountBox(
+//        @Id(assignable = true) var hash: Long = 0,
+//        var token: String,
+//        var alias: String,
+//        var enablePush: Int,
+//        var enableSound: Int,
+//        @io.objectbox.annotation.Index var email: String,
+//        var enableVibrate: Int,
+//        @io.objectbox.annotation.Index var phone: String,
+//        var photoUrl: String,
+//        @io.objectbox.annotation.Index var account: String,
+//        var wxPush: Int,
+//        var wxopenid: String
+//)
 
 
 @MustBeDocumented
@@ -60,16 +57,16 @@ data class AccountBox(
 annotation class MsgId(val msgId: Int)
 
 
-data class Device(val box: DeviceBox) {
-    @MsgId(PropertyTypes.NET_201)
-    val net: DPNet? by this
-    @MsgId(PropertyTypes.SDCARD_STORAGE_204)
-    val sdcard: DPSdStatus? by this
-
-    private operator fun <T : DP> getValue(device: Device, property: KProperty<*>): T? = DeviceSupervisor.getValue(device, property)
-}
-
-data class Account(val box: AccountBox)
+//data class Device(val box: DeviceBox) {
+//    @MsgId(PropertyTypes.NET_201)
+//    val net: DPNet? by this
+//    @MsgId(PropertyTypes.SDCARD_STORAGE_204)
+//    val sdcard: DPSdStatus? by this
+//
+//    private operator fun <T : DP> getValue(device: Device, property: KProperty<*>): T? = DeviceSupervisor.getValue(device, property)
+//}
+//
+//data class Account(val box: AccountBox)
 
 @Message
 open class DP(@field:Ignore @JvmField val msgId: Int = 0,

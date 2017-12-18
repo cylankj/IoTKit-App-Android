@@ -320,7 +320,7 @@ repositories {
 }
 
 greendao {
-    schemaVersion 8
+    schemaVersion 9
 }
 
 dependencies {
@@ -435,9 +435,10 @@ dependencies {
     compile 'org.msgpack:msgpack-core:0.8.13'
     compile 'org.msgpack:jackson-dataformat-msgpack:0.8.13'
     compile 'com.google.code.gson:gson:2.8.2'
-    compile "io.objectbox:objectbox-android:$objectBoxVersion"
-    compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
-    kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
+    //去掉 objectBox
+//    compile "io.objectbox:objectbox-android:$objectBoxVersion"
+//    compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
+//    kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
     kapt "com.android.databinding:compiler:2.3.3"
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.1'
 

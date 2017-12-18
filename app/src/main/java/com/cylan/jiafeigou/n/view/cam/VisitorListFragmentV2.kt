@@ -27,15 +27,15 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
+import com.cylan.jiafeigou.cache.db.KeyValue
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.base.IBaseFragment
 import com.cylan.jiafeigou.n.mvp.contract.cam.VisitorListContract
 import com.cylan.jiafeigou.n.mvp.impl.cam.BaseVisitorPresenter
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem
 import com.cylan.jiafeigou.n.view.cam.item.LoadMoreItem
-import com.cylan.jiafeigou.server.cache.KeyValueStringItem
 import com.cylan.jiafeigou.server.cache.longHash
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
@@ -47,7 +47,6 @@ import com.google.gson.reflect.TypeToken
 import com.mikepenz.fastadapter.IItem
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
-import io.objectbox.kotlin.boxFor
 import kotlinx.android.synthetic.main.fragment_visitor_list.*
 
 
@@ -121,9 +120,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     private fun restoreCache() {
-        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
-        val valueItem = boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash()]
-        val valueItem1 = boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash()]
+
+        val keyValueDao = BaseDBHelper.getInstance().daoSession.keyValueDao
+        keyValueDao.loadByRowId("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash())
+
+//        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
+        val valueItem = keyValueDao.loadByRowId("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash())// boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash()]
+        val valueItem1 = keyValueDao.loadByRowId("${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash())//boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash()]
         valueItem?.value?.apply {
             val item = Gson().fromJson<List<FaceItem>>(this, object : TypeToken<List<FaceItem>>() {}.type)
             item.forEach { it.withSetSelected(false) }
@@ -169,12 +172,15 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
 
     private fun saveCache() {
-        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
+        val keyValueDao = BaseDBHelper.getInstance().daoSession.keyValueDao;
+//        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
         val gson = Gson()
         visitorItems.drop(2).apply {
-            boxFor.put(KeyValueStringItem("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash(), gson.toJson(this)))
+            keyValueDao.insertOrReplace(KeyValue("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash(), gson.toJson(this)))
+//            boxFor.put(KeyValueStringItem("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash(), gson.toJson(this)))
         }
-        boxFor.put(KeyValueStringItem("${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash(), gson.toJson(strangerItems)))
+        keyValueDao.insertOrReplace(KeyValue("${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash(), gson.toJson(strangerItems)))
+//        boxFor.put(KeyValueStringItem("${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash(), gson.toJson(strangerItems)))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

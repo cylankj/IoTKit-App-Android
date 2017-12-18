@@ -3,8 +3,10 @@ package com.cylan.jiafeigou.module
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import com.cylan.entity.jniCall.JFGDoorBellCaller
+import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity
@@ -63,7 +65,7 @@ object BellerSupervisor : Supervisor {
 
     private class OwnerHooker : BellerHooker() {
         override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
-            if (DeviceSupervisor.getDevice(parameter.cid) != null) {
+            if (TextUtils.equals(DataSourceManager.getInstance().getDevice(parameter.cid).uuid, parameter.cid)) {
                 action.process()
             }
         }
@@ -124,8 +126,9 @@ object BellerSupervisor : Supervisor {
         val caller = event.cid
         val time = event.time
         val regionType = event.regionType
-        val device = DeviceSupervisor.getDevice(caller)
-        val V2 = device?.box?.vid?.isEmpty() == true
+//        val device = DeviceSupervisor.getDevice(caller)
+        val device = DataSourceManager.getInstance().getDevice(caller)
+        val V2 = device?.vid?.isEmpty() == true
         val url = if (V2) {
             "cylan:///$caller/$time.jpg?regionType=$regionType"
         } else {

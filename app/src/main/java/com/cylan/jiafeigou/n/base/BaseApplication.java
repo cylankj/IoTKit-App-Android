@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
-import com.cylan.jiafeigou.MyObjectBox;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
@@ -20,8 +19,6 @@ import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.server.cache.Device;
-import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.hook.HookHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -40,8 +37,6 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasFragmentInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import io.objectbox.Box;
-import io.objectbox.BoxStore;
 import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -67,26 +62,26 @@ public class BaseApplication extends MultiDexApplication implements Application.
     //    private static AppComponent appComponent;
     private static int stopViewCount = 0;
     private static int pauseViewCount = 0;
-    private static BoxStore boxStore;
-
-    private static Box<PropertyItem> propertyItemBox;
-
-    private static Box<Device> deviceBox;
+//    private static BoxStore boxStore;
+//
+//    private static Box<PropertyItem> propertyItemBox;
+//
+//    private static Box<Device> deviceBox;
     private volatile boolean needToInject = true;
     private static AppComponent appComponent;
 
-    public static BoxStore getBoxStore() {
-        return boxStore;
-    }
-
-    //
-    public static Box<PropertyItem> getPropertyItemBox() {
-        return propertyItemBox;
-    }
-
-    public static Box<Device> getDeviceBox() {
-        return deviceBox;
-    }
+//    public static BoxStore getBoxStore() {
+//        return boxStore;
+//    }
+//
+//    //
+//    public static Box<PropertyItem> getPropertyItemBox() {
+//        return propertyItemBox;
+//    }
+//
+//    public static Box<Device> getDeviceBox() {
+//        return deviceBox;
+//    }
 
     @Override
     public void onCreate() {
@@ -103,17 +98,16 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appInit");
             stopViewCount = 0;
             //Dagger2 依赖注入
-            try {
-                boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
+//                propertyItemBox = boxStore.boxFor(PropertyItem.class);
+//                deviceBox = boxStore.boxFor(Device.class);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             DataSourceManager.getInstance();//以后会去掉 datasource
-            propertyItemBox = boxStore.boxFor(PropertyItem.class);
-            deviceBox = boxStore.boxFor(Device.class);
             OkGo.init(this);
             initializationManager.initialization();
-
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);
