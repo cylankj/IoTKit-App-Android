@@ -18,7 +18,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.video.History;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 16-7-12.
@@ -74,6 +78,8 @@ public class SuperWheelExt extends View {
     private static final int STATE_IDLE = 0x000;
     private static final int STATE_ASSEMBLE = 0x001;
     private int state = STATE_IDLE;
+    private TimeZone timezone;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH", Locale.getDefault());
 
     public IData getDataProvider() {
         return iDataProvider;
@@ -308,7 +314,12 @@ public class SuperWheelExt extends View {
         if (time < 0 || iDataProvider == null || iDataProvider.getBottomType(time) == 0) {
             return;
         }
-        canvas.drawText(iDataProvider.getDateInFormat(time),
+//        canvas.drawText(iDataProvider.getDateInFormat(time),
+//                pos - (dateTextWidth >> 1),
+//                getHeight() + 2 * textRect.centerY(),
+//                naturalDateTextPaint);
+        //      还需要考虑设备时区
+        canvas.drawText(simpleDateFormat.format(new Date(time)) + ":00",
                 pos - (dateTextWidth >> 1),
                 getHeight() + 2 * textRect.centerY(),
                 naturalDateTextPaint);
@@ -519,6 +530,11 @@ public class SuperWheelExt extends View {
          * @param time: 移动后，
          */
         void onWheelTimeUpdate(long time, int state);
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        this.timezone = timeZone;
+        simpleDateFormat.setTimeZone(timeZone);
     }
 }
 

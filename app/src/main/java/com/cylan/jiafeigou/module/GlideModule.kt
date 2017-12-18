@@ -5,12 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.module.AppGlideModule
-import com.bumptech.glide.request.RequestOptions
-import com.cylan.jiafeigou.misc.JConstant
-import java.io.File
 import java.io.InputStream
 
 /**
@@ -20,9 +15,11 @@ import java.io.InputStream
 class GlideModule : AppGlideModule() {
 
     override fun applyOptions(context: Context?, builder: GlideBuilder) {
-        val downloadDirectoryPath = JConstant.ROOT_DIR + File.separator + "cache"
-        val cacheSize = 100 * 1000 * 1000
-        builder.setDiskCache(DiskLruCacheFactory(downloadDirectoryPath, cacheSize))
+        //需要在清缓存时把 Glide 里的也删掉,所以放到内部了
+//        val cache = File(Environment.getDataDirectory(), "cache")
+////        val downloadDirectoryPath = JConstant.ROOT_DIR + File.separator + "cache"
+//        val cacheSize = 100 * 1000 * 1000
+//        builder.setDiskCache(DiskLruCacheFactory(cache.absolutePath, cacheSize))
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {

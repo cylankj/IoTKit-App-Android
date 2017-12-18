@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -84,10 +85,18 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                     oldVersion = ret.getVersion();
                     oldVersion.setLastShowTime(time);
                     oldVersion.setTotalSize(totalSize(oldVersion));
-                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
-                    setBinVersion(oldVersion);
-                    finalShow();
-                    return Observable.just(ret.getVersion());
+                    BinVersion version = ret.getVersion();
+                    if (version != null) {
+                        if (BindUtils.versionCompare(version.getTagVersion(), oldVersion.getTagVersion()) > 0) {
+                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
+                            setBinVersion(oldVersion);
+                            finalShow();
+                            return Observable.just(ret.getVersion());
+                        } else {
+                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, "");
+                        }
+                    }
+                    return Observable.empty();
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);

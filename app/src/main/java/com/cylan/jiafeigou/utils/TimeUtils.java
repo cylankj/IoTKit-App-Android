@@ -472,6 +472,9 @@ public class TimeUtils {
             return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_HOUR, String.valueOf(hour));
         }
         long days = hour / 24;
-        return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_DAY, String.valueOf(days));
+        if (days <= 7) {
+            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_DAY, String.valueOf(days));
+        }
+        return getYHM(lastTime);
     }
 }

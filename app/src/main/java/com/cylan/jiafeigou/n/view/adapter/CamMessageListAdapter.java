@@ -53,6 +53,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private boolean status;
     private Map<String, String> personMaps = new HashMap<>();
     private Map<String, List<CamMessageBean>> visitorMaps = new HashMap<>();
+    private boolean hasFaceHeader = false;
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -62,6 +63,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         this.uuid = uiid;
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         this.isSharedDevice = device != null && device.available() && !TextUtils.isEmpty(device.shareAccount);
+        this.hasFaceHeader = JFGRules.isFaceFragment(device.pid);
     }
 
     /*
@@ -377,7 +379,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-                if (dpAlarm.face_names != null) {
+                if (dpAlarm.face_names != null && hasFaceHeader) {
                     StringBuilder builder = new StringBuilder();
                     for (int i = 0; i < dpAlarm.face_names.length; i++) {
                         builder.append(dpAlarm.face_names[i]);
@@ -389,9 +391,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     return tContent + (TextUtils.isEmpty(faceText) ?
                             getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
                             : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
-                } else if (dpAlarm.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
+                } else if (hasFaceHeader && dpAlarm.face_id != null /*&& bean.alarmMsg.humanNum > 0*/) {
                     String faceText = JConstant.getFaceText(dpAlarm.face_id, personMaps, null);
-
                     return tContent + (TextUtils.isEmpty(faceText) ?
                             getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
                             : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
@@ -420,10 +421,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private String getFinalTimeContentSD(CamMessageBean bean) {
         String tContent = TimeUtils.getHH_MM(bean.message.getVersion()) + " ";
-        String[] DDD = null;
-        if (DDD instanceof String[]) {
-
-        }
         switch ((int) bean.message.getMsgId()) {
             case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
 
