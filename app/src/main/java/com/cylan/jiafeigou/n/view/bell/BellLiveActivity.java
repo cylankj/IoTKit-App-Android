@@ -405,6 +405,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            setHideBackMargin();
             customToolbar.setVisibility(View.GONE);
             landBack.setVisibility(View.VISIBLE);
+            landBack.setText(mLiveTitle);
             ViewUtils.updateViewMatchScreenHeight(flBellLiveHolder);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
             cover.setVisibility(View.GONE);
@@ -486,8 +487,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 break;
             case R.id.imgv_bell_live_switch_to_land:
                 initLandView();
-                ViewUtils.setRequestedOrientation(this,
-                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                ViewUtils.setRequestedOrientation(this, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
         }
     }

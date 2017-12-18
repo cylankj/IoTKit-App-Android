@@ -796,6 +796,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         boolean isMobileNet = net.net > 1;
         svSettingDeviceWifi.setSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
+
+
+
         tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
