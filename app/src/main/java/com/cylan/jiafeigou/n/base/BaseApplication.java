@@ -103,7 +103,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appInit");
             stopViewCount = 0;
             //Dagger2 依赖注入
-            boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
+            try {
+                boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             DataSourceManager.getInstance();//以后会去掉 datasource
             propertyItemBox = boxStore.boxFor(PropertyItem.class);
             deviceBox = boxStore.boxFor(Device.class);
