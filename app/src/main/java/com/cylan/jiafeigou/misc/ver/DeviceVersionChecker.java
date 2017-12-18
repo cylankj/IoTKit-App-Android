@@ -52,11 +52,12 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
 
     @Override
     public void startCheck() {
-        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60 * 1000) {
-            lastCheckTime = System.currentTimeMillis();
-        } else {
-            return;
-        }
+        //测试要求去掉一个小时检测一次的限制
+//        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60 * 1000) {
+//            lastCheckTime = System.currentTimeMillis();
+//        } else {
+//            return;
+//        }
         final String uuid = portrait.getCid();
         Subscription subscribe = Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)

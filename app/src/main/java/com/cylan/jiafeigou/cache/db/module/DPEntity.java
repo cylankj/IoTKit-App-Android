@@ -16,6 +16,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.util.Arrays;
+import com.cylan.jiafeigou.cache.db.DaoSession;
 
 /**
  * Created by yanzhendong on 2017/2/27.
