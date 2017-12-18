@@ -958,6 +958,10 @@ public class MiscUtils {
     }
 
     public static long getFileSizeFromUrl(String url) {
+        if (TextUtils.isEmpty(url)) {
+            //空的 URL 地址,则直接返回了
+            return 0;
+        }
         Request request = new Request.Builder()
                 .url(url)
                 .build();

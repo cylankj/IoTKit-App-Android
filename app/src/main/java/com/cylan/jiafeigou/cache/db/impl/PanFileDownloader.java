@@ -5,8 +5,8 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.cylan.jiafeigou.cache.db.module.DaoMaster;
-import com.cylan.jiafeigou.cache.db.module.DaoSession;
+import com.cylan.jiafeigou.cache.db.DaoMaster;
+import com.cylan.jiafeigou.cache.db.DaoSession;
 import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.cache.db.module.DownloadFileDao;
 import com.cylan.jiafeigou.cache.db.view.IPanFileDbHelper;
