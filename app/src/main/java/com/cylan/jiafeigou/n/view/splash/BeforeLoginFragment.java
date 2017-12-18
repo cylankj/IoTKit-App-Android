@@ -130,7 +130,7 @@ public class BeforeLoginFragment extends Fragment {
         if (clickEvent == null) {
             clickEvent = new Event();
         }
-        if (!BuildConfig.DEBUG && OptionsImpl.getServer().contains("yun.")) {
+        if (!BuildConfig.DEBUG) {
             return;
         }
         if (clickEvent.click(getContext())) {
