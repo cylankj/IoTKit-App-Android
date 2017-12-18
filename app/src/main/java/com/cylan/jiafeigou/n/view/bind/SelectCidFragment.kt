@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.bind
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,7 +97,13 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
 
     fun back() {
         AppLogger.w("back")
-        fragmentManager?.popBackStack()
+        AlertDialog.Builder(context!!)
+                .setMessage(R.string.Tap1_AddDevice_tips)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, { _, _ -> fragmentManager?.popBackStack() })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show()
+
     }
 
     @OnClick(R.id.device_cid)

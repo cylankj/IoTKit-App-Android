@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -18,19 +17,13 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.SimpleCache;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -44,7 +37,7 @@ import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
-import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.push.BellPuller;
@@ -54,7 +47,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -63,14 +55,12 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.utils.JfgUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -188,7 +178,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
                     mView.showFirmwareDialog();
                 }, AppLogger::e);
-        AbstractVersion<AbstractVersion.BinVersion> version = new DeviceVersionChecker();
+        DeviceVersionChecker version = new DeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.setShowCondition(() -> {
@@ -1331,5 +1321,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             }
             return true;
         }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        SubscriptionSupervisor.unsubscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
     }
 }

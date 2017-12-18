@@ -31,7 +31,12 @@ object SubscriptionSupervisor {
 
     @JvmStatic
     fun unsubscribe(target: Any, category: String?, tag: String?) {
-        Log.d(TAG, "unsubscribe for:target:${target.javaClass.name},category:$category,tag:$tag")
+        unsubscribe(target.javaClass.name, category, tag)
+    }
+
+    @JvmStatic
+    fun unsubscribe(target: String, category: String?, tag: String?) {
+        Log.d(TAG, "unsubscribe for:target:$target,category:$category,tag:$tag")
         subscriptions[target.javaClass.name]?.apply {
             synchronized(SubscriptionSupervisor::class) {
                 if (TextUtils.isEmpty(category)) {

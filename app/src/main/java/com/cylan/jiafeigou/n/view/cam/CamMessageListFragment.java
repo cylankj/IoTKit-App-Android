@@ -450,6 +450,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void decideRefresh() {
+        srLayoutCamListRefresh.setRefreshing(true);
         if (hasFaceHeader && hasExpanded) {
             if (visitorFragment != null) {
                 visitorFragment.refreshContent();

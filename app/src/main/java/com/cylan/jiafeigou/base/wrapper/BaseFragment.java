@@ -159,11 +159,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @CallSuper
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) {
-            isVisible = true;
+        if (isVisible = isVisibleToUser) {
             onVisible();
         } else {
-            isVisible = false;
             onInvisible();
         }
     }

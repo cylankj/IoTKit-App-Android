@@ -430,7 +430,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/v_guide"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/x46"
+        android:layout_marginBottom="@dimen/y46"
         android:layout_marginEnd="@dimen/x10"
         android:visibility="gone">
 

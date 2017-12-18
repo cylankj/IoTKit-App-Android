@@ -27,7 +27,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -41,6 +40,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
@@ -134,6 +134,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ButterKnife.bind(this, view);
         return view;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -388,10 +389,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        if ((isVisible && isPrepared && onBackPressed()) || willExit) {
+        if (willExit && this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             removeVideoView();
         }
-        return super.performBackIntercept(willExit);
+        return isVisible && isPrepared && onBackPressed();
     }
 
     @Override
@@ -869,22 +870,24 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return true;
         } else {
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 stop 延迟调用");
-            Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
-                @Override
-                public void onSucceed(Bitmap bitmap) {
-                    PerformanceUtils.stopTrace("takeShotFromLocalView");
+            if (presenter != null && presenter.getPlayState() == PLAY_STATE_PLAYING) {
+                Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
+                    @Override
+                    public void onSucceed(Bitmap bitmap) {
+                        PerformanceUtils.stopTrace("takeShotFromLocalView");
 //                    camLiveControlLayer.onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                    presenter.saveAndShareBitmap(bitmap, false, false);
-                }
+                        presenter.saveAndShareBitmap(bitmap, false, false);
+                    }
 
-                @Override
-                public void onFailure(String s) {
+                    @Override
+                    public void onFailure(String s) {
 
-                }
-            });
-            presenter.stopPlayVideo(true).subscribe(ret -> {
-            }, AppLogger::e);
-
+                    }
+                });
+                presenter.stopPlayVideo(true).subscribe(ret -> {
+                }, AppLogger::e);
+            }
+            removeVideoView();
             return false;
         }
     }
@@ -981,16 +984,38 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (fromUser) {
                 customOrientation = orientation;
                 ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
+                camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
             } else {
                 if (customOrientation != requestedOrientation) {
                     customOrientation = -1;
                     if (requestedOrientation != getActivity().getRequestedOrientation()) {
                         ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                        camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
+                        camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
                     }
                 }
             }
         }
     }
+
+    private Runnable backgroundCheckerRunnable = () -> {
+        if (BaseApplication.getPauseViewCount() == 0) {
+            //APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,
+            if (presenter != null) {
+                presenter.stopPlayVideo(STOP_MAUNALLY);
+            }
+        }
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        camLiveControlLayer.removeCallbacks(backgroundCheckerRunnable);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        camLiveControlLayer.postDelayed(backgroundCheckerRunnable, 700);
+    }
+
 }
