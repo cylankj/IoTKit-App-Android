@@ -35,7 +35,6 @@ import com.cylan.jiafeigou.module.message.MIDHeader;
 import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.server.cache.CacheHolderKt;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -249,7 +248,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
 
         /*过渡性使用,将来会废弃*/
-        CacheHolderKt.saveProperty(s, arrayList, null);
+//        CacheHolderKt.saveProperty(s, arrayList, null);
     }
 
     @Override

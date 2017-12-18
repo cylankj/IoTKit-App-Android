@@ -49,7 +49,6 @@ import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.SdcardDetailActivity;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
-import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -78,8 +77,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.objectbox.reactive.DataObserver;
-import io.objectbox.reactive.DataSubscription;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -94,7 +91,7 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 @Badge(parentTag = "CameraLiveActivity")
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
-        implements CamSettingContract.View, DataObserver<List<PropertyItem>> {
+        implements CamSettingContract.View/*, DataObserver<List<PropertyItem>>*/ {
 
     private static final int REQ_DELAY_RECORD = 122;
     @BindView(R.id.sv_setting_device_detail)
@@ -153,7 +150,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
 //    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
     private SimpleDialogFragment mClearRecordFragment;
-    private DataSubscription observer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,10 +258,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (observer != null && !observer.isCanceled()) {
-            observer.cancel();
-            observer = null;
-        }
     }
 
     private void initBackListener() {
@@ -621,7 +613,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             startActivity(intent);
         } else {
             DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-            if (!JFGRules.isDeviceOnline(net)) {
+            if (!JFGRules.isDeviceOnline(net) ||/*WiFi 关闭时也要从新进入流程页*/ NetUtils.isWiFiConnected(this)) {
                 //设备离线
                 Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
                 intent.putExtra("PanoramaConfigure", "Family");
@@ -798,7 +790,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
 
 
-
         tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
@@ -883,7 +874,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceWifi.setEnabled(false);
             svSettingDeviceWifi.setSubTitle("");
         }
-        svSettingDeviceWiredMode.setSubTitle(wiredModeEnable ? getString(R.string.WIRED_MODE_CONNECTED) : getString(R.string.DOOR_NOT_CONNECT));
+        svSettingDeviceWifi.setEnabled(!wiredModeOnline);
+        svSettingDeviceWiredMode.setSubTitle(wiredModeOnline ? getString(R.string.WIRED_MODE_CONNECTED) : getString(R.string.DOOR_NOT_CONNECT));
 //        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
 //            if (NetUtils.getJfgNetType() == 0) {
 //                ToastUtil.showToast(getString(R.string.NoNetworkTips));
@@ -1246,11 +1238,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (requestCode == REQ_DELAY_RECORD) {
 
         }
-    }
-
-    @Override
-    public void onData(List<PropertyItem> propertyItems) {
-        Log.i(JConstant.CYLAN_TAG, "数据库数据发生了变化,需要更新显示");
     }
 
     @OnClick(R.id.sv_setting_device_ap)

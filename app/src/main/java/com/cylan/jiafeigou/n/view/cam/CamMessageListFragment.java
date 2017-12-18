@@ -32,12 +32,14 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.KeyValue;
+import com.cylan.jiafeigou.cache.db.KeyValueDao;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -51,7 +53,6 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.server.cache.CacheHolderKt;
-import com.cylan.jiafeigou.server.cache.KeyValueStringItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -82,7 +83,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.objectbox.Box;
 
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
@@ -481,11 +481,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         decideRefresh();//需要每次刷新,而不是第一次刷新
 
         if (NetUtils.getNetType(getContext()) == -1) {
-            Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
-            KeyValueStringItem stringItem = boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
-            if (stringItem != null) {
+//            Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
+            KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
+            KeyValue keyValue = keyValueDao.loadByRowId(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
+//            KeyValueStringItem stringItem =  boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
+            if (keyValue != null) {
                 try {
-                    Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(stringItem.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
+                    Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(keyValue.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
                     });
                     camMessageListAdapter.restoreCachedItems(json);
                 } catch (IOException e) {
@@ -559,8 +561,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         Map<String, List<CamMessageBean>> cachedItems = camMessageListAdapter.getCachedItems();
         try {
             String toJson = new ObjectMapper().writeValueAsString(cachedItems);
-            BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class)
-                    .put(new KeyValueStringItem(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
+            KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
+            keyValueDao.insertOrReplace(new KeyValue(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
+//            keyValueDao.save(new KeyValue(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
+//            BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class)
+//                    .put(new KeyValueStringItem(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

@@ -32,8 +32,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.server.cache.CacheHolderKt;
-import com.cylan.jiafeigou.server.cache.HashStrategyFactory;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -51,7 +49,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import io.objectbox.BoxStore;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -84,7 +81,6 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     public BaseDBHelper() {
-        BoxStore boxStore = BaseApplication.getBoxStore();
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
 //        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
         DaoMaster master = new DaoMaster(helper.getWritableDb());
@@ -133,18 +129,22 @@ public class BaseDBHelper implements IDBHelper {
             DPEntity dpEntity = null;
             Device device = DataSourceManager.getInstance().getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
-                long select = HashStrategyFactory.INSTANCE.select(uuid, msg.id, msg.version);
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
                 if (dpEntity == null) {
-                    dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties._id.eq(select)).unique();
+                    dpEntity = mEntityDao.queryBuilder()
+                            .where(DPEntityDao.Properties.Uuid.eq(uuid))
+                            .where(DPEntityDao.Properties.MsgId.eq(msg.id))
+                            .unique();
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
                 }
                 if (dpEntity == null) {
-                    dpEntity = new DPEntity(select, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+                    dpEntity = unique(builder);
+//                    dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                 }
                 dpEntity.setAction(DBAction.SAVED);
                 dpEntity.setState(DBState.SUCCESS);
@@ -178,7 +178,6 @@ public class BaseDBHelper implements IDBHelper {
 //            PropertyItem item = null;
             Device device = DataSourceManager.getInstance().getDevice(dataRsp.identity);
 
-            CacheHolderKt.saveProperty(dataRsp.identity, (Map<Long, List<?>>) (Object) dataRsp.map, HashStrategyFactory.INSTANCE::select);
 
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
@@ -187,21 +186,22 @@ public class BaseDBHelper implements IDBHelper {
 //                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
 //                    );
 //                    propertyItems.add(item);
-                    long select = HashStrategyFactory.INSTANCE.select(dataRsp.identity, msg.id, msg.version);
 
                     if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
                     if (dpEntity == null) {
-//                        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-//                        dpEntity = unique(builder);
-                        dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties._id.eq(select)).unique();
+                        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
+                        dpEntity = unique(builder);
+//                        dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties.Uuid.eq(dataRsp.identity))
+//                                .where(DPEntityDao.Properties.MsgId.eq(msg.id))
+//                                .unique();
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;
                     }
                     if (dpEntity == null) {
-                        dpEntity = new DPEntity(select, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                        dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                     }
                     dpEntity.setAction(DBAction.SAVED);
                     dpEntity.setState(DBState.SUCCESS);
@@ -553,10 +553,6 @@ public class BaseDBHelper implements IDBHelper {
                     QueryBuilder<Device> queryBuilder = null;
                     Device dpDevice = null;
                     JFGDevice dev;
-
-                    CacheHolderKt.saveDevices(device);
-
-
                     List<Device> remove = buildDPDeviceQueryBuilder(account.getAccount(), getServer(), null, null, null, null).list();
                     if (remove != null) {
                         deviceDao.deleteInTx(remove);
