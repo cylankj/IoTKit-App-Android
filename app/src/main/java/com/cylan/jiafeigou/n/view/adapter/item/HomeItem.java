@@ -247,9 +247,11 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
         //时间
         long time = entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0;
-        if (time != 0) {//服务器返回的数据是错的,过滤掉
-            holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, time));
-        }
+//        if (time != 0) {//服务器返回的数据是错的,过滤掉
+        holder.setText(R.id.tv_device_msg_time, !show || time == 0 ? "" : TimeUtils.getHomeItemTime(context, time));
+//        } else {
+//            holder.setText(R.id.tv_device_msg_time, "");
+//        }
         ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
     }
 
