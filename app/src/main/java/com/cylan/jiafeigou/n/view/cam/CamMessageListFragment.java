@@ -1032,7 +1032,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         tvMsgFullSelect.setText(camMessageListAdapter.getSelectedItems().size() > 0 ? getString(R.string.CANCEL) : getString(R.string.SELECT_ALL));
         tvMsgDelete.setEnabled(camMessageListAdapter.getSelectedItems().size() > 0);
         tvMsgFullSelect.setEnabled(editerMode);
-        visitorFragment.disable(editerMode);
+        if (visitorFragment != null) {
+            visitorFragment.disable(editerMode);
+        }
         ibQuickTop.setVisibility(editerMode ? View.GONE : View.VISIBLE);
         if (editerMode && !editMode) {
             AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
