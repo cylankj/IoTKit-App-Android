@@ -108,6 +108,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnReportJfgDevices(jfgDevices: Array<JFGDevice>) {
         AppLogger.w("OnReportJfgDevices" + gson.toJson(jfgDevices))
         publish(ReportDeviceEvent(jfgDevices))
+        RxBus.getCacheInstance().post(ReportDeviceEvent(jfgDevices))
     }
 
     override fun OnUpdateAccount(jfgAccount: JFGAccount) {
@@ -252,10 +253,10 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnRobotSyncData(b: Boolean, s: String, arrayList: ArrayList<JFGDPMsg>) {
         AppLogger.w("OnRobotSyncData :" + b + " " + s + " " + Gson().toJson(arrayList))
         val ids = arrayList.map { it.id }
-        RxBus.getCacheInstance().post(RxEvent.DeviceSyncRsp(arrayList, ArrayList(ids), s))
+        RxBus.getCacheInstance().post(RobotSyncDataEvent(b,s,arrayList))
         val dpIDs = java.util.ArrayList<Long>(arrayList.size)
         arrayList.forEach { dpIDs.add(it.id) }
-        publish(RxEvent.DeviceSyncRsp(arrayList, dpIDs, s))
+        publish(RobotSyncDataEvent(b,s,arrayList))
     }
 
     override fun OnSendSMSResult(i: Int, s: String) {

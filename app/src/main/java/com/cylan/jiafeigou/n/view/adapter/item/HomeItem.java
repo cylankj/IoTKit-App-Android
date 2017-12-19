@@ -236,14 +236,14 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     private void handleMsgCountAndTime(ViewHolder holder, String uuid, Device mDevice) {
         //被分享用户,不显示 消息数
         Context context = holder.tvDeviceAlias.getContext();
-        Pair<DPEntity, Integer> pair = handleUnreadCount(mDevice);
+        Pair<DPEntity, Integer> pair = handleUnreadCount(getDevice());
         DPEntity entity = pair == null ? null : pair.first;
-        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + pair);
-        boolean isPrimaryDevice = isPrimaryAccount(mDevice.shareAccount);
-        boolean show = needShowUnread(mDevice, isPrimaryDevice);
+        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + pair.first + ",second:" + pair.second);
+        boolean isPrimaryDevice = isPrimaryAccount(getDevice().shareAccount);
+        boolean show = needShowUnread(getDevice(), isPrimaryDevice);
         //消息数,狗日的门铃的分享设备需要显示.
 
-        String warnContent = getLastWarnContent(pair, mDevice.pid, uuid);
+        String warnContent = getLastWarnContent(pair, getDevice().pid, uuid);
         holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
         //时间
         long time = entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0;

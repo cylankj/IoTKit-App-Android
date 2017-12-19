@@ -133,9 +133,17 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         this.presenter = new HomePageListPresenterImpl(this);
     }
 
+    private Runnable refreshDeviceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            presenter.fetchDeviceList(false);
+        }
+    };
+
     @Override
     public void onStart() {
         super.onStart();
+        rVDevicesList.removeCallbacks(refreshDeviceRunnable);
         if (presenter != null) {
 //            PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, true);
 //            srLayoutMainContentHolder.setRefreshing(false);
@@ -145,7 +153,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             srLayoutMainContentHolder.setOnRefreshListener(this);
             onItemsRsp(DataSourceManager.getInstance().getAllDevice());
             updateAccount.run();
-            presenter.fetchDeviceList(false);
+            //延迟两秒钟在请求
+            rVDevicesList.postDelayed(refreshDeviceRunnable, 2000L);
+
         } else {
             AppLogger.e("presenter is null");
         }
@@ -297,6 +307,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onStop() {
         super.onStop();
+        rVDevicesList.removeCallbacks(refreshDeviceRunnable);
         if (set != null) {
             set.cancel();
             set = null;
@@ -367,6 +378,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onItemsRsp(List<Device> resultList) {
         mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(resultList));
         emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+//        //不管怎么样都要刷新下,因为 homeItem 比较相等的方法并不能涵盖所有条件,不刷新可能导致主页消息更新不及时
+//        mItemAdapter.notifyAdapterDataSetChanged();
         onRefreshFinish();
     }
 

@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by cylan-hunt on 16-7-29.
  */

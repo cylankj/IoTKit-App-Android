@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.module.AppCallbackSupervisor;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -276,6 +277,7 @@ public class BaseForwardHelper {
                             msgIds.add(msg.id);
                         }
                         RxBus.getCacheInstance().post(new RxEvent.DeviceSyncRsp(msgList, msgIds, forward.mCaller));//这里会直接写入数据库 中
+                        RxBus.getCacheInstance().post(new AppCallbackSupervisor.RobotSyncDataEvent(true, forward.mCaller, msgList));
                         RxBus.getCacheInstance().post(reportMsgList);
                     }
                     break;

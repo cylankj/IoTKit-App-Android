@@ -430,8 +430,13 @@ public class DataSourceManager implements JFGSourceManager {
         }
         map.put(uuid, array);
         try {
-            Command.getInstance().robotGetMultiData(map, 1, false, 0);
-            AppLogger.w("多查询");
+            for (Map.Entry<String, JFGDPMsg[]> entry : map.entrySet()) {
+                //超过512会崩溃
+                HashMap<String, JFGDPMsg[]> hashMap = new HashMap<>();
+                hashMap.put(entry.getKey(), entry.getValue());
+                Command.getInstance().robotGetMultiData(hashMap, 1, false, 0);
+                AppLogger.w("多查询");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -851,79 +856,78 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheDeviceSub() {
-        return
-                AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.ReportDeviceEvent.class)
-                        .onBackpressureBuffer()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.io())
-                        .flatMap(event -> {
-                            Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
-                            JFGDevice device;
-                            for (int i = 0; i < event.getDevices().length; i++) {
-                                device = event.getDevices()[i];
-                                result.remove(device.uuid);
-                            }
+        return RxBus.getCacheInstance().toObservable(AppCallbackSupervisor.ReportDeviceEvent.class)
+                .onBackpressureBuffer()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(event -> {
+                    Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
+                    JFGDevice device;
+                    for (int i = 0; i < event.getDevices().length; i++) {
+                        device = event.getDevices()[i];
+                        result.remove(device.uuid);
+                    }
 
-                            AppLogger.w("已删除的设备数:" + result.size());
-                            return BaseDBHelper.getInstance().updateDevice(event.getDevices()).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
-                        })
-                        .map(devices -> {
-                            try {
-                                DBOption.DeviceOption option;
+                    AppLogger.w("已删除的设备数:" + result.size());
+                    return BaseDBHelper.getInstance().updateDevice(event.getDevices()).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
+                })
+                .map(devices -> {
+                    try {
+                        DBOption.DeviceOption option;
 //                        mCachedDeviceMap.clear();
-                                rawDeviceOrder.clear();
-                                ArrayList<String> uuidList = new ArrayList<>();
-                                synchronized (DataSourceManager.class) {
+                        rawDeviceOrder.clear();
+                        ArrayList<String> uuidList = new ArrayList<>();
+                        synchronized (DataSourceManager.class) {
 //                            mCachedDeviceMap.clear();
-                                    rawDeviceOrder.clear();
-                                    for (Device device : devices) {
-                                        option = device.option(DBOption.DeviceOption.class);
-                                        if (mCachedDeviceMap.get(device.getUuid()) == null) {
-                                            mCachedDeviceMap.put(device.getUuid(), device);
-                                        }
-                                        rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
-                                        if (!JFGRules.isShareDevice(device)) {
-                                            uuidList.add(device.getUuid());
-                                        }
-                                    }
+                            rawDeviceOrder.clear();
+                            for (Device device : devices) {
+                                option = device.option(DBOption.DeviceOption.class);
+                                if (mCachedDeviceMap.get(device.getUuid()) == null) {
+                                    mCachedDeviceMap.put(device.getUuid(), device);
                                 }
-                                syncHomeProperty();
-                                if (!BaseApplication.isBackground()) {
-                                    getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+                                rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
+                                if (!JFGRules.isShareDevice(device)) {
+                                    uuidList.add(device.getUuid());
                                 }
-                            } catch (Exception e) {
-                                AppLogger.d(e.getMessage());
-                                e.printStackTrace();
                             }
-                            return "多线程真心麻烦";
-                        })
-                        .retry((i, e) -> true)
-                        .subscribe(new Subscriber<String>() {
-                            @Override
-                            public void onCompleted() {
+                        }
+                        syncHomeProperty();
+                        if (!BaseApplication.isBackground()) {
+                            getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+                        }
+                    } catch (Exception e) {
+                        AppLogger.d(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    return "多线程真心麻烦";
+                })
+                .retry((i, e) -> true)
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                            }
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                AppLogger.d(e.getMessage());
-                            }
+                    @Override
+                    public void onError(Throwable e) {
+                        AppLogger.d(e.getMessage());
+                    }
 
-                            @Override
-                            public void onNext(String s) {
-                                request(1);
-                            }
+                    @Override
+                    public void onNext(String s) {
+                        request(1);
+                    }
 
-                            @Override
-                            public void onStart() {
-                                request(1);
-                            }
-                        });
+                    @Override
+                    public void onStart() {
+                        request(1);
+                    }
+                });
     }
 
 
     private Subscription makeCacheGetDataSub() {
-        return AppCallbackSupervisor.INSTANCE.observe(RobotoGetDataRsp.class)
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -962,7 +966,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheSyncDataSub() {
-        return AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.RobotSyncDataEvent.class)
+        return RxBus.getCacheInstance().toObservable(AppCallbackSupervisor.RobotSyncDataEvent.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

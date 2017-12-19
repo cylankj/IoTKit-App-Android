@@ -169,7 +169,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription robotDeviceDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+//                .throttleFirst(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msg -> subUuidList(), AppLogger::e);
     }
