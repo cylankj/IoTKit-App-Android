@@ -1035,7 +1035,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorFragment != null) {
             visitorFragment.disable(editerMode);
         }
-        ibQuickTop.setVisibility(editerMode ? View.GONE : View.VISIBLE);
+        if (hasFaceHeader) {
+            ibQuickTop.setVisibility(editerMode ? View.GONE : View.VISIBLE);
+        }
         if (editerMode && !editMode) {
             AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
         } else if (!editerMode && editMode) {
