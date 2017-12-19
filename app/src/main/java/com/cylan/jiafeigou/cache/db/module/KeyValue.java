@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.cache.db;
+package com.cylan.jiafeigou.cache.db.module;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;

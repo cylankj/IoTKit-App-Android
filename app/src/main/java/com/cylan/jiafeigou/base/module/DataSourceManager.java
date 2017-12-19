@@ -1046,7 +1046,7 @@ public class DataSourceManager implements JFGSourceManager {
                 long msgId = list.get(i).id;
                 JFGDPMsg msg = list.get(i);
                 if (msgId == 505 || msgId == 512 || msgId == 222) {
-                    if (!BaseApplication.isBackground()) {
+                    if (BaseApplication.isBackground()) {
                         continue;
                     }
                     //cam 1001 1002  1003

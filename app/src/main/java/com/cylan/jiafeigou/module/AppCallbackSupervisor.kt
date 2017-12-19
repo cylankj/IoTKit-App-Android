@@ -254,9 +254,9 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         AppLogger.w("OnRobotSyncData :" + b + " " + s + " " + Gson().toJson(arrayList))
         publish(RobotSyncDataEvent(b, s, ArrayList(arrayList)))
         val ids = arrayList.map { it.id }
-        RxBus.getCacheInstance().post(RobotSyncDataEvent(b, s, ArrayList(arrayList)))
         val dpIDs = java.util.ArrayList<Long>(arrayList.size)
         arrayList.forEach { dpIDs.add(it.id) }
+        RxBus.getCacheInstance().post(RxEvent.DeviceSyncRsp(ArrayList(arrayList), dpIDs, s))
 
     }
 

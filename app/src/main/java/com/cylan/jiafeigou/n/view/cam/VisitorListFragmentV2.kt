@@ -27,7 +27,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
-import com.cylan.jiafeigou.cache.db.KeyValue
+import com.cylan.jiafeigou.cache.db.module.KeyValue
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant

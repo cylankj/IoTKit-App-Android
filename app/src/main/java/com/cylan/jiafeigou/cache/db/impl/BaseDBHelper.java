@@ -142,9 +142,9 @@ public class BaseDBHelper implements IDBHelper {
                     continue;
                 }
                 if (dpEntity == null) {
-                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-                    dpEntity = unique(builder);
-//                    dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+//                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+//                    dpEntity = unique(builder);
+                    dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                 }
                 dpEntity.setAction(DBAction.SAVED);
                 dpEntity.setState(DBState.SUCCESS);
@@ -181,21 +181,12 @@ public class BaseDBHelper implements IDBHelper {
 
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
-
-//                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, (int) msg.id, msg.version),
-//                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
-//                    );
-//                    propertyItems.add(item);
-
                     if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
                     if (dpEntity == null) {
                         QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
                         dpEntity = unique(builder);
-//                        dpEntity = mEntityDao.queryBuilder().where(DPEntityDao.Properties.Uuid.eq(dataRsp.identity))
-//                                .where(DPEntityDao.Properties.MsgId.eq(msg.id))
-//                                .unique();
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;

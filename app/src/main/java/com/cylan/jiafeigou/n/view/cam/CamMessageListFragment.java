@@ -32,9 +32,9 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.KeyValue;
-import com.cylan.jiafeigou.cache.db.KeyValueDao;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.KeyValue;
+import com.cylan.jiafeigou.cache.db.module.KeyValueDao;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
