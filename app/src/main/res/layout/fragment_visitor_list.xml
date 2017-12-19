@@ -51,7 +51,8 @@
             android:paddingStart="@dimen/y15"
             android:text="@string/Tap1_Menu_More"
             android:textColor="@color/color_4b9fd5_selector"
-            android:textSize="@dimen/sp14" />
+            android:textSize="@dimen/sp14"
+            android:visibility="invisible" />
 
     </FrameLayout>
 

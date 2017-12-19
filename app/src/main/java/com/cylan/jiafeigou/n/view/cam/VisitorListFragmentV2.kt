@@ -161,9 +161,21 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         val layoutParams = view!!.layoutParams
         val oldHeight = layoutParams.height
         layoutParams.height = when {
-            faceAdapter.adapterItemCount > 3 || isExpanded -> ViewGroup.LayoutParams.MATCH_PARENT
-            faceAdapter.adapterItemCount > 0 -> resources.getDimensionPixelSize(R.dimen.y144)
-            else -> resources.getDimensionPixelSize(R.dimen.y0)
+            faceAdapter.adapterItemCount > 3 || isExpanded -> {
+                //进入消息界面，当头像区域显示有两排时才显示右侧的更多控件。实际结果：一排也显示了更多的控件
+                more_text.visibility = View.VISIBLE
+                ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            faceAdapter.adapterItemCount > 0 -> {
+                //进入消息界面，当头像区域显示有两排时才显示右侧的更多控件。实际结果：一排也显示了更多的控件
+                more_text.visibility = View.INVISIBLE
+                resources.getDimensionPixelSize(R.dimen.y144)
+            }
+            else -> {
+                //进入消息界面，当头像区域显示有两排时才显示右侧的更多控件。实际结果：一排也显示了更多的控件
+                more_text.visibility = View.INVISIBLE
+                resources.getDimensionPixelSize(R.dimen.y0)
+            }
         }
         if (oldHeight != layoutParams.height) {
             view!!.layoutParams = layoutParams
@@ -285,7 +297,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
 
         faceAdapter.withOnLongClickListener { v, adapter, item, position ->
-            if (true) {
+            if (true) {//目前屏蔽掉长按事件
                 return@withOnLongClickListener true
             }
             //            visitorListener?.onLoadItemInformation(item)
