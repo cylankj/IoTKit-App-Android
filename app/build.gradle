@@ -104,15 +104,6 @@ android {
 
     signingConfigs {
 
-//        config {
-//            p.load(project.rootProject.file('local.properties').newDataInputStream())
-//            storeFile file(p['key.store'])
-//            storePassword p['key.store.password']
-//            keyPassword p['key.alias.password']
-//            keyAlias p['key.alias']
-//        }
-
-
         debug {
             v2SigningEnabled true
             Properties properties = new Properties()
