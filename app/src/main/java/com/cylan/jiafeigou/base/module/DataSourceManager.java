@@ -814,7 +814,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheAccountSub() {
-        return getCacheInstance().toObservable(JFGAccount.class)
+        return AppCallbackSupervisor.INSTANCE.observe(JFGAccount.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -856,7 +856,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheDeviceSub() {
-        return RxBus.getCacheInstance().toObservable(AppCallbackSupervisor.ReportDeviceEvent.class)
+        return AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.ReportDeviceEvent.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -927,7 +927,7 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     private Subscription makeCacheGetDataSub() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+        return AppCallbackSupervisor.INSTANCE.observe(RobotoGetDataRsp.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -966,7 +966,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Subscription makeCacheSyncDataSub() {
-        return RxBus.getCacheInstance().toObservable(AppCallbackSupervisor.RobotSyncDataEvent.class)
+        return AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.RobotSyncDataEvent.class)
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
