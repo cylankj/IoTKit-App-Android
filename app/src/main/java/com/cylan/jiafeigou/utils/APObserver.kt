@@ -41,6 +41,11 @@ object APObserver {
 
     @JvmStatic
     fun scanDogWiFi(): Observable<MutableList<ScanResult>> {
+        return scanDogWiFi(5)
+    }
+
+    @JvmStatic
+    fun scanDogWiFi(delay: Long): Observable<MutableList<ScanResult>> {
         return Observable.create<ScanResult> { subscriber ->
             var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
                     .map {
@@ -99,7 +104,7 @@ object APObserver {
             subscriber.add(subscribe)
         }
                 .subscribeOn(Schedulers.io())
-                .buffer(5, TimeUnit.SECONDS)
+                .buffer(delay, TimeUnit.SECONDS)
                 .first()
                 .map {
                     val map = mutableMapOf<String, ScanResult>()
@@ -123,6 +128,13 @@ object APObserver {
     @JvmStatic
     fun scan(uuid: String): Observable<ScanResult?> {
         return scanDogWiFi()
+                .map { it?.first { TextUtils.equals(it.uuid, uuid) } }
+                .first { TextUtils.equals(it?.uuid, uuid) }
+    }
+
+    @JvmStatic
+    fun scan(uuid: String, delay: Long): Observable<ScanResult?> {
+        return scanDogWiFi(delay)
                 .map { it?.first { TextUtils.equals(it.uuid, uuid) } }
                 .first { TextUtils.equals(it?.uuid, uuid) }
     }

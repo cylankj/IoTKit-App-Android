@@ -15,5 +15,7 @@ public interface FirmwareUpdateContract {
 
     interface Presenter extends BasePresenter {
         void cleanFile();
+
+        void performEnvironmentCheck(String uuid);
     }
 }

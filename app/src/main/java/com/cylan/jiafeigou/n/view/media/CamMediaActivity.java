@@ -112,7 +112,13 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
         customAdapter.setCamMessageBean(camMessageBean);
         vpContainer.setAdapter(customAdapter);
-        vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
+        currentIndex = getIntent().getIntExtra(KEY_INDEX, 0);
+        //为什么要对全景 View 特殊对待呢?因为全景 View 是单例的也就是在整个 APP 我们只能创建一个全景 View,
+        //而我们用的又是 viewpager adapter, 所有就只能是 Viewpager 的第一个 item 可用,点击时替换掉第一个
+        //item 里的图片就行了
+        boolean isPan = device != null && JFGRules.isNeedPanoramicView(device.pid);
+
+        vpContainer.setCurrentItem(isPan ? 0 : currentIndex);
         customAdapter.setCallback(object -> {
             AnimatorUtils.slideAuto(customToolbar, true);
             AnimatorUtils.slideAuto(fLayoutCamHandleBar, false);
