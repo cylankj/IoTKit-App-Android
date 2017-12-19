@@ -1471,6 +1471,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private void setLiveRectTime(int type, long timestamp) {
+
+//        if (BuildConfig.DEBUG) {
+//            //just for test
+//            return;
+//        }
+
         //历史视频的时候，使用rtcp自带时间戳。
         if (livePlayType == TYPE_HISTORY && timestamp == 0) {
             return;

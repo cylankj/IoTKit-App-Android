@@ -865,17 +865,31 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
 
+        /*
+        * DPIDBaseIsExistNetWired = 225
+         设备端是否存在可用的有线网络。
+         设备端插入和拔出网线均会上报该消息。
+         id long 功能消息唯一标识
+         timeMsec int64 DP时间点, 毫秒
+         value int  0 拔出网线， 1 插入网线
+         DPIDBaseIsNetWired = 226
+         客户端配置/设备端查询 设备是否使用有线网络
+         id long 功能消息唯一标识
+         timeMsec int64 DP时间点, 毫秒
+         isWiredNet bool   True 使用有线网络， False 不使用有线网络。
+        * */
         //有线模式
         svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid, false) ? View.VISIBLE : View.GONE);
         boolean wiredModeEnable = device.$(225, 0) == 1;
 //        svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
         boolean wiredModeOnline = device.$(226, 0) == 1;
-        if (wiredModeOnline) {
+        boolean useWiredNetwork = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net == 10;
+        if (useWiredNetwork) {
             svSettingDeviceWifi.setEnabled(false);
             svSettingDeviceWifi.setSubTitle("");
         }
-        svSettingDeviceWifi.setEnabled(!wiredModeOnline);
-        svSettingDeviceWiredMode.setSubTitle(wiredModeOnline ? getString(R.string.WIRED_MODE_CONNECTED) : getString(R.string.DOOR_NOT_CONNECT));
+//        svSettingDeviceWifi.setEnabled(!wiredModeOnline);
+        svSettingDeviceWiredMode.setSubTitle(useWiredNetwork ? getString(R.string.WIRED_MODE_CONNECTED) : getString(R.string.DOOR_NOT_CONNECT));
 //        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
 //            if (NetUtils.getJfgNetType() == 0) {
 //                ToastUtil.showToast(getString(R.string.NoNetworkTips));
