@@ -57,6 +57,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -585,7 +586,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 long time = camMessageListAdapter.getList().get(position).message.getVersion();
                 if (time == 0) time = System.currentTimeMillis();
                 boolean isToday = TimeUtils.isToday(time);
-                String content = String.format(TimeUtils.getSpecifiedDate(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
+                String content = String.format(TimeUtils.getSpecifiedDate(time) + "%s", isToday ? "(" + ContextUtils.getContext().getString(R.string.DOOR_TODAY) + ")" : "");
                 tvCamMessageListDate.setText(content);
             });
         }
@@ -603,7 +604,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
             LoadingDialog.showLoading(getActivity());
             boolean isToday = TimeUtils.isToday(time);
-            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
+            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + ContextUtils.getContext().getString(R.string.DOOR_TODAY) + ")" : "");
 
             tvCamMessageListDate.setText(content);
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
@@ -627,7 +628,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             camMessageListAdapter.notifyDataSetHasChanged();
             final int count = beanArrayList == null ? 0 : beanArrayList.size();
             if (count == 0 && camMessageListAdapter.getCount() > 0) {
-                ToastUtil.showToast(getString(R.string.Loaded));
+                ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Loaded));
                 makeSureRemoveFoot();
             }
             decideEmptyViewLayout();

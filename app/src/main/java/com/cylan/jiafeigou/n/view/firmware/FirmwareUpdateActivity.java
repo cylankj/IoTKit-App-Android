@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
@@ -61,6 +62,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
 
 @Badge(parentTag = "DeviceInfoDetailFragment")
 public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
@@ -299,40 +301,68 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
 
-    private boolean checkEnv() {
+    public interface CheckListener {
+        void checkResult(boolean pass);
+    }
+
+    private void checkEnv(CheckListener listener) {
         Device device = presenter.getDevice();
         //相同版本
         if (TextUtils.equals(tvCurrentVersion.getText(), tvNewVersionName.getText())) {
             //相同版本
             ToastUtil.showToast(getString(R.string.NEW_VERSION));
-            return false;
+            listener.checkResult(false);
+//            return false;
+            return;
 //            return true;//mock¬
         }
         String deviceMac = device.$(202, "");
         String routMac = NetUtils.getRouterMacAddress();
         //1.直连AP
         if (TextUtils.equals(deviceMac, routMac)) {
-            return true;
+            listener.checkResult(true);
+//            return true;
+            return;
         }
-        DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
-        String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-        //2.不在线
-        if (!JFGRules.isDeviceOnline(dpNet) || TextUtils.isEmpty(dpNet.ssid)) {
-            ToastUtil.showToast(getString(R.string.NOT_ONLINE));
-            return false;
-        }
-        String remoteSSid = dpNet.ssid;
-        AppLogger.d("check ???" + localSSid + "," + remoteSSid);
-        //4.以上条件都不满足的话,就是在线了
-        if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
-            AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
-                    getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }, getString(R.string.CANCEL), null);
-            return false;
-        }
-        //简单地认为是同一个局域网
-        return true;
+
+        Subscription subscribe = APObserver.scan(uuid, 2).subscribe(ret -> {
+            Log.d("FirmwareUpdateActivity", "scan result is:" + ret);
+            if (ret != null) {
+                listener.checkResult(true);
+            } else {
+                DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+                String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+                //2.不在线
+                if (!JFGRules.isDeviceOnline(dpNet) || TextUtils.isEmpty(dpNet.ssid)) {
+                    ToastUtil.showToast(getString(R.string.NOT_ONLINE));
+                    listener.checkResult(false);
+                    return;
+//            return false;
+                }
+                String remoteSSid = dpNet.ssid;
+                AppLogger.d("check ???" + localSSid + "," + remoteSSid);
+                //4.以上条件都不满足的话,就是在线了
+                if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
+                            getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            }, getString(R.string.CANCEL), null);
+                    listener.checkResult(false);
+//            return false;
+                    return;
+                }
+                //简单地认为是同一个局域网
+                listener.checkResult(true);
+
+            }
+        }, error -> {
+            error.printStackTrace();
+            AppLogger.e(error);
+        });
+        presenter.addSubscription("FirmwareUpdateActivity.APObserver.scan", subscribe);
+
+
+//        return true;
     }
 
 
@@ -349,47 +379,57 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级
             //1.网络环境{是否同一局域网}
-            if (!checkEnv()) {
-                return;
-            }
-            //2.电量
-            int battery = presenter.getDevice().$(206, 0);
-            if (battery <= 30) {
-                AlertDialogManager.getInstance().showDialog(this, FirmwareUpdateActivity.class.getSimpleName(),
-                        getString(R.string.Tap1_Update_Electricity),
-                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        }, false);
-                return;
-            }
-            //开始升级
-            Device device = DataSourceManager.getInstance().getDevice(uuid());
-            BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
-            if (JFGRules.isPan720(device.pid)) {
-                update = new PanFUUpdate(uuid(), getFileNameList());
-            } else {
-                update = new NormalFUUpdate(uuid(), getFileNameList().get(0));
-            }
-            update.setListener(this);
-            ClientUpdateManager.getInstance().enqueue(uuid(), update);
-        } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
-            //Tap1_FirmwareDownloading:正在下载(%s),
-        } else {
-            //1.下载失败
-            //2.Tap1a_DownloadInstall 下载并安装(%s)
-            if (NetUtils.getJfgNetType() == 2) {
-                AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Firmware_DataTips),
-                        getString(R.string.Tap1_Firmware_DataTips),
-                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                            toDownload();
-                        }, getString(R.string.CANCEL), null);
-                return;
-            }
-            final int size = binVersion == null ? 0 : ListUtils.getSize(binVersion.getList());
-            for (int i = 0; i < size; i++) {
-                final String key = binVersion.getList().get(i).url;
-                DownloadManager.getInstance().removeTask(key);
-            }
-            toDownload();
+            //这里需要用回调的方式,虽然直接调用目前可以满足需求,但扩展不便,
+            //比如现在需要检测是否局域网在线,直接调用的话就需要阻塞线程五六秒
+            //等待扫描结果
+            checkEnv(new CheckListener() {
+                @Override
+                public void checkResult(boolean pass) {
+                    if (pass) {
+                        //2.电量
+                        int battery = presenter.getDevice().$(206, 0);
+                        if (battery <= 30) {
+                            AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, FirmwareUpdateActivity.class.getSimpleName(),
+                                    getString(R.string.Tap1_Update_Electricity),
+                                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                    }, false);
+                            return;
+                        }
+                        //开始升级
+                        Device device = DataSourceManager.getInstance().getDevice(uuid());
+                        BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
+                        if (JFGRules.isPan720(device.pid)) {
+                            update = new PanFUUpdate(uuid(), getFileNameList());
+                        } else {
+                            update = new NormalFUUpdate(uuid(), getFileNameList().get(0));
+                        }
+                        update.setListener(FirmwareUpdateActivity.this);
+                        ClientUpdateManager.getInstance().enqueue(uuid(), update);
+                    } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
+                        //Tap1_FirmwareDownloading:正在下载(%s),
+                    } else {
+                        //1.下载失败
+                        //2.Tap1a_DownloadInstall 下载并安装(%s)
+                        if (NetUtils.getJfgNetType() == 2) {
+                            AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, getString(R.string.Tap1_Firmware_DataTips),
+                                    getString(R.string.Tap1_Firmware_DataTips),
+                                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                        toDownload();
+                                    }, getString(R.string.CANCEL), null);
+                            return;
+                        }
+                        final int size = binVersion == null ? 0 : ListUtils.getSize(binVersion.getList());
+                        for (int i = 0; i < size; i++) {
+                            final String key = binVersion.getList().get(i).url;
+                            DownloadManager.getInstance().removeTask(key);
+                        }
+                        toDownload();
+                    }
+                }
+            });
+//            if (!checkEnv()) {
+//                return;
+//            }
         }
     }
 
