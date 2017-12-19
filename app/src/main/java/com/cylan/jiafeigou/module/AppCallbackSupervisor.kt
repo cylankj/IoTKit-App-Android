@@ -252,11 +252,12 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     override fun OnRobotSyncData(b: Boolean, s: String, arrayList: ArrayList<JFGDPMsg>) {
         AppLogger.w("OnRobotSyncData :" + b + " " + s + " " + Gson().toJson(arrayList))
+        publish(RobotSyncDataEvent(b, s, ArrayList(arrayList)))
         val ids = arrayList.map { it.id }
-        RxBus.getCacheInstance().post(RobotSyncDataEvent(b,s,arrayList))
+        RxBus.getCacheInstance().post(RobotSyncDataEvent(b, s, ArrayList(arrayList)))
         val dpIDs = java.util.ArrayList<Long>(arrayList.size)
         arrayList.forEach { dpIDs.add(it.id) }
-        publish(RobotSyncDataEvent(b,s,arrayList))
+
     }
 
     override fun OnSendSMSResult(i: Int, s: String) {

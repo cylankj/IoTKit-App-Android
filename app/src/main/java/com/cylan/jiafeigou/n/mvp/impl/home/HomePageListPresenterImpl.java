@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -52,6 +54,25 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         addSubscription(JFGAccountUpdate());
         addSubscription(deviceRecordStateSub());
         addSubscription(deviceUnbindSub());
+        addSubscription(timeCheckerSub());
+    }
+
+    private Subscription timeCheckerSub() {
+        //这个 timeChecker 是定时任务,用来定时更新主页的消息时间的,因为如果刚刚来了一条消息,我们把他标记为刚刚
+        //过了好久没有收到同步消息,这时如果没有定时任务,主页还会显示刚刚,这就不正确了,所以加入了定时任务,来定时
+        //更新主页的时间
+        return Observable.interval(1, TimeUnit.MINUTES)
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        subUuidList();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
     }
 
     private void initDeviceRecordState() {
