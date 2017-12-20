@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
             android:clickable="true"
-            android:drawableEnd="@drawable/btn_put_away"
+            android:drawableEnd="@drawable/icon_expand"
             android:focusable="true"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y15"

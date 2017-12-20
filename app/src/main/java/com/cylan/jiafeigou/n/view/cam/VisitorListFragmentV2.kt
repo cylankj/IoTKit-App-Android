@@ -359,11 +359,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         visitorListener?.onExpanded(isExpanded)
         if (isExpanded) {
             more_text.setText(R.string.FACE_COLLAPSE)
-            ViewUtils.setDrawablePadding(more_text, R.drawable.btn_unfolded, 2)
+            ViewUtils.setDrawablePadding(more_text, R.drawable.icon_putaway, 2)
 
         } else {
             more_text.setText(R.string.Tap1_Menu_More)
-            ViewUtils.setDrawablePadding(more_text, R.drawable.btn_put_away, 2)
+            ViewUtils.setDrawablePadding(more_text, R.drawable.icon_expand, 2)
             footerAdapter.clear()
             faceAdapter.selections.firstOrNull()?.apply {
                 gridLayoutManager.scrollToPosition(this)

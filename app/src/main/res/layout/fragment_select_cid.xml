@@ -56,7 +56,7 @@
         android:layout_marginTop="@dimen/y37"
         android:gravity="center"
         android:text="@string/NEXT"
-        android:textColor="@color/color_4b9fd5"
+        android:textColor="@color/color_4b9fd5_selector"
         android:textSize="@dimen/sp17"
         app:lb_stroke_color="@color/color_d8d8d8" />
 
