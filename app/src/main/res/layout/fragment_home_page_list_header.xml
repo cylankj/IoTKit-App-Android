@@ -8,6 +8,7 @@
     app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
     app:statusBarScrim="@android:color/transparent">
 
+
     <FrameLayout
         android:id="@+id/fLayout_header_bg"
         android:layout_width="match_parent"
@@ -50,5 +51,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp16" />
     </LinearLayout>
+
+
 </FrameLayout>
 

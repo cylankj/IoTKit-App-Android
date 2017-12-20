@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,6 +44,8 @@ public interface CamSettingContract {
         void onClearBellRecordFailed();
 
         void onDeviceUnBind();
+
+        void onNewVersion(RxEvent.VersionRsp versionRsp);
     }
 
     interface Presenter extends BasePresenter {

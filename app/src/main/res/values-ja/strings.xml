@@ -1137,6 +1137,7 @@
   <string name="WIRED_MODE_CONNECTED">接続済み</string>
   <string name="WIRED_SELECT_DEVICE_CID">デバイスCIDを選択</string>
   <string name="WIRED_SELECT_DEVICE_CID_TIPS">デバイスCID</string>
+  <string name="WIRED_UPGRADE_NON_LAN">設定前に電話機とデバイスを同じネットワークに接続してください</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="WeChat">WeChat</string>

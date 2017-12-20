@@ -49,6 +49,7 @@ import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.SdcardDetailActivity;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -1240,6 +1241,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     Intent intent = new Intent(getContext(), NewHomeActivity.class);
                     startActivity(intent);
                 }, false);
+    }
+
+    @Override
+    public void onNewVersion(RxEvent.VersionRsp versionRsp) {
+        AppLogger.w("new Version:" + versionRsp);
+        initFirmwareHint(DataSourceManager.getInstance().getDevice(uuid));
     }
 
     private void enableStandby(boolean enable) {

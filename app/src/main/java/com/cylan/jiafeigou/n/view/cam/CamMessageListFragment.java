@@ -317,6 +317,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 ViewGroup.LayoutParams layoutParams = aplCamMessageAppbar.getLayoutParams();
                 layoutParams.height = expanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
                 aplCamMessageAppbar.setLayoutParams(layoutParams);
+                lLayoutNoMessage.setVisibility((camMessageListAdapter != null && camMessageListAdapter.getCount() > 0) || hasExpanded ? View.GONE : View.VISIBLE);
 //                srLayoutCamListRefresh.setEnabled(!expanded);
             }
 
@@ -512,6 +513,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
     };
 
+    private Runnable emptyCheckerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            lLayoutNoMessage.setVisibility(camMessageListAdapter.getItemCount() > 0 ? View.INVISIBLE : View.VISIBLE);
+        }
+    };
+
     /**
      */
     private void startRequest(boolean refresh) {
@@ -535,14 +543,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 case FaceItem.FACE_TYPE_STRANGER:
                     srLayoutCamListRefresh.setRefreshing(refresh);
                     success = camMessageListAdapter.showCachedVisitorList("stranger");
-                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
                     tvCamMessageListEdit.setEnabled(success);
 //                    presenter.fetchVisitorMessageList(1, "", time, refresh);
                     break;
                 case FaceItem.FACE_TYPE_ACQUAINTANCE:
                     srLayoutCamListRefresh.setRefreshing(refresh);
                     success = camMessageListAdapter.showCachedVisitorList(personId);
-                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
+//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                     tvCamMessageListEdit.setEnabled(success);
                     if (!TextUtils.isEmpty(personId)) {
                         presenter.fetchVisitorMessageList(2, personId, time, refresh);
@@ -551,7 +562,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 case FaceItem.FACE_TYPE_STRANGER_SUB:
                     srLayoutCamListRefresh.setRefreshing(refresh);
                     success = camMessageListAdapter.showCachedVisitorList(personId);
-                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
+//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                     tvCamMessageListEdit.setEnabled(success);
                     if (!TextUtils.isEmpty(personId)) {
                         presenter.fetchVisitorMessageList(1, personId, time, refresh);
@@ -559,7 +572,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     break;
                 case FaceItem.FACE_TYPE_ALL:
                     srLayoutCamListRefresh.setRefreshing(refresh);
-                    lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+//                    lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
                     presenter.fetchVisitorMessageList(3, "", time, refresh);
                     break;
                 case FaceItem.FACE_TYPE_DP:

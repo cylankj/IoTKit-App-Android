@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
@@ -135,7 +136,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onStart() {
         super.onStart();
-        delayLoading();
+        if (LoginHelper.isLoginSuccessful()) {
+            delayLoading();
+        }
     }
 
     private void delayLoading() {

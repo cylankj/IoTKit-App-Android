@@ -1137,6 +1137,7 @@
   <string name="WIRED_MODE_CONNECTED">bağlantılı</string>
   <string name="WIRED_SELECT_DEVICE_CID">Cihaz seç CID</string>
   <string name="WIRED_SELECT_DEVICE_CID_TIPS">Cihaz CID</string>
+  <string name="WIRED_UPGRADE_NON_LAN">Lütfen yapılandırmayı yapmadan önce telefonu ve cihazı aynı ağa bağlayın</string>
   <string name="WONDER_TODAY_H_M">Bugün HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Dün HH:mm</string>
   <string name="WeChat">WeChat</string>

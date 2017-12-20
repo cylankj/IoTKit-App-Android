@@ -41,9 +41,9 @@ class AppServices() : Service(), NetworkCallback {
 
 
     override fun onNetworkChanged(context: Context?, intent: Intent) {
-        if (NetUtils.isNetworkAvailable(context)) {
-            Log.d(TAG, "网络状态发生了变化,正在执行自动登录")
-            if (!BaseApplication.isBackground()) {
+        val net = NetUtils.getJfgNetType()
+        if (net!=0) {
+            if (!BaseApplication.isBackground()&&NetUtils.isNetworkAvailable(context)) {
                 Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED)
             }
         } else {

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.bind
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
             device_cid.text = this.uuid
             device_cid.isEnabled = true
         }
+        next_step.isEnabled = !TextUtils.isEmpty(device_cid.text)
     }
 
 
@@ -76,6 +78,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
             device_cid.text = this.uuid
             device_cid.isEnabled = true
         }
+        next_step.isEnabled = !TextUtils.isEmpty(device_cid.text)
         custom_toolbar.setBackAction { back() }
     }
 

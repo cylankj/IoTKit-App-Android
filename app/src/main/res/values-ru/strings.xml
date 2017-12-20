@@ -1137,6 +1137,7 @@
   <string name="WIRED_MODE_CONNECTED">Связанный</string>
   <string name="WIRED_SELECT_DEVICE_CID">Выберите CID устройства</string>
   <string name="WIRED_SELECT_DEVICE_CID_TIPS">CID устройства</string>
+  <string name="WIRED_UPGRADE_NON_LAN">Перед настройкой подключите телефон и устройство к той же сети</string>
   <string name="WONDER_TODAY_H_M">Сегодня HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Вчера HH:mm</string>
   <string name="WeChat">WeChat</string>

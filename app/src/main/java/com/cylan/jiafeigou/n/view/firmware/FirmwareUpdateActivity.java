@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.misc.ver.PanFUUpdate;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.APObserver;
@@ -303,6 +304,15 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         });
     }
 
+    @Override
+    public void onNewVersion(RxEvent.VersionRsp versionRsp) {
+        AppLogger.w("newVersion:" + versionRsp);
+        boolean result = isDownloading();
+        if (!result) {
+            dealUpdate();
+        }
+    }
+
 
     public interface CheckListener {
         void checkResult(boolean pass);
@@ -359,7 +369,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                         String remoteSSid = dpNet.ssid;
                         AppLogger.d("check ???" + localSSid + "," + remoteSSid);
                         //4.以上条件都不满足的话,就是在线了
-                        if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
+                        if (dpNet.net == 10) {
+                            AlertDialogManager.getInstance().showDialog(this, getString(R.string.WIRED_UPGRADE_NON_LAN),
+                                    getString(R.string.WIRED_UPGRADE_NON_LAN), getString(R.string.OK), null);
+                            listener.checkResult(false);
+                        } else if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
                             AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
                                     getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));

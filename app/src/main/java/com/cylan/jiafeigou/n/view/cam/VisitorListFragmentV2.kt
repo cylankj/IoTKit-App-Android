@@ -27,8 +27,8 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
-import com.cylan.jiafeigou.cache.db.module.KeyValue
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper
+import com.cylan.jiafeigou.cache.db.module.KeyValue
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.IBaseFragment
@@ -366,7 +366,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             ViewUtils.setDrawablePadding(more_text, R.drawable.btn_put_away, 2)
             footerAdapter.clear()
             faceAdapter.selections.firstOrNull()?.apply {
-                face_header.postDelayed({ gridLayoutManager.scrollToPosition(this) }, 200)
+                gridLayoutManager.scrollToPosition(this)
             }
         }
         resizeContentHeight()

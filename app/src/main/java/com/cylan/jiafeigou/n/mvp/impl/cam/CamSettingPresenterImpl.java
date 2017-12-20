@@ -20,9 +20,11 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.VersionCheckHelper;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -30,9 +32,12 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,6 +47,7 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -106,6 +112,30 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         AppLogger.e(e.getMessage());
                     });
         }
+
+        checkDeviceVersion();
+    }
+
+    private void checkDeviceVersion() {
+        Subscription subscribe = VersionCheckHelper.checkNewVersion(uuid)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.VersionRsp>() {
+                    @Override
+                    public void call(RxEvent.VersionRsp versionRsp) {
+                        Device device = DataSourceManager.getInstance().getDevice(uuid);
+                        final String currentVersion = device.$(207, "");
+                        if (BindUtils.versionCompare(versionRsp.getVersion().getTagVersion(), currentVersion) > 0) {
+                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(versionRsp.getVersion()));
+                            mView.onNewVersion(versionRsp);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+        addStopSubscription(subscribe);
     }
 
     /**

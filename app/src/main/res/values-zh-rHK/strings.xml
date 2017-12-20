@@ -1137,6 +1137,7 @@
   <string name="WIRED_MODE_CONNECTED">已連接</string>
   <string name="WIRED_SELECT_DEVICE_CID">選擇設備CID</string>
   <string name="WIRED_SELECT_DEVICE_CID_TIPS">設備CID</string>
+  <string name="WIRED_UPGRADE_NON_LAN">請將手機和設備連至同一網絡，再進行配置</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="WeChat">微信</string>

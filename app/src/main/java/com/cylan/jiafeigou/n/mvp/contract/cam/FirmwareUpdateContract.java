@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.n.mvp.BaseActivityView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 /**
  * 作者：zsl
@@ -11,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 public interface FirmwareUpdateContract {
 
     interface View extends BaseActivityView {
+        void onNewVersion(RxEvent.VersionRsp versionRsp);
     }
 
     interface Presenter extends BasePresenter {

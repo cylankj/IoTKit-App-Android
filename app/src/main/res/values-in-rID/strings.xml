@@ -1137,6 +1137,7 @@
   <string name="WIRED_MODE_CONNECTED">Terhubung</string>
   <string name="WIRED_SELECT_DEVICE_CID">Pilih perangkat CID</string>
   <string name="WIRED_SELECT_DEVICE_CID_TIPS">Perangkat CID</string>
+  <string name="WIRED_UPGRADE_NON_LAN">Sambungkan telepon dan perangkat ke jaringan yang sama sebelum konfigurasi</string>
   <string name="WONDER_TODAY_H_M">Hari ini HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Kemarin HH:mm</string>
   <string name="WeChat">WeChat</string>

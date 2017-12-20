@@ -1115,6 +1115,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode) {
         livePlayState = presenter.getPlayState();
         layoutB.setVisibility(GONE);
+        svSwitchStream.setVisibility(GONE);
         imgVCamLiveLandPlay.setImageResource(R.drawable.icon_landscape_stop);
         liveViewWithThumbnail.setEnabled(true);
         liveViewWithThumbnail.showFlowView(false, null);
@@ -1173,12 +1174,18 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 setLoadingState(null, null);
                 break;
             case JFGRules.PlayErr.ERR_NOT_FLOW:
+                if (livePlayState == PLAY_STATE_PLAYING) {//可能已经失败了,再提示网络连接超时就不正常了
+                    livePlayState = PLAY_STATE_LOADING_FAILED;
+                    setLoadingState(getContext().getString(R.string.NETWORK_TIMEOUT), getContext().getString(R.string.USER_HELP));
+                }
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                setLoadingState(getContext().getString(R.string.NETWORK_TIMEOUT), getContext().getString(R.string.USER_HELP));
                 break;
             case JError.ErrorVideoPeerDisconnect:
+                if (livePlayState==PLAY_STATE_PLAYING) {
+                    livePlayState = PLAY_STATE_LOADING_FAILED;
+                    setLoadingState(getContext().getString(R.string.Device_Disconnected), null);
+                }
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                setLoadingState(getContext().getString(R.string.Device_Disconnected), null);
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -1665,8 +1672,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //                showHistoryWheel(false);
                 removeCallbacks(landHideRunnable);  // 取消播放后延时显示的任务
                 removeCallbacks(portHideRunnable);  //取消播放后延时显示的任务
+                //即使网络断开了也要发送 stop
+                Subscription subscribe = presenter.stopPlayVideo(JFGRules.PlayErr.ERR_NETWORK).subscribe();
+                presenter.addSubscription("presenter.stopPlayVideo(JFGRules.PlayErr.ERR_NETWORK).subscribe()", subscribe);
                 handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
             } else {
+                handlePlayErr(presenter, PLAY_STATE_STOP);
 //                showHistoryWheel(true);
             }
         });
@@ -1674,7 +1685,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void changeViewState() {
         // TODO: 2017/8/18 设置为 gone 会导致布局不正确
-//        layoutD.setVisibility(INVISIBLE);
+        layoutD.setVisibility(INVISIBLE);
+        svSwitchStream.setVisibility(INVISIBLE);
         liveViewWithThumbnail.showFlowView(false, null);
         liveViewWithThumbnail.setThumbnail();
         setHotSeatState(-1, false, false, false, false, false, false);

@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -123,6 +124,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
+        if (!LoginHelper.isLoginSuccessful()) {
+            return;
+        }
         Subscription subscribe = Observable.just(new DPEntity()
                 .setUuid("")
                 .setVersion(0L)
@@ -158,6 +162,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startLoadMore() {
+        if (!LoginHelper.isLoginSuccessful()) {
+            return;
+        }
         Subscription subscribe = Observable.just(mWonderItems.get(mWonderItems.size() - 1).version)
                 .map(version -> new DPEntity()
                         .setVersion(version)

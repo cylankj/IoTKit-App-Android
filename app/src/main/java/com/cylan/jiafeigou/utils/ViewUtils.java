@@ -402,5 +402,10 @@ public class ViewUtils {
         }
 
     }
+
+    public static void setViewMinHeightStatusBar(View container) {
+        int minimumHeight = container.getMinimumHeight();
+        container.setMinimumHeight(minimumHeight + getStatusBarHeight(container.getContext()));
+    }
 }
 

@@ -1137,6 +1137,7 @@
   <string name="WIRED_MODE_CONNECTED">Conectado</string>
   <string name="WIRED_SELECT_DEVICE_CID">Seleccionar dispositivo CID</string>
   <string name="WIRED_SELECT_DEVICE_CID_TIPS">dispositivo CID</string>
+  <string name="WIRED_UPGRADE_NON_LAN">Conecte el teléfono y el dispositivo a la misma red antes de la configuración</string>
   <string name="WONDER_TODAY_H_M">Hoy HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ayer HH:mm</string>
   <string name="WeChat">WeChat</string>
