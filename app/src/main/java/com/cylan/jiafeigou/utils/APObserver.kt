@@ -128,15 +128,13 @@ object APObserver {
     @JvmStatic
     fun scan(uuid: String): Observable<ScanResult?> {
         return scanDogWiFi()
-                .map { it?.first { TextUtils.equals(it.uuid, uuid) } }
-                .first { TextUtils.equals(it?.uuid, uuid) }
+                .map { it?.firstOrNull { TextUtils.equals(it.uuid, uuid) } }
     }
 
     @JvmStatic
     fun scan(uuid: String, delay: Long): Observable<ScanResult?> {
         return scanDogWiFi(delay)
-                .map { it?.first { TextUtils.equals(it.uuid, uuid) } }
-                .first { TextUtils.equals(it?.uuid, uuid) }
+                .map { it?.firstOrNull { TextUtils.equals(it.uuid, uuid) } }
     }
 
     data class ScanResult(var uuid: String = "",

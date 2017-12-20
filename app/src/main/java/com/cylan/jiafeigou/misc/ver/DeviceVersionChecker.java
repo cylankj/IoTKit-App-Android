@@ -60,6 +60,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
 //            return;
 //        }
         final String uuid = portrait.getCid();
+
         Subscription subscribe = Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
@@ -70,6 +71,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                     try {
                         seq = Command.getInstance()
                                 .checkDevVersion(device.pid, device.getUuid(), currentVersion);
+                        Command.getInstance().CheckTagDeviceVersion(uuid);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         seq = -1L;
@@ -80,23 +82,32 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                         .subscribeOn(Schedulers.io())
                         .filter(ret -> ret != null && TextUtils.equals(uuid, ret.getUuid())))
                 .flatMap(ret -> {
+                    setBinVersion(ret.getVersion());
                     BinVersion oldVersion = getVersionFrom(uuid);
                     long time = oldVersion.getLastShowTime();
                     oldVersion = ret.getVersion();
                     oldVersion.setLastShowTime(time);
                     oldVersion.setTotalSize(totalSize(oldVersion));
-                    BinVersion version = ret.getVersion();
-                    if (version != null) {
-                        if (BindUtils.versionCompare(version.getTagVersion(), oldVersion.getTagVersion()) > 0) {
-                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
-                            setBinVersion(oldVersion);
-                            finalShow();
-                            return Observable.just(ret.getVersion());
-                        } else {
-                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, "");
-                        }
+                    Device device = DataSourceManager.getInstance().getDevice(portrait.getCid());
+                    final String newVersion = binVersion.getTagVersion();
+                    final String currentVersion = device.$(207, "");
+                    if (BindUtils.versionCompare(newVersion, currentVersion) > 0) {
+                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
+                        setBinVersion(oldVersion);
+                        finalShow();
+                    } else {
+                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, "");
                     }
-                    return Observable.empty();
+                    return Observable.just(ret.getVersion());
+//                    BinVersion oldVersion = getVersionFrom(uuid);
+//                    long time = oldVersion.getLastShowTime();
+//                    oldVersion = ret.getVersion();
+//                    oldVersion.setLastShowTime(time);
+//                    oldVersion.setTotalSize(totalSize(oldVersion));
+//                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
+//                    setBinVersion(oldVersion);
+//                    finalShow();
+//                    return Observable.just(ret.getVersion());
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);

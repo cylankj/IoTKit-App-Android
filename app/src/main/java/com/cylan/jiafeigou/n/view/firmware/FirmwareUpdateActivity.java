@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.request.BaseRequest;
@@ -63,6 +64,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 @Badge(parentTag = "DeviceInfoDetailFragment")
 public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
@@ -325,40 +328,54 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             return;
         }
 
-        Subscription subscribe = APObserver.scan(uuid, 2).subscribe(ret -> {
-            Log.d("FirmwareUpdateActivity", "scan result is:" + ret);
-            if (ret != null) {
-                listener.checkResult(true);
-            } else {
-                DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
-                String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-                //2.不在线
-                if (!JFGRules.isDeviceOnline(dpNet) || TextUtils.isEmpty(dpNet.ssid)) {
-                    ToastUtil.showToast(getString(R.string.NOT_ONLINE));
-                    listener.checkResult(false);
-                    return;
+        Subscription subscribe = APObserver.scan(uuid, 2)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        LoadingDialog.showLoading(FirmwareUpdateActivity.this, getString(R.string.LOADING), false);
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        LoadingDialog.dismissLoading();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    Log.d("FirmwareUpdateActivity", "scan result is:" + ret);
+                    if (ret != null) {
+                        listener.checkResult(true);
+                    } else {
+                        DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+                        String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+                        //2.不在线
+                        if (!JFGRules.isDeviceOnline(dpNet) || TextUtils.isEmpty(dpNet.ssid)) {
+                            ToastUtil.showToast(getString(R.string.NOT_ONLINE));
+                            listener.checkResult(false);
+                            return;
 //            return false;
-                }
-                String remoteSSid = dpNet.ssid;
-                AppLogger.d("check ???" + localSSid + "," + remoteSSid);
-                //4.以上条件都不满足的话,就是在线了
-                if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
-                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
-                            getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            }, getString(R.string.CANCEL), null);
-                    listener.checkResult(false);
+                        }
+                        String remoteSSid = dpNet.ssid;
+                        AppLogger.d("check ???" + localSSid + "," + remoteSSid);
+                        //4.以上条件都不满足的话,就是在线了
+                        if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
+                            AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
+                                    getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                    }, getString(R.string.CANCEL), null);
+                            listener.checkResult(false);
 //            return false;
-                    return;
-                }
-                //简单地认为是同一个局域网
-                listener.checkResult(true);
+                            return;
+                        }
+                        //简单地认为是同一个局域网
+                        listener.checkResult(true);
 
-            }
-        }, error -> {
-            error.printStackTrace();
-            AppLogger.e(error);
-        });
+                    }
+                }, error -> {
+                    error.printStackTrace();
+                    AppLogger.e(error);
+                });
         presenter.addSubscription("FirmwareUpdateActivity.APObserver.scan", subscribe);
 
 
@@ -405,31 +422,31 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                         }
                         update.setListener(FirmwareUpdateActivity.this);
                         ClientUpdateManager.getInstance().enqueue(uuid(), update);
-                    } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
-                        //Tap1_FirmwareDownloading:正在下载(%s),
-                    } else {
-                        //1.下载失败
-                        //2.Tap1a_DownloadInstall 下载并安装(%s)
-                        if (NetUtils.getJfgNetType() == 2) {
-                            AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, getString(R.string.Tap1_Firmware_DataTips),
-                                    getString(R.string.Tap1_Firmware_DataTips),
-                                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                        toDownload();
-                                    }, getString(R.string.CANCEL), null);
-                            return;
-                        }
-                        final int size = binVersion == null ? 0 : ListUtils.getSize(binVersion.getList());
-                        for (int i = 0; i < size; i++) {
-                            final String key = binVersion.getList().get(i).url;
-                            DownloadManager.getInstance().removeTask(key);
-                        }
-                        toDownload();
                     }
                 }
             });
 //            if (!checkEnv()) {
 //                return;
 //            }
+        } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
+            //Tap1_FirmwareDownloading:正在下载(%s),
+        } else {
+            //1.下载失败
+            //2.Tap1a_DownloadInstall 下载并安装(%s)
+            if (NetUtils.getJfgNetType() == 2) {
+                AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, getString(R.string.Tap1_Firmware_DataTips),
+                        getString(R.string.Tap1_Firmware_DataTips),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            toDownload();
+                        }, getString(R.string.CANCEL), null);
+                return;
+            }
+            final int size = binVersion == null ? 0 : ListUtils.getSize(binVersion.getList());
+            for (int i = 0; i < size; i++) {
+                final String key = binVersion.getList().get(i).url;
+                DownloadManager.getInstance().removeTask(key);
+            }
+            toDownload();
         }
     }
 
@@ -460,7 +477,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 DownloadDBManager.INSTANCE.replace(info);
             }
             BaseRequest baseRequest = OkGo.get(key);
-            DownloadManager.getInstance().addTask(binVersion.getList().get(i).url, baseRequest, new DListener(this));
+            if (!TextUtils.isEmpty(binVersion.getList().get(i).url)) {
+                DownloadManager.getInstance().addTask(binVersion.getList().get(i).url, baseRequest, new DListener(this));
+            }
         }
     }
 

@@ -478,25 +478,39 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             camMessageListAdapter.clear();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ClearDataEvent.class);
         }
+        srLayoutCamListRefresh.removeCallbacks(refreshRunnable);
+        srLayoutCamListRefresh.postDelayed(refreshRunnable, 700);
+    }
 
-        decideRefresh();//需要每次刷新,而不是第一次刷新
+    private Runnable refreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            decideRefresh();//需要每次刷新,而不是第一次刷新
 
-        if (NetUtils.getNetType(getContext()) == -1) {
+            if (NetUtils.getNetType(getContext()) == -1) {
 //            Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
-            KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
-            KeyValue keyValue = keyValueDao.loadByRowId(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
+                KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
+                KeyValue keyValue = keyValueDao.loadByRowId(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
 //            KeyValueStringItem stringItem =  boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
-            if (keyValue != null) {
-                try {
-                    Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(keyValue.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
-                    });
-                    camMessageListAdapter.restoreCachedItems(json);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (keyValue != null) {
+                    try {
+                        Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(keyValue.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
+                        });
+                        camMessageListAdapter.restoreCachedItems(json);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
-    }
+    };
+
+    private Runnable refreshTimeOutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            srLayoutCamListRefresh.setRefreshing(false);
+        }
+    };
 
     /**
      */
@@ -514,6 +528,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //            srLayoutCamListRefresh.setRefreshing(false);
 //            return;
 //        }
+        srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         if (presenter != null) {
             boolean success;
             switch (pageType) {
@@ -554,6 +569,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     presenter.fetchMessageListByFaceId(time, false, refresh);
             }
         }
+        //30秒超时时需要置为不刷新状态
+        srLayoutCamListRefresh.postDelayed(refreshTimeOutRunnable, 30);
     }
 
     @Override

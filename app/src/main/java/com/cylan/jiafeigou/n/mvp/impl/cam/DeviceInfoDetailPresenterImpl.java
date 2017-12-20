@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -197,5 +197,14 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(setAlias -> getView().setAliasRsp(JError.ErrorOK),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage())));
+    }
+
+    public void checkNewVersion() {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+
+            }
+        });
     }
 }

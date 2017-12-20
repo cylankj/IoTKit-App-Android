@@ -88,7 +88,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 //        fastAdapter = new FastAdapter();
         mineFriendsBinding.setEmpty(empty);
         mineFriendsBinding.friends.setLayoutManager(new LinearLayoutManager(getContext()));
-        friendAccountAdapter = new ItemAdapter<>();
+        friendRequestAdapter = new ItemAdapter<>();
         friendRequestAdapter.withUseIdDistributor(true);
         friendAccountAdapter = new ItemAdapter<>();
         friendAccountAdapter.withUseIdDistributor(true);

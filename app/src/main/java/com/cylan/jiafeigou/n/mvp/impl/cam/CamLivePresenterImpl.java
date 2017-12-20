@@ -34,7 +34,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
-import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
+import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.SubscriptionSupervisor;
@@ -178,7 +178,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
                     mView.showFirmwareDialog();
                 }, AppLogger::e);
-        DeviceVersionChecker version = new DeviceVersionChecker();
+        PanDeviceVersionChecker version = new PanDeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.setShowCondition(() -> {

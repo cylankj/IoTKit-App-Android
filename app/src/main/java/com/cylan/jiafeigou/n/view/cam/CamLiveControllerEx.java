@@ -1255,11 +1255,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void orientationChanged(CamLiveContract.Presenter presenter, Device device, int orientation) {
+//        layoutC.setOrientationState();
         int playType = presenter.getPlayType();
         boolean isLand = isLand();
         layoutA.setVisibility(isLand ? VISIBLE : INVISIBLE);
         layoutF.setVisibility(isLand ? INVISIBLE : VISIBLE);
         tvLive.setBackgroundColor(isLand ? Color.TRANSPARENT : Color.WHITE);
+
         if (isLand) {
             //隐藏所有的 showcase
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());

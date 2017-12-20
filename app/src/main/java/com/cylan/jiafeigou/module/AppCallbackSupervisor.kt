@@ -472,8 +472,8 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     // final String tip, final String md5, final String cid
     override fun OnCheckDevVersionRsp(b: Boolean, url: String, tagVersion: String,
                                       tip: String, md5: String, cid: String) {
-        AppLogger.w("OnCheckDevVersionRsp :" + b + ":" + url + ":" + tagVersion
-                + ":" + tip + ":" + md5 + "," + cid)
+        AppLogger.w("OnCheckDevVersionRsp,hasNew:" + b + ",url:" + url + "tarVersion:" + tagVersion
+                + "tip:" + tip + "md5:" + md5 + "cid:" + cid)
         //        isFriend = true;
         //        account = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
         //        alias = "3.0.0";
