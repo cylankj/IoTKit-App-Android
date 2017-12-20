@@ -143,7 +143,7 @@ object LoginHelper {
                                 DataSourceManager.getInstance().initFromDB()
                             }
                         }
-                    }, 5, TimeUnit.SECONDS)
+                    }, 10, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
                 }
                 else -> {
@@ -157,7 +157,7 @@ object LoginHelper {
                                 DataSourceManager.getInstance().initFromDB()
                             }
                         }
-                    }, 7, TimeUnit.SECONDS)
+                    }, 10, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
                 }
             }
