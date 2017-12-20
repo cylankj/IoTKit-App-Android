@@ -1,7 +1,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fLayout_home_page_list_header_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:minHeight="@dimen/y48"
+    app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
+    app:statusBarScrim="@android:color/transparent">
 
     <FrameLayout
         android:id="@+id/fLayout_header_bg"

@@ -149,7 +149,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //            srLayoutMainContentHolder.setRefreshing(false);
 //            enableNestedScroll();
 //            if (isVisibleToUser && isResumed() && getActivity() != null) {
-//            }        appbar.addOnOffsetChangedListener(this);
+//            }
+            appbar.addOnOffsetChangedListener(this);
             srLayoutMainContentHolder.setOnRefreshListener(this);
             onItemsRsp(DataSourceManager.getInstance().getAllDevice());
             updateAccount.run();
@@ -170,7 +171,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (showUserCase) {
             PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
             HomePageCoverFragment fragment = new HomePageCoverFragment();
-            imgBtnAddDevices.post(() -> getActivity().getSupportFragmentManager()
+            imgBtnAddDevices.post(() -> getFragmentManager()
                     .beginTransaction().add(android.R.id.content, fragment)
                     .addToBackStack("HomePageCoverFragment")
                     .commitAllowingStateLoss());
@@ -260,7 +261,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         mItemAdapter.withOnClickListener(this);
         mItemAdapter.withOnLongClickListener(this);
         rVDevicesList.setAdapter(mItemAdapter);
-        enableNestedScroll();
+//        enableNestedScroll();
     }
 
     private void initSomeViewMargin() {
@@ -445,7 +446,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, isVisibleToUser);
         if (isVisibleToUser && isResumed() && getActivity() != null) {
             srLayoutMainContentHolder.setRefreshing(false);
-            enableNestedScroll();
+//            enableNestedScroll();
         }
     }
 
@@ -525,7 +526,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (srLayoutMainContentHolder.isRefreshing()) {
             srLayoutMainContentHolder.setRefreshing(false);
             srLayoutMainContentHolder.clearAnimation();
-            enableNestedScroll();
+//            enableNestedScroll();
             AppLogger.w("stop refreshing ui");
         }
     };

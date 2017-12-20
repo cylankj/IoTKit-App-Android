@@ -137,8 +137,11 @@ object LoginHelper {
                     Command.getInstance().openLogin(languageType, username!!, password!!, signType)
                     subscribe = Schedulers.io().createWorker().schedule({
                         if (!isLoginSuccessful()) {
-                            Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
-                            DataSourceManager.getInstance().initFromDB()
+                            val user = getUser()
+                            if (user != null && !TextUtils.isEmpty(user.username) && !TextUtils.isEmpty(user.password)) {
+                                Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
+                                DataSourceManager.getInstance().initFromDB()
+                            }
                         }
                     }, 5, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
@@ -148,8 +151,11 @@ object LoginHelper {
                     Command.getInstance().login(languageType, username!!, password!!, true)
                     subscribe = Schedulers.io().createWorker().schedule({
                         if (!isLoginSuccessful()) {
-                            Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
-                            DataSourceManager.getInstance().initFromDB()
+                            val user = getUser()
+                            if (user != null && !TextUtils.isEmpty(user.username) && !TextUtils.isEmpty(user.password)) {
+                                Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password,timeout,starting offline login")
+                                DataSourceManager.getInstance().initFromDB()
+                            }
                         }
                     }, 7, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
