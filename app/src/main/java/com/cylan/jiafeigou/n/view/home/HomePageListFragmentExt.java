@@ -144,6 +144,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onStart() {
         super.onStart();
         rVDevicesList.removeCallbacks(refreshDeviceRunnable);
+        //暂时禁用 NestedScroll 避免出现首页白块
+        srLayoutMainContentHolder.setNestedScrollingEnabled(false);
         if (presenter != null) {
 //            PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, true);
 //            srLayoutMainContentHolder.setRefreshing(false);
@@ -374,13 +376,36 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+
+    private class ItemRspRunnable implements Runnable {
+        private volatile List<Device> resultList;
+
+        public void setResultList(List<Device> resultList) {
+            if (resultList != null) {
+                this.resultList = resultList;
+            }
+        }
+
+        @Override
+        public synchronized void run() {
+            if (resultList != null) {
+                mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(resultList));
+                emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+            }
+//        //不管怎么样都要刷新下,因为 homeItem 比较相等的方法并不能涵盖所有条件,不刷新可能导致主页消息更新不及时
+//        mItemAdapter.notifyAdapterDataSetChanged();
+
+        }
+    }
+
+    private ItemRspRunnable itemRspRunnable = new ItemRspRunnable();//放在频繁刷新
+
     @UiThread
     @Override
     public void onItemsRsp(List<Device> resultList) {
-        mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(resultList));
-        emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-//        //不管怎么样都要刷新下,因为 homeItem 比较相等的方法并不能涵盖所有条件,不刷新可能导致主页消息更新不及时
-//        mItemAdapter.notifyAdapterDataSetChanged();
+        rVDevicesList.removeCallbacks(itemRspRunnable);
+        itemRspRunnable.setResultList(resultList);
+        rVDevicesList.postDelayed(itemRspRunnable, 700);
         onRefreshFinish();
     }
 
@@ -522,10 +547,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private Runnable notifyRunnable = () -> {
-        mItemAdapter.notifyDataSetChanged();
         if (srLayoutMainContentHolder.isRefreshing()) {
             srLayoutMainContentHolder.setRefreshing(false);
-            srLayoutMainContentHolder.clearAnimation();
+//            srLayoutMainContentHolder.clearAnimation();
 //            enableNestedScroll();
             AppLogger.w("stop refreshing ui");
         }

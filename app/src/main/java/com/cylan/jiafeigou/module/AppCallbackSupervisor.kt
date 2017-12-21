@@ -123,6 +123,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     }
 
     override fun OnUpdateHistoryVideoV2(bytes: ByteArray) {
+        AppLogger.w("OnUpdateHistoryVideoV2:" + DpUtils.unpack(bytes))
         DataSourceManager.getInstance().cacheHistoryDataList(bytes)
     }
 

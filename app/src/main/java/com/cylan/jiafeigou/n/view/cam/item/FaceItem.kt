@@ -148,7 +148,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.text.text = TimeUtils.getVisitorTime(strangerVisitor?.lastTime!! * 1000L)
                 holder.icon.showBorder(isSelected)
                 holder.icon.showHint(markHint)
-                holder.strangerIcon.visibility = View.VISIBLE
+                holder.strangerIcon.visibility = View.GONE//现在需要隐藏问号
                 GlideApp.with(holder.itemView.context)
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)

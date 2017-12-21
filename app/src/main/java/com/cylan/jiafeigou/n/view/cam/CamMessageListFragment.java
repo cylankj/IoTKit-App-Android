@@ -317,7 +317,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 ViewGroup.LayoutParams layoutParams = aplCamMessageAppbar.getLayoutParams();
                 layoutParams.height = expanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
                 aplCamMessageAppbar.setLayoutParams(layoutParams);
-                lLayoutNoMessage.setVisibility((camMessageListAdapter != null && camMessageListAdapter.getCount() > 0) || hasExpanded ? View.GONE : View.VISIBLE);
+//                if (expanded) {
+//                    lLayoutNoMessage.setVisibility(View.GONE);
+//                } else {
+//                    lLayoutNoMessage.setVisibility((camMessageListAdapter != null && camMessageListAdapter.getCount() > 0) ? View.GONE : View.VISIBLE);
+//                }
 //                srLayoutCamListRefresh.setEnabled(!expanded);
             }
 

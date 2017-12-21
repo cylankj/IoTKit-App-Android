@@ -9,14 +9,14 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.PopupOverlay">
 
-
+        <!--app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"-->
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:expandedTitleMarginEnd="@dimen/x64"
             app:expandedTitleMarginStart="@dimen/x48"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
+
             app:statusBarScrim="@android:color/transparent">
 
             <include layout="@layout/fragment_home_page_list_header" />
