@@ -48,6 +48,7 @@ class CameraMessageAppBarBehavior(context: Context, attrs: AttributeSet) : AppBa
 
     override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
         if (child.layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+
             return
         }
         if (target.id == R.id.face_header) {

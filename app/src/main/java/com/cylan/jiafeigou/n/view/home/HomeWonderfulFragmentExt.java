@@ -133,13 +133,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
     };
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (LoginHelper.isLoginSuccessful()) {
-            delayLoading();
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        if (LoginHelper.isLoginSuccessful()) {
+//            delayLoading();
+//        }
+//    }
 
     private void delayLoading() {
         srLayoutMainContentHolder.removeCallbacks(autoLoading);
@@ -375,7 +375,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     protected void lazyLoad() {
         super.lazyLoad();
-        delayLoading();
+        if (LoginHelper.isLoginSuccessful()) {
+            srLayoutMainContentHolder.setEnabled(true);
+            delayLoading();
+        } else {
+            srLayoutMainContentHolder.setEnabled(false);
+        }
     }
 
     private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {

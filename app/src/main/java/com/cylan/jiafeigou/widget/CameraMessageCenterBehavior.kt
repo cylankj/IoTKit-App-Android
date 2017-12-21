@@ -2,13 +2,13 @@ package com.cylan.jiafeigou.widget
 
 import android.content.Context
 import android.graphics.Rect
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import com.cylan.jiafeigou.R
 
 /**
  * Created by yanzhendong on 2017/10/12.
@@ -20,7 +20,7 @@ class CameraMessageCenterBehavior : CoordinatorLayout.Behavior<View> {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
 
     override fun layoutDependsOn(parent: CoordinatorLayout?, child: View?, dependency: View): Boolean {
-        return dependency.id == R.id.rLayout_cam_message_list_top
+        return dependency is AppBarLayout
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: View, layoutDirection: Int): Boolean {

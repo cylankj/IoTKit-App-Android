@@ -306,14 +306,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         visitorFragment.setVisitorListener(new VisitorListFragmentV2.VisitorListener() {
             @Override
             public void onLoadItemInformation(int faceType, @NotNull String personOrFaceId) {
-                changeContentByHeaderClick(faceType);
                 personId = personOrFaceId;
+                changeContentByHeaderClick(faceType);
+                if (hasExpanded) {
+                    lLayoutNoMessage.setVisibility(View.GONE);
+                }
                 startRequest(false);
             }
 
             @Override
             public void onExpanded(boolean expanded) {
                 hasExpanded = expanded;
+                if (hasExpanded) {
+                    ibQuickTop.setVisibility(View.GONE);
+                }
                 ViewGroup.LayoutParams layoutParams = aplCamMessageAppbar.getLayoutParams();
                 layoutParams.height = expanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
                 aplCamMessageAppbar.setLayoutParams(layoutParams);
@@ -548,7 +554,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     srLayoutCamListRefresh.setRefreshing(refresh);
                     success = camMessageListAdapter.showCachedVisitorList("stranger");
                     lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
-                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
+                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 200);
                     tvCamMessageListEdit.setEnabled(success);
 //                    presenter.fetchVisitorMessageList(1, "", time, refresh);
                     break;
