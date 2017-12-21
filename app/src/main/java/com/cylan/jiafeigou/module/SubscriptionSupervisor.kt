@@ -3,20 +3,21 @@ package com.cylan.jiafeigou.module
 import android.text.TextUtils
 import android.util.Log
 import rx.Subscription
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by yanzhendong on 2017/12/5.
  */
 object SubscriptionSupervisor {
     private val TAG = SubscriptionSupervisor::class.java.simpleName
-    private val subscriptions = mutableMapOf<String, SubscriptionTarget>()
+    private val subscriptions = ConcurrentHashMap<String, SubscriptionTarget>()
     const val CATEGORY_STOP = "CATEGORY_STOP"
     const val CATEGORY_DESTROY = "CATEGORY_DESTROY"
     const val CATEGORY_DEFAULT = "CATEGORY_DEFAULT"
     @JvmStatic
     fun subscribe(target: Any, category: String, tag: String, subscription: Subscription) {
-        Log.d(TAG, "subscribe for:target:${target.javaClass.name},category:$category,tag:$tag,subscription:$subscription")
         var subscriptionTarget = subscriptions[target.javaClass.name]
+        Log.d(TAG, "subscribe for:target:${target.javaClass.name},category:$category,tag:$tag,subscription:$subscription")
         if (subscriptionTarget == null) {
             synchronized(SubscriptionSupervisor::class) {
                 if (subscriptionTarget == null) {
@@ -36,11 +37,11 @@ object SubscriptionSupervisor {
 
     @JvmStatic
     fun unsubscribe(target: String, category: String?, tag: String?) {
-        Log.d(TAG, "unsubscribe for:target:$target,category:$category,tag:$tag")
-        subscriptions[target.javaClass.name]?.apply {
+        subscriptions[target]?.apply {
+            Log.d(TAG, "unsubscribe for:target:$target,category:$category,tag:$tag")
             synchronized(SubscriptionSupervisor::class) {
                 if (TextUtils.isEmpty(category)) {
-                    subscriptions.remove(target.javaClass.name)
+                    subscriptions.remove(target)
                 }
                 unsubscribe(category, tag)
             }
@@ -53,7 +54,7 @@ object SubscriptionSupervisor {
     }
 
     private class SubscriptionTarget {
-        private val subscriptions = mutableMapOf<String, SubscriptionCategory>()
+        private val subscriptions = ConcurrentHashMap<String, SubscriptionCategory>()
 
         fun subscribe(category: String, tag: String, subscription: Subscription) {
             var subscriptionCategory = subscriptions[category]
@@ -77,16 +78,20 @@ object SubscriptionSupervisor {
                             if (TextUtils.isEmpty(category)) {
                                 subscriptions.remove(it.key)
                             }
+                            Log.d(TAG, "unsubscribe for category :$category,tag:$tag,value:${it.value}")
                             it.value.unsubscribe(tag)
                         }
                     }
         }
 
         fun get(category: String, tag: String): Subscription? = subscriptions[category]?.get(tag)
+        override fun toString(): String {
+            return "SubscriptionTarget(subscriptions=$subscriptions)"
+        }
     }
 
     private class SubscriptionCategory {
-        private val subscriptions = mutableMapOf<String, Subscription>()
+        private val subscriptions = ConcurrentHashMap<String, Subscription>()
         fun subscribe(tag: String, subscription: Subscription) {
             val subscription1 = subscriptions[tag]
             if (subscription1 != null) {
@@ -107,12 +112,17 @@ object SubscriptionSupervisor {
                             val subscription = it.value
                             if (!subscription.isUnsubscribed) {
                                 subscription.unsubscribe()
+
                             }
                         }
                     }
         }
 
+
         fun get(tag: String): Subscription? = subscriptions[tag]
+        override fun toString(): String {
+            return "SubscriptionCategory(subscriptions=$subscriptions)"
+        }
     }
 
 }

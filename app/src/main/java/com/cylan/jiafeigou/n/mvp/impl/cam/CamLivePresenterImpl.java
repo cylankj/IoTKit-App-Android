@@ -330,6 +330,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public boolean fetchHistoryDataList(long time) {
+//         History.getHistory().queryHistoryCompat(uuid);
+
         History.getHistory().queryHistory(uuid, (int) (TimeUtils.getSpecificDayEndTime(TimeUtils.wrapToLong(time)) / 1000), 0, 3);
         return true;
     }

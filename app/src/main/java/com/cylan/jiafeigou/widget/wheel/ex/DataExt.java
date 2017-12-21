@@ -231,11 +231,17 @@ public class DataExt implements IData {
             if (rawList.size() == 0) {
                 return 0;
             }
-            HistoryFile v = getVideo(time);
+//            HistoryFile v = getVideo(time);
             int tmpIndex = index;
+            for (int i = 0; i < rawList.size(); i++) {
+                HistoryFile file = rawList.get(i);
+                if (time / 1000 >= file.getTime() && time / 1000 < file.getTime() + file.getDuration()) {
+                    tmpIndex=i;
+                }
+            }
+//            tmpIndex = Collections.binarySearch(rawList, v);
 
-            tmpIndex = Collections.binarySearch(rawList, v);
-            tmpIndex = -(tmpIndex + 1);
+//            tmpIndex = -(tmpIndex + 1);
 //        Log.d("getNextFocusTime", "getNextFocusTime: " + index);
             if (tmpIndex < 0 && rawList.size() > 0) {
                 tmpIndex = 0;
@@ -270,12 +276,12 @@ public class DataExt implements IData {
             }
             //0:向左滑动
             int tmpIndex = index;
-            if (considerDirection == 0) {
+            if (considerDirection == ITouchHandler.MoveDirection.LEFT) {
                 tmpIndex += 1;
                 if (tmpIndex > rawList.size() - 1) {
                     tmpIndex = rawList.size() - 1;
                 }
-            } else if (considerDirection == 1) {
+            } else if (considerDirection == ITouchHandler.MoveDirection.RIGHT) {
                 //1:向右滑动
                 tmpIndex -= 1;
                 if (tmpIndex < 0 && rawList.size() > 0) {

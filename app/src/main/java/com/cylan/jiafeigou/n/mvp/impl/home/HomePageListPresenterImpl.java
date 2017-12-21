@@ -47,21 +47,21 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     public void start() {
         super.start();
-        addSubscription(getShareDevicesListRsp());
-        addSubscription(devicesUpdate());
-        addSubscription(internalUpdateUuidList());
-        addSubscription(robotDeviceDataSync());
-        addSubscription(JFGAccountUpdate());
-        addSubscription(deviceRecordStateSub());
-        addSubscription(deviceUnbindSub());
-        addSubscription(timeCheckerSub());
+        getShareDevicesListRsp();
+        devicesUpdate();
+        internalUpdateUuidList();
+        robotDeviceDataSync();
+        JFGAccountUpdate();
+        deviceRecordStateSub();
+        deviceUnbindSub();
+        timeCheckerSub();
     }
 
-    private Subscription timeCheckerSub() {
+    private void timeCheckerSub() {
         //这个 timeChecker 是定时任务,用来定时更新主页的消息时间的,因为如果刚刚来了一条消息,我们把他标记为刚刚
         //过了好久没有收到同步消息,这时如果没有定时任务,主页还会显示刚刚,这就不正确了,所以加入了定时任务,来定时
         //更新主页的时间
-        return Observable.interval(5, TimeUnit.MINUTES)
+        Subscription subscribe = Observable.interval(5, TimeUnit.MINUTES)
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
@@ -73,6 +73,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
                     }
                 });
+        addStopSubscription(subscribe);
     }
 
     private void initDeviceRecordState() {
@@ -100,18 +101,19 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         }
     }
 
-    private Subscription deviceRecordStateSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceRecordStateChanged.class)
+    private void deviceRecordStateSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceRecordStateChanged.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (getView() != null) {
                         getView().onRefreshDeviceList();
                     }
                 });
+        addStopSubscription(subscribe);
     }
 
-    private Subscription deviceUnbindSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+    private void deviceUnbindSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(event -> {
                     subUuidList();
@@ -119,10 +121,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     e.printStackTrace();
                     AppLogger.e(e);
                 });
+        addStopSubscription(subscribe);
     }
 
-    private Subscription getShareDevicesListRsp() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
+    private void getShareDevicesListRsp() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
                 .debounce(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {
@@ -131,6 +134,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
                 });
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -138,14 +142,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      *
      * @return
      */
-    private Subscription devicesUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
+    private void devicesUpdate() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> subUuidList(), throwable -> {
-                    addSubscription(devicesUpdate());
+                    devicesUpdate();
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -160,15 +165,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         }
     }
 
-    private Subscription JFGAccountUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
+    private void JFGAccountUpdate() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(jfgAccount -> {
                     getView().onAccountUpdate(jfgAccount.jfgAccount);
                 }, throwable -> {
-                    addSubscription(JFGAccountUpdate());
+                    JFGAccountUpdate();
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -191,18 +197,20 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      *
      * @return
      */
-    private Subscription robotDeviceDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void robotDeviceDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
 //                .throttleFirst(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msg -> subUuidList(), AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
-    private Subscription internalUpdateUuidList() {
-        return RxBus.getCacheInstance().toObservable(InternalHelp.class)
+    private void internalUpdateUuidList() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> subUuidList(), AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
 

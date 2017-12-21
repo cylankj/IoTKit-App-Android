@@ -45,8 +45,8 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void start() {
         super.start();
-        addSubscription(getAccountBack());
-        addSubscription(loginInMe());
+        addSubscription(getAccountBack(),"HomeMinePresenterImpl.getAccountBack");
+        addSubscription(loginInMe(),"HomeMinePresenterImpl.loginInMe");
     }
 
     @Override

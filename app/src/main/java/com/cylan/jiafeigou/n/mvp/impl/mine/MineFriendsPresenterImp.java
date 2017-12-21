@@ -122,7 +122,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     getView().deleteItemRsp(item, ret == null ? -1 : ret.jfgResult.code, alert);
                 }, AppLogger::e);
 
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
                 });
-        addSubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
 

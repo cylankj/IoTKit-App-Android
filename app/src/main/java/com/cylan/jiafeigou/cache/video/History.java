@@ -226,13 +226,13 @@ public class History {
         }
     }
 
-    private void fillDataList(String uuid, ArrayList<Integer> list) {
+    private void fillDataList(String uuid, ArrayList<Long> list) {
         if (ListUtils.isEmpty(list)) {
             return;
         }
         ensureMap();
         ArrayList<Long> tmp = new ArrayList<>(list.size());
-        for (Integer integer : list) {
+        for (Long integer : list) {
             tmp.add(integer * 1000L);
         }
         dateListMap.put(uuid, tmp);
@@ -286,9 +286,12 @@ public class History {
             RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
             return;
         }
-        ArrayList<Integer> tmList = new ArrayList<>(rspMap.keySet());
+        ArrayList<Long> tmList = new ArrayList<>();
+        for (Integer integer : rspMap.keySet()) {
+            tmList.add((long) integer);
+        }
         //来个降序吧
-        Collections.sort(tmList, (o1, o2) -> (o2 - o1));
+        Collections.sort(tmList, (o1, o2) -> (int) (o2 - o1));
         fillDataList(uuid, tmList);
 
         //注意啊，有一个落后设备只能 一次查2天。
@@ -391,6 +394,7 @@ public class History {
     }
 
     public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
+
         Observable.just(historyVideo)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> {
@@ -426,6 +430,7 @@ public class History {
                     }
                     list.clear();//需要清空
                     Collections.reverse(timeList);
+                    fillDataList(uuid, timeList);
                     try {
                         long timeStart = timeList.get(0), timeEnd = timeList.get(ListUtils.getSize(timeList) - 1);
                         AppLogger.w(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
@@ -468,6 +473,10 @@ public class History {
 //                    .subscribe(ret -> {
 //                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         }
+    }
+
+    public void queryHistoryCompat(String uuid) {
+
     }
 
     private static class Helper {

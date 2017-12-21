@@ -131,7 +131,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else {
-            btnBindDone.cancelAnim();
+            btnBindDone.viewZoomBig();
             ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
         }
     }
