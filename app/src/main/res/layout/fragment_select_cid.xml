@@ -34,10 +34,9 @@
         android:layout_marginTop="@dimen/y50"
         android:drawableEnd="@drawable/add_icon_drop_down"
         android:ellipsize="end"
-        android:enabled="false"
         android:gravity="center"
         android:text="@string/WIRED_SELECT_DEVICE_CID_TIPS"
-        android:textColor="@color/color_normal_text_selector"
+        android:textColor="@color/color_cecece"
         android:textSize="@dimen/sp15" />
 
     <View

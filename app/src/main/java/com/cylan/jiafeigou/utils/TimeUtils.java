@@ -458,22 +458,35 @@ public class TimeUtils {
         }
     }
 
+    private static Calendar tempCalendar1 = Calendar.getInstance();
+    private static Calendar tempCalendar2 = Calendar.getInstance();
+
     public static String getVisitorTime(Long lastTime) {
-        if (lastTime == null) {
-            return "";
+        tempCalendar1.setTimeInMillis(lastTime);
+        tempCalendar2.setTimeInMillis(System.currentTimeMillis());
+
+        //之间相差几天
+        int distanceDay = tempCalendar2.get(Calendar.DAY_OF_YEAR) - tempCalendar1.get(Calendar.DAY_OF_YEAR);
+
+        if (distanceDay > 0 && distanceDay <= 7) {
+            // 七天内
+            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_DAY, String.valueOf(distanceDay));
         }
-        long second = (System.currentTimeMillis() - lastTime) / 1000;
-        long minute = second / 60;
-        if (minute < 60) {
-            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_MIN, String.valueOf(minute));
+
+        if (distanceDay > 7) {
+            return getYHM(lastTime);
         }
-        long hour = minute / 60;
-        if (hour < 24) {
-            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_HOUR, String.valueOf(hour));
-        }
-        long days = hour / 24;
-        if (days <= 7) {
-            return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_DAY, String.valueOf(days));
+        if (distanceDay == 0) {
+            long second = (System.currentTimeMillis() - lastTime) / 1000;
+            long minute = second / 60;
+            if (minute < 60) {
+                return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_MIN, String.valueOf(minute));
+            }
+            long hour = minute / 60;
+            if (hour < 24) {
+                return ContextUtils.getContext().getString(R.string.MESSAGES_TIME_HOUR, String.valueOf(hour));
+            }
+
         }
         return getYHM(lastTime);
     }

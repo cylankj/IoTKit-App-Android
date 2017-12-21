@@ -176,7 +176,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      *
      * @return
      */
+
     private void subUuidList() {
+        
         List<Device> list = DataSourceManager.getInstance().getAllDevice();
         AppLogger.w("subUuidList?" + ListUtils.getSize(list));
         getView().onItemsRsp(new ArrayList<>(list));

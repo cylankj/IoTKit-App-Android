@@ -648,7 +648,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void updateDoorLockFromPing(boolean pingSuccess) {
         this.hasPingSuccess = pingSuccess;
-        ivCamDoorLock.setEnabled(hasPingSuccess && !isShareAccount);
+        if (!ivCamDoorLock.isEnabled()) {
+            ivCamDoorLock.setEnabled(hasPingSuccess && !isShareAccount);
+        }
     }
 
     private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
@@ -1181,7 +1183,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 break;
             case JError.ErrorVideoPeerDisconnect:
-                if (livePlayState==PLAY_STATE_PLAYING) {
+                if (livePlayState == PLAY_STATE_PLAYING) {
                     livePlayState = PLAY_STATE_LOADING_FAILED;
                     setLoadingState(getContext().getString(R.string.Device_Disconnected), null);
                 }

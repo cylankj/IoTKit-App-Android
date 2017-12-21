@@ -45,7 +45,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
         this.selectedScanResult = scanResult
         selectedScanResult?.apply {
             device_cid.text = this.uuid
-            device_cid.isEnabled = true
+//            device_cid.isEnabled = true
         }
         next_step.isEnabled =  !TextUtils.equals(device_cid.text,getString(R.string.WIRED_SELECT_DEVICE_CID_TIPS))&&!TextUtils.isEmpty(device_cid.text)
     }
@@ -76,7 +76,7 @@ class SelectCidFragment : BaseFragment<SelectCidContract.Presenter>(),
         selectedScanResult = list?.getOrNull(0)
         selectedScanResult?.apply {
             device_cid.text = this.uuid
-            device_cid.isEnabled = true
+//            device_cid.isEnabled = true
         }
         next_step.isEnabled = !TextUtils.equals(device_cid.text,getString(R.string.WIRED_SELECT_DEVICE_CID_TIPS))&&!TextUtils.isEmpty(device_cid.text)
         custom_toolbar.setBackAction { back() }
