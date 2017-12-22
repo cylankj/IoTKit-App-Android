@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -236,7 +237,7 @@ public class DataExt implements IData {
             for (int i = 0; i < rawList.size(); i++) {
                 HistoryFile file = rawList.get(i);
                 if (time / 1000 >= file.getTime() && time / 1000 < file.getTime() + file.getDuration()) {
-                    tmpIndex=i;
+                    tmpIndex = i;
                 }
             }
 //            tmpIndex = Collections.binarySearch(rawList, v);
@@ -370,6 +371,33 @@ public class DataExt implements IData {
             }
             return Math.max(timeTarget, temp == null ? 0 : temp.time);
         }
+    }
+
+    @Override
+    public long getNextTime(long timeCurrent) {
+        synchronized (lock) {
+            if (rawList == null || rawList.size() == 0) {
+                return 0;
+            }
+            for (HistoryFile file : rawList) {
+                long current = file.time + file.duration;
+                if (timeCurrent / 1000 > current) {
+                    continue;
+                }
+                if (timeCurrent / 1000 < file.time) {
+                    return file.time * 1000L;
+                }
+                if (timeCurrent / 1000 >= file.time && timeCurrent / 1000 <= file.time + file.duration) {
+                    return timeCurrent;
+                }
+            }
+        }
+        return rawList.get(0).time * 1000L;
+    }
+
+    @Override
+    public List<HistoryFile> getRawHistoryFiles() {
+        return rawList;
     }
 
     private HistoryFile getVideo(long time) {

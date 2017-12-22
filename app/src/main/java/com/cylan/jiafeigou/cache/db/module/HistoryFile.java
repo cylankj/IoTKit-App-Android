@@ -26,7 +26,6 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
     public int mode;
 
 
-
     @Override
     public String toString() {
         return "HistoryFile{" +
@@ -40,17 +39,15 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(obj instanceof HistoryFile)) {
             return false;
         }
-
-        HistoryFile that = (HistoryFile) o;
-
-        return time == that.time;
+        HistoryFile historyFile = (HistoryFile) obj;
+        return historyFile.time == time && historyFile.duration == duration;
     }
 
     @Override
@@ -105,7 +102,7 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
 
     @Generated(hash = 6595676)
     public HistoryFile(Long id, long time, int duration, String uuid,
-            String server) {
+                       String server) {
         this.id = id;
         this.time = time;
         this.duration = duration;
@@ -115,7 +112,7 @@ public final class HistoryFile implements Parcelable, Comparable<HistoryFile> {
 
     @Override
     public int compareTo(@NonNull HistoryFile another) {
-        return (int) (another.time - this.time);
+        return (int) (time - another.time);
     }
 
     @Override

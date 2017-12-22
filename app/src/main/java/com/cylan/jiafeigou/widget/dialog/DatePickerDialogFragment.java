@@ -12,6 +12,7 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -21,11 +22,7 @@ import com.cylan.jiafeigou.widget.pick.WheelVerticalView;
 import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -56,10 +53,7 @@ public class DatePickerDialogFragment extends BaseDialog {
     WheelVerticalView wheelHour;
     @BindView(R.id.wheel_minute)
     WheelVerticalView wheelMinute;
-    /**
-     * <凌晨时间戳,当天最早视频时间></>
-     */
-    private List<Long> dateStartList = new ArrayList<>();
+    private TreeSet<HistoryFile> historyFiles = new TreeSet<>();
     private long timeFocus;
     private TimeZone timeZone;
     private int focusHour, focusMinute, focusDateIndex;
@@ -69,11 +63,6 @@ public class DatePickerDialogFragment extends BaseDialog {
         fragment.setArguments(bundle);
         return fragment;
     }
-
-//    @Override
-//    protected int getCustomWidth() {
-//        return ViewGroup.LayoutParams.WRAP_CONTENT;
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,16 +138,17 @@ public class DatePickerDialogFragment extends BaseDialog {
         //得到凌晨时间戳
         long time = SystemClock.currentThreadTimeMillis();
         long timeStart = TimeUtils.getSpecificDayStartTime(timeFocus);
-        Log.d("getIndexByTime", "getIndexByTime: " + dateStartList);
+//        Log.d("getIndexByTime", "getIndexByTime: " + dateStartList);
+
         //由于dateStartList是降序,所以需要Collections.reverseOrder()
-        int index = 0;
-        for (index = 0; index < ListUtils.getSize(dateStartList); index++) {
-            if (timeStart == TimeUtils.getSpecificDayStartTime(dateStartList.get(index))) {
-                break;
-            }
-        }
+//        int index = 0;
+//        for (index = 0; index < ListUtils.getSize(dateStartList); index++) {
+//            if (timeStart == TimeUtils.getSpecificDayStartTime(dateStartList.get(index))) {
+//                break;
+//            }
+//        }
         Log.d("getIndexByTime", "getIndexByTime: performance: " + (SystemClock.currentThreadTimeMillis() - time));
-        return index;
+        return 0;
     }
 
     public void setTimeFocus(long timeFocus) {
@@ -180,7 +170,7 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-    public void setDateList(ArrayList<Long> dateList) {
+    public void setDateList(List<HistoryFile> dateList) {
         if (ListUtils.isEmpty(dateList)) {
             return;
         }
@@ -199,11 +189,13 @@ public class DatePickerDialogFragment extends BaseDialog {
 //            }
 //        }
 //        tmpList.removeAll(removeList);
-        dateStartList = new ArrayList<>(new TreeSet<>(dateList));
-        Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
-        for (int i = 0; i < dateStartList.size(); i++) {
-            Log.d("setDateList", "setDateList " + simpleDateFormat.format(new Date(TimeUtils.wrapToLong(dateStartList.get(i)))));
-        }
+        historyFiles.clear();
+        historyFiles.addAll(dateList);
+//        dateStartList = new ArrayList<>(new TreeSet<>(dateList));
+//        Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
+//        for (int i = 0; i < dateStartList.size(); i++) {
+//            Log.d("setDateList", "setDateList " + simpleDateFormat.format(new Date(TimeUtils.wrapToLong(dateStartList.get(i)))));
+//        }
     }
 
     private static final int[] weekRes = {
@@ -221,14 +213,21 @@ public class DatePickerDialogFragment extends BaseDialog {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
-                return ListUtils.getSize(dateStartList);
+                if (historyFiles == null || historyFiles.size() == 0) {
+                    return 0;
+                }
+                HistoryFile first = historyFiles.first();
+                HistoryFile last = historyFiles.last();
+           return 0;
+//                return ListUtils.getSize(dateStartList);
             }
 
             @Override
             protected CharSequence getItemText(int index) {
-                int week = TimeUtils.getWeekNum(dateStartList.get(index), timeZone);
-                return TimeUtils.getDatePickFormat(dateStartList.get(index), timeZone)
-                        + getString(weekRes[week - 1]);
+//                int week = TimeUtils.getWeekNum(dateStartList.get(index), timeZone);
+//                return TimeUtils.getDatePickFormat(dateStartList.get(index), timeZone)
+//                        + getString(weekRes[week - 1]);
+                return "";
             }
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
@@ -260,34 +259,34 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     @OnClick({R.id.tv_dialog_btn_left, R.id.tv_dialog_btn_right})
     public void onClick(View view) {
-        try {//#115932 可能会有 indexOutOf 异常,这里直接 catch 掉,以免崩溃
-            switch (view.getId()) {
-                case R.id.tv_dialog_btn_right:
-                    dismiss();
-                    if (focusDateIndex >= ListUtils.getSize(dateStartList)) {
-                        AppLogger.d("out of index");
-                        return;
-                    }
-                    final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(tmp));
-                    break;
-                case R.id.tv_dialog_btn_left:
-                    if (focusDateIndex >= ListUtils.getSize(dateStartList)) {
-                        AppLogger.d("out of index");
-                        return;
-                    }
-                    dismiss();
-
-                    final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(finalTime) + "," + finalTime);
-                    if (action != null && finalTime != timeFocus) {
-                        action.onDialogAction(view.getId(), finalTime);
-                    }
-                    break;
-            }
-        } catch (Exception e) {
-            AppLogger.e(e.getMessage());
-        }
+//        try {//#115932 可能会有 indexOutOf 异常,这里直接 catch 掉,以免崩溃
+//            switch (view.getId()) {
+//                case R.id.tv_dialog_btn_right:
+//                    dismiss();
+//                    if (focusDateIndex >= ListUtils.getSize(dateStartList)) {
+//                        AppLogger.d("out of index");
+//                        return;
+//                    }
+//                    final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
+//                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(tmp));
+//                    break;
+//                case R.id.tv_dialog_btn_left:
+//                    if (focusDateIndex >= ListUtils.getSize(dateStartList)) {
+//                        AppLogger.d("out of index");
+//                        return;
+//                    }
+//                    dismiss();
+//
+//                    final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
+//                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(finalTime) + "," + finalTime);
+//                    if (action != null && finalTime != timeFocus) {
+//                        action.onDialogAction(view.getId(), finalTime);
+//                    }
+//                    break;
+//            }
+//        } catch (Exception e) {
+//            AppLogger.e(e.getMessage());
+//        }
     }
 
     @Override

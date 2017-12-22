@@ -367,4 +367,19 @@
         <attr name="checkPasswordIcon" format="boolean" />
         <attr name="showPasswordIcon" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="HistoryWheelView">
+        <attr name="hw_line_width" format="dimension|reference" />
+        <attr name="hw_line_color" format="color|reference" />
+        <attr name="hw_text_color" format="color|reference" />
+        <attr name="hw_text_size" format="dimension|reference" />
+        <attr name="hw_mask_color" format="color|reference" />
+        <attr name="hw_marker_color" format="color|reference" />
+        <attr name="hw_marker_on_screen_center" format="boolean|reference" />
+        <attr name="hw_short_line_height" format="dimension|reference" />
+        <attr name="hw_long_line_height" format="dimension|reference" />
+        <attr name="hw_line_interval" format="dimension|reference" />
+        <attr name="hw_scroller_lock_time" format="integer|reference" />
+        <attr name="hw_history_update_delay" format="integer|reference" />
+    </declare-styleable>
 </resources>

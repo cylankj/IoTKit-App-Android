@@ -82,9 +82,9 @@ import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.PanoramicView360RS_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.jiafeigou.widget.wheel.HistoryWheelView;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.Panoramic360ViewRS;
 import com.daimajia.androidanimations.library.BaseViewAnimator;
@@ -189,7 +189,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @BindView(R.id.v_live)
     LiveViewWithThumbnail liveViewWithThumbnail;
     @BindView(R.id.sw_cam_live_wheel)
-    SuperWheelExt superWheelExt;
+    HistoryWheelView superWheelExt;
 
 
     //圆形 柱状 四分一 模式切换
@@ -777,7 +777,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         //3.没有历史录像
-        if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
+        if (/*superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0*/ superWheelExt.getHistoryCount() > 0) {
             //显示
             AppLogger.d("has history video");
             layoutE.setVisibility(VISIBLE);
@@ -869,7 +869,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         @Override
         public void run() {
-            if (historyWheelHandler != null && historyWheelHandler.isBusy()) {
+            if (historyWheelHandler != null /*&& historyWheelHandler.isBusy()*/) {
                 //滑动过程
                 postDelayed(this, 3000);
                 return;
@@ -1440,8 +1440,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //分享账号不显示啊.
 //        if (JFGRules.isShareDevice(uuid)) return;
         historyWheelHandler = getHistoryWheelHandler(presenter);
-        boolean isWheelBusy = historyWheelHandler.isBusy();
-        if (!isWheelBusy && (livePlayType == TYPE_LIVE || !ignoreTimeStamp)) {
+//        boolean isWheelBusy = historyWheelHandler.isBusy();
+        if (/*!isWheelBusy && */(livePlayType == TYPE_LIVE || !ignoreTimeStamp)) {
             setLiveRectTime(livePlayType, rtcp.timestamp);
         }
         //点击事件
@@ -1497,9 +1497,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-        boolean isWheelBusy = historyWheelHandler.isBusy();
+//        boolean isWheelBusy = historyWheelHandler.isBusy();
         //拖动的时候，拒绝外部设置时间。
-        if (!isWheelBusy && JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
+        if (/*!isWheelBusy &&*/ JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
             liveTimeLayout.setContent(type, livePlayType == TYPE_LIVE ? 0 : timestamp);
         }
         if (type == TYPE_HISTORY && presenter != null

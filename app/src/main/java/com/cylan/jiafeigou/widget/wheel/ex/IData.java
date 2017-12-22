@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.widget.wheel.ex;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -76,4 +77,9 @@ public interface IData {
     public void clean();
 
     long getNextTarget(long timeTarget);
+
+    long getNextTime(long timeCurrent);
+
+    List<HistoryFile> getRawHistoryFiles();
+
 }

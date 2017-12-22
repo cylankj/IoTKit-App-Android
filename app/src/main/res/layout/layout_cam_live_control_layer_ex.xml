@@ -262,15 +262,15 @@
                         android:textSize="@dimen/sp15" />
                 </FrameLayout>
 
-                <com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt
+                <com.cylan.jiafeigou.widget.wheel.HistoryWheelView
                     android:id="@+id/sw_cam_live_wheel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="true"
-                    app:sw_lineColor="@color/color_FFDEDEDE"
-                    app:sw_markerColor="@color/color_36BDFF"
-                    app:sw_maskColor="@color/color_4036BDFF"
-                    app:sw_textColor="@color/color_FFAAAAAA" />
+                    app:hw_line_color="@color/color_FFDEDEDE"
+                    app:hw_marker_color="@color/color_36BDFF"
+                    app:hw_mask_color="@color/color_4036BDFF"
+                    app:hw_text_color="@color/color_FFAAAAAA" />
             </ViewSwitcher>
 
             <LinearLayout

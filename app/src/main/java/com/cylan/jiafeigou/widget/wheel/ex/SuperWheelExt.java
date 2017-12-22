@@ -151,7 +151,8 @@ public class SuperWheelExt extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        locked = true;
+        removeCallbacks(unlockRunnable);
         return touchHandler.onTouchEvent(event);
     }
 
@@ -370,6 +371,15 @@ public class SuperWheelExt extends View {
      * @param newState
      * @param moveDirection
      */
+    private boolean locked = false;
+
+    private Runnable unlockRunnable = new Runnable() {
+        @Override
+        public void run() {
+            locked = false;
+        }
+    };
+
     public void autoSettle(int newState, @ITouchHandler.MoveDirection int moveDirection) {
         if (iDataProvider == null) {
             return;
@@ -378,29 +388,49 @@ public class SuperWheelExt extends View {
         boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;
         if (!idle) return;
         long timeCurrent = getCurrentFocusTime();
-        if (/*tmpCurrentTime == timeCurrent &&*/ idle) {//不是停止状态，效果更好。
-            //判断当前的位置是否是热区,即:mask区域.
-            if (iDataProvider.isHotRect(timeCurrent)) {
-                //dragging finish,空白区域,
-                if (touchHandler.isTouchDown()) {
-                    return;
-                }
-                long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
-                wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
-//                setPositionByTime(timeTarget, false);
-                return;
-            }
-        }
+//        if (/*tmpCurrentTime == timeCurrent &&*/ idle) {//不是停止状态，效果更好。
+//            //判断当前的位置是否是热区,即:mask区域.
+//            if (iDataProvider.isHotRect(timeCurrent)) {
+//                //dragging finish,空白区域,
+//                if (touchHandler.isTouchDown()) {
+//                    return;
+//                }
+//                long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+//                wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
+////                setPositionByTime(timeTarget, false);
+//                return;
+//            }
+//        }
 //        if (wheelRollListener != null)
 ////                wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
 //            if (DEBUG) {
 //                Log.d(TAG, "DRAG? STATE_ADSORB");
 //            }
-        long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.LEFT);
-        setPositionByTime(timeTarget, false);
+        long timeTarget = iDataProvider.getNextTime(timeCurrent);
+//        setPositionByTime(timeTarget, false);
+//        long timeCurrent = getCurrentFocusTime();
+        float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
+//        if (DEBUG) {
+//            Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx + ",animate:" + animate);
+//        }
+//        if (animate) {
+//            touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+//        } else {
+        touchHandler.startScroll(getScrollX(), (int) deltaDx);
+//        }
+        this.lastUpdateTime = System.currentTimeMillis();
+        this.currentTarget = timeTarget;
+        if (iDataProvider != null) {
+            this.nextTarget = iDataProvider.getNextTarget(timeTarget / 1000) * 1000L;
+        }
+        this.nextTarget = Math.max(currentTarget, nextTarget);
+        if (DEBUG) {
+            Log.d(TAG, "current:" + currentTarget + ":" + History.date2String(currentTarget) + ",next:" + nextTarget + ":" + History.date2String(nextTarget));
+        }
         if (wheelRollListener != null) {
             wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
         }
+        postDelayed(unlockRunnable, 3000);
         if (DEBUG) {
             Log.d(TAG, "DRAG? STATE_FINISH");
         }
@@ -488,6 +518,7 @@ public class SuperWheelExt extends View {
      * @param timeTarget
      */
     public void setPositionByTime(long timeTarget, boolean animate) {
+        if (locked) return;
         if (!touchHandler.isFinished()) {
             return;
         }

@@ -23,9 +23,9 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
+import com.cylan.jiafeigou.widget.wheel.HistoryWheelView;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -46,24 +46,18 @@ import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
  * Created by hds on 17-4-26.
  */
 
-public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
-    private SuperWheelExt superWheelExt;
+public class HistoryWheelHandler implements HistoryWheelView.HistoryListener /*implements SuperWheelExt.WheelRollListener*/ {
+    private HistoryWheelView superWheelExt;
     private CamLiveContract.Presenter presenter;
     private Context context;
     private WeakReference<DatePickerDialogFragment> datePickerRef;
     private String uuid;
 
-    public long getLastUpdateTime() {
-        return superWheelExt.getLastUpdateTime();
-    }
 
-    public long getNextTimeDistance() {
-        return superWheelExt.getNextTimeDistance();
-    }
-
-    public HistoryWheelHandler(SuperWheelExt superWheel, CamLiveContract.Presenter presenter) {
+    public HistoryWheelHandler(HistoryWheelView superWheel, CamLiveContract.Presenter presenter) {
         this.superWheelExt = superWheel;
-        superWheelExt.setWheelRollListener(this);
+//        superWheelExt.setWheelRollListener(this);
+        superWheelExt.setHistoryListener(this);
         this.presenter = presenter;
         context = superWheel.getContext();
         uuid = presenter.getUuid();
@@ -74,7 +68,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             AppLogger.d("历史录像没准备好");
             return;
         }
-        superWheelExt.setDataProvider(presenter.getHistoryDataProvider());
+        superWheelExt.setHistoryFiles(presenter.getHistoryDataProvider().getRawHistoryFiles());
+//        superWheelExt.setDataProvider(presenter.getHistoryDataProvider());
     }
 
     public void showDatePicker(boolean isLand) {
@@ -113,13 +108,13 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         fragment.setTimeZone(JFGRules.getDeviceTimezone(device));
         fragment.setTimeFocus(getWheelCurrentFocusTime());
-        fragment.setDateList(presenter.getFlattenDateList());
+        fragment.setDateList(presenter.getHistoryDataProvider().getRawHistoryFiles());
         fragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                 "DatePickerDialogFragment");
     }
 
     private long getWheelCurrentFocusTime() {
-        return superWheelExt.getCurrentFocusTime();
+        return superWheelExt.getCurrentTime();
     }
 
     /**
@@ -167,26 +162,24 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         if (!post) {
             setNav2Time(time);
         } else {
-            superWheelExt.setPositionByTimePost(time, true);
+            superWheelExt.scrollToPosition(TimeUtils.wrapToLong(time));
         }
     }
 
     public void setNav2Time(long time) {
-        superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time), false);
-    }
-
-    public boolean isBusy() {
-        return superWheelExt.isBusy();
+        superWheelExt.scrollToPosition(TimeUtils.wrapToLong(time));
     }
 
     public void setupHistoryData(IData dataProvider) {
         final long time = System.currentTimeMillis();
-        superWheelExt.setDataProvider(dataProvider);
-        superWheelExt.setWheelRollListener(this);
+        superWheelExt.setHistoryFiles(dataProvider.getRawHistoryFiles());
+//        superWheelExt.setDataProvider(dataProvider);
+//        superWheelExt.setWheelRollListener(this);
+        superWheelExt.setHistoryListener(this);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
     }
 
-    @Override
+    //    @Override
     public void onWheelTimeUpdate(long time, int state) {
 
         switch (state) {
@@ -215,26 +208,19 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         }
     }
 
-    //    private long tmpTime;
-    private Runnable dragRunnable = new Runnable() {
-        @Override
-        public void run() {
-
-        }
-    };
-
     public void setDatePickerListener(DatePickerListener datePickerListener) {
         this.datePickerListener = datePickerListener;
     }
 
     private DatePickerListener datePickerListener;
 
-    public boolean isDragging() {
-        return false;
-    }
-
-    public long getNextFocusTime(long time) {
-        return superWheelExt.getNextFocusTime(time);
+    @Override
+    public void onHistoryTimeChanged(long time) {
+        presenter.startPlayHistory(time);
+        if (datePickerListener != null) {
+            datePickerListener.onPickDate(time / 1000, STATE_FINISH);
+        }
+        AppLogger.d("拖动停止了:" + time + "," + History.date2String(time));
     }
 
     /**
