@@ -196,6 +196,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 AppLogger.d("竟然完成了?");
             } else {
                 //文件不存在了
+                AppLogger.e("file is error .....");
                 tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(binVersion.getTotalSize())));
             }
         } else if (downloading) {
@@ -203,6 +204,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, "0/" + MiscUtils.FormatSdCardSize(binVersion.getTotalSize())));
             toDownload();
         } else {//异常,或者未开始
+            AppLogger.e("file is error or not start to download  .....");
             tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(binVersion.getTotalSize())));
         }
         return true;
@@ -418,16 +420,20 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 public void checkResult(boolean pass) {
                     if (pass) {
                         //2.电量
-                        int battery = presenter.getDevice().$(206, 0);
-                        if (battery <= 30) {
-                            AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, FirmwareUpdateActivity.class.getSimpleName(),
-                                    getString(R.string.Tap1_Update_Electricity),
-                                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                    }, false);
-                            return;
+
+                        Device device = DataSourceManager.getInstance().getDevice(uuid());
+                        if (JFGRules.showBattery(device.pid, false)) {
+                            int battery = device.$(206, 0);
+                            if (battery <= 30) {
+                                AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, FirmwareUpdateActivity.class.getSimpleName(),
+                                        getString(R.string.Tap1_Update_Electricity),
+                                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                        }, false);
+                                return;
+                            }
                         }
                         //开始升级
-                        Device device = DataSourceManager.getInstance().getDevice(uuid());
+
                         BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(uuid());
                         if (JFGRules.isPan720(device.pid)) {
                             update = new PanFUUpdate(uuid(), getFileNameList());
@@ -446,7 +452,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             //Tap1_FirmwareDownloading:正在下载(%s),
         } else {
             //1.下载失败
-            //2.Tap1a_DownloadInstall 下载并安装(%s)
+            //2. 下载并安装(%s)
             if (NetUtils.getJfgNetType() == 2) {
                 AlertDialogManager.getInstance().showDialog(FirmwareUpdateActivity.this, getString(R.string.Tap1_Firmware_DataTips),
                         getString(R.string.Tap1_Firmware_DataTips),
