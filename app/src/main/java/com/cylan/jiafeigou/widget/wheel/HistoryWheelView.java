@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.OverScroller;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
@@ -62,7 +63,11 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private int updateDelay;
     private boolean markerCenterInScreen;
     private int mCenterPosition;
+    private int textTopMargin;
+    private int textBottomMargin;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
+    private double fountHeight;
+
 
     @IntDef({SnapDirection.NONE, SnapDirection.LEFT, SnapDirection.RIGHT})
     @Retention(RetentionPolicy.SOURCE)
@@ -73,10 +78,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     }
 
     private int mSnapDirection = SnapDirection.RIGHT;
-
-
     private Calendar mCalendar = Calendar.getInstance();
-    private TimeZone mTimeZone;
     private long mZeroTime;
     private TreeSet<HistoryFile> mHistoryFiles = new TreeSet<>();
     private Runnable mUnlockRunnable = new Runnable() {
@@ -94,8 +96,11 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             }
             if (mHistoryListener != null) {
                 long currentTime = getCurrentTime();
-                Log.d(TAG, "CurrentTime is" + new Date(currentTime).toLocaleString());
-                mHistoryListener.onHistoryTimeChanged(currentTime);
+                long unitTime = getUnitTime();
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "notify time is" + new Date(currentTime).toLocaleString());
+                }
+                mHistoryListener.onHistoryTimeChanged(currentTime / unitTime * unitTime);
             }
         }
     };
@@ -148,7 +153,8 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         longLineHeight = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_long_line_height, dp2px(25));
         scrollerLockTime = attributes.getInteger(R.styleable.HistoryWheelView_hw_scroller_lock_time, 5000);
         updateDelay = attributes.getInteger(R.styleable.HistoryWheelView_hw_history_update_delay, 700);
-
+        textTopMargin = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_history_text_top_margin, dp2px(5));
+        textBottomMargin = attributes.getDimensionPixelSize(R.styleable.HistoryWheelView_hw_history_text_bottom_margin, dp2px(5));
         markerPaint.setAntiAlias(true);
         markerPaint.setColor(markerColor);
         markerPaint.setStyle(Paint.Style.STROKE);
@@ -165,8 +171,9 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         naturalDateTextPaint.setColor(textColor);
         naturalDateTextPaint.setTextSize(textSize);
         naturalDateTextPaint.setTextAlign(Paint.Align.CENTER);
+        Paint.FontMetrics fm = naturalDateTextPaint.getFontMetrics();
+        fountHeight = Math.ceil(fm.descent - fm.ascent);
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        mTimeZone = TimeZone.getDefault();
         attributes.recycle();
     }
 
@@ -202,7 +209,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         mDistanceX += distanceX;
         if (Math.abs(mDistanceX) >= mTouchSlop) {
-            setHistoryLock(true);
+            disableExternalScrollAction();
             mHasPendingUpdateAction = true;
             if (mSnapDirection != SnapDirection.NONE) {
                 mHasPendingSnapAction = true;
@@ -210,7 +217,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             distanceX = mDistanceX;
             mDistanceX = 0;
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distanceX, 0);
-            postInvalidate();
+            invalidate();
         }
         return true;
     }
@@ -222,59 +229,70 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        setHistoryLock(true);
+        disableExternalScrollAction();
         mHasPendingUpdateAction = true;
         if (mSnapDirection != SnapDirection.NONE) {
             mHasPendingSnapAction = true;
         }
         mScroller.fling(mScroller.getCurrX(), 0, (int) -velocityX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-        postInvalidate();
+        invalidate();
         return true;
     }
 
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
+            if (mHistoryListener != null) {
+                //非常没必要,但测试说要加
+                mHistoryListener.onScrolling(getCurrentTime());
+            }
             scrollTo(mScroller.getCurrX(), 0);
-            postInvalidate();
+            invalidate();
         } else {
             notifyScrollCompleted();
         }
     }
 
-    private void setHistoryLock(boolean locked) {
-        if (locked) {
-            this.mLocked = true;
-            removeCallbacks(mUnlockRunnable);
-            removeCallbacks(mNotifyRunnable);
-        } else {
-            postDelayed(mUnlockRunnable, scrollerLockTime);
-        }
+    private void disableExternalScrollAction() {
+        this.mLocked = true;
+        removeCallbacks(mUnlockRunnable);
+        removeCallbacks(mNotifyRunnable);
+    }
+
+    private void enableExternalScrollAction() {
+        postDelayed(mUnlockRunnable, scrollerLockTime);
     }
 
     public long getCurrentTime() {
-        return (long) (getPixelTime() * (mScroller.getCurrX() + mCenterPosition) + mZeroTime);
+        return getPixelTime() * (mScroller.getCurrX() + mCenterPosition) + mZeroTime;
     }
 
-    public void scrollToPosition(long time) {
+    public void scrollToPosition(long time, boolean locked) {
         if (!mLocked) {
+            if (locked) {
+                disableExternalScrollAction();
+            }
             scrollToPositionInternal(time);
         }
     }
-
-    private int pendingDistanceX = 0;
 
     private void scrollToPositionInternal(long time) {
         if (time == 0) {
             time = mZeroTime;
         }
-        long distance = getDistanceByTime(time, getCurrentTime());
-        pendingDistanceX += distance;
-        if (Math.abs(pendingDistanceX) >= mTouchSlop) {
-            distance = pendingDistanceX;
-            pendingDistanceX = 0;
+        long currentTime = getCurrentTime();
+        long distance = getDistanceByTime(time, currentTime);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "scroller time is:" + new Date(time).toLocaleString() +
+                    ",current time is:" + new Date(currentTime).toLocaleString() +
+                    ",scroller distance is:" + distance +
+                    ",currentX:" + mScroller.getCurrX() +
+                    ",target time is:" + new Date(currentTime + distance * getPixelTime()).toLocaleString());
+        }
+
+        if (distance != 0) {
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
-            postInvalidate();
+            invalidate();
         }
     }
 
@@ -325,7 +343,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     }
 
     private void notifyUpdate() {
-        setHistoryLock(false);
+        enableExternalScrollAction();
         if (mHasPendingUpdateAction) {
             mHasPendingUpdateAction = false;
             postDelayed(mNotifyRunnable, updateDelay);
@@ -352,8 +370,8 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private HistoryFile mStartHistoryBlock = new HistoryFile();
     private HistoryFile mStopHistoryBlock = new HistoryFile();
 
-    private float getPixelTime() {
-        return 10 * 60 * 1000F / lineInterval;
+    private long getPixelTime() {
+        return (long) (10 * 60 * 1000F / lineInterval);
     }
 
     private void drawHistoryBlock(Canvas canvas) {
@@ -363,8 +381,8 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         int startX = mScroller.getCurrX() - getMeasuredWidth() / 2;
         int stopX = startX + getMeasuredWidth() * 2;
         long unitTime = getUnitTime();
-        mStartHistoryBlock.time = (long) (startX * getPixelTime() + mZeroTime) / unitTime;
-        mStopHistoryBlock.time = (long) (stopX * getPixelTime() + mZeroTime) / unitTime;
+        mStartHistoryBlock.time = (startX * getPixelTime() + mZeroTime) / unitTime;
+        mStopHistoryBlock.time = (stopX * getPixelTime() + mZeroTime) / unitTime;
         HistoryFile start = mHistoryFiles.floor(mStartHistoryBlock);
         if (start == null) {
             start = mHistoryFiles.first();
@@ -382,8 +400,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     }
 
     private long getDistanceByTime(long start, long end) {
-        float unit = 10 * 60 * 1000F / lineInterval;
-        return (long) ((start - end) / unit);
+        return (start - end) / getPixelTime();
     }
 
     private void drawDivider(Canvas canvas) {
@@ -412,18 +429,17 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     }
 
     private void drawTimeText(Canvas canvas) {
-        if (mTimeZone != null) {
-            int startX = (mScroller.getCurrX() - getMeasuredWidth() / 2) / lineInterval * lineInterval;
-            int stopX = startX + getMeasuredWidth() * 2;
-            long unitTime = getUnitTime();
-            while (startX <= stopX) {
-                if (startX % (lineInterval * 6) == 0) {
-                    long dis = startX / lineInterval * 10 * 60 * unitTime;
-
-                    canvas.drawText(dateFormat.format(mZeroTime + dis), startX, getMeasuredHeight() - 40, naturalDateTextPaint);
-                }
-                startX += lineInterval;
+        int startX = (mScroller.getCurrX() - getMeasuredWidth() / 2) / lineInterval * lineInterval;
+        int stopX = startX + getMeasuredWidth() * 2;
+        long unitTime = getUnitTime();
+        while (startX <= stopX) {
+            if (startX % (lineInterval * 6) == 0) {
+                long dis = startX / lineInterval * 10 * 60 * unitTime;
+                int exceptY = longLineHeight + textTopMargin;
+                int maxY = (int) (getMeasuredHeight() - textBottomMargin - fountHeight);
+                canvas.drawText(dateFormat.format(mZeroTime + dis), startX, Math.max(exceptY, maxY), naturalDateTextPaint);
             }
+            startX += lineInterval;
         }
     }
 
@@ -442,7 +458,6 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     }
 
     public void setTimeZone(TimeZone timeZone) {
-        this.mTimeZone = timeZone;
         dateFormat.setTimeZone(timeZone);
         postInvalidate();
     }
@@ -470,12 +485,18 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         return mHistoryFiles.size();
     }
 
+    public boolean isLocked() {
+        return mLocked;
+    }
+
     public void setHistoryListener(HistoryListener listener) {
         this.mHistoryListener = listener;
     }
 
     public interface HistoryListener {
         void onHistoryTimeChanged(long time);
+
+        void onScrolling(long time);
     }
 
 }

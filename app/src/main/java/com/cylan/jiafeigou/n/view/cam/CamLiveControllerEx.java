@@ -118,6 +118,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
 /**
  * Created by hds on 17-4-19.
@@ -1440,8 +1441,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //分享账号不显示啊.
 //        if (JFGRules.isShareDevice(uuid)) return;
         historyWheelHandler = getHistoryWheelHandler(presenter);
-//        boolean isWheelBusy = historyWheelHandler.isBusy();
-        if (/*!isWheelBusy && */(livePlayType == TYPE_LIVE || !ignoreTimeStamp)) {
+        if ((livePlayType == TYPE_LIVE || !ignoreTimeStamp)) {
             setLiveRectTime(livePlayType, rtcp.timestamp);
         }
         //点击事件
@@ -1487,19 +1487,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         //直播时候，使用本地时间戳。
-//        if (livePlayType == TYPE_LIVE && timestamp != 0) return;
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-//        boolean isWheelBusy = historyWheelHandler.isBusy();
-        //拖动的时候，拒绝外部设置时间。
-        if (/*!isWheelBusy &&*/ JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
-            liveTimeLayout.setContent(type, livePlayType == TYPE_LIVE ? 0 : timestamp);
+        if (!historyWheelHandler.isHistoryLocked()) {
+            setLiveTimeContent(type, timestamp);
+            if (type == TYPE_HISTORY && presenter != null && presenter.getPlayState() == PLAY_STATE_PLAYING) {
+                Log.d("TYPE_HISTORY time", "time: " + timestamp);
+                historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp), false);
+            }
         }
-        if (type == TYPE_HISTORY && presenter != null
-                && presenter.getPlayState() == PLAY_STATE_PLAYING) {
-            Log.d("TYPE_HISTORY time", "time: " + timestamp);
-            historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
+    }
+
+    private void setLiveTimeContent(int type, long timestamp) {
+        if (JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
+            liveTimeLayout.setContent(type, livePlayType == TYPE_LIVE ? 0 : timestamp);
         }
     }
 
@@ -1560,7 +1562,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
-            setLiveRectTime(TYPE_HISTORY, time);
+            switch (state) {
+                case STATE_FINISH: {
+                    setLiveRectTime(TYPE_HISTORY, time);
+                }
+                break;
+                default: {
+                    setLiveTimeContent(TYPE_HISTORY, time);
+                }
+            }
         });
         tvCamLiveLandBottom.setVisibility(VISIBLE);
     }
@@ -1894,7 +1904,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!fetching) {
             //有历史录像
             reInitHistoryHandler(presenter);
-            historyWheelHandler.setNav2Time(timeTarget);
+            historyWheelHandler.setNav2Time(timeTarget, true);
             AppLogger.d("点击播放历史录像:" + timeTarget);
             presenter.startPlayHistory(timeTarget);
             return;
@@ -1928,8 +1938,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
                     setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-                    handler.setNav2Time(timeTarget);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     presenter.startPlayHistory(timeTarget);
+                    handler.setNav2Time(timeTarget, true);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     AppLogger.d("目标历史录像时间?" + timeTarget);
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {

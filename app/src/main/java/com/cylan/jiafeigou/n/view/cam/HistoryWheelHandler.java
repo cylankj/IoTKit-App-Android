@@ -33,7 +33,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
@@ -138,23 +137,19 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
                     HistoryFile historyFile = iData.getMinHistoryFileByStartTime(timeStart);//最小时间.
                     if (historyFile != null) {
                         //需要使用post，因为上面的setupHistoryData是post
-                        setNav2Time(TimeUtils.wrapToLong(timeStart), true);
                         presenter.startPlayHistory(TimeUtils.wrapToLong(timeStart));
+                        setNav2Time(TimeUtils.wrapToLong(timeStart), true);
                         AppLogger.d("找到历史录像?" + historyFile);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
-    public void setNav2Time(long time, boolean post) {
-        if (!post) {
-            setNav2Time(time);
-        } else {
-            superWheelExt.scrollToPosition(TimeUtils.wrapToLong(time));
-        }
+    public boolean isHistoryLocked() {
+        return superWheelExt.isLocked();
     }
 
-    public void setNav2Time(long time) {
-        superWheelExt.scrollToPosition(TimeUtils.wrapToLong(time));
+    public void setNav2Time(long time, boolean lock) {
+        superWheelExt.scrollToPosition(TimeUtils.wrapToLong(time), lock);
     }
 
     public void setupHistoryData(IData dataProvider) {
@@ -162,35 +157,6 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
         superWheelExt.setHistoryFiles(dataProvider.getRawHistoryFiles());
         superWheelExt.setHistoryListener(this);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
-    }
-
-    //    @Override
-    public void onWheelTimeUpdate(long time, int state) {
-
-        switch (state) {
-            case STATE_DRAGGING:
-                Log.d("onTimeUpdate", "STATE_DRAGGING :" + History.date2String(time) + ",time:" + time);
-//                if (datePickerListener != null)
-//                    datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
-//                superWheelExt.removeCallbacks(dragRunnable);
-                break;
-            case STATE_ADSORB:
-                Log.d("onTimeUpdate", "STATE_ADSORB :" + History.date2String(time) + ",time:" + time);
-                break;
-            case STATE_FINISH:
-                Log.d("onTimeUpdate", "STATE_FINISH :" + History.date2String(time) + ",time:" + time);
-//                tmpTime = time;
-//                superWheelExt.removeCallbacks(dragRunnable);
-//                superWheelExt.postDelayed(dragRunnable, 700);
-                presenter.startPlayHistory(time);
-                if (datePickerListener != null) {
-                    datePickerListener.onPickDate(time / 1000, STATE_FINISH);
-                }
-                AppLogger.d("拖动停止了:" + time + "," + History.date2String(time));
-                break;
-            default:
-                break;
-        }
     }
 
     public void setDatePickerListener(DatePickerListener datePickerListener) {
@@ -206,6 +172,13 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
             datePickerListener.onPickDate(time / 1000, STATE_FINISH);
         }
         AppLogger.d("拖动停止了:" + time + "," + History.date2String(time));
+    }
+
+    @Override
+    public void onScrolling(long time) {
+        if (datePickerListener != null) {
+            datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
+        }
     }
 
     /**

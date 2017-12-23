@@ -43,7 +43,8 @@
                         android:gravity="center"
                         android:text="@string/Tap1_TitleName"
                         android:textColor="@android:color/white"
-                        android:textSize="@dimen/sp20" />
+                        android:textSize="@dimen/sp20"
+                        android:visibility="invisible" />
                     <!--android:padding="@dimen/x10"-->
                     <ImageView
                         android:id="@+id/imgV_add_devices"
