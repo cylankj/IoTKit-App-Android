@@ -445,15 +445,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                getParent().requestDisallowInterceptTouchEvent(true);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                getParent().requestDisallowInterceptTouchEvent(false);
-                break;
-        }
+        getParent().requestDisallowInterceptTouchEvent(true);
         return mDetector.onTouchEvent(event);
     }
 
