@@ -18,6 +18,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
+import static com.cylan.jiafeigou.utils.PackageUtils.TAG;
 
 /**
  * Created by cylan-hunt on 16-12-8.
@@ -64,10 +65,19 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     }
 
 
+    private static final String TAG = "LiveControlView";
+
     @Override
     public void setOrientationState(int o) {
         isLandscape = (o == SCREEN_ORIENTATION_LANDSCAPE || o == SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-        setImageViewVisibility(imageView.getVisibility(), isLandscape);
+        Log.e(TAG, "setOrientationState landscape: " + isLandscape);
+        setImageViewVisibility(isLandscape ? GONE : VISIBLE, isLandscape);
+        imageView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setImageViewVisibility(imageView.getVisibility(), isLandscape);
+            }
+        }, isLandscape ? 0 : 1000);
     }
 
     @Override

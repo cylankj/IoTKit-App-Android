@@ -751,11 +751,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //                layoutD.setTranslationY(0);
 //                layoutE.setTranslationY(0);
                 boolean toHide = layoutC.isShown();
+                Log.e(TAG, "onLiveRectTap: layoutC.isShown(): " + layoutC.isShown());
                 if (toHide) {
                     removeCallbacks(portShowRunnable);
                     post(portHideRunnable);
                 } else {
                     removeCallbacks(portHideRunnable);
+                    post(portShowRunnable);
+                }
+            } else {
+                if (!layoutC.isShown()) {
                     post(portShowRunnable);
                 }
             }
@@ -1110,6 +1115,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode) {
+        Log.e(TAG, "onLiveStop: " + device.getSn());
         livePlayState = presenter.getPlayState();
         layoutB.setVisibility(GONE);
         svSwitchStream.setVisibility(GONE);
