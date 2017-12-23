@@ -355,11 +355,13 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         } else if (mSnapDirection == SnapDirection.AUTO) {//处理最短吸附的情况
             long distanceF = mSnapHistoryBlock.time - (floor.time + floor.duration);
             long distanceC = mSnapHistoryBlock.time - ceiling.time;
-            target = currentTime - (Math.abs(distanceC) < Math.abs(distanceF) ? distanceC : distanceF);
+            target = currentTime - (Math.abs(distanceC) < Math.abs(distanceF) ? distanceC : distanceF) * unitTime;
         }
 
         if (target != currentTime) {
             scrollToPositionInternal(target);
+        } else {
+            notifyUpdate();
         }
     }
 
