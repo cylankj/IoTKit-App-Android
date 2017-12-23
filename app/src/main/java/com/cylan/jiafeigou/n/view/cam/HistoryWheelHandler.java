@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -27,8 +25,8 @@ import com.cylan.jiafeigou.widget.wheel.HistoryWheelView;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -39,24 +37,18 @@ import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
-//import com.cylan.jiafeigou.utils.TimeUtils;
-
-
 /**
  * Created by hds on 17-4-26.
  */
 
-public class HistoryWheelHandler implements HistoryWheelView.HistoryListener /*implements SuperWheelExt.WheelRollListener*/ {
+public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
     private HistoryWheelView superWheelExt;
     private CamLiveContract.Presenter presenter;
     private Context context;
-    private WeakReference<DatePickerDialogFragment> datePickerRef;
     private String uuid;
-
 
     public HistoryWheelHandler(HistoryWheelView superWheel, CamLiveContract.Presenter presenter) {
         this.superWheelExt = superWheel;
-//        superWheelExt.setWheelRollListener(this);
         superWheelExt.setHistoryListener(this);
         this.presenter = presenter;
         context = superWheel.getContext();
@@ -69,7 +61,6 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener /*i
             return;
         }
         superWheelExt.setHistoryFiles(presenter.getHistoryDataProvider().getRawHistoryFiles());
-//        superWheelExt.setDataProvider(presenter.getHistoryDataProvider());
     }
 
     public void showDatePicker(boolean isLand) {
@@ -78,48 +69,44 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener /*i
 
 
     private void showPortDatePicker() {
-        Bundle bundle = new Bundle();
-        bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
-        DatePickerDialogFragment fragment = DatePickerDialogFragment.newInstance(bundle);
-        fragment.setAction((int id, Object value) -> {
-            if (value != null && value instanceof Long) {
-                IData data = presenter.getHistoryDataProvider();
-                HistoryFile historyFile = data == null ? null : data.getMaxHistoryFile();
-                //时间轴上没有
-                if (historyFile == null || historyFile.getTime() + historyFile.getDuration() < (long) value / 1000) {
-                    historyFile = History.getHistory().getHistoryFile((Long) value);
-                    if (historyFile == null) {
-                        AppLogger.d("没有这段视频: " + historyFile + "," + value);
-                        ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
-                        return;
-                    } else {
-                        //需要重新回执时间轴
-
+        TreeSet<HistoryFile> historyFiles = new TreeSet<>(presenter.getHistoryDataProvider().getRawHistoryFiles());
+        if (historyFiles.size() > 0) {
+            long start = historyFiles.first().time * 1000L;
+            long end = historyFiles.last().time * 1000L;
+            long select = superWheelExt.getCurrentTime();
+            int timezoneOffset = JFGRules.getDeviceTimezone(DataSourceManager.getInstance().getDevice(uuid)).getRawOffset();
+            String title = context.getString(R.string.TIME);
+            DatePickerDialogFragment fragment = DatePickerDialogFragment.newInstance(start, end, select, timezoneOffset, title, null, null);
+            fragment.setAction(new BaseDialog.BaseDialogAction() {
+                @Override
+                public void onDialogAction(int id, Object value) {
+                    if (value != null && value instanceof Long) {
+                        HistoryFile historyFile = new HistoryFile();
+                        historyFile.time = (Long) value / 1000L;
+                        HistoryFile floor = historyFiles.floor(historyFile);
+                        HistoryFile ceiling = historyFiles.ceiling(historyFile);
+                        boolean inFloor = floor != null && floor.time + floor.duration >= historyFile.time;
+                        boolean inCeiling = ceiling != null && ceiling.time == historyFile.time;
+                        if (!inCeiling && !inFloor) {
+                            //没有这段视频
+                            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
+                        } else {
+                            if (datePickerListener != null) {
+                                datePickerListener.onPickDate((Long) value, STATE_FINISH);
+                            }
+                            playPreciseByTime((Long) value);
+                        }
                     }
                 }
-
-                AppLogger.d("msgTime pick: " + History.date2String((Long) value) + "," + value);
-                if (datePickerListener != null) {
-                    datePickerListener.onPickDate((Long) value, STATE_FINISH);
-                }
-                playPreciseByTime((Long) value);
-            }
-        });
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
-        fragment.setTimeZone(JFGRules.getDeviceTimezone(device));
-        fragment.setTimeFocus(getWheelCurrentFocusTime());
-        fragment.setDateList(presenter.getHistoryDataProvider().getRawHistoryFiles());
-        fragment.show(((FragmentActivity) context).getSupportFragmentManager(),
-                "DatePickerDialogFragment");
-    }
-
-    private long getWheelCurrentFocusTime() {
-        return superWheelExt.getCurrentTime();
+            });
+            fragment.show(((FragmentActivity) context).getSupportFragmentManager(), "DatePickerDialogFragment");
+        }
     }
 
     /**
      * 选择一天,load所有的数据,但是需要移动的这一天的开始位置.
      */
+
     private void playPreciseByTime(long timeStart) {
         final String date = History.parseTime2Date(TimeUtils.wrapToLong(timeStart));
         ArrayList<HistoryFile> hList = History.getHistory().getHistoryFile(date);
@@ -173,8 +160,6 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener /*i
     public void setupHistoryData(IData dataProvider) {
         final long time = System.currentTimeMillis();
         superWheelExt.setHistoryFiles(dataProvider.getRawHistoryFiles());
-//        superWheelExt.setDataProvider(dataProvider);
-//        superWheelExt.setWheelRollListener(this);
         superWheelExt.setHistoryListener(this);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
     }

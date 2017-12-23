@@ -210,7 +210,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             distanceX = mDistanceX;
             mDistanceX = 0;
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distanceX, 0);
-            invalidate();
+            postInvalidate();
         }
         return true;
     }
@@ -228,7 +228,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             mHasPendingSnapAction = true;
         }
         mScroller.fling(mScroller.getCurrX(), 0, (int) -velocityX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-        invalidate();
+        postInvalidate();
         return true;
     }
 
@@ -236,7 +236,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), 0);
-            invalidate();
+            postInvalidate();
         } else {
             notifyScrollCompleted();
         }
@@ -262,14 +262,20 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         }
     }
 
+    private int pendingDistanceX = 0;
+
     private void scrollToPositionInternal(long time) {
-        setHistoryLock(true);
         if (time == 0) {
             time = mZeroTime;
         }
         long distance = getDistanceByTime(time, getCurrentTime());
-        mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
-        invalidate();
+        pendingDistanceX += distance;
+        if (Math.abs(pendingDistanceX) >= mTouchSlop) {
+            distance = pendingDistanceX;
+            pendingDistanceX = 0;
+            mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
+            postInvalidate();
+        }
     }
 
     private HistoryFile mSnapHistoryBlock = new HistoryFile();
@@ -423,7 +429,15 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        getParent().requestDisallowInterceptTouchEvent(true);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                getParent().requestDisallowInterceptTouchEvent(true);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+        }
         return mDetector.onTouchEvent(event);
     }
 
