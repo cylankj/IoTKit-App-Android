@@ -59,8 +59,20 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private int textSize;
     private int shortLineHeight;
     private int longLineHeight;
+    /**
+     * 在内部更新或外部带锁定操作更新后,锁定历史时间轴一段时间,在这段时间里
+     * 外部更新将会被忽略,内部更新任何时候是不受影响的
+     */
     private int scrollerLockTime;
+    /***
+     *滑动停止后延迟一定的时间再通知更新,这样做的原因是用户可能在连续滑动
+     *如果滑动一停止立即通知更新,可能不是所希望的结果,延迟一段时间以确保
+     *用户没有在继续操作了
+     */
     private int updateDelay;
+    /***
+     *标定刻度是否居于屏幕正中间,如果为 true 标定刻度将居于屏幕正中,否则居于控件正中
+     */
     private boolean markerCenterInScreen;
     private int mCenterPosition;
     private int textTopMargin;
@@ -75,6 +87,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         int NONE = -1;
         int LEFT = 0;
         int RIGHT = 1;
+        int AUTO = 2;
     }
 
     private int mSnapDirection = SnapDirection.RIGHT;
@@ -180,6 +193,9 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        /*
+         *之所以用 post 是因为在这里直接获取的话获取不到控件在屏幕上的位置
+         */
         removeCallbacks(mMarkerPositionRunnable);
         post(mMarkerPositionRunnable);
     }
@@ -208,6 +224,9 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         mDistanceX += distanceX;
+        /*
+         *当 distanceX 的距离小于 touchSlop 时,滑动没有效果,所有这里要积攒到最小到 touchSlop 才开始滑动
+         */
         if (Math.abs(mDistanceX) >= mTouchSlop) {
             disableExternalScrollAction();
             mHasPendingUpdateAction = true;
@@ -299,46 +318,48 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private HistoryFile mSnapHistoryBlock = new HistoryFile();
 
     private void notifySnapAction() {
-        switch (mSnapDirection) {
-            case SnapDirection.LEFT: {
+        mHasPendingSnapAction = false;
+        if (mHistoryFiles.size() == 0 || mSnapDirection == SnapDirection.NONE) {
+            return;
+        }
+        long currentTime = getCurrentTime();
+        long unitTime = getUnitTime();
+        mSnapHistoryBlock.time = currentTime / unitTime;
+        HistoryFile floor = mHistoryFiles.floor(mSnapHistoryBlock);
+        HistoryFile ceiling = mHistoryFiles.ceiling(mSnapHistoryBlock);
+        if (floor == null) {
+            floor = mHistoryFiles.first();
+        }
+        if (ceiling == null) {
+            ceiling = mHistoryFiles.last();
+        }
 
-            }
-            break;
-            case SnapDirection.RIGHT: {
-                mHasPendingSnapAction = false;
-                if (mHistoryFiles.size() == 0) {
-                    return;
-                }
-                long currentTime = getCurrentTime();
-                long unitTime = getUnitTime();
-                mSnapHistoryBlock.time = currentTime / unitTime;
-                HistoryFile floor = mHistoryFiles.floor(mSnapHistoryBlock);
-                HistoryFile ceiling = mHistoryFiles.ceiling(mSnapHistoryBlock);
-                if (floor == null) {
-                    floor = mHistoryFiles.first();
-                }
-                if (ceiling == null) {
-                    ceiling = mHistoryFiles.last();
-                }
-                long target = currentTime;
-                if (target < floor.time * unitTime) {
-                    target = floor.time * unitTime;
-                } else if (target > (ceiling.time + ceiling.duration) * unitTime) {
-                    target = (ceiling.time + ceiling.duration) * unitTime;
-                } else if (target > (floor.time + floor.duration) * unitTime && target < ceiling.time * unitTime) {
-                    target = ceiling.time * unitTime;
-                }
-                if (target != currentTime) {
-                    scrollToPositionInternal(target);
-                } else {
-                    notifyUpdate();
-                }
-            }
-            break;
-            case SnapDirection.NONE: {
+        //判断当前是否需要做吸附操作,如果当前在数据区,则不需要做吸附操作了
+        boolean inFloor = mSnapHistoryBlock.time >= floor.time && mSnapHistoryBlock.time <= floor.time + floor.duration;
+        boolean inCeiling = mSnapHistoryBlock.time >= ceiling.time && mSnapHistoryBlock.time <= ceiling.time + ceiling.duration;
+        if (inFloor || inCeiling) {
+            notifyUpdate();
+            return;
+        }
+        long target = currentTime;
 
-            }
-            break;
+        //在边界处是没有吸附规则的自动吸附到第一个或最后一个的开始处
+        if (mSnapHistoryBlock.time < floor.time) {//处理左边界的情况
+            target = floor.time * unitTime;
+        } else if (mSnapHistoryBlock.time > ceiling.time * ceiling.duration) {//处理右边界的情况
+            target = ceiling.time * unitTime;
+        } else if (mSnapDirection == SnapDirection.LEFT) {//处理左吸附的情况
+            target = (floor.time + floor.duration) * unitTime;
+        } else if (mSnapDirection == SnapDirection.RIGHT) {//处理右吸附的情况
+            target = ceiling.time * unitTime;
+        } else if (mSnapDirection == SnapDirection.AUTO) {//处理最短吸附的情况
+            long distanceF = mSnapHistoryBlock.time - (floor.time + floor.duration);
+            long distanceC = mSnapHistoryBlock.time - ceiling.time;
+            target = currentTime - (Math.abs(distanceC) < Math.abs(distanceF) ? distanceC : distanceF);
+        }
+
+        if (target != currentTime) {
+            scrollToPositionInternal(target);
         }
     }
 
@@ -431,13 +452,12 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private void drawTimeText(Canvas canvas) {
         int startX = (mScroller.getCurrX() - getMeasuredWidth() / 2) / lineInterval * lineInterval;
         int stopX = startX + getMeasuredWidth() * 2;
-        long unitTime = getUnitTime();
         while (startX <= stopX) {
             if (startX % (lineInterval * 6) == 0) {
-                long dis = startX / lineInterval * 10 * 60 * unitTime;
+                long distanceTime = startX * getPixelTime();
                 int exceptY = longLineHeight + textTopMargin;
                 int maxY = (int) (getMeasuredHeight() - textBottomMargin - fountHeight);
-                canvas.drawText(dateFormat.format(mZeroTime + dis), startX, Math.max(exceptY, maxY), naturalDateTextPaint);
+                canvas.drawText(dateFormat.format(mZeroTime + distanceTime), startX, Math.max(exceptY, maxY), naturalDateTextPaint);
             }
             startX += lineInterval;
         }
