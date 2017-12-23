@@ -467,9 +467,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
-            getParent().requestDisallowInterceptTouchEvent(true);
-        }
+        getParent().requestDisallowInterceptTouchEvent(true);
         return mDetector.onTouchEvent(event);
     }
 
