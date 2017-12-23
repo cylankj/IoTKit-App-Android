@@ -870,12 +870,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         @Override
         public void run() {
-            if (historyWheelHandler != null /*&& historyWheelHandler.isBusy()*/) {
-                //滑动过程
-                postDelayed(this, 3000);
-                return;
-            }
-
             // TODO: 2017/8/28 模式切换显示时不要自动隐藏
             if (rbViewModeSwitchParent.getVisibility() == VISIBLE) {
                 return;
