@@ -5,11 +5,13 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.HistoryManager;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -23,14 +25,12 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.HistoryWheelView;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
@@ -55,11 +55,12 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
     }
 
     public void dateUpdate() {
-        if (presenter.getHistoryDataProvider() == null) {
+        TreeSet<JFGVideo> history = HistoryManager.getInstance().getHistory(uuid);
+        if (history == null) {
             AppLogger.d("历史录像没准备好");
             return;
         }
-        superWheelExt.setHistoryFiles(presenter.getHistoryDataProvider().getRawHistoryFiles());
+        superWheelExt.setHistoryFiles(HistoryManager.getInstance().getHistory(uuid));
     }
 
     public void showDatePicker(boolean isLand) {
@@ -68,10 +69,10 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
 
 
     private void showPortDatePicker() {
-        TreeSet<HistoryFile> historyFiles = new TreeSet<>(presenter.getHistoryDataProvider().getRawHistoryFiles());
+        TreeSet<JFGVideo> historyFiles = HistoryManager.getInstance().getHistory(uuid);
         if (historyFiles.size() > 0) {
-            long start = historyFiles.first().time * 1000L;
-            long end = historyFiles.last().time * 1000L;
+            long start = historyFiles.first().beginTime * 1000L;
+            long end = historyFiles.last().beginTime * 1000L;
             long select = superWheelExt.getCurrentTime();
             int timezoneOffset = JFGRules.getDeviceTimezone(DataSourceManager.getInstance().getDevice(uuid)).getRawOffset();
             String title = context.getString(R.string.TIME);
@@ -80,12 +81,11 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
                 @Override
                 public void onDialogAction(int id, Object value) {
                     if (value != null && value instanceof Long) {
-                        HistoryFile historyFile = new HistoryFile();
-                        historyFile.time = (Long) value / 1000L;
-                        HistoryFile floor = historyFiles.floor(historyFile);
-                        HistoryFile ceiling = historyFiles.ceiling(historyFile);
-                        boolean inFloor = floor != null && floor.time + floor.duration >= historyFile.time;
-                        boolean inCeiling = ceiling != null && ceiling.time == historyFile.time;
+                        JFGVideo historyFile = new JFGVideo("", (Long) value / 1000L, 0);
+                        JFGVideo floor = historyFiles.floor(historyFile);
+                        JFGVideo ceiling = historyFiles.ceiling(historyFile);
+                        boolean inFloor = floor != null && floor.beginTime + floor.duration >= historyFile.beginTime;
+                        boolean inCeiling = ceiling != null && ceiling.beginTime == historyFile.beginTime;
                         if (!inCeiling && !inFloor) {
                             //没有这段视频
                             ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
@@ -121,27 +121,16 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
                         playByTime(timeStart);
                     }, throwable -> AppLogger.e("失败了?" + MiscUtils.getErr(throwable)));
             presenter.addSubscription("playPreciseByTime", subscription);
-            presenter.fetchHistoryDataList(timeStart);
+            presenter.fetchHistoryDataListV2(uuid, (int) timeStart, 0, 1);
             return;
         }
         playByTime(timeStart);
     }
 
     private void playByTime(long timeStart) {
-        presenter.assembleTheDay(timeStart)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
-                .subscribe(iData -> {
-                    setupHistoryData(iData);
-                    HistoryFile historyFile = iData.getMinHistoryFileByStartTime(timeStart);//最小时间.
-                    if (historyFile != null) {
-                        //需要使用post，因为上面的setupHistoryData是post
-                        presenter.startPlayHistory(TimeUtils.wrapToLong(timeStart));
-                        setNav2Time(TimeUtils.wrapToLong(timeStart), true);
-                        AppLogger.d("找到历史录像?" + historyFile);
-                    }
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        presenter.startPlayHistory(TimeUtils.wrapToLong(timeStart));
+        setNav2Time(TimeUtils.wrapToLong(timeStart), true);
+        setupHistoryData();
     }
 
     public boolean isHistoryLocked() {
@@ -152,9 +141,9 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
         superWheelExt.scrollToPosition(TimeUtils.wrapToLong(time), lock);
     }
 
-    public void setupHistoryData(IData dataProvider) {
+    public void setupHistoryData() {
         final long time = System.currentTimeMillis();
-        superWheelExt.setHistoryFiles(dataProvider.getRawHistoryFiles());
+        superWheelExt.setHistoryFiles(HistoryManager.getInstance().getHistory(uuid));
         superWheelExt.setHistoryListener(this);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
     }

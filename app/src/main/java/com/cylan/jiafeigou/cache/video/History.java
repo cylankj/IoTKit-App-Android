@@ -97,6 +97,29 @@ public class History {
 
     private HashMap<String, Boolean> rspIndexMap = new HashMap<>();
 
+    private HashMap<String, HistoryObserver> historyObserverHashMap = new HashMap<>();
+
+    public interface HistoryObserver {
+        void onHistoryChanged();
+    }
+
+    public void addHistoryObserver(String uuid, HistoryObserver observer) {
+        historyObserverHashMap.put(uuid, observer);
+    }
+
+    public void removeHistoryObserver(String uuid) {
+        historyObserverHashMap.remove(uuid);
+    }
+
+    public void cacheHistory(JFGHistoryVideo historyVideo) {
+
+    }
+
+    public void cacheHistory(byte[] bytes) {
+
+    }
+
+
     /**
      * 数据集,不实现Lru逻辑
      */
@@ -134,6 +157,8 @@ public class History {
     }
 
     private History() {
+        //耦合,为这么要在这里做这个事情?History 只是用来存储数据,数据的增加删除都是外部
+        //使用者来操作的,为什么 history 内部直接自己把数据删了?
         RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
                 .subscribeOn(Schedulers.io())
                 .map(setDataRsp -> {

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -22,7 +23,6 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -37,6 +37,7 @@ import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
+import com.cylan.jiafeigou.module.HistoryManager;
 import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
@@ -54,20 +55,20 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -238,32 +239,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return getLiveStream().type;
     }
 
-
-    /**
-     * 一天一天地查询
-     * 可以用来查询数据库
-     */
-
-    @Override
-    public Observable<IData> assembleTheDay(long timeStart) {
-        final String date = History.parseTime2Date(TimeUtils.wrapToLong(timeStart));
-        AppLogger.d("historyFile:timeEnd?" + date);
-        return Observable.just(History.getHistory().getHistoryFile(date))
-                .flatMap(historyFiles -> {
-                    AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
-                    if (!ListUtils.isEmpty(historyFiles)) {
-                        DataExt.getInstance().flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
-                    } else {
-                        AppLogger.d("没有这一天的录像，要去查");
-                    }
-                    //本地没有啊,需要从服务器获取.
-                    if (ListUtils.isEmpty(historyFiles)) {
-                        fetchHistoryDataList();
-                    }
-                    return Observable.just(DataExt.getInstance());
-                });
-    }
-
     @Override
     public CamLiveContract.LiveStream getLiveStream() {
         if (liveStream == null) {
@@ -298,42 +273,61 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         getHotSeatStateMaintainer().restore();
     }
 
+    @Override
+    public void fetchHistoryDataListV1(String uuid) {
+        Observable<String> observable = Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            HistoryManager.getInstance().fetchHistoryV1(uuid);
+            subscriber.onNext(uuid);
+            subscriber.onCompleted();
+        });
+        fetchHistoryDataListCompat(observable);
+    }
 
     @Override
-    public boolean fetchHistoryDataList() {
-//        test();
+    public void fetchHistoryDataListV2(String uuid, int time, int way, int count) {
+        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                HistoryManager.getInstance().fetchHistoryV2(uuid, time, way, count);
+                subscriber.onNext(uuid);
+                subscriber.onCompleted();
+            }
+        });
+        fetchHistoryDataListCompat(observable);
+    }
+
+    private void fetchHistoryDataListCompat(Observable<String> observable) {
         if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PREPARE) {
             stopPlayVideo(PLAY_STATE_STOP).subscribe(ret -> {
             }, AppLogger::e);
             AppLogger.d("获取历史录像,先断开直播,或者历史录像");
         }
-        if (ListUtils.isEmpty(History.getHistory().getDateList(uuid))) {
-            DataExt.getInstance().clean();
-        }
-        if (DataExt.getInstance().getDataCount() > 0) {
-            AppLogger.d("有历史录像了.");
-            RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
-            return false;
-        }
-        boolean sub = isunSubscribed("getHistoryList");
-        if (!sub) {
-            AppLogger.d("这次 请求还没结束");
-            return false;
-        }
-        makeTimeDelayForList();
-        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
-                .subscribe();
-        unSubscribe("getHistoryList");
-        addSubscription(subscription, "getHistoryList");
-        return true;
-    }
 
-    @Override
-    public boolean fetchHistoryDataList(long time) {
-//         History.getHistory().queryHistoryCompat(uuid);
-
-        History.getHistory().queryHistory(uuid, (int) (TimeUtils.getSpecificDayEndTime(TimeUtils.wrapToLong(time)) / 1000), 0, 3);
-        return true;
+        Subscription subscribe = observable.subscribeOn(Schedulers.io())
+                .flatMap(cid -> RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class))
+                .delay(1, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGHistoryVideo>() {
+                    @Override
+                    public void call(JFGHistoryVideo historyVideo) {
+                        if (!HistoryManager.getInstance().hasHistory(uuid)) {
+                            //没有历史视频
+                            mView.onHistoryEmpty();
+                        } else {
+                            //有历史视频
+                            mView.onHistoryReady(HistoryManager.getInstance().getHistory(uuid));
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        AppLogger.e(throwable);
+                        mView.onLoadHistoryFailed();
+                    }
+                });
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -364,40 +358,45 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         addSubscription(method(), subscribe);
     }
 
-    /**
-     * 对于大内存的设备,历史录像是好几条逐条rsp.但是不知道什么时候结束,不知道有几条.
-     * <p>
-     * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
-     */
-    private void makeTimeDelayForList() {
-        AppLogger.d("注册 录像等待结果？");
-        Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-                .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-                .timeout(30, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.computation())
-                .map((Func1<RxEvent.JFGHistoryVideoParseRsp, Observable<?>>) rsp -> {
-                    final String date = History.parseTime2Date(TimeUtils.wrapToLong(rsp.timeStart));
-                    ArrayList<HistoryFile> files = History.getHistory().getHistoryFile(date);
-                    DataExt.getInstance().flattenData(files, JFGRules.getDeviceTimezone(getDevice()));
-                    AppLogger.d("格式化数据");
-                    return null;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    //更新日历
-                    ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
-                    AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-                    mView.onHistoryDataRsp(DataExt.getInstance());
-                    mView.onHistoryLoadFinished();
-                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
-                    AppLogger.d("历史录像wheel准备好,断开直播");
-                    //放在这里不好,有 bug 单:#116924
-                    //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
-                    // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
-                    startPlayHistory(DataExt.getInstance().getFlattenMinTime());
-                }, AppLogger::e);
-        addSubscription(subscription, "makeTimeDelayForList");
+    @Override
+    public boolean isHistoryEmpty() {
+        return !HistoryManager.getInstance().hasHistory(uuid);
     }
+
+//    /**
+//     * 对于大内存的设备,历史录像是好几条逐条rsp.但是不知道什么时候结束,不知道有几条.
+//     * <p>
+//     * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
+//     */
+//    private void makeTimeDelayForList() {
+//        AppLogger.d("注册 录像等待结果？");
+//        Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+//                .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+//                .timeout(30, TimeUnit.SECONDS)
+//                .subscribeOn(Schedulers.computation())
+//                .map((Func1<RxEvent.JFGHistoryVideoParseRsp, Observable<?>>) rsp -> {
+//                    final String date = History.parseTime2Date(TimeUtils.wrapToLong(rsp.timeStart));
+//                    ArrayList<HistoryFile> files = History.getHistory().getHistoryFile(date);
+//                    DataExt.getInstance().flattenData(files, JFGRules.getDeviceTimezone(getDevice()));
+//                    AppLogger.d("格式化数据");
+//                    return null;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(ret -> {
+//                    //更新日历
+//                    ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
+//                    AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
+//                    mView.onHistoryDataRsp(DataExt.getInstance());
+//                    mView.onHistoryLoadFinished();
+//                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
+//                    AppLogger.d("历史录像wheel准备好,断开直播");
+//                    //放在这里不好,有 bug 单:#116924
+//                    //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
+//                    // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
+//                    startPlayHistory(DataExt.getInstance().getFlattenMinTime());
+//                }, AppLogger::e);
+//        addSubscription(subscription, "makeTimeDelayForList");
+//    }
 
     @Override
     public boolean isShareDevice() {
@@ -659,41 +658,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         liveStream.playState = state;
         Log.d("updateLiveStream", "updateLiveStream:" + liveStream);
     }
-/**
- * 设备是否在线
- */
-//    private Observable<Boolean> checkDevice() {
-//        return Observable.just(uuid)
-//                .subscribeOn(Schedulers.io())
-//                .flatMap(new Func1<String, Observable<Boolean>>() {
-//                    @Override
-//                    public Observable<Boolean> call(String account) {
-//                        return null;
-//                    }
-//                })
-//                .filter();
-//    }
-
-    /**
-     * 网络
-     *
-     * @return
-     */
-    private Observable<Boolean> checkNetwork() {
-        return Observable.just(uuid)
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(String s) {
-                        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
-                        if (!JFGRules.isDeviceOnline(net)) {
-                            updateLiveStream(TYPE_HISTORY, -1, PLAY_STATE_IDLE);
-                            mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
-                        }
-                        return null;
-                    }
-                });
-    }
 
     @Override
     public void startPlayHistory(long t) {
@@ -832,20 +796,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 });
     }
 
-    //forPopWindow true:手动截图:弹窗,保存每日精彩
-    //forPopWindow false:直播断开,退出界面.
-    @Override
-    public void takeSnapShot(boolean forPopWindow) {
-   /*     AppLogger.i("takeSnapShot forPopWindow:" + forPopWindow);
-        Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .map(new TakeSnapShootHelper(uuid, forPopWindow, mView))
-                .observeOn(Schedulers.io())
-                .subscribe(pair -> {
-                }, AppLogger::e, () -> AppLogger.d("take screen finish"));*/
-    }
-
-
     @Override
     public void saveAlarmFlag(boolean flag) {
         Log.d("saveAlarmFlag", "saveAlarmFlag: " + flag);
@@ -860,16 +810,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(Schedulers.io())
                 .subscribe(pair -> {
                 }, AppLogger::e, () -> AppLogger.d("take screen finish"));
-    }
-
-    @Override
-    public ArrayList<Long> getFlattenDateList() {
-        return DataSourceManager.getInstance().getHisDateList(uuid);
-    }
-
-    @Override
-    public IData getHistoryDataProvider() {
-        return DataExt.getInstance();
     }
 
     @Override
@@ -934,11 +874,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(ret -> {
                 }, AppLogger::e);
     }
-
-//    private Subscription streamModeUpdate(){
-//
-//        Subscription subscription =
-//    }
 
     /**
      * robot同步数据

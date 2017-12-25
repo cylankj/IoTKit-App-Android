@@ -59,8 +59,6 @@ public interface ICamLiveLayer {
 
     void onResolutionRsp(JFGMsgVideoResolution resolution);
 
-    void onHistoryDataRsp(CamLiveContract.Presenter presenter);
-
     void onLiveDestroy();
 
     void onDeviceStandByChanged(Device device, View.OnClickListener clickListener);
@@ -100,9 +98,6 @@ public interface ICamLiveLayer {
     void resumeGoodFrame();
 
     void startBadFrame();
-
-    void reAssembleHistory(CamLiveContract.Presenter presenter, long timeTarget);
-
     void updateLiveRect(Rect rect);
 
     /**

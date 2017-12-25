@@ -5,14 +5,14 @@ import android.graphics.Bitmap;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.TreeSet;
 
 import rx.Observable;
 
@@ -39,13 +39,9 @@ public interface CamLiveContract {
 
         boolean judge();
 
-        void onHistoryDataRsp(IData dataProvider);
-
         void onRtcp(JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp);
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
-
-//        void onDeviceInfoChanged(long id);
 
         void onDeviceInfoChanged(JFGDPMsg msg) throws IOException;
 
@@ -87,13 +83,6 @@ public interface CamLiveContract {
 
         void showFirmwareDialog();
 
-//        /**
-//         * 保存了每一份数据的第一条的时间戳
-//         *
-//         * @param dateList
-//         */
-//        void onHistoryDateListUpdate(ArrayList<Long> dateList);
-
         void audioRecordPermissionDenied();
 
         void onNetworkChanged(boolean connected);
@@ -123,6 +112,12 @@ public interface CamLiveContract {
         void onOpenDoorSuccess();
 
         void onOpenDoorPasswordError();
+
+        void onHistoryEmpty();
+
+        void onHistoryReady(TreeSet<JFGVideo> history);
+
+        void onLoadHistoryFailed();
     }
 
     interface Presenter extends BasePresenter {
@@ -148,14 +143,7 @@ public interface CamLiveContract {
          */
         int getPlayType();
 
-        /**
-         * 抓取历史录像列表
-         */
-//        void fetchHistoryDataList();
-
         boolean isShareDevice();
-
-//        void setStopReason(int stopReason);
 
         /**
          * 开始播放历史录像或者开始直播
@@ -194,13 +182,6 @@ public interface CamLiveContract {
         Observable<Boolean> switchStreamMode(int mode);
 
         /**
-         * 预览专用？
-         *
-         * @param forPopWindow
-         */
-        void takeSnapShot(boolean forPopWindow);
-
-        /**
          * 保存标志
          *
          * @param flag
@@ -208,13 +189,6 @@ public interface CamLiveContract {
         void saveAlarmFlag(boolean flag);
 
         void saveAndShareBitmap(Bitmap bitmap, boolean b, boolean save);
-
-        /**
-         * @return <Integer:天数,Long:时间戳>
-         */
-        ArrayList<Long> getFlattenDateList();
-
-        IData getHistoryDataProvider();
 
         /**
          * //默认隐藏.没网络时候,也不显示,设备离线也不显示
@@ -230,9 +204,6 @@ public interface CamLiveContract {
          * @param id
          */
         <T extends DataPoint> void updateInfoReq(T value, long id);
-
-
-        Observable<IData> assembleTheDay(long timeStart);
 
         LiveStream getLiveStream();
 
@@ -250,17 +221,13 @@ public interface CamLiveContract {
 
         boolean isDeviceStandby();
 
-        boolean fetchHistoryDataList();
+        void fetchHistoryDataListV1(String uuid);
 
-        /**
-         * 按照时间查
-         *
-         * @param time
-         * @return
-         */
-        boolean fetchHistoryDataList(long time);
+        void fetchHistoryDataListV2(String uuid, int time, int way, int count);
 
         void openDoorLock(String password);
+
+        boolean isHistoryEmpty();
     }
 
     class LiveStream {

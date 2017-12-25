@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -61,6 +62,7 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -300,55 +302,41 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPause() {
         super.onPause();
-//        presenter.saveHotSeatState();
         enableSensor(false);
         if (presenter != null) {
             presenter.stopPlayVideo(true).subscribe(ret -> {
-//                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
         }
     }
-
-//    @Override
-//    public void stop() {
-//        super.stop();
-//        enableSensor(false);
-//        if (presenter != null)
-//            presenter.stopPlayVideo(true).subscribe(ret -> {
-//            }, AppLogger::e);
-//    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (presenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
-//            camLiveControlLayer.showUseCase();
             // TODO: 2017/8/16 直播页需要自动横屏了
             //直播成功之后，才触发sensor.
-//            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             Device device = presenter.getDevice();
             DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
             if (standby.standby) {
                 return;
             }
             Bundle bundle = getArguments();
-            if (getArguments().containsKey(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME)) {
-                long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
-                AppLogger.d("需要定位到时间轴:" + time);
-                if (time == 0 && BuildConfig.DEBUG) {
-                    throw new IllegalArgumentException("play history time is 0");
+            if (bundle != null) {
+                if (getArguments().containsKey(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME)) {
+                    long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                    AppLogger.d("需要定位到时间轴:" + time);
+                    if (time == 0 && BuildConfig.DEBUG) {
+                        throw new IllegalArgumentException("play history time is 0");
+                    }
+                    getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                    //满足条件才需要播放
+                    if (!judge()) {
+                        return;
+                    }
+
+                    presenter.fetchHistoryDataListV1(uuid);
                 }
-                getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
-                //满足条件才需要播放
-                if (!judge()) {
-                    return;
-                }
-                if (String.valueOf(time).length() != String.valueOf(System.currentTimeMillis()).length()) {
-                    time = time * 1000L;//确保是毫秒
-                }
-                camLiveControlLayer.reAssembleHistory(presenter, time);
             }
-//            presenter.startPlay();
         } else if (presenter != null && isResumed() && !isVisibleToUser) {
             presenter.stopPlayVideo(PLAY_STATE_STOP).subscribe(ret -> {
 //                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
@@ -638,12 +626,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //        }
         return true;
     }
-
-    @Override
-    public void onHistoryDataRsp(IData dataStack) {
-        camLiveControlLayer.onHistoryDataRsp(presenter);
-    }
-
     @Override
     public void onLiveStop(int playType, int errId) {
         enableSensor(false);
@@ -856,6 +838,25 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ToastUtil.showToast(getString(R.string.DOOR_WRONG_PSW));
     }
 
+    @Override
+    public void onHistoryEmpty() {
+        Log.d(CYLAN_TAG, "没有历史录像视频...");
+        camLiveControlLayer.onHistoryEmpty();
+    }
+
+    @Override
+    public void onHistoryReady(TreeSet<JFGVideo> history) {
+        Log.d(CYLAN_TAG, "历史录像视频数据已就绪");
+        camLiveControlLayer.onHistoryReady(history);
+
+    }
+
+    @Override
+    public void onLoadHistoryFailed() {
+        Log.d(CYLAN_TAG, "加载历史录像失败了");
+        camLiveControlLayer.onLoadHistoryFailed();
+    }
+
     public void removeVideoView() {
         if (!isUserVisible() && camLiveControlLayer != null)//可以解决退出activity,TransitionAnimation，出现黑屏
         {
@@ -891,6 +892,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return false;
         }
     }
+
 
     class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
 

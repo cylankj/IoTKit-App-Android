@@ -118,12 +118,15 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     }
 
     override fun OnUpdateHistoryVideoList(jfgHistoryVideo: JFGHistoryVideo) {
-        AppLogger.w("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size)
+        AppLogger.w("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size + ",content:" + gson.toJson(jfgHistoryVideo))
+        HistoryManager.getInstance().cacheHistory(jfgHistoryVideo)
         DataSourceManager.getInstance().cacheHistoryDataList(jfgHistoryVideo)
+        RxBus.getCacheInstance().post(jfgHistoryVideo)
     }
 
     override fun OnUpdateHistoryVideoV2(bytes: ByteArray) {
-        AppLogger.w("OnUpdateHistoryVideoV2:" + DpUtils.unpack(bytes))
+        AppLogger.w("OnUpdateHistoryVideoListV2:" + DpUtils.unpack(bytes))
+        HistoryManager.getInstance().cacheHistory(bytes)
         DataSourceManager.getInstance().cacheHistoryDataList(bytes)
     }
 

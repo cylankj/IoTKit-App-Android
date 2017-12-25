@@ -236,7 +236,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         Context context = holder.tvDeviceAlias.getContext();
         Pair<DPEntity, Integer> pair = handleUnreadCount(getDevice());
         DPEntity entity = pair == null ? null : pair.first;
-        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + pair.first + ",second:" + pair.second);
+        if (pair != null) {
+            Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + pair.first + ",second:" + pair.second);
+        }
         boolean isPrimaryDevice = isPrimaryAccount(getDevice().shareAccount);
         boolean show = needShowUnread(getDevice(), isPrimaryDevice);
         //消息数,狗日的门铃的分享设备需要显示.

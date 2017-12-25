@@ -15,16 +15,19 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.EdgeEffect;
 import android.widget.OverScroller;
 
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -78,22 +81,35 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private int textTopMargin;
     private int textBottomMargin;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
-    private double fountHeight;
+    private double fontHeight;
+    private EdgeEffect mEdgeEffectLeft;
+    private EdgeEffect mEdgeEffectRight;
+    private boolean mOverScrollerMode = true;
 
-
-    @IntDef({SnapDirection.NONE, SnapDirection.LEFT, SnapDirection.RIGHT})
+    @IntDef({SnapDirection.MOVE_DIRECTION, SnapDirection.LEFT, SnapDirection.RIGHT, SnapDirection.AUTO})
     @Retention(RetentionPolicy.SOURCE)
     public @interface SnapDirection {
-        int NONE = -1;
+        int MOVE_DIRECTION = -1;
         int LEFT = 0;
         int RIGHT = 1;
         int AUTO = 2;
     }
 
     private int mSnapDirection = SnapDirection.RIGHT;
+    /**
+     * 用来标记控件内部是否可以动态改变 mSnapDirection,在 onScroll 或者 onFling 方法里会
+     * 读取这个字段,如果SnapDirection 没有被锁住,onScroll 或者 onFling 会根据手指滑动的
+     * 方向动态的改变 SnapDirection,否则将按照外部设定的 SnapDirection 进行吸附
+     */
+    private boolean mSnapDirectionLocked = false;
     private Calendar mCalendar = Calendar.getInstance();
     private long mZeroTime;
-    private TreeSet<HistoryFile> mHistoryFiles = new TreeSet<>();
+    private TreeSet<JFGVideo> mHistoryFiles = new TreeSet<>(new Comparator<JFGVideo>() {
+        @Override
+        public int compare(JFGVideo o1, JFGVideo o2) {
+            return (int) (o1.beginTime - o2.beginTime);
+        }
+    });
     private Runnable mUnlockRunnable = new Runnable() {
         @Override
         public void run() {
@@ -164,7 +180,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         lineWidth = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_line_width, dp2px(2.5f));
         shortLineHeight = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_short_line_height, dp2px(10));
         longLineHeight = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_long_line_height, dp2px(25));
-        scrollerLockTime = attributes.getInteger(R.styleable.HistoryWheelView_hw_scroller_lock_time, 5000);
+        scrollerLockTime = attributes.getInteger(R.styleable.HistoryWheelView_hw_scroller_lock_time, 10_000);//锁的时间够久以确保历史录像有足够的时间切换
         updateDelay = attributes.getInteger(R.styleable.HistoryWheelView_hw_history_update_delay, 700);
         textTopMargin = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_history_text_top_margin, dp2px(5));
         textBottomMargin = attributes.getDimensionPixelSize(R.styleable.HistoryWheelView_hw_history_text_bottom_margin, dp2px(5));
@@ -185,8 +201,10 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         naturalDateTextPaint.setTextSize(textSize);
         naturalDateTextPaint.setTextAlign(Paint.Align.CENTER);
         Paint.FontMetrics fm = naturalDateTextPaint.getFontMetrics();
-        fountHeight = Math.ceil(fm.descent - fm.ascent);
+        fontHeight = Math.ceil(fm.descent - fm.ascent);
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        mEdgeEffectLeft = new EdgeEffect(getContext());
+        mEdgeEffectRight = new EdgeEffect(getContext());
         attributes.recycle();
     }
 
@@ -227,17 +245,32 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         /*
          *当 distanceX 的距离小于 touchSlop 时,滑动没有效果,所有这里要积攒到最小到 touchSlop 才开始滑动
          */
-        if (Math.abs(mDistanceX) >= mTouchSlop) {
-            disableExternalScrollAction();
-            mHasPendingUpdateAction = true;
-            if (mSnapDirection != SnapDirection.NONE) {
-                mHasPendingSnapAction = true;
-            }
-            distanceX = mDistanceX;
-            mDistanceX = 0;
+        if (Math.abs(mDistanceX) < mTouchSlop) {
+            return true;
+        }
+
+        disableExternalScrollAction();
+        mHasPendingUpdateAction = true;
+        if (mSnapDirection == SnapDirection.MOVE_DIRECTION || !mSnapDirectionLocked) {
+            mHasPendingSnapAction = true;
+        }
+        distanceX = mDistanceX;
+        if (!mSnapDirectionLocked) {
+            mSnapDirection = distanceX >= 0 ? SnapDirection.RIGHT : SnapDirection.LEFT;
+        }
+        mDistanceX = 0;
+
+        if (mOverScrollerMode) {
+            float exceptX = mScroller.getCurrX() + distanceX;
+            float finalX = distanceX > 0 ? Math.min(getMaxScrollX(), exceptX) : Math.max(getMinScrollX(), exceptX);
+            distanceX = finalX - mScroller.getCurrX();
+        }
+
+        if (distanceX != 0) {
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distanceX, 0);
             invalidate();
         }
+
         return true;
     }
 
@@ -250,12 +283,40 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         disableExternalScrollAction();
         mHasPendingUpdateAction = true;
-        if (mSnapDirection != SnapDirection.NONE) {
+        if (mSnapDirection == SnapDirection.MOVE_DIRECTION || !mSnapDirectionLocked) {
             mHasPendingSnapAction = true;
         }
-        mScroller.fling(mScroller.getCurrX(), 0, (int) -velocityX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
+        if (!mSnapDirectionLocked) {
+            mSnapDirection = velocityX <= 0 ? SnapDirection.RIGHT : SnapDirection.LEFT;
+        }
+        int minX = Integer.MIN_VALUE;
+        int maxX = Integer.MAX_VALUE;
+        if (mOverScrollerMode) {
+            minX = getMinScrollX();
+            maxX = getMaxScrollX();
+        }
+        mScroller.fling(mScroller.getCurrX(), 0, (int) -velocityX, 0, minX, maxX, 0, 0);
         invalidate();
         return true;
+    }
+
+    private int getMinScrollX() {
+        long minTime = mZeroTime;
+        if (mHistoryFiles.size() > 0) {
+            JFGVideo first = mHistoryFiles.first();
+            minTime = first.beginTime * getUnitTime();
+        }
+        return (int) (getDistanceByTime(minTime, mZeroTime) - mCenterPosition);
+    }
+
+    private int getMaxScrollX() {
+        long emptyMaxTime = mZeroTime + getPixelTime() * getMeasuredWidth();
+        long maxTime = emptyMaxTime;
+        if (mHistoryFiles.size() > 0) {
+            JFGVideo last = mHistoryFiles.last();
+            maxTime = (last.beginTime + last.duration) * getUnitTime();
+        }
+        return (int) (getDistanceByTime(maxTime, emptyMaxTime) + (getMeasuredWidth() - mCenterPosition));
     }
 
     @Override
@@ -275,10 +336,10 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private void disableExternalScrollAction() {
         this.mLocked = true;
         removeCallbacks(mUnlockRunnable);
-        removeCallbacks(mNotifyRunnable);
     }
 
     private void enableExternalScrollAction() {
+        removeCallbacks(mUnlockRunnable);
         postDelayed(mUnlockRunnable, scrollerLockTime);
     }
 
@@ -293,6 +354,12 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             }
             scrollToPositionInternal(time);
         }
+    }
+
+    public void snapScrollToPosition(long time, boolean locked) {
+        long currentTime = getCurrentTime();
+        time += getSnapDistanceX(time, time >= currentTime ? SnapDirection.RIGHT : SnapDirection.LEFT);
+        scrollToPosition(time, locked);
     }
 
     private void scrollToPositionInternal(long time) {
@@ -310,23 +377,22 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         }
 
         if (distance != 0) {
+            removeCallbacks(mNotifyRunnable);
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
             invalidate();
         }
     }
 
-    private HistoryFile mSnapHistoryBlock = new HistoryFile();
+    private JFGVideo mSnapHistoryBlock = new JFGVideo("", 0, 0);
 
-    private void notifySnapAction() {
-        mHasPendingSnapAction = false;
-        if (mHistoryFiles.size() == 0 || mSnapDirection == SnapDirection.NONE) {
-            return;
+    private long getSnapDistanceX(long start, int snapDirection) {
+        if (mHistoryFiles.size() == 0) {
+            return 0;
         }
-        long currentTime = getCurrentTime();
         long unitTime = getUnitTime();
-        mSnapHistoryBlock.time = currentTime / unitTime;
-        HistoryFile floor = mHistoryFiles.floor(mSnapHistoryBlock);
-        HistoryFile ceiling = mHistoryFiles.ceiling(mSnapHistoryBlock);
+        mSnapHistoryBlock.beginTime = start / unitTime;
+        JFGVideo floor = mHistoryFiles.floor(mSnapHistoryBlock);
+        JFGVideo ceiling = mHistoryFiles.ceiling(mSnapHistoryBlock);
         if (floor == null) {
             floor = mHistoryFiles.first();
         }
@@ -335,33 +401,38 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         }
 
         //判断当前是否需要做吸附操作,如果当前在数据区,则不需要做吸附操作了
-        boolean inFloor = mSnapHistoryBlock.time >= floor.time && mSnapHistoryBlock.time <= floor.time + floor.duration;
-        boolean inCeiling = mSnapHistoryBlock.time >= ceiling.time && mSnapHistoryBlock.time <= ceiling.time + ceiling.duration;
+        boolean inFloor = mSnapHistoryBlock.beginTime >= floor.beginTime && mSnapHistoryBlock.beginTime <= floor.beginTime + floor.duration;
+        boolean inCeiling = mSnapHistoryBlock.beginTime >= ceiling.beginTime && mSnapHistoryBlock.beginTime <= ceiling.beginTime + ceiling.duration;
         if (inFloor || inCeiling) {
-            notifyUpdate();
-            return;
+            return 0;
         }
-        long target = currentTime;
+        long distance = start;
 
         //在边界处是没有吸附规则的自动吸附到第一个或最后一个的开始处
-        if (mSnapHistoryBlock.time < floor.time) {//处理左边界的情况
-            target = floor.time * unitTime;
-        } else if (mSnapHistoryBlock.time > ceiling.time * ceiling.duration) {//处理右边界的情况
-            target = ceiling.time * unitTime;
-        } else if (mSnapDirection == SnapDirection.LEFT) {//处理左吸附的情况
-            target = (floor.time + floor.duration) * unitTime;
-        } else if (mSnapDirection == SnapDirection.RIGHT) {//处理右吸附的情况
-            target = ceiling.time * unitTime;
-        } else if (mSnapDirection == SnapDirection.AUTO) {//处理最短吸附的情况
-            long distanceF = mSnapHistoryBlock.time - (floor.time + floor.duration);
-            long distanceC = mSnapHistoryBlock.time - ceiling.time;
-            target = currentTime - (Math.abs(distanceC) < Math.abs(distanceF) ? distanceC : distanceF) * unitTime;
+        if (mSnapHistoryBlock.beginTime < floor.beginTime) {//处理左边界的情况
+            distance = (mSnapHistoryBlock.beginTime - floor.beginTime) * unitTime;
+        } else if (mSnapHistoryBlock.beginTime > ceiling.beginTime * ceiling.duration) {//处理右边界的情况
+            distance = (mSnapHistoryBlock.beginTime - ceiling.beginTime) * unitTime;
+        } else if (snapDirection == SnapDirection.LEFT) {//处理左吸附的情况
+            distance = (mSnapHistoryBlock.beginTime - (floor.beginTime + floor.duration)) * unitTime;
+        } else if (snapDirection == SnapDirection.RIGHT) {//处理右吸附的情况
+            distance = (mSnapHistoryBlock.beginTime - ceiling.beginTime) * unitTime;
+        } else if (snapDirection == SnapDirection.AUTO) {//处理最短吸附的情况
+            long distanceF = mSnapHistoryBlock.beginTime - (floor.beginTime + floor.duration);
+            long distanceC = mSnapHistoryBlock.beginTime - ceiling.beginTime;
+            distance = start - (Math.abs(distanceC) < Math.abs(distanceF) ? distanceC : distanceF) * unitTime;
         }
+        return distance;
+    }
 
-        if (target != currentTime) {
-            scrollToPositionInternal(target);
-        } else {
+    private void notifySnapAction() {
+        mHasPendingSnapAction = false;
+        long currentTime = getCurrentTime();
+        long distanceX = getSnapDistanceX(currentTime, mSnapDirection);
+        if (distanceX == 0) {
             notifyUpdate();
+        } else {
+            scrollToPositionInternal(currentTime - distanceX);
         }
     }
 
@@ -388,10 +459,14 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         drawBackground(canvas);
         drawTimeText(canvas);
         drawDivider(canvas);
+        if (mOverScrollerMode) {
+            drawEdgeEffect(canvas);
+        }
     }
 
-    private HistoryFile mStartHistoryBlock = new HistoryFile();
-    private HistoryFile mStopHistoryBlock = new HistoryFile();
+
+    private JFGVideo mStartHistoryBlock = new JFGVideo("", 0, 0);
+    private JFGVideo mStopHistoryBlock = new JFGVideo("", 0, 0);
 
     private long getPixelTime() {
         return (long) (10 * 60 * 1000F / lineInterval);
@@ -404,21 +479,21 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         int startX = mScroller.getCurrX() - getMeasuredWidth() / 2;
         int stopX = startX + getMeasuredWidth() * 2;
         long unitTime = getUnitTime();
-        mStartHistoryBlock.time = (startX * getPixelTime() + mZeroTime) / unitTime;
-        mStopHistoryBlock.time = (stopX * getPixelTime() + mZeroTime) / unitTime;
-        HistoryFile start = mHistoryFiles.floor(mStartHistoryBlock);
+        mStartHistoryBlock.beginTime = (startX * getPixelTime() + mZeroTime) / unitTime;
+        mStopHistoryBlock.beginTime = (stopX * getPixelTime() + mZeroTime) / unitTime;
+        JFGVideo start = mHistoryFiles.floor(mStartHistoryBlock);
         if (start == null) {
             start = mHistoryFiles.first();
         }
-        HistoryFile stop = mHistoryFiles.ceiling(mStopHistoryBlock);
+        JFGVideo stop = mHistoryFiles.ceiling(mStopHistoryBlock);
         if (stop == null) {
             stop = mHistoryFiles.last();
         }
-        SortedSet<HistoryFile> historyFiles = mHistoryFiles.subSet(start, true, stop, true);
-        for (HistoryFile file : historyFiles) {
-            long distanceX1 = getDistanceByTime(file.time * unitTime, mZeroTime);
-            long distanceX2 = getDistanceByTime((file.time + file.duration) * unitTime, mZeroTime);
-            canvas.drawRect(distanceX1, 0, distanceX2, getMeasuredHeight(), dataMaskPaint);
+        SortedSet<JFGVideo> historyFiles = mHistoryFiles.subSet(start, true, stop, true);
+        for (JFGVideo file : historyFiles) {
+            long distanceX1 = getDistanceByTime(file.beginTime * unitTime, mZeroTime);
+            long distanceX2 = getDistanceByTime((file.beginTime + file.duration) * unitTime, mZeroTime);
+            canvas.drawRect(distanceX1, 0, Math.max(distanceX1 + 1, distanceX2)/*最少要画一个像素,否则还以为没有数据*/, getMeasuredHeight(), dataMaskPaint);
         }
     }
 
@@ -441,6 +516,11 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         }
     }
 
+    private void drawEdgeEffect(Canvas canvas) {
+        EdgeEffect edgeEffect = new EdgeEffect(getContext());
+        edgeEffect.draw(canvas);
+    }
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     private long getUnitTime() {
@@ -458,7 +538,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             if (startX % (lineInterval * 6) == 0) {
                 long distanceTime = startX * getPixelTime();
                 int exceptY = longLineHeight + textTopMargin;
-                int maxY = (int) (getMeasuredHeight() - textBottomMargin - fountHeight);
+                int maxY = (int) (getMeasuredHeight() - textBottomMargin - fontHeight);
                 canvas.drawText(dateFormat.format(mZeroTime + distanceTime), startX, Math.max(exceptY, maxY), naturalDateTextPaint);
             }
             startX += lineInterval;
@@ -478,15 +558,16 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
     public void setSnapDirection(@SnapDirection int snapDirection) {
         this.mSnapDirection = snapDirection;
+        this.mSnapDirectionLocked = snapDirection != SnapDirection.MOVE_DIRECTION;
     }
 
-    public void setHistoryFiles(List<HistoryFile> historyFiles) {
+    public void setHistoryFiles(Collection<JFGVideo> historyFiles) {
         mHistoryFiles.clear();
         mHistoryFiles.addAll(historyFiles);
         postInvalidate();
     }
 
-    public void addHistoryFiles(List<HistoryFile> historyFiles) {
+    public void addHistoryFiles(List<JFGVideo> historyFiles) {
         mHistoryFiles.addAll(historyFiles);
         postInvalidate();
     }
