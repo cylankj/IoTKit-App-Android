@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.module;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.Collection;
@@ -40,6 +38,7 @@ public class HistoryManager {
         }
         return instance;
     }
+
 
     public interface HistoryObserver {
         void onHistoryChanged(Collection<JFGVideo> history);
@@ -97,22 +96,13 @@ public class HistoryManager {
     }
 
     public void cacheHistory(byte[] bytes) {
-        DpMsgDefine.UniversalDataBaseRsp rsp = DpUtils.unpackDataWithoutThrow(bytes,
-                DpMsgDefine.UniversalDataBaseRsp.class, null);
-        if (rsp != null) {
-            if (rsp.way == 1) {
-                //日期参数回来,有些设备坑了，一次只能返回两天。所以只能动态加载了。
-//                fillListInDate(rsp.caller, rsp.dataMap);
-            } else {
-                //按照分钟的查询回来
-//                parseBit(rsp.caller, rsp.dataMap);
-            }
-        }
+        HistoryV2Manager.getInstance().cacheHistory(bytes);
     }
 
     public void fetchHistoryV1(String uuid) {
         try {
             Command.getInstance().getVideoList(uuid);
+//            Command.getInstance().getVideoListV2(uuid, (int) (System.currentTimeMillis() / 1000), 1, 365);
         } catch (JfgException e) {
             e.printStackTrace();
             AppLogger.e(e);
@@ -120,12 +110,48 @@ public class HistoryManager {
     }
 
     public void fetchHistoryV2(String uuid, int beginTime, int way, int num) {
-        try {
-            Command.getInstance().getVideoListV2(uuid, beginTime, way, num);
-        } catch (JfgException e) {
-            e.printStackTrace();
-            AppLogger.e(e);
+        fetchHistoryV1(uuid);
+//        HistoryV2Manager.getInstance().fetchHistoryV2(uuid, beginTime, way, num);
+    }
+
+    private static class HistoryV2Manager {
+
+        private static class PendingQueryAction {
+            public String uuid;
+            public int beginTime;
+            public int way;
+            public int num;
         }
+
+        private static HistoryV2Manager instance;
+        private TreeSet<PendingQueryAction> pendingQueryActions = new TreeSet<>();
+
+        public static HistoryV2Manager getInstance() {
+            if (instance == null) {
+                synchronized (HistoryV2Manager.class) {
+                    if (instance == null) {
+                        instance = new HistoryV2Manager();
+                    }
+                }
+            }
+            return instance;
+        }
+
+        void fetchHistoryV2(String uuid, int beginTime, int way, int num) {
+            try {
+                Command.getInstance().getVideoListV2(uuid, beginTime, way, num);
+//                pendingQueryActions.
+            } catch (JfgException e) {
+                e.printStackTrace();
+                AppLogger.e(e);
+            }
+        }
+
+
+        void cacheHistory(byte[] bytes) {
+
+        }
+
     }
 
 }

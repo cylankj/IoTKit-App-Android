@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -55,19 +54,10 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
-        Observable.just(login)
-                .subscribeOn(Schedulers.io())
-                .map(o -> {
-                    try {
-                        AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd, true);
-                        AutoSignIn.getInstance().autoLogin();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return o;
-                })
-                .subscribe(ret -> {
-                }, AppLogger::e);
+        LoginHelper.saveUser(login.userName, login.pwd, 1);
+        LoginHelper.performAutoLogin().subscribe(ret -> {
+        }, error -> {
+        });
     }
 
     @Override

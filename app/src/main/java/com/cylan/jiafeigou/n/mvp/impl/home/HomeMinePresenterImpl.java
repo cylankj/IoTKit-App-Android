@@ -7,10 +7,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
@@ -19,9 +19,7 @@ import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.Random;
@@ -45,8 +43,8 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void start() {
         super.start();
-        addSubscription(getAccountBack(),"HomeMinePresenterImpl.getAccountBack");
-        addSubscription(loginInMe(),"HomeMinePresenterImpl.loginInMe");
+        addSubscription(getAccountBack(), "HomeMinePresenterImpl.getAccountBack");
+        addSubscription(loginInMe(), "HomeMinePresenterImpl.loginInMe");
     }
 
     @Override
@@ -131,9 +129,8 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(Schedulers.io())
                 .map(accountArrived -> {
-                    AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
                     AppLogger.w("监听到用户信息回调!");
-                    isOpenLogin = signType != null && signType.type >= 3;
+                    isOpenLogin = LoginHelper.getLoginType() >= 3;
                     if (isOpenLogin) {
                         String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
                         if (!TextUtils.isEmpty(photoUrl)) {//设置第三方登录图像
@@ -188,7 +185,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                                 }
                             }
                         } catch (Exception e) {
-                          e.printStackTrace();
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -197,33 +194,14 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
 
     @Override
     public void loginType() {
-        Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .flatMap(o -> {
-                    try {
-                        String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                        if (TextUtils.isEmpty(aesAccount)) {
-                            AppLogger.d("reShowAccount:aes account is null");
-                            return Observable.just(null);
-                        }
-                        String decryption = AESUtil.decrypt(aesAccount);
-                        AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
-                        return Observable.just(signType.type);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return Observable.just(1);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(i -> {
-                    if (getView() != null) {
-                        if (i == 3 || i == 4) {
-                            getView().jump2SetPhoneFragment();
-                        } else if (i == 6 || i == 7) {
-                            getView().jump2BindMailFragment();
-                        }
-                    }
-                }, AppLogger::e);
+        int loginType = LoginHelper.getLoginType();
+        if (getView() != null) {
+            if (loginType == 3 || loginType == 4) {
+                getView().jump2SetPhoneFragment();
+            } else if (loginType == 6 || loginType == 7) {
+                getView().jump2BindMailFragment();
+            }
+        }
     }
 
     public Subscription loginInMe() {

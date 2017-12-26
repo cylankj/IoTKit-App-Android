@@ -520,7 +520,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         btnLoadHistory.setEnabled(false);
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
-        presenter.fetchHistoryDataListV2(uuid, (int) TimeUtils.getTodayEndTime() / 1000, 0, 3);
+        presenter.fetchHistoryDataListV2(uuid, (int) (TimeUtils.getTodayEndTime() / 1000), 1, 3);
     }
 
     @Override
