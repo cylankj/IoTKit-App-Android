@@ -901,8 +901,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     };
 
     public boolean isActionBarHide() {
-        return layoutA.getAlpha() == 0 || !layoutA.isShown()
-                || layoutD.getAlpha() == 0 || !layoutD.isShown();
+        return layoutA.getAlpha() == 0 || layoutD.getAlpha() == 0;
     }
 
     private Runnable landHideRunnable = new Runnable() {
