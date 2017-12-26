@@ -39,7 +39,7 @@ public interface CamLiveContract {
 
         boolean judge();
 
-        void onRtcp(JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp);
+        void onRtcp(JFGMsgVideoRtcp rtcp);
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 

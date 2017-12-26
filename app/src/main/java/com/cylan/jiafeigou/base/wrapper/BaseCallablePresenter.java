@@ -1,18 +1,15 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.GlideApp;
-import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -124,7 +121,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscribe = load(BellPuller.getInstance().getUrl(uuid))
+        Log.d("AAAAA", "url is:"+url);
+        Subscription subscribe = load(url)
                 .subscribe(ret -> {
                 }, AppLogger::e);
         addDestroySubscription(subscribe);
@@ -155,24 +153,19 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     private void preload(String url) {
         if (mView != null && url != null) {
+            Log.d("AAAAA", "preload:" + url);
             GlideApp.with(mView.activity())
                     .asBitmap()
+                    .load(url)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .listener(new RequestListener<Bitmap>() {
+                    .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                             RxBus.getCacheInstance().post(new Notify(true));
                             // TODO: 2017/8/29 门铃截图也需要保存起来
                             saveBitmap(resource);
-                            return false;
                         }
-                    })
-                    .submit();
+                    });
         }
     }
 

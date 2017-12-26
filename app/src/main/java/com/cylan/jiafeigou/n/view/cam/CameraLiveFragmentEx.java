@@ -58,7 +58,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -90,11 +89,15 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
  */
 @RuntimePermissions()
 public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presenter>
-        implements CamLiveContract.View {
+        implements CamLiveContract.View, CameraMessageSender.MessageObserver {
 
     public Rect mLiveViewRectInWindow = new Rect();
+    @Deprecated//需要拆分 CamLiveControllerEx 里的 逻辑,太多太杂了
     @BindView(R.id.cam_live_control_layer)
     CamLiveControllerEx camLiveControlLayer;
+    private CameraLiveViewModel cameraLiveViewModel = new CameraLiveViewModel();
+    private CameraMenuViewModel cameraMenuViewModel = new CameraMenuViewModel();
+    private CameraMessageSender cameraMessageSender = new CameraMessageSender();
     private boolean isNormalView;
     private MyEventListener eventListener;
 
@@ -108,11 +111,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         return fragment;
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         presenter = new CamLivePresenterImpl(this);
+        cameraMessageSender.observeMessages(this);
+        cameraLiveViewModel.attachMessageSender(cameraMessageSender);
+        cameraMenuViewModel.attachMessageSender(cameraMessageSender);
     }
 
     @Override
@@ -626,6 +631,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //        }
         return true;
     }
+
     @Override
     public void onLiveStop(int playType, int errId) {
         enableSensor(false);
@@ -703,9 +709,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onRtcp(JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp) {
+    public void onRtcp(JFGMsgVideoRtcp rtcp) {
         AppLogger.d("onRtcp: " + new Gson().toJson(rtcp));
-        camLiveControlLayer.onRtcpCallback(presenter.getPlayType(), rtcp, false);
+        camLiveControlLayer.onRtcpCallback(presenter.getPlayType(), rtcp);
     }
 
     @Override
@@ -891,6 +897,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             removeVideoView();
             return false;
         }
+    }
+
+    @Override
+    public void onReceiveMessage(CameraMessageSender.Message message) {
+
     }
 
 

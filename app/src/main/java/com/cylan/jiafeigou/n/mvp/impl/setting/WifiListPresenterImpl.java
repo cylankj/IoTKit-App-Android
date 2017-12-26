@@ -53,11 +53,6 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
     }
 
     @Override
-    protected Subscription[] register() {
-        return super.register();
-    }
-
-    @Override
     public void startScan() {
         Subscription subscription = Observable.just("scan")
                 .subscribeOn(Schedulers.io())

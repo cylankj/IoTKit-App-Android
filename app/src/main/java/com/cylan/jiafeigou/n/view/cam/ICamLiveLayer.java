@@ -55,7 +55,7 @@ public interface ICamLiveLayer {
 
     void orientationChanged(CamLiveContract.Presenter presenter, Device device, int orientation);
 
-    void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp);
+    void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp);
 
     void onResolutionRsp(JFGMsgVideoResolution resolution);
 
@@ -98,6 +98,7 @@ public interface ICamLiveLayer {
     void resumeGoodFrame();
 
     void startBadFrame();
+
     void updateLiveRect(Rect rect);
 
     /**

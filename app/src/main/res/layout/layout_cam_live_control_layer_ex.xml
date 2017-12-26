@@ -474,9 +474,4 @@
             android:textSize="@dimen/sp12" />
     </com.cylan.jiafeigou.widget.Switcher>
 
-
-    <!--<include-->
-    <!--layout="@layout/view_camera_wheel_case"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent" />-->
 </com.cylan.jiafeigou.n.view.cam.CamLiveControllerEx>

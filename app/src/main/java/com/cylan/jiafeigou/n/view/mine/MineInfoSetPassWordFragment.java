@@ -13,12 +13,12 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -192,7 +192,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
-            LoginHelper.saveUser(DataSourceManager.getInstance().getAccount().getAccount(), getNewPassword(), 1);
+            LoginHelper.saveUser(DataSourceManager.getInstance().getAccount().getAccount(), MD5Util.lowerCaseMD5(getNewPassword()), 1);
             LoginHelper.performAutoLogin().subscribe(ret -> {
             }, error -> {
             });

@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ContextUtils
-import com.cylan.jiafeigou.utils.MD5Util
 import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import rx.Observable
@@ -65,7 +64,7 @@ object LoginHelper {
         }
 
         PreferencesUtils.putString(JConstant.KEY_PHONE, username)
-        PreferencesUtils.putString(JConstant.KEY_PSW, MD5Util.lowerCaseMD5(password))
+        PreferencesUtils.putString(JConstant.KEY_PSW, password)
         PreferencesUtils.putInt(JConstant.KEY_SIGN_TYPE, signType)
     }
 
@@ -189,6 +188,11 @@ object LoginHelper {
         clearPassword()
         Command.getInstance().logout()
         DataSourceManager.getInstance().logout()
+    }
+
+    @JvmStatic
+    fun isOpenLogin(): Boolean {
+        return loginType >= 3
     }
 
 }

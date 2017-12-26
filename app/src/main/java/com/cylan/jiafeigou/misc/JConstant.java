@@ -154,7 +154,6 @@ public class JConstant {
 
     public static final String KEY_DEVICE_ITEM_UUID = "key_device_uuid";
     public static final String KEY_DEVICE_TIME_ZONE = "key_device_time_zone";
-    public static final java.lang.String SHOW_PASSWORD_CHANGED = "SHOW_PASSWORD_CHANGED";
 
     /**
      * 有区别于直接绑定

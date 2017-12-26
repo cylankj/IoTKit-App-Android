@@ -1,13 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import android.graphics.drawable.Drawable;
-import android.support.annotation.UiThread;
-
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-
-import rx.Subscription;
 
 /**
  * Created by hunt on 16-5-23.
@@ -63,8 +58,6 @@ public interface HomeMineContract {
          * 获取到未读的消息数
          */
         void fetchNewInfo();
-
-        Subscription getAccountBack();
 
         void loginType();
 

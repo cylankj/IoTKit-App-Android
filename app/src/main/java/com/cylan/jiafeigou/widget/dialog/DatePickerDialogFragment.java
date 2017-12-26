@@ -202,6 +202,7 @@ public class DatePickerDialogFragment extends BaseDialog {
                 mCalendar.setTimeInMillis(startTime);
                 mCalendar.set(Calendar.HOUR_OF_DAY, 0);
                 mCalendar.set(Calendar.MINUTE, 0);
+                mCalendar.set(Calendar.SECOND, 1);
                 mCalendar.roll(Calendar.DAY_OF_YEAR, wheelDatePick.getCurrentItem());
                 mCalendar.roll(Calendar.HOUR_OF_DAY, wheelHour.getCurrentItem());
                 mCalendar.roll(Calendar.MINUTE, wheelMinute.getCurrentItem());

@@ -8,8 +8,6 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 import java.io.IOException;
 
-import rx.Subscription;
-
 /**
  * Created by cylan-hunt on 16-11-25.
  */
@@ -41,16 +39,7 @@ public interface CamInfoContract {
          */
         void clearSdcard();
 
-        /**
-         * 发送清空Sd卡请求的回调
-         *
-         * @return
-         */
-        Subscription clearSdcardReqBack();
-
-
         void updateAlias(Device device);
 
-        Subscription onClearSdReqBack();
     }
 }

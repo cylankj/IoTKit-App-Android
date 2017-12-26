@@ -125,7 +125,6 @@ import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
 public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer,
         View.OnClickListener, HistoryManager.HistoryObserver {
-    private static final long DAMP_DISTANCE = 2000L;
     @BindView(R.id.imgV_cam_live_land_nav_back)
     TextView imgVCamLiveLandNavBack;
     @BindView(R.id.imgV_land_cam_switch_speaker)
@@ -238,7 +237,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * 设备的时区
      */
     private SimpleDateFormat liveTimeDateFormat;
-    //    private VideoViewFactory.IVideoView videoView;
     private Device device;
     private YoYo.YoYoString landAnimationLayoutA;
     private YoYo.YoYoString landAnimationLayoutD;
@@ -443,6 +441,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .first()
                 .subscribe(status -> {
 
                     if (status == null) {
@@ -478,39 +477,32 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         presenter.startPlay();
     }
 
+    private volatile boolean hasPendingHistoryPlayAction = false;
+
     public void onHistoryReady(Collection<JFGVideo> history) {
-        if (vsLayoutWheel.getCurrentView() instanceof ViewGroup) {
-            vsLayoutWheel.showNext();
-            livePlayState = PLAY_STATE_STOP;
-            setLoadingState(PLAY_STATE_STOP, null);
-            tvLive.setVisibility(VISIBLE);
-            vFlag.setVisibility(VISIBLE);
-            AppLogger.d("需要展示 遮罩");
-        }
+        vsLayoutWheel.setDisplayedChild(1);
+        tvLive.setVisibility(VISIBLE);
+        vFlag.setVisibility(VISIBLE);
         showHistoryWheel(true);
-        reInitHistoryHandler(presenter);
+        reInitHistoryHandler();
         superWheelExt.setHistoryFiles(history);
-        historyWheelHandler.setDatePickerListener((time, state) -> {
-            //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
-            switch (state) {
-                case STATE_FINISH: {
-                    setLiveRectTime(TYPE_HISTORY, time);
-                }
-                break;
-                default: {
-                    setLiveTimeContent(TYPE_HISTORY, time);
-                }
-            }
-        });
         tvCamLiveLandBottom.setVisibility(VISIBLE);
-        try {
-            JFGVideo jfgVideo = HistoryManager.getInstance().getMinHistory(uuid);
-            if (jfgVideo != null) {
-                setLiveRectTime(TYPE_HISTORY, jfgVideo.beginTime);
-                presenter.startPlayHistory(jfgVideo.beginTime * 1000L);
+        if (hasPendingHistoryPlayAction) {
+            synchronized (this) {
+                if (hasPendingHistoryPlayAction) {
+                    hasPendingHistoryPlayAction = false;
+                    try {
+                        JFGVideo jfgVideo = HistoryManager.getInstance().getMinHistory(uuid);
+                        if (jfgVideo != null) {
+                            Log.d("RePlay", "Replay history");
+                            setLiveRectTime(TYPE_HISTORY, jfgVideo.beginTime, true);
+                            presenter.startPlayHistory(jfgVideo.beginTime * 1000L);
+                        }
+                    } catch (Throwable throwable) {
+                        AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                    }
+                }
             }
-        } catch (Throwable throwable) {
-            AppLogger.e("err:" + MiscUtils.getErr(throwable));
         }
         Log.d("onHistoryReady", "onHistoryReady:" + new Gson().toJson(history));
     }
@@ -520,6 +512,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         btnLoadHistory.setEnabled(false);
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
+        hasPendingHistoryPlayAction = true;
         presenter.fetchHistoryDataListV2(uuid, (int) (TimeUtils.getTodayEndTime() / 1000), 1, 3);
     }
 
@@ -642,6 +635,41 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         AppLogger.w("需要重置清晰度");
 
         HistoryManager.getInstance().addHistoryObserver(uuid, this);
+
+        //点击事件
+        if (liveTimeRectListener == null) {
+            liveTimeRectListener = v -> {
+                int net = NetUtils.getJfgNetType();
+                if (net == 0) {
+                    ToastUtil.showNegativeToast(getContext().getString(R.string.NoNetworkTips));
+                    return;
+                }
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
+                if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+                    ToastUtil.showNegativeToast(getContext().getString(R.string.OFFLINE_ERR));
+                    return;
+                }
+                DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+
+                if (status.hasSdcard && status.err != 0) {
+                    ToastUtil.showNegativeToast(getContext().getString(R.string.VIDEO_SD_DESC));
+                    return;
+                }
+                if (!status.hasSdcard || status.err != 0) {
+                    ToastUtil.showToast(getContext().getString(R.string.NO_SDCARD));
+                    return;
+                }
+                if (historyWheelHandler == null || presenter.isHistoryEmpty()) {
+                    ToastUtil.showToast(getResources().getString(R.string.History_video_Firstly));
+                    return;
+                }
+                if (historyWheelHandler != null) {
+                    ViewUtils.deBounceClick(v);
+                    historyWheelHandler.showDatePicker(MiscUtils.isLand());
+                }
+            };
+            (liveTimeLayout).setOnClickListener(liveTimeRectListener);
+        }
     }
 
     public void updateDoorLock() {
@@ -672,8 +700,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-    public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
-        reInitHistoryHandler(presenter);
+    public HistoryWheelHandler getHistoryWheelHandler() {
+        reInitHistoryHandler();
         return historyWheelHandler;
     }
 
@@ -1435,7 +1463,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp) {
+    public void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp) {
         livePlayState = PLAY_STATE_PLAYING;
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
@@ -1446,47 +1474,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         //分享账号不显示啊.
 //        if (JFGRules.isShareDevice(uuid)) return;
-        historyWheelHandler = getHistoryWheelHandler(presenter);
-        if ((livePlayType == TYPE_LIVE || !ignoreTimeStamp)) {
-            setLiveRectTime(livePlayType, rtcp.timestamp);
-        }
-        //点击事件
-        if (liveTimeRectListener == null) {
-            liveTimeRectListener = v -> {
-                int net = NetUtils.getJfgNetType();
-                if (net == 0) {
-                    ToastUtil.showNegativeToast(getContext().getString(R.string.NoNetworkTips));
-                    return;
-                }
-                Device device = DataSourceManager.getInstance().getDevice(uuid);
-                if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-                    ToastUtil.showNegativeToast(getContext().getString(R.string.OFFLINE_ERR));
-                    return;
-                }
-                DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+        historyWheelHandler = getHistoryWheelHandler();
+        setLiveRectTime(livePlayType, rtcp.timestamp, false);
 
-                if (status.hasSdcard && status.err != 0) {
-                    ToastUtil.showNegativeToast(getContext().getString(R.string.VIDEO_SD_DESC));
-                    return;
-                }
-                if (!status.hasSdcard || status.err != 0) {
-                    ToastUtil.showToast(getContext().getString(R.string.NO_SDCARD));
-                    return;
-                }
-                if (historyWheelHandler == null || presenter.isHistoryEmpty()) {
-                    ToastUtil.showToast(getResources().getString(R.string.History_video_Firstly));
-                    return;
-                }
-                if (historyWheelHandler != null) {
-                    ViewUtils.deBounceClick(v);
-                    historyWheelHandler.showDatePicker(MiscUtils.isLand());
-                }
-            };
-            (liveTimeLayout).setOnClickListener(liveTimeRectListener);
-        }
     }
 
-    private void setLiveRectTime(int type, long timestamp) {
+    private void setLiveRectTime(int type, long timestamp, boolean focus) {
         //历史视频的时候，使用rtcp自带时间戳。
         if (livePlayType == TYPE_HISTORY && timestamp == 0) {
             return;
@@ -1494,12 +1487,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //直播时候，使用本地时间戳。
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
-        historyWheelHandler = getHistoryWheelHandler(presenter);
-        if (!historyWheelHandler.isHistoryLocked()) {
+        historyWheelHandler = getHistoryWheelHandler();
+        if (!historyWheelHandler.isHistoryLocked() || focus) {
             setLiveTimeContent(type, timestamp);
-            if (type == TYPE_HISTORY && presenter != null && presenter.getPlayState() == PLAY_STATE_PLAYING) {
+            if (type == TYPE_HISTORY) {
                 Log.d("TYPE_HISTORY time", "time: " + timestamp);
-                historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp), false);
+                superWheelExt.scrollToPosition(TimeUtils.wrapToLong(timestamp), focus, focus);
             }
         }
     }
@@ -1559,30 +1552,22 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         return liveViewWithThumbnail;
     }
 
-//    @Override
-//    public void onHistoryDataRsp(CamLiveContract.Presenter presenter) {
-//        showHistoryWheel(true);
-//        reInitHistoryHandler(presenter);
-//        Log.d("onHistoryDataRsp", "onHistoryDataRsp");
-//        historyWheelHandler.dateUpdate();
-//        historyWheelHandler.setDatePickerListener((time, state) -> {
-//            //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
-//            switch (state) {
-//                case STATE_FINISH: {
-//                    setLiveRectTime(TYPE_HISTORY, time);
-//                }
-//                break;
-//                default: {
-//                    setLiveTimeContent(TYPE_HISTORY, time);
-//                }
-//            }
-//        });
-//        tvCamLiveLandBottom.setVisibility(VISIBLE);
-//    }
-
-    private void reInitHistoryHandler(CamLiveContract.Presenter presenter) {
+    private void reInitHistoryHandler() {
         if (historyWheelHandler == null) {
-            historyWheelHandler = new HistoryWheelHandler(superWheelExt, presenter);
+            historyWheelHandler = new HistoryWheelHandler(superWheelExt, uuid);
+            historyWheelHandler.setDatePickerListener((time, state) -> {
+                //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+                switch (state) {
+                    case STATE_FINISH: {
+                        setLiveRectTime(TYPE_HISTORY, time, true);
+                        presenter.startPlayHistory(time);
+                    }
+                    break;
+                    default: {
+                        setLiveTimeContent(TYPE_HISTORY, time);
+                    }
+                }
+            });
         }
     }
 
@@ -1941,8 +1926,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     //防止不可见时被点击到控件
                     return;
                 }
-//                post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
-//                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+
                 if (orientationHandle != null) {
                     orientationHandle.setRequestOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
                 }
@@ -2013,13 +1997,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     public void showPlayHistoryButton() {
-        /**
-         * newdoby（1.0.0.457） 已经获取历史视频 当sd卡拔出，客户端点击弹窗中确定后，历史时间轴应消失，同时显示“历史录像”按钮
-         * */
-
-        if (historyWheelHandler != null) {
-            historyWheelHandler.dateUpdate();
-        }
         vsLayoutWheel.setVisibility(VISIBLE);
         layoutE.setVisibility(VISIBLE);
         if (vsLayoutWheel.getDisplayedChild() == 1) {

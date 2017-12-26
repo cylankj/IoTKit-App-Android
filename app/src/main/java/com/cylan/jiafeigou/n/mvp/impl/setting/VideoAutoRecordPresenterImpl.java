@@ -36,8 +36,9 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{monitorDeviceSyncRsp()};
+    public void start() {
+        super.start();
+        monitorDeviceSyncRsp();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                       DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -55,8 +56,8 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                 });
     }
 
-    private Subscription monitorDeviceSyncRsp() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceSyncRsp.class)
+    private void monitorDeviceSyncRsp() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceSyncRsp.class)
                 .filter(ret -> TextUtils.equals(ret.uuid, uuid))
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -85,5 +86,6 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
                 });
+        addStopSubscription(subscribe);
     }
 }

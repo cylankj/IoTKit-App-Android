@@ -313,6 +313,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 AlertDialogManager.getInstance().showDialog(this, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                         getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                         getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
+                            hasPendingUnbindAction = true;
                             presenter.unbindDevice();
                             LoadingDialog.showLoading(this, getString(R.string.DELETEING), true);
                         }, getString(R.string.CANCEL), null);
@@ -1194,6 +1195,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else if (state == -1) {
             ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
             LoadingDialog.dismissLoading();
+            hasPendingUnbindAction = false;
         }
     }
 
@@ -1232,15 +1234,19 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         LoadingDialog.dismissLoading();
     }
 
+    private boolean hasPendingUnbindAction = false;
+
     @Override
     public void onDeviceUnBind() {
         AppLogger.w("当前设备已解绑");
-        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
-                getString(R.string.OK), (dialog, which) -> {
-                    finish();
-                    Intent intent = new Intent(getContext(), NewHomeActivity.class);
-                    startActivity(intent);
-                }, false);
+        if (!hasPendingUnbindAction) {
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
+                    getString(R.string.OK), (dialog, which) -> {
+                        finish();
+                        Intent intent = new Intent(getContext(), NewHomeActivity.class);
+                        startActivity(intent);
+                    }, false);
+        }
     }
 
     @Override

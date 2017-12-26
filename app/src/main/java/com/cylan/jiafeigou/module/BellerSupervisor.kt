@@ -19,9 +19,11 @@ import com.cylan.jiafeigou.utils.ContextUtils
  */
 object BellerSupervisor : Supervisor {
     private val TAG = BellerSupervisor::class.java.simpleName
+    private val urlHooker = URLHooker()
 
     init {
         HookerSupervisor.addHooker(OwnerHooker())
+        HookerSupervisor.addHooker(urlHooker)
         HookerSupervisor.addHooker(RepeatHooker())
 
     }
@@ -62,6 +64,15 @@ object BellerSupervisor : Supervisor {
         }
     }
 
+    private class URLHooker : BellerHooker() {
+        val recordUrls = mutableMapOf<String, String>()
+        override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
+            if (!parameter.url.isEmpty()) {
+                recordUrls[parameter.cid] = parameter.url
+            }
+            super.doHooker(action, parameter)
+        }
+    }
 
     private class OwnerHooker : BellerHooker() {
         override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
@@ -156,6 +167,11 @@ object BellerSupervisor : Supervisor {
     @JvmStatic
     fun receiveLocalDoorBeller() {
 
+    }
+
+    @JvmStatic
+    fun getBellerPicture(uuid: String): String? {
+        return urlHooker.recordUrls[uuid]
     }
 
     private fun performLauncher(cid: String, time: Long = System.currentTimeMillis() / 1000L, url: String = "") {

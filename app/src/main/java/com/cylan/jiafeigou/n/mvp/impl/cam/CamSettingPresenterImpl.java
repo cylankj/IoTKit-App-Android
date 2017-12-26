@@ -67,16 +67,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                robotDataSync(),
-                robotDeviceDataSync(),
-//                onClearSdReqBack(),
-                getDeviceUnBindSub()
-        };
-    }
-
-    @Override
     protected String[] registerNetworkAction() {
         return new String[]{ConnectivityManager.CONNECTIVITY_ACTION};
     }
@@ -99,6 +89,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void start() {
         super.start();
+        robotDataSync();
+        robotDeviceDataSync();
+        getDeviceUnBindSub();
         DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
         getView().deviceUpdate(getDevice());
         if (JFGRules.isPan720(getDevice().pid)) {
@@ -143,8 +136,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
      *
      * @return
      */
-    private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+    private void robotDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .filter((RobotoGetDataRsp jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.identity)
                 ))
@@ -155,6 +148,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 })
                 .subscribe(ret -> {
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -162,8 +156,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
      *
      * @return
      */
-    private Subscription robotDeviceDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void robotDeviceDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(jfgRobotSyncData -> (
                         ListUtils.getSize(jfgRobotSyncData.dpList) > 0 &&
                                 getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
@@ -178,6 +172,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         e.printStackTrace();
                     }
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -527,8 +522,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
 
-    private Subscription getDeviceUnBindSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+    private void getDeviceUnBindSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(event -> TextUtils.equals(event.uuid, uuid))
@@ -537,6 +532,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         mView.onDeviceUnBind();
                     }
                 }, e -> AppLogger.d(e.getMessage()));
+        addStopSubscription(subscribe);
     }
 
 }

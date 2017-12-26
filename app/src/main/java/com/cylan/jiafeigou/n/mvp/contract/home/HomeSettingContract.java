@@ -63,12 +63,6 @@ public interface HomeSettingContract {
          */
         void savaSwitchState(boolean isChick, String key);
 
-        /**
-         * 获取到用户的信息
-         *
-         * @return
-         */
-        Subscription getAccountInfo();
 
         void logOut(String account, Activity activity);
     }

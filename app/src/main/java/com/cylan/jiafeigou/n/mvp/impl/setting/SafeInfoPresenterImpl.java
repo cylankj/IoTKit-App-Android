@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -44,6 +43,8 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     public void start() {
         super.start();
         DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
+        robotDataSync();
+        robotDeviceDataSync();
     }
 
     public void getSafeInformation() {
@@ -58,7 +59,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                       DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -107,8 +108,8 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
      *
      * @return
      */
-    private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+    private void robotDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .filter((RobotoGetDataRsp jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.identity)
                 ))
@@ -119,6 +120,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 })
                 .subscribe(ret -> {
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -126,8 +128,8 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
      *
      * @return
      */
-    private Subscription robotDeviceDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void robotDeviceDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(jfgRobotSyncData -> (
                         ListUtils.getSize(jfgRobotSyncData.dpList) > 0 &&
                                 getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
@@ -142,15 +144,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                         e.printStackTrace();
                     }
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
+        addStopSubscription(subscribe);
     }
-
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                robotDataSync(),
-                robotDeviceDataSync()
-        };
-    }
-
 
 }

@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -32,11 +33,10 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                resultLoginSub(),
-                registerBack()
-        };
+    public void start() {
+        super.start();
+        resultLoginSub();
+        registerBack();
     }
 
     @Override
@@ -54,15 +54,14 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
-        LoginHelper.saveUser(login.userName, login.pwd, 1);
+        LoginHelper.saveUser(login.userName, MD5Util.lowerCaseMD5(login.pwd), 1);
         LoginHelper.performAutoLogin().subscribe(ret -> {
         }, error -> {
         });
     }
 
-    @Override
-    public Subscription registerBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
+    public void registerBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(1000L, TimeUnit.MICROSECONDS)
                 .subscribe(register -> {
@@ -70,11 +69,12 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
                     getView().submitResult(register);
                 }, e -> AppLogger.d(e.getMessage()));
+        addStopSubscription(subscribe);
     }
 
-    private Subscription resultLoginSub() {
+    private void resultLoginSub() {
         //sdk中，登陆失败的话，自动一分钟登录一次。
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resultLogin -> {
@@ -82,5 +82,6 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                         getView().loginResult(resultLogin.code);
                     }
                 }, throwable -> AppLogger.e("" + throwable));
+        addStopSubscription(subscribe);
     }
 }

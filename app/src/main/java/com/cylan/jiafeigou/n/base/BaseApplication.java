@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
@@ -16,7 +15,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
 import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -163,8 +161,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onActivityStarted(Activity activity) {
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
         stopViewCount++;
-        GlobalResetPwdSource.getInstance().currentActivity(activity);
-
         RxBus.getCacheInstance().post(new RxEvent.ActivityStartEvent());
     }
 
@@ -190,7 +186,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
         stopViewCount--;
         if (stopViewCount == 0) {
-            GlobalResetPwdSource.getInstance().currentActivity(null);
             prepareReportTask();
         }
     }

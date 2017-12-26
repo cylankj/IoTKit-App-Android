@@ -6,15 +6,23 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION
 import android.os.IBinder
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import com.cylan.entity.JfgEnum
 import com.cylan.entity.jniCall.JFGDoorBellCaller
+import com.cylan.jiafeigou.R
+import com.cylan.jiafeigou.SmartcallActivity
+import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.module.*
 import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
+import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.support.network.NetMonitor
 import com.cylan.jiafeigou.support.network.NetworkCallback
+import com.cylan.jiafeigou.utils.ContextUtils
 import com.cylan.jiafeigou.utils.NetUtils
+import com.cylan.jiafeigou.utils.PreferencesUtils
 
 /**
  * Created by yanzhendong on 2017/12/1.
@@ -42,8 +50,8 @@ class AppServices() : Service(), NetworkCallback {
 
     override fun onNetworkChanged(context: Context?, intent: Intent) {
         val net = NetUtils.getJfgNetType()
-        if (net!=0) {
-            if (!BaseApplication.isBackground()&&NetUtils.isNetworkAvailable(context)) {
+        if (net != 0) {
+            if (!BaseApplication.isBackground() && NetUtils.isNetworkAvailable(context)) {
                 Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED)
             }
         } else {
@@ -76,8 +84,32 @@ class AppServices() : Service(), NetworkCallback {
                 is RxEvent.DeviceSyncRsp -> doHookerSyncMessages(eventAction)
                 is AppCallbackSupervisor.ReportDeviceEvent -> doHookerReportDevices(eventAction)
                 is JFGDoorBellCaller -> doHookerDoorBeller(eventAction)
+                is RxEvent.PwdHasResetEvent -> doHookerPasswordChanged(eventAction)
             }
 
+        }
+
+        private fun doHookerPasswordChanged(eventAction: RxEvent.PwdHasResetEvent) {
+            AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground())
+            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)
+            RxBus.getCacheInstance().removeAllStickyEvents()
+            if (!BaseApplication.isBackground()) {
+                when (eventAction.code) {
+                    16008, 1007, 16006 -> {
+                        AlertDialog.Builder(ContextUtils.getContext())
+                                .setTitle(R.string.RET_ELOGIN_ERROR)
+                                .setMessage(R.string.PWD_CHANGED)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.OK, { dialog, _ ->
+                                    dialog.dismiss()
+                                    val intent = Intent(ContextUtils.getContext(), SmartcallActivity::class.java)
+                                    intent.putExtra("from_log_out", true);
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
+                                    ContextUtils.getContext().applicationContext.startActivity(intent);
+                                }).show()
+                    }
+                }
+            }
         }
 
         private fun doHookerDoorBeller(eventAction: JFGDoorBellCaller) {

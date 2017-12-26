@@ -43,15 +43,6 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         super(view);
     }
 
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                robotDeviceDataSync(),
-                clearSdcardReqBack(),
-                onClearSdReqBack(),
-        };
-    }
-
     private void loadParameters() {
         try {
             if (DataSourceManager.getInstance().isOnline()) {
@@ -65,6 +56,9 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public void start() {
         super.start();
         loadParameters();
+        robotDeviceDataSync();
+        clearSdcardReqBack();
+        onClearSdReqBack();
     }
 
     /**
@@ -72,8 +66,8 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
      *
      * @return
      */
-    private Subscription robotDeviceDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void robotDeviceDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)))
                 .filter(j -> j.dpList != null)
                 .flatMap(deviceSyncRsp -> Observable.from(deviceSyncRsp.dpList))
@@ -86,6 +80,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         e.printStackTrace();
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -121,9 +116,8 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 }, AppLogger::e);
     }
 
-    @Override
-    public Subscription clearSdcardReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    public void clearSdcardReqBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<DpMsgDefine.DPSdStatus>>() {
                     @Override
@@ -155,11 +149,11 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
 
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
-    @Override
-    public Subscription onClearSdReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+    public void onClearSdReqBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .map(ret -> ret.rets)
@@ -173,6 +167,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         getView().clearSdResult(1);
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     @Override

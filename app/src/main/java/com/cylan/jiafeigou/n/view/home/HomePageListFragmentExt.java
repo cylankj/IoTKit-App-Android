@@ -547,12 +547,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private Runnable notifyRunnable = () -> {
-        if (srLayoutMainContentHolder.isRefreshing()) {
-            srLayoutMainContentHolder.setRefreshing(false);
-//            srLayoutMainContentHolder.clearAnimation();
-//            enableNestedScroll();
-            AppLogger.w("stop refreshing ui");
-        }
+        srLayoutMainContentHolder.setRefreshing(false);
+        srLayoutMainContentHolder.clearAnimation();
     };
 
     @Override

@@ -35,7 +35,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -65,8 +64,9 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{getAccountInfo()};
+    public void start() {
+        super.start();
+        getAccountInfo();
     }
 
     private SHARE_MEDIA parseLoginType(int loginType) {
@@ -237,9 +237,8 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
      *
      * @return
      */
-    @Override
-    public Subscription getAccountInfo() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
+    public void getAccountInfo() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null && getView() != null) {
@@ -247,6 +246,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                         userInfo = getUserInfo.jfgAccount;
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
 

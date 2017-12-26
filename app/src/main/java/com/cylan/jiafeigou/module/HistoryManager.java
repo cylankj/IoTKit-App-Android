@@ -3,11 +3,16 @@ package com.cylan.jiafeigou.module;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,6 +42,10 @@ public class HistoryManager {
             }
         }
         return instance;
+    }
+
+    public void clearHistory(String uuid) {
+        historyVideoMap.remove(uuid);
     }
 
 
@@ -140,18 +149,39 @@ public class HistoryManager {
         void fetchHistoryV2(String uuid, int beginTime, int way, int num) {
             try {
                 Command.getInstance().getVideoListV2(uuid, beginTime, way, num);
-//                pendingQueryActions.
             } catch (JfgException e) {
                 e.printStackTrace();
                 AppLogger.e(e);
             }
         }
 
-
-        void cacheHistory(byte[] bytes) {
+        private void executePendingQueryAction() {
 
         }
 
-    }
+        private void decidePendingQueryAction(String caller, Map<Integer, List<DpMsgDefine.Unit>> dataMap) {
+        }
 
+        private void notifyHistoryChangedIfNeeded(String caller, Map<Integer, List<DpMsgDefine.Unit>> dataMap) {
+
+        }
+
+        void cacheHistory(byte[] bytes) {
+            DpMsgDefine.UniversalDataBaseRsp rsp = DpUtils.unpackDataWithoutThrow(bytes, DpMsgDefine.UniversalDataBaseRsp.class, null);
+            if (rsp == null) {
+                //不管怎么样 pendingQueryAction 都要执行
+                executePendingQueryAction();
+                return;
+            }
+            if (rsp.way == 1) {
+                //日期参数回来,有些设备坑了，一次只能返回两天。所以只能动态加载了。
+                decidePendingQueryAction(rsp.caller, rsp.dataMap);
+            } else {
+                //按照分钟的查询回来
+                notifyHistoryChangedIfNeeded(rsp.caller, rsp.dataMap);
+                executePendingQueryAction();
+            }
+            AppLogger.w("save hisFile tx:" + Arrays.toString(bytes));
+        }
+    }
 }

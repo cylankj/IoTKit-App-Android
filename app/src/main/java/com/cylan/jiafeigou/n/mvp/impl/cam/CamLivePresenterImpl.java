@@ -99,7 +99,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 帧率记录
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
-    private volatile boolean ignoreTimeStamp;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
@@ -107,13 +106,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         DataExt.getInstance().clean();
         //清了吧.不需要缓存.
         History.getHistory().clearHistoryFile(uuid);
+        HistoryManager.getInstance().clearHistory(uuid);
     }
 
     @Override
     public void start() {
         super.start();
-        DataSourceManager.getInstance()
-                .syncAllProperty(uuid, 204, 222);
+        DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
+        monitorBattery();
+        monitorRobotDataSync();
+        monitorDeviceUnbind();
+        monitorCheckNewVersionRsp();
+        monitorSdcardFormatSub();
     }
 
     @Override
@@ -124,8 +128,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         unSubscribe("RTCPNotifySub");
     }
 
-    private Subscription getDeviceUnBindSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+    private void monitorDeviceUnbind() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(event -> TextUtils.equals(event.uuid, uuid))
@@ -134,6 +138,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         mView.onDeviceUnBind();
                     }
                 }, e -> AppLogger.d(e.getMessage()));
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -142,10 +147,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      *
      * @return
      */
-    private Subscription getBatterySub() {
+    private void monitorBattery() {
         //按照
         if (JFGRules.popPowerDrainOut(getDevice().pid)) {
-            Observable.just("getBatterySub")
+            Subscription subscribe = Observable.just("monitorBattery")
                     .subscribeOn(Schedulers.io())
                     .filter(ret -> NetUtils.getJfgNetType() > 0)//在线
                     .filter(ret -> !JFGRules.isShareDevice(uuid))//非分享
@@ -165,12 +170,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                            mView.onBatteryDrainOut();
                         }
                     }, AppLogger::e);
-            AppLogger.d("getBatterySub:" + JFGRules.popPowerDrainOutLevel(getDevice().pid));
+            addStopSubscription(subscribe);
         }
-        return null;
     }
 
-    private Subscription checkNewVersionRsp() {
+    private void monitorCheckNewVersionRsp() {
         Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
                 .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.getCid(), uuid))
                 .retry()
@@ -195,7 +199,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return true;
         });
         version.startCheck();
-        return subscription;
+        addStopSubscription(subscription);
     }
 
     /**
@@ -363,41 +367,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return !HistoryManager.getInstance().hasHistory(uuid);
     }
 
-//    /**
-//     * 对于大内存的设备,历史录像是好几条逐条rsp.但是不知道什么时候结束,不知道有几条.
-//     * <p>
-//     * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
-//     */
-//    private void makeTimeDelayForList() {
-//        AppLogger.d("注册 录像等待结果？");
-//        Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-//                .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-//                .timeout(30, TimeUnit.SECONDS)
-//                .subscribeOn(Schedulers.computation())
-//                .map((Func1<RxEvent.JFGHistoryVideoParseRsp, Observable<?>>) rsp -> {
-//                    final String date = History.parseTime2Date(TimeUtils.wrapToLong(rsp.timeStart));
-//                    ArrayList<HistoryFile> files = History.getHistory().getHistoryFile(date);
-//                    DataExt.getInstance().flattenData(files, JFGRules.getDeviceTimezone(getDevice()));
-//                    AppLogger.d("格式化数据");
-//                    return null;
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(ret -> {
-//                    //更新日历
-//                    ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
-//                    AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-//                    mView.onHistoryDataRsp(DataExt.getInstance());
-//                    mView.onHistoryLoadFinished();
-//                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
-//                    AppLogger.d("历史录像wheel准备好,断开直播");
-//                    //放在这里不好,有 bug 单:#116924
-//                    //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
-//                    // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
-//                    startPlayHistory(DataExt.getInstance().getFlattenMinTime());
-//                }, AppLogger::e);
-//        addSubscription(subscription, "makeTimeDelayForList");
-//    }
-
     @Override
     public boolean isShareDevice() {
         return JFGRules.isShareDevice(uuid);
@@ -526,11 +495,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
                     try {
-                        // TODO: 2017/9/2 startPlay 后的三秒内禁止更新时间,只允许更新流量 ,避免时间轴跳动,只针对于历史录像
-                        if (rtcp.timestamp - getLiveStream().playStartTime < 30) {// TODO: 2017/9/4 rtcp 回调的时间是秒
-                            ignoreTimeStamp = false;
-                        }
-                        getView().onRtcp(rtcp, ignoreTimeStamp);
+                        getView().onRtcp(rtcp);
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -673,7 +638,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
         // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
-        ignoreTimeStamp = true;
         getLiveStream().playStartTime = time;
         getView().onLivePrepare(TYPE_HISTORY);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
@@ -841,23 +805,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 });
     }
 
-
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{getBatterySub(),
-                robotDataSync(),
-                getDeviceUnBindSub(),
-                checkNewVersionRsp(),
-                sdcardFormatSub()};
-    }
-
     /**
      * sd卡被格式化
      *
      * @return
      */
-    private Subscription sdcardFormatSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+    private void monitorSdcardFormatSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .map(ret -> ret.rets)
@@ -873,6 +827,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -880,8 +835,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      *
      * @return
      */
-    private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    private void monitorRobotDataSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
                         jfgRobotSyncData.dpList != null &&
                                 getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
@@ -915,10 +870,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("robotDataSync"))
+                .retry(new RxHelper.RxException<>("monitorRobotDataSync"))
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe(ret -> {
                 }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
+        addStopSubscription(subscribe);
     }
 
     @Override

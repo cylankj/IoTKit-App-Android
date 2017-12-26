@@ -51,16 +51,15 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                resultVerifyCodeSub(),
-                switchBoxSub(),
-                loginPopBackSub()
-        };
+    public void start() {
+        super.start();
+        resultVerifyCodeSub();
+        switchBoxSub();
+        loginPopBackSub();
     }
 
-    private Subscription resultVerifyCodeSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
+    private void resultVerifyCodeSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
                 .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
@@ -75,11 +74,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 }, () -> {
                     AppLogger.d("complete?");
                 });
+        addStopSubscription(subscribe);
     }
 
 
-    private Subscription switchBoxSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)
+    private void switchBoxSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)
                 .delay(100, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(switchBox -> {
@@ -88,14 +88,16 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         PreferencesUtils.putBoolean(JConstant.REG_SWITCH_BOX, false);
                     }
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+        addStopSubscription(subscribe);
     }
 
-    private Subscription loginPopBackSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LoginPopBack.class)
+    private void loginPopBackSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LoginPopBack.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginPopBack -> getView().updateAccount(loginPopBack.account),
                         throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+        addStopSubscription(subscribe);
     }
 
     @Override
@@ -216,7 +218,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void performLogin(String account, String password) {
 //        if (mView != null) mView.showLoading();
-        performLoginInternal(1, account, password);
+        performLoginInternal(1, account, MD5Util.lowerCaseMD5(password));
     }
 
     private int parseLoginType(SHARE_MEDIA share_media) {
@@ -305,7 +307,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     private void performLoginInternal(int loginType, String account, String password) {
-        Subscription subscription = LoginHelper.performLogin(account, MD5Util.lowerCaseMD5(password), loginType)
+        Subscription subscription = LoginHelper.performLogin(account, password, loginType)
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountArrived -> {

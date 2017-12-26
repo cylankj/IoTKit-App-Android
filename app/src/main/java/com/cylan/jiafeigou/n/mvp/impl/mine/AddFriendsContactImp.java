@@ -51,16 +51,15 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
 
     public AddFriendsContactImp(AddFriendContract.View view) {
         super(view);
-        helper =BaseDBHelper.getInstance();
+        helper = BaseDBHelper.getInstance();
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                getFriendListDataCallBack(),
-                checkFriendAccountCallBack()};
+    public void start() {
+        super.start();
+        getFriendListDataCallBack();
+        checkFriendAccountCallBack();
     }
-
 
     /**
      * desc：处理获取到的联系人数据
@@ -187,7 +186,6 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      *
      * @return
      */
-    @Override
     public Subscription getFriendListDataCallBack() {
 //        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
 //                .flatMap(getFriendList -> {
@@ -233,9 +231,8 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      *
      * @return
      */
-    @Override
-    public Subscription checkFriendAccountCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+    public void checkFriendAccountCallBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(checkAccountCallback -> {
                     if (checkAccountCallback != null && isCheckAcc) {
@@ -244,6 +241,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
                         isCheckAcc = false;
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     /**

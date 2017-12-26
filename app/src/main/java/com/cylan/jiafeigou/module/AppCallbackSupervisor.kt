@@ -145,7 +145,9 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnLogoutByServer(i: Int) {
         AppLogger.w("OnLogoutByServer:" + i)
         LoginHelper.performLogout()
-        RxBus.getCacheInstance().post(RxEvent.PwdHasResetEvent(i))
+        val pwdHasResetEvent = RxEvent.PwdHasResetEvent(i);
+        publish(pwdHasResetEvent)
+        RxBus.getCacheInstance().post(pwdHasResetEvent)
     }
 
     override fun OnVideoDisconnect(jfgMsgVideoDisconn: JFGMsgVideoDisconn) {

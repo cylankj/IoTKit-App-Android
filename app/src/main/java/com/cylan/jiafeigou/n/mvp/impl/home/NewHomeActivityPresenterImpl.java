@@ -38,13 +38,8 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
         }
     }
 
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{updateRsp(), mineTabNewInfoRsp()};
-    }
-
-    private Subscription updateRsp() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ApkDownload.class)
+    private void updateRsp() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.ApkDownload.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -63,22 +58,25 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                     RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);
 //                    addSubscription(updateRsp());
                 });
+        addStopSubscription(subscribe);
     }
 
     @Override
     public void start() {
         super.start();
-        addSubscription(updateRsp());
+        updateRsp();
+        mineTabNewInfoRsp();
     }
 
-    private Subscription mineTabNewInfoRsp() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.InfoUpdate.class)
+    private void mineTabNewInfoRsp() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.InfoUpdate.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(ret -> {
                     TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineFragment");
                     mView.refreshHint(node != null && node.getTraversalCount() > 0);
-                }, throwable -> addSubscription(mineTabNewInfoRsp()));
+                }, throwable -> mineTabNewInfoRsp());
+        addStopSubscription(subscribe);
     }
 }

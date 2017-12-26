@@ -90,14 +90,6 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
             NetMonitor.getNetMonitor().registerNet(this, action);
             AppLogger.w("register network true");
         }
-        Subscription[] register = register();
-        if (register != null) {
-            for (Subscription subscription : register) {
-                if (subscription != null) {
-                    addSubscription(subscription);
-                }
-            }
-        }
     }
 
     /**
@@ -141,10 +133,6 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
         NetMonitor.getNetMonitor().unregister(this);
         unRegisterHeadSetObservable();
         abandonAudioFocus();
-    }
-
-    protected Subscription[] register() {
-        return null;
     }
 
     @Override

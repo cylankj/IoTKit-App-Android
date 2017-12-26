@@ -27,15 +27,13 @@ import java.util.Random;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-23.
  */
 public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
-
-    private boolean isOpenLogin = false;
-
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
     }
@@ -43,8 +41,11 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void start() {
         super.start();
-        addSubscription(getAccountBack(), "HomeMinePresenterImpl.getAccountBack");
-        addSubscription(loginInMe(), "HomeMinePresenterImpl.loginInMe");
+        getAccountBack();
+        loginInMe();
+        if (LoginHelper.isLoginSuccessful()) {
+            updateAccount(DataSourceManager.getInstance().getJFGAccount());
+        }
     }
 
     @Override
@@ -101,7 +102,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
      */
     @Override
     public boolean checkOpenLogIn() {
-        return isOpenLogin;
+        return LoginHelper.getLoginType() >= 3;
     }
 
     /**
@@ -124,38 +125,65 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         return TextUtils.isEmpty(photoUrl) || photoUrl.contains("image/default.jpg");
     }
 
-    @Override
-    public Subscription getAccountBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
+    public void getAccountBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
                 .observeOn(Schedulers.io())
-                .map(accountArrived -> {
-                    AppLogger.w("监听到用户信息回调!");
-                    isOpenLogin = LoginHelper.getLoginType() >= 3;
-                    if (isOpenLogin) {
-                        String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
-                        if (!TextUtils.isEmpty(photoUrl)) {//设置第三方登录图像
-                            uploadOpenLoginIcon(accountArrived, photoUrl);
-                        }
-                    }
-                    return accountArrived;
-
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountArrived -> {
-                    if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getPhotoUrl())) {
-                        getView().setUserImageHeadByUrl(accountArrived.account.getPhotoUrl());
-                    }
-                    if (getView() != null) {
-                        String al = accountArrived.account.getAlias();
-                        String a2 = accountArrived.account.getAccount();
-                        getView().setAliasName(TextUtils.isEmpty(al) ? a2 : al);
-                    }
+                    updateAccount(accountArrived.jfgAccount);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
+        addDestroySubscription(subscribe);
     }
 
-    private void uploadOpenLoginIcon(RxEvent.AccountArrived accountArrived, String photoUrl) {
+    private void updateAccount(JFGAccount account) {
+        String photoUrl = account.getPhotoUrl();
+        if (checkOpenLogIn()) {
+            boolean defaultPhoto = isDefaultPhoto(photoUrl);
+            if (defaultPhoto) {//设置第三方登录图像
+                String userIcon = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+                if (!TextUtils.isEmpty(userIcon)) {
+                    uploadOpenLoginIcon(photoUrl = userIcon);
+                }
+            }
+
+            String alias = TextUtils.isEmpty(account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : account.getAlias();
+            if (TextUtils.isEmpty(alias)) {
+                boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
+                if (isEmail) {
+                    String[] split = account.getAccount().split("@");
+                    alias = split[0];
+                }
+            }
+            if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(account.getAlias())) {//设置第三方登录昵称
+                account.setAlias(alias);
+                Subscription schedule = Schedulers.io().createWorker().schedule(new Action0() {
+                    @Override
+                    public void call() {
+                        try {
+                            account.resetFlag();
+                            account.setPhoto(true);
+                            Command.getInstance().setAccount(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                addSubscription("resetAccount", schedule);
+            }
+        }
+        if (getView() != null && !TextUtils.isEmpty(photoUrl)) {
+            getView().setUserImageHeadByUrl(photoUrl);
+        }
+        if (getView() != null) {
+            String al = account.getAlias();
+            String a2 = account.getAccount();
+            getView().setAliasName(TextUtils.isEmpty(al) ? a2 : al);
+        }
+    }
+
+    private void uploadOpenLoginIcon(String photoUrl) {
         GlideApp.with(getView().getContext())
                 .downloadOnly()
                 .load(photoUrl)
@@ -163,27 +191,8 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     @Override
                     public void onResourceReady(File resource, Transition<? super File> transition) {
                         try {
-                            String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
-                            if (TextUtils.isEmpty(alias)) {
-                                boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
-                                if (isEmail) {
-                                    String[] split = accountArrived.jfgAccount.getAccount().split("@");
-                                    alias = split[0];
-                                }
-                            }
                             Command.getInstance().updateAccountPortrait(resource.getAbsolutePath());
                             AppLogger.d("正在设置第三方登录图像" + resource.getAbsolutePath());
-                            if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
-                                accountArrived.jfgAccount.setAlias(alias);
-                                try {
-                                    AppLogger.d("正在设置第三方登录昵称" + alias);
-                                    accountArrived.jfgAccount.resetFlag();
-                                    accountArrived.jfgAccount.setPhoto(true);
-                                    Command.getInstance().setAccount(accountArrived.jfgAccount);
-                                } catch (JfgException e) {
-                                    e.printStackTrace();
-                                }
-                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -204,14 +213,15 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         }
     }
 
-    public Subscription loginInMe() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
+    public void loginInMe() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginMeTab -> {
                     if (loginMeTab.b) {
                         start();
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
 }

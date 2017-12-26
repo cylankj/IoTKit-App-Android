@@ -286,7 +286,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private void parse(Intent intent) {
         String uuid = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         String url = intent.getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
-        if (TextUtils.equals(uuid, this.uuid) && url != null) {
+        if (TextUtils.equals(uuid, this.uuid)) {
             presenter.loadPreview(url);
         }
     }

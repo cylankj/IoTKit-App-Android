@@ -76,24 +76,14 @@ public interface AddFriendContract {
          */
         void getFriendListData();
 
-        /**
-         * 获取好友的列表的回调
-         *
-         * @return
-         */
-        Subscription getFriendListDataCallBack();
+
 
         /**
          * 检测账号是否已经注册
          */
         void checkFriendAccount(String account);
 
-        /**
-         * 检测账号的回调
-         *
-         * @return
-         */
-        Subscription checkFriendAccountCallBack();
+
 
         /**
          * 检测短信权限

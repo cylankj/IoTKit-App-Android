@@ -85,6 +85,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private EdgeEffect mEdgeEffectLeft;
     private EdgeEffect mEdgeEffectRight;
     private boolean mOverScrollerMode = true;
+    private HistoryAdapter mHistoryAdapter;
 
     @IntDef({SnapDirection.MOVE_DIRECTION, SnapDirection.LEFT, SnapDirection.RIGHT, SnapDirection.AUTO})
     @Retention(RetentionPolicy.SOURCE)
@@ -137,6 +138,11 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private Runnable mMarkerPositionRunnable = new Runnable() {
         @Override
         public void run() {
+            if (!mScroller.isFinished()) {
+                removeCallbacks(mMarkerPositionRunnable);
+                post(mMarkerPositionRunnable);
+                return;
+            }
             long currentTime = getCurrentTime();
             if (markerCenterInScreen) {
                 int[] location = new int[2];
@@ -348,7 +354,11 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     }
 
     public void scrollToPosition(long time, boolean locked) {
-        if (!mLocked) {
+        scrollToPosition(time, locked, false);
+    }
+
+    public void scrollToPosition(long time, boolean locked, boolean focus) {
+        if (!mLocked || focus) {
             if (locked) {
                 disableExternalScrollAction();
             }
@@ -359,7 +369,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     public void snapScrollToPosition(long time, boolean locked) {
         long currentTime = getCurrentTime();
         time += getSnapDistanceX(time, time >= currentTime ? SnapDirection.RIGHT : SnapDirection.LEFT);
-        scrollToPosition(time, locked);
+        scrollToPosition(time, locked, false);
     }
 
     private void scrollToPositionInternal(long time) {
@@ -440,6 +450,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         enableExternalScrollAction();
         if (mHasPendingUpdateAction) {
             mHasPendingUpdateAction = false;
+            removeCallbacks(mNotifyRunnable);
             postDelayed(mNotifyRunnable, updateDelay);
         }
     }
@@ -588,10 +599,65 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         this.mHistoryListener = listener;
     }
 
+    public void setHistoryAdapter(HistoryAdapter adapter) {
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter.setDataSetObserver(null);
+        }
+        this.mHistoryAdapter = adapter;
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter.setDataSetObserver(mObserver);
+            postInvalidate();
+        }
+    }
+
     public interface HistoryListener {
         void onHistoryTimeChanged(long time);
 
         void onScrolling(long time);
     }
 
+    private HistoryDataSetObserver mObserver = new HistoryDataSetObserver() {
+    };
+
+    private interface HistoryDataSetObserver {
+
+    }
+
+    public abstract class HistoryAdapter {
+        public JFGVideo getHistoryFloor() {
+            return null;
+        }
+
+        public JFGVideo getHistoryCeilling() {
+            return null;
+        }
+
+        public JFGVideo getMinHistory() {
+            return null;
+        }
+
+        public JFGVideo getMaxHistory() {
+            return null;
+        }
+
+        public void getRangeHistory() {
+
+        }
+
+        public void notifyDataSetChanged() {
+
+        }
+
+        public void addHistorys() {
+
+        }
+
+        public void setHistorys() {
+
+        }
+
+        void setDataSetObserver(HistoryDataSetObserver observer) {
+
+        }
+    }
 }

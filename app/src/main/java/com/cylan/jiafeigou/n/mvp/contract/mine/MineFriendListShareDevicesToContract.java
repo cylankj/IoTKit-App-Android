@@ -74,10 +74,6 @@ public interface MineFriendListShareDevicesToContract {
 
     interface Presenter extends BasePresenter {
 
-        /**
-         * 获取设备列表是数据
-         */
-        Subscription initDeviceListData();
 
         /**
          * 发送分享设备给的亲友的请求
@@ -89,12 +85,6 @@ public interface MineFriendListShareDevicesToContract {
          */
         void checkIsChoose(ArrayList<DeviceBean> list);
 
-        /**
-         * 分享设备的回调
-         *
-         * @return
-         */
-        Subscription shareDeviceCallBack();
 
         /**
          * 获取到设备已经分享的亲友数
@@ -102,13 +92,6 @@ public interface MineFriendListShareDevicesToContract {
          * @param cid
          */
         void getDeviceInfo(ArrayList<String> cid);
-
-        /**
-         * 获取到设备信息的回调
-         *
-         * @return
-         */
-        Subscription getDeviceInfoCallBack();
 
     }
 

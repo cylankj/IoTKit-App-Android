@@ -48,34 +48,32 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
         if (node != null) {
             node.setCacheData(new CacheObject().setCount(0).setObject(null));
         }
-        pushManager.getNewList()
+        Subscription subscribe = pushManager.getNewList()
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> mView.initList(null))
                 .subscribe(ret -> getView().initList(ret), AppLogger::e);
+        addStopSubscription(subscribe);
+        newListRsp();
+        sendLogRspSub();
     }
 
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                newListRsp(), sendLogRspSub()
-        };
-    }
-
-    private Subscription sendLogRspSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SendLogRsp.class)
+    private void sendLogRspSub() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.SendLogRsp.class)
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> mView.updateItem(ret.bean));
+        addStopSubscription(subscribe);
     }
 
-    private Subscription newListRsp() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetFeedBackRsp.class)
+    private void newListRsp() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.GetFeedBackRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null && !ListUtils.isEmpty(ret.newList))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> mView.appendList(ret.newList), AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     @Override

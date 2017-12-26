@@ -48,22 +48,16 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
         this.relAndFriendBean = relAndFriendBean;
     }
 
-
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                initDeviceListData(),
-                getDeviceInfoCallBack(),
-                shareDeviceCallBack()
-        };
+    public void start() {
+        super.start();
+        initDeviceListData();
+        getDeviceInfoCallBack();
+        shareDeviceCallBack();
     }
 
-    /**
-     * 获取到设备列表的数据
-     */
-    @Override
-    public Subscription initDeviceListData() {
-        return Observable.just(getShareDeviceList())
+    public void initDeviceListData() {
+        Subscription subscribe = Observable.just(getShareDeviceList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deviceList -> {
                     if (getView() != null && deviceList != null && deviceList.size() != 0) {
@@ -81,6 +75,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                         getView().showNoDeviceView();
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -140,9 +135,8 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      *
      * @return
      */
-    @Override
-    public Subscription shareDeviceCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class)
+    public void shareDeviceCallBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(shareDeviceCallBack -> {
 
@@ -157,6 +151,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                         }
                     }
                 }, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     /**
@@ -201,9 +196,8 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      *
      * @return
      */
-    @Override
-    public Subscription getDeviceInfoCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
+    public void getDeviceInfoCallBack() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
                 .flatMap(getShareListCallBack -> {
                     ArrayList<JFGShareListInfo> list =
                             DataSourceManager.getInstance().getShareList();
@@ -229,6 +223,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handlerShareDeviceListData, AppLogger::e);
+        addStopSubscription(subscribe);
     }
 
     @Override

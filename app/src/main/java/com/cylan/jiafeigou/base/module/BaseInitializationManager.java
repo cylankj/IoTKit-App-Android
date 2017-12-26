@@ -9,7 +9,6 @@ import android.util.Log;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.dagger.annotation.Named;
-import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -68,7 +67,6 @@ public final class BaseInitializationManager {
         initUmengSdk();
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         PerformanceUtils.stopTrace("initialization");
-        GlobalResetPwdSource.getInstance().register();
     }
     private void initUmengSdk() {
         Config.DEBUG = true;
@@ -127,7 +125,6 @@ public final class BaseInitializationManager {
             compositeSubscription.unsubscribe();
             compositeSubscription = null;
         }
-        GlobalResetPwdSource.getInstance().unRegister();
     }
 
     private void initBugMonitor() {

@@ -105,10 +105,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 });
     }
 
-    @Override
-    protected Subscription[] register() {
-        return super.register();
-    }
+
 
     private Subscription robotDataSync() {
         return RxBus.getCacheInstance().toObservable(JfgEvent.RobotoSyncData.class)

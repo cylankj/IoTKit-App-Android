@@ -240,9 +240,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_disconnected), getString(R.string.Tap1_AddDevice_disconnected),
                 getString(R.string.OK), (dialog, which) -> {
                     presenter.finish();
-                    final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName(this, className));
+                    Intent intent = getIntent();
+                    intent.setComponent(new ComponentName(this, intent.getStringExtra(JConstant.KEY_COMPONENT_NAME)));
                     startActivity(intent);
                 }, false);
     }
