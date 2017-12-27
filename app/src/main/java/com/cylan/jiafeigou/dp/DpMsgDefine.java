@@ -2174,7 +2174,7 @@ public class DpMsgDefine {
         @Index(2)
         public String faceId;
         @Index(3)
-        public int timeMsec;
+        public long timeMsec;
         @Index(4)
         public List<DPHeader> dataList;
 

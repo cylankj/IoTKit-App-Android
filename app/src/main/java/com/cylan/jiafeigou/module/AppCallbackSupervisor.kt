@@ -120,7 +120,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     override fun OnUpdateHistoryVideoList(jfgHistoryVideo: JFGHistoryVideo) {
         AppLogger.w("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size + ",content:" + gson.toJson(jfgHistoryVideo))
         HistoryManager.getInstance().cacheHistory(jfgHistoryVideo)
-        DataSourceManager.getInstance().cacheHistoryDataList(jfgHistoryVideo)
+//        DataSourceManager.getInstance().cacheHistoryDataList(jfgHistoryVideo)
         RxBus.getCacheInstance().post(jfgHistoryVideo)
     }
 

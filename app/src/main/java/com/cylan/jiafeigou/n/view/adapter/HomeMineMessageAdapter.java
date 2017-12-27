@@ -16,23 +16,54 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
+    private boolean isEditMode = false;
 
-    public boolean isShowCheck;
-    public boolean checkAll;
-
-    public OnDeleteCheckChangeListener listener;
-
-    public interface OnDeleteCheckChangeListener {
-        void deleteCheck(boolean isCheck, SysMsgBean item);
+    public boolean isEditMode() {
+        return isEditMode;
     }
 
-    public void setOnDeleteCheckChangeListener(OnDeleteCheckChangeListener listener) {
-        this.listener = listener;
+    public void setEditMode(boolean editMode) {
+        isEditMode = editMode;
+        notifyDataSetHasChanged();
     }
+
+    public void select(boolean selectAll) {
+        List<SysMsgBean> msgBeans = getList();
+        if (msgBeans != null) {
+            for (SysMsgBean bean : msgBeans) {
+                bean.isCheck = selectAll ? 1 : 0;
+            }
+        }
+        notifyDataSetHasChanged();
+    }
+
+    public List<SysMsgBean> getSelectedItems() {
+        List<SysMsgBean> beanList = new ArrayList<>();
+        List<SysMsgBean> msgBeans = getList();
+        if (msgBeans != null) {
+            for (SysMsgBean bean : getList()) {
+                if (bean.isCheck == 1) {
+                    beanList.add(bean);
+                }
+            }
+        }
+        return beanList;
+    }
+
+    public interface SelectionListener {
+        void onSelectionChanged(int position, boolean isChecked);
+    }
+
+    public void setSelectionListener(SelectionListener listener) {
+
+    }
+
+    private SelectionListener listener;
 
     public HomeMineMessageAdapter(Context context, List<SysMsgBean> items, IMulItemViewType<SysMsgBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -42,29 +73,17 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, SysMsgBean item) {
         //处理消息时间
         holder.setText(R.id.item_time, parseTime(item.getTime()));
-
-        if (isShowCheck) {
-            holder.setVisibility(R.id.delete_check, View.VISIBLE);
-        } else {
-            holder.setVisibility(R.id.delete_check, View.GONE);
-        }
-
-        CheckBox deleteCheck = holder.getView(R.id.delete_check);
-        deleteCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.setVisibility(R.id.delete_check, isEditMode ? View.VISIBLE : View.GONE);
+        holder.setChecked(R.id.delete_check, item.isCheck == 1);
+        CheckBox checkBox = holder.getView(R.id.delete_check);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (listener != null) {
-                    listener.deleteCheck(isChecked, item);
+                    listener.onSelectionChanged(layoutPosition, isChecked);
                 }
             }
         });
-
-        if (checkAll) {
-            deleteCheck.setChecked(true);
-        } else {
-            deleteCheck.setChecked(false);
-        }
-
         //头像icon
         if (item.type == 701) {
             //处理消息显示

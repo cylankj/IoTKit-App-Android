@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +37,7 @@ import butterknife.OnClick;
 public class SystemMessageFragment extends IBaseFragment implements SysMessageContract.View {
 
     @BindView(R.id.rcl_home_mine_message_recyclerview)
-    RecyclerView rclHomeMineMessageRecyclerview;
+    RecyclerView rlSystemMessages;
     @BindView(R.id.ll_no_mesg)
     LinearLayout llNoMesg;
     @BindView(R.id.tv_check_all)
@@ -47,13 +48,9 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
     RelativeLayout rlDeleteDialog;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-
-    private boolean isCheckAll;
-
     private SysMessageContract.Presenter presenter;
     private HomeMineMessageAdapter messageAdapter;
-    private ArrayList<SysMsgBean> hasCheckData;
-    private ArrayList<Integer> serviceDelRsp;
+    private LinearLayoutManager layoutManager;
 
     public static SystemMessageFragment newInstance(Bundle bundle) {
         SystemMessageFragment fragment = new SystemMessageFragment();
@@ -64,61 +61,82 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
     }
+
+    private boolean isLoading = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine_message, container, false);
         ButterKnife.bind(this, view);
-        rclHomeMineMessageRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutManager = new LinearLayoutManager(getContext());
+        rlSystemMessages.setLayoutManager(layoutManager);
         messageAdapter = new HomeMineMessageAdapter(getContext(), null, null);
-        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
+        rlSystemMessages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int visibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                if (visibleItemPosition >= 0) {
+                    if (dy > 0) { //check for scroll down
+                        int visibleItemCount = layoutManager.getChildCount();
+                        int totalItemCount = layoutManager.getItemCount();
+                        if (!isLoading) {
+                            if ((visibleItemCount + visibleItemPosition) >= totalItemCount) {
+                                isLoading = true;
+                                onLoadMore();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        rlSystemMessages.setAdapter(messageAdapter);
+        messageAdapter.setSelectionListener(new HomeMineMessageAdapter.SelectionListener() {
+            @Override
+            public void onSelectionChanged(int position, boolean isChecked) {
+                if (messageAdapter.isEditMode()) {
+                    updateBottomLayout();
+                }
+            }
+        });
         initPresenter();
+        presenter.loadSystemMessageFromServer(0, 0);
         return view;
     }
 
+    private void updateBottomLayout() {
+        List<SysMsgBean> selectedItems = messageAdapter.getSelectedItems();
+        tvDelete.setEnabled(selectedItems.size() > 0);
+        if (selectedItems.size() < messageAdapter.getList().size()) {
+            tvCheckAll.setText(R.string.SELECT_ALL);
+        } else {
+            tvCheckAll.setText(R.string.CANCEL);
+        }
+    }
 
+
+    private void onLoadMore() {
+        List<SysMsgBean> msgBeanList = messageAdapter.getList();
+        long v601 = Long.MAX_VALUE;
+        long v701 = Long.MAX_VALUE;
+        if (msgBeanList != null) {
+            for (SysMsgBean bean : msgBeanList) {
+                if (bean.type == 701) {
+                    v701 = Math.min(v701, bean.time);
+                } else if (bean.type == 601) {
+                    v601 = Math.min(v601, bean.time);
+                }
+            }
+        }
+        presenter.loadSystemMessageFromServer(v601, v701);
+    }
 
     private void initPresenter() {
         presenter = new SysMessagePresenterImp(this);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-//        if (presenter != null) presenter.initSubscription();
-    }
-
-
-    /**
-     * 初始化列表显示
-     *
-     * @param list
-     */
-    @Override
-    public void initRecycleView(ArrayList<SysMsgBean> list) {
-        messageAdapter.addAll(list);
-    }
-
-    /**
-     * 消息为空显示
-     */
-    @Override
-    public void showNoMesgView() {
-        rclHomeMineMessageRecyclerview.setVisibility(View.INVISIBLE);
-        llNoMesg.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * 消息不为空显示
-     */
-    @Override
-    public void hideNoMesgView() {
-        rclHomeMineMessageRecyclerview.setVisibility(View.VISIBLE);
-        llNoMesg.setVisibility(View.GONE);
-    }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_check_all, R.id.tv_delete})
     public void onClick(View view) {
@@ -134,47 +152,24 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
                     return;
                 }
                 if (customToolbar.getTvToolbarRight().getText().equals(getString(R.string.CANCEL))) {
-                    handleCancle();
+                    handleCancel();
                     return;
                 }
                 handleDelete();
                 break;
             case R.id.tv_check_all:
-                if (isCheckAll) {
-                    messageAdapter.checkAll = true;
-                    rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
-                    if (hasCheckData == null) {
-                        hasCheckData = new ArrayList<>();
-                    }
-                    hasCheckData.clear();
-                    hasCheckData.addAll(messageAdapter.getList());
-                } else {
-                    hasCheckData.clear();
-                    messageAdapter.checkAll = false;
-                    rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
-                }
-                isCheckAll = !isCheckAll;
+                List<SysMsgBean> selectedItems = messageAdapter.getSelectedItems();
+                List<SysMsgBean> beans = messageAdapter.getList();
+                int size = beans == null ? 0 : beans.size();
+                messageAdapter.select(selectedItems.size() < size);
                 break;
 
             case R.id.tv_delete:
-                if (hasCheckData.size() == 0) {
-                    return;
-                }
-//                for (SysMsgBean bean : hasCheckData) {
-//                    messageAdapter.remove(bean);
-//                    if (bean.type == 601) {
-//                        presenter.deleteServiceMsg(bean.type, bean.getTime());
-//                    }
-//                    presenter.deleteOneItem(bean);
-//                }
-                presenter.removeItems(hasCheckData);
-                messageAdapter.removeAll(hasCheckData);
-                hasCheckData.clear();
+                customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
+                presenter.deleteSystemMessageFromServer(messageAdapter.getSelectedItems());
                 messageAdapter.notifyDataSetHasChanged();
                 if (messageAdapter.getItemCount() == 0) {
-                    showNoMesgView();
                     rlDeleteDialog.setVisibility(View.GONE);
-                    customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
                 }
                 break;
         }
@@ -184,53 +179,46 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
      * 处理删除操作
      */
     private void handleDelete() {
-        isCheckAll = true;
         rlDeleteDialog.setVisibility(View.VISIBLE);
         customToolbar.setToolbarRightTitle(getString(R.string.CANCEL));
-        if (hasCheckData == null) {
-            hasCheckData = new ArrayList<>();
-        }
-        messageAdapter.isShowCheck = true;
-        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
-        messageAdapter.setOnDeleteCheckChangeListener(new HomeMineMessageAdapter.OnDeleteCheckChangeListener() {
-            @Override
-            public void deleteCheck(boolean isCheck, SysMsgBean item) {
-                if (isCheck) {
-                    if (!hasCheckData.contains(item)) {
-                        hasCheckData.add(item);
-                    }
-                } else {
-                    hasCheckData.remove(item);
-                }
-            }
-        });
+        messageAdapter.setEditMode(true);
+
     }
 
     /**
      * 处理取消操作
      */
-    private void handleCancle() {
-        isCheckAll = false;
+    private void handleCancel() {
         rlDeleteDialog.setVisibility(View.GONE);
         customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
-        hasCheckData.clear();
-        hasCheckData = null;
         for (SysMsgBean bean : messageAdapter.getList()) {
             bean.isCheck = 0;
         }
         messageAdapter.notifyDataSetHasChanged();
-        messageAdapter.checkAll = false;
-        messageAdapter.isShowCheck = false;
-        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
+        messageAdapter.setEditMode(false);
+        rlSystemMessages.setAdapter(messageAdapter);
     }
 
     @Override
-    public void deleteMesgReuslt(RxEvent.DeleteDataRsp rsp) {
-        if (serviceDelRsp == null) {
-            serviceDelRsp = new ArrayList<>();
+    public void onQuerySystemMessageRsp(ArrayList<SysMsgBean> list) {
+        isLoading = false;
+        messageAdapter.addAll(list);
+        decideEmptyView();
+    }
+
+    private void decideEmptyView() {
+        boolean isEmpty = messageAdapter.getList() == null || messageAdapter.getList().size() == 0;
+        rlSystemMessages.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
+        llNoMesg.setVisibility(isEmpty ? View.VISIBLE : View.INVISIBLE);
+
+    }
+
+    @Override
+    public void onDeleteSystemMessageRsp(RxEvent.DeleteDataRsp rsp) {
+        if (rsp != null && rsp.resultCode == 0) {
+            messageAdapter.removeAll(messageAdapter.getSelectedItems());
         }
-        serviceDelRsp.add(rsp.resultCode);
-        //TODO
+        decideEmptyView();
     }
 
 }

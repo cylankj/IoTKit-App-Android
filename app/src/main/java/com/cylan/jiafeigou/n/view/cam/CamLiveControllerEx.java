@@ -232,6 +232,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private boolean hasPingSuccess = false;
     private Handler handler = new Handler();
     private boolean needShowSight;
+    private volatile boolean hasPendingHistoryPlayAction = false;
+    private long pendingHistoryPlayTime = -1;
 
     /**
      * 设备的时区
@@ -455,7 +457,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
                             return;
                         }
-                        toLoadingHistory();
+                        performLoadHistoryAndPlay(-1);
                     }
                 }, throwable -> ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD)));
 
@@ -472,12 +474,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     public void onHistoryEmpty() {
+        presenter.startPlay();
         btnLoadHistory.setEnabled(true);
         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
-        presenter.startPlay();
     }
 
-    private volatile boolean hasPendingHistoryPlayAction = false;
+    public void playHistoryAndSetLiveTime(long playTime) {
+        livePlayState = PLAY_STATE_PREPARE;
+        setLoadingState(null, null);
+        setLiveRectTime(TYPE_HISTORY, playTime, true);
+        presenter.startPlayHistory(playTime);
+    }
 
     public void onHistoryReady(Collection<JFGVideo> history) {
         vsLayoutWheel.setDisplayedChild(1);
@@ -488,32 +495,45 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         superWheelExt.setHistoryFiles(history);
         tvCamLiveLandBottom.setVisibility(VISIBLE);
         if (hasPendingHistoryPlayAction) {
-            synchronized (this) {
-                if (hasPendingHistoryPlayAction) {
-                    hasPendingHistoryPlayAction = false;
-                    try {
-                        JFGVideo jfgVideo = HistoryManager.getInstance().getMinHistory(uuid);
-                        if (jfgVideo != null) {
-                            Log.d("RePlay", "Replay history");
-                            setLiveRectTime(TYPE_HISTORY, jfgVideo.beginTime, true);
-                            presenter.startPlayHistory(jfgVideo.beginTime * 1000L);
-                        }
-                    } catch (Throwable throwable) {
-                        AppLogger.e("err:" + MiscUtils.getErr(throwable));
-                    }
+            hasPendingHistoryPlayAction = false;
+            long playTime = -1;
+            if (pendingHistoryPlayTime > 0) {
+                playTime = pendingHistoryPlayTime;
+                pendingHistoryPlayTime = -1;
+            } else {
+                JFGVideo jfgVideo = null;
+                if (history != null && history.size() > 0) {
+                    jfgVideo = history.iterator().next();
                 }
+                if (jfgVideo != null) {
+                    playTime = jfgVideo.beginTime * 1000L;
+                }
+            }
+            if (playTime > 0) {
+                Log.d("RePlay", "Replay history");
+                playHistoryAndSetLiveTime(playTime / 1000);
+            } else {
+                Log.d("RePlay", "Replay history no time to play");
             }
         }
         Log.d("onHistoryReady", "onHistoryReady:" + new Gson().toJson(history));
     }
 
-    private void toLoadingHistory() {
+    public void performLoadHistoryAndPlay(long playTime) {
         AppLogger.d("点击加载历史视频");
-        btnLoadHistory.setEnabled(false);
-        livePlayState = PLAY_STATE_PREPARE;
-        setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
-        hasPendingHistoryPlayAction = true;
-        presenter.fetchHistoryDataListV2(uuid, (int) (TimeUtils.getTodayEndTime() / 1000), 1, 3);
+        //这里需要判断是否已经是加载过历史视频了,虽然这个有局限性
+        if (vsLayoutWheel.getDisplayedChild() == 1) {
+            playHistoryAndSetLiveTime(playTime);
+        } else {
+            this.hasPendingHistoryPlayAction = true;
+            this.pendingHistoryPlayTime = playTime;
+            btnLoadHistory.setEnabled(false);
+            livePlayState = PLAY_STATE_PREPARE;
+            setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
+            hasPendingHistoryPlayAction = true;
+            presenter.fetchHistoryDataListV2(uuid, (int) (TimeUtils.getTodayEndTime() / 1000), 1, 3);
+        }
+
     }
 
     @Override
@@ -634,8 +654,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         AppLogger.w("需要重置清晰度");
 
-        HistoryManager.getInstance().addHistoryObserver(uuid, this);
-
         //点击事件
         if (liveTimeRectListener == null) {
             liveTimeRectListener = v -> {
@@ -670,6 +688,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             };
             (liveTimeLayout).setOnClickListener(liveTimeRectListener);
         }
+        HistoryManager.getInstance().addHistoryObserver(uuid, this);
     }
 
     public void updateDoorLock() {
@@ -1127,7 +1146,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate);
         ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
-
 
     private void setLoadingState(String content, String subContent) {
         int state = livePlayState;

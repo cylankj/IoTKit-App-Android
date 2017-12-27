@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 
 import java.io.IOException;
-import java.util.TreeSet;
+import java.util.Collection;
 
 import rx.Observable;
 
@@ -115,7 +115,7 @@ public interface CamLiveContract {
 
         void onHistoryEmpty();
 
-        void onHistoryReady(TreeSet<JFGVideo> history);
+        void onHistoryReady(Collection<JFGVideo> history);
 
         void onLoadHistoryFailed();
     }

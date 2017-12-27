@@ -61,7 +61,7 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.TreeSet;
+import java.util.Collection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -338,8 +338,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     if (!judge()) {
                         return;
                     }
-
-                    presenter.fetchHistoryDataListV1(uuid);
+                    camLiveControlLayer.performLoadHistoryAndPlay(time);
                 }
             }
         } else if (presenter != null && isResumed() && !isVisibleToUser) {
@@ -851,7 +850,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onHistoryReady(TreeSet<JFGVideo> history) {
+    public void onHistoryReady(Collection<JFGVideo> history) {
         Log.d(CYLAN_TAG, "历史录像视频数据已就绪");
         camLiveControlLayer.onHistoryReady(history);
 

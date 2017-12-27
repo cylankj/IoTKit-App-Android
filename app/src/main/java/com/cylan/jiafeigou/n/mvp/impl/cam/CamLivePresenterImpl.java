@@ -17,6 +17,7 @@ import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
@@ -61,6 +62,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import permissions.dispatcher.PermissionUtils;
@@ -309,18 +311,26 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
         Subscription subscribe = observable.subscribeOn(Schedulers.io())
                 .flatMap(cid -> RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class))
+                .first()
                 .delay(1, TimeUnit.SECONDS)
+                .observeOn(Schedulers.io())
+                .map(rsp -> {
+                    if (HistoryManager.getInstance().hasHistory(uuid)) {
+                        return HistoryManager.getInstance().getHistory(uuid);
+                    }
+                    return null;
+                })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<JFGHistoryVideo>() {
+                .subscribe(new Action1<TreeSet<JFGVideo>>() {
                     @Override
-                    public void call(JFGHistoryVideo historyVideo) {
-                        if (!HistoryManager.getInstance().hasHistory(uuid)) {
+                    public void call(TreeSet<JFGVideo> jfgVideos) {
+                        if (jfgVideos == null) {
                             //没有历史视频
                             mView.onHistoryEmpty();
                         } else {
                             //有历史视频
-                            mView.onHistoryReady(HistoryManager.getInstance().getHistory(uuid));
+                            mView.onHistoryReady(jfgVideos);
                         }
                     }
                 }, new Action1<Throwable>() {

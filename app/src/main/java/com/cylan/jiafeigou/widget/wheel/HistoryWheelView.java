@@ -21,6 +21,7 @@ import android.widget.OverScroller;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -31,7 +32,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.SortedSet;
+import java.util.NavigableSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HistoryWheelView extends View implements GestureDetector.OnGestureListener {
     private static final String TAG = HistoryWheelView.class.getSimpleName();
+    private static final boolean DEBUG = BuildConfig.DEBUG;
     private OverScroller mScroller;
     private GestureDetectorCompat mDetector;
 
@@ -105,18 +107,20 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private boolean mSnapDirectionLocked = false;
     private Calendar mCalendar = Calendar.getInstance();
     private long mZeroTime;
-    private TreeSet<JFGVideo> mHistoryFiles = new TreeSet<>(new Comparator<JFGVideo>() {
+    private Comparator<JFGVideo> mHistoryComparator = new Comparator<JFGVideo>() {
         @Override
         public int compare(JFGVideo o1, JFGVideo o2) {
             return (int) (o1.beginTime - o2.beginTime);
         }
-    });
+    };
+    private TreeSet<JFGVideo> mHistoryFiles = new TreeSet<>(mHistoryComparator);
     private Runnable mUnlockRunnable = new Runnable() {
         @Override
         public void run() {
             mLocked = false;
         }
     };
+
 
     private Runnable mNotifyRunnable = new Runnable() {
         @Override
@@ -127,7 +131,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             if (mHistoryListener != null) {
                 long currentTime = getCurrentTime();
                 long unitTime = getUnitTime();
-                if (BuildConfig.DEBUG) {
+                if (DEBUG) {
                     Log.d(TAG, "notify time is" + new Date(currentTime).toLocaleString());
                 }
                 mHistoryListener.onHistoryTimeChanged(currentTime / unitTime * unitTime);
@@ -378,7 +382,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         }
         long currentTime = getCurrentTime();
         long distance = getDistanceByTime(time, currentTime);
-        if (BuildConfig.DEBUG) {
+        if (DEBUG) {
             Log.d(TAG, "scroller time is:" + new Date(time).toLocaleString() +
                     ",current time is:" + new Date(currentTime).toLocaleString() +
                     ",scroller distance is:" + distance +
@@ -483,28 +487,35 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         return (long) (10 * 60 * 1000F / lineInterval);
     }
 
+
     private void drawHistoryBlock(Canvas canvas) {
-        if (mHistoryFiles.size() == 0) {
-            return;
-        }
         int startX = mScroller.getCurrX() - getMeasuredWidth() / 2;
         int stopX = startX + getMeasuredWidth() * 2;
         long unitTime = getUnitTime();
         mStartHistoryBlock.beginTime = (startX * getPixelTime() + mZeroTime) / unitTime;
         mStopHistoryBlock.beginTime = (stopX * getPixelTime() + mZeroTime) / unitTime;
         JFGVideo start = mHistoryFiles.floor(mStartHistoryBlock);
-        if (start == null) {
+        if (start == null && mHistoryFiles.size() > 0) {
             start = mHistoryFiles.first();
         }
         JFGVideo stop = mHistoryFiles.ceiling(mStopHistoryBlock);
-        if (stop == null) {
+        if (stop == null && mHistoryFiles.size() > 0) {
             stop = mHistoryFiles.last();
         }
-        SortedSet<JFGVideo> historyFiles = mHistoryFiles.subSet(start, true, stop, true);
-        for (JFGVideo file : historyFiles) {
-            long distanceX1 = getDistanceByTime(file.beginTime * unitTime, mZeroTime);
-            long distanceX2 = getDistanceByTime((file.beginTime + file.duration) * unitTime, mZeroTime);
-            canvas.drawRect(distanceX1, 0, Math.max(distanceX1 + 1, distanceX2)/*最少要画一个像素,否则还以为没有数据*/, getMeasuredHeight(), dataMaskPaint);
+        try {
+            if (mHistoryFiles.size() > 0) {
+                NavigableSet<JFGVideo> historyFiles = mHistoryFiles.subSet(start, true, stop, true);
+                for (JFGVideo file : historyFiles) {
+                    long distanceX1 = getDistanceByTime(file.beginTime * unitTime, mZeroTime);
+                    long distanceX2 = getDistanceByTime((file.beginTime + file.duration) * unitTime, mZeroTime);
+                    canvas.drawRect(distanceX1, 0, Math.max(distanceX1 + 1, distanceX2)/*最少要画一个像素,否则还以为没有数据*/, getMeasuredHeight(), dataMaskPaint);
+                }
+            }
+        } catch (Exception e) {
+            if (DEBUG) {
+                Log.d(TAG, "迭代过程中数据发生了变化,需要重新绘制");
+            }
+            postInvalidate();
         }
     }
 
@@ -572,15 +583,26 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         this.mSnapDirectionLocked = snapDirection != SnapDirection.MOVE_DIRECTION;
     }
 
+
     public void setHistoryFiles(Collection<JFGVideo> historyFiles) {
-        mHistoryFiles.clear();
-        mHistoryFiles.addAll(historyFiles);
-        postInvalidate();
+        modifyHistoryInternal(historyFiles, true);
+    }
+
+    private void modifyHistoryInternal(Collection<JFGVideo> historyFiles, boolean clean) {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                if (clean) {
+                    mHistoryFiles.clear();
+                }
+                mHistoryFiles.addAll(historyFiles);
+                postInvalidate();
+            }
+        });
     }
 
     public void addHistoryFiles(List<JFGVideo> historyFiles) {
-        mHistoryFiles.addAll(historyFiles);
-        postInvalidate();
+        modifyHistoryInternal(historyFiles, false);
     }
 
     public void setTimeUnit(TimeUnit timeUnit) {
@@ -623,24 +645,40 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
     }
 
-    public abstract class HistoryAdapter {
-        public JFGVideo getHistoryFloor() {
+    public static abstract class HistoryAdapter {
+        protected TreeSet<JFGVideo> mHistoryFiles = new TreeSet<>();
+
+        public JFGVideo floor(JFGVideo video) {
+            JFGVideo start = mHistoryFiles.floor(video);
+            if (start == null && mHistoryFiles.size() > 0) {
+                start = mHistoryFiles.first();
+            }
+            return start;
+        }
+
+        public JFGVideo ceiling(JFGVideo video) {
+            JFGVideo stop = mHistoryFiles.ceiling(video);
+            if (stop == null && mHistoryFiles.size() > 0) {
+                stop = mHistoryFiles.last();
+            }
+            return stop;
+        }
+
+        public JFGVideo min() {
+            if (mHistoryFiles.size() > 0) {
+                return mHistoryFiles.first();
+            }
             return null;
         }
 
-        public JFGVideo getHistoryCeilling() {
+        public JFGVideo max() {
+            if (mHistoryFiles.size() > 0) {
+                return mHistoryFiles.last();
+            }
             return null;
         }
 
-        public JFGVideo getMinHistory() {
-            return null;
-        }
-
-        public JFGVideo getMaxHistory() {
-            return null;
-        }
-
-        public void getRangeHistory() {
+        public void range(JFGVideo start, JFGVideo end) {
 
         }
 
@@ -648,11 +686,11 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
 
         }
 
-        public void addHistorys() {
+        public void addHistorys(Collection<JFGVideo> videos) {
 
         }
 
-        public void setHistorys() {
+        public void setHistorys(Collection<JFGVideo> videos) {
 
         }
 

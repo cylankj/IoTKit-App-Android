@@ -6,7 +6,9 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by yanzhendong on 2017/12/25.
@@ -25,7 +28,7 @@ public class HistoryManager {
     private ConcurrentHashMap<String, HistoryObserver> historyObserverHashMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, TreeSet<JFGVideo>> historyVideoMap = new ConcurrentHashMap<>();
     private HashSet<String> notifyQueen = new HashSet<>();
-
+    private ReentrantLock lock = new ReentrantLock();
     private Comparator<JFGVideo> comparator = new Comparator<JFGVideo>() {
         @Override
         public int compare(JFGVideo o1, JFGVideo o2) {
@@ -71,7 +74,15 @@ public class HistoryManager {
     }
 
     public TreeSet<JFGVideo> getHistory(String uuid) {
-        return historyVideoMap.get(uuid);
+        lock.lock();
+        try {
+            ArrayList<JFGVideo> jfgVideos = new ArrayList<>(historyVideoMap.get(uuid));
+            TreeSet<JFGVideo> treeSet = new TreeSet<>(comparator);
+            treeSet.addAll(jfgVideos);
+            return treeSet;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public JFGVideo getMinHistory(String uuid) {
@@ -81,26 +92,33 @@ public class HistoryManager {
 
     public void cacheHistory(JFGHistoryVideo historyVideo) {
         if (historyVideo.list != null && historyVideo.list.size() > 0) {
-            synchronized (this) {
-                notifyQueen.clear();
-                for (JFGVideo video : historyVideo.list) {
-                    TreeSet<JFGVideo> jfgVideos = historyVideoMap.get(video.peer);
-                    if (jfgVideos == null) {
-                        jfgVideos = new TreeSet<>(comparator);
-                        historyVideoMap.put(video.peer, jfgVideos);
-                    }
-                    jfgVideos.add(video);
-                    notifyQueen.add(video.peer);
-                }
+            HandlerThreadUtils.post(new Runnable() {
+                @Override
+                public void run() {
+                    lock.lock();
+                    try {
+                        notifyQueen.clear();
+                        for (JFGVideo video : historyVideo.list) {
+                            TreeSet<JFGVideo> jfgVideos = historyVideoMap.get(video.peer);
+                            if (jfgVideos == null) {
+                                jfgVideos = new TreeSet<>(comparator);
+                                historyVideoMap.put(video.peer, jfgVideos);
+                            }
+                            jfgVideos.add(video);
+                            notifyQueen.add(video.peer);
+                        }
 
-                for (String peer : notifyQueen) {
-                    HistoryObserver historyObserver = historyObserverHashMap.get(peer);
-                    if (historyObserver != null) {
-                        historyObserver.onHistoryChanged(getHistory(peer));
+                        for (String peer : notifyQueen) {
+                            HistoryObserver historyObserver = historyObserverHashMap.get(peer);
+                            if (historyObserver != null) {
+                                historyObserver.onHistoryChanged(new ArrayList<>(historyVideoMap.get(peer)));
+                            }
+                        }
+                    } finally {
+                        lock.unlock();
                     }
                 }
-
-            }
+            });
         }
     }
 

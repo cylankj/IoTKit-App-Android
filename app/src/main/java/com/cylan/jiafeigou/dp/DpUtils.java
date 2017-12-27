@@ -45,6 +45,7 @@ public class DpUtils {
         try {
             return mp.createBufferUnpacker(data).read(clazz);
         } catch (Exception e) {
+            e.printStackTrace();
             return defaultValue;
         }
     }

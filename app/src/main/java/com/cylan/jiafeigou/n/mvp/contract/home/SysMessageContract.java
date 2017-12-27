@@ -6,8 +6,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
-
-import rx.Subscription;
+import java.util.List;
 
 /**
  * 作者：zsl
@@ -18,56 +17,17 @@ public interface SysMessageContract {
 
     interface View extends BaseView {
 
-        /**
-         * 初始化消息列表
-         *
-         * @param list
-         */
-        void initRecycleView(ArrayList<SysMsgBean> list);
+        void onQuerySystemMessageRsp(ArrayList<SysMsgBean> list);
 
-
-        /**
-         * 消息为空显示
-         */
-        void showNoMesgView();
-
-        /**
-         * 消息不为空时显示
-         */
-        void hideNoMesgView();
-
-        void deleteMesgReuslt(RxEvent.DeleteDataRsp rsp);
+        void onDeleteSystemMessageRsp(RxEvent.DeleteDataRsp deleteDataRspClass);
     }
 
     interface Presenter extends BasePresenter {
 
+        void loadSystemMessageFromServer(long v601, long v701);
 
-        /**
-         * 获取到用户的信息拿到数据库操作对象
-         */
-        Subscription getAccount();
+        void deleteSystemMessageFromServer(List<SysMsgBean> sysMsgBeans);
 
-        /**
-         * 清空本地消息记录
-         */
-        void deleteAllRecords();
-
-
-        /**
-         * Dp获取消息记录数据
-         */
-        void getMesgDpData(String account);
-
-
-//        void deleteServiceMsg(long type, long version);
-
-        Subscription deleteMsgBack();
-
-//        void deleteOneItem(SysMsgBean bean);
-
-        void markMesgHasRead();
-
-        void removeItems(ArrayList<SysMsgBean> list);
     }
 
 }

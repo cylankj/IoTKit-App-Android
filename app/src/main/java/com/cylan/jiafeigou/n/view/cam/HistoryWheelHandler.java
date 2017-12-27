@@ -42,7 +42,7 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
     }
 
     private int getMinute(long time) {
-        return (int) (time / 60 + (time % 60 != 0 ? 1 : 0));
+        return (int) Math.ceil(((double) time / 60));
     }
 
     private boolean isSameMinute(long time1, long time2) {

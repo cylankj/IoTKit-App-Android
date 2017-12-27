@@ -8,11 +8,11 @@ import android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION
 import android.os.IBinder
 import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.WindowManager
 import com.cylan.entity.JfgEnum
 import com.cylan.entity.jniCall.JFGDoorBellCaller
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.SmartcallActivity
-import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.module.*
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rx.RxBus
@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.support.network.NetMonitor
 import com.cylan.jiafeigou.support.network.NetworkCallback
 import com.cylan.jiafeigou.utils.ContextUtils
 import com.cylan.jiafeigou.utils.NetUtils
-import com.cylan.jiafeigou.utils.PreferencesUtils
 
 /**
  * Created by yanzhendong on 2017/12/1.
@@ -67,7 +66,7 @@ class AppServices() : Service(), NetworkCallback {
         SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "LoginHelper.performAutoLogin()")
     }
 
-    private class AppHooker : HookerSupervisor.ActionHooker() {
+    private inner class AppHooker : HookerSupervisor.ActionHooker() {
 
         override fun doHookerActionHooker(action: Supervisor.Action, parameter: HookerSupervisor.HookerActionParameter): Any? {
             val actionParameter = parameter.action.parameter()
@@ -75,6 +74,7 @@ class AppServices() : Service(), NetworkCallback {
             when (actionParameter) {
                 is AppCallbackSupervisor.PublishParameter -> doHookerPublishAction(actionParameter)
             }
+
             return super.doHookerActionHooker(action, parameter)
         }
 
@@ -91,12 +91,12 @@ class AppServices() : Service(), NetworkCallback {
 
         private fun doHookerPasswordChanged(eventAction: RxEvent.PwdHasResetEvent) {
             AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground())
-            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)
+            LoginHelper.performLogout()
             RxBus.getCacheInstance().removeAllStickyEvents()
             if (!BaseApplication.isBackground()) {
                 when (eventAction.code) {
                     16008, 1007, 16006 -> {
-                        AlertDialog.Builder(ContextUtils.getContext())
+                        val dialog = AlertDialog.Builder(this@AppServices, R.style.dialog_activity_style)
                                 .setTitle(R.string.RET_ELOGIN_ERROR)
                                 .setMessage(R.string.PWD_CHANGED)
                                 .setCancelable(false)
@@ -106,7 +106,9 @@ class AppServices() : Service(), NetworkCallback {
                                     intent.putExtra("from_log_out", true);
                                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
                                     ContextUtils.getContext().applicationContext.startActivity(intent);
-                                }).show()
+                                }).create()
+                        dialog.window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT)
+                        dialog.show()
                     }
                 }
             }
