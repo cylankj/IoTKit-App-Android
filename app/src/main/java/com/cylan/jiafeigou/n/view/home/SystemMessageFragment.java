@@ -182,7 +182,7 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
         rlDeleteDialog.setVisibility(View.VISIBLE);
         customToolbar.setToolbarRightTitle(getString(R.string.CANCEL));
         messageAdapter.setEditMode(true);
-
+        tvDelete.setEnabled(messageAdapter.getSelectedItems().size() > 0);
     }
 
     /**

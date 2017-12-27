@@ -40,6 +40,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
             long t = o2.time - o1.time;
             return t > 0 ? 1 : t < 0 ? -1 : 0;
         });
+        notifyDataSetChanged();
     }
 
     @Override
@@ -49,6 +50,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
             long t = o2.time - o1.time;
             return t > 0 ? 1 : t < 0 ? -1 : 0;
         });
+        notifyDataSetChanged();
     }
 
     public void select(boolean selectAll) {
@@ -99,6 +101,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (listener != null) {
+                    item.isCheck = isChecked ? 1 : 0;
                     listener.onSelectionChanged(layoutPosition, isChecked);
                 }
             }
