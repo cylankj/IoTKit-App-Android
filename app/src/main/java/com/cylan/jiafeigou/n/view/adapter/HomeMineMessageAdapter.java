@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -29,7 +30,25 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
 
     public void setEditMode(boolean editMode) {
         isEditMode = editMode;
-        notifyDataSetHasChanged();
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void addAll(List<SysMsgBean> items) {
+        super.addAll(items);
+        Collections.sort(mList, (o1, o2) -> {
+            long t = o2.time - o1.time;
+            return t > 0 ? 1 : t < 0 ? -1 : 0;
+        });
+    }
+
+    @Override
+    public void add(int location, SysMsgBean item) {
+        super.add(location, item);
+        Collections.sort(mList, (o1, o2) -> {
+            long t = o2.time - o1.time;
+            return t > 0 ? 1 : t < 0 ? -1 : 0;
+        });
     }
 
     public void select(boolean selectAll) {
@@ -39,7 +58,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
                 bean.isCheck = selectAll ? 1 : 0;
             }
         }
-        notifyDataSetHasChanged();
+        notifyDataSetChanged();
     }
 
     public List<SysMsgBean> getSelectedItems() {
@@ -60,7 +79,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
     }
 
     public void setSelectionListener(SelectionListener listener) {
-
+        this.listener = listener;
     }
 
     private SelectionListener listener;
