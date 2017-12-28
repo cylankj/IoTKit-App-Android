@@ -1848,7 +1848,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        isUserTouchScreen = true;
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                isUserTouchScreen = false;
+                break;
+            default:
+                isUserTouchScreen = true;
+        }
         return super.onInterceptTouchEvent(ev);
     }
 }
