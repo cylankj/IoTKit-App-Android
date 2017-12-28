@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -1080,11 +1079,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
                 switch (state) {
                     case STATE_FINISH: {
+                        isUserTouchScreen = false;
                         setLiveRectTime(TYPE_HISTORY, time, true);
                         presenter.startPlayHistory(time);
                     }
                     break;
                     default: {
+                        isUserTouchScreen = true;
                         setLiveTimeContent(TYPE_HISTORY, time);
                     }
                 }
@@ -1845,16 +1846,4 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         superWheelExt.setTimeZone(timeZone);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                isUserTouchScreen = false;
-                break;
-            default:
-                isUserTouchScreen = true;
-        }
-        return super.onInterceptTouchEvent(ev);
-    }
 }
