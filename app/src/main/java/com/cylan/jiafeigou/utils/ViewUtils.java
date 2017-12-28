@@ -84,6 +84,10 @@ public class ViewUtils {
         }
     }
 
+    public static void setBottomMargin(View view, int margin) {
+        setMargins(view, 0, 0, 0, margin);
+    }
+
     public static void setViewMarginStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
         increaseMargins(v, 0, height, 0, 0);

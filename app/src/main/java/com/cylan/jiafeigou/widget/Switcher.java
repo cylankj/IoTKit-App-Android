@@ -10,8 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,24 +43,22 @@ public class Switcher extends LinearLayout {
         viewSecond = (TextView) getChildAt(1);
         viewThird = (TextView) getChildAt(2);
         viewFirst.setOnClickListener(v -> {
-            slideOut();
-            removeCallbacks(autoSlideOut);
             int index = content2Index(viewFirst.getText().toString());
             viewFirst.setText(viewThird.getText());
             viewThird.setText(index2Content(index));
             if (switcherListener != null) {
                 switcherListener.switcher(v, index);
             }
+            performSlideAnimation(false);
         });
         viewSecond.setOnClickListener(v -> {
-            slideOut();
-            removeCallbacks(autoSlideOut);
             int index = content2Index(viewSecond.getText().toString());
             viewSecond.setText(viewThird.getText());
             viewThird.setText(index2Content(index));
             if (switcherListener != null) {
                 switcherListener.switcher(v, index);
             }
+            performSlideAnimation(false);
         });
         viewThird.setOnClickListener(v -> {
             if (!viewFirst.isShown()) {
@@ -73,60 +69,15 @@ public class Switcher extends LinearLayout {
                 viewSecond.setVisibility(VISIBLE);
                 viewSecond.setAlpha(0.0f);
             }
-            removeCallbacks(autoSlideOut);
-            if (viewFirst.getAlpha() == 1.0) {
-                YoYo.with(Techniques.SlideOutRight)
-                        .interpolate(new DecelerateInterpolator())
-                        .duration(200)
-                        .playOn(viewSecond);
-                YoYo.with(Techniques.FadeOut)
-                        .duration(200)
-                        .playOn(viewSecond);
-                YoYo.with(Techniques.SlideOutRight)
-                        .interpolate(new DecelerateInterpolator())
-                        .duration(200)
-                        .playOn(viewFirst);
-                YoYo.with(Techniques.FadeOut)
-                        .duration(200)
-                        .playOn(viewFirst);
-            } else {
-                YoYo.with(Techniques.SlideInRight)
-                        .interpolate(new DecelerateInterpolator())
-                        .duration(200)
-                        .playOn(viewSecond);
-                YoYo.with(Techniques.FadeIn)
-                        .duration(200)
-                        .playOn(viewSecond);
-                YoYo.with(Techniques.SlideInRight)
-                        .interpolate(new DecelerateInterpolator())
-                        .duration(200)
-                        .playOn(viewFirst);
-                YoYo.with(Techniques.FadeIn)
-                        .duration(200)
-                        .playOn(viewFirst);
-                postDelayed(autoSlideOut, 3000);
-            }
             if (switcherListener != null) {
                 switcherListener.switcher(v, content2Index(viewThird.getText()));
             }
+            performSlideAnimation(!isShowing);
         });
-    }
-
-    private Runnable autoSlideOut = this::slideOut;
-
-    private void slideOut() {
-        YoYo.with(Techniques.SlideOutRight)
-                .duration(200)
-                .playOn(viewSecond);
-        YoYo.with(Techniques.FadeOut)
-                .duration(200)
-                .playOn(viewSecond);
-        YoYo.with(Techniques.SlideOutRight)
-                .duration(200)
-                .playOn(viewFirst);
-        YoYo.with(Techniques.FadeOut)
-                .duration(200)
-                .playOn(viewFirst);
+        viewFirst.setTranslationX(isShowing ? 0 : getWidth() - viewFirst.getLeft());
+        viewFirst.setAlpha(isShowing ? 1 : 0);
+        viewSecond.setTranslationX(isShowing ? 0 : getWidth() - viewSecond.getLeft());
+        viewSecond.setAlpha(isShowing ? 1 : 0);
     }
 
     private SwitcherListener switcherListener;
@@ -165,11 +116,38 @@ public class Switcher extends LinearLayout {
         viewSecond.setText(getResources().getString(list.get(1)));
     }
 
-    public void setOnDismissListener() {
+    private boolean isShowing = false;
 
-    }
+    public void performSlideAnimation(boolean show) {
+        if (isShowing = show) {
+            viewFirst.animate()
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(200)
+                    .translationX(0)
+                    .alpha(1)
+                    .start();
 
-    public interface OnDismiss {
-        void onSwitcherDismiss();
+            viewSecond.animate()
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(200)
+                    .translationX(0)
+                    .alpha(1)
+                    .start();
+        } else {
+            viewFirst.animate()
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(200)
+                    .translationX(getWidth() - viewFirst.getLeft())
+                    .alpha(0)
+                    .start();
+
+            viewSecond.animate()
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(200)
+                    .translationX(getWidth() - viewFirst.getLeft())
+                    .alpha(0)
+                    .start();
+        }
+
     }
 }

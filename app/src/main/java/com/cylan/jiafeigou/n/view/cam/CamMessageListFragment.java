@@ -473,6 +473,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
+            startRequest(true);
         } else {
             startRequest(true);
         }
@@ -642,6 +643,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         fLayoutCamMessageListTimeline.setListener(time -> {
             AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
             if (presenter != null) {
+                camMessageListAdapter.clear();
+                decideEmptyViewLayout();
                 presenter.fetchMessageListByFaceId(TimeUtils.getSpecificDayEndTime(time), false, false);
             }
             LoadingDialog.showLoading(getActivity());

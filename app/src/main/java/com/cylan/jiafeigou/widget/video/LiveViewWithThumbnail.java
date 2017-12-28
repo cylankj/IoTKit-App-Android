@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -29,7 +27,6 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
@@ -38,11 +35,6 @@ import org.webrtc.videoengine.ViEAndroidGLES20;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 17-3-13.
@@ -54,7 +46,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private FrameLayout standByLayout;//待机
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
-    private Subscription subscription;
     private boolean isNormalView;
 //    private Glide glide;
 
@@ -72,11 +63,14 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         imgThumbnail = (ImageView) viewGroup.findViewById(R.id.imgv_live_thumbnail);
         imgThumbnail.setOnClickListener(v -> {//do nothing
             Log.d("wat", "wat");
-            performTouch();
+            if (listener != null) {
+                listener.onSingleTap(0, 0);
+            }
         });
         standByLayout = (FrameLayout) viewGroup.findViewById(R.id.fLayout_standby_mode);
         tvLiveFlow = (TextView) viewGroup.findViewById(R.id.tv_live_flow);
     }
+
 
     public VideoViewFactory.IVideoView getVideoView() {
         return this.videoView;
@@ -89,6 +83,19 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (videoView instanceof ViEAndroidGLES20) {
 //            ((ViEAndroidGLES20) videoView).onTouch()
             //普通view应该有问题的
+        }
+    }
+
+    public interface OnSingleTapListener {
+        void onSingleTap();
+    }
+
+    private VideoViewFactory.InterActListener listener;
+
+    public void setInterActListener(VideoViewFactory.InterActListener listener) {
+        this.listener = listener;
+        if (videoView != null) {
+            videoView.setInterActListener(listener);
         }
     }
 
@@ -130,11 +137,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void setThumbnail(Context context, String token, Uri glideUrl) {
-        imgThumbnail.setVisibility(VISIBLE);
-        if (glideUrl == null || TextUtils.isEmpty(glideUrl.toString())) {
-            return;
-        }
-        //todo GLIDE
+        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
+        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
         AppLogger.i("load uri: " + glideUrl);
         GlideApp.with(context)
                 .asBitmap()
@@ -149,33 +153,17 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void setThumbnail(Context context, String token, Bitmap bitmap) {
-        imgThumbnail.setVisibility(VISIBLE);
+        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
         imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
-        if (bitmap == null) {
-            AppLogger.e("preview bitmap is null");
-            return;
-        } else {
-            Log.d(TAG, "setThumbnail: good");
-        }
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        subscription = Observable.just(bitmap)
-                .subscribeOn(Schedulers.io())
-                .map(bMap -> {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    return stream.toByteArray();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bytes -> GlideApp.with(context)
-                                .asBitmap()
-                                .load(bytes)
-                                .signature(new ObjectKey(token))
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .skipMemoryCache(!isNormalView)
-                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
-                        MiscUtils::getErr);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        GlideApp.with(context)
+                .asBitmap()
+                .load(stream.toByteArray())
+                .signature(new ObjectKey(token))
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
     }
 
 
@@ -197,6 +185,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
 //        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
         this.videoView = iVideoView;
+        if (videoView != null) {
+            videoView.setInterActListener(listener);
+        }
         ((View) videoView).setId("videoView".hashCode());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER_HORIZONTAL;
@@ -230,9 +221,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             imgThumbnail.setVisibility(GONE);
         }
         Log.d(TAG, "onLiveStart");
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
         if (imgThumbnail != null && imgThumbnail.isShown()) {
             imgThumbnail.setVisibility(GONE);
         }
@@ -240,17 +228,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void onLiveStop() {
-//        if (isNormalView())
-//            imgThumbnail.setVisibility(VISIBLE);
-//        else {//全景view,也要显示黑色背景
-//            imgThumbnail.setVisibility(VISIBLE);
-//        }
-//        imgThumbnail.bringToFront();
-//        imgThumbnail.setImageResource(android.R.color.black);
-        if (!isNormalView()) {
-            imgThumbnail.setImageResource(android.R.color.transparent);
-            imgThumbnail.setVisibility(VISIBLE);
-        }
+        imgThumbnail.setImageResource(android.R.color.transparent);
+        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
         Log.d(TAG, "onLiveStop");
     }
 
@@ -349,8 +328,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                         imageViewRef.get().setBackgroundDrawable(bd);
                     }
                 } else {
-                    videoViewWeakReference.get().loadBitmap(resource);
-                    imageViewRef.get().setVisibility(VISIBLE);
+                    videoViewWeakReference.get().loadBitmap(resource.copy(resource.getConfig(), true));
+                    imageViewRef.get().setVisibility(GONE);
                     imageViewRef.get().setImageResource(android.R.color.transparent);
                     AppLogger.w("开始加载全景预览图");
                 }

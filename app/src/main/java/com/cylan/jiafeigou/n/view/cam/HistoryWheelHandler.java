@@ -2,8 +2,10 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGVideo;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.video.History;
@@ -71,9 +73,15 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
                         * */
                         boolean inFloor = floor != null && (floor.beginTime + floor.duration >= historyFile.beginTime ||
                                 isSameMinute(floor.beginTime + floor.duration, historyFile.beginTime));
-                        boolean inCeiling = ceiling != null && (ceiling.beginTime == historyFile.beginTime ||
-                                isSameMinute(ceiling.beginTime, historyFile.beginTime));
-
+                        boolean inCeiling = ceiling != null && isSameMinute(ceiling.beginTime, historyFile.beginTime);
+                        if (BuildConfig.DEBUG) {
+                            Log.d("HistoryWheelHandler", "select time is:" + historyFile.beginTime +
+                                    ",floor is:" + floor +
+                                    ",ceiling is" + ceiling +
+                                    ",in floor:" + inFloor +
+                                    ",in ceiling:" + inCeiling
+                            );
+                        }
                         if (!inCeiling && !inFloor) {
                             //没有这段视频
                             ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));

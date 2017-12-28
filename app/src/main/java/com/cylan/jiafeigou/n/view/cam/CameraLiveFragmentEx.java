@@ -210,9 +210,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         camLiveControlLayer.setFlipListener(new FlipImageView.FlipListener() {
             @Override
             public void onClick(FlipImageView view) {
-                if (camLiveControlLayer.isActionBarHide() && MiscUtils.isLand()) {
-                    return;//动画过程中
-                }
                 Device device = presenter.getDevice();
                 DpMsgDefine.DPSdStatus dpSdStatus = device.$(204, new DpMsgDefine.DPSdStatus());
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
@@ -365,12 +362,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.onResume();
         Log.d("isResumed", "isResumed: " + getUserVisibleHint());
         camLiveControlLayer.onActivityResume(presenter, DataSourceManager.getInstance().getDevice(uuid()), isUserVisible());
-        if (presenter != null) {
-            if (!judge() || presenter.getLiveStream().playState == PLAY_STATE_STOP) {
-                return;//还没开始播放
-            }
-//            presenter.restoreHotSeatState();
-        }
     }
 
     @Override
@@ -504,9 +495,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     switch (vId) {
                         case R.id.imgV_cam_trigger_capture:
                         case R.id.imgV_land_cam_trigger_capture:
-                            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) {
-                                return;
-                            }
                             if (camLiveControlLayer != null && camLiveControlLayer.getLiveViewWithThumbnail() != null &&
                                     camLiveControlLayer.getLiveViewWithThumbnail().getVideoView() != null) {
 //                                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView()
@@ -1001,13 +989,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (fromUser) {
                 customOrientation = orientation;
                 ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
+                camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
             } else {
                 if (customOrientation != requestedOrientation) {
                     customOrientation = -1;
                     if (requestedOrientation != getActivity().getRequestedOrientation()) {
                         ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                        camLiveControlLayer.layoutC.setOrientationState(requestedOrientation);
+                        camLiveControlLayer.liveLoadingBar.setOrientationState(requestedOrientation);
                     }
                 }
             }

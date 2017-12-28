@@ -71,6 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
@@ -858,7 +859,6 @@ public class DataSourceManager implements JFGSourceManager {
     private Subscription makeCacheDeviceSub() {
         return AppCallbackSupervisor.INSTANCE.observe(AppCallbackSupervisor.ReportDeviceEvent.class)
                 .onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(event -> {
                     Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
@@ -867,62 +867,53 @@ public class DataSourceManager implements JFGSourceManager {
                         device = event.getDevices()[i];
                         result.remove(device.uuid);
                     }
-
                     AppLogger.w("已删除的设备数:" + result.size());
-                    return BaseDBHelper.getInstance().updateDevice(event.getDevices()).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
+                    return BaseDBHelper.getInstance().updateDevice(event.getDevices()).map(devices -> new Pair<>(devices, result));
                 })
-                .map(devices -> {
-                    try {
-                        DBOption.DeviceOption option;
-//                        mCachedDeviceMap.clear();
-                        rawDeviceOrder.clear();
-                        ArrayList<String> uuidList = new ArrayList<>();
-                        synchronized (DataSourceManager.class) {
-//                            mCachedDeviceMap.clear();
+                .subscribe(new Action1<Pair<Iterable<Device>, Set<String>>>() {
+                    @Override
+                    public void call(Pair<Iterable<Device>, Set<String>> iterableSetPair) {
+                        try {
+                            unBindDevices(iterableSetPair.second).subscribe();
+                        } catch (Exception e) {
+                            AppLogger.e(e);
+                        }
+                        try {
+                            DBOption.DeviceOption option;
                             rawDeviceOrder.clear();
-                            for (Device device : devices) {
-                                option = device.option(DBOption.DeviceOption.class);
-                                if (mCachedDeviceMap.get(device.getUuid()) == null) {
-                                    mCachedDeviceMap.put(device.getUuid(), device);
-                                }
-                                rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
-                                if (!JFGRules.isShareDevice(device)) {
-                                    uuidList.add(device.getUuid());
+                            ArrayList<String> uuidList = new ArrayList<>();
+                            synchronized (DataSourceManager.class) {
+                                rawDeviceOrder.clear();
+                                for (Device device : iterableSetPair.first) {
+                                    option = device.option(DBOption.DeviceOption.class);
+                                    Device dev = mCachedDeviceMap.get(device.getUuid());
+                                    if (dev == null) {
+                                        mCachedDeviceMap.put(device.getUuid(), device);
+                                    } else {
+                                        dev.setDevice(device);
+                                    }
+                                    rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
+                                    if (!JFGRules.isShareDevice(device)) {
+                                        uuidList.add(device.getUuid());
+                                    }
                                 }
                             }
+                            syncHomeProperty();
+                            if (!BaseApplication.isBackground()) {
+                                getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+                            }
+                        } catch (Exception e) {
+                            AppLogger.d(e.getMessage());
+                            e.printStackTrace();
                         }
-                        syncHomeProperty();
-                        if (!BaseApplication.isBackground()) {
-                            getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
-                        }
-                    } catch (Exception e) {
-                        AppLogger.d(e.getMessage());
-                        e.printStackTrace();
                     }
-                    return "多线程真心麻烦";
-                })
-                .retry((i, e) -> true)
-                .subscribe(new Subscriber<String>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        AppLogger.d(e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        request(1);
-                    }
-
-                    @Override
-                    public void onStart() {
-                        request(1);
+                    public void call(Throwable throwable) {
+                        AppLogger.e(throwable);
                     }
                 });
+
     }
 
 

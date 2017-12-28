@@ -324,4 +324,21 @@ public class Device extends BasePropertyHolder<Device> {
     protected String uuid() {
         return uuid;
     }
+
+    public void setDevice(Device device) {
+        this._id = device._id;
+        this.uuid = device.uuid;
+        this.sn = device.sn;
+        this.alias = device.alias;
+        this.shareAccount = device.shareAccount;
+        this.pid = device.pid;
+        this.vid = device.vid;
+        this.account = device.account;
+        this.regionType = device.regionType;
+        this.server = device.server;
+        this.action = device.action;
+        this.state = device.state;
+        this.option = device.option;
+        this.available = true;
+    }
 }
