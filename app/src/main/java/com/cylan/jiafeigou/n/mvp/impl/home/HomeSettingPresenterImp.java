@@ -98,6 +98,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         LoginHelper.performLogout();
         NotifyManager.getNotifyManager().clearAll();
         RxBus.getCacheInstance().removeAllStickyEvents();
+
 //        DataSourceManager.getInstance().logout()
 //                .subscribeOn(Schedulers.io())
 //                .subscribe(retAccount -> {
@@ -250,9 +251,10 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
 
-    private static final int BYTE = 1024;
-    private static final int MEGA_BYTE = 1024 * 1024;
-    private static final int GIGA_BYTE = 1024 * 1024 * 1024;
+    private static final long KB = 1024;
+    private static final long MB = KB * 1024;
+    private static final long GB = MB * 1024;
+    private static final long TB = GB * 1024;
 
     /**
      * desc:转换文件的大小
@@ -263,17 +265,16 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     public String FormatFileSize(long byteData) {
         DecimalFormat df = new DecimalFormat("0.0");
         String fileSizeString = "";
-        if (byteData < BYTE) {
-            return byteData + "KB";
-        }
-        if (byteData >= BYTE && byteData < MEGA_BYTE) {
-            return df.format((double) (byteData >>> 10)) + "M";
-        }
-        if (byteData >= MEGA_BYTE && byteData < GIGA_BYTE) {
-            return df.format((double) (byteData >>> 20)) + "G";
-        }
-        if (byteData >= GIGA_BYTE && byteData < 1024L * GIGA_BYTE) {
-            return df.format((double) (byteData >>> 30)) + "T";
+        if (byteData < KB) {
+            return byteData + "B";
+        } else if (byteData >= KB && byteData < MB) {
+            return df.format((double) (byteData >>> 10)) + "KB";
+        } else if (byteData >= MB && byteData < GB) {
+            return df.format((double) (byteData >>> 20)) + "MB";
+        } else if (byteData >= GB && byteData < TB) {
+            return df.format((double) (byteData >>> 30)) + "GB";
+        } else if (byteData >= TB) {
+            return df.format((double) (byteData >>> 40)) + "TB";
         }
         return fileSizeString;
     }

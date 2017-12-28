@@ -126,7 +126,7 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
                 if (bean.type == 701) {
                     v701 = Math.min(v701, bean.time);
                 } else if (bean.type == 601) {
-                    v601 = Math.min(v601,  bean.time);
+                    v601 = Math.min(v601, bean.time);
                 }
             }
         }
@@ -165,12 +165,9 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
                 break;
 
             case R.id.tv_delete:
-                customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
                 presenter.deleteSystemMessageFromServer(messageAdapter.getSelectedItems());
                 messageAdapter.notifyDataSetHasChanged();
-                if (messageAdapter.getItemCount() == 0) {
-                    rlDeleteDialog.setVisibility(View.GONE);
-                }
+                rlDeleteDialog.setVisibility(View.GONE);
                 break;
         }
     }

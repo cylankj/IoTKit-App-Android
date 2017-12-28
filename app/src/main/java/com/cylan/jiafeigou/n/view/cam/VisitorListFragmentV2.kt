@@ -169,7 +169,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             faceAdapter.adapterItemCount > 0 -> {
                 //进入消息界面，当头像区域显示有两排时才显示右侧的更多控件。实际结果：一排也显示了更多的控件
                 more_text.visibility = View.INVISIBLE
-                resources.getDimensionPixelSize(R.dimen.y144)
+                resources.getDimensionPixelSize(R.dimen.y160)
             }
             else -> {
                 //进入消息界面，当头像区域显示有两排时才显示右侧的更多控件。实际结果：一排也显示了更多的控件

@@ -36,7 +36,7 @@ class CameraMessageAppBarBehavior(context: Context, attrs: AttributeSet) : AppBa
         return if (layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
             super.onMeasureChild(parent, child, parentWidthMeasureSpec, widthUsed, parentHeightMeasureSpec, heightUsed)
         } else {
-            child.measure(parentWidthMeasureSpec, View.MeasureSpec.makeMeasureSpec(child.context.resources.getDimensionPixelSize(R.dimen.y245), View.MeasureSpec.AT_MOST))
+            child.measure(parentWidthMeasureSpec, View.MeasureSpec.makeMeasureSpec(child.context.resources.getDimensionPixelSize(R.dimen.y260), View.MeasureSpec.AT_MOST))
             true
         }
     }
