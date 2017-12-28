@@ -79,6 +79,11 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     }
 
     @Override
+    public boolean beforeInterceptBackEvent() {
+        return false;
+    }
+
+    @Override
     public final Activity activity() {
         return getActivity();
     }

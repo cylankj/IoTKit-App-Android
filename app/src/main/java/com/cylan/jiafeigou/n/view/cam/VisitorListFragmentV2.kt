@@ -357,6 +357,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     private fun setExpanded(expanded: Boolean) {
         this.isExpanded = expanded
         visitorListener?.onExpanded(isExpanded)
+        resizeContentHeight()
         if (isExpanded) {
             more_text.setText(R.string.FACE_COLLAPSE)
             ViewUtils.setDrawablePadding(more_text, R.drawable.icon_putaway, 2)
@@ -366,10 +367,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             ViewUtils.setDrawablePadding(more_text, R.drawable.icon_expand, 2)
             footerAdapter.clear()
             faceAdapter.selections.firstOrNull()?.apply {
-                gridLayoutManager.scrollToPosition(this)
+                gridLayoutManager.scrollToPositionWithOffset(this, 0)
             }
         }
-        resizeContentHeight()
     }
 
     private fun makeVisitorCount(count: Int, forAllVisitor: Boolean) {

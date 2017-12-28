@@ -1,25 +1,32 @@
 package com.cylan.jiafeigou.base.wrapper;
 
-import android.graphics.Bitmap;
+import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.request.FutureTarget;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.module.BellerSupervisor;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -121,52 +128,58 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Log.d("AAAAA", "url is:"+url);
-        Subscription subscribe = load(url)
-                .subscribe(ret -> {
-                }, AppLogger::e);
-        addDestroySubscription(subscribe);
-    }
-
-    protected Observable<Long> load(String url) {
-        return Observable.interval(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(s -> {
-                    preload(url);
-                    return s;
-                })
-                .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class).first()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .filter(ret -> ret != null)
-                        .map(notify -> {
-                            if (notify.success) {
-                                AppLogger.d("正在显示门铃截图");
-                                if (mView != null) {
-                                    mView.onShowVideoPreviewPicture(url);
-                                }
-                            }
-                            return notify;
-                        })
-
-                );
-    }
-
-    private void preload(String url) {
-        if (mView != null && url != null) {
-            Log.d("AAAAA", "preload:" + url);
-            GlideApp.with(mView.activity())
-                    .asBitmap()
-                    .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                            RxBus.getCacheInstance().post(new Notify(true));
-                            // TODO: 2017/8/29 门铃截图也需要保存起来
-                            saveBitmap(resource);
+        Subscription subscribe = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                File file = null;
+                String picture = null;
+                while (file == null && !subscriber.isUnsubscribed()) {
+                    try {
+                        picture = BellerSupervisor.getBellerPicture(uuid);
+                        if (TextUtils.isEmpty(picture)) {
+                            SystemClock.sleep(1000);
+                            continue;
                         }
-                    });
-        }
+                        FutureTarget<File> fileFutureTarget = GlideApp.with(mView.activity())
+                                .downloadOnly()
+                                .load(picture)
+                                .submit();
+                        Log.d("LoadPreview", "load preview:" + picture);
+                        file = fileFutureTarget.get();
+                        removeLastPreview();
+                        String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+                        FileUtils.copyFile(file, new File(filePath));
+                        AppLogger.w("截图文件地址:" + filePath);
+                    } catch (Exception e) {
+                        Log.d("LoadPreview", "load preview error:" + picture + ",retrying");
+                        SystemClock.sleep(1000);
+                    }
+                }
+                subscriber.onNext(picture);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class))
+                .first()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        if (mView != null) {
+                            Log.d("LoadPreview", "finished" + s);
+                            mView.onShowVideoPreviewPicture(s);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        AppLogger.e("load picture error:" + throwable.getMessage());
+                    }
+                });
+        addDestroySubscription(subscribe);
     }
 
     public static class Notify {

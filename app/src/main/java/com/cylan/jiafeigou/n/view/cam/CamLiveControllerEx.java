@@ -1497,6 +1497,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private void setLiveRectTime(int type, long timestamp, boolean focus) {
+
         //历史视频的时候，使用rtcp自带时间戳。
         if (livePlayType == TYPE_HISTORY && timestamp == 0) {
             return;
@@ -1505,10 +1506,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler();
-        if (!historyWheelHandler.isHistoryLocked() || focus) {
+        boolean historyLocked = historyWheelHandler.isHistoryLocked();
+        Log.d("TYPE_HISTORY", "time: " + timestamp + ",locked:" + historyLocked + ",focus:" + focus);
+        if (!historyLocked || focus) {
             setLiveTimeContent(type, timestamp);
             if (type == TYPE_HISTORY) {
-                Log.d("TYPE_HISTORY time", "time: " + timestamp);
                 superWheelExt.scrollToPosition(TimeUtils.wrapToLong(timestamp), focus, focus);
             }
         }

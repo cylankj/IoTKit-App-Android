@@ -284,7 +284,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return Observable.just(false);
     }
 
-    private void removeLastPreview() {
+    protected void removeLastPreview() {
         final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
         if (TextUtils.isEmpty(pre)) {
             return;
@@ -300,9 +300,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
             }
         } catch (Exception e) {
         }
-        Observable.just("go")
-                .subscribeOn(Schedulers.io())
-                .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
+        FileUtils.deleteFile(pre);
     }
 
     protected Observable<RxEvent.LiveResponse> handleVideoResponse(String peer) {

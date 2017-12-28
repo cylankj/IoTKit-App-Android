@@ -260,6 +260,20 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         boolean hasConsumed = false;
         for (ActivityBackInterceptor interceptor : interceptors) {
             try {
+                if (interceptor.beforeInterceptBackEvent()) {
+                    hasConsumed = true;
+                }
+                //如果出现异常直接捕获就行了
+            } catch (Exception e) {
+                e.printStackTrace();
+                AppLogger.e(MiscUtils.getErr(e));
+            }
+        }
+        if (hasConsumed) {
+            return;
+        }
+        for (ActivityBackInterceptor interceptor : interceptors) {
+            try {
                 if (interceptor.performBackIntercept(willExit)) {
                     hasConsumed = true;
                 }
@@ -278,6 +292,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public boolean performBackIntercept(boolean willExit) {
+        return false;
+    }
+
+    @Override
+    public boolean beforeInterceptBackEvent() {
         return false;
     }
 

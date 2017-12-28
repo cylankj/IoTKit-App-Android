@@ -380,6 +380,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
+    public boolean beforeInterceptBackEvent() {
+        return super.beforeInterceptBackEvent();
+    }
+
+    @Override
     public boolean performBackIntercept(boolean willExit) {
         if (willExit && this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             removeVideoView();

@@ -2,6 +2,7 @@
 
 package com.cylan.jiafeigou.module
 
+import android.util.Log
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -53,15 +54,17 @@ object HookerSupervisor : Supervisor {
     private class HookerAction(val hookerParameter: HookerActionParameter) : Supervisor.Action {
         private var parameter: Any = hookerParameter
         private var index = 0
-        override fun parameter(): Any = hookerParameter
+        override fun parameter(): Any = parameter
         override fun process(): Any? {
             var hooker = hookers[parameter::class.java]?.getOrNull(index++)
             if (hooker == null && parameter is HookerActionParameter) {
+                Log.d("HookerAction", "No Hooker Action")
                 index = 0
                 parameter = (parameter as HookerActionParameter).action.parameter()
                 hooker = hookers[parameter::class.java]?.getOrNull(index++)
             }
             return if (hooker != null) {
+                Log.d("HookerAction", "doHooker:" + hooker + "parameter:" + parameter)
                 return hooker.hooker(this)
             } else {
                 hookerParameter.action.process()

@@ -147,7 +147,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 ArrayList<JFGDPMsg> jfgdpMsgs = new ArrayList<>(sysMsgBeans.size());
                 byte[] pack = DpUtils.pack(0);
                 for (SysMsgBean bean : sysMsgBeans) {
-                    jfgdpMsgs.add(new JFGDPMsg(bean.type, 0, pack));
+                    jfgdpMsgs.add(new JFGDPMsg(bean.type, bean.time, pack));
                 }
                 try {
                     long seq = Command.getInstance().robotDelData("", jfgdpMsgs, 0);

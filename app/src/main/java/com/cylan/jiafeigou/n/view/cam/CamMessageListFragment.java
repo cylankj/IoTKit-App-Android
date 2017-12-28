@@ -1060,11 +1060,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private TextView mockView;
 
     @Override
-    public boolean performBackIntercept(boolean willExit) {
+    public boolean beforeInterceptBackEvent() {
         if (isUserVisible() && isResumed()) {
             return exitEditMode() || exitDateSelectMode();
         }
-        return super.performBackIntercept(willExit);
+        return super.beforeInterceptBackEvent();
     }
 
     private boolean setEditerMode(boolean editerMode) {

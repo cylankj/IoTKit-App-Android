@@ -30,8 +30,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -728,22 +726,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onShowVideoPreviewPicture(String URL) {
-//        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         // TODO: 2017/11/10 GLIDE
-        GlideApp.with(this)
-                .asBitmap()
-                .load(URL)
-                .placeholder(R.drawable.default_diagram_mask)
+        GlideApp.with(this).load(URL).
+                placeholder(R.drawable.default_diagram_mask)
                 .error(R.drawable.default_diagram_mask)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(true)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-
-                    }
-                });
+                .into(mBellLiveVideoPicture);
     }
 
 

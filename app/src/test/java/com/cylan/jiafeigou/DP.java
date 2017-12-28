@@ -41,7 +41,6 @@ import com.lzy.okgo.cache.CacheMode;
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
-import org.msgpack.annotation.Message;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -65,6 +64,9 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -633,6 +635,47 @@ public class DP {
     @Test
     public void testV3Action() {
         System.out.println(DoorLockHelper.OPEN_DOOR_LOCK_ACTION);
+    }
+
+    @Test
+    public void testTimeout() throws InterruptedException {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+//                   subscriber.onNext("SSSSSSSSSs");
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .takeUntil(RxBus.getCacheInstance().toObservable(String.class))
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        System.out.println("AAAAAAAAAAAAAAAAAAA");
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        System.out.println("error" + throwable.getMessage());
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        System.out.println("SSSSSSSSSSSSSSSSSSSs");
+                    }
+                });
+
+        Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .delay(3, TimeUnit.SECONDS)
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        RxBus.getCacheInstance().post("SSSSSSSSSSSSSs");
+                    }
+                });
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        countDownLatch.await();
     }
 
 }

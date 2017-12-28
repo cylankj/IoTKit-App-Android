@@ -41,7 +41,6 @@ class AppServices() : Service(), NetworkCallback {
     override fun onCreate() {
         super.onCreate()
         HookerSupervisor.addHooker(appHooker)
-//        DeviceSupervisor.monitorReportDevices()
         BellerSupervisor.monitorBeller()
         NetMonitor.getNetMonitor().registerNet(this, arrayOf(ConnectivityManager.CONNECTIVITY_ACTION, NETWORK_STATE_CHANGED_ACTION))
     }
@@ -96,7 +95,7 @@ class AppServices() : Service(), NetworkCallback {
             if (!BaseApplication.isBackground()) {
                 when (eventAction.code) {
                     16008, 1007, 16006 -> {
-                        val dialog = AlertDialog.Builder(this@AppServices, R.style.dialog_activity_style)
+                        val dialog = AlertDialog.Builder(this@AppServices, R.style.AlertDialog)
                                 .setTitle(R.string.RET_ELOGIN_ERROR)
                                 .setMessage(R.string.PWD_CHANGED)
                                 .setCancelable(false)

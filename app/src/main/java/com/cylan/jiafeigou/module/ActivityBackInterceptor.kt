@@ -5,6 +5,7 @@ package com.cylan.jiafeigou.module
  */
 interface ActivityBackInterceptor {
 
+    fun beforeInterceptBackEvent(): Boolean
     fun performBackIntercept(willExit: Boolean): Boolean
 }
 

@@ -54,6 +54,7 @@ object BellerSupervisor : Supervisor {
         private val record = mutableMapOf<String, Long>()
         private val CALL_DURATION: Long = 30
         override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
+            Log.d("BellerSupervisor", "RepeatHooker:" + parameter)
             val lastTime = record[parameter.cid] ?: 0
             record[parameter.cid] = parameter.time
             if (parameter.time - lastTime < CALL_DURATION) {
@@ -67,6 +68,7 @@ object BellerSupervisor : Supervisor {
     private class URLHooker : BellerHooker() {
         val recordUrls = mutableMapOf<String, String>()
         override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
+            Log.d("BellerSupervisor", "URLHooker:" + parameter)
             if (!parameter.url.isEmpty()) {
                 recordUrls[parameter.cid] = parameter.url
             }
@@ -76,6 +78,7 @@ object BellerSupervisor : Supervisor {
 
     private class OwnerHooker : BellerHooker() {
         override fun doHooker(action: Supervisor.Action, parameter: BellerParameter) {
+            Log.d("BellerSupervisor", "OwnerHooker:" + parameter)
             if (TextUtils.equals(DataSourceManager.getInstance().getDevice(parameter.cid).uuid, parameter.cid)) {
                 action.process()
             }

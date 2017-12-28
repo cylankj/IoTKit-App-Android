@@ -35,7 +35,10 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
 
     @Override
     public void addAll(List<SysMsgBean> items) {
-        super.addAll(items);
+        if (items == null || items.size() == 0) {
+            return;
+        }
+        mList.addAll(items);
         Collections.sort(mList, (o1, o2) -> {
             long t = o2.time - o1.time;
             return t > 0 ? 1 : t < 0 ? -1 : 0;
@@ -45,8 +48,8 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
 
     @Override
     public void add(int location, SysMsgBean item) {
-        super.add(location, item);
-        Collections.sort(mList, (o1, o2) -> {
+        mList.add(location, item);
+          Collections.sort(mList, (o1, o2) -> {
             long t = o2.time - o1.time;
             return t > 0 ? 1 : t < 0 ? -1 : 0;
         });
