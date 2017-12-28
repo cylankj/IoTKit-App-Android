@@ -217,7 +217,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private boolean isRSCam;
     private boolean isShareAccount = false;
     private boolean hasPingSuccess = false;
-    private Handler handler = new Handler();
     private boolean needShowSight;
     private volatile boolean hasPendingHistoryPlayAction = false;
     private volatile boolean isUserTouchScreen = false;
