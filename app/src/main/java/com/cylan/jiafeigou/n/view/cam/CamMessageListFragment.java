@@ -144,7 +144,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private boolean hasFaceHeader = false;
     private int pageType = FaceItem.FACE_TYPE_DP;
     private String personId;
-//    private boolean hasFirstRequested = false;
+    //    private boolean hasFirstRequested = false;
     private Rect appbarRect = new Rect();
     private Rect messageRect = new Rect();
     private Rect headerRect = new Rect();
@@ -416,9 +416,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void onMessageAppbarScrolled(AppBarLayout appBarLayout, int offset) {
         Log.i("onMessageAppbarScrolled", "offset is:" + offset + ",total is:" + appBarLayout.getTotalScrollRange());
-//        srLayoutCamListRefresh.setEnabled(offset == 0 && !rvCamMessageList.canScrollVertically(-1));
-
-        if (Math.abs(offset) == appBarLayout.getTotalScrollRange()) {
+        int totalScrollRange = appBarLayout.getTotalScrollRange();
+        if (totalScrollRange == 0) {
+            ibQuickTop.setVisibility(View.INVISIBLE);
+            return;
+        }
+        if (Math.abs(offset) == totalScrollRange) {
             // TODO: 2017/9/29 更新箭头
             if (hasFaceHeader && isPendendingAnimationFinished && ibQuickTop.getTranslationY() != 0) {
                 isPendendingAnimationFinished = false;
@@ -434,7 +437,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     }
                 }).playOn(ibQuickTop);
             }
-//            arrow.setImageResource(R.drawable.btn_put_away);
         } else if (Math.abs(offset) == 0) {
             if (hasFaceHeader && isPendendingAnimationFinished && ibQuickTop.getTranslationY() == 0) {
                 isPendendingAnimationFinished = false;
@@ -448,7 +450,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         })
                         .playOn(ibQuickTop);
             }
-//            arrow.setImageResource(R.drawable.btn_unfolded);
         }
     }
 

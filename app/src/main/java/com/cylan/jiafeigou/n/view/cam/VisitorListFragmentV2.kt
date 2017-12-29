@@ -269,11 +269,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     faceAdapter.set(strangerItems)
                     faceAdapter.select(0)
                     resizeContentHeight()
-//                    strangerItems.getOrNull(currentPosition)?.strangerVisitor?.faceId?.apply {
                     visitorListener?.onLoadItemInformation(FaceItem.FACE_TYPE_STRANGER, strangerItems.getOrNull(0)?.strangerVisitor?.faceId ?: "")
-//                    }
                     presenter.fetchStrangerVisitorList(0)
-
                 }
                 FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                     val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_ACQUAINTANCE) item.visitor?.personId else item.strangerVisitor?.faceId

@@ -87,7 +87,6 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private EdgeEffect mEdgeEffectLeft;
     private EdgeEffect mEdgeEffectRight;
     private boolean mOverScrollerMode = true;
-    private HistoryAdapter mHistoryAdapter;
 
     @IntDef({SnapDirection.MOVE_DIRECTION, SnapDirection.LEFT, SnapDirection.RIGHT, SnapDirection.AUTO})
     @Retention(RetentionPolicy.SOURCE)
@@ -305,7 +304,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             minX = getMinScrollX();
             maxX = getMaxScrollX();
         }
-        mScroller.fling(mScroller.getCurrX(), 0, (int) -velocityX, 0, minX, maxX, 0, 0);
+        mScroller.fling(mScroller.getCurrX(), 0, (int) -velocityX, 0, minX, maxX, 0, 0, 100, 0);
         invalidate();
         return true;
     }
@@ -332,7 +331,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            if (mHistoryListener != null && mHasPendingUpdateAction) {
+            if (mHistoryListener != null && mHasPendingUpdateAction&&!mScroller.isOverScrolled()) {
                 //非常没必要,但测试说要加
                 mHistoryListener.onScrolling(getCurrentTime());
             }
@@ -394,6 +393,8 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             removeCallbacks(mNotifyRunnable);
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
             invalidate();
+        } else if (mHasPendingUpdateAction) {
+            notifyUpdate();
         }
     }
 
@@ -617,23 +618,8 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         return mLocked;
     }
 
-    public boolean isScrollFinished() {
-        return mScroller.isFinished();
-    }
-
     public void setHistoryListener(HistoryListener listener) {
         this.mHistoryListener = listener;
-    }
-
-    public void setHistoryAdapter(HistoryAdapter adapter) {
-        if (mHistoryAdapter != null) {
-            mHistoryAdapter.setDataSetObserver(null);
-        }
-        this.mHistoryAdapter = adapter;
-        if (mHistoryAdapter != null) {
-            mHistoryAdapter.setDataSetObserver(mObserver);
-            postInvalidate();
-        }
     }
 
     public interface HistoryListener {
@@ -642,64 +628,4 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         void onScrolling(long time);
     }
 
-    private HistoryDataSetObserver mObserver = new HistoryDataSetObserver() {
-    };
-
-    private interface HistoryDataSetObserver {
-
-    }
-
-    public static abstract class HistoryAdapter {
-        protected TreeSet<JFGVideo> mHistoryFiles = new TreeSet<>();
-
-        public JFGVideo floor(JFGVideo video) {
-            JFGVideo start = mHistoryFiles.floor(video);
-            if (start == null && mHistoryFiles.size() > 0) {
-                start = mHistoryFiles.first();
-            }
-            return start;
-        }
-
-        public JFGVideo ceiling(JFGVideo video) {
-            JFGVideo stop = mHistoryFiles.ceiling(video);
-            if (stop == null && mHistoryFiles.size() > 0) {
-                stop = mHistoryFiles.last();
-            }
-            return stop;
-        }
-
-        public JFGVideo min() {
-            if (mHistoryFiles.size() > 0) {
-                return mHistoryFiles.first();
-            }
-            return null;
-        }
-
-        public JFGVideo max() {
-            if (mHistoryFiles.size() > 0) {
-                return mHistoryFiles.last();
-            }
-            return null;
-        }
-
-        public void range(JFGVideo start, JFGVideo end) {
-
-        }
-
-        public void notifyDataSetChanged() {
-
-        }
-
-        public void addHistorys(Collection<JFGVideo> videos) {
-
-        }
-
-        public void setHistorys(Collection<JFGVideo> videos) {
-
-        }
-
-        void setDataSetObserver(HistoryDataSetObserver observer) {
-
-        }
-    }
 }
