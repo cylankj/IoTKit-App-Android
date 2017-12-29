@@ -2784,4 +2784,13 @@ public class DpMsgDefine {
             }
         };
     }
+
+    public static class GrayItem {
+
+    }
+
+    public static class GrayResponse {
+        public List<GrayItem> enable;
+        public List<GrayItem> disable;
+    }
 }

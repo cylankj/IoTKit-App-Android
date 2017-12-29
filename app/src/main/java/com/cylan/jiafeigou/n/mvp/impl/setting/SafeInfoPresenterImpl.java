@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.setting;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
@@ -14,15 +15,26 @@ import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -45,12 +57,6 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
         DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
         robotDataSync();
         robotDeviceDataSync();
-    }
-
-    public void getSafeInformation() {
-//       Observable.create(new Observable.OnSubscribe<getd>() {
-//       })
-
     }
 
     @Override
@@ -98,9 +104,78 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
         return builder.toString();
     }
 
+
     @Override
     public void getAIStrategy() {
+        Subscription subscribe = Observable.create(new Observable.OnSubscribe<JSONObject>() {
+            @Override
+            public void call(Subscriber<? super JSONObject> subscriber) {
+                try {
+                    String server = OptionsImpl.getServer();
+                    if (!server.contains("http") && !server.contains("https")) {
+                        server = "http://" + server;
+                    }
+                    if (server.contains(":443")) {
+                        server = server.replace(":443", ":80");
+                    }
+                    server = server + "/gray";
+                    Log.d("GRAY", "server is:" + server);
+                    String account = DataSourceManager.getInstance().getAccount().getAccount();
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    JSONArray dataList = new JSONArray();
+                    JSONObject tokenParams = new JSONObject();
+                    tokenParams.put("act", "get_token");
+                    tokenParams.put("account", account);
+                    tokenParams.put("app_id", "");
+                    Response execute = OkGo.post(server)
+                            .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                            .execute();
+                    JSONObject jsonObject = new JSONObject(execute.body().string());
+                    Log.d("GRAY", "get token response:" + jsonObject.toString());
+                    int ret = jsonObject.getInt("ret");
 
+                    if (ret == 0) {
+                        JSONObject grayParams = new JSONObject();
+                        grayParams.put("act", "report_data");
+                        grayParams.put("token", jsonObject.getString("token"));
+                        grayParams.put("vid", OptionsImpl.getVid());
+                        grayParams.put("account", account);
+                        grayParams.put("version", device.$(DpMsgMap.ID_207_DEVICE_VERSION, ""));
+                        grayParams.put("sys_version", device.$(DpMsgMap.ID_208_DEVICE_SYS_VERSION, ""));
+                        grayParams.put("region", DataSourceManager.getInstance().getStorageType());
+                        grayParams.put("app_type", 2);
+                        grayParams.put("data_list", dataList);
+                        execute = OkGo.post(server)
+                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), grayParams.toString()))
+                                .execute();
+                        JSONObject jsonObject1 = new JSONObject(execute.body().string());
+                        Log.d("GRAY", "get gray response:" + jsonObject1.toString());
+                        subscriber.onNext(jsonObject);
+                        subscriber.onCompleted();
+                    } else {
+                        subscriber.onError(new IllegalArgumentException("get token error, ret is:" + ret));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JSONObject>() {
+                    @Override
+                    public void call(JSONObject jsonObject) {
+                      mView.onAIStrategyRsp(jsonObject);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        AppLogger.e(throwable);
+                    }
+                });
+        addStopSubscription(subscribe);
     }
 
     /**

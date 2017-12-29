@@ -730,6 +730,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     }
 
+    @Override
     public HotSeatStateMaintainer getHotSeatStateMaintainer() {
         if (hotSeatStateMaintainer == null) {
             hotSeatStateMaintainer = new HotSeatStateMaintainer(mView, this);

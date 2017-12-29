@@ -10,6 +10,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -36,8 +37,6 @@ public interface CamLiveContract {
         boolean isLocalMicOn();
 
         boolean isLocalSpeakerOn();
-
-        boolean judge();
 
         void onRtcp(JFGMsgVideoRtcp rtcp);
 
@@ -176,6 +175,8 @@ public interface CamLiveContract {
         /**
          */
         void switchSpeaker();
+
+        CamLivePresenterImpl.HotSeatStateMaintainer getHotSeatStateMaintainer();
 
         void switchMic();
 

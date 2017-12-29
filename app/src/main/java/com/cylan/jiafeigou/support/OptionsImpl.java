@@ -116,34 +116,6 @@ public class OptionsImpl {
                 })
                 .toBlocking();
           return toBlocking.first();
-//        try {
-//            if (!TextUtils.isEmpty(OptionsImpl.robotServer)) {
-//                return OptionsImpl.robotServer.replace("_", ":");
-//            }
-//            String server = PreferencesUtils.getString(KEY_ROBOT_SERVER, "");
-//            if (!TextUtils.isEmpty(server)) {
-//                return OptionsImpl.robotServer = server.replace("_", ":");
-//            }
-//            // com.mcxiaoke.packer.helper.PackerNg
-//            final String domain = PackerNg.getChannel(ContextUtils.getContext());
-//            if (!TextUtils.isEmpty(domain)) {
-//                OptionsImpl.robotServer = domain.trim();
-//                Log.d(TAG, "get serverFrom ng: " + OptionsImpl.robotServer);
-//                PreferencesUtils.putString(KEY_ROBOT_SERVER, OptionsImpl.robotServer);
-//                return OptionsImpl.robotServer.replace("_", ":");
-//            }
-//            OptionsImpl.robotServer = server = PackageUtils.getMetaString(ContextUtils.getContext(), "robot_server").trim();
-//            if (!BuildConfig.DEBUG) {
-//                return server.replace("_", ":");
-//            }
-//            if (TextUtils.isEmpty(server)) {
-//                server = "yf.robotscloud.com";
-//            }
-//            return server.replace("_", ":");
-//        } catch (Exception e) {
-//            Log.d("IOException", ":" + e.getLocalizedMessage());
-//            return "yf.robotscloud.com";
-//        }
     }
 
     public static String getVKey() {

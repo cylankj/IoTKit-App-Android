@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 /**
@@ -18,7 +20,7 @@ public interface SafeInfoContract {
 
     interface View extends BaseView {
 
-        void onAIStrategyRsp();
+        void onAIStrategyRsp(JSONObject jsonObject);
 
         void deviceUpdate(Device device);
 

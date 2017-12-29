@@ -126,11 +126,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             tv.setOnClickListener(onClickListener);
         }
     }
-
-    public boolean isShowStandby() {
-        return standByLayout.isShown();
-    }
-
     private boolean isNormalView() {
         return isNormalView;
     }
@@ -174,6 +169,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         imgThumbnail.setVisibility(VISIBLE);
         imgThumbnail.setImageResource(0);
         imgThumbnail.setBackgroundColor(Color.BLACK);
+    }
+
+    public void showPreviewThumbnail() {
+
     }
 
     @Override

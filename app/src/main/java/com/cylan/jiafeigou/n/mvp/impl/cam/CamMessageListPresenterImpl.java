@@ -5,7 +5,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
@@ -480,7 +479,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                     return list;
                 })
-                .timeout(BuildConfig.DEBUG ? 3 : 10, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
                     AppLogger.e("Fetch Result:" + items);
@@ -491,6 +490,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                 }, e -> {
                     e.printStackTrace();
+                    AppLogger.e(e);
                 });
         addSubscription(subscribe, "fetchMessageList_faceId");
     }

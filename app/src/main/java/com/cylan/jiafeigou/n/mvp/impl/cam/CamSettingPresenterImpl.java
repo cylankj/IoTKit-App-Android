@@ -63,7 +63,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view);
-        DataSourceManager.getInstance().syncDeviceProperty(uuid, 204);
     }
 
     @Override
@@ -92,7 +91,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         robotDataSync();
         robotDeviceDataSync();
         getDeviceUnBindSub();
-        DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
+        DataSourceManager.getInstance().syncAllProperty(uuid);
         getView().deviceUpdate(getDevice());
         if (JFGRules.isPan720(getDevice().pid)) {
             BaseDeviceInformationFetcher.getInstance().init(uuid);
@@ -177,11 +176,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public String getDetailsSubTitle(Context context, boolean hasSdcard, int err) {
-        //sd卡状态
-//        if (hasSdcard && err != 0) {
-//            //sd初始化失败时候显示
-//            return context.getString(R.string.SD_INIT_ERR, err);
-//        }
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
                 device.uuid : (device != null ? device.alias : "");

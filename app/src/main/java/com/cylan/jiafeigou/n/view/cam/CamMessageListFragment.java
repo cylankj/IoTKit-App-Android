@@ -144,7 +144,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private boolean hasFaceHeader = false;
     private int pageType = FaceItem.FACE_TYPE_DP;
     private String personId;
-    private boolean hasFirstRequested = false;
+//    private boolean hasFirstRequested = false;
     private Rect appbarRect = new Rect();
     private Rect messageRect = new Rect();
     private Rect headerRect = new Rect();
@@ -473,18 +473,14 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
-            startRequest(true);
-        } else {
-            startRequest(true);
         }
+        startRequest(true);
     }
 
     @Override
     protected void lazyLoad() {
         super.lazyLoad();
         //从通知栏跳进来
-        if (hasFirstRequested) return;
-
         ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ClearDataEvent.class)) {
             camMessageListAdapter.clear();
@@ -534,7 +530,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     /**
      */
     private void startRequest(boolean refresh) {
-        hasFirstRequested = true;
         long time = 0;
         if (!camMessageListAdapter.hasFooter() && camMessageListAdapter.getCount() > 0) {
             setupFootView();
@@ -542,11 +537,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (camMessageListAdapter.getCount() > 1) {
             time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 2).message.getVersion();
         }
-//        if (hasFaceHeader && pageType != FaceItem.FACE_TYPE_ALL) {
-//            // #123596 AI-IOS-隐藏原图，具体看附件红色所指部分，仅仅留头像即可。--应用于测试演示使用
-//            srLayoutCamListRefresh.setRefreshing(false);
-//            return;
-//        }
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         if (presenter != null) {
             boolean success;

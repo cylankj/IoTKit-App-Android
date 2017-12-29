@@ -45,6 +45,8 @@ import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +107,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     RelativeLayout rlMonitorAreaContainer;
     private Device device;
 
+    private boolean grayEnable = false;
 
     public SafeProtectionFragment() {
         // Required empty public constructor
@@ -215,6 +218,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         swMonitoringArea.setSubTitle(warnArea.enable ? getString(R.string.DETECTION_AREA_SET) : getString(R.string.DETECTION_AREA_DEFAULT));
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(AIRecognitionFragment.class.getSimpleName());
         swMotionAI.showRedHint(node != null && node.getNodeCount() > 0);
+
+        presenter.getAIStrategy();
     }
 
     /**
@@ -242,7 +247,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
-        swMotionAI.setVisibility(enableAI && show ? View.VISIBLE : View.GONE);
+        swMotionAI.setVisibility(enableAI && show && grayEnable ? View.VISIBLE : View.GONE);
         swMotionInterval.setVisibility(warmInterval && show ? View.VISIBLE : View.GONE);
 
         swInfraredStrengthen.setVisibility(show && infrared_enhanced_recognition ? View.VISIBLE : View.GONE);
@@ -506,9 +511,31 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     @Override
-    public void onAIStrategyRsp() {
-        // TODO: 2017/8/1 获取当前账号 AI 策略,根据策略和设备属性表来决定是否显示 AI 选项
+    public void onAIStrategyRsp(JSONObject jsonObject) {
+        try {
+            if (jsonObject != null) {
+                JSONObject enable = jsonObject.getJSONObject("enable");
+                JSONObject disable = jsonObject.getJSONObject("disable");
+                if (enable != null) {
+                    JSONObject ai = enable.getJSONObject("ai");
+                    grayEnable = ai != null;
+                }
 
+                if (disable != null) {
+                    JSONObject ai = disable.getJSONObject("ai");
+                    grayEnable = ai == null;
+                }
+            }
+            refreshGray();
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void refreshGray() {
+        boolean isRs = JFGRules.isRS(device.pid);
+        boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, isRs ? false : false);
+        showDetail(f);
     }
 
     @Override

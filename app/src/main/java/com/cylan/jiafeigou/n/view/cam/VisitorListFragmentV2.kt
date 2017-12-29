@@ -457,10 +457,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         visitorListener?.onVisitorReady(visitorList)
         val id = visitorItems.getOrNull(currentPosition)?.visitor?.personId ?: ""
         presenter.fetchVisitsCount(id, FILTER_TYPE_ALL)
-        if (!isExpanded) {
-            val faceItem = visitorItems[currentPosition]
-            visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.visitor?.personId ?: "")
-        }
+
         face_header.postDelayed({
             footerAdapter.clear()
             isLoadingFinished = true

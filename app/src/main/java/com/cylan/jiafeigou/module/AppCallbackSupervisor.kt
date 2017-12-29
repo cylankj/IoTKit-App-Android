@@ -531,13 +531,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     }
 
     override fun OnUniversalDataRsp(l: Long, i: Int, bytes: ByteArray) {
-        //        try {
-        //            Object value = CacheHolderKt.getObjectMapper().get().readValue(bytes, Object.class);
-        //            Log.w(JConstant.CYLAN_TAG, "OnUniversalDataRsp:" + value);
-        //        } catch (IOException e) {
-        //            e.printStackTrace();
-        //        }
-
+        Log.w(JConstant.CYLAN_TAG, "OnUniversalDataRsp: seq:" + l + ",msgId:" + i + ",bytes:" + DpUtils.unpack(bytes));
         RxBus.getCacheInstance().post(RxEvent.UniversalDataRsp(l, i, bytes))
         publish(RxEvent.UniversalDataRsp(l, i, bytes))
     }

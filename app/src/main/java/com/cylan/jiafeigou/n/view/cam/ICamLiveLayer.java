@@ -10,7 +10,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.widget.live.ILiveControl;
 
 /**
  * 内容非常多的一个layout
@@ -67,8 +66,6 @@ public interface ICamLiveLayer {
 
     void onCaptureRsp(FragmentActivity activity, Bitmap bitmap);
 
-    void setLoadingRectAction(ILiveControl.Action action);
-
     void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
 
     void onActivityStart(CamLiveContract.Presenter presenter, Device device);
@@ -86,9 +83,9 @@ public interface ICamLiveLayer {
                          boolean micEnable,
                          boolean capture, boolean captureEnable);
 
-    void setHotSeatListener(View.OnClickListener micListener,
-                            View.OnClickListener speakerListener,
-                            View.OnClickListener captureListener);
+//    void setHotSeatListener(View.OnClickListener micListener,
+//                            View.OnClickListener speakerListener,
+//                            View.OnClickListener captureListener);
 
     int getMicState();
 
