@@ -400,14 +400,14 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void fetchVisitorMessageList(int type, final String id, long sec, boolean refresh) {
-        AppLogger.w("fetchVisitorMessageList:" + type + ",id:" + id);
+        AppLogger.w("CamMessageListPresenterImpl:fetchVisitorMessageList" + type + ",id:" + id);
         Subscription subscribe = Observable.just("fetchVisitorMessageList")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
                         final String sessionId = Command.getInstance().getSessionId();
-                        AppLogger.d("sessionId:" + sessionId);
+                        AppLogger.d("CamMessageListPresenterImpl:fetchVisitorMessageList:sessionId:20260" + sessionId);
                         String person = id == null ? "" : id;
                         DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
                         reqContent.cid = uuid;
@@ -422,9 +422,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 })
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).first(rsp -> rsp.seq == seq))
                 .map(rsp -> {
-                    AppLogger.d("Fetch Information:" + Arrays.toString(rsp.data));
+                    AppLogger.d("CamMessageListPresenterImpl:Fetch Information:" + Arrays.toString(rsp.data));
                     DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
-                    AppLogger.d("Raw Fetch Result:" + rrsp);
+                    AppLogger.d("CamMessageListPresenterImpl:Raw Fetch Result:" + rrsp);
                     //转化出。
                     ArrayList<CamMessageBean> list = new ArrayList<>();
                     if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
@@ -482,7 +482,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
-                    AppLogger.e("Fetch Result:" + items);
+                    AppLogger.e("CamMessageListPresenterImpl:Fetch Result:" + items);
                     if (refresh) {
                         mView.onVisitorListInsert(items);
                     } else {

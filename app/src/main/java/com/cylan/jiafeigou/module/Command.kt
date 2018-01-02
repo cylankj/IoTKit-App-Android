@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.module
 
 import android.Manifest
 import android.graphics.Bitmap
-import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -41,7 +40,7 @@ class Command : AppCmd {
         val appcallback = AppCallbackSupervisor
         var isOnTop = true
         @JvmField
-         var videoWidth: Int = 0
+        var videoWidth: Int = 0
         @JvmField
         var videoHeight: Int = 0
         private var command: Command? = null
@@ -89,8 +88,8 @@ class Command : AppCmd {
                             if (!isLogEnabled) {
                                 isLogEnabled = true
                                 var path = logPath
-                                if(BuildConfig.DEBUG){
-                                    path+="|logcat"
+                                if (BuildConfig.DEBUG) {
+                                    path += "|logcat"
                                 }
                                 JfgAppJni.EnableLog(true, path)
                             }
@@ -942,7 +941,11 @@ class Command : AppCmd {
     override fun sendUniservalDataSeq(mid: Int, callee: String, data: ByteArray?): Long {
         ensureNativeParams()
         return when {
-            initSuccess && data?.isNotEmpty() == true -> JfgAppJni.SendUniversalDataSeq(mid, callee, data)
+            initSuccess && data?.isNotEmpty() == true -> {
+                val l = JfgAppJni.SendUniversalDataSeq(mid, callee, data)
+                Log.d("20260", "sendUniservalDataSeq,mid:" + mid + ",callee:" + callee + ",ret:" + l + ",data" + Arrays.toString(data))
+                return l
+            }
             else -> throw JfgException("sendUniservalDataSeq error, init:$initSuccess,mid:$mid,callee:$callee,data:$data")
         }
     }
