@@ -79,15 +79,9 @@ public class VideoViewFactory {
 
     public interface ILiveView {
 
-        void setThumbnail(Context context, String token, Uri glideUrl);
+        void setThumbnail(Uri glideUrl);
 
-        /**
-         * @param context ： for glide to perform with life cycle
-         * @param bitmap
-         */
-        void setThumbnail(Context context, String token, Bitmap bitmap);
-
-        void setLiveView(IVideoView iVideoView);
+        void setLiveView(IVideoView iVideoView, String uuid);
 
         void updateLayoutParameters(int height, int weight);
 

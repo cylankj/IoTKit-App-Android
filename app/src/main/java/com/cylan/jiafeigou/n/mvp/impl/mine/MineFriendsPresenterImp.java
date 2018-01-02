@@ -79,7 +79,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public void initRequestAndFriendList() {
         Subscription subscribe = Observable.just("initRequestAndFriendList")
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap(cmd -> {
                     Command.getInstance().getFriendRequestList();
@@ -112,12 +111,15 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     }
                     return new Pair<>(requestItems, friendItems);
                 })
+                .first()
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
                 .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(result -> {
-                    getView().onInitRequestAndFriendList(result == null ? null : new ArrayList<>(result.first), result == null ? null : new ArrayList<>(result.second));
+                    if (result != null) {
+                        getView().onInitRequestAndFriendList(result.first == null ? null : new ArrayList<>(result.first), result.second == null ? null : new ArrayList<>(result.second));
+                    }
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());

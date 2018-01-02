@@ -20,6 +20,10 @@ public class HandlerThreadUtils {
         mHandler.post(runnable);
     }
 
+    public static void removeCallbacks(Runnable runnable) {
+        mHandler.removeCallbacks(runnable);
+    }
+
     public static void postAtTime(Runnable runnable, long uptimeMillis) {
         mHandler.postAtTime(runnable, uptimeMillis);
     }

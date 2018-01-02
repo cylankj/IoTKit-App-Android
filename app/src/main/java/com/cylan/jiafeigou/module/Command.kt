@@ -942,8 +942,9 @@ class Command : AppCmd {
         ensureNativeParams()
         return when {
             initSuccess && data?.isNotEmpty() == true -> {
+                Log.d("20260", "sendUniservalDataSeq,before,mid:" + mid + ",callee:" + callee + ",data" + Arrays.toString(data))
                 val l = JfgAppJni.SendUniversalDataSeq(mid, callee, data)
-                Log.d("20260", "sendUniservalDataSeq,mid:" + mid + ",callee:" + callee + ",ret:" + l + ",data" + Arrays.toString(data))
+                Log.d("20260", "sendUniservalDataSeq,mid:" + mid + ",ret:" + l + ",callee:" + callee + ",data" + Arrays.toString(data))
                 return l
             }
             else -> throw JfgException("sendUniservalDataSeq error, init:$initSuccess,mid:$mid,callee:$callee,data:$data")

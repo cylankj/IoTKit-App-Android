@@ -331,7 +331,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            if (mHistoryListener != null && mHasPendingUpdateAction&&!mScroller.isOverScrolled()) {
+            if (mHistoryListener != null && mHasPendingUpdateAction && !mScroller.isOverScrolled()) {
                 //非常没必要,但测试说要加
                 mHistoryListener.onScrolling(getCurrentTime());
             }
@@ -393,7 +393,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             removeCallbacks(mNotifyRunnable);
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
             invalidate();
-        } else if (mHasPendingUpdateAction) {
+        } else {
             notifyUpdate();
         }
     }

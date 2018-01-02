@@ -4,11 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,21 +16,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.module.GlideApp;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.panorama.CommonPanoramicView;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
-
-import org.webrtc.videoengine.ViEAndroidGLES20;
-
-import java.io.ByteArrayOutputStream;
-import java.lang.ref.WeakReference;
 
 /**
  * Created by cylan-hunt on 17-3-13.
@@ -47,7 +35,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
     private boolean isNormalView;
-//    private Glide glide;
+    private String uuid;
+    private volatile boolean isLiveThumbLoadingSuccessful = false;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -74,20 +63,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     public VideoViewFactory.IVideoView getVideoView() {
         return this.videoView;
-    }
-
-    public void performTouch() {
-        if (videoView instanceof CommonPanoramicView) {
-            ((CommonPanoramicView) videoView).onSingleTap(0, 0);
-        }
-        if (videoView instanceof ViEAndroidGLES20) {
-//            ((ViEAndroidGLES20) videoView).onTouch()
-            //普通view应该有问题的
-        }
-    }
-
-    public interface OnSingleTapListener {
-        void onSingleTap();
     }
 
     private VideoViewFactory.InterActListener listener;
@@ -126,63 +101,84 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             tv.setOnClickListener(onClickListener);
         }
     }
-    private boolean isNormalView() {
-        return isNormalView;
+
+    private Bitmap mLiveThumbBitmap = null;
+
+    private Runnable loadLiveThumbRunnable = new Runnable() {
+        @Override
+        public void run() {
+            String filePath = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_FILE + uuid);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
+                }
+            });
+
+            AppLogger.i("load uri: " + filePath);
+            if (mLiveThumbBitmap == null || mLiveThumbBitmap.isRecycled()) {
+                mLiveThumbBitmap = BitmapFactory.decodeFile(filePath);
+            }
+            if (mLiveThumbBitmap == null) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
+                    }
+                });
+                AppLogger.i(TAG + ",load live thumb failed,bitmap is null,set default picture");
+                return;
+            }
+            if (isNormalView) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mLiveThumbBitmap != null && !mLiveThumbBitmap.isRecycled()) {
+                            ViewGroup.LayoutParams lp = imgThumbnail.getLayoutParams();
+                            if (lp.height != ViewGroup.LayoutParams.MATCH_PARENT
+                                    || lp.width != ViewGroup.LayoutParams.MATCH_PARENT) {
+                                lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                                lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                                imgThumbnail.setLayoutParams(lp);
+                            }
+                            if (!imgThumbnail.isShown()) {
+                                imgThumbnail.setVisibility(VISIBLE);
+                            }
+                            imgThumbnail.setImageBitmap(mLiveThumbBitmap);
+                        }
+                    }
+                });
+
+            } else if (videoView != null) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mLiveThumbBitmap != null && !mLiveThumbBitmap.isRecycled()) {
+                            videoView.loadBitmap(mLiveThumbBitmap);
+                            imgThumbnail.setVisibility(GONE);
+                            imgThumbnail.setImageResource(android.R.color.transparent);
+                            AppLogger.w("开始加载全景预览图");
+                        }
+                    }
+                });
+            }
+        }
+    };
+
+    @Override
+    public void setThumbnail(Uri glideUrl) {
+        HandlerThreadUtils.removeCallbacks(loadLiveThumbRunnable);
+        HandlerThreadUtils.post(loadLiveThumbRunnable);
     }
 
     @Override
-    public void setThumbnail(Context context, String token, Uri glideUrl) {
-        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
-        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
-        AppLogger.i("load uri: " + glideUrl);
-        GlideApp.with(context)
-                .asBitmap()
-                .load(glideUrl)
-                .placeholder(R.drawable.default_diagram_mask)
-                .signature(new ObjectKey(token))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(true)
-                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
-    }
-
-
-    @Override
-    public void setThumbnail(Context context, String token, Bitmap bitmap) {
-        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
-        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        GlideApp.with(context)
-                .asBitmap()
-                .load(stream.toByteArray())
-                .signature(new ObjectKey(token))
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
-    }
-
-
-    /**
-     * 显示黑色块。
-     */
-    public void setThumbnail() {
-        imgThumbnail.setVisibility(VISIBLE);
-        imgThumbnail.setImageResource(0);
-        imgThumbnail.setBackgroundColor(Color.BLACK);
-    }
-
-    public void showPreviewThumbnail() {
-
-    }
-
-    @Override
-    public void setLiveView(VideoViewFactory.IVideoView iVideoView) {
+    public void setLiveView(VideoViewFactory.IVideoView iVideoView, String uuid) {
+        this.uuid = uuid;
         if (iVideoView instanceof Panoramic360ViewRS || iVideoView instanceof Panoramic360View) {
             isNormalView = false;
         } else {
             isNormalView = true;
         }
-//        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
         this.videoView = iVideoView;
         if (videoView != null) {
             videoView.setInterActListener(listener);
@@ -191,6 +187,15 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER_HORIZONTAL;
         addView((View) videoView, 0, lp);
+    }
+
+    /**
+     * 显示黑色块。
+     */
+    public void setThumbnail() {
+        imgThumbnail.setVisibility(VISIBLE);
+        imgThumbnail.setImageResource(0);
+        imgThumbnail.setBackgroundColor(Color.BLACK);
     }
 
     @Override
@@ -216,9 +221,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void onLiveStart() {
-        if (imgThumbnail.isShown()) {
-            imgThumbnail.setVisibility(GONE);
-        }
         Log.d(TAG, "onLiveStart");
         if (imgThumbnail != null && imgThumbnail.isShown()) {
             imgThumbnail.setVisibility(GONE);
@@ -259,7 +261,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void onDestroy() {
-
+        if (mLiveThumbBitmap != null && !mLiveThumbBitmap.isRecycled()) {
+            mLiveThumbBitmap.recycle();
+        }
     }
 
     @Override
@@ -280,81 +284,4 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
     }
 
-    private static class SimpleLoader extends SimpleTarget<Bitmap> {
-
-        private WeakReference<ImageView> imageViewRef;
-        private WeakReference<VideoViewFactory.IVideoView> videoViewWeakReference;
-        private boolean isNormalView;
-
-        public SimpleLoader(ImageView imageView, VideoViewFactory.IVideoView videoView, boolean isNormalView) {
-            imageViewRef = new WeakReference<>(imageView);
-            videoViewWeakReference = new WeakReference<>(videoView);
-            this.isNormalView = isNormalView;
-
-        }
-
-        @Override
-        public void onDestroy() {
-            AppLogger.w("加载预览图 is onDestroy");
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            AppLogger.w("加载预览图 is stop");
-        }
-
-        @Override
-        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-            if (resource != null && !resource.isRecycled()) {
-                if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
-                    return;
-                }
-                if (imageViewRef == null || imageViewRef.get() == null) {
-                    return;
-                }
-                if (isNormalView) {
-                    ViewGroup.LayoutParams lp = (imageViewRef.get()).getLayoutParams();
-                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                    lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                    imageViewRef.get().setLayoutParams(lp);
-                    imageViewRef.get().setVisibility(VISIBLE);
-                    imageViewRef.get().setImageResource(0);
-                    BitmapDrawable bd = new BitmapDrawable(imageViewRef.get().getContext().getResources(), resource);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        imageViewRef.get().setBackground(bd);
-                    } else {
-                        imageViewRef.get().setBackgroundDrawable(bd);
-                    }
-                } else {
-                    videoViewWeakReference.get().loadBitmap(resource.copy(resource.getConfig(), true));
-                    imageViewRef.get().setVisibility(GONE);
-                    imageViewRef.get().setImageResource(android.R.color.transparent);
-                    AppLogger.w("开始加载全景预览图");
-                }
-            } else {
-                AppLogger.w("开始加载预览图 is null? " + (resource == null));
-            }
-        }
-
-        @Override
-        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-            super.onLoadFailed(errorDrawable);
-            if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
-                return;
-            }
-            if (imageViewRef == null || imageViewRef.get() == null) {
-                return;
-            }
-            imageViewRef.get().setVisibility(VISIBLE);
-            imageViewRef.get().setImageBitmap(BitmapFactory.decodeResource(videoViewWeakReference.get().getContext().getResources(),
-                    R.drawable.default_diagram_mask));
-            AppLogger.w("开始加载全景预览图");
-        }
-
-        @Override
-        public void onLoadCleared(Drawable placeholder) {
-            AppLogger.w("bitmap is onLoadCleared");
-        }
-    }
 }

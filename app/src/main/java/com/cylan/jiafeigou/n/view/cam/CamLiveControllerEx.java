@@ -398,6 +398,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     public void onLoadHistoryFailed() {
+        hasPendingHistoryPlayAction = false;
         btnLoadHistory.setEnabled(true);
         CamLiveContract.LiveStream liveStream = presenter.getLiveStream();
         liveStream.playState = PLAY_STATE_STOP;
@@ -409,6 +410,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     public void onHistoryEmpty() {
+        hasPendingHistoryPlayAction = false;
         presenter.startPlay();
         btnLoadHistory.setEnabled(true);
         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
@@ -502,7 +504,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
         }
         //issue: 过早 add 进去会导致黑块!!!!!
-        liveViewWithThumbnail.setLiveView(videoView);
+        liveViewWithThumbnail.setLiveView(videoView, uuid);
 
         updateLiveViewMode(device.$(509, "1"));
         initSightSetting(presenter);
@@ -689,6 +691,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void setLoadingState(String content, String subContent) {
         int state = getPlayState();
+        if (hasPendingHistoryPlayAction) {
+            state = PLAY_STATE_PREPARE;
+        }
         liveLoadingBar.setState(state, content, subContent);
         if (!TextUtils.isEmpty(content) || !TextUtils.isEmpty(subContent)) {
             liveLoadingBar.setVisibility(VISIBLE);
@@ -1650,7 +1655,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     };
 
     private boolean canShowLoadingBar() {
-        return !isStandBy() && (!isLand() || (getPlayState() == PLAY_STATE_LOADING_FAILED || getPlayState() == PLAY_STATE_PREPARE));
+        return !isStandBy() && (!isLand() || (getPlayState() == PLAY_STATE_LOADING_FAILED || getPlayState() == PLAY_STATE_PREPARE || hasPendingHistoryPlayAction));
     }
 
     private boolean canShowViewModeMenu() {
@@ -1913,11 +1918,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyParentContainer.setLayoutParams(lp);
         liveViewModeContainer.setLayoutParams(glp);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
-        if (!isLivePlaying()) {//显示缩略图
-            File file = new File(presenter.getThumbnailKey());
-            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
-        }
-
+        decideShowLiveThumb();
         enableAutoRotate(enableAutoRotate);
     }
 
@@ -1941,6 +1942,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景,首次使用模式
         boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
         return !standBy && !sightShow;
+    }
+
+    private void decideShowLiveThumb() {
+        if (!isLivePlaying() ) {//显示缩略图
+            liveViewWithThumbnail.setThumbnail(Uri.fromFile(new File(presenter.getThumbnailKey())));
+        }
     }
 
 }
