@@ -282,19 +282,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public List<Device> getAllDevice() {
-//        if (mCachedDeviceMap == null || mCachedDeviceMap.size() == 0) {
-//            List<com.cylan.jiafeigou.server.cache.Device> devices = BaseApplication.getDeviceBox().getAll();
-//            rawDeviceOrder.clear();
-//            if (devices != null) {
-//                for (int i = 0; i < devices.size(); i++) {
-//                    com.cylan.jiafeigou.server.cache.Device device = devices.get(i);
-//
-//                    rawDeviceOrder.add(new Pair<>(i, String.valueOf(device.uuid())));
-//                    mCachedDeviceMap.put(String.valueOf(device.uuid()), device.cast());
-//                }
-//            }
-//        }
-
         Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
         List<Device> result = new ArrayList<>(rawDeviceOrder.size());
         List<Pair<Integer, String>> copyList = new ArrayList<>(rawDeviceOrder);
@@ -391,14 +378,10 @@ public class DataSourceManager implements JFGSourceManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        List<Integer> list = PAGE_MESSAGE.PAGE_HOME.filter(ConfigKt.getMessageByOS("", false));
-
-
         /**
          * 设备分享列表
          */
-        Command.getInstance().getShareList(uuidList);
+//        Command.getInstance().getShareList(uuidList);
     }
 
     @Override
@@ -445,7 +428,7 @@ public class DataSourceManager implements JFGSourceManager {
         /**
          * 设备分享列表
          */
-        Command.getInstance().getShareList(uuidList);
+//        Command.getInstance().getShareList(uuidList);
         return true;
     }
 
@@ -454,13 +437,15 @@ public class DataSourceManager implements JFGSourceManager {
         if (mCachedDeviceMap.size() == 0) {
             return;
         }
+        ArrayList<String> uuidList = new ArrayList<>();
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             HashMap<String, JFGDPMsg[]> map = new HashMap<>();
             Device device = mCachedDeviceMap.get(entry.getKey());
             final String uuid = device.uuid;
             if (TextUtils.isEmpty(uuid) || account == null) {
-                return;
+                break;
             }
+            uuidList.add(device.uuid);
 
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
             if (parameters == null || parameters.size() == 0) {
@@ -473,11 +458,11 @@ public class DataSourceManager implements JFGSourceManager {
             map.put(uuid, array);
             try {
                 Command.getInstance().robotGetMultiData(map, 1, false, 0);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        Command.getInstance().getShareList(uuidList);
     }
 
 
@@ -541,7 +526,6 @@ public class DataSourceManager implements JFGSourceManager {
      * @param count
      */
 
-//    int queryHistory(String uuid);
     @Override
     public long syncJFGCameraWarn(String uuid, long version, boolean asc, int count) {
         Device device = getDevice(uuid);

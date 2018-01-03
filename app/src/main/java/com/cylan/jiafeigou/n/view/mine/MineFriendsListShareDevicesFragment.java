@@ -57,13 +57,13 @@ public class MineFriendsListShareDevicesFragment extends IBaseFragment implement
         friendItem = getArguments().getParcelable("friendItem");
         shareDevicesBinding = FragmentMineFriendShareDevicesBinding.inflate(inflater, container, false);
         shareDevicesBinding.setEmpty(empty);
-        initPresenter();
         initTitleView(friendItem);
         shareDevicesBinding.rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(getContext(), null, R.layout.fragment_friend_share_device_items);
         shareDevicesBinding.rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
         ButterKnife.bind(this, shareDevicesBinding.customToolbar);
         chooseShareDeviceAdapter.setOnCheckClickListener(this::checkDevice);
+        initPresenter();
         return shareDevicesBinding.getRoot();
     }
 
@@ -121,6 +121,7 @@ public class MineFriendsListShareDevicesFragment extends IBaseFragment implement
      */
     @Override
     public void initRecycleView(ArrayList<DeviceBean> list) {
+
         chooseShareDeviceAdapter.clear();
         chooseShareDeviceAdapter.addAll(list);
     }

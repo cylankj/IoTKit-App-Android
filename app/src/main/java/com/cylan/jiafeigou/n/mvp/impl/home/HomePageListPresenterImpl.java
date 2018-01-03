@@ -114,7 +114,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private void deviceUnbindSub() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(event -> {
                     subUuidList();
                 }, e -> {
@@ -126,7 +125,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private void getShareDevicesListRsp() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
-                .debounce(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {
                     RxBus.getCacheInstance().post(new InternalHelp());
@@ -144,7 +142,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private void devicesUpdate() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> subUuidList(), throwable -> {
                     devicesUpdate();
@@ -185,7 +182,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
 
     private void subUuidList() {
-
         List<Device> list = DataSourceManager.getInstance().getAllDevice();
         AppLogger.w("subUuidList?" + ListUtils.getSize(list));
         getView().onItemsRsp(new ArrayList<>(list));
@@ -199,7 +195,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private void robotDeviceDataSync() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-//                .throttleFirst(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msg -> subUuidList(), AppLogger::e);
         addStopSubscription(subscribe);
@@ -207,7 +202,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private void internalUpdateUuidList() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(InternalHelp.class)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> subUuidList(), AppLogger::e);
         addStopSubscription(subscribe);

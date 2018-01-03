@@ -19,6 +19,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
@@ -36,6 +37,8 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.CameraLiveActionHelper;
+import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.HistoryManager;
@@ -63,6 +66,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import permissions.dispatcher.PermissionUtils;
@@ -70,6 +74,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -102,14 +107,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
+    private CameraLiveActionHelper liveActionHelper;
+
+
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
+        liveActionHelper = new CameraLiveActionHelper(uuid);
         feedRtcp.setMonitorListener(this);
-        DataExt.getInstance().clean();
         //清了吧.不需要缓存.
-        History.getHistory().clearHistoryFile(uuid);
         HistoryManager.getInstance().clearHistory(uuid);
+        monitorVideoDisconnect();
+        monitorVideoRtcp();
+        monitorHistoryVideoError();
+        monitorVideoResolution();
     }
+
 
     @Override
     public void start() {
@@ -120,6 +132,290 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         monitorDeviceUnbind();
         monitorCheckNewVersionRsp();
         monitorSdcardFormatSub();
+    }
+
+    private void monitorVideoDisconnect() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGMsgVideoDisconn>() {
+                    @Override
+                    public void call(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
+                        liveActionHelper.onVideoDisconnected(jfgMsgVideoDisconn);
+                        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                        if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                            performReportPlayError(playError);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e(throwable);
+                        throwable.printStackTrace();
+                    }
+                });
+        addDestroySubscription(subscribe);
+    }
+
+    private void monitorVideoRtcp() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGMsgVideoRtcp>() {
+                    @Override
+                    public void call(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
+                        feedRtcp.feed(jfgMsgVideoRtcp);
+                        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                        if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                            performReportPlayError(playError);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        AppLogger.e(throwable);
+                    }
+                });
+        addDestroySubscription(subscribe);
+    }
+
+    private void monitorHistoryVideoError() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGHistoryVideoErrorInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGHistoryVideoErrorInfo>() {
+                    @Override
+                    public void call(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        AppLogger.e(throwable);
+                    }
+                });
+        addDestroySubscription(subscribe);
+    }
+
+    private void monitorVideoResolution() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGMsgVideoResolution>() {
+                    @Override
+                    public void call(JFGMsgVideoResolution jfgMsgVideoResolution) {
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        AppLogger.e(throwable);
+                    }
+                });
+        addDestroySubscription(subscribe);
+    }
+
+    private void performReportPlayError(int playError) {
+        Subscription schedule = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
+            @Override
+            public void call() {
+                switch (playError) {
+                    case CameraLiveHelper.PLAY_ERROR_STANDBY: {
+                        mView.onPlayErrorStandBy();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_FIRST_SIGHT: {
+                        mView.onPlayErrorFirstSight();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_NO_NETWORK: {
+                        mView.onPlayErrorNoNetwork();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_DEVICE_OFF_LINE: {
+                        mView.onPlayErrorDeviceOffLine();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW: {
+                        mView.onPlayErrorException();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED: {
+                        mView.onPlayErrorWaitForPlayCompleted();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_LOW_FRAME_RATE: {
+                        mView.onPlayErrorLowFrameRate();
+                        performUpdateBottomMenuEnable();
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_BAD_FRAME_RATE: {
+                        mView.onPlayErrorBadFrameRate();
+                        performUpdateBottomMenuEnable();
+                        performStopVideoAction(CameraLiveHelper.isLive(liveActionHelper));
+                    }
+                    break;
+                }
+            }
+        });
+        addStopSubscription(schedule);
+    }
+
+    public void performUpdateBottomMenuEnable() {
+        boolean microphoneEnable = CameraLiveHelper.checkMicrophoneEnable(liveActionHelper);
+        boolean speakerEnable = CameraLiveHelper.checkSpeakerEnable(liveActionHelper);
+        boolean doorLockEnable = CameraLiveHelper.checkDoorLockEnable(liveActionHelper);
+        boolean captureEnable = CameraLiveHelper.checkCaptureEnable(liveActionHelper);
+        mView.onUpdateBottomMenuEnable(microphoneEnable, speakerEnable, doorLockEnable, captureEnable);
+    }
+
+    @Override
+    public void performPlayVideoAction(boolean live, long timestamp) {
+        Subscription subscribe = Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                    //当前情况下不能播放
+                    subscriber.onError(new RxEvent.HelperBreaker(playError));
+                    return;
+                }
+
+                liveActionHelper.onUpdateVideoPlayType(live);
+
+                boolean shouldDisconnectFirst = CameraLiveHelper.shouldDisconnectFirst(liveActionHelper);
+                if (shouldDisconnectFirst) {
+                    //播放前需要先断开
+                    performStopVideoAction(live);
+                }
+
+                int playCode;
+                try {
+                    if (live) {
+                        playCode = Command.getInstance().playVideo(uuid);
+                    } else {
+                        playCode = Command.getInstance().playHistoryVideo(uuid, timestamp);
+                    }
+                } catch (Exception e) {
+                    playCode = CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW;
+                    e.printStackTrace();
+                    AppLogger.e(e);
+                }
+
+                liveActionHelper.onUpdateVideoPlayCode(playCode);
+
+                playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                    //开始播放历史视频或直播出现了错误
+                    subscriber.onError(new RxEvent.HelperBreaker(playError));
+                    return;
+                }
+
+                liveActionHelper.onVideoPlayStarted(live);
+                Subscription schedule = Schedulers.io().createWorker().schedule(new Action0() {
+                    @Override
+                    public void call() {
+                        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                        if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                            subscriber.onError(new RxEvent.HelperBreaker(playError));
+                        } else {
+                            subscriber.onNext("应该是播放成功了啊...");
+                            subscriber.onCompleted();
+                        }
+                    }
+                }, 30, TimeUnit.SECONDS);
+                subscriber.add(schedule);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                        if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                            performReportPlayError(playError);
+                        }
+                    }
+                });
+        addStopSubscription(subscribe);
+    }
+
+    @Override
+    public void performStopVideoAction(boolean live) {
+        Subscription subscribe = Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+
+                if (playError == CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                    performLiveThumbSaveAction(true);
+                }
+
+                int playCode;
+                try {
+                    playCode = Command.getInstance().stopPlay(uuid);
+                } catch (Exception e) {
+                    playCode = CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW;
+                    e.printStackTrace();
+                    AppLogger.e(e);
+                }
+                liveActionHelper.onUpdateVideoPlayCode(playCode);
+
+                playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                    subscriber.onError(new RxEvent.HelperBreaker(playError));
+                    return;
+                }
+
+                liveActionHelper.onUpdateVideoPlayType(live);
+                subscriber.onNext("");
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        addStopSubscription(subscribe);
+    }
+
+    @Override
+    public void performLiveThumbSaveAction(boolean sync) {
+        try {
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            if (CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
+                Command.getInstance().screenshot(false, new CallBack<Bitmap>() {
+                    @Override
+                    public void onSucceed(Bitmap bitmap) {
+
+                        countDownLatch.countDown();
+                    }
+
+                    @Override
+                    public void onFailure(String s) {
+                        countDownLatch.countDown();
+                    }
+                });
+            } else {
+                countDownLatch.countDown();
+            }
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -216,8 +512,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(ret -> mView != null)
                 .map(ret -> {
                     AppLogger.i("stop for reason: " + ret.code);
-                    stopPlayVideo(ret.code).subscribe(result -> {
-                    }, AppLogger::e);
+                    stopPlayVideo(ret.code);
                     return ret;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -304,8 +599,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void fetchHistoryDataListCompat(Observable<String> observable) {
         if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PREPARE) {
-            stopPlayVideo(PLAY_STATE_STOP).subscribe(ret -> {
-            }, AppLogger::e);
+            stopPlayVideo(PLAY_STATE_STOP);
             AppLogger.d("获取历史录像,先断开直播,或者历史录像");
         }
 
@@ -388,6 +682,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return standby.standby;
     }
 
+
     @Override
     public void startPlay() {
         if (mView == null || !mView.isUserVisible()) {
@@ -447,8 +742,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> ret != null && ret.code != 0)
                 .subscribe(result -> {
-                    stopPlayVideo(result.code).subscribe(what -> {
-                    }, AppLogger::e);
+                    stopPlayVideo(result.code);
                     removeTimeoutSub();
                 }, AppLogger::e);
     }
@@ -512,10 +806,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, AppLogger::e);
     }
 
-    private Boolean isDampOver() {
-        return null;
-    }
-
     private Subscription timeoutSub() {
         return Observable.just("timeout")
                 .subscribeOn(Schedulers.newThread())
@@ -523,8 +813,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .doOnError(ret -> AppLogger.e("30s 超时了"))
                 .subscribe(ret -> {
                     //需要发送超时
-                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(what -> {
-                    }, AppLogger::e);
+                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW);
                     BellPuller.getInstance().currentCaller(null);
                 }, AppLogger::e);
     }
@@ -590,10 +879,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     if (NetUtils.getJfgNetType() == 0) {
                         //客户端断网了
-                        stopPlayVideo(ERR_NETWORK)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .filter(ret -> mView != null)
-                                .subscribe(ret -> mView.onLiveStop(getLiveStream().type, ERR_NETWORK), AppLogger::e);
+                        stopPlayVideo(ERR_NETWORK);
+                        if (mView != null) {
+                            mView.onLiveStop(getLiveStream().type, ERR_NETWORK);
+                        }
                         AppLogger.i("stop play  video for err network");
                         return false;
                     }
@@ -662,7 +951,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 getLiveStream().time = time;
                 getHotSeatStateMaintainer().saveRestore();
                 if (getLiveStream().playState != PLAY_STATE_PLAYING) {
-//                    Command.getInstance().playVideo(uuid);
+//                    Command.getInstance().performPlayVideoAction(uuid);
 //                    AppLogger.i(" stop video .first......");
                 }
                 ret = Command.getInstance().playHistoryVideo(uuid, time);
@@ -679,15 +968,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public Observable<Boolean> stopPlayVideo(int reasonOrState) {
+    public void stopPlayVideo(int reasonOrState) {
         AppLogger.d("pre play state: " + liveStream);
         if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
                 || liveStream.playState == PLAY_STATE_STOP) {
-            return Observable.just(false);
+//            return Observable.just(false);
         }
 
         resolutionW = resolutionH = 0;
-        return Observable.just(uuid)
+        Observable.just(uuid)
                 .subscribeOn(Schedulers.io())
                 .flatMap((String s) -> {
                     try {
@@ -709,8 +998,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public Observable<Boolean> stopPlayVideo(boolean detach) {
-        return stopPlayVideo(PLAY_STATE_STOP);
+    public void stopPlayVideo(boolean detach) {
+        stopPlayVideo(PLAY_STATE_STOP);
     }
 
     @Override
@@ -891,15 +1180,30 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void onFrameFailed() {
         AppLogger.e("is bad net work");
+        liveActionHelper.onUpdateVideoFrameFailed();
+        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+        if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+            performReportPlayError(playError);
+        }
+        if (playError == CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+            //说明当前是正常播放状态下 FrameFailed
+            performStopVideoAction(CameraLiveHelper.isLive(liveActionHelper));
+        } else {
+            performReportPlayError(playError);
+        }
         //暂停播放
-        stopPlayVideo(JFGRules.PlayErr.ERR_LOW_FRAME_RATE).subscribe(ret -> {
-        }, AppLogger::e);
-
+        stopPlayVideo(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
     }
 
     @Override
     public void onFrameRate(boolean slow) {
         AppLogger.e("is bad net work show loading?" + slow);
+        liveActionHelper.onUpdateVideoSlowState(slow);
+        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+        if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+            performReportPlayError(playError);
+        }
+
         if (slow) {
             saveHotSeatState();
         } else {
@@ -1094,9 +1398,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                                 micOn,
                                                 playType == TYPE_LIVE,
                                                 captureOn, true);
-                                    }
-                                    if (!result) {
-                                        viewWeakReference.get().onAudioPermissionCheck();
                                     }
                                 },
                                 AppLogger::e);

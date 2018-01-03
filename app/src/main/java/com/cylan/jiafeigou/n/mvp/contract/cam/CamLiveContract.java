@@ -66,8 +66,6 @@ public interface CamLiveContract {
 
         void onTakeSnapShot(Bitmap bitmap);
 
-        void onPreviewResourceReady(Bitmap bitmap);
-
         /**
          * 历史录像播放结束状态
          *
@@ -98,8 +96,6 @@ public interface CamLiveContract {
                            boolean captureOn,
                            boolean captureEnable);
 
-        void onAudioPermissionCheck();
-
         void onBatteryDrainOut();
 
         void onHistoryLoadFinished();
@@ -117,9 +113,36 @@ public interface CamLiveContract {
         void onHistoryReady(Collection<JFGVideo> history);
 
         void onLoadHistoryFailed();
+
+        void onPlayErrorStandBy();
+
+        void onPlayErrorFirstSight();
+
+        void onPlayErrorNoNetwork();
+
+        void onPlayErrorDeviceOffLine();
+
+        void onPlayErrorException();
+
+        void onPlayErrorWaitForPlayCompleted();
+
+        void onPlayErrorLowFrameRate();
+
+        void onPlayErrorBadFrameRate();
+
+        void onUpdateBottomMenuEnable(boolean microphoneEnable,
+                                      boolean speakerEnable,
+                                      boolean doorLockEnable,
+                                      boolean captureEnable);
     }
 
     interface Presenter extends BasePresenter {
+
+        void performStopVideoAction(boolean live);
+
+        void performPlayVideoAction(boolean live, long timestamp);
+
+        void performLiveThumbSaveAction(boolean sync);
 
         /**
          * sd卡中的路径
@@ -144,6 +167,7 @@ public interface CamLiveContract {
 
         boolean isShareDevice();
 
+
         /**
          * 开始播放历史录像或者开始直播
          */
@@ -161,14 +185,14 @@ public interface CamLiveContract {
          *
          * @param reasonOrState
          */
-        Observable<Boolean> stopPlayVideo(int reasonOrState);
+        void stopPlayVideo(int reasonOrState);
 
         /**
          * 退出页面
          *
          * @param detach
          */
-        Observable<Boolean> stopPlayVideo(boolean detach);
+        void stopPlayVideo(boolean detach);
 
         String getUuid();
 

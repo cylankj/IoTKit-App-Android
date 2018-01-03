@@ -257,25 +257,6 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finishExt();
-
-//                    if (getIntent() != null && getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
-//                        finishExt();
-//                    } else {
-//                        if (getIntent().getStringExtra("PanoramaConfigure") != null) {
-//                            finishExt();
-//                        } else {
-//                            final String className = getIntent().getStringExtra(JConstant.KEY_BIND_BACK_ACTIVITY);
-//                            Intent intent = new Intent();
-//                            intent.setComponent(new ComponentName(this, className));
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-//                            finishExt();
-////                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-////                            Intent intent = new Intent(ConfigWifiActivity.this, BindDeviceActivity.class);
-////                            startActivity(intent);
-//                        }
-//                    }
-
                 }, getString(R.string.CANCEL), null, false);
         return true;
     }
@@ -304,19 +285,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
         }
         Object object = tvConfigApName.getTag();
-//        etWifiPwd.getText().clear();
         if (object == null && TextUtils.isEmpty(tvConfigApName.getText())) {
             getInterestingSSid(resultList);
-//            tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
-//            tvConfigApName.setText(resultList.get(0).SSID);
-//            LocalWifiInfo.Saver.getSaver().getInfo(resultList.get(0).SSID.replace("\"", ""))
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(info -> {
-//                        if (info != null && !TextUtils.isEmpty(info.getPwd())) {
-//                            //填充密码
-//                            etWifiPwd.setText(info.getPwd());
-//                        } else etWifiPwd.setText("");
-//                    }, AppLogger::e);
         }
     }
 

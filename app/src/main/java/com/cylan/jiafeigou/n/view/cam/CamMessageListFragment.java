@@ -598,9 +598,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             String toJson = new ObjectMapper().writeValueAsString(cachedItems);
             KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
             keyValueDao.insertOrReplace(new KeyValue(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
-//            keyValueDao.save(new KeyValue(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
-//            BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class)
-//                    .put(new KeyValueStringItem(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"), toJson));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -614,9 +611,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void setCurrentPosition(int position) {
         if (getView() != null && isAdded()) {
             getView().post(() -> {
-                if (camMessageListAdapter.getCount() == 0) {
+                if (camMessageListAdapter.getCount() == 0 || camMessageListAdapter.getList().size() <= position) {
                     return;
                 }
+
                 long time = camMessageListAdapter.getList().get(position).message.getVersion();
                 if (time == 0) time = System.currentTimeMillis();
                 boolean isToday = TimeUtils.isToday(time);

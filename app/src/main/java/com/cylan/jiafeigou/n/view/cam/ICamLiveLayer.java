@@ -5,9 +5,6 @@ import android.graphics.Rect;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGMsgVideoResolution;
-import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 
@@ -52,25 +49,11 @@ public interface ICamLiveLayer {
 
     void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode);
 
-    void orientationChanged(CamLiveContract.Presenter presenter, Device device, int orientation);
-
-    void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp);
-
-    void onResolutionRsp(JFGMsgVideoResolution resolution);
-
-    void onLiveDestroy();
-
     void onDeviceStandByChanged(Device device, View.OnClickListener clickListener);
-
-    void onLoadPreviewBitmap(Bitmap bitmap);
 
     void onCaptureRsp(FragmentActivity activity, Bitmap bitmap);
 
     void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
-
-    void onActivityStart(CamLiveContract.Presenter presenter, Device device);
-
-    void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible);
 
     void updateLiveViewMode(String mode);
 
@@ -83,10 +66,6 @@ public interface ICamLiveLayer {
                          boolean micEnable,
                          boolean capture, boolean captureEnable);
 
-//    void setHotSeatListener(View.OnClickListener micListener,
-//                            View.OnClickListener speakerListener,
-//                            View.OnClickListener captureListener);
-
     int getMicState();
 
     int getSpeakerState();
@@ -98,10 +77,4 @@ public interface ICamLiveLayer {
 
     void updateLiveRect(Rect rect);
 
-    /**
-     * 设备属性更新
-     *
-     * @param device
-     */
-    void dpUpdate(JFGDPMsg msg, Device device);
 }

@@ -1,4 +1,4 @@
-<com.cylan.jiafeigou.n.view.cam.CamLiveControllerEx xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cam_live_control_layer"
@@ -449,4 +449,4 @@
             android:textSize="@dimen/sp12" />
     </com.cylan.jiafeigou.widget.Switcher>
 
-</com.cylan.jiafeigou.n.view.cam.CamLiveControllerEx>
+</RelativeLayout>

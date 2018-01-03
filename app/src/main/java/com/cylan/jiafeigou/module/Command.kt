@@ -331,7 +331,7 @@ class Command : AppCmd {
         if (initSuccess) {
             return this.playVideo(cid, "")
         } else {
-            throw JfgException("playVideo error,init:$initSuccess,cid:$cid")
+            throw JfgException("performPlayVideoAction error,init:$initSuccess,cid:$cid")
         }
     }
 
@@ -342,7 +342,7 @@ class Command : AppCmd {
             initSuccess && !TextUtils.isEmpty(cid) -> {
                 JfgAppJni.PlayVideo(cid, constraint)
             }
-            else -> throw JfgException("playVideo error,init:$initSuccess, cid:$cid,constraint:$constraint")
+            else -> throw JfgException("performPlayVideoAction error,init:$initSuccess, cid:$cid,constraint:$constraint")
         }
     }
 

@@ -850,63 +850,62 @@ public class MiscUtils {
     /**
      * 属于绑定过程,恢复公网的wifi
      */
-    public static void recoveryWiFi() {
+    public static boolean recoveryWiFi() {
         PerformanceUtils.stopTrace(TAG_UDP_FLOW);
         PerformanceUtils.startTrace(TAG_NET_RECOVERY_FLOW);
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiManager.WifiLock wifiLock = wifiManager.createWifiLock("jfg reconnect processor");
         try {
             wifiLock.acquire();
-            List<WifiConfiguration> list =
-                    wifiManager.getConfiguredNetworks();
-            WifiInfo info = wifiManager.getConnectionInfo();
-            if (JFGRules.isCylanDevice(info.getSSID())) {
-                boolean disconnect = wifiManager.disconnect();
-                boolean disableNetwork = wifiManager.disableNetwork(info.getNetworkId());
-                boolean removed = wifiManager.removeNetwork(info.getNetworkId());
-                AppLogger.d("当前连接的网络:" + info.getSSID()
-                        + ",disconnected:" + disconnect
-                        + ",disable Network:" + disableNetwork
-                        + ",removed:" + removed);
-            }
-            if (list != null) {
-                int highPriority = -1;
-                int index = -1;
-                for (int i = 0; i < list.size(); i++) {
-                    String ssid = list.get(i).SSID;
-                    if (!JFGRules.isCylanDevice(ssid)) {
-                        //恢复之前连接过的wifi
-                        if (highPriority < list.get(i).priority) {
-                            highPriority = list.get(i).priority;
-                            index = i;
-                        }
-                    } else {
-                        WifiConfiguration configuration = list.get(i);
-                        boolean disconnect = wifiManager.disconnect();
-                        boolean s = wifiManager.disableNetwork(configuration.networkId);
-                        boolean b = wifiManager.removeNetwork(configuration.networkId);
-                        AppLogger.d("断开网络是否成功:" + disconnect + "禁用加菲狗 Dog:" + s + "移除加菲狗 dog:" + b);
+            List<WifiConfiguration> list = new ArrayList<>(wifiManager.getConfiguredNetworks());
+            //小米会一直弹权限框,所以直接注释掉
+//            WifiInfo info = wifiManager.getConnectionInfo();
+//            if (JFGRules.isCylanDevice(info.getSSID())) {
+//                boolean disconnect = wifiManager.disconnect();
+//                boolean disableNetwork = wifiManager.disableNetwork(info.getNetworkId());
+//                boolean removed = wifiManager.removeNetwork(info.getNetworkId());
+//                AppLogger.d("当前连接的网络:" + info.getSSID()
+//                        + ",disconnected:" + disconnect
+//                        + ",disable Network:" + disableNetwork
+//                        + ",removed:" + removed);
+//            }
+            int highPriority = -1;
+            int index = -1;
+            for (int i = 0; i < list.size(); i++) {
+                String ssid = list.get(i).SSID;
+                if (!JFGRules.isCylanDevice(ssid)) {
+                    //恢复之前连接过的wifi
+                    if (highPriority < list.get(i).priority) {
+                        highPriority = list.get(i).priority;
+                        index = i;
                     }
+                } else {
+                    //小米会一直弹 WiFi 权限框,所以直接注释掉
+//                        WifiConfiguration configuration = list.get(i);
+//                        boolean disconnect = wifiManager.disconnect();
+//                        boolean s = wifiManager.disableNetwork(configuration.networkId);
+//                        boolean b = wifiManager.removeNetwork(configuration.networkId);
+//                        AppLogger.d("断开网络是否成功:" + disconnect + "禁用加菲狗 Dog:" + s + "移除加菲狗 dog:" + b);
                 }
-                if (index != -1) {
-                    wifiManager.disconnect();
-                    boolean enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, true);
-                    AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
-                    boolean reconnect = wifiManager.reconnect();
-                    AppLogger.d("re connect :" + reconnect);
+            }
+            if (index != -1) {
+                wifiManager.disconnect();
+                boolean enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, true);
+                AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
+                boolean reconnect = wifiManager.reconnect();
+                AppLogger.d("re connect :" + reconnect);
 
-                    if (!reconnect && list.size() > 0) {//重连失败了,则随机连接一个了
-                        for (WifiConfiguration wifiConfiguration : list) {
-                            if (!JFGRules.isCylanDevice(wifiConfiguration.SSID)) {
-                                //恢复之前连接过的wifi
-                                wifiManager.disconnect();
-                                enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, true);
-                                AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
-                                reconnect = wifiManager.reconnect();
-                                AppLogger.d("re connect :" + reconnect);
-                                if (reconnect) {
-                                    break;
-                                }
+                if (!reconnect && list.size() > 0) {//重连失败了,则随机连接一个了
+                    for (WifiConfiguration wifiConfiguration : list) {
+                        if (!JFGRules.isCylanDevice(wifiConfiguration.SSID)) {
+                            //恢复之前连接过的wifi
+                            wifiManager.disconnect();
+                            enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, true);
+                            AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
+                            reconnect = wifiManager.reconnect();
+                            AppLogger.d("re connect :" + reconnect);
+                            if (reconnect) {
+                                break;
                             }
                         }
                     }
@@ -917,6 +916,7 @@ public class MiscUtils {
         } finally {
             wifiLock.release();
         }
+        return true;
     }
 
     public static Observable<String> getAppVersionFromGooglePlay() {

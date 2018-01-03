@@ -36,7 +36,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private TextView tvLiveFlow;//流量
     private boolean isNormalView;
     private String uuid;
-    private volatile boolean isLiveThumbLoadingSuccessful = false;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
