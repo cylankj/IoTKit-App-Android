@@ -509,7 +509,7 @@
       "BATTERY": "0",
       "CIDPREFIX": "2901",
       "CLOUD_STORAGE": "0",
-      "DETECTION_ZONE": "0",
+      "DETECTION_ZONE": "1",
       "DEVICE": "DOG-10W",
       "DOOR_LOCK": "0",
       "EMPTIED": "0",
@@ -559,7 +559,7 @@
       "BATTERY": "0",
       "CIDPREFIX": "2902",
       "CLOUD_STORAGE": "0",
-      "DETECTION_ZONE": "0",
+      "DETECTION_ZONE": "1",
       "DEVICE": "DOG-11W",
       "DOOR_LOCK": "0",
       "EMPTIED": "0",
@@ -609,7 +609,7 @@
       "BATTERY": "0",
       "CIDPREFIX": "2903",
       "CLOUD_STORAGE": "0",
-      "DETECTION_ZONE": "0",
+      "DETECTION_ZONE": "1",
       "DEVICE": "DOG-13W",
       "DOOR_LOCK": "0",
       "EMPTIED": "0",
@@ -2529,5 +2529,5 @@
       1564
     ]
   },
-  "version": "20171220"
+  "version": "20180103"
 }
