@@ -46,6 +46,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun initViewAndListener() {
         super.initViewAndListener()
+        effect_container.keepScreenOn = true
         ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
         effect_container.setSizeUpdateListener(this::onMonitorAreaChanged)
         effect_container.setOnSystemUiVisibilityChangeListener { ViewUtils.setSystemUiVisibility(monitor_picture, false) }

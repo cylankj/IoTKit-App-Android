@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
@@ -21,7 +22,6 @@ import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -40,19 +40,18 @@ import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.module.CameraLiveActionHelper;
 import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.DPTimeZone;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.HistoryManager;
 import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
-import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -64,6 +63,7 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
@@ -80,11 +80,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
-import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NETWORK;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
@@ -162,6 +159,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<JFGMsgVideoRtcp>() {
                     @Override
                     public void call(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
+
                         feedRtcp.feed(jfgMsgVideoRtcp);
                         int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                         if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
@@ -393,6 +391,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public void performStopVideoAction() {
+        performStopVideoAction(CameraLiveHelper.isLive(liveActionHelper));
+    }
+
+    @Override
     public void performLiveThumbSaveAction(boolean sync) {
         try {
             CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -400,7 +403,19 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 Command.getInstance().screenshot(false, new CallBack<Bitmap>() {
                     @Override
                     public void onSucceed(Bitmap bitmap) {
-
+                        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+                        PerformanceUtils.startTrace("takeCapture");
+                        if (bitmap == null) {
+                            AppLogger.e("performLiveThumbSaveAction bitmap is null ..");
+                            return;
+                        }
+                        final String fileName = uuid + System.currentTimeMillis() + ".png";
+                        final String cover = JConstant.MEDIA_PATH + File.separator + uuid + "_cover.png";
+                        final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+                        //需要删除之前的一条记录.
+                        BitmapUtils.saveBitmap2file(bitmap, cover);
+                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
+                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_FILE + uuid, cover);
                         countDownLatch.countDown();
                     }
 
@@ -415,6 +430,84 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             countDownLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void performDeviceInfoChangedAction(ArrayList<JFGDPMsg> dpList) {
+        for (JFGDPMsg msg : dpList) {
+
+            try {
+                mView.onDeviceInfoChanged(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            switch ((int) msg.id) {
+                case DpMsgMap.ID_222_SDCARD_SUMMARY: {
+                    DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPSdcardSummary.class, null);
+                    boolean hasSdcard = JFGRules.hasSdcard(sdStatus);
+                    liveActionHelper.onUpdateSDCard(hasSdcard);
+                    if (!hasSdcard) {
+                        AppLogger.d("sdcard 被拔出");
+                        updateLiveStream(TYPE_LIVE, 0, -1);
+                        mView.onDeviceSDCardOut();
+                    }
+                }
+                break;
+                case DpMsgMap.ID_206_BATTERY: {
+                    if (JFGRules.popPowerDrainOut(getDevice().pid)) {
+                        Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
+                        if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                            mView.onBatteryDrainOut();
+                        }
+                    }
+                }
+                break;
+                case DpMsgMap.ID_508_CAMERA_STANDBY_FLAG: {
+                    DpMsgDefine.DPStandby standby = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPStandby.class, null);
+                    boolean standBy = JFGRules.isStandBy(standby);
+                    liveActionHelper.onUpdateStandBy(standBy);
+                    if (standBy) {
+                        mView.onPlayErrorStandBy();
+                        performStopVideoAction(CameraLiveHelper.isLive(liveActionHelper));
+                    } else if (CameraLiveHelper.canPlayVideoNow(uuid)) {
+                        boolean live = CameraLiveHelper.isLive(liveActionHelper);
+                        performPlayVideoAction(live, CameraLiveHelper.getLastPlayTime(live, liveActionHelper));
+                    }
+                }
+                break;
+                case DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD: {
+                    mView.onDeviceSDCardFormat();
+                }
+                break;
+                case DpMsgMap.ID_509_CAMERA_MOUNT_MODE: {
+                    String _509 = DpUtils.unpackDataWithoutThrow(msg.packValue, String.class, "1");
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    if (device.pid == 39 || device.pid == 49) {
+                        _509 = "0";
+                    }
+                    mView.onUpdateLiveViewMode(_509);
+                }
+                break;
+                case DpMsgMap.ID_201_NET: {
+
+                }
+                break;
+                case DpMsgMap.ID_214_DEVICE_TIME_ZONE: {
+                    DPTimeZone dpTimeZone = DpUtils.unpackDataWithoutThrow(msg.packValue, DPTimeZone.class, null);
+                    if (dpTimeZone != null) {
+                        mView.onDeviceTimeZoneChanged(dpTimeZone);
+                    }
+                }
+                break;
+                case DpMsgMap.ID_510_CAMERA_COORDINATE: {
+                    DpMsgDefine.DpCoordinate dpCoordinate = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DpCoordinate.class, null);
+                    if (dpCoordinate != null) {
+                        mView.onUpdateCameraCoordinate(dpCoordinate);
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -500,30 +593,30 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         addStopSubscription(subscription);
     }
 
-    /**
-     * 视频断开连接
-     * 只需要开始播放后注册
-     *
-     * @return
-     */
-    private Subscription videoDisconnectSub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .subscribeOn(Schedulers.io())
-                .filter(ret -> mView != null)
-                .map(ret -> {
-                    AppLogger.i("stop for reason: " + ret.code);
-                    stopPlayVideo(ret.code);
-                    return ret;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    BellPuller.getInstance().currentCaller(null);
-                    updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
-                    getView().onLiveStop(getLiveStream().type, ret.code);
-//                    feedRtcp.stop();
-                    AppLogger.d("reset subscription");
-                }, AppLogger::e);
-    }
+//    /**
+//     * 视频断开连接
+//     * 只需要开始播放后注册
+//     *
+//     * @return
+//     */
+//    private Subscription videoDisconnectSub() {
+//        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+//                .subscribeOn(Schedulers.io())
+//                .filter(ret -> mView != null)
+//                .map(ret -> {
+//                    AppLogger.i("stop for reason: " + ret.code);
+//                    stopPlayVideo(ret.code);
+//                    return ret;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(ret -> {
+//                    BellPuller.getInstance().currentCaller(null);
+//                    updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
+//                    getView().onLiveStop(getLiveStream().type, ret.code);
+////                    feedRtcp.stop();
+//                    AppLogger.d("reset subscription");
+//                }, AppLogger::e);
+//    }
 
     @Override
     public String getThumbnailKey() {
@@ -599,7 +692,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void fetchHistoryDataListCompat(Observable<String> observable) {
         if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PREPARE) {
-            stopPlayVideo(PLAY_STATE_STOP);
+//            stopPlayVideo(PLAY_STATE_STOP);
+            AppLogger.d("获取历史录像,先断开直播,或者历史录像");
+        }
+        boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
+        if (videoPlaying) {
+            performStopVideoAction(CameraLiveHelper.isLive(liveActionHelper));
             AppLogger.d("获取历史录像,先断开直播,或者历史录像");
         }
 
@@ -642,7 +740,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void openDoorLock(String password) {
         if (liveStream.playState != PLAY_STATE_PLAYING) {
             //还没有开始直播,则需要开始直播
-            startPlay();
+//            startPlay();
+            performPlayVideoAction(true, 0);
         }
         Subscription subscribe = DoorLockHelper.INSTANCE.openDoor(uuid, password)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
@@ -683,69 +782,69 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
 
-    @Override
-    public void startPlay() {
-        if (mView == null || !mView.isUserVisible()) {
-            return;
-        }
-        if (getLiveStream().playState == PLAY_STATE_PREPARE) {
-            AppLogger.d("已经loading");
-            mView.onLivePrepare(getLiveStream().type);
-            return;
-        }
-        mView.onLivePrepare(getLiveStream().type);
-        boolean sdkOnlineStatus = DataSourceManager.getInstance().isOnline();
-        if (!sdkOnlineStatus) {
-            String routeMac = NetUtils.getRouterMacAddress();
-            String deviceMac = getDevice().$(202, "");
-            boolean AP = !TextUtils.isEmpty(routeMac) && TextUtils.equals(deviceMac, routeMac);
-            AppLogger.d("直连Ap?" + AP);
-        }
-        addSubscription(beforePlayObservable(s -> {
-            try {
-                int ret;
-                boolean switchInterface = false;
-                // 历史播放中，需要停止,不能保证上次是播放的是历史还是直播，所以直接断开。
-                if (getLiveStream().playState == PLAY_STATE_PLAYING) {
-                    Command.getInstance().stopPlay(uuid);  // 先停止播放
-                    switchInterface = true;
-                }
-                // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
-                getLiveStream().playStartTime = System.currentTimeMillis() / 1000;
-//                getLiveStream().playStartTime = System.currentTimeMillis();
-                ret = Command.getInstance().playVideo(uuid);
-
-                AppLogger.d("play video ret :" + ret + "," + switchInterface);
-
-                // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
-//                if (JFGRules.isBell(getDevice().pid)) {
-                BellPuller.getInstance().currentCaller(uuid);//查看直播时禁止呼叫
+//    @Override
+//    public void startPlay() {
+//        if (mView == null || !mView.isUserVisible()) {
+//            return;
+//        }
+//        if (getLiveStream().playState == PLAY_STATE_PREPARE) {
+//            AppLogger.d("已经loading");
+//            mView.onLivePrepare(getLiveStream().type);
+//            return;
+//        }
+//        mView.onLivePrepare(getLiveStream().type);
+//        boolean sdkOnlineStatus = DataSourceManager.getInstance().isOnline();
+//        if (!sdkOnlineStatus) {
+//            String routeMac = NetUtils.getRouterMacAddress();
+//            String deviceMac = getDevice().$(202, "");
+//            boolean AP = !TextUtils.isEmpty(routeMac) && TextUtils.equals(deviceMac, routeMac);
+//            AppLogger.d("直连Ap?" + AP);
+//        }
+//        addSubscription(beforePlayObservable(s -> {
+//            try {
+//                int ret;
+//                boolean switchInterface = false;
+//                // 历史播放中，需要停止,不能保证上次是播放的是历史还是直播，所以直接断开。
+//                if (getLiveStream().playState == PLAY_STATE_PLAYING) {
+//                    Command.getInstance().stopPlay(uuid);  // 先停止播放
+//                    switchInterface = true;
 //                }
-                getHotSeatStateMaintainer().saveRestore();
-                AppLogger.i("play video: " + uuid + " " + ret);
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-            updateLiveStream(getLiveStream().type, -1, PLAY_STATE_PREPARE);
-            getView().onLivePrepare(TYPE_LIVE);
-            return null;
-        }).subscribe(objectObservable -> {
-            AppLogger.d("播放流程走通 done,不在这个环节获取历史视频");
-        }, AppLogger::e), "beforePlayObservable");
-    }
-
-    /**
-     * 错误码
-     */
-    private Subscription errCodeSub() {
-        return RxBus.getCacheInstance().toObservable(JFGHistoryVideoErrorInfo.class)
-                .subscribeOn(Schedulers.io())
-                .filter(ret -> ret != null && ret.code != 0)
-                .subscribe(result -> {
-                    stopPlayVideo(result.code);
-                    removeTimeoutSub();
-                }, AppLogger::e);
-    }
+//                // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+//                getLiveStream().playStartTime = System.currentTimeMillis() / 1000;
+////                getLiveStream().playStartTime = System.currentTimeMillis();
+//                ret = Command.getInstance().playVideo(uuid);
+//
+//                AppLogger.d("play video ret :" + ret + "," + switchInterface);
+//
+//                // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
+////                if (JFGRules.isBell(getDevice().pid)) {
+//                BellPuller.getInstance().currentCaller(uuid);//查看直播时禁止呼叫
+////                }
+//                getHotSeatStateMaintainer().saveRestore();
+//                AppLogger.i("play video: " + uuid + " " + ret);
+//            } catch (JfgException e) {
+//                e.printStackTrace();
+//            }
+//            updateLiveStream(getLiveStream().type, -1, PLAY_STATE_PREPARE);
+//            getView().onLivePrepare(TYPE_LIVE);
+//            return null;
+//        }).subscribe(objectObservable -> {
+//            AppLogger.d("播放流程走通 done,不在这个环节获取历史视频");
+//        }, AppLogger::e), "beforePlayObservable");
+//    }
+//
+//    /**
+//     * 错误码
+//     */
+//    private Subscription errCodeSub() {
+//        return RxBus.getCacheInstance().toObservable(JFGHistoryVideoErrorInfo.class)
+//                .subscribeOn(Schedulers.io())
+//                .filter(ret -> ret != null && ret.code != 0)
+//                .subscribe(result -> {
+//                    stopPlayVideo(result.code);
+//                    removeTimeoutSub();
+//                }, AppLogger::e);
+//    }
 
 
     /**
@@ -805,18 +904,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                 }, AppLogger::e);
     }
-
-    private Subscription timeoutSub() {
-        return Observable.just("timeout")
-                .subscribeOn(Schedulers.newThread())
-                .delay(30, TimeUnit.SECONDS)
-                .doOnError(ret -> AppLogger.e("30s 超时了"))
-                .subscribe(ret -> {
-                    //需要发送超时
-                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW);
-                    BellPuller.getInstance().currentCaller(null);
-                }, AppLogger::e);
-    }
+//
+//    private Subscription timeoutSub() {
+//        return Observable.just("timeout")
+//                .subscribeOn(Schedulers.newThread())
+//                .delay(30, TimeUnit.SECONDS)
+//                .doOnError(ret -> AppLogger.e("30s 超时了"))
+//                .subscribe(ret -> {
+//                    //需要发送超时
+//                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW);
+//                    BellPuller.getInstance().currentCaller(null);
+//                }, AppLogger::e);
+//    }
 
     /**
      * 只有新建立的播放,才有这个回调.
@@ -863,47 +962,47 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 });
     }
 
-    /**
-     * 1.检查网络
-     * 2.开始播放
-     *
-     * @return
-     */
-    private Observable<String> beforePlayObservable(Func1<String, String> func1) {
-        return Observable.just("")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .filter(o -> {
-                    DpMsgDefine.DPStandby dpStandby = getDevice().$(508, new DpMsgDefine.DPStandby());
-                    if (dpStandby.standby) {
-                        return false;//待机模式
-                    }
-                    if (NetUtils.getJfgNetType() == 0) {
-                        //客户端断网了
-                        stopPlayVideo(ERR_NETWORK);
-                        if (mView != null) {
-                            mView.onLiveStop(getLiveStream().type, ERR_NETWORK);
-                        }
-                        AppLogger.i("stop play  video for err network");
-                        return false;
-                    }
-                    return true;
-                })
-                .map(ret -> {
-                    //加入管理,如果播放失败,收到disconnect
-
-                    feedRtcp.stop();
-                    addSubscription(videoDisconnectSub(), "videoDisconnectSub");
-                    addSubscription(errCodeSub(), "errCodeSub");
-                    //挪到resolutionSub里面
-//                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
-                    addSubscription(resolutionSub(), "resolutionSub");
-                    addSubscription(timeoutSub(), "timeoutSub");
-                    addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");
-                    return "";
-                })
-                .observeOn(Schedulers.io())
-                .map(func1);
-    }
+//    /**
+//     * 1.检查网络
+//     * 2.开始播放
+//     *
+//     * @return
+//     */
+//    private Observable<String> beforePlayObservable(Func1<String, String> func1) {
+//        return Observable.just("")
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .filter(o -> {
+//                    DpMsgDefine.DPStandby dpStandby = getDevice().$(508, new DpMsgDefine.DPStandby());
+//                    if (dpStandby.standby) {
+//                        return false;//待机模式
+//                    }
+//                    if (NetUtils.getJfgNetType() == 0) {
+//                        //客户端断网了
+//                        stopPlayVideo(ERR_NETWORK);
+//                        if (mView != null) {
+//                            mView.onLiveStop(getLiveStream().type, ERR_NETWORK);
+//                        }
+//                        AppLogger.i("stop play  video for err network");
+//                        return false;
+//                    }
+//                    return true;
+//                })
+//                .map(ret -> {
+//                    //加入管理,如果播放失败,收到disconnect
+//
+//                    feedRtcp.stop();
+//                    addSubscription(videoDisconnectSub(), "videoDisconnectSub");
+//                    addSubscription(errCodeSub(), "errCodeSub");
+//                    //挪到resolutionSub里面
+////                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
+//                    addSubscription(resolutionSub(), "resolutionSub");
+//                    addSubscription(timeoutSub(), "timeoutSub");
+//                    addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");
+//                    return "";
+//                })
+//                .observeOn(Schedulers.io())
+//                .map(func1);
+//    }
 
     private void removeTimeoutSub() {
         unSubscribe("timeoutSub");
@@ -923,84 +1022,84 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Log.d("updateLiveStream", "updateLiveStream:" + liveStream);
     }
 
-    @Override
-    public void startPlayHistory(long t) {
-        //保证得到s System.currentTimeMillis() / t == 0 的条件范围可能有点小
-        if (t == 0) {
-            t = 1;
-            if (BuildConfig.DEBUG) {
-                throw new IllegalArgumentException("怎么会有这种情况发生");
-            }
-        }
-        if (t == getLiveStream().playStartTime) {
-            return;//多次调用了,过滤掉即可
-        }
-        final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
-        // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
-        getLiveStream().playStartTime = time;
-        getView().onLivePrepare(TYPE_HISTORY);
-        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(net)) {
-            updateLiveStream(TYPE_HISTORY, -1, PLAY_STATE_IDLE);
-            mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
-            return;
-        }
-        addSubscription(beforePlayObservable(s -> {
-            try {
-                int ret = 0;
-                getLiveStream().time = time;
-                getHotSeatStateMaintainer().saveRestore();
-                if (getLiveStream().playState != PLAY_STATE_PLAYING) {
-//                    Command.getInstance().performPlayVideoAction(uuid);
-//                    AppLogger.i(" stop video .first......");
-                }
-                ret = Command.getInstance().playHistoryVideo(uuid, time);
-                //说明现在是在查看历史录像了,泽允许进行门铃呼叫
-                BellPuller.getInstance().currentCaller(null);
-                updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i("play history video: " + uuid + " time:" + History.parseTime2Date(TimeUtils.wrapToLong(time)) + " ret:" + ret);
-            } catch (Exception e) {
-                AppLogger.e("err:" + e.getLocalizedMessage());
-            }
-            return null;
-        }).subscribe(ret -> {
-        }, AppLogger::e), "playHistory");
-    }
+//    @Override
+//    public void startPlayHistory(long t) {
+//        //保证得到s System.currentTimeMillis() / t == 0 的条件范围可能有点小
+//        if (t == 0) {
+//            t = 1;
+//            if (BuildConfig.DEBUG) {
+//                throw new IllegalArgumentException("怎么会有这种情况发生");
+//            }
+//        }
+//        if (t == getLiveStream().playStartTime) {
+//            return;//多次调用了,过滤掉即可
+//        }
+//        final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
+//        // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+//        getLiveStream().playStartTime = time;
+//        getView().onLivePrepare(TYPE_HISTORY);
+//        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
+//        if (!JFGRules.isDeviceOnline(net)) {
+//            updateLiveStream(TYPE_HISTORY, -1, PLAY_STATE_IDLE);
+//            mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
+//            return;
+//        }
+//        addSubscription(beforePlayObservable(s -> {
+//            try {
+//                int ret = 0;
+//                getLiveStream().time = time;
+//                getHotSeatStateMaintainer().saveRestore();
+//                if (getLiveStream().playState != PLAY_STATE_PLAYING) {
+////                    Command.getInstance().performPlayVideoAction(uuid);
+////                    AppLogger.i(" stop video .first......");
+//                }
+//                ret = Command.getInstance().playHistoryVideo(uuid, time);
+//                //说明现在是在查看历史录像了,泽允许进行门铃呼叫
+//                BellPuller.getInstance().currentCaller(null);
+//                updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
+//                AppLogger.i("play history video: " + uuid + " time:" + History.parseTime2Date(TimeUtils.wrapToLong(time)) + " ret:" + ret);
+//            } catch (Exception e) {
+//                AppLogger.e("err:" + e.getLocalizedMessage());
+//            }
+//            return null;
+//        }).subscribe(ret -> {
+//        }, AppLogger::e), "playHistory");
+//    }
 
-    @Override
-    public void stopPlayVideo(int reasonOrState) {
-        AppLogger.d("pre play state: " + liveStream);
-        if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
-                || liveStream.playState == PLAY_STATE_STOP) {
-//            return Observable.just(false);
-        }
-
-        resolutionW = resolutionH = 0;
-        Observable.just(uuid)
-                .subscribeOn(Schedulers.io())
-                .flatMap((String s) -> {
-                    try {
-                        Command.getInstance().stopPlay(s);
-                        getHotSeatStateMaintainer().reset();
-                        updateLiveStream(getLiveStream().type, -1, reasonOrState);
-                        BellPuller.getInstance().currentCaller(null);
-                        AppLogger.i("stopPlayVideo:" + s);
-                    } catch (JfgException e) {
-                        AppLogger.e("stop play err: " + e.getLocalizedMessage());
-                    }
-                    AppLogger.d("live stop: " + reasonOrState);
-                    if (getView() != null) {
-                        getView().onLiveStop(getLiveStream().type, reasonOrState);
-                    }
-                    return Observable.just(true);
-                })
-                .doOnError(throwable -> AppLogger.e("stop play err" + throwable.getLocalizedMessage()));
-    }
-
-    @Override
-    public void stopPlayVideo(boolean detach) {
-        stopPlayVideo(PLAY_STATE_STOP);
-    }
+//    @Override
+//    public void stopPlayVideo(int reasonOrState) {
+//        AppLogger.d("pre play state: " + liveStream);
+//        if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
+//                || liveStream.playState == PLAY_STATE_STOP) {
+////            return Observable.just(false);
+//        }
+//
+//        resolutionW = resolutionH = 0;
+//        Observable.just(uuid)
+//                .subscribeOn(Schedulers.io())
+//                .flatMap((String s) -> {
+//                    try {
+//                        Command.getInstance().stopPlay(s);
+//                        getHotSeatStateMaintainer().reset();
+//                        updateLiveStream(getLiveStream().type, -1, reasonOrState);
+//                        BellPuller.getInstance().currentCaller(null);
+//                        AppLogger.i("stopPlayVideo:" + s);
+//                    } catch (JfgException e) {
+//                        AppLogger.e("stop play err: " + e.getLocalizedMessage());
+//                    }
+//                    AppLogger.d("live stop: " + reasonOrState);
+//                    if (getView() != null) {
+//                        getView().onLiveStop(getLiveStream().type, reasonOrState);
+//                    }
+//                    return Observable.just(true);
+//                })
+//                .doOnError(throwable -> AppLogger.e("stop play err" + throwable.getLocalizedMessage()));
+//    }
+//
+//    @Override
+//    public void stopPlayVideo(boolean detach) {
+//        stopPlayVideo(PLAY_STATE_STOP);
+//    }
 
     @Override
     public String getUuid() {
@@ -1141,41 +1240,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         jfgRobotSyncData.dpList != null &&
                                 getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
-                .flatMap(deviceSyncRsp -> {
-                    AppLogger.d("update dp List: " + ListUtils.getSize(deviceSyncRsp.dpList));
-                    return Observable.from(deviceSyncRsp.dpList);
-                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(msg -> {
-                    try {
-                        if (msg.id == 222) {
-                            DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                            if (sdStatus == null) {
-                                sdStatus = new DpMsgDefine.DPSdcardSummary();
-                            }
-                            if (!sdStatus.hasSdcard || sdStatus.errCode != 0) {
-                                updateLiveStream(TYPE_LIVE, 0, -1);
-                            }
-                        } else if (msg.id == DpMsgMap.ID_206_BATTERY) {
-                            if (JFGRules.popPowerDrainOut(getDevice().pid)) {
-                                Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
-                                if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
-                                    mView.onBatteryDrainOut();
-                                }
-                            }
-                        }
-                        mView.onDeviceInfoChanged(msg);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("monitorRobotDataSync"))
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe(ret -> {
+                .retry(new RxHelper.RxException<>("monitorRobotDataSync"))
+                .subscribe(jfgRobotSyncData -> {
+                    if (jfgRobotSyncData.dpList != null) {
+                        performDeviceInfoChangedAction(jfgRobotSyncData.dpList);
+                    }
                 }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
         addStopSubscription(subscribe);
     }
+
 
     @Override
     public void onFrameFailed() {
@@ -1192,7 +1267,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             performReportPlayError(playError);
         }
         //暂停播放
-        stopPlayVideo(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
+//        stopPlayVideo(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
     }
 
     @Override

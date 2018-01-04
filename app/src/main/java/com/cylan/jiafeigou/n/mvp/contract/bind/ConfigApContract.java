@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.bind;
 import android.net.wifi.ScanResult;
 
 import com.cylan.jiafeigou.misc.bind.IBindUdpFlow;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -31,7 +30,7 @@ public interface ConfigApContract {
          */
         void onWiFiResult(List<ScanResult> resultList);
 
-        void onSetWifiFinished(UdpConstant.UdpDevicePortrait udpDevicePortrait);
+        void onSetWifiFinished(String uuid);
 
         void sendWifiInfoFailed();
 

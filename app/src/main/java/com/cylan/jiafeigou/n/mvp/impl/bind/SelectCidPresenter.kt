@@ -23,11 +23,6 @@ import javax.inject.Inject
  */
 class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : BasePresenter<SelectCidContract.View>(view), SelectCidContract.Presenter {
     override fun sendDogConfig(scanResult: APObserver.ScanResult) {
-//        if (BuildConfig.DEBUG) {
-//            mock(scanResult)
-//            return
-//        }
-
         val subscribe = BindHelper.sendServerConfig(scanResult.uuid, scanResult.mac, JFGRules.getLanguageType())
                 .timeout(5, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -38,29 +33,6 @@ class SelectCidPresenter @Inject constructor(view: SelectCidContract.View) : Bas
                             AppLogger.d("超时了")
                         }
                         else -> {
-                            mView.onSendDogConfigFinished()
-                        }
-                    }
-                }) {
-                    it.printStackTrace()
-                    AppLogger.e(it)
-                }
-        addStopSubscription(subscribe)
-    }
-
-    private fun mock(scanResult: APObserver.ScanResult) {
-        //配置 WiFi 只是为了测试用,因为现在没有有线设备,模拟一下了
-        val subscribe = Observable.zip(BindHelper.sendWiFiConfig(scanResult.uuid, scanResult.mac, "Xiaomi_ACF2", "88888888")
-                , BindHelper.sendServerConfig(scanResult.uuid, scanResult.mac, JFGRules.getLanguageType()), { _, t2 -> t2 })
-                .timeout(7, TimeUnit.SECONDS, Observable.just(null))
-                .compose(applyLoading(false,R.string.LOADING))
-                .subscribe({
-                    when (it) {
-                        null -> {
-                            AppLogger.d("超时了")
-                        }
-                        else -> {
-                            MiscUtils.recoveryWiFi()
                             mView.onSendDogConfigFinished()
                         }
                     }

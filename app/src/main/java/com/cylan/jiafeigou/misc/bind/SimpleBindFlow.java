@@ -180,10 +180,8 @@ public class SimpleBindFlow extends AFullBind {
                                 ret.uuid, portrait.mac, bindCode);
                         try {
                             for (int i = 0; i < 2; i++) {
-                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                                        UdpConstant.PORT, code.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                        UdpConstant.PORT, code.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, code.toBytes());
                             }
                         } catch (JfgException e) {
                             AppLogger.e("e: " + e.getLocalizedMessage());
@@ -193,18 +191,10 @@ public class SimpleBindFlow extends AFullBind {
                         AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
                         try {
                             for (int i = 0; i < 3; i++) {
-                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                                        UdpConstant.PORT,
-                                        setServer.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                                        UdpConstant.PORT,
-                                        setLanguage.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                        UdpConstant.PORT,
-                                        setServer.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                        UdpConstant.PORT,
-                                        setLanguage.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setServer.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setLanguage.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setServer.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setLanguage.toBytes());
                             }
                         } catch (JfgException e) {
                             AppLogger.e("err:" + e);
@@ -245,12 +235,8 @@ public class SimpleBindFlow extends AFullBind {
             subscriptionMap.add(sub, "PingAck");
             try {
                 for (int i = 0; i < 2; i++) {
-                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                            UdpConstant.PORT,
-                            new JfgUdpMsg.Ping().toBytes());
-                    Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                            UdpConstant.PORT,
-                            new JfgUdpMsg.Ping().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
                 }
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -292,12 +278,8 @@ public class SimpleBindFlow extends AFullBind {
             subscriptionMap.add(sub, "FPingAck");
             try {
                 for (int i = 0; i < 2; i++) {
-                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                            UdpConstant.PORT,
-                            new JfgUdpMsg.FPing().toBytes());
-                    Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                            UdpConstant.PORT,
-                            new JfgUdpMsg.FPing().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                 }
             } catch (JfgException e) {
                 e.printStackTrace();

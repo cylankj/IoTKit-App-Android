@@ -108,7 +108,7 @@ public class CameraLiveHelper {
 
         helper.isPendingPlayActionCompleted();
 
-        return 0;
+        return PLAY_ERROR_NO_ERROR;
     }
 
     public static boolean shouldDisconnectFirst(CameraLiveActionHelper helper) {
@@ -153,5 +153,9 @@ public class CameraLiveHelper {
         boolean badFrameState = helper.checkLiveBadFrameState(false);
         boolean lowFrameState = helper.checkLiveLowFrameState(false);
         return playing && playCode == 0 && !badFrameState && !lowFrameState;
+    }
+
+    public static long getLastPlayTime(boolean live, CameraLiveActionHelper liveActionHelper) {
+        return live ? 0 : liveActionHelper.getLastPlayTime();
     }
 }

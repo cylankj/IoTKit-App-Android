@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils
 
 import android.text.TextUtils
+import android.util.Log
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.entity.jniCall.RobotoGetDataRsp
 import com.cylan.ex.JfgException
@@ -31,32 +32,26 @@ import java.util.concurrent.TimeUnit
  * Created by yanzhendong on 2017/11/29.
  */
 object BindHelper {
+    const val TAG = "BindHelper"
     private val TIME_OUT = (90 * 1000).toLong()
     private val INTERVAL = 3
     @JvmStatic
     fun sendWiFiConfig(uuid: String, mac: String, ssid: String, password: String, security: Int = 0): Observable<JfgUdpMsg.DoSetWifiAck> {
         return Observable.create<JfgUdpMsg.DoSetWifiAck> { subscriber ->
-            //            RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
-//                    .map {
-//                        if (BuildConfig.DEBUG) {
-//                            Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:" + Gson().toJson(it))
-//                        }
-//                        val secondaryHeard = unpackData<JfgUdpMsg.UdpSecondaryHeard>(it.data, JfgUdpMsg.UdpSecondaryHeard::class.java)
-//                        return@map when {
-//                            TextUtils.equals(secondaryHeard.cmd, UdpConstant.SET_WIFI_ACK) -> {
-//                                val fPingAck = unpackData<JfgUdpMsg.DoSetWifiAck>(it.data, JfgUdpMsg.DoSetWifiAck::class.java)
-//                            }
-//                            else -> null
-//                        }
-//                    }
             val setWifi = JfgUdpMsg.DoSetWifi(uuid, mac, ssid, password)
             setWifi.security = security
-            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
-            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
+            for (i in 1..3) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "sendWiFiConfig:uuid is:$uuid,mac is:$mac,ssid is:$ssid,password is:$password,security is:$security")
+                }
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
+            }
             subscriber.onNext(JfgUdpMsg.DoSetWifiAck())
             subscriber.onCompleted()
         }
                 .subscribeOn(Schedulers.io())
+                .delay(1, TimeUnit.SECONDS)
     }
 
     @JvmStatic
@@ -130,6 +125,7 @@ object BindHelper {
                         }
                         bindDeviceEvent.bindResult == JError.ErrorOK
                     }
+                    .first()
                     .flatMap { _ -> Observable.interval(INTERVAL.toLong(), TimeUnit.SECONDS) }
                     .map { _ ->
                         var seq: Long = -1

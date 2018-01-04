@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LocalWifiInfo;
@@ -104,14 +103,16 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     }
 
     @Override
-    public void onSetWifiFinished(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-
+    public void onSetWifiFinished(String uuid) {
+        ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
+        Intent intent = new Intent(this, NewHomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override
     public void sendWifiInfoFailed() {
         LoadingDialog.dismissLoading();
-//        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
     }
 
     @Override
@@ -183,10 +184,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
                 if (presenter != null) {
                     presenter.sendWifiInfo(uuid, ssid, (String) value, security);
                 }
-                ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
-                Intent intent = new Intent(this, NewHomeActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+
             }
         });
         dialog.show(getSupportFragmentManager(), "dialog");

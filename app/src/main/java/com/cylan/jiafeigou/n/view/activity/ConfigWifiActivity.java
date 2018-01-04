@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
@@ -44,7 +43,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.LoginButton;
-import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -332,9 +330,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     @Override
-    public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
-        AppLogger.d("ConfigWiFiActivity:设备画像为:" + new Gson().toJson(o));
-        this.uuid = o.uuid;
+    public void onSetWifiFinished(String uuid) {
+        this.uuid = uuid;
         LoadingDialog.dismissLoading();
         if (getIntent().hasExtra(JUST_SEND_INFO) && !getIntent().getBooleanExtra("just_config", false)) {
             runOnUiThread(() -> ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG)));
@@ -344,7 +341,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         } else {
             Intent intent = getIntent();// new Intent(this, SubmitBindingInfoActivity.class);
             intent.setClass(this, SubmitBindingInfoActivity.class);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             intent.putExtra(KEY_BIND_DEVICE, getIntent().getStringExtra(KEY_BIND_DEVICE));
             startActivity(intent);
             finishExt();

@@ -17,8 +17,10 @@ public class CameraLiveActionHelper {
     private volatile boolean isMicrophoneOn = false;
     private volatile boolean isLiveSlow = false;
     private volatile boolean isLiveBad = false;
-
+    private volatile boolean isStandBy = false;
+    private volatile boolean isSDCardExist = false;
     private volatile int playCode;
+    private volatile long lastPlayTime = 0;
 
     public String getUuid() {
         return uuid;
@@ -89,7 +91,7 @@ public class CameraLiveActionHelper {
     }
 
     public void onUpdateVideoFrameFailed() {
-
+        isLiveBad = true;
     }
 
     public boolean checkLiveLowFrameState(boolean reset) {
@@ -110,5 +112,17 @@ public class CameraLiveActionHelper {
 
     public boolean isPendingPlayActionCompleted() {
         return false;
+    }
+
+    public void onUpdateSDCard(boolean hasSdcard) {
+        this.isSDCardExist = hasSdcard;
+    }
+
+    public void onUpdateStandBy(boolean standBy) {
+        this.isStandBy = standBy;
+    }
+
+    public long getLastPlayTime() {
+        return lastPlayTime;
     }
 }

@@ -147,11 +147,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svSettingDeviceAp;
     @BindView(R.id.siv_setting_device_door_look)
     SettingItemView0 sivDeviceDoorLock;
-
-    //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
-//    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
     private SimpleDialogFragment mClearRecordFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -516,11 +512,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
-//        Bundle bundle = new Bundle();
-//        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-//        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
-//        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-//                sdcardDetailFragment, android.R.id.content);
         Intent intent = new Intent(this, SdcardDetailActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);

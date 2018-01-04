@@ -8,6 +8,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.module.DPTimeZone;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
@@ -134,11 +136,23 @@ public interface CamLiveContract {
                                       boolean speakerEnable,
                                       boolean doorLockEnable,
                                       boolean captureEnable);
+
+        void onDeviceSDCardOut();
+
+        void onDeviceSDCardFormat();
+
+        void onUpdateLiveViewMode(String _509);
+
+        void onDeviceTimeZoneChanged(DPTimeZone timeZone);
+
+        void onUpdateCameraCoordinate(DpMsgDefine.DpCoordinate dpCoordinate);
     }
 
     interface Presenter extends BasePresenter {
 
         void performStopVideoAction(boolean live);
+
+        void performStopVideoAction();
 
         void performPlayVideoAction(boolean live, long timestamp);
 
@@ -168,31 +182,31 @@ public interface CamLiveContract {
         boolean isShareDevice();
 
 
-        /**
-         * 开始播放历史录像或者开始直播
-         */
-        void startPlay();
+//        /**
+//         * 开始播放历史录像或者开始直播
+//         */
+//        void startPlay();
+//
+//        /**
+//         * 开始播放历史录像
+//         *
+//         * @param time
+//         */
+//        void startPlayHistory(long time);
 
-        /**
-         * 开始播放历史录像
-         *
-         * @param time
-         */
-        void startPlayHistory(long time);
+//        /**
+//         * 停止播放历史录像或者直播
+//         *
+//         * @param reasonOrState
+//         */
+//        void stopPlayVideo(int reasonOrState);
 
-        /**
-         * 停止播放历史录像或者直播
-         *
-         * @param reasonOrState
-         */
-        void stopPlayVideo(int reasonOrState);
-
-        /**
-         * 退出页面
-         *
-         * @param detach
-         */
-        void stopPlayVideo(boolean detach);
+//        /**
+//         * 退出页面
+//         *
+//         * @param detach
+//         */
+//        void stopPlayVideo(boolean detach);
 
         String getUuid();
 

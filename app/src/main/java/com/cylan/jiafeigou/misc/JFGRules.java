@@ -620,6 +620,10 @@ public class JFGRules {
         return pid == 84 || pid == 82;
     }
 
+    public static boolean isStandBy(DpMsgDefine.DPStandby standby) {
+        return standby != null && standby.standby;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;
