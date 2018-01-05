@@ -9,10 +9,10 @@ import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.module.CameraLiveActionHelper;
 import com.cylan.jiafeigou.module.DPTimeZone;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -36,49 +36,14 @@ public interface CamLiveContract {
 
     interface View extends BaseFragmentView {
 
-        boolean isLocalMicOn();
-
-        boolean isLocalSpeakerOn();
-
         void onRtcp(JFGMsgVideoRtcp rtcp);
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
         void onDeviceInfoChanged(JFGDPMsg msg) throws IOException;
 
-        /**
-         * 准备播放
-         */
-        void onLivePrepare(int type);
-
-        /**
-         * 直播或者历史录像
-         *
-         * @param type
-         */
-        void onLiveStarted(int type);
-
-        /**
-         * 直播或者历史录像
-         *
-         * @param type
-         * @param errId : 失败 0:网络失败
-         */
-        void onLiveStop(int type, int errId);
 
         void onTakeSnapShot(Bitmap bitmap);
-
-        /**
-         * 历史录像播放结束状态
-         *
-         * @param state
-         */
-        void onHistoryLiveStop(int state);
-
-        /**
-         * @param start :开始显示loading
-         */
-        void shouldWaitFor(boolean start);
 
         void showFirmwareDialog();
 
@@ -87,16 +52,6 @@ public interface CamLiveContract {
         void onNetworkChanged(boolean connected);
 
         boolean isUserVisible();
-
-        /**
-         * speakerOn,micOn,captureOn
-         */
-        void switchHotSeat(boolean speakerOn,
-                           boolean speakerEnable,
-                           boolean micOn,
-                           boolean micEnable,
-                           boolean captureOn,
-                           boolean captureEnable);
 
         void onBatteryDrainOut();
 
@@ -132,10 +87,9 @@ public interface CamLiveContract {
 
         void onPlayErrorBadFrameRate();
 
-        void onUpdateBottomMenuEnable(boolean microphoneEnable,
-                                      boolean speakerEnable,
-                                      boolean doorLockEnable,
-                                      boolean captureEnable);
+        void onUpdateBottomMenuEnable(boolean microphoneEnable, boolean speakerEnable, boolean doorLockEnable, boolean captureEnable);
+
+        void onUpdateBottomMenuOn(boolean speakerOn, boolean microphoneOn);
 
         void onDeviceSDCardOut();
 
@@ -146,6 +100,18 @@ public interface CamLiveContract {
         void onDeviceTimeZoneChanged(DPTimeZone timeZone);
 
         void onUpdateCameraCoordinate(DpMsgDefine.DpCoordinate dpCoordinate);
+
+        void onVideoPlayStopped(boolean live);
+
+        void onPlayErrorWaitForPlayCompletedTimeout();
+
+        void onUpdateVideoLoading(boolean showLoading);
+
+        void onPlayErrorUnKnowPlayError(int errorCode);
+
+        void onPlayErrorInConnecting();
+
+        void onVideoPlayActionCompleted();
     }
 
     interface Presenter extends BasePresenter {
@@ -156,7 +122,15 @@ public interface CamLiveContract {
 
         void performPlayVideoAction(boolean live, long timestamp);
 
+        void performPlayVideoAction();
+
         void performLiveThumbSaveAction(boolean sync);
+
+        CameraLiveActionHelper getCameraLiveAction();
+
+        void performChangeSpeakerAction(boolean on);
+
+        void performChangeMicrophoneAction(boolean on);
 
         /**
          * sd卡中的路径
@@ -165,58 +139,10 @@ public interface CamLiveContract {
          */
         String getThumbnailKey();
 
-        /**
-         * 播放状态
-         *
-         * @return
-         */
-        int getPlayState();
-
-        /**
-         * 当前直播,或者历史视频
-         *
-         * @return
-         */
-        int getPlayType();
 
         boolean isShareDevice();
 
-
-//        /**
-//         * 开始播放历史录像或者开始直播
-//         */
-//        void startPlay();
-//
-//        /**
-//         * 开始播放历史录像
-//         *
-//         * @param time
-//         */
-//        void startPlayHistory(long time);
-
-//        /**
-//         * 停止播放历史录像或者直播
-//         *
-//         * @param reasonOrState
-//         */
-//        void stopPlayVideo(int reasonOrState);
-
-//        /**
-//         * 退出页面
-//         *
-//         * @param detach
-//         */
-//        void stopPlayVideo(boolean detach);
-
         String getUuid();
-
-        /**
-         */
-        void switchSpeaker();
-
-        CamLivePresenterImpl.HotSeatStateMaintainer getHotSeatStateMaintainer();
-
-        void switchMic();
 
         Observable<Boolean> switchStreamMode(int mode);
 
@@ -244,19 +170,15 @@ public interface CamLiveContract {
          */
         <T extends DataPoint> void updateInfoReq(T value, long id);
 
-        LiveStream getLiveStream();
-
-        void updateLiveStream(LiveStream liveStream);
-
         float getVideoPortHeightRatio();
 
         boolean isEarpiecePlug();
 
         void switchEarpiece(boolean s);
 
-        void saveHotSeatState();
-
-        void restoreHotSeatState();
+//        void saveHotSeatState();
+//
+//        void restoreHotSeatState();
 
         boolean isDeviceStandby();
 

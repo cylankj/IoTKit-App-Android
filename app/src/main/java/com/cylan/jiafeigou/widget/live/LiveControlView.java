@@ -18,7 +18,6 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
-import static com.cylan.jiafeigou.utils.PackageUtils.TAG;
 
 /**
  * Created by cylan-hunt on 16-12-8.
@@ -97,6 +96,72 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         } else {
             imageView.setVisibility(visibility);
         }
+    }
+
+    public void showLoading() {
+        setVisibility(VISIBLE);
+        tvHelp.setVisibility(GONE);
+        imageView.setVisibility(GONE);
+        simpleProgressBar.setVisibility(VISIBLE);
+        simpleProgressBar.bringToFront();
+    }
+
+    public void showLoading(String content, String help) {
+        setVisibility(VISIBLE);
+        imageView.setVisibility(GONE);
+        simpleProgressBar.setVisibility(VISIBLE);
+        textView.setVisibility(VISIBLE);
+        if (!TextUtils.isEmpty(content)) {
+            textView.setText(content);
+        }
+        if (!TextUtils.isEmpty(help)) {
+            tvHelp.setVisibility(VISIBLE);
+            tvHelp.setText(help);
+        }
+    }
+
+    public void showLoadingError(String content, String help) {
+        setVisibility(VISIBLE);
+        imageView.setVisibility(VISIBLE);
+        imageView.bringToFront();
+        imageView.setImageResource(R.drawable.btn_video_retry);
+        simpleProgressBar.setVisibility(GONE);
+        textView.setVisibility(VISIBLE);
+        if (!TextUtils.isEmpty(content)) {
+            textView.setText(content);
+        }
+        if (!TextUtils.isEmpty(help)) {
+            tvHelp.setVisibility(VISIBLE);
+            tvHelp.setText(help);
+        }
+    }
+
+    public void showPlaying() {
+        setVisibility(VISIBLE);
+        imageView.bringToFront();
+        setImageViewVisibility(VISIBLE, isLandscape);
+        imageView.setImageResource(R.drawable.camera_icon_play);
+        textView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
+        simpleProgressBar.setVisibility(GONE);
+    }
+
+    public void showPause() {
+        setVisibility(VISIBLE);
+        imageView.bringToFront();
+        setImageViewVisibility(VISIBLE, isLandscape);
+        imageView.setImageResource(R.drawable.camera_icon_pause);
+        textView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
+        simpleProgressBar.setVisibility(GONE);
+    }
+
+    public void hideLoading() {
+        simpleProgressBar.setVisibility(GONE);
+        setVisibility(GONE);
+    }
+    public void hide() {
+        setVisibility(GONE);
     }
 
     @Override
@@ -184,4 +249,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 break;
         }
     }
+
+
+
 }

@@ -42,38 +42,12 @@ public interface ICamLiveLayer {
     void initLiveViewRect(float ratio, Rect rect);
 
     void initView(CamLiveContract.Presenter presenter, String uuid);
-
-    void onLivePrepared(int type);
-
-    void onLiveStart(CamLiveContract.Presenter presenter, Device device);
-
-    void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode);
-
     void onDeviceStandByChanged(Device device, View.OnClickListener clickListener);
-
     void onCaptureRsp(FragmentActivity activity, Bitmap bitmap);
 
     void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
 
     void updateLiveViewMode(String mode);
-
-    /***
-
-     */
-    void setHotSeatState(int liveType, boolean speaker,
-                         boolean speakerEnable,
-                         boolean mic,
-                         boolean micEnable,
-                         boolean capture, boolean captureEnable);
-
-    int getMicState();
-
-    int getSpeakerState();
-
-
-    void resumeGoodFrame();
-
-    void startBadFrame();
 
     void updateLiveRect(Rect rect);
 

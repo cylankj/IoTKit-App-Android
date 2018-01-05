@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.widget.video;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -72,7 +71,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             videoView.setInterActListener(listener);
         }
     }
-
     public TextView getTvLiveFlow() {
         return tvLiveFlow;
     }
@@ -188,15 +186,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         addView((View) videoView, 0, lp);
     }
 
-    /**
-     * 显示黑色块。
-     */
-    public void setThumbnail() {
-        imgThumbnail.setVisibility(VISIBLE);
-        imgThumbnail.setImageResource(0);
-        imgThumbnail.setBackgroundColor(Color.BLACK);
-    }
-
     @Override
     public void updateLayoutParameters(int height, int width) {
         if (videoView == null) {
@@ -210,27 +199,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         lp.height = height;
         lp.width = width;
         ((View) videoView).setLayoutParams(lp);
-    }
-
-    @Override
-    public void onCreate(boolean isNormalView) {
-        this.isNormalView = isNormalView;
-        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
-    }
-
-    @Override
-    public void onLiveStart() {
-        Log.d(TAG, "onLiveStart");
-        if (imgThumbnail != null && imgThumbnail.isShown()) {
-            imgThumbnail.setVisibility(GONE);
-        }
-    }
-
-    @Override
-    public void onLiveStop() {
-        imgThumbnail.setImageResource(android.R.color.transparent);
-        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
-        Log.d(TAG, "onLiveStop");
     }
 
     @Override

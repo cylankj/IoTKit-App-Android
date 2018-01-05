@@ -84,13 +84,6 @@ public class VideoViewFactory {
         void setLiveView(IVideoView iVideoView, String uuid);
 
         void updateLayoutParameters(int height, int weight);
-
-        void onCreate(boolean isNormalView);
-
-        void onLiveStart();
-
-        void onLiveStop();
-
         /**
          * 流量
          */

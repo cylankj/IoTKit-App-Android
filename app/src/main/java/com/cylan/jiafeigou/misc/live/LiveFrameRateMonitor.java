@@ -29,6 +29,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     private long lastNotifyTime;
     private static final int NOTIFY_WINDOW = 4000;
     private volatile int badFrameCount = 0;
+    private volatile boolean isGoodFrameRateNow = false;
     /**
      * 10内的规则.
      */
@@ -45,6 +46,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
         boolean isFrameLoading = badFrameCount >= LOADING_TARGET;
         Log.d("LiveFrameRateMonitor", "视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badFrameCount);
         long dutation = System.currentTimeMillis() - lastNotifyTime;
+        isGoodFrameRateNow = !isFrameLoading && !isFrameFailed;
         if (isFrameLoading && isFrameFailed && dutation > NOTIFY_WINDOW) {//加载失败了,4秒通知
             lastNotifyTime = System.currentTimeMillis();
             monitorListener.onFrameFailed();
@@ -59,9 +61,13 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
 
     @Override
     public void stop() {
-//        frameRateList.clear();
         preStatus = false;
         badFrameCount = 0;
+    }
+
+    @Override
+    public boolean isGoodFrameNow() {
+        return isGoodFrameRateNow;
     }
 
     /**

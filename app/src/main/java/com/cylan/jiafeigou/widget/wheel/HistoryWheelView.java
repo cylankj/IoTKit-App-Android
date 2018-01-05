@@ -393,7 +393,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             removeCallbacks(mNotifyRunnable);
             mScroller.startScroll(mScroller.getCurrX(), 0, (int) distance, 0);
             invalidate();
-        } else {
+        } else if (mHasPendingUpdateAction) {
             notifyUpdate();
         }
     }

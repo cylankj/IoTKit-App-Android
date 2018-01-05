@@ -41,7 +41,7 @@ import rx.schedulers.Schedulers;
  */
 
 public abstract class BasePresenter<View extends JFGView> implements JFGPresenter, LifecycleAdapter {
-    protected String TAG = getClass().getName();
+    protected String TAG = getClass().getSimpleName();
     @Inject
     @ContextLife
     protected Context mContext;//在不支持 inject 的时候为空,小心使用

@@ -1,12 +1,20 @@
 package com.cylan.jiafeigou.module;
 
+import android.Manifest;
+import android.media.MediaRecorder;
+import android.os.Build;
+
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+
+import permissions.dispatcher.PermissionUtils;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 
@@ -15,6 +23,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
  */
 
 public class CameraLiveHelper {
+    public static final String TAG = CameraLiveHelper.class.getSimpleName();
     public static final int PLAY_ERROR_NO_ERROR = 0;
     public static final int PLAY_ERROR_STANDBY = 1;
     public static final int PLAY_ERROR_FIRST_SIGHT = 2;
@@ -25,6 +34,36 @@ public class CameraLiveHelper {
     public static final int PLAY_ERROR_LOW_FRAME_RATE = 7;
     public static final int PLAY_ERROR_BAD_FRAME_RATE = 8;
     public static final int PLAY_ERROR_IN_CONNECTING = 9;
+    public static final int PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT = 10;
+    public static final int PLAY_ERROR_UN_KNOW_PLAY_ERROR = 11;
+    public static int unKnowErrorCode = 0;
+
+    public static String printError(int playError) {
+        switch (playError) {
+            case PLAY_ERROR_NO_ERROR:
+                return "PLAY_ERROR_NO_ERROR";
+            case PLAY_ERROR_STANDBY:
+                return "PLAY_ERROR_STANDBY";
+            case PLAY_ERROR_FIRST_SIGHT:
+                return "PLAY_ERROR_FIRST_SIGHT";
+            case PLAY_ERROR_NO_NETWORK:
+                return "PLAY_ERROR_NO_NETWORK";
+            case PLAY_ERROR_DEVICE_OFF_LINE:
+                return "PLAY_ERROR_DEVICE_OFF_LINE";
+            case PLAY_ERROR_JFG_EXCEPTION_THROW:
+                return "PLAY_ERROR_JFG_EXCEPTION_THROW";
+            case PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED:
+                return "PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED";
+            case PLAY_ERROR_LOW_FRAME_RATE:
+                return "PLAY_ERROR_LOW_FRAME_RATE";
+            case PLAY_ERROR_BAD_FRAME_RATE:
+                return "PLAY_ERROR_BAD_FRAME_RATE";
+            case PLAY_ERROR_IN_CONNECTING:
+                return "PLAY_ERROR_IN_CONNECTING";
+            default:
+                return "Unknown PlayError:" + playError;
+        }
+    }
 
     public static boolean canPlayVideoNow(String uuid) {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
@@ -53,7 +92,11 @@ public class CameraLiveHelper {
 
     public static boolean isFirstSight(String uuid) {
         //全景,首次使用模式
-        return PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        boolean shareDevice = JFGRules.isShareDevice(uuid);
+        boolean showSight = JFGRules.showSight(device.pid, shareDevice);
+        boolean hasShowSight = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+        return !shareDevice && showSight && hasShowSight;
     }
 
     public static boolean isDeviceOnline(String uuid) {
@@ -95,7 +138,14 @@ public class CameraLiveHelper {
         if (playCode == JError.ErrorVideoPeerInConnect) {
             return PLAY_ERROR_IN_CONNECTING;
         }
-
+        if (playCode != 0) {
+            unKnowErrorCode = playCode;
+            return PLAY_ERROR_UN_KNOW_PLAY_ERROR;
+        }
+        boolean playActionCompleted = helper.isPendingPlayActionCompleted();
+        if (!playActionCompleted) {
+            return PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED;
+        }
         boolean badFrameState = helper.checkLiveBadFrameState(true);
         if (badFrameState) {
             return PLAY_ERROR_BAD_FRAME_RATE;
@@ -106,7 +156,10 @@ public class CameraLiveHelper {
             return PLAY_ERROR_LOW_FRAME_RATE;
         }
 
-        helper.isPendingPlayActionCompleted();
+        boolean loadingFailed = helper.isLoadingFailed();
+        if (loadingFailed) {
+            return PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT;
+        }
 
         return PLAY_ERROR_NO_ERROR;
     }
@@ -119,7 +172,7 @@ public class CameraLiveHelper {
     }
 
     public static boolean isVideoPlaying(CameraLiveActionHelper helper) {
-        return helper.isPlaying();
+        return helper.isPlaying() && helper.isPendingPlayActionCompleted() && NetUtils.getJfgNetType() != 0;
     }
 
     public static boolean isLive(CameraLiveActionHelper helper) {
@@ -127,20 +180,22 @@ public class CameraLiveHelper {
     }
 
     public static boolean checkMicrophoneEnable(CameraLiveActionHelper helper) {
-        boolean playing = helper.isPlaying();
-        int playCode = helper.checkPlayCode(false);
-        boolean badFrameState = helper.checkLiveBadFrameState(false);
-        boolean lowFrameState = helper.checkLiveLowFrameState(false);
-        return playing && playCode == 0 && !badFrameState && !lowFrameState;
-    }
-
-    public static boolean checkSpeakerEnable(CameraLiveActionHelper helper) {
         boolean live = helper.isLive();
         boolean playing = helper.isPlaying();
         int playCode = helper.checkPlayCode(false);
         boolean badFrameState = helper.checkLiveBadFrameState(false);
         boolean lowFrameState = helper.checkLiveLowFrameState(false);
-        return live && playing && playCode == 0 && !badFrameState && !lowFrameState;
+        boolean playActionCompleted = helper.isPendingPlayActionCompleted();
+        return live && playing && playCode == 0 && !badFrameState && !lowFrameState && playActionCompleted;
+    }
+
+    public static boolean checkSpeakerEnable(CameraLiveActionHelper helper) {
+        boolean playing = helper.isPlaying();
+        int playCode = helper.checkPlayCode(false);
+        boolean badFrameState = helper.checkLiveBadFrameState(false);
+        boolean lowFrameState = helper.checkLiveLowFrameState(false);
+        boolean playActionCompleted = helper.isPendingPlayActionCompleted();
+        return playing && playCode == 0 && !badFrameState && !lowFrameState && playActionCompleted;
     }
 
     public static boolean checkDoorLockEnable(CameraLiveActionHelper helper) {
@@ -157,5 +212,51 @@ public class CameraLiveHelper {
 
     public static long getLastPlayTime(boolean live, CameraLiveActionHelper liveActionHelper) {
         return live ? 0 : liveActionHelper.getLastPlayTime();
+    }
+
+    public static boolean isVideoLoading(CameraLiveActionHelper helper) {
+        return helper.isLoading();
+    }
+
+    public static boolean checkMicrophoneOn(CameraLiveActionHelper liveActionHelper, boolean speakerOn) {
+        return liveActionHelper.isMicrophoneOn();
+    }
+
+    public static boolean checkSpeakerOn(CameraLiveActionHelper liveActionHelper, boolean microphoneOn) {
+        return microphoneOn || liveActionHelper.isSpeakerOn();
+    }
+
+    public static boolean checkAudioPermission() {
+        MediaRecorder mRecorder = null;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {//这是为了兼容魅族4.4的权限
+            try {
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.release();
+            } catch (Exception e) {
+                AppLogger.d(e.getMessage());
+                if (mRecorder != null) {
+                    mRecorder.release();
+                }
+                return false;
+            }
+        } else {
+            if (!PermissionUtils.hasSelfPermissions(ContextUtils.getContext(), Manifest.permission.RECORD_AUDIO)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int checkUnKnowErrorCode(boolean reset) {
+        int code = unKnowErrorCode;
+        if (reset) {
+            unKnowErrorCode = 0;
+        }
+        return code;
+    }
+
+    public static boolean checkSyncEvent(CameraLiveActionHelper helper, int event) {
+        return (helper.getSyncEvent() & event) == 1;
     }
 }
