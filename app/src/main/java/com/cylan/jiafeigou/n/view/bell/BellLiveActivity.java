@@ -165,7 +165,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            boolean showSdHd = JFGRules.showSdHd(device.pid, device.$(207, ""), false);
 //            streamSwitcher.setVisibility(showSdHd ? View.VISIBLE : View.GONE);
         }
-//        streamSwitcher.setSwitcherListener(this::switchStreamMode);
+//        streamSwitcher.setSwitcherListener(this::performChangeStreamModeAction);
         decideBottomLayout();
         customToolbar.setToolbarLeftTitle(mLiveTitle);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);

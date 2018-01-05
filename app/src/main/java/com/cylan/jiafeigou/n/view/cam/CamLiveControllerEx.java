@@ -1438,13 +1438,13 @@
 //    @Override
 //    public void switcher(View view, int mode) {
 //        if (view.getId() == R.id.switch_hd) {
-//            presenter.switchStreamMode(mode)
+//            presenter.performChangeStreamModeAction(mode)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .subscribe(ret -> {
 //                    }, AppLogger::e);
 //        } else if (view.getId() == R.id.switch_sd) {
-//            presenter.switchStreamMode(mode)
+//            presenter.performChangeStreamModeAction(mode)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .subscribe(ret -> {

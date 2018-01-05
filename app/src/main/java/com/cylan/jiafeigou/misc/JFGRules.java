@@ -707,8 +707,11 @@ public class JFGRules {
 
     public static boolean isRoundRadio(int pid) {
         IProperty property = PropertiesLoader.getInstance();
+        String view_mode = property.property(pid, "VIEW_MODE");
         String view = property.property(pid, "VIEW");
-        return !TextUtils.isEmpty(view) && (view.contains("圆形") || view.contains("鱼缸"));
+        boolean roundView = !TextUtils.isEmpty(view) && (view.contains("圆形") || view.contains("鱼缸"));
+        boolean roundMode = !TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1");
+        return roundView || roundMode;
     }
 
 

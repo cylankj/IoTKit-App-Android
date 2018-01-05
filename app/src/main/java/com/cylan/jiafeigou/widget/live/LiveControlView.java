@@ -35,14 +35,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     private ImageView imageView;
     private Action action;
 
-    boolean isLandscape;
-
-    private static final int SCREEN_ORIENTATION_LANDSCAPE = 0;
-    private static final int SCREEN_ORIENTATION_PORTRAIT = 1;
-    private static final int SCREEN_ORIENTATION_REVERSE_LANDSCAPE = 8;
-    private static final int SCREEN_ORIENTATION_REVERSE_PORTRAIT = 9;
-
-
     public LiveControlView(Context context) {
         this(context, null);
     }
@@ -63,21 +55,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         textView.setOnClickListener(this);
     }
 
-
     private static final String TAG = "LiveControlView";
-
-    @Override
-    public void setOrientationState(int o) {
-        isLandscape = (o == SCREEN_ORIENTATION_LANDSCAPE || o == SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-        Log.e(TAG, "setOrientationState landscape: " + isLandscape);
-        setImageViewVisibility(isLandscape ? GONE : VISIBLE, isLandscape);
-        imageView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setImageViewVisibility(imageView.getVisibility(), isLandscape);
-            }
-        }, isLandscape ? 0 : 1000);
-    }
 
     @Override
     public int getState() {
@@ -89,29 +67,33 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         setState(state, content, null);
     }
 
-
-    private void setImageViewVisibility(int visibility, boolean isLandscape) {
-        if (isLandscape) {
-            imageView.setVisibility(GONE);
-        } else {
-            imageView.setVisibility(visibility);
-        }
-    }
-
     public void showLoading() {
         setVisibility(VISIBLE);
+        bringToFront();
         tvHelp.setVisibility(GONE);
         imageView.setVisibility(GONE);
+        textView.setVisibility(GONE);
         simpleProgressBar.setVisibility(VISIBLE);
-        simpleProgressBar.bringToFront();
+    }
+
+    public void showLastLoading() {
+        setVisibility(VISIBLE);
+        bringToFront();
+        imageView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
+        simpleProgressBar.setVisibility(VISIBLE);
+        if (!TextUtils.isEmpty(textView.getText())) {
+            textView.setVisibility(VISIBLE);
+        }
     }
 
     public void showLoading(String content, String help) {
         setVisibility(VISIBLE);
+        bringToFront();
         imageView.setVisibility(GONE);
         simpleProgressBar.setVisibility(VISIBLE);
-        textView.setVisibility(VISIBLE);
         if (!TextUtils.isEmpty(content)) {
+            textView.setVisibility(VISIBLE);
             textView.setText(content);
         }
         if (!TextUtils.isEmpty(help)) {
@@ -120,10 +102,24 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         }
     }
 
+    public void showLastLoadingError() {
+        setVisibility(VISIBLE);
+        bringToFront();
+        imageView.setVisibility(VISIBLE);
+        imageView.setImageResource(R.drawable.btn_video_retry);
+        simpleProgressBar.setVisibility(GONE);
+        if (!TextUtils.isEmpty(textView.getText())) {
+            textView.setVisibility(VISIBLE);
+        }
+        if (!TextUtils.isEmpty(tvHelp.getText())) {
+            tvHelp.setVisibility(VISIBLE);
+        }
+    }
+
     public void showLoadingError(String content, String help) {
         setVisibility(VISIBLE);
+        bringToFront();
         imageView.setVisibility(VISIBLE);
-        imageView.bringToFront();
         imageView.setImageResource(R.drawable.btn_video_retry);
         simpleProgressBar.setVisibility(GONE);
         textView.setVisibility(VISIBLE);
@@ -138,9 +134,9 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
 
     public void showPlaying() {
         setVisibility(VISIBLE);
-        imageView.bringToFront();
-        setImageViewVisibility(VISIBLE, isLandscape);
+        bringToFront();
         imageView.setImageResource(R.drawable.camera_icon_play);
+        imageView.setVisibility(VISIBLE);
         textView.setVisibility(GONE);
         tvHelp.setVisibility(GONE);
         simpleProgressBar.setVisibility(GONE);
@@ -148,20 +144,38 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
 
     public void showPause() {
         setVisibility(VISIBLE);
-        imageView.bringToFront();
-        setImageViewVisibility(VISIBLE, isLandscape);
+        bringToFront();
         imageView.setImageResource(R.drawable.camera_icon_pause);
+        imageView.setVisibility(VISIBLE);
         textView.setVisibility(GONE);
         tvHelp.setVisibility(GONE);
         simpleProgressBar.setVisibility(GONE);
     }
 
     public void hideLoading() {
+        setVisibility(INVISIBLE);
+        bringToFront();
         simpleProgressBar.setVisibility(GONE);
-        setVisibility(GONE);
+        imageView.setVisibility(GONE);
+        textView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
     }
+
     public void hide() {
         setVisibility(GONE);
+    }
+
+    public void show() {
+        setVisibility(VISIBLE);
+        bringToFront();
+    }
+
+    public void showOrHide(boolean show) {
+        if (show) {
+            show();
+        } else {
+            hide();
+        }
     }
 
     @Override
@@ -174,7 +188,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
             case PLAY_STATE_PREPARE:
                 setVisibility(VISIBLE);
                 tvHelp.setVisibility(GONE);
-                setImageViewVisibility(GONE, isLandscape);
                 if (!TextUtils.isEmpty(content)) {
                     textView.setVisibility(VISIBLE);
                     textView.setText(content);
@@ -188,7 +201,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
             case PLAY_STATE_PLAYING:
                 setVisibility(VISIBLE);
                 imageView.bringToFront();
-                setImageViewVisibility(VISIBLE, isLandscape);
                 imageView.setImageResource(R.drawable.camera_icon_pause);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
@@ -196,7 +208,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 break;
             case PLAY_STATE_STOP:
                 imageView.bringToFront();
-                setImageViewVisibility(VISIBLE, isLandscape);
                 imageView.setImageResource(R.drawable.camera_icon_play);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
@@ -249,7 +260,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 break;
         }
     }
-
 
 
 }

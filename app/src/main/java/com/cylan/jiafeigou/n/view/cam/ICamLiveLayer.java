@@ -43,10 +43,6 @@ public interface ICamLiveLayer {
 
     void initView(CamLiveContract.Presenter presenter, String uuid);
     void onDeviceStandByChanged(Device device, View.OnClickListener clickListener);
-    void onCaptureRsp(FragmentActivity activity, Bitmap bitmap);
-
-    void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
-
     void updateLiveViewMode(String mode);
 
     void updateLiveRect(Rect rect);

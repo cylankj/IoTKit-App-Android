@@ -678,7 +678,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                     }
                 }
                 //just for test
-                //in.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
+                in.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
                 in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
                 startActivity(in);
             }

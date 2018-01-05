@@ -17,8 +17,6 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import java.io.IOException;
 import java.util.Collection;
 
-import rx.Observable;
-
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 
 /**
@@ -42,14 +40,9 @@ public interface CamLiveContract {
 
         void onDeviceInfoChanged(JFGDPMsg msg) throws IOException;
 
-
-        void onTakeSnapShot(Bitmap bitmap);
-
         void showFirmwareDialog();
 
         void audioRecordPermissionDenied();
-
-        void onNetworkChanged(boolean connected);
 
         boolean isUserVisible();
 
@@ -112,6 +105,12 @@ public interface CamLiveContract {
         void onPlayErrorInConnecting();
 
         void onVideoPlayActionCompleted();
+
+        void onCaptureFinished(Bitmap bitmap);
+
+        void onUpdateNormalThumbPicture(Bitmap bitmap);
+
+        void onUpdatePanoramaThumbPicture(Bitmap bitmap);
     }
 
     interface Presenter extends BasePresenter {
@@ -124,13 +123,21 @@ public interface CamLiveContract {
 
         void performPlayVideoAction();
 
-        void performLiveThumbSaveAction(boolean sync);
-
-        CameraLiveActionHelper getCameraLiveAction();
+        void performLivePictureCaptureSaveAction(boolean saveInPhotoAndNotify);
 
         void performChangeSpeakerAction(boolean on);
 
+        void performChangeSpeakerAction();
+
         void performChangeMicrophoneAction(boolean on);
+
+        void performChangeMicrophoneAction();
+
+        void performChangeStreamModeAction(int mode);
+
+        void performLoadLiveThumbPicture();
+
+        CameraLiveActionHelper getCameraLiveAction();
 
         /**
          * sd卡中的路径
@@ -139,28 +146,9 @@ public interface CamLiveContract {
          */
         String getThumbnailKey();
 
-
         boolean isShareDevice();
 
         String getUuid();
-
-        Observable<Boolean> switchStreamMode(int mode);
-
-        /**
-         * 保存标志
-         *
-         * @param flag
-         */
-        void saveAlarmFlag(boolean flag);
-
-        void saveAndShareBitmap(Bitmap bitmap, boolean b, boolean save);
-
-        /**
-         * //默认隐藏.没网络时候,也不显示,设备离线也不显示
-         *
-         * @return
-         */
-        boolean needShowHistoryWheelView();
 
         /**
          * 修改摄像头配置属性
@@ -175,12 +163,6 @@ public interface CamLiveContract {
         boolean isEarpiecePlug();
 
         void switchEarpiece(boolean s);
-
-//        void saveHotSeatState();
-//
-//        void restoreHotSeatState();
-
-        boolean isDeviceStandby();
 
         void fetchHistoryDataListV1(String uuid);
 

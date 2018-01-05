@@ -13,7 +13,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -57,7 +56,6 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.module.CameraLiveActionHelper;
 import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DPTimeZone;
@@ -72,7 +70,6 @@ import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpActivity;
-import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -100,7 +97,6 @@ import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.Panoramic360ViewRS;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -276,8 +272,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_camera_live, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -299,37 +294,35 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (presenter != null) {
             presenter.performStopVideoAction();
         }
+        liveLoadingBar.postDelayed(backgroundCheckerRunnable, 700);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (presenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
+        boolean isRealVisible = isVisibleToUser && isResumed() && getActivity() != null;
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "setUserVisibleHint,isRealVisible:" + isRealVisible);
+        }
+        if (isRealVisible) {
             // TODO: 2017/8/16 直播页需要自动横屏了
+            liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
+            performLayoutContentAction();
+            performTimeZoneRefresh();
             //直播成功之后，才触发sensor.
             Bundle bundle = getArguments();
-            if (bundle != null) {
+            if (bundle != null && presenter != null) {
                 long playTime = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, -1);
                 bundle.remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
-                if (playTime > 0 && canPlayLiveNow()) {
+                if (playTime > 0 && CameraLiveHelper.canPlayVideoNow(uuid)) {
                     AppLogger.d("需要定位到时间轴:" + playTime);
                     performLoadHistoryAndPlay(playTime);
                 }
             }
-        } else if (presenter != null && isResumed() && !isVisibleToUser) {
+        } else if (presenter != null) {
             presenter.performStopVideoAction();
             AppLogger.d("stop play");
-        } else {
-            AppLogger.d("not ready :" + "isResumed?" + isResumed());
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("isResumed", "isResumed: " + getUserVisibleHint());
-        performReLayoutAction();
-        performTimeZoneRefresh();
     }
 
     @Override
@@ -349,10 +342,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @SuppressLint("MissingSuperCall")
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        if (willExit && this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            removeVideoView();
-        }
-        return isVisible && isPrepared && onBackPressed();
+        return isVisible && isPrepared && willExit && onBackPressed();
     }
 
     @Override
@@ -371,7 +361,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         getString(R.string.MSG_SD_OFF),
                         getString(R.string.OK), (DialogInterface d, int which) -> {
                             boolean videoPlaying = CameraLiveHelper.isVideoPlaying(presenter.getCameraLiveAction());
-                            if (!videoPlaying && canPlayLiveNow()) {
+                            if (!videoPlaying && CameraLiveHelper.canPlayVideoNow(uuid)) {
                                 presenter.performPlayVideoAction(true, 0);
                             }
 
@@ -390,7 +380,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             } else {
                 if (isLivePlaying()) {
                     //恢复播放
-                    if (canPlayLiveNow()) {
+                    if (CameraLiveHelper.canPlayVideoNow(uuid)) {
                         presenter.performPlayVideoAction();
                     }
                 }
@@ -461,12 +451,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void jump2Setting() {
-        //跳转到...
         Intent intent = new Intent(getContext(), CamSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid());
-        ((Activity) getContext()).startActivityForResult(intent, REQUEST_CODE,
-                ActivityOptionsCompat.makeCustomAnimation(getActivity(),
-                        R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+        startActivityForResult(intent, REQUEST_CODE,
+                ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
         AppLogger.d("跳转到使用帮助");
     }
 
@@ -518,21 +506,50 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onTakeSnapShot(Bitmap bitmap) {
+    public void onCaptureFinished(Bitmap bitmap) {
+        boolean land = isLand();
+        boolean finished = getActivity() == null || getActivity().isFinishing();
+        FragmentActivity activity = getActivity();
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "onCaptureFinished,has bitmap:" + (bitmap != null) + ",isLand:" + land + ",activity finished:" + finished);
+        }
         if (bitmap == null) {
-            if (getView() != null) {
-                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
-            }
+            ToastUtil.showNegativeToast(getString(R.string.set_failed));
             return;
         }
-        if (MiscUtils.isLand()) {
+        if (land) {
             ToastUtil.showNegativeToast(getString(R.string.SAVED_PHOTOS));
             return;//横屏 不需要弹窗.
         }
-        PerformanceUtils.startTrace("takeSnapShot_pre");
-        liveLoadingBar.post(() -> onCaptureRsp(getActivity(), bitmap));
-        PerformanceUtils.stopTrace("takeSnapShot_pre");
-        PerformanceUtils.stopTrace("takeSnapShot");
+        if (!finished) {
+            roundCardPopup = new RoundCardPopup(getActivity(), view -> view.setImageDrawable(new BitmapDrawable(getResources(), bitmap)), v -> {
+                roundCardPopup.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
+                ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment, android.R.id.content);
+                fragment.setCallBack(t -> activity.getSupportFragmentManager().popBackStack());
+            });
+            roundCardPopup.setAutoDismissTime(5 * 1000L);
+            roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
+        }
+    }
+
+    @Override
+    public void onUpdateNormalThumbPicture(Bitmap bitmap) {
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "onUpdateNormalThumbPicture,has bitmap:" + (bitmap != null));
+        }
+        liveViewWithThumbnail.showLiveThumbPicture(bitmap, true);
+    }
+
+    @Override
+    public void onUpdatePanoramaThumbPicture(Bitmap bitmap) {
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "onUpdatePanoramaThumbPicture,has bitmap:" + (bitmap != null));
+        }
+        liveViewWithThumbnail.showLiveThumbPicture(bitmap, false);
     }
 
     @Override
@@ -562,7 +579,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             Log.d(CameraLiveHelper.TAG, "收到分辨率消息,正在准备直播");
         }
         try {
-            Command.getInstance().enableRenderSingleRemoteView(true, (View) liveViewWithThumbnail.getVideoView());
+            View videoView = (View) this.videoView;
+            if (!videoView.isShown()) {
+                videoView.setVisibility(VISIBLE);
+            }
+            Command.getInstance().enableRenderSingleRemoteView(true, videoView);
         } catch (JfgException e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
@@ -573,16 +594,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (portRatio == -1 && !isLand()) {
             portRatio = ratio;
         }
-        updateLiveRect(mLiveViewRectInWindow);
-
+        performReLayoutAction();
+        initLiveViewRect(portRatio, mLiveViewRectInWindow);
     }
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionGrant_Speaker() {
         if (isLivePlaying()) {
             if (CameraLiveHelper.checkAudioPermission()) {
-                CameraLiveActionHelper cameraLiveAction = presenter.getCameraLiveAction();
-                presenter.performChangeSpeakerAction(!cameraLiveAction.isSpeakerOn());
+                presenter.performChangeSpeakerAction();
             } else {
                 Log.d(CameraLiveHelper.TAG, "audioRecordPermissionGrant_Speaker没有声音权限权限");
             }
@@ -593,8 +613,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void audioRecordPermissionGrant_Mic() {
         if (isLivePlaying()) {
             if (CameraLiveHelper.checkAudioPermission()) {
-                CameraLiveActionHelper cameraLiveAction = presenter.getCameraLiveAction();
-                presenter.performChangeMicrophoneAction(!cameraLiveAction.isMicrophoneOn());
+                presenter.performChangeMicrophoneAction();
             } else {
                 Log.d(CameraLiveHelper.TAG, "audioRecordPermissionGrant_Mic没有声音权限权限");
             }
@@ -624,11 +643,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @OnShowRationale({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionRational(PermissionRequest request) {
         audioRecordPermissionDenied();
-    }
-
-    @Override
-    public void onNetworkChanged(boolean connected) {
-        onNetworkChanged(presenter, connected);
     }
 
     @Override
@@ -766,7 +780,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPlayErrorDeviceOffLine() {
-        Log.d(CameraLiveHelper.TAG, "设备离线了");
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "设备离线了");
+        }
+        liveLoadingBar.showLoadingError(ContextUtils.getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
+        performLayoutEnableAction();
     }
 
     @Override
@@ -847,7 +865,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         getAlertDialogManager().showDialog(getActivity(), getString(R.string.MSG_SD_OFF),
                 getString(R.string.MSG_SD_OFF),
                 getString(R.string.OK), (DialogInterface d, int which) -> {
-                    if (!isLivePlaying() && canPlayLiveNow()) {
+                    if (!isLivePlaying() && CameraLiveHelper.canPlayVideoNow(uuid)) {
                         presenter.performPlayVideoAction(true, 0);
                     }
 
@@ -880,23 +898,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         updateCamParam(dpCoordinate);
     }
 
-    public void removeVideoView() {
-        ViewGroup viewGroup = (ViewGroup) getView();
-        if (!isUserVisible() && viewGroup != null)//可以解决退出activity,TransitionAnimation，出现黑屏
-        {
-            Log.d("CameraLiveFragmentExt:", "RemoveVideoView");
-            viewGroup.removeAllViews();
-        }
-    }
-
     public boolean onBackPressed() {
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
             return true;
         } else {
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 stop 延迟调用");
+            if (videoView != null) {
+                liveViewWithThumbnail.showVideoView(false);
+            }
             presenter.performStopVideoAction();
-            removeVideoView();
             return false;
         }
     }
@@ -905,7 +916,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onReceiveMessage(CameraMessageSender.Message message) {
 
     }
-
 
     class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
 
@@ -999,13 +1009,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (fromUser) {
                 customOrientation = orientation;
                 ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                liveLoadingBar.setOrientationState(requestedOrientation);
             } else {
                 if (customOrientation != requestedOrientation) {
                     customOrientation = -1;
                     if (requestedOrientation != getActivity().getRequestedOrientation()) {
                         ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                        liveLoadingBar.setOrientationState(requestedOrientation);
                     }
                 }
             }
@@ -1016,28 +1024,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (BaseApplication.getPauseViewCount() == 0) {
             //APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,
             if (presenter != null) {
-//                presenter.stopPlayVideo(STOP_MAUNALLY);
                 presenter.performStopVideoAction();
             }
         }
     };
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-        setFlipped(!safeIsOpen);
-        updateLiveViewMode(device.$(509, "1"));
-        liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        liveLoadingBar.postDelayed(backgroundCheckerRunnable, 700);
-    }
-
 
     private void initListener() {
         //isFriend.流量
@@ -1085,7 +1075,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         }
                         rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
 
-                        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
                         if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
                             ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                             ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
@@ -1098,7 +1087,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     }).show();
         } else if ("0".equals(dpPrimary)) {
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
 //                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                 ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
@@ -1108,7 +1096,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         } else if ("1".equals(dpPrimary) && !JFGRules.hasViewAngle(device.pid)) {
             // TODO: 2017/8/18 怎么处理好呢?
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
                 ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                 if (rbViewModeSwitchParent.getCheckedRadioButtonId() == -1) {
@@ -1119,7 +1106,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
         } else if (!JFGRules.hasViewAngle(device.pid)) {
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
                 ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                 ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
@@ -1130,7 +1116,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     void switchViewMode(RadioGroup radioGroup, int checkId) {
         ((RadioButton) radioGroup.findViewById(checkId)).setChecked(true);
-        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
         switch (checkId) {
             case R.id.rb_view_mode_circular:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
@@ -1226,7 +1211,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         updateLiveViewRectHeight(ratio);
         liveViewWithThumbnail.post(() -> {
             liveViewWithThumbnail.getLocalVisibleRect(rect);
-            AppLogger.d("rect: " + rect);
         });
     }
 
@@ -1290,7 +1274,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {
                 cp = CameraParam.getTopPreset();
             }
-            liveViewWithThumbnail.getVideoView().config360(cp);
+            if (videoView != null) {
+                videoView.config360(cp);
+            }
         } catch (Exception e) {
         }
     }
@@ -1597,35 +1583,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onCaptureRsp(FragmentActivity activity, Bitmap bitmap) {
-        if (MiscUtils.isLand() || activity == null || activity.isFinishing()) {
-            return;
-        }
-        try {
-            PerformanceUtils.startTrace("showPopupWindow");
-            roundCardPopup = new RoundCardPopup(getContext(), view -> view.setImageDrawable(new BitmapDrawable(getResources(), bitmap)), v -> {
-                roundCardPopup.dismiss();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
-                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment,
-                        android.R.id.content);
-                fragment.setCallBack(t -> activity.getSupportFragmentManager().popBackStack());
-            });
-            roundCardPopup.setAutoDismissTime(5 * 1000L);
-            roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
-        } catch (Exception e) {
-            AppLogger.e("showPopupWindow: " + e.getLocalizedMessage());
-        }
-    }
-
-    @Override
-    public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
-        performReLayoutAction();
-    }
-
-    @Override
     public void updateLiveViewMode(String mode) {
         if (device.pid == 39 || device.pid == 49) {
             mode = "0";
@@ -1633,10 +1590,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (!needShowSight) {
             updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
         } else {
-            liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+            if (videoView != null) {
+                videoView.config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+            }
         }
-        liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
-        liveViewWithThumbnail.getVideoView().detectOrientationChanged();
+        if (videoView != null) {
+            videoView.setMode(TextUtils.equals("0", mode) ? 0 : 1);
+            videoView.detectOrientationChanged();
+        }
     }
 
     private int[] portMicRes = {R.drawable.icon_port_mic_off_selector,
@@ -1688,7 +1649,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnClick(R.id.tv_live)
     public void onLiveClick() {
-        if (canPlayLiveNow()) {
+        if (CameraLiveHelper.canPlayVideoNow(uuid)) {
             presenter.performPlayVideoAction(true, 0);
             AppLogger.i("TextView click start play!");
         }
@@ -1706,21 +1667,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnClick({R.id.imgV_cam_trigger_capture, R.id.imgV_land_cam_trigger_capture})
     public void onTriggerCaptureClick() {
-        if (videoView != null) {
-            Command.getInstance().screenshot(false, new com.cylan.jfgapp.interfases.CallBack<Bitmap>() {
-                @Override
-                public void onSucceed(Bitmap bitmap) {
-                    PerformanceUtils.stopTrace("takeShotFromLocalView");
-                    onCaptureRsp((FragmentActivity) getContext(), bitmap);
-                    presenter.saveAndShareBitmap(bitmap, true, true);
-                }
-
-                @Override
-                public void onFailure(String s) {
-
-                }
-            });
-        }
+        presenter.performLivePictureCaptureSaveAction(true);
     }
 
     @OnClick(R.id.imgV_land_cam_switch_xunhuan)
@@ -1797,7 +1744,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         // TODO: 2017/8/23 摇一摇
         Log.i(CYLAN_TAG, "我需要摇一摇");
         if (isShakeEnable()) {
-            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof PanoramicView360RS_Ext) {
                 ((PanoramicView360RS_Ext) videoView).enableAutoRotation(true);
                 ((PanoramicView360RS_Ext) videoView).phoneShook();
@@ -1823,18 +1769,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void switcher(View view, int mode) {
-        if (view.getId() == R.id.switch_hd) {
-            presenter.switchStreamMode(mode)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                    }, AppLogger::e);
-        } else if (view.getId() == R.id.switch_sd) {
-            presenter.switchStreamMode(mode)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                    }, AppLogger::e);
+        if (view.getId() != R.id.sv_switch_stream) {
+            presenter.performChangeStreamModeAction(mode);
         }
         performLayoutAnimation(true);
     }
@@ -1850,10 +1786,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onSnapshot(Bitmap bitmap, boolean tag) {
-        Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
-        PerformanceUtils.stopTrace("takeShotFromLocalView");
-        onCaptureRsp((FragmentActivity) getContext(), bitmap);
-        presenter.saveAndShareBitmap(bitmap, true, false);
+        if (BuildConfig.DEBUG) {
+            Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
+        }
     }
 
     @Override
@@ -2013,7 +1948,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     };
 
     private boolean canShowLoadingBar() {
-        return !isStandBy() && (!isLand() || isLoading() || hasPendingHistoryPlayAction);
+        return !isStandBy() && (!isLand() || isLoading() || hasPendingHistoryPlayAction || !isLivePlaying());
     }
 
     private boolean canShowViewModeMenu() {
@@ -2056,9 +1991,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d(TAG, "performLandLayoutAnimation,showLayout:" + showLayout);
         if (showLayout) {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(1).withStartAction(() -> {
-
-                liveLoadingBar.setVisibility(canShowLoadingBar() ? VISIBLE : INVISIBLE
-                );//全屏直播门铃 1.需要去掉中间播放按钮
+                liveLoadingBar.showOrHide(canShowLoadingBar());//全屏直播门铃 1.需要去掉中间播放按钮
             }).start();
             svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
                 svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : INVISIBLE);
@@ -2094,8 +2027,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(isLoading() ? 1 : 0)
                     .translationY(isLoading() ? 1 : 0)
                     .withEndAction(() -> {
-                        liveLoadingBar.setVisibility(canShowLoadingBar() ? VISIBLE : INVISIBLE
-                        );
+                        liveLoadingBar.showOrHide(canShowLoadingBar());
                     }).start();
 
             svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(svSwitchStream.getHeight() / 4)
@@ -2129,14 +2061,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
             }).start();
         }
-
     }
 
     private void performPortLayoutAnimation(boolean showLayout) {
         Log.d(TAG, "performPortLayoutAnimation,showLayout:" + showLayout);
         if (showLayout) {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
-                liveLoadingBar.setVisibility(canShowLoadingBar() ? VISIBLE : INVISIBLE);
+                liveLoadingBar.showOrHide(canShowLoadingBar());
             }).start();
 
             liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
@@ -2160,7 +2091,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
         } else {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(isLivePlaying() ? 0 : 1).translationY(0).withEndAction(() -> {
-                liveLoadingBar.setVisibility(canShowLoadingBar() ? VISIBLE : INVISIBLE);
+                liveLoadingBar.showOrHide(canShowLoadingBar());
             }).start();
             svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(0).withStartAction(() -> {
                 svSwitchStream.performSlideAnimation(false);
@@ -2209,6 +2140,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : GONE);
+        liveLoadingBar.showOrHide(canShowLoadingBar());
     }
 
     private void performLayoutEnableAction() {
@@ -2272,13 +2204,26 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         historyParentContainer.setLayoutParams(lp);
         liveViewModeContainer.setLayoutParams(glp);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
+        boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
+        setFlipped(!safeIsOpen);
+        decideFlippedContent();
         decideLiveThumbContent();
+        decideLiveViewMode();
         enableAutoRotate(enableAutoRotate);
     }
 
+    private void decideLiveViewMode() {
+        updateLiveViewMode(device.$(509, "1"));
+    }
+
+    private void decideFlippedContent() {
+        boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
+        setFlipped(!safeIsOpen);
+    }
+
     private void decideLiveThumbContent() {
-        if (!isLivePlaying()) {//显示缩略图
-            liveViewWithThumbnail.setThumbnail(Uri.fromFile(new File(presenter.getThumbnailKey())));
+        if (!isLivePlaying() && isResumed() && isUserVisible() && presenter != null) {//显示缩略图
+            presenter.performLoadLiveThumbPicture();
             return;
         }
         boolean no_net = NetUtils.getJfgNetType() == 0;
@@ -2303,14 +2248,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         liveTimeDateFormat.setTimeZone(timeZone);
         liveTimeLayout.setTimeZone(timeZone);
         superWheelExt.setTimeZone(timeZone);
-    }
-
-    public boolean canPlayLiveNow() {
-        //待机模式
-        boolean standBy = presenter.isDeviceStandby();
-        //全景,首次使用模式
-        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
-        return !standBy && !sightShow;
     }
 
     private boolean isLoading() {

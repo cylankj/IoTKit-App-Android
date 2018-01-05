@@ -22,12 +22,6 @@ public interface ILiveControl {
 
     void setState(int state, CharSequence content, String help);
 
-    /**
-     * 设置横竖屏状态
-     *
-     * @param o 横竖屏的值
-     */
-    void setOrientationState(int o);
 
     int getState();
 

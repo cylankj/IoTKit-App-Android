@@ -2,8 +2,6 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,12 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.HandlerThreadUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.panorama.Panoramic360View;
-import com.cylan.panorama.Panoramic360ViewRS;
 
 /**
  * Created by cylan-hunt on 17-3-13.
@@ -33,8 +26,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private FrameLayout standByLayout;//待机
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
-    private boolean isNormalView;
-    private String uuid;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -58,11 +49,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         tvLiveFlow = (TextView) viewGroup.findViewById(R.id.tv_live_flow);
     }
 
-
-    public VideoViewFactory.IVideoView getVideoView() {
-        return this.videoView;
-    }
-
     private VideoViewFactory.InterActListener listener;
 
     public void setInterActListener(VideoViewFactory.InterActListener listener) {
@@ -71,6 +57,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             videoView.setInterActListener(listener);
         }
     }
+
     public TextView getTvLiveFlow() {
         return tvLiveFlow;
     }
@@ -99,91 +86,19 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
     }
 
-    private Bitmap mLiveThumbBitmap = null;
-
-    private Runnable loadLiveThumbRunnable = new Runnable() {
-        @Override
-        public void run() {
-            String filePath = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_FILE + uuid);
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
-                }
-            });
-
-            AppLogger.i("load uri: " + filePath);
-            if (mLiveThumbBitmap == null || mLiveThumbBitmap.isRecycled()) {
-                mLiveThumbBitmap = BitmapFactory.decodeFile(filePath);
-            }
-            if (mLiveThumbBitmap == null) {
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
-                    }
-                });
-                AppLogger.i(TAG + ",load live thumb failed,bitmap is null,set default picture");
-                return;
-            }
-            if (isNormalView) {
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mLiveThumbBitmap != null && !mLiveThumbBitmap.isRecycled()) {
-                            ViewGroup.LayoutParams lp = imgThumbnail.getLayoutParams();
-                            if (lp.height != ViewGroup.LayoutParams.MATCH_PARENT
-                                    || lp.width != ViewGroup.LayoutParams.MATCH_PARENT) {
-                                lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                                lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                                imgThumbnail.setLayoutParams(lp);
-                            }
-                            if (!imgThumbnail.isShown()) {
-                                imgThumbnail.setVisibility(VISIBLE);
-                            }
-                            imgThumbnail.setImageBitmap(mLiveThumbBitmap);
-                        }
-                    }
-                });
-
-            } else if (videoView != null) {
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mLiveThumbBitmap != null && !mLiveThumbBitmap.isRecycled()) {
-                            videoView.loadBitmap(mLiveThumbBitmap);
-                            imgThumbnail.setVisibility(GONE);
-                            imgThumbnail.setImageResource(android.R.color.transparent);
-                            AppLogger.w("开始加载全景预览图");
-                        }
-                    }
-                });
-            }
-        }
-    };
-
-    @Override
-    public void setThumbnail(Uri glideUrl) {
-        HandlerThreadUtils.removeCallbacks(loadLiveThumbRunnable);
-        HandlerThreadUtils.post(loadLiveThumbRunnable);
-    }
-
     @Override
     public void setLiveView(VideoViewFactory.IVideoView iVideoView, String uuid) {
-        this.uuid = uuid;
-        if (iVideoView instanceof Panoramic360ViewRS || iVideoView instanceof Panoramic360View) {
-            isNormalView = false;
-        } else {
-            isNormalView = true;
-        }
         this.videoView = iVideoView;
-        if (videoView != null) {
-            videoView.setInterActListener(listener);
+        if (videoView == null) {
+            return;
         }
-        ((View) videoView).setId("videoView".hashCode());
+        videoView.setInterActListener(listener);
+        View view = (View) this.videoView;
+        view.setId("videoView".hashCode());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER_HORIZONTAL;
-        addView((View) videoView, 0, lp);
+        view.setVisibility(GONE);
+        addView((View) this.videoView, 0, lp);
     }
 
     @Override
@@ -227,13 +142,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     @Override
-    public void onDestroy() {
-        if (mLiveThumbBitmap != null && !mLiveThumbBitmap.isRecycled()) {
-            mLiveThumbBitmap.recycle();
-        }
-    }
-
-    @Override
     public void showMobileDataInterface(OnClickListener clickListener) {
         final View v = findViewById(R.id.v_mobile_data_cover);
         if (v != null && v.isShown()) {
@@ -251,4 +159,41 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
     }
 
+    @Override
+    public void showVideoView(boolean show) {
+        if (videoView != null) {
+            ((View) videoView).setVisibility(show ? VISIBLE : GONE);
+        }
+        imgThumbnail.setVisibility(show ? GONE : VISIBLE);
+    }
+
+    @Override
+    public void showLiveThumbPicture(Bitmap bitmap, boolean normalView) {
+        if (normalView) {
+            if (bitmap != null && !bitmap.isRecycled()) {
+                ViewGroup.LayoutParams lp = imgThumbnail.getLayoutParams();
+                if (lp.height != ViewGroup.LayoutParams.MATCH_PARENT
+                        || lp.width != ViewGroup.LayoutParams.MATCH_PARENT) {
+                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    imgThumbnail.setLayoutParams(lp);
+                }
+                imgThumbnail.setImageBitmap(bitmap);
+                if (!imgThumbnail.isShown()) {
+                    imgThumbnail.setVisibility(VISIBLE);
+                }
+            }
+        } else if (videoView != null) {
+            if (bitmap != null && !bitmap.isRecycled()) {
+                View videoView = (View) LiveViewWithThumbnail.this.videoView;
+                if (!videoView.isShown()) {
+                    videoView.setVisibility(VISIBLE);
+                }
+                LiveViewWithThumbnail.this.videoView.loadBitmap(bitmap);
+                imgThumbnail.setVisibility(GONE);
+                imgThumbnail.setImageResource(android.R.color.transparent);
+                AppLogger.w("开始加载全景预览图");
+            }
+        }
+    }
 }

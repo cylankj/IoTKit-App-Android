@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -79,8 +78,6 @@ public class VideoViewFactory {
 
     public interface ILiveView {
 
-        void setThumbnail(Uri glideUrl);
-
         void setLiveView(IVideoView iVideoView, String uuid);
 
         void updateLayoutParameters(int height, int weight);
@@ -90,10 +87,11 @@ public class VideoViewFactory {
         void showFlowView(boolean show, String content);
 
         void detectOrientationChanged(boolean port);
-
-        void onDestroy();
-
         void showMobileDataInterface(View.OnClickListener clickListener);
+
+        void showVideoView(boolean show);
+
+        void showLiveThumbPicture(Bitmap bitmap, boolean normalView);
     }
 
     public interface InterActListener {
