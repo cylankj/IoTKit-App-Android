@@ -136,9 +136,9 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_outdoor);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_Outdoor_CameraTipsTitle));
-                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+//                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
-                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.HALF_CAMERA_ADD_TIPS));
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Camera_Outdoor));
                 break;

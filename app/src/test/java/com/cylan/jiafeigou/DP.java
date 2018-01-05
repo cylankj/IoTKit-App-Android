@@ -678,4 +678,16 @@ public class DP {
         countDownLatch.await();
     }
 
+    @Test
+    public void testUpTime() {
+        long time = System.currentTimeMillis() / 1000 - 1514019654;
+        int temp = (int) time / 60;
+        int minute = temp % 60;
+        temp = temp / 60;
+        int hour = temp % 24;
+        temp = temp / 24;
+        int day = temp;
+        System.out.println("day:" + day + ",hour:" + hour + ",minute:" + minute);
+    }
+
 }

@@ -160,7 +160,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         } else {
             //图片的高宽比小于屏幕的高宽比 则此时需要宽度铺满屏幕宽度,高度计算出来
             monitorPictureWidth = metrics.widthPixels
-            monitorPictureHeight = (metrics.heightPixels.toFloat() * pictureRadio).toInt()
+            monitorPictureHeight = (metrics.widthPixels.toFloat() * pictureRadio).toInt()
         }
         params.width = monitorPictureWidth
         params.height = monitorPictureHeight
