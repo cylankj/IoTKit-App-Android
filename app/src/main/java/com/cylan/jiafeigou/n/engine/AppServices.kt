@@ -47,7 +47,7 @@ class AppServices() : Service(), NetworkCallback {
 
 
     @Volatile
-   private var isConnected: Boolean = true
+    private var isConnected: Boolean = true
 
     override fun onNetworkChanged(context: Context?, intent: Intent) {
         var connected = NetUtils.getJfgNetType() != 0;
@@ -57,8 +57,8 @@ class AppServices() : Service(), NetworkCallback {
                 Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED)
             }
         }
+        isConnected = connected;
     }
-
 
 
     override fun onDestroy() {
