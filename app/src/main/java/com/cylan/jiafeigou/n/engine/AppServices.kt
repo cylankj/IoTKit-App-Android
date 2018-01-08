@@ -46,17 +46,20 @@ class AppServices() : Service(), NetworkCallback {
     }
 
 
+    @Volatile
+   private var isConnected: Boolean = true
+
     override fun onNetworkChanged(context: Context?, intent: Intent) {
-        val net = NetUtils.getJfgNetType()
-        if (net != 0) {
-            if (!BaseApplication.isBackground() && NetUtils.isNetworkAvailable(context)) {
+        var connected = NetUtils.getJfgNetType() != 0;
+        if (connected != isConnected) {
+            //网络连接状态发生了变化
+            if (connected && !BaseApplication.isBackground()) {
                 Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED)
             }
-        } else {
-            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST)
         }
-
     }
+
+
 
     override fun onDestroy() {
         super.onDestroy()
