@@ -67,8 +67,9 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         setState(state, content, null);
     }
 
-    public void showLoading() {
-        setVisibility(VISIBLE);
+    public void changeToLoading(boolean show) {
+        setAlpha(show ? 1 : getAlpha());
+        setVisibility(show ? VISIBLE : GONE);
         bringToFront();
         tvHelp.setVisibility(GONE);
         imageView.setVisibility(GONE);
@@ -87,11 +88,12 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         }
     }
 
-    public void showLoading(String content, String help) {
-        setVisibility(VISIBLE);
+    public void changeToLoading(boolean show, String content, String help) {
+        setVisibility(show ? VISIBLE : GONE);
+        setAlpha(show ? 1 : getAlpha());
+        simpleProgressBar.setVisibility(VISIBLE);
         bringToFront();
         imageView.setVisibility(GONE);
-        simpleProgressBar.setVisibility(VISIBLE);
         if (!TextUtils.isEmpty(content)) {
             textView.setVisibility(VISIBLE);
             textView.setText(content);
@@ -116,10 +118,11 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         }
     }
 
-    public void showLoadingError(String content, String help) {
-        setVisibility(VISIBLE);
-        bringToFront();
+    public void changeToLoadingError(boolean show, String content, String help) {
+        setVisibility(show ? VISIBLE : GONE);
+        setAlpha(show ? 1 : getAlpha());
         imageView.setVisibility(VISIBLE);
+        bringToFront();
         imageView.setImageResource(R.drawable.btn_video_retry);
         simpleProgressBar.setVisibility(GONE);
         textView.setVisibility(VISIBLE);
@@ -132,21 +135,23 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         }
     }
 
-    public void showPlaying() {
-        setVisibility(VISIBLE);
+    public void changeToPlaying(boolean show) {
+        setVisibility(show ? VISIBLE : GONE);
+        setAlpha(show ? 1 : getAlpha());
+        imageView.setVisibility(VISIBLE);
         bringToFront();
         imageView.setImageResource(R.drawable.camera_icon_play);
-        imageView.setVisibility(VISIBLE);
         textView.setVisibility(GONE);
         tvHelp.setVisibility(GONE);
         simpleProgressBar.setVisibility(GONE);
     }
 
-    public void showPause() {
-        setVisibility(VISIBLE);
+    public void changeToPause(boolean show) {
+        setVisibility(show ? VISIBLE : GONE);
+        setAlpha(show ? 1 : getAlpha());
+        imageView.setVisibility(VISIBLE);
         bringToFront();
         imageView.setImageResource(R.drawable.camera_icon_pause);
-        imageView.setVisibility(VISIBLE);
         textView.setVisibility(GONE);
         tvHelp.setVisibility(GONE);
         simpleProgressBar.setVisibility(GONE);
@@ -166,6 +171,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     }
 
     public void show() {
+        setAlpha(1);
         setVisibility(VISIBLE);
         bringToFront();
     }

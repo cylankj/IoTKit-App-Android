@@ -31,6 +31,7 @@ public class CameraLiveActionHelper {
     public volatile boolean isPendingStopLiveActionCompleted = true;
     public volatile boolean isPendingCaptureActionCompleted = true;
     public volatile boolean isPendingPlayLiveActionTimeOutActionReached = false;
+    public volatile boolean isVideoResolutionReached;
 
     public CameraLiveActionHelper(String uuid) {
         this.uuid = uuid;
@@ -41,6 +42,7 @@ public class CameraLiveActionHelper {
         if (TextUtils.equals(remote, uuid)) {
             playCode = videoDisconn.code;
             isPendingPlayLiveActionCompleted = true;
+            isPendingStopLiveActionCompleted = true;
             isPendingPlayLiveActionTimeOutActionReached = false;
         }
     }
@@ -68,7 +70,9 @@ public class CameraLiveActionHelper {
         this.isLiveBad = false;
         this.isLiveSlow = false;
         this.isPendingPlayLiveActionCompleted = false;
+        this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionTimeOutActionReached = false;
+        this.isVideoResolutionReached = false;
         this.isLive = live;
     }
 
@@ -101,6 +105,9 @@ public class CameraLiveActionHelper {
     public void onVideoResolutionReached(JFGMsgVideoResolution jfgMsgVideoResolution) {
         if (TextUtils.equals(uuid, jfgMsgVideoResolution.peer)) {
             isPendingPlayLiveActionCompleted = true;
+            isPendingStopLiveActionCompleted = true;
+            isPendingPlayLiveActionTimeOutActionReached = false;
+            isVideoResolutionReached = true;
             isLiveBad = false;
             isLiveSlow = false;
             isLoading = false;
@@ -115,13 +122,17 @@ public class CameraLiveActionHelper {
         this.isLiveSlow = false;
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = true;
+        this.isPendingPlayLiveActionTimeOutActionReached = false;
+        this.isVideoResolutionReached = false;
         this.isLive = live;
     }
 
     public void onUpdateVideoPlayTimeOutAction() {
-        this.isLiveBad = true;
-        this.isLiveSlow = true;
         this.isPendingPlayLiveActionTimeOutActionReached = true;
+        this.isPendingStopLiveActionCompleted = true;
+        this.isPendingPlayLiveActionCompleted = true;
+        this.isLiveBad = false;
+        this.isLiveSlow = false;
         this.isPlaying = false;
 
     }
@@ -134,4 +145,8 @@ public class CameraLiveActionHelper {
         this.playCode = jfgHistoryVideoErrorInfo.code;
     }
 
+    public void onPendingPlayLiveActionCompleted() {
+        this.isPendingPlayLiveActionCompleted = true;
+        this.isLoading = false;
+    }
 }

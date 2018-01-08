@@ -149,7 +149,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void checkAccountIsReg(String account) {
-//        mView.showLoading();
+//        mView.changeToLoading();
         Subscription subscribe = Observable.just(account)
                 .subscribeOn(Schedulers.io())
                 .timeout(30, TimeUnit.SECONDS)
@@ -217,7 +217,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void performLogin(String account, String password) {
-//        if (mView != null) mView.showLoading();
+//        if (mView != null) mView.changeToLoading();
         performLoginInternal(1, account, MD5Util.lowerCaseMD5(password));
     }
 

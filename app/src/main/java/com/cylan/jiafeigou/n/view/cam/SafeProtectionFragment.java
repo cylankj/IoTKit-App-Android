@@ -37,6 +37,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -465,6 +466,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             break;
 
             case R.id.sw_monitoring_area: {
+                if (NetUtils.getJfgNetType() == 0) {
+                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 MonitorAreaSettingFragment fragment = MonitorAreaSettingFragment.Companion.newInstance(uuid);
                 fragment.setCallBack(t -> updateDetails());
                 ActivityUtils.addFragmentToActivity(getFragmentManager(), fragment, android.R.id.content);

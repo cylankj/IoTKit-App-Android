@@ -133,7 +133,7 @@ public class PanoramicViewFragment extends IBaseFragment {
 //        if (getView() != null) {
 //            getView().post(() -> {
 //                if (show)
-//                    LoadingDialog.showLoading(getFragmentManager(), "", true);
+//                    LoadingDialog.changeToLoading(getFragmentManager(), "", true);
 //                else LoadingDialog.dismissLoading(getFragmentManager());
 //            });
 //        }

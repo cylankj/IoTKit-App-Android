@@ -78,6 +78,8 @@ public interface CamLiveContract {
 
         void onPlayErrorLowFrameRate();
 
+        void onPlayFrameResumeGood();
+
         void onPlayErrorBadFrameRate();
 
         void onUpdateBottomMenuEnable(boolean microphoneEnable, boolean speakerEnable, boolean doorLockEnable, boolean captureEnable);
@@ -138,15 +140,6 @@ public interface CamLiveContract {
         void performLoadLiveThumbPicture();
 
         CameraLiveActionHelper getCameraLiveAction();
-
-        /**
-         * sd卡中的路径
-         *
-         * @return
-         */
-        String getThumbnailKey();
-
-        boolean isShareDevice();
 
         String getUuid();
 

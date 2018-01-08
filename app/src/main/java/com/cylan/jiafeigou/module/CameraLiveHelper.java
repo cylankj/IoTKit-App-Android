@@ -4,7 +4,10 @@ import android.Manifest;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.os.Build;
+import android.os.SystemClock;
+import android.util.Log;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -131,7 +134,7 @@ public class CameraLiveHelper {
             return PLAY_ERROR_DEVICE_OFF_LINE;
         }
 
-        boolean timeOutActionReached = helper.checkPlayTimeout(true);
+        boolean timeOutActionReached = helper.checkPlayTimeout(false);
         if (timeOutActionReached) {
             return PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT;
         }
@@ -152,12 +155,12 @@ public class CameraLiveHelper {
         if (!playActionCompleted) {
             return PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED;
         }
-        boolean badFrameState = helper.checkLiveBadFrameState(true);
+        boolean badFrameState = helper.checkLiveBadFrameState(false);
         if (badFrameState) {
             return PLAY_ERROR_BAD_FRAME_RATE;
         }
 
-        boolean lowFrameState = helper.checkLiveLowFrameState(true);
+        boolean lowFrameState = helper.checkLiveLowFrameState(false);
         if (lowFrameState) {
             return PLAY_ERROR_LOW_FRAME_RATE;
         }
@@ -173,8 +176,11 @@ public class CameraLiveHelper {
     public static boolean shouldDisconnectFirst(CameraLiveActionHelper helper) {
         boolean playing = helper.isPlaying;
         int playCode = helper.checkPlayCode(false);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "shouldDisconnectFirst? playCode is:" + playCode + ",如果 playCode 为1002 也应该断开,其他情况以后慢慢添加");
+        }
         boolean live = helper.isLive;
-        return live && playing && playCode == 0;
+        return live && ((playing && playCode == 0) || playCode == 1002);
     }
 
     public static boolean isVideoPlaying(CameraLiveActionHelper helper) {
@@ -262,8 +268,14 @@ public class CameraLiveHelper {
         return code;
     }
 
-    public static boolean checkFrameSlow(CameraLiveActionHelper helper) {
-        return false;
+    public static boolean checkFrameSlow(CameraLiveActionHelper helper, boolean slow) {
+        boolean preSlow = helper.isLiveSlow;
+        helper.onUpdateVideoSlowState(slow);
+        return !preSlow && slow;
+    }
+
+    public static boolean checkFrameBad(CameraLiveActionHelper helper) {
+        return helper.isLiveBad && (helper.isVideoResolutionReached || System.currentTimeMillis() - helper.lastPlayTime > 30_000);
     }
 
     public static Bitmap checkLastLiveThumbPicture(CameraLiveActionHelper helper) {
@@ -277,5 +289,32 @@ public class CameraLiveHelper {
     public static boolean checkIsPanoramaView(CameraLiveActionHelper helper) {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         return JFGRules.isRoundRadio(device.pid);
+    }
+
+    public static boolean canStopVideoWithPlayError(int playError) {
+        return true;
+    }
+
+
+    public static void waitForStopCompleted(CameraLiveActionHelper helper) {
+        int waitCount = 0;
+        do {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "正在等待视频结束完成!!!");
+            }
+            SystemClock.sleep(700);
+            waitCount++;
+        } while (waitCount < 10 && !helper.isPendingStopLiveActionCompleted);
+    }
+
+    public static void waitForCaptureCompleted(CameraLiveActionHelper helper) {
+        int waitCount = 0;
+        do {
+            if (BuildConfig.DEBUG) {
+                Log.d(CameraLiveHelper.TAG, "正在等待截图结束.....");
+            }
+            SystemClock.sleep(500);
+            waitCount++;
+        } while (waitCount < 10 && !helper.isPendingCaptureActionCompleted);
     }
 }

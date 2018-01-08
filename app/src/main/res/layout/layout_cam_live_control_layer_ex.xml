@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_centerHorizontal="true"
-        android:background="@android:color/background_dark" />
+        android:background="@android:color/background_dark"
+        android:clickable="true"
+        android:focusable="true" />
 
     <View
         android:id="@+id/v_guide"

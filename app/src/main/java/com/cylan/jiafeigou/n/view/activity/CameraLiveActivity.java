@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -257,32 +256,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
             vpCameraLive.setAdapter(simpleAdapterPager);
         }
-        vpCameraLive.setPagingScrollListener(event -> {
-
-            //横屏强制禁止滑动
-
-            final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), vpCameraLive.getCurrentItem());
-            if (vpCameraLive.getCurrentItem() == 0) {
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-                if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
-                    Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
-                    //true:不在区域内，
-                    boolean contains = rect.contains((int) event.getRawX(), (int) event.getY());
-                    Log.d("contains", "contains:" + contains);
-                    return contains;
-                } else {
-                    return true;
-                }
-            } else {
-//                //消息页面,需要拦截,
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-                if (fragment != null && fragment instanceof CamMessageListFragment) {
-                    return ((CamMessageListFragment) fragment).handleViewPagerState();
-                } else {
-                    return false;
-                }
-            }
-        });
     }
 
     private void initToolbar(final boolean newMsg) {

@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -47,6 +48,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         });
         standByLayout = (FrameLayout) viewGroup.findViewById(R.id.fLayout_standby_mode);
         tvLiveFlow = (TextView) viewGroup.findViewById(R.id.tv_live_flow);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        getParent().requestDisallowInterceptTouchEvent(true);
+        return super.onInterceptTouchEvent(ev);
     }
 
     private VideoViewFactory.InterActListener listener;
@@ -164,7 +171,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (videoView != null) {
             ((View) videoView).setVisibility(show ? VISIBLE : GONE);
         }
-        imgThumbnail.setVisibility(show ? GONE : VISIBLE);
+        imgThumbnail.setVisibility(show ? INVISIBLE : VISIBLE);
     }
 
     @Override
@@ -190,10 +197,19 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     videoView.setVisibility(VISIBLE);
                 }
                 LiveViewWithThumbnail.this.videoView.loadBitmap(bitmap);
-                imgThumbnail.setVisibility(GONE);
+                imgThumbnail.setVisibility(INVISIBLE);
                 imgThumbnail.setImageResource(android.R.color.transparent);
                 AppLogger.w("开始加载全景预览图");
             }
         }
+    }
+
+    public void hideThumbPicture() {
+        imgThumbnail.setVisibility(INVISIBLE);
+    }
+
+    public void showBlackBackground() {
+        imgThumbnail.setVisibility(VISIBLE);
+        imgThumbnail.setImageResource(R.color.color_black);
     }
 }
