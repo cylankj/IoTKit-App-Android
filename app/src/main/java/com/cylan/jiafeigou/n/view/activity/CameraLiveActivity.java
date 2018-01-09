@@ -108,7 +108,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
 
-
     private void makeNewMsgSub() {
         if (newMsgSub != null) {
             newMsgSub.unsubscribe();
@@ -262,10 +261,17 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         customToolbar.post(() -> {
             vIndicator = (PagerSlidingTabStrip) customToolbar.findViewById(R.id.v_indicator);
             vIndicator.setViewPager(vpCameraLive);
-            vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
+            vIndicator.setOnPageChangeListener(new SimplePageListener());
             imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
             updateRedHint();
-            customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> onNavBack());
+            customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> {
+                final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+                if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+                    ((CameraLiveFragmentEx) fragment).onBackPressed();
+                }
+                finishExt();
+            });
         });
     }
 
@@ -282,16 +288,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
-
-    public void onNavBack() {
-        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 stop 延迟调用 bug #118078
-        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
-            ((CameraLiveFragmentEx) fragment).onBackPressed();
-        }
-        finishExt();
     }
 
     /**
@@ -320,11 +316,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private class SimplePageListener implements ViewPager.OnPageChangeListener {
-        private String uuid;
-
-        private SimplePageListener(String uuid) {
-            this.uuid = uuid;
-        }
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -346,10 +337,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
 
     class SimpleAdapterPager extends FragmentPagerAdapter {
-
         private String uuid;
-        private boolean justJump = false;
-
 
         public SimpleAdapterPager(FragmentManager fm, String uuid) {
             super(fm);
@@ -381,10 +369,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) : ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
-        }
-
-        public void justJump(boolean jumpToMessage) {
-            this.justJump = jumpToMessage;
         }
     }
 

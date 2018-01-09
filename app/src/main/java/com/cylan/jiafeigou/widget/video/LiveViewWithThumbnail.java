@@ -104,7 +104,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         view.setId("videoView".hashCode());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER_HORIZONTAL;
-        view.setVisibility(GONE);
+        view.setVisibility(INVISIBLE);
         addView((View) this.videoView, 0, lp);
     }
 
@@ -169,7 +169,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void showVideoView(boolean show) {
         if (videoView != null) {
-            ((View) videoView).setVisibility(show ? VISIBLE : GONE);
+            ((View) videoView).setVisibility(show ? VISIBLE : INVISIBLE);
         }
         imgThumbnail.setVisibility(show ? INVISIBLE : VISIBLE);
     }
@@ -211,5 +211,15 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     public void showBlackBackground() {
         imgThumbnail.setVisibility(VISIBLE);
         imgThumbnail.setImageResource(R.color.color_black);
+    }
+
+    public void destroyVideoView() {
+        try {
+            if (videoView != null) {
+                videoView.onPause();
+                videoView.onDestroy();
+            }
+        } catch (Exception e) {
+        }
     }
 }

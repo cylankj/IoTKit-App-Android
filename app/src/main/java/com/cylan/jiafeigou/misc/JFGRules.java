@@ -624,6 +624,12 @@ public class JFGRules {
         return standby != null && standby.standby;
     }
 
+    public static boolean isSDCardExist(Device device) {
+        DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdcardSummary sdcardSummary = device.$(DpMsgMap.ID_222_SDCARD_SUMMARY, new DpMsgDefine.DPSdcardSummary());
+        return hasSdcard(sdStatus) || hasSdcard(sdcardSummary);
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

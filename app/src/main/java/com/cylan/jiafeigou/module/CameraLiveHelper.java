@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
@@ -69,37 +70,44 @@ public class CameraLiveHelper {
         }
     }
 
-    public static boolean canPlayVideoNow(String uuid) {
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
+    public static boolean canPlayVideoNow(CameraLiveActionHelper helper) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         //待机模式
         boolean standBy = device.$(508, new DpMsgDefine.DPStandby()).standby;
         //全景,首次使用模式
-        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + helper.uuid, false);
         return !standBy && !sightShow;
     }
 
-    public static boolean canShowFlip(String uuid) {
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
+    public static boolean canShowFlip(CameraLiveActionHelper helper) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         return !JFGRules.isShareDevice(device) && JFGRules.hasProtection(device.pid, false);
     }
 
-    public static boolean canShowHistoryWheel(String uuid) {
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
-        return !JFGRules.isShareDevice(device) && JFGRules.hasSDFeature(device.pid);
+    public static boolean canShowHistoryWheel(CameraLiveActionHelper helper) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        return !JFGRules.isShareDevice(device) && JFGRules.hasSDFeature(device.pid)
+                && JFGRules.isDeviceOnline(helper.uuid) && NetUtils.getJfgNetType() != 0
+                && JFGRules.isSDCardExist(device);
     }
 
-    public static boolean isDeviceStandby(String uuid) {
+    public static boolean canShowStreamSwitcher(CameraLiveActionHelper helper) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        return isVideoPlaying(helper) && isLive(helper) && JFGRules.showSdHd(device.pid, device.$(207, ""), false);
+    }
+
+    public static boolean isDeviceStandby(CameraLiveActionHelper helper) {
         //待机模式
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         return device.$(508, new DpMsgDefine.DPStandby()).standby;
     }
 
-    public static boolean isFirstSight(String uuid) {
+    public static boolean isFirstSight(CameraLiveActionHelper helper) {
         //全景,首次使用模式
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
-        boolean shareDevice = JFGRules.isShareDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        boolean shareDevice = JFGRules.isShareDevice(helper.uuid);
         boolean showSight = JFGRules.showSight(device.pid, shareDevice);
-        boolean hasShowSight = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+        boolean hasShowSight = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + helper.uuid, false);
         return !shareDevice && showSight && hasShowSight;
     }
 
@@ -114,12 +122,12 @@ public class CameraLiveHelper {
      */
     public static int checkPlayError(CameraLiveActionHelper helper) {
         String uuid = helper.uuid;
-        boolean deviceStandby = isDeviceStandby(uuid);
+        boolean deviceStandby = isDeviceStandby(helper);
         if (deviceStandby) {
             return PLAY_ERROR_STANDBY;
         }
 
-        boolean firstSight = isFirstSight(uuid);
+        boolean firstSight = isFirstSight(helper);
         if (firstSight) {
             return PLAY_ERROR_FIRST_SIGHT;
         }
@@ -269,18 +277,18 @@ public class CameraLiveHelper {
     }
 
     public static boolean checkFrameSlow(CameraLiveActionHelper helper, boolean slow) {
-        boolean preSlow = helper.isLiveSlow;
-        helper.onUpdateVideoSlowState(slow);
+        boolean preSlow = helper.onUpdateVideoSlowState(slow);
         return !preSlow && slow;
     }
 
     public static boolean checkFrameBad(CameraLiveActionHelper helper) {
-        return helper.isLiveBad && (helper.isVideoResolutionReached || System.currentTimeMillis() - helper.lastPlayTime > 30_000);
+        return helper.isLiveBad && helper.isPendingStopLiveActionCompleted && (helper.isVideoResolutionReached || System.currentTimeMillis() - helper.lastPlayTime > 30_000);
     }
 
     public static Bitmap checkLastLiveThumbPicture(CameraLiveActionHelper helper) {
         Bitmap lastLiveThumbPicture = helper.lastLiveThumbPicture;
         if (lastLiveThumbPicture != null && !lastLiveThumbPicture.isRecycled()) {
+            helper.isLastLiveThumbPictureChanged = false;
             return lastLiveThumbPicture;
         }
         return null;
@@ -316,5 +324,38 @@ public class CameraLiveHelper {
             SystemClock.sleep(500);
             waitCount++;
         } while (waitCount < 10 && !helper.isPendingCaptureActionCompleted);
+    }
+
+    public static boolean isNoError(CameraLiveActionHelper helper) {
+        return checkPlayError(helper) == PLAY_ERROR_NO_ERROR;
+    }
+
+    public static boolean isVideoStopped(CameraLiveActionHelper helper) {
+        return !helper.isPlaying && helper.isPendingStopLiveActionCompleted;
+    }
+
+    public static boolean shouldReportError(CameraLiveActionHelper helper, int playError) {
+        int lastPlayError = helper.lastReportedPlayError;
+        return lastPlayError != playError || playError == CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR;
+    }
+
+    public static long LongTimestamp(long timestamp) {
+        return System.currentTimeMillis() / timestamp > 100 ? timestamp * 1000 : timestamp;
+    }
+
+    public static boolean checkIsThumbPictureChanged(CameraLiveActionHelper helper) {
+        return true;
+    }
+
+    public static boolean checkIsDeviceNetChanged(CameraLiveActionHelper helper, DpMsgDefine.DPNet dpNet) {
+        return dpNet == null || helper.deviceNet == null || dpNet.net != helper.deviceNet.net || !TextUtils.equals(dpNet.ssid, helper.deviceNet.ssid);
+    }
+
+    public static boolean checkIsDeviceTimeZoneChanged(CameraLiveActionHelper helper, DPTimeZone timeZone) {
+        return helper.deviceTimezone == null || timeZone == null || helper.deviceTimezone.offset != timeZone.offset;
+    }
+
+    public static boolean shouldResumeToPlayVideo(CameraLiveActionHelper helper) {
+        return canPlayVideoNow(helper) && helper.hasPendingResumeToPlayVideoAction;
     }
 }

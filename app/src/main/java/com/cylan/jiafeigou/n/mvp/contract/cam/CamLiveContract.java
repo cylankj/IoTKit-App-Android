@@ -2,22 +2,16 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.graphics.Bitmap;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.module.CameraLiveActionHelper;
-import com.cylan.jiafeigou.module.DPTimeZone;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 
-import java.io.IOException;
 import java.util.Collection;
-
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -38,13 +32,9 @@ public interface CamLiveContract {
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
-        void onDeviceInfoChanged(JFGDPMsg msg) throws IOException;
-
         void showFirmwareDialog();
 
         void audioRecordPermissionDenied();
-
-        boolean isUserVisible();
 
         void onBatteryDrainOut();
 
@@ -64,7 +54,7 @@ public interface CamLiveContract {
 
         void onLoadHistoryFailed();
 
-        void onPlayErrorStandBy();
+        void onDeviceStandByChanged(boolean isStandBy);
 
         void onPlayErrorFirstSight();
 
@@ -92,7 +82,7 @@ public interface CamLiveContract {
 
         void onUpdateLiveViewMode(String _509);
 
-        void onDeviceTimeZoneChanged(DPTimeZone timeZone);
+        void onDeviceTimeZoneChanged(int rawOffset);
 
         void onUpdateCameraCoordinate(DpMsgDefine.DpCoordinate dpCoordinate);
 
@@ -113,13 +103,14 @@ public interface CamLiveContract {
         void onUpdateNormalThumbPicture(Bitmap bitmap);
 
         void onUpdatePanoramaThumbPicture(Bitmap bitmap);
+
+        void onNetworkResumeGood();
+
+        void onDeviceNetChanged(int net);
     }
 
     interface Presenter extends BasePresenter {
-
-        void performStopVideoAction(boolean live);
-
-        void performStopVideoAction();
+        void performStopVideoAction(boolean notify);
 
         void performPlayVideoAction(boolean live, long timestamp);
 
@@ -139,7 +130,7 @@ public interface CamLiveContract {
 
         void performLoadLiveThumbPicture();
 
-        CameraLiveActionHelper getCameraLiveAction();
+        boolean isStandBy();
 
         String getUuid();
 
@@ -157,30 +148,33 @@ public interface CamLiveContract {
 
         void switchEarpiece(boolean s);
 
-        void fetchHistoryDataListV1(String uuid);
+        void fetchHistoryDataListV1(String uuid, long playTime);
 
-        void fetchHistoryDataListV2(String uuid, int time, int way, int count);
+        void fetchHistoryDataListV2(String uuid, int time, int way, int count, long playTime);
 
         void openDoorLock(String password);
 
         boolean isHistoryEmpty();
-    }
 
-    class LiveStream {
-        public int type = TYPE_LIVE;
-        public long time = -1;
-        public int playState = PLAY_STATE_STOP;
+        boolean isLive();
 
-        public volatile long playStartTime = 0;
+        boolean isLivePlaying();
 
-        @Override
-        public String toString() {
-            return "LiveStream{" +
-                    "type=" + type +
-                    ", time=" + time +
-                    ", playState=" + playState +
-                    '}';
-        }
+        boolean isLoading();
+
+        boolean canShowLoadingBar();
+
+        boolean canHideLoadingBar();
+
+        boolean canShowViewModeMenu();
+
+        boolean canShowStreamSwitcher();
+
+        boolean canShowHistoryWheel();
+
+        boolean canPlayVideoNow();
+
+        boolean canShowFlip();
     }
 }
 

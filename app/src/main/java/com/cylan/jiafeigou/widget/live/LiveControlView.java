@@ -167,7 +167,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     }
 
     public void hide() {
-        setVisibility(GONE);
+        setVisibility(INVISIBLE);
     }
 
     public void show() {
