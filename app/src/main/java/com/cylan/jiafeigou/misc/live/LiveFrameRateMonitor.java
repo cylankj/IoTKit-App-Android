@@ -14,8 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 
 public class LiveFrameRateMonitor implements IFeedRtcp {
-
-
     private static final int MAX_SIZE = 30;//现在统一30秒 loading
     private static final int TARGET_SIZE = 8;
     private static final int FINAL_LEVEL = 2;
@@ -30,6 +28,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     private static final int NOTIFY_WINDOW = 4000;
     private volatile int badFrameCount = 0;
     private volatile boolean isGoodFrameRateNow = false;
+    public boolean isStopped = false;
     /**
      * 10内的规则.
      */
@@ -63,11 +62,17 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     public void stop() {
         preStatus = false;
         badFrameCount = 0;
+        isStopped = true;
     }
 
     @Override
     public boolean isGoodFrameNow() {
         return isGoodFrameRateNow;
+    }
+
+    @Override
+    public boolean isStopped() {
+        return isStopped;
     }
 
     /**

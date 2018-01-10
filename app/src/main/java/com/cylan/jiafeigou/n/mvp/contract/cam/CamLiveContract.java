@@ -106,7 +106,9 @@ public interface CamLiveContract {
 
         void onNetworkResumeGood();
 
-        void onDeviceNetChanged(int net);
+        void onDeviceNetChanged(DpMsgDefine.DPNet net, boolean isLocalOnline);
+
+        void onUpdateAlarmOpenChanged(boolean alarmOpened);
     }
 
     interface Presenter extends BasePresenter {
@@ -129,6 +131,10 @@ public interface CamLiveContract {
         void performChangeStreamModeAction(int mode);
 
         void performLoadLiveThumbPicture();
+
+        void performResetFirstSight();
+
+        void performLocalNetworkPingAction();
 
         boolean isStandBy();
 
@@ -175,6 +181,12 @@ public interface CamLiveContract {
         boolean canPlayVideoNow();
 
         boolean canShowFlip();
+
+        boolean canShowFirstSight();
+
+        boolean canDoorLockEnable();
+
+        boolean canShowHistoryCase();
     }
 }
 

@@ -38,7 +38,8 @@ public class SimplePopupWindow extends RelativePopupWindow {
         setFocusable(true);
         setOutsideTouchable(true);
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        tvContent.setBackgroundResource(bgResId);
+        tvContent.setText(tvContent.getContext().getString(contentResId));
         // Disable default animation for circular reveal
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setAnimationStyle(0);

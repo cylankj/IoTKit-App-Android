@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -81,19 +82,25 @@ public class CameraLiveHelper {
 
     public static boolean canShowFlip(CameraLiveActionHelper helper) {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-        return !JFGRules.isShareDevice(device) && JFGRules.hasProtection(device.pid, false);
+        return !JFGRules.isShareDevice(device)
+                && JFGRules.hasProtection(device.pid, false);
     }
 
     public static boolean canShowHistoryWheel(CameraLiveActionHelper helper) {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-        return !JFGRules.isShareDevice(device) && JFGRules.hasSDFeature(device.pid)
-                && JFGRules.isDeviceOnline(helper.uuid) && NetUtils.getJfgNetType() != 0
-                && JFGRules.isSDCardExist(device);
+        return !JFGRules.isShareDevice(device)
+                && JFGRules.hasSDFeature(device.pid)
+                && JFGRules.isDeviceOnline(helper.uuid)
+                && NetUtils.hasNetwork()
+                && !isDeviceStandby(helper)
+                && !isFirstSight(helper);
     }
 
     public static boolean canShowStreamSwitcher(CameraLiveActionHelper helper) {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-        return isVideoPlaying(helper) && isLive(helper) && JFGRules.showSdHd(device.pid, device.$(207, ""), false);
+        return isVideoPlaying(helper)
+                && isLive(helper)
+                && JFGRules.showSdHd(device.pid, device.$(207, ""), false);
     }
 
     public static boolean isDeviceStandby(CameraLiveActionHelper helper) {
@@ -108,7 +115,12 @@ public class CameraLiveHelper {
         boolean shareDevice = JFGRules.isShareDevice(helper.uuid);
         boolean showSight = JFGRules.showSight(device.pid, shareDevice);
         boolean hasShowSight = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + helper.uuid, false);
+        //for test
         return !shareDevice && showSight && hasShowSight;
+    }
+
+    public static void resetFirstSight(CameraLiveActionHelper helper) {
+        PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + helper.uuid, false);
     }
 
     public static boolean isDeviceOnline(String uuid) {
@@ -202,32 +214,42 @@ public class CameraLiveHelper {
     public static boolean checkMicrophoneEnable(CameraLiveActionHelper helper) {
         boolean live = helper.isLive;
         boolean playing = helper.isPlaying;
+        boolean isLoading = helper.isLoading;
         int playCode = helper.checkPlayCode(false);
         boolean badFrameState = helper.checkLiveBadFrameState(false);
         boolean lowFrameState = helper.checkLiveLowFrameState(false);
         boolean playActionCompleted = helper.isPendingPlayLiveActionCompleted;
-        return live && playing && playCode == 0 && !badFrameState && !lowFrameState && playActionCompleted;
+        return live && playing && !isLoading && playCode == 0 && !badFrameState && !lowFrameState && playActionCompleted;
     }
 
     public static boolean checkSpeakerEnable(CameraLiveActionHelper helper) {
         boolean playing = helper.isPlaying;
+        boolean isLoading = helper.isLoading;
         int playCode = helper.checkPlayCode(false);
         boolean badFrameState = helper.checkLiveBadFrameState(false);
         boolean lowFrameState = helper.checkLiveLowFrameState(false);
         boolean playActionCompleted = helper.isPendingPlayLiveActionCompleted;
-        return playing && playCode == 0 && !badFrameState && !lowFrameState && playActionCompleted;
+        return playing && !isLoading && playCode == 0 && !badFrameState && !lowFrameState && playActionCompleted;
     }
 
     public static boolean checkDoorLockEnable(CameraLiveActionHelper helper) {
-        return false;
+        //无网络连接或者设备离线不可点击,局域网在线可点击,
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        boolean deviceOnline = JFGRules.isDeviceOnline(net);
+        boolean hasNetwork = NetUtils.hasNetwork();
+        boolean isLocalOnline = helper.isLocalOnline;
+        boolean isShareAccount = !TextUtils.isEmpty(device.shareAccount);
+        return hasNetwork && !isShareAccount && (deviceOnline || isLocalOnline);
     }
 
     public static boolean checkCaptureEnable(CameraLiveActionHelper helper) {
         boolean playing = helper.isPlaying;
+        boolean isLoading = helper.isLoading;
         int playCode = helper.checkPlayCode(false);
         boolean badFrameState = helper.checkLiveBadFrameState(false);
         boolean lowFrameState = helper.checkLiveLowFrameState(false);
-        return playing && playCode == 0 && !badFrameState && !lowFrameState;
+        return playing && !isLoading && playCode == 0 && !badFrameState && !lowFrameState;
     }
 
     public static long getLastPlayTime(boolean live, CameraLiveActionHelper liveActionHelper) {
@@ -351,11 +373,41 @@ public class CameraLiveHelper {
         return dpNet == null || helper.deviceNet == null || dpNet.net != helper.deviceNet.net || !TextUtils.equals(dpNet.ssid, helper.deviceNet.ssid);
     }
 
-    public static boolean checkIsDeviceTimeZoneChanged(CameraLiveActionHelper helper, DPTimeZone timeZone) {
+    public static boolean checkIsDeviceTimeZoneChanged(CameraLiveActionHelper helper, DpMsgDefine.DPTimeZone timeZone) {
         return helper.deviceTimezone == null || timeZone == null || helper.deviceTimezone.offset != timeZone.offset;
     }
 
     public static boolean shouldResumeToPlayVideo(CameraLiveActionHelper helper) {
         return canPlayVideoNow(helper) && helper.hasPendingResumeToPlayVideoAction;
+    }
+
+
+    public static boolean checkIsDeviceLocalOnlineChanged(CameraLiveActionHelper helper, boolean localOnlineState) {
+        return helper.isLocalOnline != localOnlineState;
+    }
+
+    public static boolean checkIsDeviceCoordinateChanged(CameraLiveActionHelper helper, DpMsgDefine.DpCoordinate dpCoordinate) {
+        return dpCoordinate == null || helper.deviceCoordinate == null
+                || dpCoordinate.h != helper.deviceCoordinate.h
+                || dpCoordinate.r != helper.deviceCoordinate.r
+                || dpCoordinate.w != helper.deviceCoordinate.w
+                || dpCoordinate.x != helper.deviceCoordinate.x
+                || dpCoordinate.y != helper.deviceCoordinate.y;
+    }
+
+    public static boolean checkIsDeviceViewMountModeChanged(CameraLiveActionHelper helper, String viewMountMode) {
+        return TextUtils.isEmpty(viewMountMode) || TextUtils.isEmpty(helper.deviceViewMountMode) || !TextUtils.equals(viewMountMode, helper.deviceViewMountMode);
+    }
+
+    public static boolean checkIsDeviceBatteryChanged(CameraLiveActionHelper helper, Integer battery) {
+        return battery == null || helper.deviceBattery != battery;
+    }
+
+    public static boolean checkIsDeviceAlarmOpenStateChanged(CameraLiveActionHelper helper, Boolean alarmOpen) {
+        return alarmOpen == null || alarmOpen != helper.isDeviceAlarmOpened;
+    }
+
+    public static boolean canShowHistoryCase(CameraLiveActionHelper helper) {
+        return PreferencesUtils.getBoolean(JConstant.KEY_SHOW_HISTORY_WHEEL_CASE, true);
     }
 }

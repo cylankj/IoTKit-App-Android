@@ -28,8 +28,13 @@ public class CameraLiveActionHelper {
     public volatile boolean isStandBy = false;
     public volatile boolean isSDCardExist = false;
     public volatile boolean isSDCardFormatted = false;
+    public volatile boolean isLocalOnline = false;
     public volatile DpMsgDefine.DPNet deviceNet;
     public volatile DpMsgDefine.DPTimeZone deviceTimezone;
+    public volatile DpMsgDefine.DpCoordinate deviceCoordinate;
+    public volatile String deviceViewMountMode;
+    public volatile boolean isDeviceAlarmOpened;
+    public volatile int deviceBattery;
     public volatile int playCode;
     public volatile long lastPlayTime = 0;
     public volatile int lastReportedPlayError = 0;
@@ -54,6 +59,7 @@ public class CameraLiveActionHelper {
         this.isSDCardExist = JFGRules.isSDCardExist(device);
         this.deviceNet = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         this.deviceTimezone = device.$(DpMsgMap.ID_214_DEVICE_TIME_ZONE, new DpMsgDefine.DPTimeZone());
+        this.isDeviceAlarmOpened = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     public void onVideoDisconnected(JFGMsgVideoDisconn videoDisconn) {
@@ -146,7 +152,6 @@ public class CameraLiveActionHelper {
         this.isLiveSlow = false;
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = true;
-        this.isPendingPlayLiveActionTimeOutActionReached = false;
         this.isVideoResolutionReached = false;
         this.isLive = live;
     }
@@ -158,7 +163,6 @@ public class CameraLiveActionHelper {
         this.isLiveBad = false;
         this.isLiveSlow = false;
         this.isPlaying = false;
-
     }
 
     public boolean isLoadingFailed() {
@@ -225,5 +229,47 @@ public class CameraLiveActionHelper {
         final boolean isPendingHistoryPlayActionCompleted = this.isPendingHistoryPlayActionCompleted;
         this.isPendingHistoryPlayActionCompleted = true;
         return isPendingHistoryPlayActionCompleted;
+    }
+
+    public boolean onUpdateDeviceLocalOnlineState(boolean isLocalOnline) {
+        final boolean localOnline = this.isLocalOnline;
+        this.isLocalOnline = isLocalOnline;
+        return localOnline;
+    }
+
+    public DpMsgDefine.DPNet onUpdateDeviceNet(DpMsgDefine.DPNet dpNet) {
+        final DpMsgDefine.DPNet net = this.deviceNet;
+        this.deviceNet = dpNet;
+        return net;
+    }
+
+    public DpMsgDefine.DPTimeZone onUpdateDeviceTimezone(DpMsgDefine.DPTimeZone dpTimeZone) {
+        final DpMsgDefine.DPTimeZone timeZone = this.deviceTimezone;
+        this.deviceTimezone = dpTimeZone;
+        return timeZone;
+    }
+
+    public DpMsgDefine.DpCoordinate onUpdateDeviceCoordinate(DpMsgDefine.DpCoordinate dpCoordinate) {
+        final DpMsgDefine.DpCoordinate coordinate = this.deviceCoordinate;
+        this.deviceCoordinate = dpCoordinate;
+        return coordinate;
+    }
+
+    public String onUpdateDeviceMountMode(String mountMode) {
+        final String viewMountMode = this.deviceViewMountMode;
+        this.deviceViewMountMode = mountMode;
+        return viewMountMode;
+    }
+
+    public int onUpdateDeviceBattery(Integer battery) {
+        final int preBattery = this.deviceBattery;
+        this.deviceBattery = battery == null ? 0 : battery;
+        return preBattery;
+    }
+
+    public boolean onUpdateDeviceAlarmOpenState(Boolean alarmOpen) {
+        final boolean isDeviceAlarmOpen = this.isDeviceAlarmOpened;
+        this.isDeviceAlarmOpened = alarmOpen;
+        return isDeviceAlarmOpen;
     }
 }

@@ -67,12 +67,10 @@ import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -97,7 +95,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -119,7 +116,6 @@ import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.CYLAN_TAG;
-import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
@@ -132,7 +128,7 @@ import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
  */
 @RuntimePermissions()
 public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presenter> implements CamLiveContract.View, CameraMessageSender.MessageObserver,
-        Switcher.SwitcherListener, VideoViewFactory.InterActListener, ILiveControl.Action, FlipImageView.OnFlipListener {
+        Switcher.SwitcherListener, VideoViewFactory.InterActListener, ILiveControl.Action, FlipImageView.OnFlipListener, HistoryWheelHandler.DatePickerListener {
     @BindView(R.id.imgV_cam_live_land_nav_back)
     TextView imgVCamLiveLandNavBack;
     @BindView(R.id.imgV_land_cam_switch_speaker)
@@ -220,8 +216,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private int pid;
     private boolean isRSCam;
     private boolean isShareAccount = false;
-    private boolean hasPingSuccess = false;
-    private boolean needShowSight;
     /**
      * 设备的时区
      */
@@ -229,6 +223,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private Device device;
     private boolean hasMicFeature;
     private boolean hasDoorLock;
+    private boolean isLocalOnline = false;
     private VideoViewFactory.IVideoView videoView;
     private CameraLiveViewModel cameraLiveViewModel = new CameraLiveViewModel();
     private CameraMenuViewModel cameraMenuViewModel = new CameraMenuViewModel();
@@ -283,8 +278,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPause() {
         super.onPause();
         liveLoadingBar.postDelayed(backgroundCheckerRunnable, 700);
-        enableSensor(false);
-        presenter.performStopVideoAction(false);
+        presenter.performStopVideoAction(true);
     }
 
     private boolean isReallyVisibleToUser() {
@@ -295,9 +289,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isReallyVisibleToUser()) {
-            performLazyContentInitAction();
+            performReLayoutAction();
         } else if (presenter != null) {
-            presenter.performStopVideoAction(false);
+            presenter.performStopVideoAction(true);
         }
     }
 
@@ -310,23 +304,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-    private void performLazyContentInitAction() {
-        // TODO: 2017/8/16 直播页需要自动横屏了
-        performLayoutContentAction();
-        performTimeZoneRefresh();
-        //直播成功之后，才触发sensor.
-        Bundle bundle = getArguments();
-        if (bundle != null && presenter != null) {
-            long playTime = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, -1);
-            bundle.remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
-            if (playTime > 0 && canPlayVideoNow()) {
-                AppLogger.d("需要定位到时间轴:" + playTime);
-                performLoadHistoryAndPlay(playTime);
-            }
-        }
-    }
-
-
     @Override
     public void onDestroyView() {
         //1.live view pause
@@ -337,7 +314,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @SuppressLint("MissingSuperCall")
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        return isVisible && isPrepared && willExit && onBackPressed();
+        return willExit && onBackPressed();
     }
 
     private void enableSensor(boolean enable) {
@@ -484,7 +461,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         AppLogger.d("onRtcp: " + new Gson().toJson(rtcp));
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
-        historyWheelHandler = getHistoryWheelHandler();
         setLiveRectTime(rtcp.timestamp, false);
     }
 
@@ -577,14 +553,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onHistoryLoadFinished() {
-        if (isReallyVisibleToUser()) {
-            //这里是个异步的,显示的条件是当前 fragment 可见
-            AppLogger.d(" //这里是个异步的,显示的条件是当前 fragment 可见");
-            if (!MiscUtils.isLand()) {
-                LiveShowCase.showHistoryWheelCase(getActivity(), historyParentContainer);
-                LiveShowCase.showHistoryCase((Activity) getContext(), imgVCamZoomToFullScreen);
-            }
-        }
+
     }
 
     @Override
@@ -628,14 +597,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onHistoryReady(Collection<JFGVideo> history) {
         Log.d(CYLAN_TAG, "历史录像视频数据已就绪");
-        historyWheelContainer.setDisplayedChild(1);
-        tvLive.setVisibility(VISIBLE);
-        vFlag.setVisibility(VISIBLE);
-        showHistoryWheel(true);
-        reInitHistoryHandler();
         superWheelExt.setHistoryFiles(history);
-        tvCamLiveLandBottom.setVisibility(VISIBLE);
-
+        performReLayoutAction();
     }
 
     @Override
@@ -810,7 +773,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
             return true;
         } else {
-            liveViewWithThumbnail.showVideoView(false);
+            liveViewWithThumbnail.showVideoView(isReallyVisibleToUser());
+            liveLoadingBar.changeToPlaying(true);
             presenter.performStopVideoAction(false);
             return false;
         }
@@ -819,6 +783,24 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onReceiveMessage(CameraMessageSender.Message message) {
 
+    }
+
+    @Override
+    public void onPickDate(long time, int state) {
+        //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+        if (isLand()) {
+            performLayoutAnimation(true, true);
+        }
+        switch (state) {
+            case STATE_FINISH: {
+                setLiveRectTime(time, true);
+                presenter.performPlayVideoAction(false, time);
+            }
+            break;
+            default: {
+                setLiveTimeContent(time);
+            }
+        }
     }
 
     class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
@@ -927,6 +909,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         liveViewWithThumbnail.setInterActListener(this);
         (layoutLandFlip).setFlipListener(this);
         (layoutPortFlip).setFlipListener(this);
+        historyWheelHandler.setDatePickerListener(this);
     }
 
     public Device getDevice() {
@@ -1097,48 +1080,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         this.uuid = uuid;
         this.device = DataSourceManager.getInstance().getDevice(uuid);
         this.isRSCam = JFGRules.isRS(device.pid);
-        this.needShowSight = JFGRules.showSight(presenter.getDevice().pid, JFGRules.isShareDevice(uuid));
         this.hasMicFeature = JFGRules.hasMicFeature(device.pid);
         this.hasDoorLock = JFGRules.hasDoorLock(device.pid);
         this.isShareAccount = !TextUtils.isEmpty(device.shareAccount);
         this.pid = device.pid;
+        this.historyWheelHandler = new HistoryWheelHandler(superWheelExt, uuid);
         //disable 6个view
         initListener();
         performReLayoutAction();
-        videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
         enableAutoRotate(false);
-        //issue: 过早 add 进去会导致黑块!!!!!
-        liveViewWithThumbnail.setLiveView(videoView, uuid);
-        updateLiveViewMode(device.$(509, "1"));
-        initSightSetting(presenter);
-        updateDoorLock();
-        if (JFGRules.shouldObserverAP()) {//需要监听是否局域网在线
-            Subscription subscribe = APObserver.scan(uuid)
-                    .timeout(5, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                        hasPingSuccess = true;
-                        updateDoorLock();
-                    }, e -> {
-                        e.printStackTrace();
-                        AppLogger.e(e);
-                        hasPingSuccess = false;
-                        updateDoorLock();
-                    });
-            presenter.addSubscription("CameraLiveFragmentEx.APObserver.scan", subscribe);
-        }
-        AppLogger.w("需要重置清晰度");
-
-    }
-
-    public void updateDoorLock() {
-        //无网络连接或者设备离线不可点击,局域网在线可点击,
-        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        boolean deviceOnline = JFGRules.isDeviceOnline(net);
-        boolean noNet = NetUtils.getNetType(getContext()) == -1;
-        if ((!deviceOnline && !hasPingSuccess) || noNet || isShareAccount) {
-            ivCamDoorLock.setEnabled(false);
-        }
+        presenter.performLocalNetworkPingAction();
     }
 
     private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
@@ -1152,95 +1103,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         } catch (Exception e) {
         }
-    }
-
-    public HistoryWheelHandler getHistoryWheelHandler() {
-        reInitHistoryHandler();
-        return historyWheelHandler;
-    }
-
-    private boolean isSightShown;
-
-    public boolean isSightShown() {
-        return isSightShown;
-    }
-
-    /**
-     * 全景视角设置
-     */
-    private void initSightSetting(CamLiveContract.Presenter basePresenter) {
-
-        if (!needShowSight || JFGRules.isShareDevice(uuid)) {
-            return;
-        }
-        String uuid = basePresenter.getUuid();
-        isSightShown = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
-        Log.d("initSightSetting", "judge? " + isSightShown);
-        if (!isSightShown) {
-            return;//不是第一次
-        }
-        historyParentContainer.setVisibility(GONE);//需要隐藏历史录像时间轴
-        View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
-        if (oldLayout == null) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
-            liveViewWithThumbnail.addView(view);//最顶
-            View layout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
-            ((TextView) (view.findViewById(R.id.tv_sight_setting_content)))
-                    .setText(getContext().getString(R.string.Tap1_Camera_Overlook) + ": "
-                            + getContext().getString(R.string.Tap1_Camera_OverlookTips));
-            view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
-                if (layout != null) {
-                    liveViewWithThumbnail.removeView(layout);
-                }
-//                basePresenter.startPlay();
-                if (!isStandBy()) {
-                    liveLoadingBar.changeToPlaying(canShowLoadingBar());
-                }
-                //需要隐藏历史录像时间轴
-                boolean showSdcard = JFGRules.showSdcard(basePresenter.getDevice());
-                historyParentContainer.setVisibility(showSdcard
-                        ? VISIBLE : GONE);
-                historyWheelContainer.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
-                isSightShown = false;
-            });
-            layout.setOnClickListener(v -> AppLogger.d("don't click me"));
-            view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
-                liveViewWithThumbnail.removeView(layout);
-                Intent intent = new Intent(getContext(), SightSettingActivity.class);
-                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                getContext().startActivity(intent);
-                isSightShown = false;
-            });
-            PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
-        } else {
-            //已经添加了
-            oldLayout.setVisibility(VISIBLE);
-        }
-        liveLoadingBar.hideLoading();
-    }
-
-    /**
-     * 历史录像条显示逻辑
-     *
-     * @param show
-     */
-    private void showHistoryWheel(boolean show) {
-        //处理显示逻辑
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
-        //4.被分享用户不显示
-        if (JFGRules.isShareDevice(device)) {
-            AppLogger.d("is share device");
-            historyParentContainer.setVisibility(GONE);
-            return;
-        }
-        //3.没有历史录像
-        if (/*superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0*/ superWheelExt.getHistoryCount() > 0) {
-            //显示
-            AppLogger.d("has history video");
-            historyParentContainer.setVisibility(VISIBLE);
-            return;
-        }
-        historyParentContainer.setVisibility(show ? VISIBLE : GONE);
     }
 
     private boolean isLand() {
@@ -1363,7 +1225,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         //直播时候，使用本地时间戳。
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
-        historyWheelHandler = getHistoryWheelHandler();
         boolean historyLocked = historyWheelHandler.isHistoryLocked();
         Log.d("TYPE_HISTORY", "time: " + timestamp + ",locked:" + historyLocked + ",focus:" + focus);
         if (!historyLocked || focus) {
@@ -1400,28 +1261,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 getVideoFinalWidth());
     }
 
-    private void reInitHistoryHandler() {
-        if (historyWheelHandler == null) {
-            historyWheelHandler = new HistoryWheelHandler(superWheelExt, uuid);
-            historyWheelHandler.setDatePickerListener((time, state) -> {
-                //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
-                if (isLand()) {
-                    performLayoutAnimation(true, true);
-                }
-                switch (state) {
-                    case STATE_FINISH: {
-                        setLiveRectTime(time, true);
-                        presenter.performPlayVideoAction(false, time);
-                    }
-                    break;
-                    default: {
-                        setLiveTimeContent(time);
-                    }
-                }
-            });
-        }
-    }
-
     private boolean isStandBy() {
         return presenter != null && presenter.isStandBy();
     }
@@ -1430,7 +1269,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (device.pid == 39 || device.pid == 49) {
             mode = "0";
         }
-        if (!needShowSight) {
+        if (!canShowFirstSight()) {
             updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
         } else {
             if (videoView != null) {
@@ -1518,7 +1357,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         this.enableAutoRotate = enableAutoRotate;
         if (videoView != null && videoView instanceof Panoramic360ViewRS) {
             try {
-                ((Panoramic360ViewRS) videoView).enableAutoRotation(isLivePlaying() && isLive() && enableAutoRotate);
+                ((Panoramic360ViewRS) videoView).enableAutoRotation(isLivePlaying() && isLive() && enableAutoRotate && isLand());
             } catch (NullPointerException e) {
             }
         }
@@ -1562,22 +1401,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-//    public void showPlayHistoryButton() {
-//        historyWheelContainer.setVisibility(VISIBLE);
-//        historyParentContainer.setVisibility(VISIBLE);
-//        if (historyWheelContainer.getDisplayedChild() == 1) {
-//            historyWheelContainer.showPrevious();
-//        }
-//        Device device = DataSourceManager.getInstance().getDevice(uuid);
-//        btnLoadHistory.setEnabled(device.$(201, new DpMsgDefine.DPNet()).net > 0);//设备在线才可点击
-//        if (isLand()) {
-//            historyWheelContainer.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
-//        } else {
-//            historyWheelContainer.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
-//            vLine.setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
-//        }
-//    }
-
     public void onShake() {
         // TODO: 2017/8/23 摇一摇
         Log.i(CYLAN_TAG, "我需要摇一摇");
@@ -1594,8 +1417,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onDeviceNetChanged(int net) {
-        updateDoorLock();
+    public void onDeviceNetChanged(DpMsgDefine.DPNet net, boolean isLocalOnline) {
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "onDeviceNetChanged,net is:" + net + " isLocalOnline:" + isLocalOnline);
+        }
+        this.isLocalOnline = isLocalOnline;
+        performLayoutEnableAction();
+    }
+
+    @Override
+    public void onUpdateAlarmOpenChanged(boolean alarmOpened) {
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "onUpdateAlarmOpenChanged,isAlarmOpened:" + alarmOpened);
+        }
+        setFlipped(!alarmOpened);
     }
 
     @Override
@@ -1795,16 +1630,22 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         return presenter != null && presenter.canShowHistoryWheel();
     }
 
-    private boolean canShowLoadHistory() {
-        return canShowHistoryWheel() && !isStandBy();
-    }
-
     private boolean canShowFlip() {
         return presenter != null && presenter.canShowFlip();
     }
 
+    private boolean canShowFirstSight() {
+        return presenter != null && presenter.canShowFirstSight();
+    }
+
+    private boolean canShowHistoryCase() {
+        return presenter != null && presenter.canShowHistoryCase();
+    }
+
     private boolean canXunHuanEnable() {
-        return isLive() && isLivePlaying() && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate;
+        return isLive() && isLivePlaying() && JFGRules.showSwitchModeButton(device.pid)
+                && videoView != null && videoView instanceof Panoramic360ViewRS
+                && ((Panoramic360ViewRS) videoView).getDisplayMode() == Panoramic360ViewRS.SFM_Cylinder;
     }
 
     private boolean canModeSwitchEnable() {
@@ -1961,6 +1802,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private void performLayoutVisibilityAction() {
         boolean isLand = isLand();
         boolean showFlip = canShowFlip();
+        boolean showHistoryWheel = canShowHistoryWheel();
         liveTopBannerView.setVisibility(isLand ? VISIBLE : INVISIBLE);
         bottomControllerContainer.setVisibility(isLand ? INVISIBLE : VISIBLE);
         layoutLandFlip.setVisibility(showFlip && isLand ? VISIBLE : GONE);
@@ -1968,10 +1810,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         imgVCamZoomToFullScreen.setVisibility(isLand ? INVISIBLE : VISIBLE);
         imgVCamLiveLandPlay.setVisibility(isLand ? VISIBLE : GONE);
         liveBottomBannerView.setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
-        historyWheelContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
-        tvLive.setVisibility(historyWheelContainer.getDisplayedChild() == 1 ? VISIBLE : GONE);
+        historyWheelContainer.setVisibility(showHistoryWheel ? VISIBLE : INVISIBLE);
+        tvLive.setVisibility(historyWheelContainer.getDisplayedChild() == 1 || !isHistoryEmpty() ? VISIBLE : GONE);
         liveViewModeContainer.setVisibility(canShowViewModeMenu() ? VISIBLE : INVISIBLE);
-        vFlag.setVisibility(historyWheelContainer.getDisplayedChild() == 1 ? VISIBLE : GONE);
+        vFlag.setVisibility(historyWheelContainer.getDisplayedChild() == 1 || !isHistoryEmpty() ? VISIBLE : GONE);
         ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : GONE);
         imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
@@ -1981,7 +1823,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : GONE);
         liveLoadingBar.showOrHide(canShowLoadingBar());
-        historyParentContainer.setVisibility(canShowLoadHistory() ? VISIBLE : INVISIBLE);
+        historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
     }
 
     private void performLayoutEnableAction() {
@@ -1997,12 +1839,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         imgVLandCamTriggerMic.setEnabled(isPlaying && !isHistory);
         imgVCamSwitchSpeaker.setEnabled(isPlaying);
         imgVLandCamSwitchSpeaker.setEnabled(isPlaying);
+        ivCamDoorLock.setEnabled(isDoorLockEnable());
         imgVCamZoomToFullScreen.setEnabled(isPlaying);
         liveViewWithThumbnail.setEnabled(true);
         btnLoadHistory.setEnabled(canLoadHistoryEnable());
     }
 
+    private boolean isDoorLockEnable() {
+        return presenter != null && presenter.canDoorLockEnable();
+    }
+
     private void performLayoutContentAction() {
+        if (videoView == null) {
+            videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
+            liveViewWithThumbnail.setLiveView(videoView, uuid);
+        }
         boolean isLand = isLand();
         imgVCamTriggerMic.setImageResource(hasDoorLock ? portBellMicRes[0] : portMicRes[0]);
         tvLive.setBackgroundColor(isLand ? Color.TRANSPARENT : Color.WHITE);
@@ -2013,7 +1864,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         imgVCamLiveLandNavBack.setText(alias);
         historyParentContainer.setBackgroundResource(isLand ? R.color.color_4C000000 : android.R.color.transparent);
         liveBottomBannerView.setBackgroundResource(isLand ? android.R.color.transparent : R.drawable.camera_sahdow);
-        historyWheelContainer.setDisplayedChild(presenter.isHistoryEmpty() ? 0 : 1);
+        historyWheelContainer.setDisplayedChild(isHistoryEmpty() ? 0 : 1);
         flLoadHistory.setBackgroundResource(isLand ? android.R.color.transparent : R.color.color_F7F8FA);
         vLine.setBackgroundResource(isLand ? android.R.color.transparent : R.color.color_f2f2f2);
         (imgVCamLiveLandPlay).setImageResource(isLivePlaying() ? R.drawable.icon_landscape_playing : R.drawable.icon_landscape_stop);
@@ -2046,12 +1897,81 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         historyParentContainer.setLayoutParams(lp);
         liveViewModeContainer.setLayoutParams(glp);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
-        boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-        setFlipped(!safeIsOpen);
         decideFlippedContent();
         decideLiveThumbContent();
         decideLiveViewMode();
+        decideFirstSightSetting();
+        decideDeviceTimezone();
+        decideHistoryShowCase();
+        decidePendingResumeAction();
         enableAutoRotate(enableAutoRotate);
+    }
+
+    private boolean isHistoryEmpty() {
+        return presenter != null && presenter.isHistoryEmpty();
+    }
+
+    private void decidePendingResumeAction() {
+        Bundle bundle = getArguments();
+        if (bundle != null && presenter != null) {
+            long playTime = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, -1);
+            bundle.remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+            if (playTime > 0 && canPlayVideoNow()) {
+                AppLogger.d("需要定位到时间轴:" + playTime);
+                performLoadHistoryAndPlay(playTime);
+            }
+        }
+    }
+
+    private void decideHistoryShowCase() {
+        boolean canShowHistoryCase = canShowHistoryCase();
+        Fragment historyShowCaseFragment = getFragmentManager().findFragmentByTag(HistoryWheelShowCaseFragment.class.getSimpleName());
+        if (isReallyVisibleToUser()) {
+            if (!MiscUtils.isLand() && canShowHistoryCase) {
+                LiveShowCase.showHistoryWheelCase(getActivity(), historyParentContainer);
+                LiveShowCase.showHistoryCase((Activity) getContext(), tvLive);
+            }
+        } else {
+            if (historyShowCaseFragment != null) {
+                getFragmentManager().beginTransaction().remove(historyShowCaseFragment).commitAllowingStateLoss();
+            }
+        }
+    }
+
+
+    private void decideDeviceTimezone() {
+        TimeZone timezone = JFGRules.getDeviceTimezone(device);
+        onDeviceTimeZoneChanged(timezone.getRawOffset());
+    }
+
+    private void decideFirstSightSetting() {
+        boolean canShowFirstSight = canShowFirstSight();
+        View sightLayer = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
+        if (!canShowFirstSight) {
+            liveViewWithThumbnail.removeView(sightLayer);
+            return;
+        }
+        liveLoadingBar.changeToPlaying(false);
+        if (sightLayer != null) {
+            sightLayer.setVisibility(VISIBLE);
+            return;
+        }
+        LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, liveViewWithThumbnail);
+        ((TextView) (liveViewWithThumbnail.findViewById(R.id.tv_sight_setting_content))).setText(getString(R.string.Tap1_Camera_Overlook) + ": " + getString(R.string.Tap1_Camera_OverlookTips));
+        liveViewWithThumbnail.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener(this::onSightSettingCancelClicked);
+        liveViewWithThumbnail.findViewById(R.id.btn_sight_setting_next).setOnClickListener(this::onSightSettingNextClicked);
+    }
+
+    private void onSightSettingNextClicked(View view) {
+        presenter.performResetFirstSight();
+        Intent intent = new Intent(getContext(), SightSettingActivity.class);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        startActivity(intent);
+    }
+
+    private void onSightSettingCancelClicked(View view) {
+        presenter.performResetFirstSight();
+        performReLayoutAction();
     }
 
     private void decideLiveViewMode() {
@@ -2059,8 +1979,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void decideFlippedContent() {
-        boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-        setFlipped(!safeIsOpen);
+        Boolean alarmOpen = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        setFlipped(!alarmOpen);
     }
 
     private void decideLiveThumbContent() {
@@ -2087,8 +2007,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private void onStandByClicked(View view) {
         Intent intent = new Intent(getContext(), CamSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid());
-        startActivityForResult(intent, REQUEST_CODE,
-                ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+        startActivityForResult(intent, REQUEST_CODE, ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
         AppLogger.d("跳转到使用帮助");
     }
 
@@ -2096,10 +2015,5 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         performLayoutVisibilityAction();
         performLayoutEnableAction();
         performLayoutContentAction();
-    }
-
-    private void performTimeZoneRefresh() {
-        TimeZone timeZone = JFGRules.getDeviceTimezone(device);
-        onDeviceTimeZoneChanged(timeZone.getRawOffset());
     }
 }

@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.module.CameraLiveActionHelper;
 import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.module.DPTimeZone;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.HistoryManager;
 import com.cylan.jiafeigou.module.SubscriptionSupervisor;
@@ -45,6 +44,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -598,12 +598,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        if (throwable instanceof RxEvent.HelperBreaker) {
-                            int playError = ((RxEvent.HelperBreaker) throwable).breakerCode;
-                            if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
-                                performReportPlayError(playError);
-                            }
-                        }
                         int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                         if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                             performReportPlayError(playError);
@@ -687,50 +681,28 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             switch ((int) msg.id) {
                 case DpMsgMap.ID_222_SDCARD_SUMMARY: {
                     DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPSdcardSummary.class, null);
-                    boolean isSDCardExist = liveActionHelper.onUpdateSDCardStatus(sdStatus);
-                    if (liveActionHelper.isSDCardExist != isSDCardExist) {
-                        if (!liveActionHelper.isSDCardExist) {
-                            if (BuildConfig.DEBUG) {
-                                Log.d(CameraLiveHelper.TAG, "SD 卡已被拔出");
-                            }
-                            if (CameraLiveHelper.isVideoPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
-                                performStopVideoAction(false);
-                            }
-                            mView.onDeviceSDCardOut();
-                        }
+                    if (sdStatus == null) {
+                        return;
                     }
+                    decideReportDevice222Event(sdStatus);
                 }
                 break;
                 case DpMsgMap.ID_206_BATTERY: {
-                    if (JFGRules.popPowerDrainOut(getDevice().pid)) {
-                        Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
-                        if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
-                            mView.onBatteryDrainOut();
-                        }
-                    }
+                    Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
+                    decideReportDevice206Event(battery);
                 }
                 break;
                 case DpMsgMap.ID_508_CAMERA_STANDBY_FLAG: {
                     DpMsgDefine.DPStandby standby = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPStandby.class, null);
-                    boolean isStandBy = liveActionHelper.onUpdateStandBy(JFGRules.isStandBy(standby));
-                    if (isStandBy != liveActionHelper.isStandBy) {
-                        mView.onDeviceStandByChanged(liveActionHelper.isStandBy);
-                        if (liveActionHelper.isStandBy) {
-                            performStopVideoAction(false);
-                        } else if (CameraLiveHelper.shouldResumeToPlayVideo(liveActionHelper)) {
-                            performPlayVideoAction();
-                        }
+                    if (standby == null) {
+                        return;
                     }
+                    decideReportDevice508Event(standby);
                 }
                 break;
                 case DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD: {
                     Integer formatted = DpUtils.unpackDataWithoutThrow(msg.packValue, int.class, 0);
-                    boolean isSDCardFormatted = liveActionHelper.onUpdateSDCardFormatted(formatted);
-                    if (isSDCardFormatted != liveActionHelper.isSDCardFormatted) {
-                        if (liveActionHelper.isSDCardFormatted) {
-                            mView.onDeviceSDCardFormat();
-                        }
-                    }
+                    decideReportDevice218Event(formatted);
                 }
                 break;
                 case DpMsgMap.ID_509_CAMERA_MOUNT_MODE: {
@@ -739,30 +711,123 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (device.pid == 39 || device.pid == 49) {
                         _509 = "0";
                     }
-                    mView.onUpdateLiveViewMode(_509);
+                    if (TextUtils.isEmpty(_509)) {
+                        return;
+                    }
+                    decideReportDevice509Event(_509);
                 }
                 break;
                 case DpMsgMap.ID_201_NET: {
                     DpMsgDefine.DPNet dpNet = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPNet.class, null);
-                    if (dpNet != null && CameraLiveHelper.checkIsDeviceNetChanged(liveActionHelper, dpNet)) {
-                        mView.onDeviceNetChanged(dpNet.net);
+                    if (dpNet == null) {
+                        return;
                     }
+                    decideReportDevice201Event(dpNet);
                 }
                 break;
                 case DpMsgMap.ID_214_DEVICE_TIME_ZONE: {
-                    DPTimeZone dpTimeZone = DpUtils.unpackDataWithoutThrow(msg.packValue, DPTimeZone.class, null);
-                    if (dpTimeZone != null && CameraLiveHelper.checkIsDeviceTimeZoneChanged(liveActionHelper, dpTimeZone)) {
-                        mView.onDeviceTimeZoneChanged(dpTimeZone.offset);
+                    DpMsgDefine.DPTimeZone dpTimeZone = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPTimeZone.class, null);
+                    if (dpTimeZone == null) {
+                        return;
                     }
+                    decideReportDevice214Event(dpTimeZone);
                 }
                 break;
                 case DpMsgMap.ID_510_CAMERA_COORDINATE: {
                     DpMsgDefine.DpCoordinate dpCoordinate = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DpCoordinate.class, null);
-                    if (dpCoordinate != null) {
-                        mView.onUpdateCameraCoordinate(dpCoordinate);
+                    if (dpCoordinate == null) {
+                        return;
                     }
+                    decideReportDevice510Event(dpCoordinate);
                 }
                 break;
+                case DpMsgMap.ID_501_CAMERA_ALARM_FLAG: {
+                    Boolean alarmOpen = DpUtils.unpackDataWithoutThrow(msg.packValue, boolean.class, false);
+                    decideReportDevice501Action(alarmOpen);
+                }
+                break;
+            }
+        }
+    }
+
+    private void decideReportDevice501Action(Boolean alarmOpen) {
+        alarmOpen = liveActionHelper.onUpdateDeviceAlarmOpenState(alarmOpen);
+        if (CameraLiveHelper.checkIsDeviceAlarmOpenStateChanged(liveActionHelper, alarmOpen)) {
+            mView.onUpdateAlarmOpenChanged(liveActionHelper.isDeviceAlarmOpened);
+        }
+    }
+
+    private void decideReportDevice510Event(DpMsgDefine.DpCoordinate dpCoordinate) {
+        dpCoordinate = liveActionHelper.onUpdateDeviceCoordinate(dpCoordinate);
+        if (CameraLiveHelper.checkIsDeviceCoordinateChanged(liveActionHelper, dpCoordinate)) {
+            mView.onUpdateCameraCoordinate(dpCoordinate);
+        }
+    }
+
+    private void decideReportDevice214Event(DpMsgDefine.DPTimeZone dpTimeZone) {
+        dpTimeZone = liveActionHelper.onUpdateDeviceTimezone(dpTimeZone);
+        if (CameraLiveHelper.checkIsDeviceTimeZoneChanged(liveActionHelper, dpTimeZone)) {
+            mView.onDeviceTimeZoneChanged(liveActionHelper.deviceTimezone.offset);
+        }
+    }
+
+    private void decideReportDevice201Event(DpMsgDefine.DPNet dpNet) {
+        dpNet = liveActionHelper.onUpdateDeviceNet(dpNet);
+        if (CameraLiveHelper.checkIsDeviceNetChanged(liveActionHelper, dpNet)) {
+            mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
+        }
+    }
+
+    private void decideReportDevice509Event(String _509) {
+        _509 = liveActionHelper.onUpdateDeviceMountMode(_509);
+        if (CameraLiveHelper.checkIsDeviceViewMountModeChanged(liveActionHelper, _509)) {
+            mView.onUpdateLiveViewMode(_509);
+        }
+    }
+
+    private void decideReportDevice218Event(Integer formatted) {
+        boolean isSDCardFormatted = liveActionHelper.onUpdateSDCardFormatted(formatted);
+        if (isSDCardFormatted != liveActionHelper.isSDCardFormatted) {
+            if (liveActionHelper.isSDCardFormatted) {
+                mView.onDeviceSDCardFormat();
+            }
+        }
+    }
+
+    private void decideReportDevice508Event(DpMsgDefine.DPStandby standby) {
+        boolean isStandBy = liveActionHelper.onUpdateStandBy(JFGRules.isStandBy(standby));
+        if (isStandBy != liveActionHelper.isStandBy) {
+            mView.onDeviceStandByChanged(liveActionHelper.isStandBy);
+            if (liveActionHelper.isStandBy) {
+                performStopVideoAction(false);
+            } else if (CameraLiveHelper.shouldResumeToPlayVideo(liveActionHelper)) {
+                performPlayVideoAction();
+            }
+        }
+    }
+
+    private void decideReportDevice206Event(Integer battery) {
+        battery = liveActionHelper.onUpdateDeviceBattery(battery);
+        if (CameraLiveHelper.checkIsDeviceBatteryChanged(liveActionHelper, battery)) {
+            if (JFGRules.popPowerDrainOut(getDevice().pid)) {
+                if (battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                    mView.onBatteryDrainOut();
+                }
+            }
+        }
+    }
+
+    private void decideReportDevice222Event(DpMsgDefine.DPSdcardSummary sdStatus) {
+        boolean isSDCardExist = liveActionHelper.onUpdateSDCardStatus(sdStatus);
+        if (liveActionHelper.isSDCardExist != isSDCardExist) {
+            if (!liveActionHelper.isSDCardExist) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(CameraLiveHelper.TAG, "SD 卡已被拔出");
+                }
+                if (CameraLiveHelper.isVideoPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
+                    performStopVideoAction(false);
+                }
+                mView.onDeviceSDCardOut();
             }
         }
     }
@@ -1031,6 +1096,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public boolean canShowFirstSight() {
+        return CameraLiveHelper.isFirstSight(liveActionHelper);
+    }
+
+    @Override
+    public boolean canDoorLockEnable() {
+        return CameraLiveHelper.checkDoorLockEnable(liveActionHelper);
+    }
+
+    @Override
+    public boolean canShowHistoryCase() {
+        return CameraLiveHelper.canShowHistoryCase(liveActionHelper) && canShowHistoryWheel() && !isHistoryEmpty() && !isLive();
+    }
+
+    @Override
     public boolean isStandBy() {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
@@ -1127,6 +1207,36 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public void performResetFirstSight() {
+        CameraLiveHelper.resetFirstSight(liveActionHelper);
+    }
+
+    @Override
+    public void performLocalNetworkPingAction() {
+        if (JFGRules.shouldObserverAP()) {//需要监听是否局域网在线
+            Subscription subscribe = APObserver.scan(uuid)
+                    .timeout(5, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> {
+                        boolean localOnlineState = liveActionHelper.onUpdateDeviceLocalOnlineState(true);
+                        boolean localOnlineChanged = CameraLiveHelper.checkIsDeviceLocalOnlineChanged(liveActionHelper, localOnlineState);
+                        if (localOnlineChanged) {
+                            mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
+                        }
+                    }, e -> {
+                        e.printStackTrace();
+                        AppLogger.e(e);
+                        boolean localOnlineState = liveActionHelper.onUpdateDeviceLocalOnlineState(false);
+                        boolean localOnlineChanged = CameraLiveHelper.checkIsDeviceLocalOnlineChanged(liveActionHelper, localOnlineState);
+                        if (localOnlineChanged) {
+                            mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
+                        }
+                    });
+            addStopSubscription(subscribe);
+        }
+    }
+
+    @Override
     public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
@@ -1187,7 +1297,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
         addStopSubscription(subscribe);
     }
-
 
     @Override
     public void onFrameFailed() {

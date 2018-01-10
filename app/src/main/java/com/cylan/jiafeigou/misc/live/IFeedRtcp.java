@@ -18,6 +18,8 @@ public interface IFeedRtcp {
 
     boolean isGoodFrameNow();
 
+    boolean isStopped();
+
     void setMonitorListener(MonitorListener listener);
 
     interface MonitorListener {

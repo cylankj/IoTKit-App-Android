@@ -99,6 +99,10 @@ public class NetUtils {
         return getJfgNetType(c);
     }
 
+    public static boolean hasNetwork() {
+        return getJfgNetType() != 0;
+    }
+
 
     /**
      * 获取网络名，没有网络为 offLine，

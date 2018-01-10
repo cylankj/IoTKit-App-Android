@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,25 +23,12 @@ import butterknife.OnClick;
  */
 
 public class HistoryWheelShowCaseFragment extends Fragment {
-
-
     private View anchor;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.view_camera_wheel_case, container, false);
-        View guideline = rootView.findViewById(R.id.guideline);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
-        if (anchor != null) {
-            DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
-            int deviceHeight = displayMetrics.heightPixels;
-            int[] position = new int[2];
-            anchor.getLocationInWindow(position);
-            float percent = (position[1] + anchor.getMeasuredHeight() / 2) * 1.0f / deviceHeight;
-            layoutParams.guidePercent = percent;
-            guideline.setLayoutParams(layoutParams);
-        }
         return rootView;
     }
 
@@ -47,14 +36,39 @@ public class HistoryWheelShowCaseFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        relayout();
     }
 
     @OnClick(R.id.btn_ok)
     public void ok() {
-        getActivity().getSupportFragmentManager().popBackStack(getClass().getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        PreferencesUtils.putBoolean(JConstant.KEY_SHOW_HISTORY_WHEEL_CASE, false);
+        getFragmentManager().popBackStack(getClass().getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public void setAnchor(View handAnchor) {
         this.anchor = handAnchor;
+        relayout();
+    }
+
+    private void relayout() {
+        View rootView = getView();
+        if (rootView != null) {
+            rootView.post(new Runnable() {
+                @Override
+                public void run() {
+                    View guideline = rootView.findViewById(R.id.guideline);
+                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
+                    if (anchor != null) {
+                        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+                        int deviceHeight = displayMetrics.heightPixels;
+                        int[] position = new int[2];
+                        anchor.getLocationInWindow(position);
+                        float percent = (position[1] + anchor.getMeasuredHeight() / 2) * 1.0f / deviceHeight;
+                        layoutParams.guidePercent = percent;
+                        guideline.setLayoutParams(layoutParams);
+                    }
+                }
+            });
+        }
     }
 }

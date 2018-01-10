@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:alpha="0.6"
     android:background="#000000"
+    android:clickable="true"
     android:fitsSystemWindows="true"
+    android:focusable="true"
     android:orientation="vertical">
 
 
