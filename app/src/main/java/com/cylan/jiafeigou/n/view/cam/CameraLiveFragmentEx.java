@@ -269,8 +269,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPause() {
         super.onPause();
+        liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
         liveLoadingBar.postDelayed(backgroundCheckerRunnable, 700);
-        presenter.performStopVideoAction(true);
     }
 
     private boolean isReallyVisibleToUser() {
@@ -758,7 +758,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return true;
         } else {
             liveViewWithThumbnail.showVideoView(isReallyVisibleToUser() && !isNormalView);
-            presenter.performStopVideoAction(true);
             return false;
         }
     }
@@ -877,7 +876,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (BaseApplication.getPauseViewCount() == 0) {
             //APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,
             if (presenter != null) {
-                presenter.performStopVideoAction(false);
+                presenter.performStopVideoAction(true);
             }
         }
     };
