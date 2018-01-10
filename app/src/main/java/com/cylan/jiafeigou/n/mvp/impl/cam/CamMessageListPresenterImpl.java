@@ -400,20 +400,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void fetchVisitorMessageList(int type, final String id, long sec, boolean refresh) {
-        AppLogger.w("CamMessageListPresenterImpl:fetchVisitorMessageList" + type + ",id:" + id);
         Subscription subscribe = Observable.just("fetchVisitorMessageList")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        final String sessionId = Command.getInstance().getSessionId();
-                        AppLogger.d("CamMessageListPresenterImpl:fetchVisitorMessageList:sessionId:20260" + sessionId);
-                        String person = id == null ? "" : id;
                         DpMsgDefine.FetchMsgListReq reqContent = new DpMsgDefine.FetchMsgListReq();
                         reqContent.cid = uuid;
-                        reqContent.faceId = person;
+                        reqContent.faceId = id == null ? "" : id;
                         reqContent.msgType = type;
                         reqContent.seq = refresh ? 0 : sec;
+                        AppLogger.i(reqContent.toString());
                         return Command.getInstance().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
                     } catch (Exception e) {
                         AppLogger.e(MiscUtils.getErr(e));
@@ -422,9 +419,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 })
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).first(rsp -> rsp.seq == seq))
                 .map(rsp -> {
-                    AppLogger.d("CamMessageListPresenterImpl:Fetch Information:" + Arrays.toString(rsp.data));
+                    AppLogger.e("Fetch Information seq:" + rsp.seq);
                     DpMsgDefine.FetchMsgListRsp rrsp = DpUtils.unpackDataWithoutThrow(rsp.data, DpMsgDefine.FetchMsgListRsp.class, null);
-                    AppLogger.d("CamMessageListPresenterImpl:Raw Fetch Result:" + rrsp);
+                    AppLogger.i("Raw Fetch Result:" + rrsp);
                     //转化出。
                     ArrayList<CamMessageBean> list = new ArrayList<>();
                     if (rrsp != null && TextUtils.equals(rrsp.cid, uuid) && rrsp.dataList != null) {
@@ -482,14 +479,15 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
-                    AppLogger.e("CamMessageListPresenterImpl:Fetch Result:" + items);
+//                    AppLogger.e("Fetch Result:" + items);
+                    AppLogger.e("Fetch Result: items.size: " + items.size());
                     if (refresh) {
                         mView.onVisitorListInsert(items);
                     } else {
                         mView.onVisitorListAppend(items);
                     }
                 }, e -> {
-                    e.printStackTrace();
+                        e.printStackTrace();
                     AppLogger.e(e);
                 });
         addSubscription(subscribe, "fetchMessageList_faceId");
