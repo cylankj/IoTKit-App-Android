@@ -758,8 +758,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return true;
         } else {
             liveViewWithThumbnail.showVideoView(isReallyVisibleToUser() && !isNormalView);
-            liveLoadingBar.changeToPlaying(true);
-            presenter.performStopVideoAction(false);
+            presenter.performStopVideoAction(true);
             return false;
         }
     }

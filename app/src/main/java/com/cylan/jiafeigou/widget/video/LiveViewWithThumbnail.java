@@ -168,10 +168,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void showVideoView(boolean show) {
+        imgThumbnail.setVisibility(show ? INVISIBLE : VISIBLE);
         if (videoView != null) {
             ((View) videoView).setVisibility(show ? VISIBLE : INVISIBLE);
         }
-        imgThumbnail.setVisibility(show ? INVISIBLE : VISIBLE);
     }
 
     @Override
