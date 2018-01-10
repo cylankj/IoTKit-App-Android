@@ -109,6 +109,10 @@ public interface CamLiveContract {
         void onDeviceNetChanged(DpMsgDefine.DPNet net, boolean isLocalOnline);
 
         void onUpdateAlarmOpenChanged(boolean alarmOpened);
+
+        void onChangeSafeProtectionErrorAutoRecordClosed();
+
+        void onChangeSafeProtectionErrorNeedConfirm();
     }
 
     interface Presenter extends BasePresenter {
@@ -136,6 +140,8 @@ public interface CamLiveContract {
 
         void performLocalNetworkPingAction();
 
+        void performChangeSafeProtection(int event);//event,0:unchecked,1:checked safe sdcard
+
         boolean isStandBy();
 
         String getUuid();
@@ -148,7 +154,7 @@ public interface CamLiveContract {
          */
         <T extends DataPoint> void updateInfoReq(T value, long id);
 
-        float getVideoPortHeightRatio();
+        float getVideoPortHeightRatio(boolean isLand);
 
         boolean isEarpiecePlug();
 
@@ -187,6 +193,8 @@ public interface CamLiveContract {
         boolean canDoorLockEnable();
 
         boolean canShowHistoryCase();
+
+
     }
 }
 

@@ -2,11 +2,13 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
@@ -68,16 +70,14 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 
 /**
  * Created by cylan-hunt on 16-7-27.
  */
 public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener, HistoryManager.HistoryObserver {
-    /**
-     * 只有从Idle->playing,err->playing才会设置.
-     */
-    private int resolutionH, resolutionW;
     /**
      * 保存当前播放的方式,eg:从播放历史视频切换到设置页面,回来之后,需要继续播放历史视频.
      */
@@ -212,9 +212,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }
                         boolean isPendingPlayActionCompleted = liveActionHelper.isPendingPlayLiveActionCompleted;
                         liveActionHelper.onVideoResolutionReached(jfgMsgVideoResolution);
-                        resolutionH = jfgMsgVideoResolution.height;
-                        resolutionW = jfgMsgVideoResolution.width;
-                        PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) jfgMsgVideoResolution.height / jfgMsgVideoResolution.width);
                         int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                         if (BuildConfig.DEBUG) {
                             Log.d(CameraLiveHelper.TAG, "monitorVideoResolution,正在检查 playError:" + CameraLiveHelper.printError(playError));
@@ -953,13 +950,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public float getVideoPortHeightRatio() {
+    public float getVideoPortHeightRatio(boolean isLand) {
         AppLogger.d("获取分辨率?");
-        float cache = PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, 0.0f);
-        if (cache == 0.0f) {
-            cache = JFGRules.getDefaultPortHeightRatio(getDevice().pid);
-        }
-        return PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, cache);
+        return CameraLiveHelper.checkVideoRadio(liveActionHelper, isLand);
+
     }
 
     @Override
@@ -1233,6 +1227,27 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }
                     });
             addStopSubscription(subscribe);
+        }
+    }
+
+    @Override
+    public void performChangeSafeProtection(int event) {
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        DpMsgDefine.DPSdStatus dpSdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
+        boolean autoRecordEnabled = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1) > 0;
+        boolean safeProtectionOpened = device.$(ID_501_CAMERA_ALARM_FLAG, false);
+        boolean hasSDCard = JFGRules.hasSdcard(dpSdStatus);
+        //先判断是否关闭了自动录像,关闭了提示 :若关闭，“侦测到异常时”将不启用录像
+        //若自动录像未关闭 则提示:关闭“移动侦测”，将停止“侦测报警录像”
+        //无卡不需要显示 //oldOption 不等于2 说明没有关闭自动录像则提示:关闭“移动侦测”，将停止“侦测报警录像”
+        if (event == 0 && safeProtectionOpened && !autoRecordEnabled && hasSDCard) {
+            mView.onChangeSafeProtectionErrorAutoRecordClosed();
+        } else if (event == 0 && safeProtectionOpened) {
+            mView.onChangeSafeProtectionErrorNeedConfirm();
+        } else {
+            //之前未开启,则开启
+            DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(true);
+            updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
         }
     }
 

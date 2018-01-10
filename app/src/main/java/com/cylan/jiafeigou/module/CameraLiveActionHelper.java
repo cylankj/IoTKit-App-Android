@@ -10,7 +10,9 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 /**
  * Created by yanzhendong on 2018/1/3.
@@ -29,6 +31,8 @@ public class CameraLiveActionHelper {
     public volatile boolean isSDCardExist = false;
     public volatile boolean isSDCardFormatted = false;
     public volatile boolean isLocalOnline = false;
+    public volatile int resolutionH;
+    public volatile int resolutionW;
     public volatile DpMsgDefine.DPNet deviceNet;
     public volatile DpMsgDefine.DPTimeZone deviceTimezone;
     public volatile DpMsgDefine.DpCoordinate deviceCoordinate;
@@ -134,6 +138,8 @@ public class CameraLiveActionHelper {
 
     public void onVideoResolutionReached(JFGMsgVideoResolution jfgMsgVideoResolution) {
         if (TextUtils.equals(uuid, jfgMsgVideoResolution.peer)) {
+            this.resolutionH = jfgMsgVideoResolution.height;
+            this.resolutionW = jfgMsgVideoResolution.width;
             this.isPendingPlayLiveActionCompleted = true;
             this.isPendingStopLiveActionCompleted = true;
             this.isPendingPlayLiveActionTimeOutActionReached = false;
@@ -142,6 +148,7 @@ public class CameraLiveActionHelper {
             this.isLiveSlow = false;
             this.isLoading = false;
             this.isPlaying = true;
+            PreferencesUtils.putFloat(getSavedResolutionKey(), (float) jfgMsgVideoResolution.height / jfgMsgVideoResolution.width);
         }
     }
 
@@ -271,5 +278,10 @@ public class CameraLiveActionHelper {
         final boolean isDeviceAlarmOpen = this.isDeviceAlarmOpened;
         this.isDeviceAlarmOpened = alarmOpen;
         return isDeviceAlarmOpen;
+    }
+
+    public String getSavedResolutionKey() {
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        return JConstant.KEY_UUID_RESOLUTION + ":" + device.pid;
     }
 }

@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.module;
 
 import android.Manifest;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
@@ -409,5 +411,27 @@ public class CameraLiveHelper {
 
     public static boolean canShowHistoryCase(CameraLiveActionHelper helper) {
         return PreferencesUtils.getBoolean(JConstant.KEY_SHOW_HISTORY_WHEEL_CASE, true);
+    }
+
+    public static float checkVideoRadio(CameraLiveActionHelper helper, boolean isLand) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+        final boolean needPanoramicView = JFGRules.isNeedPanoramicView(device.pid);
+        float liveViewRadio = 0F;
+        if (helper.resolutionH != 0 && helper.resolutionW != 0) {
+            liveViewRadio = (float) helper.resolutionH / (float) helper.resolutionW;
+        }
+        if (liveViewRadio == 0) {
+            liveViewRadio = PreferencesUtils.getFloat(helper.getSavedResolutionKey(), JFGRules.getDefaultPortHeightRatio(device.pid));
+        }
+        if (device.pid == 81) {//81设备特殊对待
+            return isLand ? 3F / 4F : 1F;
+        }
+
+        if (isLand) {
+            return (float) displayMetrics.heightPixels / (float) displayMetrics.widthPixels;
+        } else {
+            return needPanoramicView ? 1F : liveViewRadio;
+        }
     }
 }

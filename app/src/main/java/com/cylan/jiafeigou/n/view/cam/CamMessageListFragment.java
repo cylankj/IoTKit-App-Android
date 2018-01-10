@@ -1107,7 +1107,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @OnClick(R.id.quick_top)
     public void clickedQuickTop() {
         AppLogger.w("clickedQuickTop");
-        aplCamMessageAppbar.setExpanded(true);
-        layoutManager.scrollToPosition(0);
+        int scrollState = rvCamMessageList.getScrollState();
+        if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+            aplCamMessageAppbar.setExpanded(true);
+            layoutManager.scrollToPosition(0);
+        }
     }
 }
