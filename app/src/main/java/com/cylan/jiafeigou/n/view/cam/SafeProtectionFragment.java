@@ -466,8 +466,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             break;
 
             case R.id.sw_monitoring_area: {
-                if (NetUtils.getJfgNetType() == 0) {
-                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                if (NetUtils.getJfgNetType(getContext()) == 0) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
                 MonitorAreaSettingFragment fragment = MonitorAreaSettingFragment.Companion.newInstance(uuid);

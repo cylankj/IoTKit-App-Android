@@ -535,8 +535,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (!camMessageListAdapter.hasFooter() && camMessageListAdapter.getCount() > 0) {
             setupFootView();
         }
-        if (camMessageListAdapter.getCount() > 1) {
-            time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 2).message.getVersion();
+        if (camMessageListAdapter.getCount() > 0) {
+            CamMessageBean cb = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1);
+            if (cb.viewType == CamMessageBean.ViewType.FOOT && camMessageListAdapter.getCount() > 1) {
+                cb = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 2);
+            }
+            time = cb.message.getVersion();
         }
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         if (presenter != null) {

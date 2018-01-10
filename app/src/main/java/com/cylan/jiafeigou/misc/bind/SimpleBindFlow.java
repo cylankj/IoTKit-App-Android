@@ -382,12 +382,11 @@ public class SimpleBindFlow extends AFullBind {
                     setWifi.security = type;
                     //发送wifi配置
                     try {
-                        Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
-                        Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
+                        // fix #126372 by lxh
+                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
