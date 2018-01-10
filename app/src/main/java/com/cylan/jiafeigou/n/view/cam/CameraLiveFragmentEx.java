@@ -273,6 +273,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         liveLoadingBar.postDelayed(backgroundCheckerRunnable, 700);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
+        if (presenter != null) {
+            presenter.performStopVideoAction(true);
+        }
+    }
+
     private boolean isReallyVisibleToUser() {
         return getUserVisibleHint() && isResumed() && getActivity() != null && presenter != null;
     }
