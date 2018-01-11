@@ -31,17 +31,20 @@ public class CameraLiveActionHelper {
     public volatile boolean isSDCardExist = false;
     public volatile boolean isSDCardFormatted = false;
     public volatile boolean isLocalOnline = false;
+    public volatile boolean isDeviceOnline = true;
     public volatile int resolutionH;
     public volatile int resolutionW;
     public volatile DpMsgDefine.DPNet deviceNet;
     public volatile DpMsgDefine.DPTimeZone deviceTimezone;
     public volatile DpMsgDefine.DpCoordinate deviceCoordinate;
     public volatile String deviceViewMountMode;
+    public volatile int deviceDisplayMode;
     public volatile boolean isDeviceAlarmOpened;
     public volatile int deviceBattery;
     public volatile int playCode;
     public volatile long lastPlayTime = 0;
     public volatile int lastReportedPlayError = 0;
+    public volatile int lastUnKnowPlayError;
     public volatile Bitmap lastLiveThumbPicture;
     public volatile boolean isNetworkConnected = true;
     public volatile boolean isPendingPlayLiveActionCompleted = true;
@@ -51,10 +54,24 @@ public class CameraLiveActionHelper {
     public volatile boolean isPendingPlayLiveActionTimeOutActionReached = false;
     public volatile boolean isLastLiveThumbPictureChanged = true;
     public volatile boolean isVideoResolutionReached;
+
     public volatile boolean hasPendingResumeToPlayVideoAction = false;
+    public final boolean hasSDCardFeature;
+    public final boolean hasDoorLockFeature;
+    public final boolean hasSafeProtectionFeature;
+    public final boolean hasSightFeature;
+    public final boolean hasViewModeFeature;
+    public final boolean hasMicrophoneFeature;
 
     public CameraLiveActionHelper(String uuid) {
         this.uuid = uuid;
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        this.hasSDCardFeature = JFGRules.hasSDFeature(device.pid);
+        this.hasDoorLockFeature = JFGRules.hasDoorLock(device.pid);
+        this.hasSafeProtectionFeature = JFGRules.hasProtection(device.pid, false);
+        this.hasSightFeature = JFGRules.showSight(device.pid, false);
+        this.hasViewModeFeature = JFGRules.showSwitchModeButton(device.pid);
+        this.hasMicrophoneFeature = JFGRules.hasMicFeature(device.pid);
     }
 
     public void onUpdateDeviceInformation() {
@@ -152,7 +169,7 @@ public class CameraLiveActionHelper {
         }
     }
 
-    public void onVideoPlayStopped(boolean live) {
+    public void onVideoPlayPrepared(boolean live) {
         this.isPlaying = false;
         this.isLoading = false;
         this.isLiveBad = false;
@@ -160,16 +177,28 @@ public class CameraLiveActionHelper {
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = true;
         this.isVideoResolutionReached = false;
+        this.isPendingPlayLiveActionTimeOutActionReached = false;
         this.isLive = live;
+        this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
+        this.lastUnKnowPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
+    }
+
+    public void onVideoPlayStopped(boolean live) {
+        this.isPlaying = false;
+        this.isLoading = false;
+        this.isLiveSlow = false;
+        this.isPendingStopLiveActionCompleted = true;
+        this.isPendingPlayLiveActionCompleted = true;
+        this.isVideoResolutionReached = false;
+        this.isLive = live;
+        this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
     }
 
     public void onVideoPlayTimeOutReached() {
         this.isPendingPlayLiveActionTimeOutActionReached = true;
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = true;
-        this.isLiveBad = false;
         this.isLiveSlow = false;
-        this.isPlaying = false;
     }
 
     public boolean isLoadingFailed() {
@@ -181,7 +210,7 @@ public class CameraLiveActionHelper {
     }
 
     public boolean onUpdatePendingPlayLiveActionCompleted() {
-        final boolean isPendingPlayLiveActionCompleted = this.isPendingPlayLiveActionCompleted;
+        boolean isPendingPlayLiveActionCompleted = this.isPendingPlayLiveActionCompleted;
         this.isPendingPlayLiveActionCompleted = true;
         this.isLoading = false;
         return isPendingPlayLiveActionCompleted;
@@ -194,9 +223,7 @@ public class CameraLiveActionHelper {
             this.isPendingHistoryPlayActionCompleted = true;
             this.isPendingPlayLiveActionTimeOutActionReached = false;
             this.isPendingStopLiveActionCompleted = true;
-            this.isLiveBad = false;
             this.isLiveSlow = false;
-            this.isPlaying = false;
             this.isLoading = false;
         }
         return isNetworkConnected;
@@ -205,6 +232,9 @@ public class CameraLiveActionHelper {
     public void onUpdateLastLiveThumbPicture(CameraLiveActionHelper helper, Bitmap bitmap) {
         helper.lastLiveThumbPicture = bitmap;
         helper.isLastLiveThumbPictureChanged = true;
+        if (bitmap != null && !bitmap.isRecycled()) {
+            CameraLiveHelper.putCache(this, bitmap);
+        }
     }
 
     public boolean onUpdateStandBy(boolean standBy) {
@@ -283,5 +313,11 @@ public class CameraLiveActionHelper {
     public String getSavedResolutionKey() {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         return JConstant.KEY_UUID_RESOLUTION + ":" + device.pid;
+    }
+
+    public int onUpdateDeviceDisplayMode(int displayMode) {
+        int deviceDisplayMode = this.deviceDisplayMode;
+        this.deviceDisplayMode = displayMode;
+        return deviceDisplayMode;
     }
 }

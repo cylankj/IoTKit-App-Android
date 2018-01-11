@@ -38,8 +38,6 @@ public interface CamLiveContract {
 
         void onBatteryDrainOut();
 
-        void onHistoryLoadFinished();
-
         void onDeviceUnBind();
 
         void onOpenDoorError();
@@ -48,9 +46,7 @@ public interface CamLiveContract {
 
         void onOpenDoorPasswordError();
 
-        void onHistoryEmpty();
-
-        void onHistoryReady(Collection<JFGVideo> history);
+        void onHistoryReached(Collection<JFGVideo> history, boolean isHistoryEmpty);
 
         void onLoadHistoryFailed();
 
@@ -60,7 +56,9 @@ public interface CamLiveContract {
 
         void onPlayErrorNoNetwork();
 
-        void onPlayErrorDeviceOffLine();
+        void onDeviceChangedToOffLine();
+
+        void onDeviceChangedToOnline();
 
         void onPlayErrorException();
 
@@ -90,8 +88,6 @@ public interface CamLiveContract {
 
         void onPlayErrorWaitForPlayCompletedTimeout();
 
-        void onUpdateVideoLoading(boolean showLoading);
-
         void onPlayErrorUnKnowPlayError(int errorCode);
 
         void onPlayErrorInConnecting();
@@ -113,6 +109,26 @@ public interface CamLiveContract {
         void onChangeSafeProtectionErrorAutoRecordClosed();
 
         void onChangeSafeProtectionErrorNeedConfirm();
+
+        void onPlayErrorSDFileIO();
+
+        void onPlayErrorSDHistoryAll();
+
+        void onPlayErrorSDIO();
+
+        void onPlayErrorVideoPeerDisconnect();
+
+        void onPlayErrorVideoPeerNotExist();
+
+        void onViewModeAvailable(int displayMode);
+
+        void onViewModeHangError();
+
+        void onViewModeNotSupportError();
+
+        void onViewModeForceHangError(int displayMode);
+
+        void onVideoPlayPrepared(boolean live);
     }
 
     interface Presenter extends BasePresenter {
@@ -141,6 +157,8 @@ public interface CamLiveContract {
         void performLocalNetworkPingAction();
 
         void performChangeSafeProtection(int event);//event,0:unchecked,1:checked safe sdcard
+
+        void performViewModeChecker(int displayMode);
 
         boolean isStandBy();
 
@@ -182,9 +200,9 @@ public interface CamLiveContract {
 
         boolean canShowStreamSwitcher();
 
-        boolean canShowHistoryWheel();
+        boolean canShowXunHuan();
 
-        boolean canPlayVideoNow();
+        boolean canShowHistoryWheel();
 
         boolean canShowFlip();
 
@@ -194,7 +212,27 @@ public interface CamLiveContract {
 
         boolean canShowHistoryCase();
 
+        boolean canLoadHistoryEnable();
 
+        boolean canModeSwitchEnable();
+
+        boolean canXunHuanEnable();
+
+        boolean canPlayVideoNow();
+
+        boolean canShowDoorLock();
+
+        boolean canShowMicrophone();
+
+        boolean canStreamSwitcherEnable();
+
+        boolean isVideoLoading();
+
+        boolean canCaptureEnable();
+
+        boolean canMicrophoneEnable();
+
+        boolean canSpeakerEnable();
     }
 }
 

@@ -423,7 +423,7 @@
 //        presenter.startPlayHistory(playTime);
 //    }
 //
-//    public void onHistoryReady(Collection<JFGVideo> history) {
+//    public void onHistoryReached(Collection<JFGVideo> history) {
 //        historyWheelContainer.setDisplayedChild(1);
 //        tvLive.setVisibility(VISIBLE);
 //        vFlag.setVisibility(VISIBLE);
@@ -453,7 +453,7 @@
 //                Log.d("RePlay", "Replay history no time to play");
 //            }
 //        }
-//        Log.d("onHistoryReady", "onHistoryReady:" + new Gson().toJson(history));
+//        Log.d("onHistoryReached", "onHistoryReached:" + new Gson().toJson(history));
 //    }
 //
 //    public void performLoadHistoryAndPlay(long playTime) {

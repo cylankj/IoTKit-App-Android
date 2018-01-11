@@ -87,6 +87,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private EdgeEffect mEdgeEffectLeft;
     private EdgeEffect mEdgeEffectRight;
     private boolean mOverScrollerMode = true;
+    private boolean mIsTouchEventFinished = true;
 
     @IntDef({SnapDirection.MOVE_DIRECTION, SnapDirection.LEFT, SnapDirection.RIGHT, SnapDirection.AUTO})
     @Retention(RetentionPolicy.SOURCE)
@@ -189,7 +190,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         lineWidth = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_line_width, dp2px(2.5f));
         shortLineHeight = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_short_line_height, dp2px(10));
         longLineHeight = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_long_line_height, dp2px(25));
-        scrollerLockTime = attributes.getInteger(R.styleable.HistoryWheelView_hw_scroller_lock_time, 5_000);//锁的时间够久以确保历史录像有足够的时间切换
+        scrollerLockTime = attributes.getInteger(R.styleable.HistoryWheelView_hw_scroller_lock_time, 2_000);//锁的时间够久以确保历史录像有足够的时间切换
         updateDelay = attributes.getInteger(R.styleable.HistoryWheelView_hw_history_update_delay, 700);
         textTopMargin = attributes.getDimensionPixelOffset(R.styleable.HistoryWheelView_hw_history_text_top_margin, dp2px(5));
         textBottomMargin = attributes.getDimensionPixelSize(R.styleable.HistoryWheelView_hw_history_text_bottom_margin, dp2px(5));
@@ -337,7 +338,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
             }
             scrollTo(mScroller.getCurrX(), 0);
             invalidate();
-        } else {
+        } else if (mIsTouchEventFinished) {
             notifyScrollCompleted();
         }
     }
@@ -356,12 +357,16 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         return getPixelTime() * (mScroller.getCurrX() + mCenterPosition) + mZeroTime;
     }
 
+    public long getFinalTime() {
+        return getPixelTime() * (mScroller.getFinalX() + mCenterPosition) + mZeroTime;
+    }
+
     public void scrollToPosition(long time, boolean locked) {
         scrollToPosition(time, locked, false);
     }
 
     public void scrollToPosition(long time, boolean locked, boolean focus) {
-        if (!mLocked || focus) {
+        if (mIsTouchEventFinished && (!mLocked || focus)) {
             if (locked) {
                 disableExternalScrollAction();
             }
@@ -571,6 +576,23 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         getParent().requestDisallowInterceptTouchEvent(true);
+        int eventAction = event.getAction();
+        switch (eventAction) {
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL: {
+                mIsTouchEventFinished = true;
+                computeScroll();
+            }
+            break;
+            case MotionEvent.ACTION_DOWN: {
+                mIsTouchEventFinished = false;
+            }
+            break;
+            case MotionEvent.ACTION_MOVE: {
+                mIsTouchEventFinished = false;
+            }
+            break;
+        }
         return mDetector.onTouchEvent(event);
     }
 

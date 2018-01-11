@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,7 +52,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.module.Command;
@@ -114,10 +112,6 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.misc.JConstant.CYLAN_TAG;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
-import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
@@ -209,7 +203,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private HistoryWheelHandler historyWheelHandler;
     private CamLiveContract.Presenter presenter;
     private int pid;
-    private boolean isRSCam;
     private boolean isShareAccount = false;
     /**
      * 设备的时区
@@ -223,7 +216,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private CameraLiveViewModel cameraLiveViewModel = new CameraLiveViewModel();
     private CameraMenuViewModel cameraMenuViewModel = new CameraMenuViewModel();
     private CameraMessageSender cameraMessageSender = new CameraMessageSender();
-    private boolean isNormalView;
     private MyEventListener eventListener;
 
     public CameraLiveFragmentEx() {
@@ -277,9 +269,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStop() {
         super.onStop();
         liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
-        if (presenter != null) {
-            presenter.performStopVideoAction(true);
-        }
+        presenter.performStopVideoAction(true);
     }
 
     private boolean isReallyVisibleToUser() {
@@ -319,11 +309,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void enableSensor(boolean enable) {
-        boolean autoRotateOn = (Settings.System.getInt(getContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
+        boolean autoRotateOn = (Settings.System.getInt(ContextUtils.getContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
         //检查系统是否开启自动旋转
         if (autoRotateOn && enable) {
             AppLogger.d("耗电大户");
-            eventListener.enable();
+            if (eventListener != null) {
+                eventListener.enable();
+            }
         } else if (eventListener != null) {
             eventListener.disable();
         }
@@ -358,34 +350,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onUpdateVideoLoading(boolean showLoading) {
-        Log.d(CameraLiveHelper.TAG, "onUpdateVideoLoading:" + showLoading);
-        if (showLoading) {
-            liveLoadingBar.changeToLoading(canShowLoadingBar());
-        } else {
-            liveLoadingBar.hideLoading();
-        }
-        imgVCamZoomToFullScreen.setEnabled(!showLoading);
-    }
-
-    @Override
     public void onPlayErrorUnKnowPlayError(int errorCode) {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorUnKnowPlayError:" + errorCode);
-        handlePlayErr(errorCode);
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.NO_NETWORK_2), null);
     }
 
     @Override
     public void onPlayErrorInConnecting() {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorInConnecting");
-        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Device_Disconnected), null);
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.CONNECTING), null); //正在直播...
     }
 
     @Override
     public void onVideoPlayActionCompleted() {
         Log.d(CameraLiveHelper.TAG, "onVideoPlayActionCompleted");
         performReLayoutAction();
-        performLayoutAnimation(false);
         liveLoadingBar.changeToPause(false);
+
     }
 
     @Override
@@ -545,14 +526,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onHistoryLoadFinished() {
-
-    }
-
-    @Override
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑");
-        presenter.performStopVideoAction(true);
         AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
                 getString(R.string.OK), (dialog, which) -> {
                     getActivity().finish();
@@ -580,18 +555,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onHistoryEmpty() {
-        Log.d(CameraLiveHelper.TAG, "没有历史录像视频...");
-        presenter.performPlayVideoAction(true, 0);
-        btnLoadHistory.setEnabled(true);
-        ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
-    }
-
-    @Override
-    public void onHistoryReady(Collection<JFGVideo> history) {
+    public void onHistoryReached(Collection<JFGVideo> history, boolean isHistoryEmpty) {
         Log.d(CYLAN_TAG, "历史录像视频数据已就绪");
         superWheelExt.setHistoryFiles(history);
         performReLayoutAction();
+        if (isHistoryEmpty) {
+            ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
+        }
     }
 
     @Override
@@ -626,12 +596,22 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onPlayErrorDeviceOffLine() {
-        if (BuildConfig.DEBUG) {
-            Log.d(CameraLiveHelper.TAG, "设备离线了");
-        }
+    public void onDeviceChangedToOffLine() {
+        Log.d(CameraLiveHelper.TAG, "onDeviceChangedToOffLine");
         performReLayoutAction();
-        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.OFFLINE_ERR), ContextUtils.getContext().getString(R.string.USER_HELP));
+
+    }
+
+    @Override
+    public void onDeviceChangedToOnline() {
+        Log.d(CameraLiveHelper.TAG, "onDeviceChangedToOnline");
+        performReLayoutAction();
+        if (isLivePlaying()) {
+            liveLoadingBar.changeToPause(false);
+        } else {
+            liveLoadingBar.changeToPlaying(true);
+        }
     }
 
     @Override
@@ -663,12 +643,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPlayErrorLowFrameRate() {
         Log.d(CameraLiveHelper.TAG, "当前帧率低");
         liveLoadingBar.changeToLoading(canShowLoadingBar());
+        performLayoutEnableAction();
     }
 
     @Override
     public void onPlayFrameResumeGood() {
         Log.d(CameraLiveHelper.TAG, "当前帧率已恢复正常");
         liveLoadingBar.changeToPause(false);
+        performLayoutEnableAction();
     }
 
     @Override
@@ -766,7 +748,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
             return true;
         } else {
-            liveViewWithThumbnail.showVideoView(isReallyVisibleToUser() && !isNormalView);
+            if (!isReallyVisibleToUser()) {
+                liveViewWithThumbnail.showVideoView(false);
+            }
             return false;
         }
     }
@@ -789,7 +773,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
             break;
             default: {
-                setLiveTimeContent(time);
+                setLiveTimeContent(false, time);
             }
         }
     }
@@ -894,7 +878,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         //isFriend.流量
         //c.loading
         (liveLoadingBar).setAction(this);
-        ivViewModeSwitch.setOnClickListener(this::toggleSwitchMenu);
+        ivViewModeSwitch.setOnClickListener(this::toggleViewMode);  //平视,1.平视.0俯视.默认平视
         rbViewModeSwitchParent.setOnCheckedChangeListener(this::switchViewMode);
         svSwitchStream.setSwitcherListener(this);
         liveViewWithThumbnail.setInterActListener(this);
@@ -903,11 +887,33 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         historyWheelHandler.setDatePickerListener(this);
     }
 
-    public Device getDevice() {
-        if (device == null) {
-            device = DataSourceManager.getInstance().getDevice(uuid);
+    private void toggleViewMode(View view) {
+        if (rbViewModeSwitchParent.getVisibility() == View.VISIBLE) {
+            rbViewModeSwitchParent.setVisibility(GONE);
+        } else {
+            presenter.performViewModeChecker(getDisplayMode());
         }
-        return device;
+    }
+
+    private int getDisplayMode() {
+        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+            return ((Panoramic360ViewRS) videoView).getDisplayMode();
+        }
+        return Panoramic360ViewRS.SFM_Normal;
+    }
+
+    private void performChangeViewDisplayMode(int displayMode) {
+        rbViewModeSwitchParent.setVisibility(VISIBLE);
+        rbViewModeSwitchParent.check(getCheckIdByViewMode(displayMode));
+        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+            Panoramic360ViewRS panoramic360ViewRS = (Panoramic360ViewRS) this.videoView;
+            panoramic360ViewRS.setDisplayMode(displayMode);
+            if (displayMode != Panoramic360ViewRS.SFM_Normal) {
+                panoramic360ViewRS.setMountMode(Panoramic360ViewRS.MountMode.TOP);
+            }
+        }
+        enableAutoRotate(enableAutoRotate = displayMode == Panoramic360ViewRS.SFM_Normal && enableAutoRotate);
+        performLayoutAnimation(true);
     }
 
     private int getCheckIdByViewMode(int viewMode) {
@@ -922,89 +928,24 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         return R.id.rb_view_mode_circular;
     }
 
-    private void toggleSwitchMenu(View view) {
-        //平视,1.平视.0俯视.默认平视
-        String dpPrimary = getDevice().$(509, "1");
-        if ("1".equals(dpPrimary) && JFGRules.hasViewAngle(getDevice().pid)) {
-            new AlertDialog.Builder(getContext())
-                    .setMessage(R.string.SWITCH_VIEW_POP)
-                    .setNegativeButton(R.string.CANCEL, null)
-                    .setPositiveButton(R.string.OK, (dialog, which) -> {
-                        try {
-                            DataSourceManager.getInstance().updateValue(uuid, new DpMsgDefine.DPPrimary<String>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
-                        } catch (IllegalAccessException e) {
-                            AppLogger.e("err: ");
-                        }
-                        rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-
-                        if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
-                            ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                            ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
-                            rbViewModeSwitchParent.setVisibility(VISIBLE);
-                            if (!isLand()) {
-                                ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
-                            }
-                        }
-
-                    }).show();
-        } else if ("0".equals(dpPrimary)) {
-            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
-//                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
-                rbViewModeSwitchParent.setVisibility(VISIBLE);
-            }
-
-        } else if ("1".equals(dpPrimary) && !JFGRules.hasViewAngle(device.pid)) {
-            // TODO: 2017/8/18 怎么处理好呢?
-            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
-                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                if (rbViewModeSwitchParent.getCheckedRadioButtonId() == -1) {
-                    ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
-                    rbViewModeSwitchParent.setVisibility(VISIBLE);
-                }
-            }
-            AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
-        } else if (!JFGRules.hasViewAngle(device.pid)) {
-            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
-                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
-                rbViewModeSwitchParent.setVisibility(VISIBLE);
-            }
+    private int getViewModeByCheckId(int checkId) {
+        switch (checkId) {
+            case R.id.rb_view_mode_column:
+                return Panoramic360ViewRS.SFM_Cylinder;
+            case R.id.rb_view_mode_circular:
+                return Panoramic360ViewRS.SFM_Normal;
+            case R.id.rb_view_mode_four:
+                return Panoramic360ViewRS.SFM_Quad;
+            default:
+                return Panoramic360ViewRS.SFM_Normal;
         }
     }
 
     void switchViewMode(RadioGroup radioGroup, int checkId) {
-        ((RadioButton) radioGroup.findViewById(checkId)).setChecked(true);
-        switch (checkId) {
-            case R.id.rb_view_mode_circular:
-                if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-                    ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Normal);
-                    ivModeXunHuan.setEnabled(enableAutoRotate);
-                    enableAutoRotate(isLand() && enableAutoRotate);
-                    AppLogger.d("正在切换到圆形视图");
-                }
-                break;
-            case R.id.rb_view_mode_column:
-                if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-                    ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Cylinder);
-                    ivModeXunHuan.setEnabled(enableAutoRotate = false);
-                    enableAutoRotate(enableAutoRotate);
-                    AppLogger.d("正在切换到柱状视图");
-                }
-                break;
-            case R.id.rb_view_mode_four:
-                if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-                    ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Quad);
-                    ivModeXunHuan.setEnabled(enableAutoRotate = false);
-                    enableAutoRotate(enableAutoRotate);
-                    AppLogger.d("正在切换到四合一视图");
-                }
-                break;
+        int checkIdByViewMode = getCheckIdByViewMode(getDisplayMode());
+        if (checkId != checkIdByViewMode) {
+            presenter.performViewModeChecker(getViewModeByCheckId(checkId));
         }
-        rbViewModeSwitchParent.setVisibility(GONE);
     }
 
     private void getSdcardStatus() {
@@ -1039,7 +980,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                             ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
                             return;
                         }
-                        performLoadHistoryAndPlay(-1);
+                        performLoadHistoryAndPlay(0);
                     }
                 }, throwable -> ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD)));
 
@@ -1070,17 +1011,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         this.presenter = presenter;
         this.uuid = uuid;
         this.device = DataSourceManager.getInstance().getDevice(uuid);
-        this.isRSCam = JFGRules.isRS(device.pid);
         this.hasMicFeature = JFGRules.hasMicFeature(device.pid);
         this.hasDoorLock = JFGRules.hasDoorLock(device.pid);
         this.isShareAccount = !TextUtils.isEmpty(device.shareAccount);
         this.pid = device.pid;
         this.historyWheelHandler = new HistoryWheelHandler(superWheelExt, uuid);
-        isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
         //disable 6个view
         initListener();
         performReLayoutAction();
-        enableAutoRotate(false);
         presenter.performLocalNetworkPingAction();
     }
 
@@ -1101,113 +1039,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         return ContextUtils.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    /**
-     * 错误码 需要放在一个Map里面管理
-     *
-     * @param errCode
-     */
-    private void handlePlayErr(int errCode) {
-        switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
-            case JFGRules.PlayErr.ERR_NETWORK:
-                liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1), ContextUtils.getContext().getString(R.string.USER_HELP));
-                break;
-            case JFGRules.PlayErr.ERR_UNKOWN:
-                liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.NO_NETWORK_2), null);
-                break;
-            case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                int net = NetUtils.getJfgNetType(getContext());
-                liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.GLOBAL_NO_NETWORK), net == 0 ? ContextUtils.getContext().getString(R.string.USER_HELP) : null);
-                break;
-            case STOP_MAUNALLY:
-            case PLAY_STATE_STOP:
-                liveLoadingBar.changeToPlaying(true);
-                break;
-            case JFGRules.PlayErr.ERR_NOT_FLOW:
-                if (isLivePlaying()) {//可能已经失败了,再提示网络连接超时就不正常了
-                    liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.NETWORK_TIMEOUT), ContextUtils.getContext().getString(R.string.USER_HELP));
-                }
-                break;
-            case JError.ErrorVideoPeerDisconnect:
-                if (isLivePlaying()) {
-                    liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Device_Disconnected), null);
-                }
-                break;
-            case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
-                break;
-            case JError.ErrorVideoPeerNotExist:
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
-                break;
-            case JError.ErrorVideoPeerInConnect:
-                //正在直播...
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.CONNECTING), null);
-                break;
-            case PLAY_STATE_IDLE:
-                liveLoadingBar.hideLoading();
-                break;
-            case PLAY_STATE_NET_CHANGED:
-                liveLoadingBar.changeToLoading(true);
-                break;
-            case JError.ErrorSDHistoryAll:
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.Historical_Read), null);
-                if (getContext() instanceof Activity) {
-                    AlertDialogManager.getInstance().showDialog((Activity) getContext(),
-                            getContext().getString(R.string.Historical_Read),
-                            getContext().getString(R.string.Historical_Read),
-                            getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                presenter.performPlayVideoAction(true, 0);
-                            });
-                }
-                break;
-            case JError.ErrorSDFileIO:
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.Historical_Failed), null);
-                if (getContext() instanceof Activity) {
-                    AlertDialogManager.getInstance().showDialog((Activity) getContext(),
-                            getContext().getString(R.string.Historical_Failed),
-                            getContext().getString(R.string.Historical_Failed),
-                            getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                presenter.performPlayVideoAction(true, 0);
-                            });
-                }
-                break;
-            case JError.ErrorSDIO:
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.Historical_No), null);
-                if (getContext() instanceof Activity) {
-                    AlertDialogManager.getInstance().showDialog((Activity) getContext(),
-                            getContext().getString(R.string.Historical_No),
-                            getContext().getString(R.string.Historical_No),
-                            getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                presenter.performPlayVideoAction(true, 0);
-                            });
-                }
-                break;
-            default:
-                liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.GLOBAL_NO_NETWORK), null);
-                break;
-        }
-    }
-
     private void setLiveRectTime(long timestamp, boolean focus) {
         //历史视频的时候，使用rtcp自带时间戳。
-        if (!isLive() && timestamp == 0) {
-            return;
-        }
         //直播时候，使用本地时间戳。
         //全景的时间戳是0,使用设备的时区
-        //wifi狗是格林尼治时间戳,需要-8个时区.
-        boolean historyLocked = historyWheelHandler.isHistoryLocked();
-        Log.d("TYPE_HISTORY", "time: " + timestamp + ",locked:" + historyLocked + ",focus:" + focus);
-        if (!historyLocked || focus) {
-            setLiveTimeContent(timestamp);
-            if (!isLive()) {
-                superWheelExt.scrollToPosition(TimeUtils.wrapToLong(timestamp), focus, focus);
-            }
+        boolean historyLooked = superWheelExt.isLocked();
+        boolean live = isLive();
+        if ((timestamp != 0 || !live) && !historyLooked || focus) {
+            superWheelExt.scrollToPosition(TimeUtils.wrapToLong(timestamp), focus, focus);
+        }
+        if (!historyLooked) {
+            setLiveTimeContent(live, timestamp);
         }
     }
 
-    private void setLiveTimeContent(long timestamp) {
+    private void setLiveTimeContent(boolean live, long timestamp) {
         if (JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
-            liveTimeLayout.setContent(isLive() ? CamLiveContract.TYPE_LIVE : CamLiveContract.TYPE_HISTORY, isLive() ? 0 : timestamp);
+            liveTimeLayout.setContent(live || timestamp == 0 ? CamLiveContract.TYPE_LIVE : CamLiveContract.TYPE_HISTORY, isLive() ? 0 : timestamp);
         }
     }
 
@@ -1265,13 +1113,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnClick(R.id.imgV_cam_live_land_play)
     public void onLandLivePlayClick(View v) {//横屏,左下角播放
-        if (isLivePlaying()) {
+        performTogglePlayingAction();
+    }
+
+    private void performTogglePlayingAction() {
+        boolean livePlaying = isLivePlaying();
+        if (livePlaying) {
+            imgVCamLiveLandPlay.setImageResource(R.drawable.icon_landscape_stop);
             presenter.performStopVideoAction(true);
-            ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
         } else {
-            ((ImageView) v).setImageResource(R.drawable.icon_landscape_playing);
+            imgVCamLiveLandPlay.setImageResource(R.drawable.icon_landscape_playing);
             presenter.performPlayVideoAction();
         }
+        Log.d(CameraLiveHelper.TAG, "performTogglePlayingAction:isPlaying:" + livePlaying);
     }
 
     @OnClick(R.id.tv_live)
@@ -1304,12 +1158,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void enableAutoRotate(boolean enableAutoRotate) {
+        ivModeXunHuan.setEnabled(enableAutoRotate);
         boolean switchModeButton = JFGRules.showSwitchModeButton(device.pid);
         if (!switchModeButton) {
             this.enableAutoRotate = false;
             return;
         }
-        this.enableAutoRotate = enableAutoRotate;
+        if (isLand()) {
+            this.enableAutoRotate = enableAutoRotate;
+        }
         if (videoView != null && videoView instanceof Panoramic360ViewRS) {
             try {
                 ((Panoramic360ViewRS) videoView).enableAutoRotation(isLivePlaying() && isLive() && enableAutoRotate && isLand());
@@ -1391,18 +1248,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onChangeSafeProtectionErrorAutoRecordClosed() {
         Log.d(CameraLiveHelper.TAG, "onChangeSafeProtectionErrorAutoRecordClosed");
-        AlertDialogManager.getInstance().showDialog((Activity) getContext(),
-                getContext().getString(R.string.Tap1_Camera_MotionDetection_OffTips),
-                getContext().getString(R.string.Tap1_Camera_MotionDetection_OffTips),
-                getContext().getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                     presenter.performChangeSafeProtection(1);
                     //关闭移动侦测的同时也关闭自动录像
                     setFlipped(true);
-                    ToastUtil.showToast(getContext().getString(R.string.SCENE_SAVED));
+                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
-                }, getContext().getString(R.string.CANCEL), (dialog, which) -> {
+                }, getString(R.string.CANCEL), (dialog, which) -> {
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
@@ -1412,18 +1269,101 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onChangeSafeProtectionErrorNeedConfirm() {
         Log.d(CameraLiveHelper.TAG, "onChangeSafeProtectionErrorAutoRecordClosed");
-        AlertDialogManager.getInstance().showDialog((Activity) getContext(), "safeIsOpen", getContext().getString(R.string.Detection_Pop),
-                getContext().getString(R.string.OK), (dialog, which) -> {
+        AlertDialogManager.getInstance().showDialog((Activity) getContext(), "safeIsOpen", getString(R.string.Detection_Pop),
+                getString(R.string.OK), (dialog, which) -> {
                     presenter.performChangeSafeProtection(1);
                     setFlipped(true);
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
-                }, getContext().getString(R.string.CANCEL), (dialog, which) -> {
+                }, getString(R.string.CANCEL), (dialog, which) -> {
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
                 }, false);
+    }
+
+    @Override
+    public void onPlayErrorSDFileIO() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorSDFileIO");
+        liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_Failed), null);
+        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_Failed),
+                getString(R.string.Historical_Failed), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    presenter.performPlayVideoAction(true, 0);
+                });
+    }
+
+    @Override
+    public void onPlayErrorSDHistoryAll() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorSDHistoryAll");
+        liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_Read), null);
+        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_Read),
+                getString(R.string.Historical_Read), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    presenter.performPlayVideoAction(true, 0);
+                });
+    }
+
+    @Override
+    public void onPlayErrorSDIO() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorSDIO");
+        liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_No), null);
+        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_No),
+                getString(R.string.Historical_No), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    presenter.performPlayVideoAction(true, 0);
+                });
+    }
+
+    @Override
+    public void onPlayErrorVideoPeerDisconnect() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorVideoPeerDisconnect");
+        if (isLivePlaying()) {
+            liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Device_Disconnected), null);
+        }
+    }
+
+    @Override
+    public void onPlayErrorVideoPeerNotExist() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorVideoPeerNotExist");
+        liveLoadingBar.changeToLoadingError(true, getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
+    }
+
+    @Override
+    public void onViewModeAvailable(int displayMode) {
+        Log.d(CameraLiveHelper.TAG, "onViewModeAvailable:" + displayMode);
+        performChangeViewDisplayMode(displayMode);
+    }
+
+    @Override
+    public void onViewModeHangError() {
+        Log.d(CameraLiveHelper.TAG, "onViewModeHangError");
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.SWITCH_VIEW_POP)
+                .setNegativeButton(R.string.CANCEL, null)
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                    performChangeViewDisplayMode(getDisplayMode());
+
+                }).show();
+    }
+
+    @Override
+    public void onViewModeNotSupportError() {
+        Log.d(CameraLiveHelper.TAG, "onViewModeNotSupportError");
+    }
+
+    @Override
+    public void onViewModeForceHangError(int displayMode) {
+        Log.d(CameraLiveHelper.TAG, "onViewModeForceHangError");
+        presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+        performChangeViewDisplayMode(displayMode);
+        AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
+    }
+
+    @Override
+    public void onVideoPlayPrepared(boolean live) {
+        Log.d(CameraLiveHelper.TAG, "onVideoPlayPrepared,live:" + live);
+        performLayoutEnableAction();
+        liveLoadingBar.changeToLoading(true, live ? null : getString(R.string.LOADING), null);
     }
 
     @Override
@@ -1449,13 +1389,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void clickImage(View view, int state) {
-        boolean livePlaying = isLivePlaying();
-        if (livePlaying) {
-            presenter.performStopVideoAction(true);
-        } else {
-            presenter.performPlayVideoAction();
-        }
-        AppLogger.i("clickImage:" + state);
+        performTogglePlayingAction();
     }
 
     @Override
@@ -1583,17 +1517,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private boolean canXunHuanEnable() {
-        return isLive() && isLivePlaying() && JFGRules.showSwitchModeButton(device.pid)
-                && videoView != null && videoView instanceof Panoramic360ViewRS
-                && ((Panoramic360ViewRS) videoView).getDisplayMode() == Panoramic360ViewRS.SFM_Cylinder;
+        return presenter != null && presenter.canXunHuanEnable();
     }
 
     private boolean canModeSwitchEnable() {
-        return isLive() && isLivePlaying() && JFGRules.showSwitchModeButton(device.pid);
+        return presenter != null && presenter.canModeSwitchEnable();
     }
 
     private boolean canLoadHistoryEnable() {
-        return !isStandBy() && JFGRules.isDeviceOnline(uuid);
+        return presenter != null && presenter.canLoadHistoryEnable();
     }
 
     private boolean canPlayVideoNow() {
@@ -1677,6 +1609,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(liveViewModeContainer.getHeight() / 4).withEndAction(() -> {
                 ivViewModeSwitch.setEnabled(isLive() && isLivePlaying() && JFGRules.showSwitchModeButton(device.pid));
                 liveViewModeContainer.setVisibility(INVISIBLE);
+                rbViewModeSwitchParent.setVisibility(INVISIBLE);
             }).start();
             liveViewWithThumbnail.getTvLiveFlow().animate().setDuration(ANIMATION_DURATION).translationY(-liveTopBannerView.getHeight()).withEndAction(() -> {
 
@@ -1723,6 +1656,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(0).withEndAction(() -> {
                 ivViewModeSwitch.setEnabled(canModeSwitchEnable());
                 liveViewModeContainer.setVisibility(INVISIBLE);
+                rbViewModeSwitchParent.setVisibility(INVISIBLE);
             }).start();
 
             liveBottomBannerView.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0)
@@ -1743,6 +1677,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         boolean isLand = isLand();
         boolean showFlip = canShowFlip();
         boolean showHistoryWheel = canShowHistoryWheel();
+        boolean canShowMicrophone = canShowMicrophone();
+        boolean canShowDoorLook = canShowDoorLook();
+        boolean canShowXunHuan = canShowXunHuan();
         liveTopBannerView.setVisibility(isLand ? VISIBLE : INVISIBLE);
         bottomControllerContainer.setVisibility(isLand ? INVISIBLE : VISIBLE);
         layoutLandFlip.setVisibility(showFlip && isLand ? VISIBLE : GONE);
@@ -1752,40 +1689,75 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         liveBottomBannerView.setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
         historyWheelContainer.setVisibility(showHistoryWheel ? VISIBLE : INVISIBLE);
         tvLive.setVisibility(historyWheelContainer.getDisplayedChild() == 1 || !isHistoryEmpty() ? VISIBLE : GONE);
-        liveViewModeContainer.setVisibility(canShowViewModeMenu() ? VISIBLE : INVISIBLE);
         vFlag.setVisibility(historyWheelContainer.getDisplayedChild() == 1 || !isHistoryEmpty() ? VISIBLE : GONE);
-        ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
-        svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : GONE);
-        imgVCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
-        imgVLandCamTriggerMic.setVisibility(hasMicFeature ? VISIBLE : GONE);
-        ivCamDoorLock.setVisibility(hasDoorLock && !isShareAccount ? VISIBLE : GONE);
+        ivModeXunHuan.setVisibility(canShowXunHuan ? VISIBLE : INVISIBLE);
+        imgVCamTriggerMic.setVisibility(canShowMicrophone ? VISIBLE : GONE);
+        imgVLandCamTriggerMic.setVisibility(canShowMicrophone ? VISIBLE : GONE);
+        ivCamDoorLock.setVisibility(canShowDoorLook ? VISIBLE : GONE);
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : GONE);
         liveLoadingBar.showOrHide(canShowLoadingBar());
         historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
+
+        //菜单View默认隐藏
+//      svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : GONE);
+        svSwitchStream.setVisibility(INVISIBLE);
+//      liveViewModeContainer.setVisibility(canShowViewModeMenu() ? VISIBLE : INVISIBLE);
+        liveViewModeContainer.setVisibility(INVISIBLE);
+    }
+
+    private boolean canShowXunHuan() {
+        return presenter != null && presenter.canShowXunHuan();
+    }
+
+    private boolean canShowDoorLook() {
+        return presenter != null && presenter.canShowDoorLock();
+    }
+
+    private boolean canShowMicrophone() {
+        return presenter != null && presenter.canShowMicrophone();
     }
 
     private void performLayoutEnableAction() {
         boolean isHistory = !isLive();
         boolean isPlaying = isLivePlaying();
-        //直播
+        boolean canCaptureEnable = canCaptureEnable();
+        boolean canMicrophoneEnable = canMicrophoneEnable();
+        boolean canSpeakerEnable = canSpeakerEnable();
         tvLive.setEnabled(isHistory);
         ivModeXunHuan.setEnabled(canXunHuanEnable());
         ivViewModeSwitch.setEnabled(canModeSwitchEnable());
-        imgVCamTriggerCapture.setEnabled(isPlaying);
-        imgVLandCamTriggerCapture.setEnabled(isPlaying);
-        imgVCamTriggerMic.setEnabled(isPlaying && !isHistory);
-        imgVLandCamTriggerMic.setEnabled(isPlaying && !isHistory);
-        imgVCamSwitchSpeaker.setEnabled(isPlaying);
-        imgVLandCamSwitchSpeaker.setEnabled(isPlaying);
-        ivCamDoorLock.setEnabled(isDoorLockEnable());
+        imgVCamTriggerCapture.setEnabled(canCaptureEnable);
+        imgVLandCamTriggerCapture.setEnabled(canCaptureEnable);
+        imgVCamTriggerMic.setEnabled(canMicrophoneEnable);
+        imgVLandCamTriggerMic.setEnabled(canMicrophoneEnable);
+        imgVCamSwitchSpeaker.setEnabled(canSpeakerEnable);
+        imgVLandCamSwitchSpeaker.setEnabled(canCaptureEnable);
+        ivCamDoorLock.setEnabled(canDoorLockEnable());
         imgVCamZoomToFullScreen.setEnabled(isPlaying);
         liveViewWithThumbnail.setEnabled(true);
         btnLoadHistory.setEnabled(canLoadHistoryEnable());
+        svSwitchStream.setEnabled(canStreamSwitcherEnable());
     }
 
-    private boolean isDoorLockEnable() {
+    private boolean canSpeakerEnable() {
+        return presenter != null && presenter.canSpeakerEnable();
+    }
+
+    private boolean canMicrophoneEnable() {
+        return presenter != null && presenter.canMicrophoneEnable();
+    }
+
+    private boolean canCaptureEnable() {
+        return presenter != null && presenter.canCaptureEnable();
+    }
+
+    private boolean canStreamSwitcherEnable() {
+        return presenter != null && presenter.canStreamSwitcherEnable();
+    }
+
+    private boolean canDoorLockEnable() {
         return presenter != null && presenter.canDoorLockEnable();
     }
 
@@ -1879,7 +1851,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         }
     }
-
 
     private void decideDeviceTimezone() {
         TimeZone timezone = JFGRules.getDeviceTimezone(device);

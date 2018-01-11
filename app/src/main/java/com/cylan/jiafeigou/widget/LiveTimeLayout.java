@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.video.History;
+import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -66,7 +67,7 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
         this.liveType = liveType;
         if (liveType == CamLiveContract.TYPE_HISTORY) {
             this.liveTime = liveTime;
-            String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback) + "|%s", getTime(liveTime == 0 ? System.currentTimeMillis() : liveTime * 1000L));
+            String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback) + "|%s", getTime(liveTime == 0 ? System.currentTimeMillis() : CameraLiveHelper.LongTimestamp(liveTime)));
             textView.setText(content);
         } else if (liveType == CamLiveContract.TYPE_LIVE) {
             String content = String.format(getContext().getString(R.string.Tap1_Camera_VideoLive) + "|%s", getRealLiveTime(System.currentTimeMillis()));
