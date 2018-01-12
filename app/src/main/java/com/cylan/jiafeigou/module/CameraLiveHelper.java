@@ -278,7 +278,7 @@ public class CameraLiveHelper {
     }
 
     public static boolean checkSpeakerOn(CameraLiveActionHelper liveActionHelper, boolean microphoneOn) {
-        return liveActionHelper.isTalkbackMode || liveActionHelper.isSpeakerOn;
+        return liveActionHelper.isTalkBackMode || liveActionHelper.isSpeakerOn;
     }
 
     public static boolean checkAudioPermission() {

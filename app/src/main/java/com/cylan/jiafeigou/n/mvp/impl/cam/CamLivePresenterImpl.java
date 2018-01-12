@@ -619,11 +619,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
+                        if (notify) {
+                            mView.onVideoPlayStopped(live);
+                        }
                         int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                         if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                             performReportPlayError(playError);
-                        } else if (notify) {
-                            mView.onVideoPlayStopped(live);
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -814,13 +815,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void decideReportDevice201Event(DpMsgDefine.DPNet dpNet) {
         dpNet = liveActionHelper.onUpdateDeviceNet(dpNet);
-        if (CameraLiveHelper.checkIsDeviceNetChanged(liveActionHelper, dpNet)) {
+        boolean netChanged = CameraLiveHelper.checkIsDeviceNetChanged(liveActionHelper, dpNet);
+        boolean deviceOnline = JFGRules.isDeviceOnline(dpNet);
+        Log.d(CameraLiveHelper.TAG, "decideReportDevice201Event,netChanged:" + netChanged + ",isOnline:" + JFGRules.isDeviceOnline(dpNet));
+        if (netChanged) {
             mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
-            boolean deviceOnline = JFGRules.isDeviceOnline(dpNet);
             if (deviceOnline) {
                 mView.onDeviceChangedToOnline();
             } else {
-                performStopVideoAction(false);
+                if (liveActionHelper.isPlaying) {
+                    performStopVideoAction(false);
+                }
                 mView.onDeviceChangedToOffLine();
             }
         }

@@ -25,7 +25,7 @@ public class CameraLiveActionHelper {
     public volatile boolean isLoading = false;
     public volatile boolean isSpeakerOn = false;
     public volatile boolean isMicrophoneOn = false;
-    public volatile boolean isTalkbackMode = false;
+    public volatile boolean isTalkBackMode = false;
     public volatile boolean isLiveSlow = false;
     public volatile boolean isLiveBad = false;
     public volatile boolean isStandBy = false;
@@ -322,14 +322,14 @@ public class CameraLiveActionHelper {
     public boolean onUpdateMicrophoneOn(boolean isMicrophoneOn) {
         boolean on = this.isMicrophoneOn;
         this.isMicrophoneOn = isMicrophoneOn;
-        this.isTalkbackMode = isMicrophoneOn;
+        this.isTalkBackMode = isMicrophoneOn;
         return on;
     }
 
     public boolean onUpdateSpeakerOn(boolean isSpeakerOn) {
         boolean on = this.isSpeakerOn;
         this.isSpeakerOn = isSpeakerOn;
-        this.isTalkbackMode = isSpeakerOn && this.isTalkbackMode;
+        this.isTalkBackMode = isSpeakerOn && this.isTalkBackMode;
         return on;
     }
 }
