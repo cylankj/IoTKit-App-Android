@@ -25,6 +25,7 @@ public class CameraLiveActionHelper {
     public volatile boolean isLoading = false;
     public volatile boolean isSpeakerOn = false;
     public volatile boolean isMicrophoneOn = false;
+    public volatile boolean isTalkbackMode = false;
     public volatile boolean isLiveSlow = false;
     public volatile boolean isLiveBad = false;
     public volatile boolean isStandBy = false;
@@ -232,9 +233,6 @@ public class CameraLiveActionHelper {
     public void onUpdateLastLiveThumbPicture(CameraLiveActionHelper helper, Bitmap bitmap) {
         helper.lastLiveThumbPicture = bitmap;
         helper.isLastLiveThumbPictureChanged = true;
-        if (bitmap != null && !bitmap.isRecycled()) {
-            CameraLiveHelper.putCache(this, bitmap);
-        }
     }
 
     public boolean onUpdateStandBy(boolean standBy) {
@@ -319,5 +317,19 @@ public class CameraLiveActionHelper {
         int deviceDisplayMode = this.deviceDisplayMode;
         this.deviceDisplayMode = displayMode;
         return deviceDisplayMode;
+    }
+
+    public boolean onUpdateMicrophoneOn(boolean isMicrophoneOn) {
+        boolean on = this.isMicrophoneOn;
+        this.isMicrophoneOn = isMicrophoneOn;
+        this.isTalkbackMode = isMicrophoneOn;
+        return on;
+    }
+
+    public boolean onUpdateSpeakerOn(boolean isSpeakerOn) {
+        boolean on = this.isSpeakerOn;
+        this.isSpeakerOn = isSpeakerOn;
+        this.isTalkbackMode = isSpeakerOn && this.isTalkbackMode;
+        return on;
     }
 }

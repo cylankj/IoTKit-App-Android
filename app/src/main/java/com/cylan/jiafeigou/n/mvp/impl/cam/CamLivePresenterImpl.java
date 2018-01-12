@@ -263,20 +263,28 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             public void call() {
                 switch (playError) {
                     case CameraLiveHelper.PLAY_ERROR_STANDBY: {
-                        performStopVideoAction(false);
-                        mView.onDeviceStandByChanged(true);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
+                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
+                            mView.onDeviceStandByChanged(true);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_FIRST_SIGHT: {
-                        performStopVideoAction(false);
-                        mView.onPlayErrorFirstSight();
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
+                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
+                            mView.onPlayErrorFirstSight();
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_NETWORK: {
                         if (liveActionHelper.isPlaying) {
                             performStopVideoAction(false);
                         }
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
+                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onPlayErrorNoNetwork();
                         }
                     }
@@ -285,7 +293,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (liveActionHelper.isPlaying) {
                             performStopVideoAction(false);
                         }
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
+                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onDeviceChangedToOffLine();
                         }
                     }
@@ -410,7 +418,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
             @Override
             public void call() {
-                final boolean microphoneOn = liveActionHelper.isMicrophoneOn;
+                boolean microphoneOn = CameraLiveHelper.checkMicrophoneOn(liveActionHelper, liveActionHelper.isSpeakerOn);
                 final boolean speakerOn = CameraLiveHelper.checkSpeakerOn(liveActionHelper, microphoneOn);
                 mView.onUpdateBottomMenuOn(speakerOn, microphoneOn);
             }
@@ -560,10 +568,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 feedRtcp.stop();
                 boolean stopLiveActionCompleted = liveActionHelper.isPendingStopLiveActionCompleted;
                 boolean videoPlaying = liveActionHelper.isPlaying;
-                if (!videoPlaying || !stopLiveActionCompleted) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(CameraLiveHelper.TAG, "performStopVideoAction,live:" + live + ",当前情况下无需再停止直播了,是否正在播放:" + videoPlaying + ",是否有正在执行的停止Action:" + !stopLiveActionCompleted);
-                    }
+                boolean needlessStopAction = !videoPlaying || !stopLiveActionCompleted;
+                if (BuildConfig.DEBUG) {
+                    Log.d(CameraLiveHelper.TAG, "performStopVideoAction,live:" + live + ",是否无需再停止播放:" + needlessStopAction +
+                            ",是否正在播放:" + videoPlaying + ",是否正在停止:" + !stopLiveActionCompleted + ",是否通知 UI 更新:" + notify);
+                }
+                if (needlessStopAction) {
                     subscriber.onNext("当前情况下无需再停止直播了");
                     subscriber.onCompleted();
                     return;
@@ -604,6 +614,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             }
         })
                 .subscribeOn(Schedulers.io())
+                .timeout(5, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -656,14 +667,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         subscriber.onCompleted();
                         if (bitmap != null) {
                             final String cover = JConstant.MEDIA_PATH + File.separator + uuid + "_cover.png";
-                            BitmapUtils.saveBitmap2file(bitmap, cover);
-                            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_FILE + uuid, cover);
-                            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
-
-                            if (saveInPhotoAndNotify) {
-                                final String fileName = uuid + System.currentTimeMillis() + ".png";
-                                final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
-                                BitmapUtils.saveBitmap2file(bitmap, filePath);
+                            byte[] bytes = CameraLiveHelper.putCache(liveActionHelper, bitmap, true);
+                            if (bytes != null) {
+                                BitmapUtils.saveByteArray2File(bytes, cover);
+                                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
+                                if (saveInPhotoAndNotify) {
+                                    final String fileName = uuid + System.currentTimeMillis() + ".png";
+                                    final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+                                    BitmapUtils.saveByteArray2File(bytes, filePath);
+                                }
                             }
                         }
                     }
@@ -671,9 +683,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     @Override
                     public void onFailure(String s) {
                         Log.d(CameraLiveHelper.TAG, "截图已经失败了");
+                        liveActionHelper.isPendingCaptureActionCompleted = true;
                         subscriber.onNext(null);
                         subscriber.onCompleted();
-                        liveActionHelper.isPendingCaptureActionCompleted = true;
                     }
                 });
             }
@@ -873,7 +885,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscription = Schedulers.io().createWorker().schedule(new Action0() {
             @Override
             public void call() {
-                liveActionHelper.isSpeakerOn = speakerOn;
+                liveActionHelper.onUpdateSpeakerOn(speakerOn);
                 boolean microphoneOn = CameraLiveHelper.checkMicrophoneOn(liveActionHelper, speakerOn);
                 Command.getInstance().setAudio(true, microphoneOn, speakerOn);
                 Command.getInstance().setAudio(false, speakerOn, microphoneOn);
@@ -887,7 +899,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void performChangeSpeakerAction() {
-        performChangeSpeakerAction(!liveActionHelper.isSpeakerOn);
+        performChangeSpeakerAction(!CameraLiveHelper.checkSpeakerOn(liveActionHelper, liveActionHelper.isMicrophoneOn));
     }
 
     @Override
@@ -895,7 +907,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscription = Schedulers.io().createWorker().schedule(new Action0() {
             @Override
             public void call() {
-                liveActionHelper.isMicrophoneOn = microphoneOn;
+                liveActionHelper.onUpdateMicrophoneOn(microphoneOn);
                 boolean speakerOn = CameraLiveHelper.checkSpeakerOn(liveActionHelper, microphoneOn);
                 Command.getInstance().setAudio(true, microphoneOn, speakerOn);
                 Command.getInstance().setAudio(false, speakerOn, microphoneOn);
@@ -1254,15 +1266,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscribe = Observable.create(new Observable.OnSubscribe<Bitmap>() {
             @Override
             public void call(Subscriber<? super Bitmap> subscriber) {
+                Bitmap lastLiveThumbPicture = CameraLiveHelper.checkLastLiveThumbPicture(liveActionHelper);
+                subscriber.onNext(lastLiveThumbPicture);
+                subscriber.onCompleted();
+
                 boolean isThumbPictureChanged = CameraLiveHelper.checkIsThumbPictureChanged(liveActionHelper);
                 if (isThumbPictureChanged) {
-                    Bitmap lastLiveThumbPicture = CameraLiveHelper.checkLastLiveThumbPicture(liveActionHelper);
-                    subscriber.onNext(lastLiveThumbPicture);
+                    CameraLiveHelper.putCache(liveActionHelper, lastLiveThumbPicture, true);
                     if (BuildConfig.DEBUG) {
                         Log.d(CameraLiveHelper.TAG, "是否有可用的预览图片:" + lastLiveThumbPicture);
                     }
                 }
-                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())

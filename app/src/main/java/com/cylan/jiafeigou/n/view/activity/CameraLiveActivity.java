@@ -268,9 +268,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
                 if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
-                    ((CameraLiveFragmentEx) fragment).onBackPressed();
+                    ((CameraLiveFragmentEx) fragment).onBackPressed(true);
                 }
-                finishExt();
             });
         });
     }

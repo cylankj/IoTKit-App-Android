@@ -240,6 +240,21 @@ public class BitmapUtils {
         return newBitmap;
     }
 
+    public static void saveByteArray2File(byte[] bytes, String filename) {
+        try {
+            File file = new File(filename);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            OutputStream stream = new FileOutputStream(filename);
+            stream.write(bytes, 0, bytes.length);
+            stream.flush();
+            stream.close();
+        } catch (Exception e) {
+            AppLogger.e(e);
+        }
+    }
+
     public static boolean saveBitmap2file(Bitmap bmp, String filename) {
         PerformanceUtils.startTrace("saveBitmap2file:" + filename);
         CompressFormat format = CompressFormat.PNG;

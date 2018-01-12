@@ -26,8 +26,8 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.panorama.Panoramic360ViewRS;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.nio.ByteBuffer;
 
 import permissions.dispatcher.PermissionUtils;
 
@@ -39,7 +39,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 
 public class CameraLiveHelper {
     public static final String TAG = CameraLiveHelper.class.getSimpleName();
-    public static final String VERB_TAG = "VERB:" + CameraLiveHelper.class.getSimpleName();
+    public static final String VERB_TAG = "VERB:";
     public static final int PLAY_ERROR_NO_ERROR = 0;
     public static final int PLAY_ERROR_STANDBY = 1;
     public static final int PLAY_ERROR_FIRST_SIGHT = 2;
@@ -58,7 +58,7 @@ public class CameraLiveHelper {
     public static final int PLAY_ERROR_VIDEO_PEER_NOT_EXIST = 15;
     public static final int PLAY_ERROR_VIDEO_PEER_DISCONNECT = 16;
 
-    private static final int MAX_CACHE_SIZE = (int) (Runtime.getRuntime().totalMemory() / 1024 / 8);
+    private static final int MAX_CACHE_SIZE = (int) (Runtime.getRuntime().totalMemory() / 8);
     public static LruCache<String, byte[]> sLiveThumbLruCache = new LruCache<String, byte[]>(MAX_CACHE_SIZE) {
         @Override
         protected int sizeOf(String key, byte[] value) {
@@ -278,7 +278,7 @@ public class CameraLiveHelper {
     }
 
     public static boolean checkSpeakerOn(CameraLiveActionHelper liveActionHelper, boolean microphoneOn) {
-        return microphoneOn || liveActionHelper.isSpeakerOn;
+        return liveActionHelper.isTalkbackMode || liveActionHelper.isSpeakerOn;
     }
 
     public static boolean checkAudioPermission() {
@@ -326,40 +326,55 @@ public class CameraLiveHelper {
             helper.isLastLiveThumbPictureChanged = false;
         } else {
             lastLiveThumbPicture = getCache(helper);
-            Log.d(TAG, "hasCache:" + (lastLiveThumbPicture != null));
             if (lastLiveThumbPicture == null) {
                 String filePath = JConstant.MEDIA_PATH + File.separator + helper.uuid + "_cover.png";
+                long before = System.currentTimeMillis();
                 lastLiveThumbPicture = BitmapFactory.decodeFile(filePath);
-                if (lastLiveThumbPicture != null) {
-                    putCache(helper, lastLiveThumbPicture);
-                }
+                long after = System.currentTimeMillis();
+                Log.d(VERB_TAG, "decode bitmap cost:" + (after - before) + "ms");
+                helper.isLastLiveThumbPictureChanged = true;
+            } else {
+                helper.isLastLiveThumbPictureChanged = false;
             }
-            helper.isLastLiveThumbPictureChanged = true;
         }
         helper.lastLiveThumbPicture = lastLiveThumbPicture;
+        Log.d(TAG, "hasCache:" + (lastLiveThumbPicture != null));
         return lastLiveThumbPicture;
     }
 
     public static byte[] bitmapToByteArray(Bitmap bitmap) {
-        ByteBuffer buf = ByteBuffer.allocate(bitmap.getWidth() * bitmap.getHeight() * 4);
-        bitmap.copyPixelsToBuffer(buf);
-        return buf.array();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(bitmap.getByteCount());
+        bitmap.compress(Bitmap.CompressFormat.WEBP, 100, stream);
+        return stream.toByteArray();
     }
 
-    public static void putCache(CameraLiveActionHelper helper, Bitmap bitmap) {
-        if (bitmap != null && !bitmap.isRecycled()) {
-            byte[] bytes = bitmapToByteArray(bitmap);
-            sLiveThumbLruCache.put(makeCacheKey(helper), bytes);
+    public static byte[] putCache(CameraLiveActionHelper helper, Bitmap bitmap, boolean forceReplace) {
+        String key = makeCacheKey(helper);
+        byte[] bytes = sLiveThumbLruCache.get(key);
+        if (bytes != null && !forceReplace) {
+            return bytes;
         }
+        if (forceReplace && bitmap != null && !bitmap.isRecycled()) {
+            long before = System.currentTimeMillis();
+            bytes = bitmapToByteArray(bitmap);
+            long after = System.currentTimeMillis();
+            sLiveThumbLruCache.put(key, bytes);
+            Log.d(VERB_TAG, "encode bitmap cost:" + (after - before) + "ms," + "length is:" + (bytes.length / 1024) + "KB");
+        }
+        return bytes;
     }
 
     public static Bitmap getCache(CameraLiveActionHelper helper) {
-        byte[] bytes = sLiveThumbLruCache.get(makeCacheKey(helper));
+        String key = makeCacheKey(helper);
+        byte[] bytes = sLiveThumbLruCache.get(key);
+        Bitmap cacheBitmap = null;
         if (bytes != null) {
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            cacheBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
-        return null;
+        Log.d(VERB_TAG, "getCache for key:" + key + ",is " + cacheBitmap);
+        return cacheBitmap;
     }
+
 
     public static String makeCacheKey(CameraLiveActionHelper helper) {
         return helper.uuid + ":cache";
@@ -415,7 +430,7 @@ public class CameraLiveHelper {
     }
 
     public static boolean checkIsThumbPictureChanged(CameraLiveActionHelper helper) {
-        return true;
+        return helper.isLastLiveThumbPictureChanged;
     }
 
     public static boolean checkIsDeviceNetChanged(CameraLiveActionHelper helper, DpMsgDefine.DPNet dpNet) {

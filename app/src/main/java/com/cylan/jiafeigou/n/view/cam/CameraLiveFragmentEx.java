@@ -60,6 +60,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
@@ -212,11 +213,22 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private boolean hasMicFeature;
     private boolean hasDoorLock;
     private boolean isLocalOnline = false;
+    private boolean hasPendingFinishAction = false;
     private VideoViewFactory.IVideoView videoView;
     private CameraLiveViewModel cameraLiveViewModel = new CameraLiveViewModel();
     private CameraMenuViewModel cameraMenuViewModel = new CameraMenuViewModel();
     private CameraMessageSender cameraMessageSender = new CameraMessageSender();
     private MyEventListener eventListener;
+
+    private Runnable backgroundCheckerRunnable = () -> {
+        if (BaseApplication.getPauseViewCount() == 0) {
+            //APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,
+            if (presenter != null) {
+                presenter.performStopVideoAction(true);
+            }
+        }
+    };
+
 
     public CameraLiveFragmentEx() {
         // Required empty public constructor
@@ -289,6 +301,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onResume() {
         super.onResume();
+        hasPendingFinishAction = false;
         liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
         if (isReallyVisibleToUser()) {
             performReLayoutAction();
@@ -305,7 +318,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @SuppressLint("MissingSuperCall")
     @Override
     public boolean performBackIntercept(boolean willExit) {
-        return willExit && onBackPressed();
+        return onBackPressed(willExit);
     }
 
     private void enableSensor(boolean enable) {
@@ -341,6 +354,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         liveLoadingBar.setKeepScreenOn(false);
         performReLayoutAction();
         performLayoutAnimation(false);
+        if (hasPendingFinishAction) {
+            hasPendingFinishAction = false;
+            CameraLiveActivity activity = (CameraLiveActivity) getActivity();
+            if (activity != null) {
+                activity.finishExt();
+            }
+        }
     }
 
     @Override
@@ -743,15 +763,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         updateCamParam(dpCoordinate);
     }
 
-    public boolean onBackPressed() {
+    public boolean onBackPressed(boolean willExit) {
+        if (!willExit) {
+            return false;
+        }
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
             return true;
         } else {
-            if (!isReallyVisibleToUser()) {
+            boolean reallyVisibleToUser = isReallyVisibleToUser();
+            if (reallyVisibleToUser) {
+                hasPendingFinishAction = true;
+            } else {
+                hasPendingFinishAction = false;
                 liveViewWithThumbnail.showVideoView(false);
             }
-            return false;
+            presenter.performStopVideoAction(reallyVisibleToUser);
+            return hasPendingFinishAction;
         }
     }
 
@@ -864,15 +892,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         }
     }
-
-    private Runnable backgroundCheckerRunnable = () -> {
-        if (BaseApplication.getPauseViewCount() == 0) {
-            //APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,
-            if (presenter != null) {
-                presenter.performStopVideoAction(true);
-            }
-        }
-    };
 
     private void initListener() {
         //isFriend.流量
