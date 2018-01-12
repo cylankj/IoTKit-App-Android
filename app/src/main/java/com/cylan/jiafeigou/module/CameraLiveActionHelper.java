@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.module;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
  * Created by yanzhendong on 2018/1/3.
  */
 
+@SuppressWarnings("WeakerAccess")
 public class CameraLiveActionHelper {
     public String uuid;
     public volatile boolean isLive = true;
@@ -77,6 +79,7 @@ public class CameraLiveActionHelper {
     }
 
     public void onUpdateDeviceInformation() {
+        Log.d(CameraLiveHelper.TAG, "onUpdateDeviceInformation");
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         this.isStandBy = JFGRules.isDeviceStandBy(device);
         this.isSDCardExist = JFGRules.isSDCardExist(device);
@@ -187,7 +190,13 @@ public class CameraLiveActionHelper {
         this.lastUnKnowPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
     }
 
-    public void onVideoPlayStopped(boolean live) {
+    public void onVideoStopPrepared(boolean live) {
+        this.isPendingStopLiveActionCompleted = false;
+        this.isPendingPlayLiveActionCompleted = true;
+        this.isLive = live;
+    }
+
+    public void onVideoPlayStopped(boolean live, int playCode) {
         this.isPlaying = false;
         this.isLoading = false;
         this.isLiveSlow = false;
@@ -196,6 +205,7 @@ public class CameraLiveActionHelper {
         this.isVideoResolutionReached = false;
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
+        this.playCode = playCode;
     }
 
     public void onVideoPlayTimeOutReached() {
@@ -339,5 +349,11 @@ public class CameraLiveActionHelper {
         this.isSpeakerOn = isSpeakerOn;
         this.isTalkBackMode = isSpeakerOn && this.isTalkBackMode;
         return on;
+    }
+
+    public boolean onUpdatePendingCaptureActionCompleted() {
+        boolean isPendingCaptureActionCompleted = this.isPendingCaptureActionCompleted;
+        this.isPendingCaptureActionCompleted = true;
+        return isPendingCaptureActionCompleted;
     }
 }

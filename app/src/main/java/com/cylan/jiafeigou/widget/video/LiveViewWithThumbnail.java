@@ -177,29 +177,26 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void showLiveThumbPicture(Bitmap bitmap, boolean normalView) {
         if (normalView) {
+            ViewGroup.LayoutParams lp = imgThumbnail.getLayoutParams();
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            imgThumbnail.setLayoutParams(lp);
+            imgThumbnail.setVisibility(VISIBLE);
             if (bitmap != null && !bitmap.isRecycled()) {
-                ViewGroup.LayoutParams lp = imgThumbnail.getLayoutParams();
-                if (lp.height != ViewGroup.LayoutParams.MATCH_PARENT
-                        || lp.width != ViewGroup.LayoutParams.MATCH_PARENT) {
-                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                    lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                    imgThumbnail.setLayoutParams(lp);
-                }
                 imgThumbnail.setImageBitmap(bitmap);
-                if (!imgThumbnail.isShown()) {
-                    imgThumbnail.setVisibility(VISIBLE);
-                }
+            } else {
+                imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
             }
         } else if (videoView != null) {
+            View videoView = (View) LiveViewWithThumbnail.this.videoView;
+            videoView.setVisibility(VISIBLE);
             if (bitmap != null && !bitmap.isRecycled()) {
-                View videoView = (View) LiveViewWithThumbnail.this.videoView;
-                if (!videoView.isShown()) {
-                    videoView.setVisibility(VISIBLE);
-                }
                 LiveViewWithThumbnail.this.videoView.loadBitmap(bitmap);
                 imgThumbnail.setVisibility(INVISIBLE);
                 imgThumbnail.setImageResource(android.R.color.transparent);
-                AppLogger.w("开始加载全景预览图");
+            } else {
+                imgThumbnail.setVisibility(VISIBLE);
+                imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
             }
         }
     }

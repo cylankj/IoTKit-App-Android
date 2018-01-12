@@ -224,6 +224,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (BaseApplication.getPauseViewCount() == 0) {
             //APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,
             if (presenter != null) {
+                Log.d(CameraLiveHelper.TAG, "APP 进入了后台,需要停止直播播放,7.0 以上onStop 会延迟10秒,所以不能在 onStop 里停止直播,");
                 presenter.performStopVideoAction(true);
             }
         }
@@ -280,6 +281,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onStop() {
         super.onStop();
+        if (BuildConfig.DEBUG) {
+            Log.d(CameraLiveHelper.TAG, "View 生命周期OnStop已经调用了");
+        }
         liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
         presenter.performStopVideoAction(true);
     }
@@ -368,6 +372,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPlayErrorWaitForPlayCompletedTimeout() {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorWaitForPlayCompletedTimeout");
+        performReLayoutAction();
         liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.CONNECTING), null);
     }
 
@@ -922,21 +927,53 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         return viewDisplayMode;
     }
 
+    private int getMountMode() {
+        return presenter == null ? 0 : presenter.getMountMode();
+    }
+
+    private CameraParam getCameraParam() {
+        return presenter == null ? CameraParam.getTopPreset() : presenter.getCameraParam();
+    }
+
     private void performChangeViewDisplayMode(int displayMode, boolean show) {
         rbViewModeSwitchParent.setVisibility(show ? VISIBLE : GONE);
         rbViewModeSwitchParent.check(getCheckIdByViewMode(displayMode));
         if (videoView != null && videoView instanceof Panoramic360ViewRS) {
             Panoramic360ViewRS panoramic360ViewRS = (Panoramic360ViewRS) this.videoView;
-            panoramic360ViewRS.setDisplayMode(displayMode);
             if (displayMode != Panoramic360ViewRS.SFM_Normal) {
                 panoramic360ViewRS.setMountMode(Panoramic360ViewRS.MountMode.TOP);
             }
+//            else {
+//                int mountMode = getMountMode();
+//                videoView.setMode(mountMode);
+//            }
+            panoramic360ViewRS.setDisplayMode(displayMode);
         }
+//        CameraParam cameraParam = getCameraParam();
+//        if (videoView != null) {
+//            videoView.config360(cameraParam);
+//            videoView.detectOrientationChanged();
+//        }
+//        if (device.pid == 39 || device.pid == 49) {
+//            mode = "0";
+//        }
+//        if (!canShowFirstSight()) {
+//            updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
+//        } else {
+//            if (videoView != null) {
+//                videoView.config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+//            }
+//        }
+//        if (videoView != null) {
+//            videoView.setMode(TextUtils.equals("0", mode) ? 0 : 1);
+//            videoView.detectOrientationChanged();
+//        }
         enableAutoRotate(enableAutoRotate = displayMode == Panoramic360ViewRS.SFM_Normal && enableAutoRotate);
         if (show) {
             performLayoutAnimation(true);
         }
     }
+
 
     private int getCheckIdByViewMode(int viewMode) {
         switch (viewMode) {
@@ -1363,8 +1400,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 .setNegativeButton(R.string.CANCEL, null)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
-                    performChangeViewDisplayMode(getDisplayMode(), true);
-
+                    onViewModeAvailable(getDisplayMode());
                 }).show();
     }
 

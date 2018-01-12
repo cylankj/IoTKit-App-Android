@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.Panoramic360ViewRS;
 
 import java.io.ByteArrayOutputStream;
@@ -564,6 +565,20 @@ public class CameraLiveHelper {
     }
 
     public static int checkViewDisplayMode(CameraLiveActionHelper helper) {
+        if (!helper.isLive) {
+            helper.onUpdateDeviceDisplayMode(Panoramic360ViewRS.SFM_Normal);
+        }
         return helper.deviceDisplayMode;
+    }
+
+    public static int checkViewMountMode(CameraLiveActionHelper helper) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        String viewMountMode = device.$(DpMsgMap.ID_509_CAMERA_MOUNT_MODE, "1");
+        if (device.pid == 39) {
+            viewMountMode = "0";
+        } else if (device.pid == 49) {
+            viewMountMode = "0";
+        }
+        return Integer.valueOf(viewMountMode);
     }
 }

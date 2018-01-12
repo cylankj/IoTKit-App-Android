@@ -380,7 +380,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 string.setSpan(StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 string.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
-            face_header.post { cam_message_indicator_watcher_text.text = string }
+            cam_message_indicator_watcher_text.text = string
         } else {
             val string = SpannableString(getString(R.string.MESSAGES_FACE_VISIT_TIMES, count.toString()))
             val matcher = "\\d+".toPattern().matcher(string)
@@ -397,7 +397,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 string.setSpan(StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 string.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
-            cam_message_indicator_watcher_text.post { cam_message_indicator_watcher_text.text = string }
+            cam_message_indicator_watcher_text.text = string
         }
     }
 

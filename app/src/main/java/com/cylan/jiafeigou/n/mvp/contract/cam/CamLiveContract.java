@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.panorama.CameraParam;
 
 import java.util.Collection;
 
@@ -242,6 +243,10 @@ public interface CamLiveContract {
         boolean isNoPlayError();
 
         int getDisplayMode();
+
+        int getMountMode();
+
+        CameraParam getCameraParam();
     }
 }
 

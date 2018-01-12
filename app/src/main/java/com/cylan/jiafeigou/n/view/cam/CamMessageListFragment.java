@@ -496,7 +496,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         public void run() {
             decideRefresh();//需要每次刷新,而不是第一次刷新
 
-            if (NetUtils.getNetType(getContext()) == -1) {
+            if (!NetUtils.hasNetwork()) {
 //            Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
                 KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
                 KeyValue keyValue = keyValueDao.loadByRowId(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));

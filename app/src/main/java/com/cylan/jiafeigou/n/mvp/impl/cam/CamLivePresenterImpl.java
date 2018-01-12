@@ -431,6 +431,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 feedRtcp.stop();
+                liveActionHelper.onVideoPlayPrepared(live);
                 int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                 if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                     //当前情况下不能播放
@@ -441,7 +442,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     subscriber.onCompleted();
                     return;
                 }
-                liveActionHelper.onVideoPlayPrepared(live);
                 Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
                     @Override
                     public void call() {
@@ -577,7 +577,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     subscriber.onCompleted();
                     return;
                 }
-                liveActionHelper.isPendingStopLiveActionCompleted = false;
+                liveActionHelper.onVideoStopPrepared(live);
                 BellPuller.getInstance().currentCaller(null);//查看直播时禁止呼叫
                 int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                 if (BuildConfig.DEBUG) {
@@ -601,9 +601,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (BuildConfig.DEBUG) {
                     Log.d(CameraLiveHelper.TAG, "停止直播是否成功呢: playCode is:" + CameraLiveHelper.printError(playCode));
                 }
-                liveActionHelper.onVideoPlayStopped(live);
-                liveActionHelper.playCode = playCode;
-                liveActionHelper.isLive = live;
+                liveActionHelper.onVideoPlayStopped(live, playCode);
                 performUpdateBottomMenuEnable();
                 if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                     performReportPlayError(playError);
@@ -651,6 +649,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void performLivePictureCaptureSaveAction(boolean saveInPhotoAndNotify) {
         if (!CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
+            liveActionHelper.onUpdatePendingCaptureActionCompleted();
             if (BuildConfig.DEBUG) {
                 Log.d(CameraLiveHelper.TAG, "当前没有开始播放,无法截取缩略图, notify:" + saveInPhotoAndNotify);
             }
@@ -667,7 +666,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (bitmap != null) {
                             liveActionHelper.onUpdateLastLiveThumbPicture(liveActionHelper, bitmap);
                         }
-                        liveActionHelper.isPendingCaptureActionCompleted = true;
+                        liveActionHelper.onUpdatePendingCaptureActionCompleted();
                         subscriber.onNext(bitmap);
                         subscriber.onCompleted();
                         if (bitmap != null) {
@@ -818,10 +817,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     private void decideReportDevice201Event(DpMsgDefine.DPNet dpNet) {
-        dpNet = liveActionHelper.onUpdateDeviceNet(dpNet);
-        boolean netChanged = CameraLiveHelper.checkIsDeviceNetChanged(liveActionHelper, dpNet);
+        DpMsgDefine.DPNet preNet = liveActionHelper.onUpdateDeviceNet(dpNet);
+        boolean netChanged = CameraLiveHelper.checkIsDeviceNetChanged(liveActionHelper, preNet);
         boolean deviceOnline = JFGRules.isDeviceOnline(dpNet);
-        Log.d(CameraLiveHelper.TAG, "decideReportDevice201Event,netChanged:" + netChanged + ",isOnline:" + JFGRules.isDeviceOnline(dpNet));
+        boolean preOnline = JFGRules.isDeviceOnline(preNet);
+        Log.d(CameraLiveHelper.TAG, "decideReportDevice201Event,netChanged:" + netChanged + ",isOnline now:" + deviceOnline + ",isOnline pre:" + preOnline);
         if (netChanged) {
             mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
             if (deviceOnline) {
@@ -1196,6 +1196,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public int getDisplayMode() {
         return CameraLiveHelper.checkViewDisplayMode(liveActionHelper);
+    }
+
+    @Override
+    public int getMountMode() {
+        return CameraLiveHelper.checkViewMountMode(liveActionHelper);
     }
 
     @Override
