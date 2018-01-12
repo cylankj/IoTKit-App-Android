@@ -43,6 +43,7 @@ public class CameraLiveActionHelper {
     public volatile String deviceViewMountMode;
     public volatile int deviceDisplayMode;
     public volatile boolean isDeviceAlarmOpened;
+    public volatile int deviceStreamMode;
     public volatile int deviceBattery;
     public volatile int playCode;
     public volatile long lastPlayTime = 0;
@@ -355,5 +356,11 @@ public class CameraLiveActionHelper {
         boolean isPendingCaptureActionCompleted = this.isPendingCaptureActionCompleted;
         this.isPendingCaptureActionCompleted = true;
         return isPendingCaptureActionCompleted;
+    }
+
+    public int onUpdateDeviceStreamMode(int mode) {
+        int streamMode = this.deviceStreamMode;
+        this.deviceStreamMode = mode;
+        return streamMode;
     }
 }

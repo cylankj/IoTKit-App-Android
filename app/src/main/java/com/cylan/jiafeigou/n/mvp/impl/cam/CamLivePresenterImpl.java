@@ -1231,6 +1231,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public boolean isSafeProtectionOpened() {
+        return CameraLiveHelper.isDeviceAlarmOpened(liveActionHelper);
+    }
+
+    @Override
+    public int getStreamMode() {
+        return CameraLiveHelper.checkViewStreamMode(liveActionHelper);
+    }
+
+    @Override
     public boolean canShowFlip() {
         return CameraLiveHelper.canShowFlip(liveActionHelper);
     }
@@ -1288,30 +1298,29 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscribe = Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                DpMsgDefine.DPPrimary<Integer> dpPrimary = new DpMsgDefine.DPPrimary<>(mode);
-                try {
-                    AppLogger.e("还需要发送局域网消息");
-                    boolean updateValue = DataSourceManager.getInstance().updateValue(uuid, dpPrimary, 513);
-                    subscriber.onNext(updateValue);
-                    subscriber.onCompleted();
-                } catch (IllegalAccessException e) {
-                    AppLogger.e(e);
-                    subscriber.onNext(false);
-                    subscriber.onCompleted();
+                int streamMode = liveActionHelper.onUpdateDeviceStreamMode(mode);
+                boolean streamModeChanged = CameraLiveHelper.checkIsDeviceStreamModeChanged(liveActionHelper, streamMode);
+                if (streamModeChanged) {
+                    updateInfoReq(new DpMsgDefine.DPPrimary<>(mode), DpMsgMap.ID_513_CAM_RESOLUTION);
                 }
+                subscriber.onNext(streamModeChanged);
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(Boolean aBoolean) {
-
+                    public void call(Boolean streamModeChanged) {
+                        if (streamModeChanged) {
+                            mView.onStreamModeChanged(mode);
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        AppLogger.e(throwable);
+                        Log.d(CameraLiveHelper.TAG, "performChangeStreamModeAction error:" + throwable.getMessage());
                     }
                 });
         addStopSubscription(subscribe);
@@ -1404,8 +1413,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             mView.onChangeSafeProtectionErrorNeedConfirm();
         } else {
             //之前未开启,则开启
-            DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(!safeProtectionOpened);
+            safeProtectionOpened = !safeProtectionOpened;
+            DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(safeProtectionOpened);
             updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
+            mView.onSafeProtectionChanged(safeProtectionOpened);
         }
     }
 

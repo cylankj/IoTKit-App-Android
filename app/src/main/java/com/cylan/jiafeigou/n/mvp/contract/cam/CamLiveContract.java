@@ -134,6 +134,10 @@ public interface CamLiveContract {
         void onPlayErrorNoError();
 
         void onPlayErrorWaitForFetchHistoryCompleted();
+
+        void onSafeProtectionChanged(boolean safeProtectionOpened);
+
+        void onStreamModeChanged(int mode);
     }
 
     interface Presenter extends BasePresenter {
@@ -253,6 +257,10 @@ public interface CamLiveContract {
         boolean canHideStreamSwitcher();
 
         boolean canHideViewModeMenu();
+
+        boolean isSafeProtectionOpened();
+
+        int getStreamMode();
     }
 }
 

@@ -1308,7 +1308,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                     presenter.performChangeSafeProtection(1);
                     //关闭移动侦测的同时也关闭自动录像
-                    setFlipped(true);
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
@@ -1326,7 +1325,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         AlertDialogManager.getInstance().showDialog((Activity) getContext(), "safeIsOpen", getString(R.string.Detection_Pop),
                 getString(R.string.OK), (dialog, which) -> {
                     presenter.performChangeSafeProtection(1);
-                    setFlipped(true);
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
@@ -1431,6 +1429,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d(CameraLiveHelper.TAG, "onPlayErrorWaitForFetchHistoryCompleted");
         performReLayoutAction();
         liveLoadingBar.changeToLoading(true, ContextUtils.getContext().getString(R.string.LOADING), null);
+    }
+
+    @Override
+    public void onSafeProtectionChanged(boolean safeProtectionOpened) {
+        Log.d(CameraLiveHelper.TAG, "onSafeProtectionChanged:" + safeProtectionOpened);
+        setFlipped(!safeProtectionOpened);
+    }
+
+    @Override
+    public void onStreamModeChanged(int mode) {
+        Log.d(CameraLiveHelper.TAG, "onStreamModeChanged");
+        svSwitchStream.setMode(mode);
     }
 
     @Override
@@ -1891,6 +1901,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         decideDeviceTimezone();
         decideHistoryShowCase();
         decidePendingResumeAction();
+        decideStreamModeSetting();
+    }
+
+    private void decideStreamModeSetting() {
+        onStreamModeChanged(getStreamMode());
+    }
+
+    private int getStreamMode() {
+        return presenter==null?0:presenter.getStreamMode();
     }
 
     private boolean isHistoryEmpty() {
@@ -1965,8 +1984,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void decideFlippedContent() {
-        Boolean alarmOpen = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        setFlipped(!alarmOpen);
+        performRefreshSafeProtectionSetting();
+    }
+
+    private void performRefreshSafeProtectionSetting() {
+        onUpdateAlarmOpenChanged(isSafeProtectionOpen());
+    }
+
+    private boolean isSafeProtectionOpen() {
+        return presenter != null && presenter.isSafeProtectionOpened();
     }
 
     private void decideLiveThumbContent() {

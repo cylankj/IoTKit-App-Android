@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.FutureTarget;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -328,12 +330,13 @@ public class CameraLiveHelper {
 
     public static Bitmap checkLastLiveThumbPicture(CameraLiveActionHelper helper) {
         Bitmap lastLiveThumbPicture = helper.lastLiveThumbPicture;
+        boolean isPanoramaView = checkIsPanoramaView(helper);
+        String filePath = JConstant.MEDIA_PATH + File.separator + helper.uuid + "_cover.png";
         if (lastLiveThumbPicture != null && !lastLiveThumbPicture.isRecycled()) {
             helper.isLastLiveThumbPictureChanged = false;
-        } else {
+        } else if (isPanoramaView) {
             lastLiveThumbPicture = getCache(helper);
             if (lastLiveThumbPicture == null) {
-                String filePath = JConstant.MEDIA_PATH + File.separator + helper.uuid + "_cover.png";
                 long before = System.currentTimeMillis();
                 lastLiveThumbPicture = BitmapFactory.decodeFile(filePath);
                 long after = System.currentTimeMillis();
@@ -341,6 +344,18 @@ public class CameraLiveHelper {
                 helper.isLastLiveThumbPictureChanged = true;
             } else {
                 helper.isLastLiveThumbPictureChanged = false;
+            }
+        } else {
+            try {
+                long before = System.currentTimeMillis();
+                FutureTarget<Bitmap> bitmapFutureTarget = GlideApp.with(ContextUtils.getContext()).asBitmap()
+                        .load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL).submit();
+                lastLiveThumbPicture = bitmapFutureTarget.get();
+                long after = System.currentTimeMillis();
+                helper.isLastLiveThumbPictureChanged = true;
+                Log.d(VERB_TAG, "Glide load bitmap cost:" + (after - before) + "ms");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         helper.lastLiveThumbPicture = lastLiveThumbPicture;
@@ -595,5 +610,17 @@ public class CameraLiveHelper {
     public static boolean canHideViewMode(CameraLiveActionHelper helper) {
         boolean videoPlaying = isVideoPlaying(helper);
         return !videoPlaying;
+    }
+
+    public static boolean isDeviceAlarmOpened(CameraLiveActionHelper helper) {
+        return helper.isDeviceAlarmOpened;
+    }
+
+    public static boolean checkIsDeviceStreamModeChanged(CameraLiveActionHelper helper, int streamMode) {
+        return helper.deviceStreamMode != streamMode;
+    }
+
+    public static int checkViewStreamMode(CameraLiveActionHelper helper) {
+        return helper.deviceStreamMode;
     }
 }
