@@ -292,7 +292,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isReallyVisibleToUser()) {
-            performReLayoutAction();
+            presenter.performCheckVideoPlayError();
         } else if (presenter != null) {
             presenter.performStopVideoAction(true);
         }
@@ -304,7 +304,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         hasPendingFinishAction = false;
         liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
         if (isReallyVisibleToUser()) {
-            performReLayoutAction();
+            presenter.performCheckVideoPlayError();
         }
     }
 
@@ -350,7 +350,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onVideoPlayStopped(boolean live) {
         Log.d(CameraLiveHelper.TAG, "onLiveStop: " + device.getSn());
         enableSensor(false);
-        liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        if (presenter != null && presenter.isNoPlayError()) {
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        }
         liveLoadingBar.setKeepScreenOn(false);
         performReLayoutAction();
         performLayoutAnimation(false);
@@ -771,15 +773,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
             return true;
         } else {
-            boolean reallyVisibleToUser = isReallyVisibleToUser();
-            if (reallyVisibleToUser) {
-                hasPendingFinishAction = true;
-            } else {
-                hasPendingFinishAction = false;
+            hasPendingFinishAction = true;
+            if (!isReallyVisibleToUser()) {
                 liveViewWithThumbnail.showVideoView(false);
             }
-            presenter.performStopVideoAction(reallyVisibleToUser);
-            return hasPendingFinishAction;
+            presenter.performStopVideoAction(hasPendingFinishAction);
+            return true;
         }
     }
 
@@ -915,14 +914,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private int getDisplayMode() {
+        int viewDisplayMode = Panoramic360ViewRS.SFM_Normal;
         if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-            return ((Panoramic360ViewRS) videoView).getDisplayMode();
+            viewDisplayMode = ((Panoramic360ViewRS) videoView).getDisplayMode();
         }
-        return Panoramic360ViewRS.SFM_Normal;
+        viewDisplayMode = presenter != null ? presenter.getDisplayMode() : viewDisplayMode;
+        return viewDisplayMode;
     }
 
-    private void performChangeViewDisplayMode(int displayMode) {
-        rbViewModeSwitchParent.setVisibility(VISIBLE);
+    private void performChangeViewDisplayMode(int displayMode, boolean show) {
+        rbViewModeSwitchParent.setVisibility(show ? VISIBLE : GONE);
         rbViewModeSwitchParent.check(getCheckIdByViewMode(displayMode));
         if (videoView != null && videoView instanceof Panoramic360ViewRS) {
             Panoramic360ViewRS panoramic360ViewRS = (Panoramic360ViewRS) this.videoView;
@@ -932,7 +933,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         }
         enableAutoRotate(enableAutoRotate = displayMode == Panoramic360ViewRS.SFM_Normal && enableAutoRotate);
-        performLayoutAnimation(true);
+        if (show) {
+            performLayoutAnimation(true);
+        }
     }
 
     private int getCheckIdByViewMode(int viewMode) {
@@ -1349,7 +1352,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onViewModeAvailable(int displayMode) {
         Log.d(CameraLiveHelper.TAG, "onViewModeAvailable:" + displayMode);
-        performChangeViewDisplayMode(displayMode);
+        performChangeViewDisplayMode(displayMode, true);
     }
 
     @Override
@@ -1360,7 +1363,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 .setNegativeButton(R.string.CANCEL, null)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
-                    performChangeViewDisplayMode(getDisplayMode());
+                    performChangeViewDisplayMode(getDisplayMode(), true);
 
                 }).show();
     }
@@ -1374,7 +1377,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onViewModeForceHangError(int displayMode) {
         Log.d(CameraLiveHelper.TAG, "onViewModeForceHangError");
         presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
-        performChangeViewDisplayMode(displayMode);
+        performChangeViewDisplayMode(displayMode, true);
         AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
     }
 
@@ -1383,6 +1386,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d(CameraLiveHelper.TAG, "onVideoPlayPrepared,live:" + live);
         performLayoutEnableAction();
         liveLoadingBar.changeToLoading(true, live ? null : getString(R.string.LOADING), null);
+    }
+
+    @Override
+    public void onPlayErrorNoError() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorNoError");
+        performReLayoutAction();
+        liveLoadingBar.changeToPlaying(canShowLoadingBar());
     }
 
     @Override
@@ -1837,7 +1847,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         decideDeviceTimezone();
         decideHistoryShowCase();
         decidePendingResumeAction();
-        enableAutoRotate(enableAutoRotate);
     }
 
     private boolean isHistoryEmpty() {
@@ -1908,6 +1917,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     private void decideLiveViewMode() {
         updateLiveViewMode(device.$(509, "1"));
+        performChangeViewDisplayMode(getDisplayMode(), false);
     }
 
     private void decideFlippedContent() {

@@ -354,7 +354,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_ERROR: {
-
+                        mView.onPlayErrorNoError();
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_FILE_IO: {
@@ -431,14 +431,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 feedRtcp.stop();
-                liveActionHelper.onVideoPlayPrepared(live);
-                Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
-                    @Override
-                    public void call() {
-                        mView.onVideoPlayPrepared(live);
-                    }
-                });
-                subscriber.add(subscription);
                 int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                 if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                     //当前情况下不能播放
@@ -449,7 +441,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     subscriber.onCompleted();
                     return;
                 }
-                liveActionHelper.onUpdateLive(live);
+                liveActionHelper.onVideoPlayPrepared(live);
+                Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
+                    @Override
+                    public void call() {
+                        mView.onVideoPlayPrepared(live);
+                    }
+                });
+                subscriber.add(subscription);
                 if (BuildConfig.DEBUG) {
                     Log.d(CameraLiveHelper.TAG, "updateVideoPlayType,isLive:" + live);
                 }
@@ -637,6 +636,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                 });
         addDestroySubscription(subscribe);
+    }
+
+    @Override
+    public void performCheckVideoPlayError() {
+        performReportPlayError(CameraLiveHelper.checkPlayError(liveActionHelper));
     }
 
     @Override
@@ -1037,7 +1041,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     performStopVideoAction(false);
                     AppLogger.d("获取历史录像,先断开直播,或者历史录像");
                 }
+                Log.d(CameraLiveHelper.TAG, "fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
                 runnable.run();
+                subscriber.onNext("fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -1046,7 +1053,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (!liveActionHelper.onUpdatePendingHistoryPlayActionCompleted()) {
+                        boolean historyPlayActionCompleted = liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
+                        Log.d(CameraLiveHelper.TAG, "fetchHistoryDataListCompat 30秒已经过去了:" + historyPlayActionCompleted);
+                        if (!historyPlayActionCompleted) {
                             mView.onLoadHistoryFailed();
                         }
                     }
@@ -1177,6 +1186,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public boolean canSpeakerEnable() {
         return CameraLiveHelper.checkSpeakerEnable(liveActionHelper);
+    }
+
+    @Override
+    public boolean isNoPlayError() {
+        return CameraLiveHelper.isNoError(liveActionHelper);
+    }
+
+    @Override
+    public int getDisplayMode() {
+        return CameraLiveHelper.checkViewDisplayMode(liveActionHelper);
     }
 
     @Override
@@ -1360,9 +1379,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void performViewModeChecker(int displayMode) {
-        liveActionHelper.onUpdateDeviceDisplayMode(displayMode);
         int viewModeError = CameraLiveHelper.checkViewModeError(liveActionHelper);
         if (viewModeError == 0) {
+            liveActionHelper.onUpdateDeviceDisplayMode(displayMode);
             mView.onViewModeAvailable(displayMode);
         } else if (viewModeError == 1) {
             mView.onViewModeHangError();
@@ -1489,9 +1508,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void stop() {
         super.stop();
+        SubscriptionSupervisor.unsubscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
         liveActionHelper.onUpdateLastLiveThumbPicture(liveActionHelper, null);
         HistoryManager.getInstance().removeHistoryObserver(uuid);
-        SubscriptionSupervisor.unsubscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
     }
 
     @Override

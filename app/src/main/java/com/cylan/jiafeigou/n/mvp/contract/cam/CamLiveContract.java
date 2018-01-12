@@ -129,9 +129,14 @@ public interface CamLiveContract {
         void onViewModeForceHangError(int displayMode);
 
         void onVideoPlayPrepared(boolean live);
+
+        void onPlayErrorNoError();
     }
 
     interface Presenter extends BasePresenter {
+
+        void performCheckVideoPlayError();
+
         void performStopVideoAction(boolean notify);
 
         void performPlayVideoAction(boolean live, long timestamp);
@@ -233,6 +238,10 @@ public interface CamLiveContract {
         boolean canMicrophoneEnable();
 
         boolean canSpeakerEnable();
+
+        boolean isNoPlayError();
+
+        int getDisplayMode();
     }
 }
 

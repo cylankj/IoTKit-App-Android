@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
+import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -62,7 +64,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
         }
         AppLogger.d("记得这个弹窗,需要在网络状态好的情况下.");
         final String uuid = portrait.getCid();
-        Observable.just("go").subscribeOn(Schedulers.io())
+        Subscription subscribe = Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
@@ -70,7 +72,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                     final String currentVersion = device.$(207, "");
                     AppLogger.d("current version: " + currentVersion);
                     try {
-                        seq =  Command.getInstance()
+                        seq = Command.getInstance()
                                 .CheckTagDeviceVersion(portrait.getCid());
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
@@ -102,6 +104,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);
+        SubscriptionSupervisor.subscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck", subscribe);
     }
 
     @Override

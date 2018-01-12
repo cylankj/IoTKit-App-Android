@@ -73,6 +73,7 @@ public class CameraLiveActionHelper {
         this.hasSightFeature = JFGRules.showSight(device.pid, false);
         this.hasViewModeFeature = JFGRules.showSwitchModeButton(device.pid);
         this.hasMicrophoneFeature = JFGRules.hasMicFeature(device.pid);
+        this.deviceDisplayMode = PreferencesUtils.getInt(getSavedDisplayModeKey(), this.deviceDisplayMode);
     }
 
     public void onUpdateDeviceInformation() {
@@ -82,6 +83,8 @@ public class CameraLiveActionHelper {
         this.deviceNet = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         this.deviceTimezone = device.$(DpMsgMap.ID_214_DEVICE_TIME_ZONE, new DpMsgDefine.DPTimeZone());
         this.isDeviceAlarmOpened = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
+
     }
 
     public void onVideoDisconnected(JFGMsgVideoDisconn videoDisconn) {
@@ -313,9 +316,14 @@ public class CameraLiveActionHelper {
         return JConstant.KEY_UUID_RESOLUTION + ":" + device.pid;
     }
 
+    public String getSavedDisplayModeKey() {
+        return "DEVICE_SAVED_DISPLAY_MODE_KEY_" + uuid;
+    }
+
     public int onUpdateDeviceDisplayMode(int displayMode) {
         int deviceDisplayMode = this.deviceDisplayMode;
         this.deviceDisplayMode = displayMode;
+        PreferencesUtils.putInt(getSavedDisplayModeKey(), displayMode);
         return deviceDisplayMode;
     }
 

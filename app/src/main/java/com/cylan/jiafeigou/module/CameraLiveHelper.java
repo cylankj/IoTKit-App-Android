@@ -563,4 +563,7 @@ public class CameraLiveHelper {
         return JFGRules.showSwitchModeButton(device.pid) && isVideoPlaying(helper) && isLive(helper);
     }
 
+    public static int checkViewDisplayMode(CameraLiveActionHelper helper) {
+        return helper.deviceDisplayMode;
+    }
 }
