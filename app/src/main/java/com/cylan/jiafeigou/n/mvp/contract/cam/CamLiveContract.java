@@ -132,6 +132,8 @@ public interface CamLiveContract {
         void onVideoPlayPrepared(boolean live);
 
         void onPlayErrorNoError();
+
+        void onPlayErrorWaitForFetchHistoryCompleted();
     }
 
     interface Presenter extends BasePresenter {
@@ -247,6 +249,10 @@ public interface CamLiveContract {
         int getMountMode();
 
         CameraParam getCameraParam();
+
+        boolean canHideStreamSwitcher();
+
+        boolean canHideViewModeMenu();
     }
 }
 

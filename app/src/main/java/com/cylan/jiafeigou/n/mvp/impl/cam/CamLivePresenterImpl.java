@@ -51,6 +51,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
+import com.cylan.panorama.CameraParam;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -136,18 +137,23 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void monitorVideoRtcp() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JFGMsgVideoRtcp>() {
                     @Override
                     public void call(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
+                        Log.d(CameraLiveHelper.VERB_TAG, "live:" + (jfgMsgVideoRtcp.timestamp == 0));
                         boolean goodFrameRate = jfgMsgVideoRtcp.frameRate > 0;
                         if (jfgMsgVideoRtcp.timestamp != 0) {
                             liveActionHelper.lastPlayTime = CameraLiveHelper.LongTimestamp(jfgMsgVideoRtcp.timestamp);
                         }
                         if (goodFrameRate) {
-                            boolean liveActionCompleted = liveActionHelper.onUpdatePendingPlayLiveActionCompleted();
-                            if (!liveActionCompleted) {
-                                mView.onVideoPlayActionCompleted();
+                            liveActionHelper.isLive = jfgMsgVideoRtcp.timestamp == 0;
+                            if (!CameraLiveHelper.isLive(liveActionHelper)) {
+                                boolean liveActionCompleted = liveActionHelper.onUpdatePendingPlayLiveActionCompleted();
+                                if (!liveActionCompleted) {
+                                    mView.onVideoPlayActionCompleted();
+                                }
                             }
                         }
                         boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
@@ -159,6 +165,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        Log.e(CameraLiveHelper.TAG, "RTCP ERROR" + throwable.getMessage());
                         throwable.printStackTrace();
                         AppLogger.e(throwable);
                     }
@@ -263,11 +270,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             public void call() {
                 switch (playError) {
                     case CameraLiveHelper.PLAY_ERROR_STANDBY: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onDeviceStandByChanged(true);
+                        }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
@@ -281,29 +288,29 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_NETWORK: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onPlayErrorNoNetwork();
+                        }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_DEVICE_OFF_LINE: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onDeviceChangedToOffLine();
+                        }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorException();
+                        }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
@@ -314,11 +321,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_BAD_FRAME_RATE: {
-                        if (liveActionHelper.isPlaying && CameraLiveHelper.checkFrameBad(liveActionHelper)) {
-                            performStopVideoAction(false);
-                        }
                         if (shouldReportError && CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorBadFrameRate();
+                        }
+                        if (liveActionHelper.isPlaying && CameraLiveHelper.checkFrameBad(liveActionHelper)) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
@@ -329,21 +336,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (shouldReportError && CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorWaitForPlayCompletedTimeout();
+                        }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR: {
                         Log.d(CameraLiveHelper.TAG, "PLAY_ERROR_UN_KNOW_PLAY_ERROR:" + liveActionHelper.lastUnKnowPlayError);
                         if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
                             if (shouldReportError) {
                                 mView.onPlayErrorUnKnowPlayError(CameraLiveHelper.checkUnKnowErrorCode(liveActionHelper, false));
                             }
+                            performStopVideoAction(false);
                         }
                     }
                     break;
@@ -376,21 +383,25 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_DISCONNECT: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorVideoPeerDisconnect();
+                        }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_NOT_EXIST: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
-                        }
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorVideoPeerNotExist();
                         }
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
+                    }
+                    break;
+                    case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED: {
+                        mView.onPlayErrorWaitForFetchHistoryCompleted();
                     }
                     break;
                 }
@@ -603,9 +614,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
                 liveActionHelper.onVideoPlayStopped(live, playCode);
                 performUpdateBottomMenuEnable();
-                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
-                    performReportPlayError(playError);
-                }
                 subscriber.onNext("");
                 subscriber.onCompleted();
             }
@@ -648,7 +656,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void performLivePictureCaptureSaveAction(boolean saveInPhotoAndNotify) {
-        if (!CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
+        if (!liveActionHelper.isPlaying) {
             liveActionHelper.onUpdatePendingCaptureActionCompleted();
             if (BuildConfig.DEBUG) {
                 Log.d(CameraLiveHelper.TAG, "当前没有开始播放,无法截取缩略图, notify:" + saveInPhotoAndNotify);
@@ -827,10 +835,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             if (deviceOnline) {
                 mView.onDeviceChangedToOnline();
             } else {
+                mView.onDeviceChangedToOffLine();
                 if (liveActionHelper.isPlaying) {
                     performStopVideoAction(false);
                 }
-                mView.onDeviceChangedToOffLine();
             }
         }
     }
@@ -881,10 +889,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (BuildConfig.DEBUG) {
                     Log.d(CameraLiveHelper.TAG, "SD 卡已被拔出");
                 }
+                mView.onDeviceSDCardOut();
                 if (CameraLiveHelper.isVideoPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
                     performStopVideoAction(false);
                 }
-                mView.onDeviceSDCardOut();
             }
         }
     }
@@ -939,10 +947,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(event -> TextUtils.equals(event.uuid, uuid))
                 .subscribe(event -> {
-                    performStopVideoAction(true);
                     if (mView != null) {
                         mView.onDeviceUnBind();
                     }
+                    performStopVideoAction(true);
                 }, e -> AppLogger.d(e.getMessage()));
         addStopSubscription(subscribe);
     }
@@ -1038,13 +1046,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
                 boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
                 if (videoPlaying) {
-                    performStopVideoAction(false);
+                    performStopVideoAction(true);
                     AppLogger.d("获取历史录像,先断开直播,或者历史录像");
                 }
-                Log.d(CameraLiveHelper.TAG, "fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
                 runnable.run();
                 subscriber.onNext("fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
                 subscriber.onCompleted();
+                int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                    performReportPlayError(playError);
+                }
+                Log.d(CameraLiveHelper.TAG, "fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -1201,6 +1213,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public int getMountMode() {
         return CameraLiveHelper.checkViewMountMode(liveActionHelper);
+    }
+
+    @Override
+    public CameraParam getCameraParam() {
+        return null;
+    }
+
+    @Override
+    public boolean canHideStreamSwitcher() {
+        return CameraLiveHelper.canHideStreamSwitcher(liveActionHelper);
+    }
+
+    @Override
+    public boolean canHideViewModeMenu() {
+        return CameraLiveHelper.canHideViewMode(liveActionHelper);
     }
 
     @Override
@@ -1377,7 +1404,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             mView.onChangeSafeProtectionErrorNeedConfirm();
         } else {
             //之前未开启,则开启
-            DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(true);
+            DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(!safeProtectionOpened);
             updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
         }
     }
@@ -1482,7 +1509,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
         if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
             performReportPlayError(playError);
-        } else if (!frameSlow) {
+        } else if (!slow) {
             mView.onPlayFrameResumeGood();
         }
     }

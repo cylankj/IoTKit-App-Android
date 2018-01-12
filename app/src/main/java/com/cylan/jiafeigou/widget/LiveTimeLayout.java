@@ -25,10 +25,8 @@ import java.util.TimeZone;
 public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
 
     private TextView textView;
-    private int liveType;
-    private long liveTime;
     private SimpleDateFormat dateFormat;
-
+    public volatile long lastDisplayTime;
 
     public LiveTimeLayout(Context context) {
         this(context, null);
@@ -58,21 +56,12 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
 
     @Override
     public void setContent(int liveType, long liveTime) {
-        if (!isShown()) {
-            setVisibility(VISIBLE);
-        }
-        if (!textView.isShown()) {
-            textView.setVisibility(View.VISIBLE);
-        }
-        this.liveType = liveType;
-        if (liveType == CamLiveContract.TYPE_HISTORY) {
-            this.liveTime = liveTime;
-            String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback) + "|%s", getTime(liveTime == 0 ? System.currentTimeMillis() : CameraLiveHelper.LongTimestamp(liveTime)));
-            textView.setText(content);
-        } else if (liveType == CamLiveContract.TYPE_LIVE) {
-            String content = String.format(getContext().getString(R.string.Tap1_Camera_VideoLive) + "|%s", getRealLiveTime(System.currentTimeMillis()));
-            textView.setText(content);
-        }
+        setVisibility(VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        boolean live = liveType == CamLiveContract.TYPE_LIVE;
+        lastDisplayTime = (liveTime == 0 || liveType == CamLiveContract.TYPE_LIVE) ? System.currentTimeMillis() : CameraLiveHelper.LongTimestamp(liveTime);
+        String type = live ? getContext().getString(R.string.Tap1_Camera_VideoLive) : getContext().getString(R.string.Tap1_Camera_Playback);
+        textView.setText(String.format(type + "|%s", getTime(lastDisplayTime)));
     }
 
     @Override

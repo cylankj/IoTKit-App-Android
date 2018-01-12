@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.Panoramic360ViewRS;
 
 import java.io.ByteArrayOutputStream;
@@ -58,6 +57,7 @@ public class CameraLiveHelper {
     public static final int PLAY_ERROR_SD_HISTORY_ALL = 14;
     public static final int PLAY_ERROR_VIDEO_PEER_NOT_EXIST = 15;
     public static final int PLAY_ERROR_VIDEO_PEER_DISCONNECT = 16;
+    public static final int PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED = 17;
 
     private static final int MAX_CACHE_SIZE = (int) (Runtime.getRuntime().totalMemory() / 8);
     public static LruCache<String, byte[]> sLiveThumbLruCache = new LruCache<String, byte[]>(MAX_CACHE_SIZE) {
@@ -103,6 +103,8 @@ public class CameraLiveHelper {
                 return "PLAY_ERROR_VIDEO_PEER_NOT_EXIST";
             case PLAY_ERROR_VIDEO_PEER_DISCONNECT:
                 return "PLAY_ERROR_VIDEO_PEER_DISCONNECT";
+            case PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED:
+                return "PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED";
             default:
                 return "Unknown PlayError:" + playError;
         }
@@ -184,6 +186,8 @@ public class CameraLiveHelper {
             playError = PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT;
         } else if (!helper.isPendingPlayLiveActionCompleted) {
             playError = PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED;
+        } else if (!helper.isPendingHistoryPlayActionCompleted) {
+            playError = PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED;
         } else if (helper.checkLiveBadFrameState(false)) {
             playError = PLAY_ERROR_BAD_FRAME_RATE;
         } else if (helper.checkLiveLowFrameState(false)) {
@@ -226,7 +230,8 @@ public class CameraLiveHelper {
     }
 
     public static boolean isVideoPlaying(CameraLiveActionHelper helper) {
-        return helper.isPlaying && helper.isPendingPlayLiveActionCompleted && NetUtils.getJfgNetType() != 0;
+        return helper.isPlaying && helper.isPendingPlayLiveActionCompleted
+                && helper.isPendingStopLiveActionCompleted && NetUtils.getJfgNetType() != 0;
     }
 
     public static boolean isLive(CameraLiveActionHelper helper) {
@@ -580,5 +585,15 @@ public class CameraLiveHelper {
             viewMountMode = "0";
         }
         return Integer.valueOf(viewMountMode);
+    }
+
+    public static boolean canHideStreamSwitcher(CameraLiveActionHelper helper) {
+        boolean videoPlaying = isVideoPlaying(helper);
+        return !videoPlaying;
+    }
+
+    public static boolean canHideViewMode(CameraLiveActionHelper helper) {
+        boolean videoPlaying = isVideoPlaying(helper);
+        return !videoPlaying;
     }
 }

@@ -342,7 +342,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         performReLayoutAction();
-        performLayoutAnimation(true);
+        performLayoutAnimation(false);
     }
 
     @Override
@@ -1048,7 +1048,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
 
     public void playHistoryAndSetLiveTime(long playTime) {
-        liveLoadingBar.changeToLoading(canShowLoadingBar());
         presenter.performPlayVideoAction(false, playTime);
         setLiveRectTime(playTime, true);
     }
@@ -1059,8 +1058,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (historyWheelContainer.getDisplayedChild() == 1) {
             playHistoryAndSetLiveTime(playTime);
         } else {
-            btnLoadHistory.setEnabled(false);
-            liveLoadingBar.changeToLoading(canShowLoadingBar(), getResources().getString(R.string.VIDEO_REFRESHING), null);
             presenter.fetchHistoryDataListV2(uuid, (int) (TimeUtils.getTodayEndTime() / 1000), 1, 3, playTime);
         }
     }
@@ -1104,12 +1101,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         //全景的时间戳是0,使用设备的时区
         boolean historyLooked = superWheelExt.isLocked();
         boolean live = isLive();
-        if ((timestamp != 0 || !live) && !historyLooked || focus) {
+        if (!live && !historyLooked || focus) {
             superWheelExt.scrollToPosition(TimeUtils.wrapToLong(timestamp), focus, focus);
         }
-        if (!historyLooked) {
-            setLiveTimeContent(live, timestamp);
-        }
+        setLiveTimeContent(live, historyLooked ? liveTimeLayout.lastDisplayTime : timestamp);
     }
 
     private void setLiveTimeContent(boolean live, long timestamp) {
@@ -1421,7 +1416,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onVideoPlayPrepared(boolean live) {
         Log.d(CameraLiveHelper.TAG, "onVideoPlayPrepared,live:" + live);
         performLayoutEnableAction();
-        liveLoadingBar.changeToLoading(true, live ? null : getString(R.string.LOADING), null);
+        liveLoadingBar.changeToLoading(true);
     }
 
     @Override
@@ -1429,6 +1424,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d(CameraLiveHelper.TAG, "onPlayErrorNoError");
         performReLayoutAction();
         liveLoadingBar.changeToPlaying(canShowLoadingBar());
+    }
+
+    @Override
+    public void onPlayErrorWaitForFetchHistoryCompleted() {
+        Log.d(CameraLiveHelper.TAG, "onPlayErrorWaitForFetchHistoryCompleted");
+        performReLayoutAction();
+        liveLoadingBar.changeToLoading(true, ContextUtils.getContext().getString(R.string.LOADING), null);
     }
 
     @Override
@@ -1648,12 +1650,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         liveLoadingBar.showOrHide(!canHideLoadingBar());
                     }).start();
 
-            svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(svSwitchStream.getHeight() / 4)
+            svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(canHideStreamSwitcher() ? 0 : 1).translationY(svSwitchStream.getHeight() / 4)
                     .withStartAction(() -> {
                         svSwitchStream.performSlideAnimation(false);
                     })
                     .withEndAction(() -> {
-                        svSwitchStream.setVisibility(INVISIBLE);
+                        svSwitchStream.setVisibility(canHideStreamSwitcher() ? INVISIBLE : VISIBLE);
                     }).start();
 
             liveTopBannerView.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(-liveTopBannerView.getHeight() / 4).withEndAction(() -> {
@@ -1671,15 +1673,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 historyParentContainer.setVisibility(INVISIBLE);
             }).start();
 
-            liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(liveViewModeContainer.getHeight() / 4).withEndAction(() -> {
+            liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(canHideViewMode() ? 0 : 1).translationY(liveViewModeContainer.getHeight() / 4).withEndAction(() -> {
                 ivViewModeSwitch.setEnabled(isLive() && isLivePlaying() && JFGRules.showSwitchModeButton(device.pid));
-                liveViewModeContainer.setVisibility(INVISIBLE);
+                liveViewModeContainer.setVisibility(canHideViewMode() ? INVISIBLE : VISIBLE);
                 rbViewModeSwitchParent.setVisibility(INVISIBLE);
             }).start();
             liveViewWithThumbnail.getTvLiveFlow().animate().setDuration(ANIMATION_DURATION).translationY(-liveTopBannerView.getHeight()).withEndAction(() -> {
 
             }).start();
         }
+    }
+
+    private boolean canHideViewMode() {
+        return presenter != null && presenter.canHideViewModeMenu();
+    }
+
+    private boolean canHideStreamSwitcher() {
+        return presenter != null && presenter.canHideStreamSwitcher();
     }
 
     private void performPortLayoutAnimation(boolean showLayout) {
@@ -1712,15 +1722,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(isLivePlaying() ? 0 : 1).translationY(0).withEndAction(() -> {
                 liveLoadingBar.showOrHide(!canHideLoadingBar());
             }).start();
-            svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(0).withStartAction(() -> {
+            svSwitchStream.animate().setDuration(ANIMATION_DURATION).alpha(canHideStreamSwitcher() ? 0 : 1).translationY(0).withStartAction(() -> {
                 svSwitchStream.performSlideAnimation(false);
             }).withEndAction(() -> {
-                svSwitchStream.setVisibility(INVISIBLE);
+                svSwitchStream.setVisibility(canHideStreamSwitcher() ? INVISIBLE : VISIBLE);
             }).start();
 
-            liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(0).translationY(0).withEndAction(() -> {
+            liveViewModeContainer.animate().setDuration(ANIMATION_DURATION).alpha(canHideViewMode() ? 0 : 1).translationY(0).withEndAction(() -> {
                 ivViewModeSwitch.setEnabled(canModeSwitchEnable());
-                liveViewModeContainer.setVisibility(INVISIBLE);
+                liveViewModeContainer.setVisibility(canHideViewMode() ? INVISIBLE : VISIBLE);
                 rbViewModeSwitchParent.setVisibility(INVISIBLE);
             }).start();
 
@@ -1766,10 +1776,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
 
         //菜单View默认隐藏
-//      svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : GONE);
-        svSwitchStream.setVisibility(INVISIBLE);
-//      liveViewModeContainer.setVisibility(canShowViewModeMenu() ? VISIBLE : INVISIBLE);
-        liveViewModeContainer.setVisibility(INVISIBLE);
+        svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : INVISIBLE);
+        liveViewModeContainer.setVisibility(canShowViewModeMenu() ? VISIBLE : INVISIBLE);
     }
 
     private boolean canShowXunHuan() {
