@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.signature.ObjectKey;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -332,6 +333,7 @@ public class CameraLiveHelper {
         Bitmap lastLiveThumbPicture = helper.lastLiveThumbPicture;
         boolean isPanoramaView = checkIsPanoramaView(helper);
         String filePath = JConstant.MEDIA_PATH + File.separator + helper.uuid + "_cover.png";
+
         if (lastLiveThumbPicture != null && !lastLiveThumbPicture.isRecycled()) {
             helper.isLastLiveThumbPictureChanged = false;
         } else if (isPanoramaView) {
@@ -347,12 +349,13 @@ public class CameraLiveHelper {
             }
         } else {
             try {
+                String fileToken = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + helper.uuid);
                 long before = System.currentTimeMillis();
                 FutureTarget<Bitmap> bitmapFutureTarget = GlideApp.with(ContextUtils.getContext()).asBitmap()
-                        .load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL).submit();
+                        .load(filePath).signature(new ObjectKey(fileToken)).diskCacheStrategy(DiskCacheStrategy.ALL).submit();
                 lastLiveThumbPicture = bitmapFutureTarget.get();
                 long after = System.currentTimeMillis();
-                helper.isLastLiveThumbPictureChanged = true;
+                helper.isLastLiveThumbPictureChanged = false;
                 Log.d(VERB_TAG, "Glide load bitmap cost:" + (after - before) + "ms");
             } catch (Exception e) {
                 e.printStackTrace();

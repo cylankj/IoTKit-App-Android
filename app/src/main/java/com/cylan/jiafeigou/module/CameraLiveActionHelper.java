@@ -246,7 +246,6 @@ public class CameraLiveActionHelper {
 
     public void onUpdateLastLiveThumbPicture(CameraLiveActionHelper helper, Bitmap bitmap) {
         helper.lastLiveThumbPicture = bitmap;
-        helper.isLastLiveThumbPictureChanged = true;
     }
 
     public boolean onUpdateStandBy(boolean standBy) {
