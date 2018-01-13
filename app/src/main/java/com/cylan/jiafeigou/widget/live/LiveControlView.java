@@ -146,6 +146,17 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         simpleProgressBar.setVisibility(GONE);
     }
 
+    public void changeToNone() {
+        setVisibility(GONE);
+        setAlpha(1);
+        imageView.setVisibility(VISIBLE);
+        bringToFront();
+        imageView.setImageResource(0);
+        textView.setVisibility(GONE);
+        tvHelp.setVisibility(GONE);
+        simpleProgressBar.setVisibility(GONE);
+    }
+
     public void changeToPause(boolean show) {
         setVisibility(show ? VISIBLE : GONE);
         setAlpha(show ? 1 : getAlpha());

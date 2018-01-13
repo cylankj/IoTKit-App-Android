@@ -348,10 +348,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         enableSensor(false);
         liveLoadingBar.setKeepScreenOn(false);
         performReLayoutAction();
-        performLayoutAnimation(false);
-        if (presenter != null && presenter.isNoPlayError()) {
-            liveLoadingBar.changeToPlaying(canShowLoadingBar());
-        }
+        liveLoadingBar.changeToPlaying(presenter.isNoPlayError());
         if (hasPendingFinishAction) {
             hasPendingFinishAction = false;
             CameraLiveActivity activity = (CameraLiveActivity) getActivity();
@@ -596,14 +593,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onDeviceStandByChanged(boolean isStandBy) {
         Log.d(CameraLiveHelper.TAG, "设备已设置为待机模式");
         performReLayoutAction();
-        liveLoadingBar.changeToPlaying(canShowLoadingBar() && !isStandBy);
+        if (isStandBy) {
+            liveLoadingBar.changeToNone();
+        } else {
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        }
     }
 
     @Override
     public void onPlayErrorFirstSight() {
         Log.d(CameraLiveHelper.TAG, "第一次使用全景模式");
         performReLayoutAction();
-        liveLoadingBar.changeToPlaying(false);
+        liveLoadingBar.changeToNone();
     }
 
     @Override
@@ -1747,7 +1748,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : GONE);
-        liveLoadingBar.showOrHide(isLivePlaying() ? canHideLoadingBar() : canShowLoadingBar());
+        liveLoadingBar.showOrHide(canHideLoadingBar());
         historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
 
         //菜单View默认隐藏
