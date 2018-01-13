@@ -43,11 +43,7 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -104,10 +100,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
@@ -354,12 +346,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onVideoPlayStopped(boolean live) {
         Log.d(CameraLiveHelper.TAG, "onLiveStop: " + device.getSn());
         enableSensor(false);
-        if (presenter != null && presenter.isNoPlayError()) {
-            liveLoadingBar.changeToPlaying(canShowLoadingBar());
-        }
         liveLoadingBar.setKeepScreenOn(false);
         performReLayoutAction();
         performLayoutAnimation(false);
+        if (presenter != null && presenter.isNoPlayError()) {
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        }
         if (hasPendingFinishAction) {
             hasPendingFinishAction = false;
             CameraLiveActivity activity = (CameraLiveActivity) getActivity();
@@ -517,7 +509,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void audioRecordPermissionGrantProgramCheck() {
     }
 
-    @Override
     @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionDenied() {
         if (!isAdded() || getActivity() == null || getActivity().isFinishing()) {
@@ -778,11 +769,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
             return true;
         } else {
-            hasPendingFinishAction = true;
             if (!isReallyVisibleToUser()) {
                 liveViewWithThumbnail.showVideoView(false);
             }
-            presenter.performStopVideoAction(hasPendingFinishAction);
+            presenter.performStopVideoAction(hasPendingFinishAction = true);
             return true;
         }
     }
@@ -1007,61 +997,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-    private void getSdcardStatus() {
-        Subscription subscription = Observable.just(new DPEntity()
-                .setMsgId(204)
-                .setUuid(uuid)
-                .setAction(DBAction.QUERY)
-                .setVersion(0)
-                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
-                .subscribeOn(Schedulers.io())
-                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
-                .map(ret -> {
-                    try {
-                        DpMsgDefine.DPSdStatus sdStatus = ret.getResultResponse();
-                        return sdStatus;
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .first()
-                .subscribe(status -> {
-
-                    if (status == null) {
-                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
-                    } else {
-                        if (!status.hasSdcard) {
-                            ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
-                            return;
-                        }
-                        if (status.err != 0) {
-                            ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
-                            return;
-                        }
-                        performLoadHistoryAndPlay(0);
-                    }
-                }, throwable -> ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD)));
-
-        presenter.addSubscription("getSdcardStatus", subscription);
-    }
-
-
-    public void playHistoryAndSetLiveTime(long playTime) {
-        presenter.performPlayVideoAction(false, playTime);
-        setLiveRectTime(playTime, true);
-    }
-
-    public void performLoadHistoryAndPlay(long playTime) {
-        AppLogger.d("点击加载历史视频");
-        //这里需要判断是否已经是加载过历史视频了,虽然这个有局限性
-        if (historyWheelContainer.getDisplayedChild() == 1) {
-            playHistoryAndSetLiveTime(playTime);
-        } else {
-            presenter.fetchHistoryDataListV2(uuid, (int) (TimeUtils.getTodayEndTime() / 1000), 1, 3, playTime);
-        }
-    }
-
     public void initView(CamLiveContract.Presenter presenter, String uuid) {
         //竖屏 隐藏
         this.presenter = presenter;
@@ -1232,7 +1167,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @OnClick(R.id.btn_load_history)
     public void onLoadHistoryClick() {
         AppLogger.d("需要手动获取sd卡");
-        getSdcardStatus();
+        presenter.performHistoryPlayAndCheckerAction(0);
     }
 
     @OnClick(R.id.live_time_layout)
@@ -1441,6 +1376,35 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStreamModeChanged(int mode) {
         Log.d(CameraLiveHelper.TAG, "onStreamModeChanged");
         svSwitchStream.setMode(mode);
+    }
+
+    @Override
+    public void onHistoryCheckerErrorNoSDCard() {
+        Log.d(CameraLiveHelper.TAG, "onHistoryCheckerErrorNoSDCard");
+        ToastUtil.showToast(getString(R.string.NO_SDCARD));
+        performLayoutEnableAction();
+        if (!isLivePlaying()) {
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        }
+    }
+
+    @Override
+    public void onHistoryCheckerErrorSDCardInitRequired(int errorCode) {
+        Log.d(CameraLiveHelper.TAG, "onHistoryCheckerErrorSDCardInitRequired,errorCode is:" + errorCode);
+        ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
+        if (!isLivePlaying()) {
+            liveLoadingBar.changeToPlaying(true);
+        } else if (presenter.isNoPlayError()) {
+            liveLoadingBar.changeToPause(false);
+        }
+        performLayoutEnableAction();
+    }
+
+    @Override
+    public void onLoadHistoryPrepared(long playTime, boolean isHistoryCheckerRequired) {
+        Log.d(CameraLiveHelper.TAG, "onLoadHistoryPrepared");
+        performLayoutEnableAction();
+        liveLoadingBar.changeToLoading(true, isHistoryCheckerRequired ? getString(R.string.LOADING) : null, null);
     }
 
     @Override
@@ -1714,6 +1678,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 ivViewModeSwitch.setEnabled(canModeSwitchEnable());
             }).start();
 
+
             liveBottomBannerView.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
                 liveBottomBannerView.setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
             }).withEndAction(() -> {
@@ -1782,7 +1747,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : GONE);
-        liveLoadingBar.showOrHide(canShowLoadingBar());
+        liveLoadingBar.showOrHide(isLivePlaying() ? canHideLoadingBar() : canShowLoadingBar());
         historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
 
         //菜单View默认隐藏
@@ -1909,7 +1874,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private int getStreamMode() {
-        return presenter==null?0:presenter.getStreamMode();
+        return presenter == null ? 0 : presenter.getStreamMode();
     }
 
     private boolean isHistoryEmpty() {
@@ -1923,7 +1888,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             bundle.remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
             if (playTime > 0 && canPlayVideoNow()) {
                 AppLogger.d("需要定位到时间轴:" + playTime);
-                performLoadHistoryAndPlay(playTime);
+                presenter.performHistoryPlayAndCheckerAction(playTime);
             }
         }
     }

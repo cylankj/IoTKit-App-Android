@@ -142,13 +142,13 @@ public class CameraLiveHelper {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         return isVideoPlaying(helper)
                 && isLive(helper)
-                && JFGRules.showSdHd(device.pid, device.$(207, ""), false);
+                && JFGRules.showSdHd(device.pid, device.$(DpMsgMap.ID_207_DEVICE_VERSION, ""), false);
     }
 
     public static boolean isDeviceStandby(CameraLiveActionHelper helper) {
         //待机模式
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-        return device.$(508, new DpMsgDefine.DPStandby()).standby;
+        return device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby()).standby;
     }
 
     public static boolean isFirstSight(CameraLiveActionHelper helper) {
@@ -215,7 +215,9 @@ public class CameraLiveHelper {
             helper.lastUnKnowPlayError = playCode;
             playError = PLAY_ERROR_UN_KNOW_PLAY_ERROR;
         }
-        Log.d(VERB_TAG, "check play error:" + printError(playError));
+        if (BuildConfig.DEBUG) {
+            Log.d(VERB_TAG, "check play error:" + printError(playError));
+        }
         return playError;
     }
 
@@ -238,7 +240,7 @@ public class CameraLiveHelper {
     }
 
     public static boolean isLive(CameraLiveActionHelper helper) {
-        return helper.isLive;
+        return helper.isLive && helper.isPendingHistoryPlayActionCompleted;
     }
 
     public static boolean checkMicrophoneEnable(CameraLiveActionHelper helper) {
@@ -336,7 +338,7 @@ public class CameraLiveHelper {
 
         if (lastLiveThumbPicture != null && !lastLiveThumbPicture.isRecycled()) {
             helper.isLastLiveThumbPictureChanged = false;
-        } else if (isPanoramaView) {
+        } else if (true) {//glide 与直接调用 getCache 性能一样
             lastLiveThumbPicture = getCache(helper);
             if (lastLiveThumbPicture == null) {
                 long before = System.currentTimeMillis();
@@ -393,9 +395,11 @@ public class CameraLiveHelper {
         byte[] bytes = sLiveThumbLruCache.get(key);
         Bitmap cacheBitmap = null;
         if (bytes != null) {
+            long before = System.currentTimeMillis();
             cacheBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            long after = System.currentTimeMillis();
+            Log.d(VERB_TAG, "getCache for key:" + key + ",is " + cacheBitmap + ",decodeByteArray cost:" + (after - before) + "ms");
         }
-        Log.d(VERB_TAG, "getCache for key:" + key + ",is " + cacheBitmap);
         return cacheBitmap;
     }
 
@@ -416,24 +420,28 @@ public class CameraLiveHelper {
 
     public static void waitForStopCompleted(CameraLiveActionHelper helper) {
         int waitCount = 0;
+        final int retryCount = 30;
+        long sleepTime = 200;
         do {
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "正在等待视频结束完成!!!");
             }
-            SystemClock.sleep(700);
+            SystemClock.sleep(sleepTime);
             waitCount++;
-        } while (waitCount < 10 && !helper.isPendingStopLiveActionCompleted);
+        } while (waitCount < retryCount && !helper.isPendingStopLiveActionCompleted);
     }
 
     public static void waitForCaptureCompleted(CameraLiveActionHelper helper) {
         int waitCount = 0;
+        final int retryCount = 30;
+        long sleepTime = 200;
         do {
             if (BuildConfig.DEBUG) {
                 Log.d(CameraLiveHelper.TAG, "正在等待截图结束.....");
             }
-            SystemClock.sleep(500);
+            SystemClock.sleep(sleepTime);
             waitCount++;
-        } while (waitCount < 10 && !helper.isPendingCaptureActionCompleted);
+        } while (waitCount < retryCount && !helper.isPendingCaptureActionCompleted);
     }
 
     public static boolean isNoError(CameraLiveActionHelper helper) {
@@ -446,7 +454,8 @@ public class CameraLiveHelper {
 
     public static boolean shouldReportError(CameraLiveActionHelper helper, int playError) {
         int lastPlayError = helper.lastReportedPlayError;
-        return lastPlayError != playError || playError == CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR;
+        return playError != PLAY_ERROR_NO_ERROR && (lastPlayError != playError
+                || playError == CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR);
     }
 
     public static long LongTimestamp(long timestamp) {
@@ -625,5 +634,13 @@ public class CameraLiveHelper {
 
     public static int checkViewStreamMode(CameraLiveActionHelper helper) {
         return helper.deviceStreamMode;
+    }
+
+    public static boolean checkIsDeviceSDCardExistStateChanged(CameraLiveActionHelper helper, boolean isSDCardExist) {
+        return helper.isSDCardExist != isSDCardExist;
+    }
+
+    public static boolean shouldReportError(CameraLiveActionHelper helper) {
+        return !isNoError(helper) && shouldReportError(helper, checkPlayError(helper));
     }
 }

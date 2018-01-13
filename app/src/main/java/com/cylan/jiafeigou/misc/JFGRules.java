@@ -630,6 +630,10 @@ public class JFGRules {
         return hasSdcard(sdStatus) || hasSdcard(sdcardSummary);
     }
 
+    public static boolean hasSDCardError(DpMsgDefine.DPSdStatus status) {
+        return status != null && status.err != 0;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

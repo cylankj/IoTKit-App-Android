@@ -35,8 +35,6 @@ public interface CamLiveContract {
 
         void showFirmwareDialog();
 
-        void audioRecordPermissionDenied();
-
         void onBatteryDrainOut();
 
         void onDeviceUnBind();
@@ -138,6 +136,12 @@ public interface CamLiveContract {
         void onSafeProtectionChanged(boolean safeProtectionOpened);
 
         void onStreamModeChanged(int mode);
+
+        void onHistoryCheckerErrorNoSDCard();
+
+        void onHistoryCheckerErrorSDCardInitRequired(int errorCode);
+
+        void onLoadHistoryPrepared(long playTime, boolean isHistoryCheckerRequired);
     }
 
     interface Presenter extends BasePresenter {
@@ -149,6 +153,8 @@ public interface CamLiveContract {
         void performPlayVideoAction(boolean live, long timestamp);
 
         void performPlayVideoAction();
+
+        void performHistoryPlayAndCheckerAction(long playTime);
 
         void performLivePictureCaptureSaveAction(boolean saveInPhotoAndNotify);
 
@@ -261,6 +267,7 @@ public interface CamLiveContract {
         boolean isSafeProtectionOpened();
 
         int getStreamMode();
+
     }
 }
 

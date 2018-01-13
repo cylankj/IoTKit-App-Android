@@ -40,6 +40,7 @@ public class CameraLiveActionHelper {
     public volatile DpMsgDefine.DPNet deviceNet;
     public volatile DpMsgDefine.DPTimeZone deviceTimezone;
     public volatile DpMsgDefine.DpCoordinate deviceCoordinate;
+    public volatile DpMsgDefine.DPSdStatus deviceSDStatus;
     public volatile String deviceViewMountMode;
     public volatile int deviceDisplayMode;
     public volatile boolean isDeviceAlarmOpened;
@@ -83,7 +84,8 @@ public class CameraLiveActionHelper {
         Log.d(CameraLiveHelper.TAG, "onUpdateDeviceInformation");
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         this.isStandBy = JFGRules.isDeviceStandBy(device);
-        this.isSDCardExist = JFGRules.isSDCardExist(device);
+        this.deviceSDStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, deviceSDStatus);
+        this.isSDCardExist = JFGRules.hasSdcard(this.deviceSDStatus);
         this.deviceNet = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         this.deviceTimezone = device.$(DpMsgMap.ID_214_DEVICE_TIME_ZONE, new DpMsgDefine.DPTimeZone());
         this.isDeviceAlarmOpened = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
@@ -194,6 +196,7 @@ public class CameraLiveActionHelper {
     public void onVideoStopPrepared(boolean live) {
         this.isPendingStopLiveActionCompleted = false;
         this.isPendingPlayLiveActionCompleted = true;
+        this.isPendingHistoryPlayActionCompleted = true;
         this.isLive = live;
     }
 
@@ -203,6 +206,7 @@ public class CameraLiveActionHelper {
         this.isLiveSlow = false;
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = true;
+        this.isPendingHistoryPlayActionCompleted = true;
         this.isVideoResolutionReached = false;
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
@@ -261,7 +265,7 @@ public class CameraLiveActionHelper {
         return isSDCardFormatted;
     }
 
-    public boolean onUpdateSDCardStatus(DpMsgDefine.DPSdcardSummary sdStatus) {
+    public boolean onUpdateDeviceSDCardStatus(DpMsgDefine.DPSdcardSummary sdStatus) {
         final boolean isSDCardExist = this.isSDCardExist;
         this.isSDCardExist = JFGRules.hasSdcard(sdStatus);
         return isSDCardExist;
@@ -361,5 +365,12 @@ public class CameraLiveActionHelper {
         int streamMode = this.deviceStreamMode;
         this.deviceStreamMode = mode;
         return streamMode;
+    }
+
+    public boolean onUpdateDeviceSDCardStatus(DpMsgDefine.DPSdStatus sdStatus) {
+        final boolean isSDCardExist = this.isSDCardExist;
+        this.deviceSDStatus = sdStatus;
+        this.isSDCardExist = JFGRules.hasSdcard(sdStatus);
+        return isSDCardExist;
     }
 }

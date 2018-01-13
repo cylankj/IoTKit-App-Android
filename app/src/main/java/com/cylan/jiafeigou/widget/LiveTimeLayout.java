@@ -46,13 +46,7 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
 
     private String getTime(long time) {
         return dateFormat.format(new Date(TimeUtils.wrapToLong(time)));
-//        return History.parseLiveTime(TimeUtils.wrapToLong(time));
     }
-
-    private String getRealLiveTime(long time) {
-        return History.parseLiveRealTime(time);
-    }
-
 
     @Override
     public void setContent(int liveType, long liveTime) {
