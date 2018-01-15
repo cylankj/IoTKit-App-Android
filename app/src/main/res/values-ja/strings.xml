@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">デバイスのバインディングを解除しました</string>
   <string name="MSG_UNSHARE">%s ユーザーへのシェアを解除しました</string>
   <string name="MSG_VIDEO">生放送</string>
-  <string name="MSG_WARNING">新しい発現がある</string>
+  <string name="MSG_WARNING">新しいメッセージ</string>
   <string name="MSG_WARN_OFF">防犯システムを解除しました、再度起動することが可能です~</string>
   <string name="MSG_WARN_ON">防犯システムを開始しました、不審者が現れたらすぐにお知らせします</string>
   <string name="MUTE">サイレントモード</string>

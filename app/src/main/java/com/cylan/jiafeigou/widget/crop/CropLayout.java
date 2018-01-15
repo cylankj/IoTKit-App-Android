@@ -14,6 +14,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class CropLayout extends FrameLayout {
 
     private Shaper shapper;
     private ViewDragHelper dragHelper;
+    private float mCornerRadius;
 
     public CropLayout(@NonNull Context context) {
         super(context);
@@ -59,7 +61,7 @@ public class CropLayout extends FrameLayout {
     private void init() {
         final ViewConfiguration vc = ViewConfiguration.get(getContext());
         mTouchSlop = vc.getScaledTouchSlop() * 3;
-
+        mCornerRadius = getContext().getResources().getDimensionPixelSize(R.dimen.y30);
         dragHelper = ViewDragHelper.create(this, new ViewDragHelper.Callback() {
 
             @Override
@@ -126,27 +128,38 @@ public class CropLayout extends FrameLayout {
         rectF.right = shapper.getShaper().getRight();
         rectF.bottom = shapper.getShaper().getBottom();
         //left top
-        if ((rectF.left) < x && (rectF.left + mTouchSlop) > x
-                && (rectF.top - mTouchSlop) <= y && (rectF.top + mTouchSlop) > y) {
+        float leftCorner = Math.abs(x - rectF.left);
+        float rightCorner = Math.abs(x - rectF.right);
+        float topCorner = Math.abs(y - rectF.top);
+        float bottomCorner = Math.abs(y - rectF.bottom);
+
+        if (leftCorner < mCornerRadius && topCorner < mCornerRadius) {
             Log.d(TAG, "0  corner");
-            return 0;//0
-        }
-        if ((rectF.right - mTouchSlop) < x && (rectF.right) > x
-                && (rectF.top - mTouchSlop) <= y && (rectF.top + mTouchSlop) > y) {
+            return 0;
+        } else if (rightCorner < mCornerRadius && topCorner < mCornerRadius) {
             Log.d(TAG, "1  corner");
-            return 1;//1
-        }
-        if ((rectF.left) < x && (rectF.left + mTouchSlop) > x
-                && (rectF.bottom - mTouchSlop) <= y && (rectF.bottom) > y) {
-            Log.d(TAG, "3  corner");
-            return 3;//3
-        }
-        if ((rectF.right - mTouchSlop) < x && (rectF.right + mTouchSlop / 2) > x
-                && (rectF.bottom - mTouchSlop) <= y && (rectF.bottom) > y) {
+            return 1;
+        } else if (rightCorner < mCornerRadius && bottomCorner < mCornerRadius) {
             Log.d(TAG, "2  corner");
-            return 2;//2
+            return 2;
+        } else if (leftCorner < mCornerRadius && bottomCorner < mCornerRadius) {
+            Log.d(TAG, "3  corner");
+            return 3;
+        } else if (leftCorner < mCornerRadius) {
+            Log.d(TAG, "4  left edge");
+            return 4;
+        } else if (topCorner < mCornerRadius) {
+            Log.d(TAG, "5  top edge");
+            return 5;
+        } else if (rightCorner < mCornerRadius) {
+            Log.d(TAG, "6  right edge");
+            return 6;
+        } else if (bottomCorner < mCornerRadius) {
+            Log.d(TAG, "7  bottom edge");
+            return 7;
+        } else {
+            return -1;
         }
-        return -1;
     }
 
 
@@ -191,27 +204,61 @@ public class CropLayout extends FrameLayout {
 
 
     private void layoutChild(int currentCorner, float rawX, float rawY) {
+        View childView = getChildView();
+        if (childView == null) {
+            return;
+        }
+        int minimumWidth = childView.getMinimumWidth();
+        int minimumHeight = childView.getMinimumHeight();
+        int childViewLeft = childView.getLeft();
+        int childViewTop = childView.getTop();
+        int childViewRight = childView.getRight();
+        int childViewBottom = childView.getBottom();
         synchronized (this) {
             if (currentCorner == 0) {
-                l = (int) rawX;
-                t = (int) rawY;
-                r = getChildView().getRight();
-                b = getChildView().getBottom();
+                l = (int) Math.min(Math.max(0, rawX), childViewRight - minimumWidth);
+                t = (int) Math.min(Math.max(0, rawY), childViewBottom - minimumHeight);
+                r = childViewRight;
+                b = childViewBottom;
             } else if (currentCorner == 1) {
-                l = getChildView().getLeft();
-                t = (int) rawY;
-                r = (int) rawX;
-                b = getChildView().getBottom();
+                l = childViewLeft;
+                t = (int) Math.min(Math.max(0, rawY), childViewBottom - minimumHeight);
+                r = (int) Math.max(Math.min(getRight(), rawX), childViewLeft + minimumWidth);
+                b = childViewBottom;
             } else if (currentCorner == 2) {
-                l = getChildView().getLeft();
-                t = getChildView().getTop();
-                r = (int) rawX;
-                b = (int) rawY;
+                l = childViewLeft;
+                t = childViewTop;
+                r = (int) Math.max(Math.min(getRight(), rawX), childViewLeft + minimumWidth);
+                b = (int) Math.max(Math.min(getBottom(), rawY), childViewTop + minimumHeight);
             } else if (currentCorner == 3) {
-                l = (int) rawX;
-                t = getChildView().getTop();
-                r = getChildView().getRight();
-                b = (int) rawY;
+                l = (int) Math.min(Math.max(0, rawX), childViewRight - minimumWidth);
+                t = childViewTop;
+                r = childViewRight;
+                b = (int) Math.max(Math.min(getBottom(), rawY), childViewTop + minimumHeight);
+            } else if (currentCorner == 4) {
+                //left edge
+                l = (int) Math.min(Math.max(0, rawX), childViewRight - minimumWidth);
+                t = childViewTop;
+                r = childViewRight;
+                b = childViewBottom;
+            } else if (currentCorner == 5) {
+                //top edge
+                l = childViewLeft;
+                t = (int) Math.min(Math.max(0, rawY), childViewBottom - minimumHeight);
+                r = childViewRight;
+                b = childViewBottom;
+            } else if (currentCorner == 6) {
+                //right edge
+                l = childViewLeft;
+                t = childViewTop;
+                r = (int) Math.max(Math.min(rawX, getRight()), childViewLeft + minimumWidth);
+                b = childViewBottom;
+            } else if (currentCorner == 7) {
+                //bottom edge
+                l = childViewLeft;
+                t = childViewTop;
+                r = childViewRight;
+                b = (int) Math.max(Math.min(rawY, getBottom()), childViewTop + minimumHeight);
             }
             if (l >= r || b <= t) return;
             l = Math.max(0, l);
@@ -220,19 +267,6 @@ public class CropLayout extends FrameLayout {
             b = Math.min(getHeight(), b);
 
             int w = r - l, h = b - t;
-            if (w < getChildView().getMinimumWidth()) {
-                w = getChildView().getMinimumWidth();
-            }
-            if (l + w > getRight()) {
-                l = getRight() - w;
-            }
-//            l = Math.min(getRight() - w, getChildView().getLeft());
-            if (h < getChildView().getMinimumHeight()) {
-                h = getChildView().getMinimumHeight();
-            }
-            if (t + h > getBottom()) {
-                t = getBottom() - h;
-            }
             Log.d(TAG, "index:" + currentCorner + String.format(",l:%s,t:%s,vR:%s,vB:%s", l, t, getRight() - getChildView().getRight(), getBottom() - getChildView().getBottom()));
             LayoutParams lp = (LayoutParams) getChildView().getLayoutParams();
             lp.width = w;

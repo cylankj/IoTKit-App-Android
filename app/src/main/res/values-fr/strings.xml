@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">L\'appareil a été supprimé</string>
   <string name="MSG_UNSHARE">Le partage avec l\'utilisateur %s a été supprimé</string>
   <string name="MSG_VIDEO">Vidéo</string>
-  <string name="MSG_WARNING">Nouvelle découverte</string>
+  <string name="MSG_WARNING">Nouveaux messages</string>
   <string name="MSG_WARN_OFF">La détection de mouvement a été désactivée</string>
   <string name="MSG_WARN_ON">La détection de mouvement a été activée. En cas de mouvement l\'appareil vous en informera.</string>
   <string name="MUTE">Couper le son</string>

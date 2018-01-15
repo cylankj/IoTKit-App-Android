@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Device has been deleted</string>
   <string name="MSG_UNSHARE">Cancel the sharing with %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">New discovery</string>
+  <string name="MSG_WARNING">New messages</string>
   <string name="MSG_WARN_OFF">Motion Detection has been turned off, but can open again.</string>
   <string name="MSG_WARN_ON">Motion Detection has been turned on, you will be notified when movements detected.</string>
   <string name="MUTE">Mute</string>

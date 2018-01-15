@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">设备已删除</string>
   <string name="MSG_UNSHARE">已取消对%s用户的分享</string>
   <string name="MSG_VIDEO">看直播</string>
-  <string name="MSG_WARNING">有新的发现</string>
+  <string name="MSG_WARNING">有新的消息</string>
   <string name="MSG_WARN_OFF">移动侦测已关闭，可以再次开启</string>
   <string name="MSG_WARN_ON">移动侦测已开启，侦测到异常时，将及时发送消息</string>
   <string name="MUTE">静音</string>

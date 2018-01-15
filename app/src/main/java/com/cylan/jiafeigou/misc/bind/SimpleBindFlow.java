@@ -371,7 +371,7 @@ public class SimpleBindFlow extends AFullBind {
 //                .subscribeOn(Schedulers.io())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + udpDevicePortrait.version);
+                    Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + (udpDevicePortrait == null ? "" : udpDevicePortrait.version));
                     boolean needUpdate = false;
                     try {
                         needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0

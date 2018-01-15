@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Dispositivo excluído com sucesso</string>
   <string name="MSG_UNSHARE">Compartilhamento cancelado para %s</string>
   <string name="MSG_VIDEO">Ao vivo</string>
-  <string name="MSG_WARNING">Novas descobertas</string>
+  <string name="MSG_WARNING">Novas mensagens</string>
   <string name="MSG_WARN_OFF">Sensor de movimento desativado</string>
   <string name="MSG_WARN_ON">Sensor de movimento ativado. O dispositivo irá informar quando perceber movimentos</string>
   <string name="MUTE">Mudo</string>

@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Thiết bị đã xoá</string>
   <string name="MSG_UNSHARE">Huỷ chia sẻ cho %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Khám phá mới</string>
+  <string name="MSG_WARNING">Bài viết mới</string>
   <string name="MSG_WARN_OFF">Bạn đã tắt phát hiện chuyển động</string>
   <string name="MSG_WARN_ON">Bạn đã bật phát hiện chuyển động. Thiết bị sẽ thông báo cho bạn khi có sự kiện</string>
   <string name="MUTE">Tắt tiếng</string>

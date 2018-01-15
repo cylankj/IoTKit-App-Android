@@ -105,6 +105,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
 
     private fun tryGetMonitorPicture(url: String) {
+        hideLoadingBar()
         GlideApp.with(this)
                 .asBitmap()
                 .load(url)
@@ -114,14 +115,13 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                         if (resource != null) {
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
-                            hideLoadingBar()
                             updateMonitorAreaPicture(resource)
                             toggleMonitorAreaMode(restoreMonitorLayout)
+                            finish.isEnabled=true;
                         }
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
-                        hideLoadingBar()
                         alertErrorGetMonitorPicture()
                     }
                 })
@@ -172,7 +172,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
             layoutParams.setMargins(widthMargin / 2, heightMargin / 2, widthMargin / 2, heightMargin / 2)
             effect_container.layoutParams = layoutParams
         }
-        finish.isEnabled = true
     }
 
     private fun toggleMonitorAreaMode(restore: Boolean) {

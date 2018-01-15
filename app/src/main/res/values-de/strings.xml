@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Gerät gelöscht</string>
   <string name="MSG_UNSHARE">Teilen an Benutzer %s gelöscht</string>
   <string name="MSG_VIDEO">Live</string>
-  <string name="MSG_WARNING">Neue Entdeckungen</string>
+  <string name="MSG_WARNING">Neue Nachrichten</string>
   <string name="MSG_WARN_OFF">Sicherheitsschutz ausgeschaltet, kann wieder angemacht werden</string>
   <string name="MSG_WARN_ON">Sicherheitsschutz eingeschaltet,erkennt Ungewöhnliches, werden Sie sofort informiert</string>
   <string name="MUTE">Lautlos</string>

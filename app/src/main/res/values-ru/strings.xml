@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Оборудование больше не привязано</string>
   <string name="MSG_UNSHARE">Не отправлено %s Пользователю</string>
   <string name="MSG_VIDEO">Просмотр</string>
-  <string name="MSG_WARNING">Новые открытия</string>
+  <string name="MSG_WARNING">Новые сообщения</string>
   <string name="MSG_WARN_OFF">Обнаружение движения отключено</string>
   <string name="MSG_WARN_ON">Вы активировали обнаружение движения. Устройство информирует вас сразу, как сработает датчик обнаружения движения</string>
   <string name="MUTE">Бесшумный режим</string>

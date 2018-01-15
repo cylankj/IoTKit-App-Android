@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Cihaz silindi</string>
   <string name="MSG_UNSHARE">%s lik pay silindi</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Yeni keşif</string>
+  <string name="MSG_WARNING">Yeni mesajlar</string>
   <string name="MSG_WARN_OFF">Hareket algılamayı kapattınız.</string>
   <string name="MSG_WARN_ON">Hareket algılamayı açtınız. Cihaz, herhangi bir şey hareket ettiğinde size hemen bildirecektir.</string>
   <string name="MUTE">Sessiz</string>

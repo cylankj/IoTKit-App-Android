@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">設備已被刪除</string>
   <string name="MSG_UNSHARE">已取消對%s用戶的分享</string>
   <string name="MSG_VIDEO">看直播</string>
-  <string name="MSG_WARNING">有新的發現</string>
+  <string name="MSG_WARNING">有新的消息</string>
   <string name="MSG_WARN_OFF">位移偵測已關閉，可以再次開啟</string>
   <string name="MSG_WARN_ON">已開啟位移偵測，偵測到異常時，將即時發送訊息給您</string>
   <string name="MUTE">靜音</string>

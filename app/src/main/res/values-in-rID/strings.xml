@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Perangkat telah dihapus</string>
   <string name="MSG_UNSHARE">Hapus berbagi dari %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Penemuan Baru</string>
+  <string name="MSG_WARNING">Pesan baru</string>
   <string name="MSG_WARN_OFF">Anda telah menutup deteksi gerakan</string>
   <string name="MSG_WARN_ON">Deteksi gerak telah dinyalakan, Anda akan diberi tahu saat gerakan terdeteksi. Anda telah membuka deteksi gerakan . Perangkat akan memberitahu anda segera ketika sesuatu bergerak</string>
   <string name="MUTE">Diam</string>

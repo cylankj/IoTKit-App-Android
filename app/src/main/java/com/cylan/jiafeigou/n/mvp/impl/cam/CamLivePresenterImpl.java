@@ -972,11 +972,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         AppLogger.d("pre play state: " + liveStream);
         if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
                 || liveStream.playState == PLAY_STATE_STOP) {
-//            return Observable.just(false);
+            return;
         }
-
         resolutionW = resolutionH = 0;
-        Observable.just(uuid)
+        Subscription subscribe = Observable.just(uuid)
                 .subscribeOn(Schedulers.io())
                 .flatMap((String s) -> {
                     try {
@@ -994,7 +993,20 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     return Observable.just(true);
                 })
-                .doOnError(throwable -> AppLogger.e("stop play err" + throwable.getLocalizedMessage()));
+                .doOnError(throwable -> AppLogger.e("stop play err" + throwable.getLocalizedMessage()))
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        AppLogger.d("stopPlayVideo result:" + aBoolean);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e(throwable);
+                        throwable.printStackTrace();
+                    }
+                });
+        addDestroySubscription(subscribe);
     }
 
     @Override

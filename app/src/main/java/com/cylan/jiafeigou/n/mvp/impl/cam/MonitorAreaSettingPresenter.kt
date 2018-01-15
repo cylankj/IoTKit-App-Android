@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -31,25 +30,43 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
     : BasePresenter<MonitorAreaSettingContact.View>(view), MonitorAreaSettingContact.Presenter {
 
     override fun loadMonitorAreaSetting() {
-        val subscribe = CompositeSubscription()
-        val subscribe1 = loadSavedMonitorPicture().subscribe({
-            if (it?.ret != 0) {
-                mView.onGetMonitorPictureError()
-            } else if (it.ret == 0) {
-                mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.time}.jpg?regionType=${it.ossType}")
-            }
-        }) {}
-        val subscribe2 = loadSavedMonitorArea()
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+//        val subscribe = CompositeSubscription()
+//        val subscribe1 = loadSavedMonitorPicture().subscribe({
+//            if (it?.ret != 0) {
+//                mView.onGetMonitorPictureError()
+//            } else if (it.ret == 0) {
+//                mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.time}.jpg?regionType=${it.ossType}")
+//            }
+//        }) {}
+//        val subscribe2 = loadSavedMonitorArea()
+//                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+//                .subscribe({
+//                    if (it?.enable == true) {
+//                        mView.onRestoreMonitorAreaSetting(it.rects!!)
+//                    } else {
+//                        mView.onRestoreDefaultMonitorAreaSetting()
+//                    }
+//                }) {}
+//        subscribe.add(subscribe1)
+//        subscribe.add(subscribe2)
+//        addDestroySubscription(subscribe)
+
+
+        val subscribe = Observable.zip(loadSavedMonitorArea(), loadSavedMonitorPicture(), { areaSetting, savedPicture -> Pair(areaSetting, savedPicture) })
+                .timeout(32, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
-                    if (it?.enable == true) {
-                        mView.onRestoreMonitorAreaSetting(it.rects!!)
+                    if (it?.second?.ret != 0) {
+                        mView.onGetMonitorPictureError();
+                    } else if (it.second?.ret == 0) {
+                        mView.onGetMonitorPictureSuccess("cylan:///$uuid/tmp/${it.second?.time}.jpg?regionType=${it.second?.ossType}")
+                    }
+                    if (it?.first?.enable == true) {
+                        mView.onRestoreMonitorAreaSetting(it.first?.rects!!)
                     } else {
                         mView.onRestoreDefaultMonitorAreaSetting()
                     }
-                }) {}
-        subscribe.add(subscribe1)
-        subscribe.add(subscribe2)
+                })
+                {}
         addDestroySubscription(subscribe)
     }
 

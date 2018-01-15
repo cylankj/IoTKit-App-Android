@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Ha eliminado el enlace del dispositivo</string>
   <string name="MSG_UNSHARE">Compartido eliminado con usuario %s</string>
   <string name="MSG_VIDEO">Vivo</string>
-  <string name="MSG_WARNING">Nuevos descubrimientos</string>
+  <string name="MSG_WARNING">Nuevos mensajes</string>
   <string name="MSG_WARN_OFF">Protección de seguridad apagada, puede activar de nuevo</string>
   <string name="MSG_WARN_ON">Ha activado la protección de seguridad, si pasa un OVNI, se lo informaremos a primera hora</string>
   <string name="MUTE">Mudo</string>

@@ -469,7 +469,7 @@
   <string name="MSG_UNBIND">Dispositivo è stato eliminato</string>
   <string name="MSG_UNSHARE">Elimina condivisione con %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Ricerca in corso&#8230;</string>
+  <string name="MSG_WARNING">Nuovi messaggi</string>
   <string name="MSG_WARN_OFF">Rilevatore di movimento disattivato</string>
   <string name="MSG_WARN_ON">Rilevatore di movimento attivato. L\'apparecchio ti informerà appena qualcosa si muove</string>
   <string name="MUTE">Silenzioso</string>
