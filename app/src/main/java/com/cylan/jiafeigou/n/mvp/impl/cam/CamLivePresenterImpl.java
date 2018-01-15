@@ -1139,8 +1139,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 CameraLiveHelper.waitForStopCompleted(liveActionHelper);
                 int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                 if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
-                    liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                     performReportPlayError(playError);
+                    liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                 }
                 liveActionHelper.isPendingHistoryPlayActionCompleted = false;
                 runnable.run();

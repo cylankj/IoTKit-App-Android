@@ -25,7 +25,7 @@ public class UdpConstant {
     public static final String BIND_TAG = "bindTag:";
     public static final String DOORBELL_RING = "doorbell_ring";
     public static final String REPORT_MSG = "report_msg";
-    public static final CharSequence SET_WIFI_ACK="";
+    public static final CharSequence SET_WIFI_ACK = "";
 
 
     public static final class PingAckT {
@@ -55,6 +55,7 @@ public class UdpConstant {
         public String mac;
         public String uuid;
         public String version;
+        public String ipAddress;
         public int net;
         public String bindCode;
         public int pid;

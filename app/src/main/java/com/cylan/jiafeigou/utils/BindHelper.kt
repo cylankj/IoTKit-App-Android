@@ -46,12 +46,16 @@ object BindHelper {
     fun sendWiFiConfig(uuid: String, mac: String, ssid: String, password: String, security: Int = 0): Observable<JfgUdpMsg.DoSetWifiAck> {
         return Observable.create<JfgUdpMsg.DoSetWifiAck> { subscriber ->
             val setWifi = JfgUdpMsg.DoSetWifi(uuid, mac, ssid, password)
+            val gson = Gson()
+            val json = PreferencesUtils.getString(JConstant.BINDING_DEVICE)
+            val devicePortrait = gson.fromJson<UdpConstant.UdpDevicePortrait>(json, UdpConstant.UdpDevicePortrait::class.java)
+            val deviceIP = devicePortrait?.ipAddress ?: UdpConstant.IP
             setWifi.security = security
             for (i in 1..3) {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "sendWiFiConfig:uuid is:$uuid,mac is:$mac,ssid is:$ssid,password is:$password,security is:$security")
                 }
-                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
+                Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setWifi.toBytes())
                 Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
             }
             subscriber.onNext(JfgUdpMsg.DoSetWifiAck())
@@ -65,6 +69,10 @@ object BindHelper {
     fun sendServerConfig(uuid: String, mac: String, languageType: Int): Observable<Any> {
         return Observable.create<Any> { subscriber ->
             var serverAddress = OptionsImpl.getServer()
+            val gson = Gson()
+            val json = PreferencesUtils.getString(JConstant.BINDING_DEVICE)
+            val devicePortrait = gson.fromJson<UdpConstant.UdpDevicePortrait>(json, UdpConstant.UdpDevicePortrait::class.java)
+            val deviceIP = devicePortrait?.ipAddress ?: UdpConstant.IP
             val port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1))
             serverAddress = serverAddress.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
             if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG) {
@@ -78,19 +86,17 @@ object BindHelper {
             val bindCode = DataSourceManager.getInstance().jfgAccount.account + System.currentTimeMillis()
             val code = JfgUdpMsg.FBindDeviceCode(uuid, mac, bindCode)
             for (i in 0..1) {
-                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes())
+                Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, code.toBytes())
                 Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, code.toBytes())
             }
             for (i in 0..2) {
-                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setServer.toBytes())
+                Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setServer.toBytes())
                 Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setServer.toBytes())
 
-                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setLanguage.toBytes())
+                Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setLanguage.toBytes())
                 Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setLanguage.toBytes())
             }
-            val json = PreferencesUtils.getString(JConstant.BINDING_DEVICE)
-            val gson = Gson()
-            val devicePortrait = gson.fromJson<UdpConstant.UdpDevicePortrait>(json, UdpConstant.UdpDevicePortrait::class.java)
+
             devicePortrait.bindCode = MD5Util.lowerCaseMD5(bindCode)//cast to md5
             PreferencesUtils.putString(JConstant.BINDING_DEVICE, gson.toJson(devicePortrait))
             AppLogger.i(UdpConstant.BIND_TAG + "setServer: " + gson.toJson(setServer))
