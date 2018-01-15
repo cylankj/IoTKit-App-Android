@@ -116,7 +116,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<JFGMsgVideoDisconn>() {
                     @Override
                     public void call(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
-                        boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
+                        boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
                         if (videoPlaying) {
                             if (BuildConfig.DEBUG) {
                                 Log.d(CameraLiveHelper.TAG, "monitorVideoDisconnect:" + jfgMsgVideoDisconn);
@@ -159,7 +159,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 }
                             }
                         }
-                        boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
+                        boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
                         if (videoPlaying) {
                             feedRtcp.feed(jfgMsgVideoRtcp);
                             mView.onRtcp(jfgMsgVideoRtcp);
@@ -631,6 +631,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, throwable -> {
                     throwable.printStackTrace();
                     AppLogger.e(throwable);
+                    liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                     mView.onHistoryCheckerErrorNoSDCard();
                 });
         addStopSubscription(subscribe);
@@ -723,7 +724,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void performLivePictureCaptureSaveAction(boolean saveInPhotoAndNotify) {
-        if (!CameraLiveHelper.isVideoInStopping(liveActionHelper)) {
+        if (!CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
             liveActionHelper.onUpdatePendingCaptureActionCompleted();
             if (BuildConfig.DEBUG) {
                 Log.d(CameraLiveHelper.TAG, "当前没有开始播放,无法截取缩略图, notify:" + saveInPhotoAndNotify);
@@ -884,7 +885,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     Log.d(CameraLiveHelper.TAG, "SD 卡已被拔出");
                 }
                 mView.onDeviceSDCardOut();
-                if (CameraLiveHelper.isVideoPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
+                if (CameraLiveHelper.isVideoRealPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
                     performStopVideoAction(false);
                 }
             }
@@ -976,7 +977,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     Log.d(CameraLiveHelper.TAG, "SD 卡已被拔出");
                 }
                 mView.onDeviceSDCardOut();
-                if (CameraLiveHelper.isVideoPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
+                if (CameraLiveHelper.isVideoRealPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
                     performStopVideoAction(false);
                 }
             }
@@ -1126,22 +1127,26 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                liveActionHelper.isPendingHistoryPlayActionCompleted = false;
                 if (playTime >= 0) {
                     liveActionHelper.lastPlayTime = playTime;
                 }
-                boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
+                boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
                 if (videoPlaying) {
                     performStopVideoAction(true);
+                    Log.d(CameraLiveHelper.TAG, "获取历史录像,先断开直播,或者历史录像");
                     AppLogger.d("获取历史录像,先断开直播,或者历史录像");
                 }
+                CameraLiveHelper.waitForStopCompleted(liveActionHelper);
+                int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+                    liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
+                    performReportPlayError(playError);
+                }
+                liveActionHelper.isPendingHistoryPlayActionCompleted = false;
                 runnable.run();
                 subscriber.onNext("fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
                 subscriber.onCompleted();
-                int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
-                if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
-                    performReportPlayError(playError);
-                }
+
                 Log.d(CameraLiveHelper.TAG, "fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
             }
         })
@@ -1154,6 +1159,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         boolean historyPlayActionCompleted = liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                         Log.d(CameraLiveHelper.TAG, "fetchHistoryDataListCompat 30秒已经过去了:" + historyPlayActionCompleted);
                         if (!historyPlayActionCompleted) {
+                            liveActionHelper.onUpdateLive(true);
                             mView.onLoadHistoryFailed();
                         }
                     }
@@ -1164,6 +1170,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.e(throwable);
                         boolean historyPlayActionCompleted = liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                         if (!historyPlayActionCompleted) {
+                            liveActionHelper.onUpdateLive(true);
                             mView.onLoadHistoryFailed();
                         }
                     }
@@ -1173,7 +1180,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void openDoorLock(String password) {
-        if (!CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
+        if (!CameraLiveHelper.isVideoRealPlaying(liveActionHelper)) {
             //还没有开始直播,则需要开始直播
             performPlayVideoAction(true, 0);
         }
@@ -1211,7 +1218,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public boolean isLivePlaying() {
-        return CameraLiveHelper.isVideoPlaying(liveActionHelper);
+        return CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
     }
 
     @Override

@@ -255,7 +255,7 @@ public class CameraLiveActionHelper {
     public boolean onUpdateStandBy(boolean standBy) {
         final boolean isStandBy = this.isStandBy;
         this.isStandBy = standBy;
-        this.hasPendingResumeToPlayVideoAction = CameraLiveHelper.isVideoPlaying(this);
+        this.hasPendingResumeToPlayVideoAction = CameraLiveHelper.isVideoRealPlaying(this);
         return isStandBy;
     }
 

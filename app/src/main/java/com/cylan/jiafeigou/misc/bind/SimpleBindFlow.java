@@ -307,8 +307,8 @@ public class SimpleBindFlow extends AFullBind {
                     return devicePortrait != null;
                 })
                 .map((Integer o) -> {
-                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
-                    Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
+                    AppLogger.d(BIND_TAG + "sendBindConfig:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
+                    Log.e(TAG, "sendBindConfig: " + new Gson().toJson(devicePortrait));
                     for (int i = 0; i < 3; i++) {
                         JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
                                 devicePortrait.mac,
@@ -353,9 +353,10 @@ public class SimpleBindFlow extends AFullBind {
 //                .subscribeOn(Schedulers.io())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + udpDevicePortrait.version);
                     boolean needUpdate = false;
                     try {
+                        //todo 这里没有判断 udpDevicePortrait 是否为 null
+                        Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + (udpDevicePortrait == null ? "" : udpDevicePortrait.version));
                         needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
                                 && BindUtils.isUcos(udpDevicePortrait.uuid);
                     } catch (Exception e) {

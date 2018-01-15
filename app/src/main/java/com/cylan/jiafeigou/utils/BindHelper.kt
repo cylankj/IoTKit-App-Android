@@ -35,6 +35,13 @@ object BindHelper {
     const val TAG = "BindHelper"
     private val TIME_OUT = (90 * 1000).toLong()
     private val INTERVAL = 3
+
+
+    open class BindContext {
+
+    }
+
+
     @JvmStatic
     fun sendWiFiConfig(uuid: String, mac: String, ssid: String, password: String, security: Int = 0): Observable<JfgUdpMsg.DoSetWifiAck> {
         return Observable.create<JfgUdpMsg.DoSetWifiAck> { subscriber ->

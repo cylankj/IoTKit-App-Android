@@ -98,10 +98,6 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
         }
     }
 
-    public boolean isHistoryLocked() {
-        return superWheelExt.isLocked();
-    }
-
     public void setDatePickerListener(DatePickerListener datePickerListener) {
         this.datePickerListener = datePickerListener;
     }

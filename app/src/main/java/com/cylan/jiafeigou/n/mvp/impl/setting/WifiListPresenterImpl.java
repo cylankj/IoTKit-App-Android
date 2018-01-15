@@ -88,7 +88,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
                             AppLogger.i(String.format(Locale.getDefault(), "send info: %s_%s_%s_%s", ssid, pwd, mac, security));
                         }
                     }, (Throwable throwable) -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
-            addSubscription(subscription, "sendWifiInfo");
+            addSubscription(subscription, "sendBindConfig");
             return;
         }
         sendInfo(ssid, pwd, security, mac);

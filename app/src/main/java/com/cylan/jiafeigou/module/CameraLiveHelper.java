@@ -140,7 +140,7 @@ public class CameraLiveHelper {
 
     public static boolean canShowStreamSwitcher(CameraLiveActionHelper helper) {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-        return isVideoPlaying(helper)
+        return isVideoRealPlaying(helper)
                 && isLive(helper)
                 && JFGRules.showSdHd(device.pid, device.$(DpMsgMap.ID_207_DEVICE_VERSION, ""), false);
     }
@@ -225,7 +225,7 @@ public class CameraLiveHelper {
         return shouldDisconnectFirst(helper, helper.playCode);
     }
 
-    public static boolean shouldDisconnectFirst(CameraLiveActionHelper helper, int playCode) {
+    public static boolean       shouldDisconnectFirst(CameraLiveActionHelper helper, int playCode) {
         boolean playing = helper.isPlaying;
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "shouldDisconnectFirst? playCode is:" + playCode + ",如果 playCode 为1002 也应该断开,其他情况以后慢慢添加");
@@ -234,14 +234,13 @@ public class CameraLiveHelper {
         return live && ((playing && playCode == 0) || playCode == 1002);
     }
 
-    public static boolean isVideoPlaying(CameraLiveActionHelper helper) {
+    public static boolean isVideoRealPlaying(CameraLiveActionHelper helper) {
         return helper.isPlaying && helper.isPendingPlayLiveActionCompleted
                 && helper.isPendingStopLiveActionCompleted && NetUtils.getJfgNetType() != 0;
     }
 
-    public static boolean isVideoInStopping(CameraLiveActionHelper helper) {
-        return helper.isPlaying && helper.isPendingPlayLiveActionCompleted
-                && !helper.isPendingStopLiveActionCompleted && NetUtils.getJfgNetType() != 0;
+    public static boolean isVideoPlaying(CameraLiveActionHelper helper) {
+        return helper.isPlaying && helper.isPendingPlayLiveActionCompleted && NetUtils.getJfgNetType() != 0;
     }
 
     public static boolean isLive(CameraLiveActionHelper helper) {
@@ -251,14 +250,14 @@ public class CameraLiveHelper {
     public static boolean checkMicrophoneEnable(CameraLiveActionHelper helper) {
         boolean live = isLive(helper);
         boolean videoLoading = isVideoLoading(helper);
-        boolean videoPlaying = isVideoPlaying(helper);
+        boolean videoPlaying = isVideoRealPlaying(helper);
         boolean hasNoPlayError = isNoError(helper);
         return live && !videoLoading && videoPlaying && hasNoPlayError;
     }
 
     public static boolean checkSpeakerEnable(CameraLiveActionHelper helper) {
         boolean videoLoading = isVideoLoading(helper);
-        boolean videoPlaying = isVideoPlaying(helper);
+        boolean videoPlaying = isVideoRealPlaying(helper);
         boolean hasNoPlayError = isNoError(helper);
         return !videoLoading && videoPlaying && hasNoPlayError;
     }
@@ -276,7 +275,7 @@ public class CameraLiveHelper {
 
     public static boolean checkCaptureEnable(CameraLiveActionHelper helper) {
         boolean videoLoading = isVideoLoading(helper);
-        boolean videoPlaying = isVideoPlaying(helper);
+        boolean videoPlaying = isVideoRealPlaying(helper);
         boolean hasNoPlayError = isNoError(helper);
         return !videoLoading && videoPlaying && hasNoPlayError;
     }
@@ -545,7 +544,7 @@ public class CameraLiveHelper {
 
     public static boolean canModeSwitchEnable(CameraLiveActionHelper helper) {
         boolean live = isLive(helper);
-        boolean videoPlaying = isVideoPlaying(helper);
+        boolean videoPlaying = isVideoRealPlaying(helper);
         boolean isLoading = helper.isLoading;
         boolean showSwitchModeButton = helper.hasViewModeFeature;
         return live && videoPlaying && showSwitchModeButton && !isLoading;
@@ -593,12 +592,12 @@ public class CameraLiveHelper {
     }
 
     public static boolean canStreamSwitcherEnable(CameraLiveActionHelper helper) {
-        return isVideoPlaying(helper);
+        return isVideoRealPlaying(helper);
     }
 
     public static boolean canShowViewModeMenu(CameraLiveActionHelper helper) {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-        return JFGRules.showSwitchModeButton(device.pid) && isVideoPlaying(helper) && isLive(helper);
+        return JFGRules.showSwitchModeButton(device.pid) && isVideoRealPlaying(helper) && isLive(helper);
     }
 
     public static int checkViewDisplayMode(CameraLiveActionHelper helper) {
@@ -620,12 +619,12 @@ public class CameraLiveHelper {
     }
 
     public static boolean canHideStreamSwitcher(CameraLiveActionHelper helper) {
-        boolean videoPlaying = isVideoPlaying(helper);
+        boolean videoPlaying = isVideoRealPlaying(helper);
         return !videoPlaying;
     }
 
     public static boolean canHideViewMode(CameraLiveActionHelper helper) {
-        boolean videoPlaying = isVideoPlaying(helper);
+        boolean videoPlaying = isVideoRealPlaying(helper);
         return !videoPlaying;
     }
 

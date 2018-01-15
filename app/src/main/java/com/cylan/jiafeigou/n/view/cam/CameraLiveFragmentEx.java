@@ -1184,7 +1184,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return;
         }
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-
         if (status.hasSdcard && status.err != 0) {
             ToastUtil.showNegativeToast(getContext().getString(R.string.VIDEO_SD_DESC));
             return;
@@ -1204,7 +1203,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     public void onShake() {
-        // TODO: 2017/8/23 摇一摇
         Log.i(CYLAN_TAG, "我需要摇一摇");
         if (isShakeEnable()) {
             if (videoView != null && videoView instanceof PanoramicView360RS_Ext) {
@@ -1386,6 +1384,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         performLayoutEnableAction();
         if (!isLivePlaying()) {
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        } else if (presenter.isNoPlayError()) {
+            liveLoadingBar.changeToPause(!canHideLoadingBar());
         }
     }
 
@@ -1393,12 +1393,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onHistoryCheckerErrorSDCardInitRequired(int errorCode) {
         Log.d(CameraLiveHelper.TAG, "onHistoryCheckerErrorSDCardInitRequired,errorCode is:" + errorCode);
         ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
-        if (!isLivePlaying()) {
-            liveLoadingBar.changeToPlaying(true);
-        } else if (presenter.isNoPlayError()) {
-            liveLoadingBar.changeToPause(false);
-        }
         performLayoutEnableAction();
+        if (!isLivePlaying()) {
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        } else if (presenter.isNoPlayError()) {
+            liveLoadingBar.changeToPause(!canHideLoadingBar());
+        }
     }
 
     @Override

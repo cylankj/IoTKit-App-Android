@@ -137,7 +137,7 @@ public class UdpDevice {
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                    AppLogger.d(TAG + ":sendWifiInfo: " + portrait);
+                    AppLogger.d(TAG + ":sendBindConfig: " + portrait);
                     return Observable.just(s);
                 });
     }
