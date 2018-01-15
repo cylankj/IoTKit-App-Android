@@ -787,7 +787,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPickDate(long time, int state) {
         //选择时间,更新时间区域,//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
         if (isLand()) {
-            performLayoutAnimation(true, true);
+            performLayoutAnimation(true);
         }
         switch (state) {
             case STATE_FINISH: {
@@ -1418,7 +1418,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public boolean onSingleTap(float x, float y) {
-        performLayoutAnimation(!isLayoutAnimationShowing, true);
+        performLayoutAnimation(!isLayoutAnimationShowing);
         return false;
     }
 

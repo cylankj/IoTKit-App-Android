@@ -239,6 +239,11 @@ public class CameraLiveHelper {
                 && helper.isPendingStopLiveActionCompleted && NetUtils.getJfgNetType() != 0;
     }
 
+    public static boolean isVideoInStopping(CameraLiveActionHelper helper) {
+        return helper.isPlaying && helper.isPendingPlayLiveActionCompleted
+                && !helper.isPendingStopLiveActionCompleted && NetUtils.getJfgNetType() != 0;
+    }
+
     public static boolean isLive(CameraLiveActionHelper helper) {
         return helper.isLive && helper.isPendingHistoryPlayActionCompleted;
     }

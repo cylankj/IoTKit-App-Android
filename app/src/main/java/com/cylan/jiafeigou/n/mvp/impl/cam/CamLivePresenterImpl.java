@@ -723,7 +723,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void performLivePictureCaptureSaveAction(boolean saveInPhotoAndNotify) {
-        if (!CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
+        if (!CameraLiveHelper.isVideoInStopping(liveActionHelper)) {
             liveActionHelper.onUpdatePendingCaptureActionCompleted();
             if (BuildConfig.DEBUG) {
                 Log.d(CameraLiveHelper.TAG, "当前没有开始播放,无法截取缩略图, notify:" + saveInPhotoAndNotify);
