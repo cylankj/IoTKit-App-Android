@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.dp.DpMsgMap
 import com.cylan.jiafeigou.dp.DpUtils
+import com.cylan.jiafeigou.dp.DpUtils.unpackDataWithoutThrow
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.misc.JError
 import com.cylan.jiafeigou.misc.JFGRules
@@ -36,25 +37,45 @@ object BindHelper {
     @JvmStatic
     fun sendWiFiConfig(uuid: String, mac: String, ssid: String, password: String, security: Int = 0): Observable<JfgUdpMsg.DoSetWifiAck> {
         return Observable.create<JfgUdpMsg.DoSetWifiAck> { subscriber ->
-            //            RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
-//                    .map {
-//                        if (BuildConfig.DEBUG) {
-//                            Log.i(JConstant.CYLAN_TAG, "正在解析 UDP 消息:" + Gson().toJson(it))
-//                        }
-//                        val secondaryHeard = unpackData<JfgUdpMsg.UdpSecondaryHeard>(it.data, JfgUdpMsg.UdpSecondaryHeard::class.java)
-//                        return@map when {
-//                            TextUtils.equals(secondaryHeard.cmd, UdpConstant.SET_WIFI_ACK) -> {
-//                                val fPingAck = unpackData<JfgUdpMsg.DoSetWifiAck>(it.data, JfgUdpMsg.DoSetWifiAck::class.java)
-//                            }
-//                            else -> null
-//                        }
-//                    }
-            val setWifi = JfgUdpMsg.DoSetWifi(uuid, mac, ssid, password)
-            setWifi.security = security
-            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
-            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
-            subscriber.onNext(JfgUdpMsg.DoSetWifiAck())
-            subscriber.onCompleted()
+            val subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
+                    .map {
+                        val udpHeader = unpackDataWithoutThrow<JfgUdpMsg.UdpHeader>(it.data, JfgUdpMsg.UdpHeader::class.java, null)
+                        if (udpHeader != null) {
+                            if (TextUtils.equals(udpHeader.cmd, UdpConstant.PING_ACK)) {
+                                val pingAck = unpackDataWithoutThrow(it.data, JfgUdpMsg.PingAck::class.java, null)
+                                if (pingAck != null && TextUtils.equals(pingAck.cid, uuid)) {
+                                    return@map it.ip
+                                }
+                            }
+                        }
+                        return@map null
+                    }
+                    .first { it != null }
+                    .timeout(3, TimeUnit.SECONDS)
+                    .subscribe({
+                        val setWifi = JfgUdpMsg.DoSetWifi(uuid, mac, ssid, password)
+                        setWifi.security = security
+                        for (i in 0..2) {
+                            Command.getInstance().sendLocalMessage(it!!, UdpConstant.PORT, setWifi.toBytes())
+                            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
+                            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
+                        }
+                        subscriber.onNext(JfgUdpMsg.DoSetWifiAck())
+                        subscriber.onCompleted()
+                    }) {
+                        it.printStackTrace()
+                        AppLogger.e(it)
+                        val setWifi = JfgUdpMsg.DoSetWifi(uuid, mac, ssid, password)
+                        setWifi.security = security
+                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes())
+                        Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
+                        subscriber.onNext(JfgUdpMsg.DoSetWifiAck())
+                        subscriber.onCompleted()
+                    }
+            subscriber.add(subscribe)
+            for (i in 0..2) {
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, JfgUdpMsg.Ping().toBytes())
+            }
         }
                 .subscribeOn(Schedulers.io())
     }

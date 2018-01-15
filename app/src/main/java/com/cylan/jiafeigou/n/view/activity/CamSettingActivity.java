@@ -615,7 +615,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             startActivity(intent);
         } else {
             DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-            if (!JFGRules.isDeviceOnline(net) /*||/*WiFi 关闭时也要从新进入流程页* NetUtils.isWiFiConnected(this)*/) {
+            if (false && !JFGRules.isDeviceOnline(net) /*||/*WiFi 关闭时也要从新进入流程页* NetUtils.isWiFiConnected(this)*/) {
                 //设备离线
                 Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
                 intent.putExtra("PanoramaConfigure", "Family");

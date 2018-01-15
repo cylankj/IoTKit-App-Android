@@ -97,7 +97,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     private val gson = Gson()
 
     override fun OnLocalMessage(s: String, i: Int, bytes: ByteArray) {
-        //        AppLogger.d("OnLocalMessage :" + account + ",i:" + i);
+        AppLogger.d("OnLocalMessage :s" + s + ",i:" + i + "bytes:" + DpUtils.unpack(bytes));
         val localUdpMsg = RxEvent.LocalUdpMsg(System.currentTimeMillis(), s, i.toShort(), bytes)
         BaseUdpMsgParser.getInstance().parserUdpMessage(localUdpMsg)
         RxBus.getCacheInstance().post(localUdpMsg)

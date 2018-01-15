@@ -107,7 +107,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
-        Observable.just("just send wifi info")
+        aFullBind.getBindObservable(false, uuid)
                 .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(s -> {
@@ -227,7 +227,8 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
      * wifi列表
      */
     private void updateWifiResults() {
-        boolean hasSelfPermissions = PermissionUtils.hasSelfPermissions(getView().getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE);
+        boolean hasSelfPermissions = PermissionUtils.hasSelfPermissions(getView().getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
+
         if (hasSelfPermissions) {
             WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             List<ScanResult> scanResults = wifiManager.getScanResults();
