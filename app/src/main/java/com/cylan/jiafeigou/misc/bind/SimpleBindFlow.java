@@ -181,8 +181,10 @@ public class SimpleBindFlow extends AFullBind {
                                 ret.uuid, portrait.mac, bindCode);
                         try {
                             for (int i = 0; i < 2; i++) {
-                                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, code.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
+                                        UdpConstant.PORT, code.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
+                                        UdpConstant.PORT, code.toBytes());
                             }
                         } catch (JfgException e) {
                             AppLogger.e("e: " + e.getLocalizedMessage());
@@ -192,10 +194,18 @@ public class SimpleBindFlow extends AFullBind {
                         AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
                         try {
                             for (int i = 0; i < 3; i++) {
-                                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setServer.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setLanguage.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setServer.toBytes());
-                                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setLanguage.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
+                                        UdpConstant.PORT,
+                                        setServer.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.IP,
+                                        UdpConstant.PORT,
+                                        setLanguage.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
+                                        UdpConstant.PORT,
+                                        setServer.toBytes());
+                                Command.getInstance().sendLocalMessage(UdpConstant.PIP,
+                                        UdpConstant.PORT,
+                                        setLanguage.toBytes());
                             }
                         } catch (JfgException e) {
                             AppLogger.e("err:" + e);
@@ -216,30 +226,49 @@ public class SimpleBindFlow extends AFullBind {
      * @return
      */
     private Observable<JfgUdpMsg.PingAck> pingObservable(final String cidSuffix) {
-        return Observable.create((Observable.OnSubscribe<JfgUdpMsg.PingAck>) subscriber -> {
+        return Observable.create(subscriber -> {
             final Subscription sub = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                    .subscribe(localUdpMsg -> {
+                    .map(localUdpMsg -> {
                         JfgUdpMsg.UdpHeader udpHeader = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.UdpHeader.class, null);
                         if (udpHeader != null && TextUtils.equals(udpHeader.cmd, UdpConstant.PING_ACK)) {
                             JfgUdpMsg.PingAck pingAck = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.PingAck.class, null);
-                            if (pingAck != null && !TextUtils.isEmpty(pingAck.cid) && pingAck.cid.endsWith(cidSuffix) && !subscriber.isUnsubscribed()) {
-                                AppLogger.d(BIND_TAG + "得到ping消息");
+                            if (pingAck != null) {
+                                Log.d(BIND_TAG, "ping ack:" + pingAck.cid + ",cidSuffix" + cidSuffix + ",ipAddress:" + localUdpMsg.ip);
+                            }
+                            if (pingAck != null && !TextUtils.isEmpty(pingAck.cid) && (pingAck.cid.endsWith(cidSuffix) || TextUtils.equals(pingAck.cid, cidSuffix))) {
                                 if (devicePortrait == null) {
                                     devicePortrait = new UdpConstant.UdpDevicePortrait();
                                 }
                                 devicePortrait.ipAddress = localUdpMsg.ip;
-                                subscriber.onNext(pingAck);
-                                subscriber.onCompleted();
+                                return pingAck;
                             }
                         }
+                        return null;
+                    })
+                    .timeout(3, TimeUnit.SECONDS)
+                    .filter(pingAck -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) && pingAck.cid.endsWith(cidSuffix))
+                    .timeout(3, TimeUnit.SECONDS)
+                    .subscribe(pingAck -> {
+                        AppLogger.d(BIND_TAG + "得到ping消息");
+                        if (subscriber != null && !subscriber.isUnsubscribed()) {
+                            subscriber.onNext(pingAck);
+                            subscriber.onCompleted();
+                        }
+                        //结束本身.
+                        subscriptionMap.remove("PingAck");
                     }, throwable -> {
                         subscriber.onError(new RxEvent.HelperBreaker(1));
+                        subscriptionMap.remove("PingAck");
                     });
-            subscriber.add(sub);
+            subscriptionMap.add(sub, "PingAck");
             try {
                 for (int i = 0; i < 2; i++) {
-                    Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
-                    Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.Ping().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.PIP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.Ping().toBytes());
                 }
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -257,33 +286,55 @@ public class SimpleBindFlow extends AFullBind {
     private Observable<UdpConstant.UdpDevicePortrait> fPingObservable(JfgUdpMsg.PingAck pingAck) {
         return Observable.create(subscriber -> {
             final Subscription sub = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                    .subscribe(localUdpMsg -> {
-                        if (devicePortrait == null) {
-                            devicePortrait = new UdpConstant.UdpDevicePortrait();
-                        }
+                    .map(localUdpMsg -> {
                         JfgUdpMsg.UdpHeader udpHeader = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.UdpHeader.class, null);
                         if (udpHeader != null && TextUtils.equals(udpHeader.cmd, UdpConstant.F_PING_ACK)) {
                             JfgUdpMsg.FPingAck fPingAck = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.FPingAck.class, null);
-                            if (pingAck != null && TextUtils.equals(pingAck.cid, fPingAck.cid) && !subscriber.isUnsubscribed()) {
-                                AppLogger.d(BIND_TAG + "得到fping消息");
-                                devicePortrait.uuid = fPingAck.cid;
-                                devicePortrait.mac = fPingAck.mac;
-                                devicePortrait.version = fPingAck.version;
-                                devicePortrait.net = pingAck.net;
-                                devicePortrait.pid = pingAck.pid;
-                                subscriber.onNext(devicePortrait);
-                                subscriber.onCompleted();
+                            if (fPingAck != null) {
+                                Log.d(BIND_TAG, "fping ack:" + fPingAck.cid + ",cidSuffix" + pingAck.cid + ",ipAddress is:" + localUdpMsg.ip);
+                            }
+                            if (fPingAck != null && !TextUtils.isEmpty(fPingAck.cid) && TextUtils.equals(pingAck.cid, fPingAck.cid)) {
+                                if (devicePortrait == null) {
+                                    devicePortrait = new UdpConstant.UdpDevicePortrait();
+                                }
+                                devicePortrait.ipAddress = localUdpMsg.ip;
+                                return fPingAck;
                             }
                         }
-
+                        return null;
+                    })
+                    .timeout(3, TimeUnit.SECONDS)
+                    .filter(ret -> pingAck != null && ret != null && TextUtils.equals(pingAck.cid, ret.cid))
+                    .timeout(3, TimeUnit.SECONDS)
+                    .subscribe(ret -> {
+                        AppLogger.d(BIND_TAG + "得到fping消息");
+                        if (devicePortrait == null) {
+                            devicePortrait = new UdpConstant.UdpDevicePortrait();
+                        }
+                        devicePortrait.uuid = ret.cid;
+                        devicePortrait.mac = ret.mac;
+                        devicePortrait.version = ret.version;
+                        devicePortrait.net = pingAck.net;
+                        devicePortrait.pid = pingAck.pid;
+                        if (subscriber != null && !subscriber.isUnsubscribed()) {
+                            subscriber.onNext(devicePortrait);
+                            subscriber.onCompleted();
+                            //结束本身.
+                            subscriptionMap.remove("FPingAck");
+                        }
                     }, throwable -> {
                         subscriber.onError(new RxEvent.HelperBreaker(2));
+                        subscriptionMap.remove("FPingAck");
                     });
-            subscriber.add(sub);
+            subscriptionMap.add(sub, "FPingAck");
             try {
                 for (int i = 0; i < 2; i++) {
-                    Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                    Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.IP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.FPing().toBytes());
+                    Command.getInstance().sendLocalMessage(UdpConstant.PIP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.FPing().toBytes());
                 }
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -311,22 +362,17 @@ public class SimpleBindFlow extends AFullBind {
                     return devicePortrait != null;
                 })
                 .map((Integer o) -> {
-                    AppLogger.d(BIND_TAG + "sendBindConfig:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
-                    Log.e(TAG, "sendBindConfig: " + new Gson().toJson(devicePortrait));
-                    String deviceAddress = TextUtils.isEmpty(devicePortrait.ipAddress) ? UdpConstant.IP : devicePortrait.ipAddress;
+                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
+                    Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
+                    String deviceIP = devicePortrait != null ? devicePortrait.ipAddress : UdpConstant.IP;
                     for (int i = 0; i < 3; i++) {
-                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
-                                devicePortrait.mac,
-                                ssid, pwd);
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid, devicePortrait.mac, ssid, pwd);
                         setWifi.security = type;
                         //发送wifi配置
                         try {
-                            Command.getInstance().sendLocalMessage(deviceAddress,
-                                    UdpConstant.PORT,
-                                    setWifi.toBytes());
-                            Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                    UdpConstant.PORT,
-                                    setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes());
                             AppLogger.d(TAG + new Gson().toJson(setWifi));
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -358,10 +404,9 @@ public class SimpleBindFlow extends AFullBind {
 //                .subscribeOn(Schedulers.io())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                    Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + (udpDevicePortrait == null ? "" : udpDevicePortrait.version));
                     boolean needUpdate = false;
                     try {
-                        //todo 这里没有判断 udpDevicePortrait 是否为 null
-                        Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + (udpDevicePortrait == null ? "" : udpDevicePortrait.version));
                         needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
                                 && BindUtils.isUcos(udpDevicePortrait.uuid);
                     } catch (Exception e) {
@@ -380,17 +425,14 @@ public class SimpleBindFlow extends AFullBind {
     public Observable<Boolean> sendWifiInfo(String uuid, String mac, String ssid, String pwd, int type) {
         return Observable.just("send")
                 .flatMap(s -> {
-                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(
-                            uuid,
-                            mac,
-                            ssid,
-                            pwd);
+                    Log.e(BIND_TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
+                    String deviceIP = devicePortrait != null ? devicePortrait.ipAddress : UdpConstant.IP;
+                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd + ",deviceIP:" + deviceIP);
+                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(uuid, mac, ssid, pwd);
                     setWifi.security = type;
                     //发送wifi配置
                     try {
-                        // fix #126372 by lxh
-                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
-                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setWifi.toBytes());
                         Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
                         Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
