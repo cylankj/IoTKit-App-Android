@@ -233,7 +233,7 @@ public class SimpleBindFlow extends AFullBind {
                         if (udpHeader != null && TextUtils.equals(udpHeader.cmd, UdpConstant.PING_ACK)) {
                             JfgUdpMsg.PingAck pingAck = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.PingAck.class, null);
                             if (pingAck != null) {
-                                Log.d("AAAAAA", "ping ack:" + pingAck.cid + ",cidSuffix" + cidSuffix);
+                                Log.d(BIND_TAG, "ping ack:" + pingAck.cid + ",cidSuffix" + cidSuffix + ",ipAddress:" + localUdpMsg.ip);
                             }
                             if (pingAck != null && !TextUtils.isEmpty(pingAck.cid) && (pingAck.cid.endsWith(cidSuffix) || TextUtils.equals(pingAck.cid, cidSuffix))) {
                                 if (devicePortrait == null) {
@@ -291,7 +291,7 @@ public class SimpleBindFlow extends AFullBind {
                         if (udpHeader != null && TextUtils.equals(udpHeader.cmd, UdpConstant.F_PING_ACK)) {
                             JfgUdpMsg.FPingAck fPingAck = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.FPingAck.class, null);
                             if (fPingAck != null) {
-                                Log.d("AAAAAA", "ping ack:" + fPingAck.cid + ",cidSuffix" + pingAck.cid);
+                                Log.d(BIND_TAG, "fping ack:" + fPingAck.cid + ",cidSuffix" + pingAck.cid + ",ipAddress is:" + localUdpMsg.ip);
                             }
                             if (fPingAck != null && !TextUtils.isEmpty(fPingAck.cid) && TextUtils.equals(pingAck.cid, fPingAck.cid)) {
                                 if (devicePortrait == null) {
@@ -364,19 +364,15 @@ public class SimpleBindFlow extends AFullBind {
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
+                    String deviceIP = devicePortrait != null ? devicePortrait.ipAddress : UdpConstant.IP;
                     for (int i = 0; i < 3; i++) {
-                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
-                                devicePortrait.mac,
-                                ssid, pwd);
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid, devicePortrait.mac, ssid, pwd);
                         setWifi.security = type;
                         //发送wifi配置
                         try {
-                            Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                                    UdpConstant.PORT,
-                                    setWifi.toBytes());
-                            Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                    UdpConstant.PORT,
-                                    setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes());
                             AppLogger.d(TAG + new Gson().toJson(setWifi));
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -429,20 +425,16 @@ public class SimpleBindFlow extends AFullBind {
     public Observable<Boolean> sendWifiInfo(String uuid, String mac, String ssid, String pwd, int type) {
         return Observable.just("send")
                 .flatMap(s -> {
-                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(
-                            uuid,
-                            mac,
-                            ssid,
-                            pwd);
+                    Log.e(BIND_TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
+                    String deviceIP = devicePortrait != null ? devicePortrait.ipAddress : UdpConstant.IP;
+                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd + ",deviceIP:" + deviceIP);
+                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(uuid, mac, ssid, pwd);
                     setWifi.security = type;
                     //发送wifi配置
                     try {
-                        Command.getInstance().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
-                        Command.getInstance().sendLocalMessage(UdpConstant.PIP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
+                        Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));

@@ -34,6 +34,37 @@ import java.util.concurrent.TimeUnit
 object BindHelper {
     private val TIME_OUT = (90 * 1000).toLong()
     private val INTERVAL = 3
+    val TAG = BindHelper::class.java.simpleName
+
+    class BindHelperContext {
+        var deviceIP: String? = null
+        var devicePort: Int = 0
+        var deviceNet: Int = 0
+        var deviceVersion: String? = null
+        var deviceMac: String? = null
+        var devicePid: Int? = null
+        var deviceOs: Int = 0
+        var deviceCid: String? = null
+        var deviceUpdateTime: Long = 0
+
+    }
+
+    @JvmStatic
+    fun sendWiFiConfig(context: BindHelperContext, ssid: String, password: String, security: Int = 0) {
+        if (context?.deviceCid.isNullOrEmpty()) {
+            AppLogger.i(TAG + ",sendWiFiConfig deviceCid is Null or Empty,unable to continue")
+            return
+        }
+        if (context?.deviceIP.isNullOrEmpty()) {
+            AppLogger.i(TAG + ",sendWiFiConfig deviceIP is Null or Empty,scan device IP First")
+            APObserver.scan(context.deviceCid!!)
+
+        } else {
+            AppLogger.i(TAG + ",sendWiFiConfig has deviceIP ,send config now")
+        }
+    }
+
+
     @JvmStatic
     fun sendWiFiConfig(uuid: String, mac: String, ssid: String, password: String, security: Int = 0): Observable<JfgUdpMsg.DoSetWifiAck> {
         return Observable.create<JfgUdpMsg.DoSetWifiAck> { subscriber ->
@@ -81,6 +112,11 @@ object BindHelper {
     }
 
     @JvmStatic
+    fun sendServerConfig(context: BindHelperContext, languageType: Int) {
+
+    }
+
+    @JvmStatic
     fun sendServerConfig(uuid: String, mac: String, languageType: Int): Observable<Any> {
         return Observable.create<Any> { subscriber ->
             var serverAddress = OptionsImpl.getServer()
@@ -118,6 +154,11 @@ object BindHelper {
             subscriber.onNext("good")
             subscriber.onCompleted()
         }
+    }
+
+    @JvmStatic
+    fun sendBindConfig(context: BindHelperContext, bindFlag: Int) {
+
     }
 
     @JvmStatic
