@@ -107,7 +107,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
-        aFullBind.getBindObservable(false, "290300000012")
+        aFullBind.getBindObservable(false, /*"290300000012"*/uuid)
                 .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(s -> {
