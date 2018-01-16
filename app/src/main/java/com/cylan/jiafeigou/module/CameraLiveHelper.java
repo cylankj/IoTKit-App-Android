@@ -225,7 +225,7 @@ public class CameraLiveHelper {
         return shouldDisconnectFirst(helper, helper.playCode);
     }
 
-    public static boolean       shouldDisconnectFirst(CameraLiveActionHelper helper, int playCode) {
+    public static boolean shouldDisconnectFirst(CameraLiveActionHelper helper, int playCode) {
         boolean playing = helper.isPlaying;
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "shouldDisconnectFirst? playCode is:" + playCode + ",如果 playCode 为1002 也应该断开,其他情况以后慢慢添加");

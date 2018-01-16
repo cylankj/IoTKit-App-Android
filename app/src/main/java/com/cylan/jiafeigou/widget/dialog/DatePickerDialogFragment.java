@@ -142,7 +142,7 @@ public class DatePickerDialogFragment extends BaseDialog {
     }
 
     private void moveToTime(long time) {
-        mCalendar.setTimeInMillis(selectTime);
+        mCalendar.setTimeInMillis(startTime);
         int zero = mCalendar.get(Calendar.DAY_OF_YEAR);
         mCalendar.setTimeInMillis(time);
         int day = mCalendar.get(Calendar.DAY_OF_YEAR);

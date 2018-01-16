@@ -7,6 +7,7 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
+import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -48,6 +49,7 @@ public class CameraLiveActionHelper {
     public volatile int deviceBattery;
     public volatile int playCode;
     public volatile long lastPlayTime = 0;
+    public volatile int recordedZeroTimestampCount = 0;
     public volatile int lastReportedPlayError = 0;
     public volatile int lastUnKnowPlayError;
     public volatile Bitmap lastLiveThumbPicture;
@@ -59,6 +61,7 @@ public class CameraLiveActionHelper {
     public volatile boolean isPendingPlayLiveActionTimeOutActionReached = false;
     public volatile boolean isLastLiveThumbPictureChanged = true;
     public volatile boolean isVideoResolutionReached;
+
 
     public volatile boolean hasPendingResumeToPlayVideoAction = false;
     public final boolean hasSDCardFeature;
@@ -242,6 +245,8 @@ public class CameraLiveActionHelper {
             this.isPendingHistoryPlayActionCompleted = true;
             this.isPendingPlayLiveActionTimeOutActionReached = false;
             this.isPendingStopLiveActionCompleted = true;
+            this.isPendingPlayLiveActionCompleted = true;
+            this.isPlaying = false;
             this.isLiveSlow = false;
             this.isLoading = false;
         }
@@ -372,5 +377,14 @@ public class CameraLiveActionHelper {
         this.deviceSDStatus = sdStatus;
         this.isSDCardExist = JFGRules.hasSdcard(sdStatus);
         return isSDCardExist;
+    }
+
+    public void onUpdateVideoRtcp(JFGMsgVideoRtcp videoRtcp) {
+        if (videoRtcp.timestamp != 0) {
+            recordedZeroTimestampCount = 0;
+            lastPlayTime = CameraLiveHelper.LongTimestamp(videoRtcp.timestamp);
+        } else {
+            recordedZeroTimestampCount++;
+        }
     }
 }

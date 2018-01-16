@@ -142,6 +142,8 @@ public interface CamLiveContract {
         void onHistoryCheckerErrorSDCardInitRequired(int errorCode);
 
         void onLoadHistoryPrepared(long playTime, boolean isHistoryCheckerRequired);
+
+        void onVideoPlayTypeChanged(boolean isLive);
     }
 
     interface Presenter extends BasePresenter {

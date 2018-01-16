@@ -44,7 +44,7 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
     }
 
     private int getMinute(long time) {
-        return (int) Math.ceil(((double) time / 60));
+        return (int) Math.ceil((((double) time) / 60));
     }
 
     private boolean isSameMinute(long time1, long time2) {
@@ -64,6 +64,7 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
                 @Override
                 public void onDialogAction(int id, Object value) {
                     if (value != null && value instanceof Long) {
+                        TreeSet<JFGVideo> historyFiles = HistoryManager.getInstance().getHistory(uuid);
                         JFGVideo historyFile = new JFGVideo("", (Long) value / 1000L, 0);
                         JFGVideo floor = historyFiles.floor(historyFile);
                         JFGVideo ceiling = historyFiles.ceiling(historyFile);

@@ -437,9 +437,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (BuildConfig.DEBUG) {
             Log.d(CameraLiveHelper.TAG, "onNetworkResumeGood");
         }
+        performReLayoutAction();
         if (!isLivePlaying()) {
             liveLoadingBar.changeToPlaying(true);
-            performLayoutContentAction();
         }
     }
 
@@ -1037,7 +1037,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         //全景的时间戳是0,使用设备的时区
         boolean historyLooked = superWheelExt.isLocked();
         boolean live = isLive();
-        if (!live && !historyLooked || focus) {
+        if (!live && !historyLooked && timestamp != 0 || focus) {
             superWheelExt.scrollToPosition(TimeUtils.wrapToLong(timestamp), focus, focus);
         }
         setLiveTimeContent(live, historyLooked ? liveTimeLayout.lastDisplayTime : timestamp);
@@ -1406,6 +1406,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d(CameraLiveHelper.TAG, "onLoadHistoryPrepared");
         performLayoutEnableAction();
         liveLoadingBar.changeToLoading(true, isHistoryCheckerRequired ? getString(R.string.LOADING) : null, null);
+    }
+
+    @Override
+    public void onVideoPlayTypeChanged(boolean isLive) {
+        Log.d(CameraLiveHelper.TAG, "onVideoPlayTypeChanged isLive:" + isLive);
+        performReLayoutAction();
     }
 
     @Override
