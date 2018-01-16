@@ -7,6 +7,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -27,6 +29,7 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 /**
@@ -375,10 +378,15 @@ public class ShareManager {
             if (activity != null) {
                 com.umeng.socialize.ShareAction shareAction = new com.umeng.socialize.ShareAction(activity);
                 SHARE_MEDIA platform = getPlatform(shareItemType);
-                UMImage image = new UMImage(activity, new File(img));
+                Bitmap bitmap = BitmapFactory.decodeFile(img);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(bitmap.getByteCount());
+                bitmap.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
+                UMImage image = new UMImage(activity, outputStream.toByteArray());
+//                UMImage image = new UMImage(activity, new File(img));
+//                UMImage umImage = new UMImage(activity, new File(img));
+//                image.setThumb(umImage);
                 shareAction.setPlatform(platform);
                 shareAction.withMedia(image);
-                shareAction.withExtra(image);
                 shareAction.setCallback(this);
                 shareAction.share();
             }

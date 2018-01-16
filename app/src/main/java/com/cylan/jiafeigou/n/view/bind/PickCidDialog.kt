@@ -128,6 +128,8 @@ class PickCidDialog : DialogFragment() {
         AppLogger.d("refreshDogWiFi")
         subscribe?.unsubscribe()
         subscribe = APObserver.scanDogWiFi()
+                .doOnSubscribe { refresh_switcher.displayedChild = 1 }
+                .doOnTerminate { refresh_switcher.displayedChild = 0 }
                 .map {
                     it.filter {
                         PropertiesLoader.getInstance().hasProperty(it.os, "WIREDMODE")
@@ -135,8 +137,7 @@ class PickCidDialog : DialogFragment() {
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { refresh_switcher.displayedChild = 1 }
-                .doOnTerminate { refresh_switcher.displayedChild = 0 }
+
                 .subscribe({ updateList(it) }) {
                     refresh_switcher.displayedChild = 0
                     it.printStackTrace()

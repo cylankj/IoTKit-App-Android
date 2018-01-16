@@ -240,6 +240,7 @@ public class SimpleBindFlow extends AFullBind {
                                     devicePortrait = new UdpConstant.UdpDevicePortrait();
                                 }
                                 devicePortrait.ipAddress = localUdpMsg.ip;
+                                devicePortrait.port = localUdpMsg.port;
                                 return pingAck;
                             }
                         }
@@ -298,6 +299,7 @@ public class SimpleBindFlow extends AFullBind {
                                     devicePortrait = new UdpConstant.UdpDevicePortrait();
                                 }
                                 devicePortrait.ipAddress = localUdpMsg.ip;
+                                devicePortrait.port = localUdpMsg.port;
                                 return fPingAck;
                             }
                         }
@@ -365,12 +367,13 @@ public class SimpleBindFlow extends AFullBind {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
                     String deviceIP = devicePortrait != null ? devicePortrait.ipAddress : UdpConstant.IP;
+                    int devicePort = devicePortrait != null ? devicePortrait.port : UdpConstant.PORT;
                     for (int i = 0; i < 3; i++) {
                         JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid, devicePortrait.mac, ssid, pwd);
                         setWifi.security = type;
                         //发送wifi配置
                         try {
-                            Command.getInstance().sendLocalMessage(deviceIP, UdpConstant.PORT, setWifi.toBytes());
+                            Command.getInstance().sendLocalMessage(deviceIP, (short) devicePort, setWifi.toBytes());
                             Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, setWifi.toBytes());
                             Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes());
                             AppLogger.d(TAG + new Gson().toJson(setWifi));

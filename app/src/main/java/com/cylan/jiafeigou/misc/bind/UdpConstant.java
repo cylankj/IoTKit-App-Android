@@ -56,6 +56,7 @@ public class UdpConstant {
         public String uuid;
         public String version;
         public String ipAddress;
+        public int port;
         public int net;
         public String bindCode;
         public int pid;

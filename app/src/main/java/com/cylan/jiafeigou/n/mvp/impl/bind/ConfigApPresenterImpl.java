@@ -22,16 +22,16 @@ import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
-import com.cylan.jiafeigou.utils.BindHelper;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -42,7 +42,6 @@ import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -108,25 +107,59 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
-        String mac = device.$(202, "");
-        BindHelper.sendWiFiConfig(uuid, mac, ssid, pwd, type)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<JfgUdpMsg.DoSetWifiAck>() {
-                    @Override
-                    public void call(JfgUdpMsg.DoSetWifiAck doSetWifiAck) {
-                        getView().onSetWifiFinished(uuid);
-                        MiscUtils.recoveryWiFi();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        if (throwable instanceof TimeoutException) {
-                            getView().sendWifiInfoFailed();
-                            AppLogger.e("发送配置失败");
-                        }
+        aFullBind.getBindObservable(false, /*"290300000012"*/uuid)
+                .subscribeOn(Schedulers.io())
+                .delay(500, TimeUnit.MILLISECONDS)
+                .map(s -> {
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    String mac = device.$(202, "");
+                    aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
+                            .subscribe(ret -> {
+                                AppLogger.w("already send info");
+                                UdpConstant.UdpDevicePortrait devicePortrait = aFullBind.getDevicePortrait();
+                                getView().onSetWifiFinished(devicePortrait == null ? "" : devicePortrait.uuid);
+                                //需要恢复网络.
+                                MiscUtils.recoveryWiFi();
+                            }, throwable -> AppLogger.e("err" + throwable.getLocalizedMessage()));
+                    return s;
+                })
+                .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.SetWifiAck.class)
+                        .filter(ret -> ret != null && ret.data != null)
+                        .filter(ret -> TextUtils.equals(uuid, ret.data.cid))
+                        .timeout(2, TimeUnit.SECONDS))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    getView().onSetWifiFinished(null);
+                    AppLogger.w("发送配置成功");
+                }, throwable -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                    if (throwable instanceof TimeoutException) {
+                        getView().sendWifiInfoFailed();
+                        AppLogger.e("发送配置失败");
                     }
                 });
+
+
+//
+//        Device device = DataSourceManager.getInstance().getDevice(uuid);
+//        String mac = device.$(202, "");
+//        BindHelper.sendWiFiConfig(uuid, mac, ssid, pwd, type)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<JfgUdpMsg.DoSetWifiAck>() {
+//                    @Override
+//                    public void call(JfgUdpMsg.DoSetWifiAck doSetWifiAck) {
+//                        getView().onSetWifiFinished(uuid);
+//                        MiscUtils.recoveryWiFi();
+//                    }
+//                }, new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        if (throwable instanceof TimeoutException) {
+//                            getView().sendWifiInfoFailed();
+//                            AppLogger.e("发送配置失败");
+//                        }
+//                    }
+//                });
     }
 
     @Override
