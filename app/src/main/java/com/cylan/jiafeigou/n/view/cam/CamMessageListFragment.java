@@ -456,9 +456,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void setupFootView() {
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = CamMessageBean.ViewType.FOOT;
-        if (camMessageListAdapter.getCount() > 0) {
-//            bean.version = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version + 1;
-        }
         rvCamMessageList.post(() -> camMessageListAdapter.add(bean));
     }
 
@@ -520,6 +517,64 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             srLayoutCamListRefresh.setRefreshing(false);
         }
     };
+    private RequestRunnable requestRunnable = new RequestRunnable();
+
+    private class RequestRunnable implements Runnable {
+        public boolean isRefresh = false;
+        public long time;
+
+
+        @Override
+        public void run() {
+            if (presenter != null) {
+                boolean success;
+                switch (pageType) {
+                    case FaceItem.FACE_TYPE_STRANGER:
+                        srLayoutCamListRefresh.setRefreshing(isRefresh);
+                        success = camMessageListAdapter.showCachedVisitorList("stranger");
+                        lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                        lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 200);
+                        tvCamMessageListEdit.setEnabled(success);
+//                    presenter.fetchVisitorMessageList(1, "", time, refresh);
+                        break;
+                    case FaceItem.FACE_TYPE_ACQUAINTANCE:
+                        srLayoutCamListRefresh.setRefreshing(isRefresh);
+                        success = camMessageListAdapter.showCachedVisitorList(personId);
+                        lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                        lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
+//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                        tvCamMessageListEdit.setEnabled(success);
+                        if (!TextUtils.isEmpty(personId)) {
+                            presenter.fetchVisitorMessageList(2, personId, time, isRefresh);
+                        }
+                        break;
+                    case FaceItem.FACE_TYPE_STRANGER_SUB:
+                        srLayoutCamListRefresh.setRefreshing(isRefresh);
+                        success = camMessageListAdapter.showCachedVisitorList(personId);
+                        lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                        lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
+//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
+                        tvCamMessageListEdit.setEnabled(success);
+                        if (!TextUtils.isEmpty(personId)) {
+                            presenter.fetchVisitorMessageList(1, personId, time, isRefresh);
+                        }
+                        break;
+                    case FaceItem.FACE_TYPE_ALL:
+                        srLayoutCamListRefresh.setRefreshing(isRefresh);
+//                    lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+                        lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
+                        lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
+                        presenter.fetchVisitorMessageList(3, "", time, isRefresh);
+                        break;
+                    case FaceItem.FACE_TYPE_DP:
+                        presenter.fetchMessageListByFaceId(time, false, isRefresh);
+                        break;
+                    default:
+                        presenter.fetchMessageListByFaceId(time, false, isRefresh);
+                }
+            }
+        }
+    }
 
     private Runnable emptyCheckerRunnable = new Runnable() {
         @Override
@@ -543,53 +598,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             time = cb.message.getVersion();
         }
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
-        if (presenter != null) {
-            boolean success;
-            switch (pageType) {
-                case FaceItem.FACE_TYPE_STRANGER:
-                    srLayoutCamListRefresh.setRefreshing(refresh);
-                    success = camMessageListAdapter.showCachedVisitorList("stranger");
-                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
-                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 200);
-                    tvCamMessageListEdit.setEnabled(success);
-//                    presenter.fetchVisitorMessageList(1, "", time, refresh);
-                    break;
-                case FaceItem.FACE_TYPE_ACQUAINTANCE:
-                    srLayoutCamListRefresh.setRefreshing(refresh);
-                    success = camMessageListAdapter.showCachedVisitorList(personId);
-                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
-                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
-                    tvCamMessageListEdit.setEnabled(success);
-                    if (!TextUtils.isEmpty(personId)) {
-                        presenter.fetchVisitorMessageList(2, personId, time, refresh);
-                    }
-                    break;
-                case FaceItem.FACE_TYPE_STRANGER_SUB:
-                    srLayoutCamListRefresh.setRefreshing(refresh);
-                    success = camMessageListAdapter.showCachedVisitorList(personId);
-                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
-                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
-                    tvCamMessageListEdit.setEnabled(success);
-                    if (!TextUtils.isEmpty(personId)) {
-                        presenter.fetchVisitorMessageList(1, personId, time, refresh);
-                    }
-                    break;
-                case FaceItem.FACE_TYPE_ALL:
-                    srLayoutCamListRefresh.setRefreshing(refresh);
-//                    lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
-                    lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
-                    lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-                    presenter.fetchVisitorMessageList(3, "", time, refresh);
-                    break;
-                case FaceItem.FACE_TYPE_DP:
-                    presenter.fetchMessageListByFaceId(time, false, refresh);
-                    break;
-                default:
-                    presenter.fetchMessageListByFaceId(time, false, refresh);
-            }
-        }
+        srLayoutCamListRefresh.removeCallbacks(requestRunnable);
+        requestRunnable.isRefresh = refresh;
+        requestRunnable.time = time;
+        srLayoutCamListRefresh.postDelayed(requestRunnable, 500);
         //30秒超时时需要置为不刷新状态
         srLayoutCamListRefresh.postDelayed(refreshTimeOutRunnable, 30);
     }

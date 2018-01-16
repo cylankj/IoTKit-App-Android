@@ -348,7 +348,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         enableSensor(false);
         liveLoadingBar.setKeepScreenOn(false);
         performReLayoutAction();
-        liveLoadingBar.changeToPlaying(presenter.isNoPlayError());
+        if (isNoPlayError()) {
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
+        }
         if (hasPendingFinishAction) {
             hasPendingFinishAction = false;
             CameraLiveActivity activity = (CameraLiveActivity) getActivity();
@@ -356,6 +358,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 activity.finishExt();
             }
         }
+    }
+
+    private boolean isNoPlayError() {
+        return presenter != null && presenter.isNoPlayError();
     }
 
     @Override
@@ -1120,10 +1126,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnClick(R.id.tv_live)
     public void onLiveClick() {
-        if (canPlayVideoNow()) {
-            presenter.performPlayVideoAction(true, 0);
-            AppLogger.i("TextView click start play!");
-        }
+        presenter.performPlayVideoAction(true, 0);
+        AppLogger.i("TextView click start play!");
     }
 
     @OnClick({R.id.imgV_cam_switch_speaker, R.id.imgV_land_cam_switch_speaker})
@@ -1384,7 +1388,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         performLayoutEnableAction();
         if (!isLivePlaying()) {
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
-        } else if (presenter.isNoPlayError()) {
+        } else if (isNoPlayError()) {
             liveLoadingBar.changeToPause(!canHideLoadingBar());
         }
     }
@@ -1396,7 +1400,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         performLayoutEnableAction();
         if (!isLivePlaying()) {
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
-        } else if (presenter.isNoPlayError()) {
+        } else if (isNoPlayError()) {
             liveLoadingBar.changeToPause(!canHideLoadingBar());
         }
     }
@@ -1412,6 +1416,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onVideoPlayTypeChanged(boolean isLive) {
         Log.d(CameraLiveHelper.TAG, "onVideoPlayTypeChanged isLive:" + isLive);
         performReLayoutAction();
+        liveLoadingBar.showOrHide(!canHideLoadingBar());
     }
 
     @Override

@@ -555,7 +555,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     private fun showHeaderFacePopMenu(item: FaceItem, position: Int, faceItem: View, faceType: Int) {
-//        AppLogger.w("showHeaderFacePopMenu:$position,item:$faceItem")
         val contentView = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
         when (faceType) {
@@ -673,6 +672,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
             dialog.dismiss()
         }
+
+    }
+
+    @OnClick(R.id.cam_message_indicator_watcher_text)
+    fun onVisitorCountClicked() {
+        val fragment = VisitorStatisticsDialogFragment.newInstance()
+        fragment.isCancelable = false
+        fragment.show(fragmentManager, "VisitorStatisticsDialogFragment")
 
     }
 

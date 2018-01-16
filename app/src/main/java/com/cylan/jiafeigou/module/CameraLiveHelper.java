@@ -236,7 +236,7 @@ public class CameraLiveHelper {
 
     public static boolean isVideoRealPlaying(CameraLiveActionHelper helper) {
         return helper.isPlaying && helper.isPendingPlayLiveActionCompleted
-                && helper.isPendingStopLiveActionCompleted && NetUtils.getJfgNetType() != 0;
+                && helper.isPendingStopLiveActionCompleted && helper.isPendingHistoryPlayActionCompleted && NetUtils.getJfgNetType() != 0;
     }
 
     public static boolean isVideoPlaying(CameraLiveActionHelper helper) {
@@ -342,7 +342,7 @@ public class CameraLiveHelper {
 
         if (lastLiveThumbPicture != null && !lastLiveThumbPicture.isRecycled()) {
             helper.isLastLiveThumbPictureChanged = false;
-        } else if (true) {//glide 与直接调用 getCache 性能一样
+        } else if (isPanoramaView || true) {//glide 与直接调用 getCache 性能一样
             lastLiveThumbPicture = getCache(helper);
             if (lastLiveThumbPicture == null) {
                 long before = System.currentTimeMillis();
@@ -620,7 +620,8 @@ public class CameraLiveHelper {
 
     public static boolean canHideStreamSwitcher(CameraLiveActionHelper helper) {
         boolean videoPlaying = isVideoRealPlaying(helper);
-        return !videoPlaying;
+        boolean live = isLive(helper);
+        return !videoPlaying || !live;
     }
 
     public static boolean canHideViewMode(CameraLiveActionHelper helper) {

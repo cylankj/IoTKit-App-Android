@@ -160,7 +160,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             liveActionHelper.onUpdateVideoRtcp(jfgMsgVideoRtcp);
                             if (liveActionHelper.recordedZeroTimestampCount > 3) {
                                 if (!liveActionHelper.onUpdateLive(true)) {
-                                  mView.onVideoPlayTypeChanged(true);
+                                    mView.onVideoPlayTypeChanged(true);
                                 }
                             }
                             feedRtcp.feed(jfgMsgVideoRtcp);
@@ -1230,7 +1230,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public boolean canShowLoadingBar() {
-        return !CameraLiveHelper.isNoError(liveActionHelper) || isLoading() || !liveActionHelper.isPendingHistoryPlayActionCompleted || !MiscUtils.isLand();
+        return !CameraLiveHelper.isNoError(liveActionHelper) || isLoading() || !MiscUtils.isLand();
     }
 
     @Override
