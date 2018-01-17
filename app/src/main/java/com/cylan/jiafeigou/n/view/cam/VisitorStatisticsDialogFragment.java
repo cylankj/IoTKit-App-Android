@@ -138,7 +138,7 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
         tvTodayCount.setText(String.valueOf(todayCount));
         tvYesterdayCount.setText(String.valueOf(allCount - todayCount));
         int increaseCount = todayCount - (allCount - todayCount);
-        tvNewlyIncreasedCount.setText((increaseCount >= 0 ? "+" : "") + increaseCount);
+        tvNewlyIncreasedCount.setText((increaseCount > 0 ? "+" : "") + increaseCount);
         tvNewlyIncreasedCount.setTextColor(increaseCount >= 0 ? Color.parseColor("#F43531") : Color.parseColor("#459C17"));
     }
 }
