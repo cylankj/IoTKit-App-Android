@@ -106,6 +106,7 @@ public class SimpleProgressBar
 
     @Override
     protected void onDraw(Canvas canvas) {
+        removeCallbacks(this);
         final int count = canvas.save();
         canvas.drawArc(circleRect, degree, swipeDegree, false, circlePaint);
         final float pointAngle = degree - (360 - swipeDegree) / 2;

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.cam;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,6 +47,9 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
     @BindView(R.id.visitor_newly_increased_count)
     TextView tvNewlyIncreasedCount;
 
+    private int todayCount = 0;
+    private int allCount = 0;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,7 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        performRefreshContent(todayCount, allCount);
         performLoadVisitorStatistics();
     }
 
@@ -128,8 +133,12 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
     }
 
     private void performRefreshContent(int todayCount, int allCount) {
+        this.todayCount = todayCount;
+        this.allCount = allCount;
         tvTodayCount.setText(String.valueOf(todayCount));
         tvYesterdayCount.setText(String.valueOf(allCount - todayCount));
-        tvNewlyIncreasedCount.setText(String.valueOf(todayCount - (allCount - todayCount)));
+        int increaseCount = todayCount - (allCount - todayCount);
+        tvNewlyIncreasedCount.setText((increaseCount >= 0 ? "+" : "") + increaseCount);
+        tvNewlyIncreasedCount.setTextColor(increaseCount >= 0 ? Color.parseColor("#F43531") : Color.parseColor("#459C17"));
     }
 }

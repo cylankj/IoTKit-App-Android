@@ -170,9 +170,7 @@ public class DatePickerDialogFragment extends BaseDialog {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
-                long distance = endTime - startTime;
-                long oneDay = 24 * 60 * 60 * 1000;
-                return (int) (distance / oneDay + (distance % oneDay == 0 ? 1 : 2));
+                return TimeUtils.getDistanceDay(startTime, endTime);
             }
 
             @Override

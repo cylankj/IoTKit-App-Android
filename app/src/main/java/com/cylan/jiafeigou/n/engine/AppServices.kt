@@ -50,7 +50,7 @@ class AppServices() : Service(), NetworkCallback {
     private var isConnected: Boolean = true
 
     override fun onNetworkChanged(context: Context?, intent: Intent) {
-        var connected = NetUtils.getJfgNetType() != 0;
+        var connected = NetUtils.getJfgNetType() != 0
         if (connected != isConnected) {
             //网络连接状态发生了变化
             if (connected && !BaseApplication.isBackground()) {

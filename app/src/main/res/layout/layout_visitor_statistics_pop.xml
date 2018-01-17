@@ -42,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/y2"
+            android:text="0"
             android:textSize="@dimen/sp17"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/visitor_today"
@@ -54,6 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/y24"
             android:text="@string/MESSAGES_FACE_PEOPLE"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp12"
             app:layout_constraintBaseline_toBaselineOf="@+id/visitor_today"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -76,6 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/y2"
+            android:text="0"
+            android:textSize="@dimen/sp17"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/visitor_yesterday"
             app:layout_constraintEnd_toStartOf="@+id/visitor_yesterday_unit"
@@ -87,6 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/y24"
             android:text="@string/MESSAGES_FACE_PEOPLE"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp12"
             app:layout_constraintBaseline_toBaselineOf="@+id/visitor_yesterday"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -111,6 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/y2"
+            android:text="0"
             android:textColor="#459C17"
             android:textSize="@dimen/sp17"
             android:textStyle="bold"
@@ -125,6 +133,8 @@
             android:layout_marginEnd="@dimen/y24"
             android:layout_marginStart="@dimen/y2"
             android:text="@string/MESSAGES_FACE_PEOPLE"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp12"
             app:layout_constraintBaseline_toBaselineOf="@+id/visitor_newly_increased_count"
             app:layout_constraintEnd_toEndOf="parent" />
 

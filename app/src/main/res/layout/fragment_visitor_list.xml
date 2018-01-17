@@ -31,12 +31,14 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/y15"
+            android:drawablePadding="@dimen/y4"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/color_666666"
             android:textSize="@dimen/sp12" />
+
 
         <TextView
             android:id="@+id/more_text"

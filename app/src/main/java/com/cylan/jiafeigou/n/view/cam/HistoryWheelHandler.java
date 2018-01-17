@@ -2,18 +2,14 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGVideo;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.HistoryManager;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.HistoryWheelView;
@@ -64,34 +60,36 @@ public class HistoryWheelHandler implements HistoryWheelView.HistoryListener {
                 @Override
                 public void onDialogAction(int id, Object value) {
                     if (value != null && value instanceof Long) {
-                        TreeSet<JFGVideo> historyFiles = HistoryManager.getInstance().getHistory(uuid);
-                        JFGVideo historyFile = new JFGVideo("", (Long) value / 1000L, 0);
-                        JFGVideo floor = historyFiles.floor(historyFile);
-                        JFGVideo ceiling = historyFiles.ceiling(historyFile);
-
-                        /*如果在一分钟内有视频,也需要认为有视频,举个例子,当前选择的时间是8:00:00 这个时间点没有视频,
-                        * 但是8:00:05这个时间有视频,也认为是有效选择了自动播放8:00:05这里的视频
-                        * */
-                        boolean inFloor = floor != null && (floor.beginTime + floor.duration >= historyFile.beginTime ||
-                                isSameMinute(floor.beginTime + floor.duration, historyFile.beginTime));
-                        boolean inCeiling = ceiling != null && isSameMinute(ceiling.beginTime, historyFile.beginTime);
-                        if (BuildConfig.DEBUG) {
-                            Log.d("HistoryWheelHandler", "select time is:" + historyFile.beginTime +
-                                    ",floor is:" + floor +
-                                    ",ceiling is" + ceiling +
-                                    ",in floor:" + inFloor +
-                                    ",in ceiling:" + inCeiling
-                            );
+//                        TreeSet<JFGVideo> historyFiles = HistoryManager.getInstance().getHistory(uuid);
+//                        JFGVideo historyFile = new JFGVideo("", (Long) value / 1000L, 0);
+//                        JFGVideo floor = historyFiles.floor(historyFile);
+//                        JFGVideo ceiling = historyFiles.ceiling(historyFile);
+//
+//                        /*如果在一分钟内有视频,也需要认为有视频,举个例子,当前选择的时间是8:00:00 这个时间点没有视频,
+//                        * 但是8:00:05这个时间有视频,也认为是有效选择了自动播放8:00:05这里的视频
+//                        * */
+//                        boolean inFloor = floor != null && (floor.beginTime + floor.duration >= historyFile.beginTime ||
+//                                isSameMinute(floor.beginTime + floor.duration, historyFile.beginTime));
+//                        boolean inCeiling = ceiling != null && isSameMinute(ceiling.beginTime, historyFile.beginTime);
+//                        if (BuildConfig.DEBUG) {
+//                            Log.d("HistoryWheelHandler", "select time is:" + historyFile.beginTime +
+//                                    ",floor is:" + floor +
+//                                    ",ceiling is" + ceiling +
+//                                    ",in floor:" + inFloor +
+//                                    ",in ceiling:" + inCeiling
+//                            );
+//                        }
+//                        if (!inCeiling && !inFloor) {
+//                            //没有这段视频
+//                            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
+//                        } else {
+//                            //如果是同一分钟则不更新
+//                            if (datePickerListener != null && !isSameMinute(select / 1000, historyFile.beginTime)) {
+                        if (datePickerListener != null) {
+                            datePickerListener.onPickDate(((Long) value) / 1000L, STATE_FINISH);
                         }
-                        if (!inCeiling && !inFloor) {
-                            //没有这段视频
-                            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
-                        } else {
-                            //如果是同一分钟则不更新
-                            if (datePickerListener != null && !isSameMinute(select / 1000, historyFile.beginTime)) {
-                                datePickerListener.onPickDate(historyFile.beginTime, STATE_FINISH);
-                            }
-                        }
+//                            }
+//                    }
                     }
                 }
             });
