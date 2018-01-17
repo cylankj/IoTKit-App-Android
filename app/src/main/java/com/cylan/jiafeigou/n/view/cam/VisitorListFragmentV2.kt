@@ -677,10 +677,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     @OnClick(R.id.cam_message_indicator_watcher_text)
     fun onVisitorCountClicked() {
-        val fragment = VisitorStatisticsDialogFragment.newInstance()
+        val fragment = VisitorStatisticsDialogFragment.newInstance(uuid)
         fragment.isCancelable = false
         fragment.show(fragmentManager, "VisitorStatisticsDialogFragment")
-
     }
 
     interface VisitorListener {

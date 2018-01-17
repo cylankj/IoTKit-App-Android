@@ -71,6 +71,7 @@
   <string name="CID_USED">L\'appareil a établi des connections, sa suppression entraînera leur perte. Continuer quand même ?</string>
   <string name="CLEAR">Effacer</string>
   <string name="CLEAR_DATA">Vider le cache des messages</string>
+  <string name="CLOSE_BUTTON">Fermer</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Fermez la porte avec succès</string>
   <string name="CODE_ERR">Code de vérification faux</string>
   <string name="COMFIRM_NEW_PASS">Confirmer le nouveau mot de passe</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Supprimer l\'icône et les messages</string>
   <string name="MESSAGES_DELETE_ICON_POP">Supprimez l\'icône et tous les messages connexes?</string>
   <string name="MESSAGES_DELETE_POP">Supprimez le visage et tous les messages connexes?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Analyse du flux de passagers</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identifier</string>
   <string name="MESSAGES_FACE_INFO">information du visage</string>
   <string name="MESSAGES_FACE_MABAGE">Gestion du visage</string>
   <string name="MESSAGES_FACE_MOVE">Passer à un visage existant</string>
   <string name="MESSAGES_FACE_MOVE_BTN">déménager à</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Nouveaux visiteurs</string>
   <string name="MESSAGES_FACE_NONE">Pas de visage</string>
+  <string name="MESSAGES_FACE_PEOPLE">gens</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">La visite d\'aujourd\'hui</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s personnes ont visité aujourd\'hui</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Visite %s fois dans les 30 jours</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">La visite d\'hier</string>
   <string name="MESSAGES_FILTER_ALL">Tout</string>
   <string name="MESSAGES_FILTER_STRANGER">Étranger</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Ajouter au visage existant</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">L\'appareil a été supprimé</string>
   <string name="MSG_UNSHARE">Le partage avec l\'utilisateur %s a été supprimé</string>
   <string name="MSG_VIDEO">Vidéo</string>
-  <string name="MSG_WARNING">Nouvelle découverte</string>
+  <string name="MSG_WARNING">Nouveaux messages</string>
   <string name="MSG_WARN_OFF">La détection de mouvement a été désactivée</string>
   <string name="MSG_WARN_ON">La détection de mouvement a été activée. En cas de mouvement l\'appareil vous en informera.</string>
   <string name="MUTE">Couper le son</string>

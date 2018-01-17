@@ -71,6 +71,7 @@
   <string name="CID_USED">Dispositivo em uso. Se continuar o cadastro, o vínculo com outros usuários será desfeito. Continuar?</string>
   <string name="CLEAR">Limpar</string>
   <string name="CLEAR_DATA">Limpar cache de mensagens</string>
+  <string name="CLOSE_BUTTON">Fechar</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Feche a porta com sucesso</string>
   <string name="CODE_ERR">Código de verificação inválido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nova senha</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Apagar ícone e mensagens</string>
   <string name="MESSAGES_DELETE_ICON_POP">Apague o ícone e todas as mensagens relacionadas?</string>
   <string name="MESSAGES_DELETE_POP">Apague o rosto e todas as mensagens relacionadas?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Análise de fluxo de passageiros</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identificar</string>
   <string name="MESSAGES_FACE_INFO">Informação do rosto</string>
   <string name="MESSAGES_FACE_MABAGE">Gestão Face</string>
   <string name="MESSAGES_FACE_MOVE">Mover para um rosto existente</string>
   <string name="MESSAGES_FACE_MOVE_BTN">mover para</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Novos visitantes</string>
   <string name="MESSAGES_FACE_NONE">Sem rosto</string>
+  <string name="MESSAGES_FACE_PEOPLE">pessoas</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Visita de hoje</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s pessoas visitaram hoje</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Visite %s vezes dentro de 30 dias</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Visita de ontem</string>
   <string name="MESSAGES_FILTER_ALL">Todos</string>
   <string name="MESSAGES_FILTER_STRANGER">Estranho</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Adicionar ao rosto existente</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Dispositivo excluído com sucesso</string>
   <string name="MSG_UNSHARE">Compartilhamento cancelado para %s</string>
   <string name="MSG_VIDEO">Ao vivo</string>
-  <string name="MSG_WARNING">Novas descobertas</string>
+  <string name="MSG_WARNING">Novas mensagens</string>
   <string name="MSG_WARN_OFF">Sensor de movimento desativado</string>
   <string name="MSG_WARN_ON">Sensor de movimento ativado. O dispositivo irá informar quando perceber movimentos</string>
   <string name="MUTE">Mudo</string>

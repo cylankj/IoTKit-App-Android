@@ -71,6 +71,7 @@
   <string name="CID_USED">このデバイスがすでにバインディングされており、続いて操作すると他とのバインディングが解除されます、継続しますか?</string>
   <string name="CLEAR">空にする</string>
   <string name="CLEAR_DATA">キャッシュクリア</string>
+  <string name="CLOSE_BUTTON">閉じる</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">ドアを正常に閉じる</string>
   <string name="CODE_ERR">有効な検証コードを入力してください</string>
   <string name="COMFIRM_NEW_PASS">新しいパスワードを確認してください</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">アイコンとメッセージを削除する</string>
   <string name="MESSAGES_DELETE_ICON_POP">アイコンと関連するすべてのメッセージを削除しますか？</string>
   <string name="MESSAGES_DELETE_POP">顔と関連するすべてのメッセージを削除しますか？</string>
+  <string name="MESSAGES_FACE_ANALYSIS">旅客流量分析</string>
   <string name="MESSAGES_FACE_IDENTIFY">識別する</string>
   <string name="MESSAGES_FACE_INFO">顔情報</string>
   <string name="MESSAGES_FACE_MABAGE">顔管理</string>
   <string name="MESSAGES_FACE_MOVE">既存の顔に移動する</string>
   <string name="MESSAGES_FACE_MOVE_BTN">へ引っ越す</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">新しい訪問者</string>
   <string name="MESSAGES_FACE_NONE">顔なし</string>
+  <string name="MESSAGES_FACE_PEOPLE">人</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">今日の訪問</string>
   <string name="MESSAGES_FACE_VISIT_SUM">今日 %s 人が訪れました</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">30日以内に%s回訪問</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">昨日の訪問</string>
   <string name="MESSAGES_FILTER_ALL">すべて</string>
   <string name="MESSAGES_FILTER_STRANGER">見知らぬ人</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">既存の顔に追加する</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">デバイスのバインディングを解除しました</string>
   <string name="MSG_UNSHARE">%s ユーザーへのシェアを解除しました</string>
   <string name="MSG_VIDEO">生放送</string>
-  <string name="MSG_WARNING">新しい発現がある</string>
+  <string name="MSG_WARNING">新しいメッセージ</string>
   <string name="MSG_WARN_OFF">防犯システムを解除しました、再度起動することが可能です~</string>
   <string name="MSG_WARN_ON">防犯システムを開始しました、不審者が現れたらすぐにお知らせします</string>
   <string name="MUTE">サイレントモード</string>

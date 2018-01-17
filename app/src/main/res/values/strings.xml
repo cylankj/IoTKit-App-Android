@@ -71,6 +71,7 @@
   <string name="CID_USED">Device has been bound.If continued,it will be forced to unbind from others,continue or not?</string>
   <string name="CLEAR">Clear</string>
   <string name="CLEAR_DATA">Clear messages cache</string>
+  <string name="CLOSE_BUTTON">Close</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Close the door successfully</string>
   <string name="CODE_ERR">Invalid code</string>
   <string name="COMFIRM_NEW_PASS">Retype new Password</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Delete icon and messages</string>
   <string name="MESSAGES_DELETE_ICON_POP">Delete the icon and all related messages?</string>
   <string name="MESSAGES_DELETE_POP">Delete the face and all related messages?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Passenger flow analysis</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identify</string>
   <string name="MESSAGES_FACE_INFO">Face information</string>
   <string name="MESSAGES_FACE_MABAGE">Face management</string>
   <string name="MESSAGES_FACE_MOVE">Move to an existing face</string>
   <string name="MESSAGES_FACE_MOVE_BTN">move to</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">New visitors</string>
   <string name="MESSAGES_FACE_NONE">No face</string>
+  <string name="MESSAGES_FACE_PEOPLE">people</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Today\'s visit</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s people visited today</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Visit %s times within 30 days</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Yesterday\'s visit</string>
   <string name="MESSAGES_FILTER_ALL">All</string>
   <string name="MESSAGES_FILTER_STRANGER">Stranger</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Add to existing face</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Device has been deleted</string>
   <string name="MSG_UNSHARE">Cancel the sharing with %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">New discovery</string>
+  <string name="MSG_WARNING">New messages</string>
   <string name="MSG_WARN_OFF">Motion Detection has been turned off, but can open again.</string>
   <string name="MSG_WARN_ON">Motion Detection has been turned on, you will be notified when movements detected.</string>
   <string name="MUTE">Mute</string>

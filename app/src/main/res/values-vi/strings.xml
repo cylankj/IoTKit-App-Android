@@ -71,6 +71,7 @@
   <string name="CID_USED">Thiết bị đang được sử dụng, nếu bạn tiếp tục thì camera này sẽ xoá khỏi tài khoản cũ và thêm vào tài khoản này, Tiếp?</string>
   <string name="CLEAR">Dọn dẹp</string>
   <string name="CLEAR_DATA">Xoá tin nhắn</string>
+  <string name="CLOSE_BUTTON">Gần</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Đóng cửa thành công</string>
   <string name="CODE_ERR">Mã không tồn tại</string>
   <string name="COMFIRM_NEW_PASS">Nhập lại mật khẩu</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Xóa biểu tượng và thư</string>
   <string name="MESSAGES_DELETE_ICON_POP">Xóa biểu tượng và tất cả các thư liên quan?</string>
   <string name="MESSAGES_DELETE_POP">Xóa khuôn mặt và tất cả các tin nhắn có liên quan?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Phân tích dòng khách</string>
   <string name="MESSAGES_FACE_IDENTIFY">Nhận định</string>
   <string name="MESSAGES_FACE_INFO">Thông tin khuôn mặt</string>
   <string name="MESSAGES_FACE_MABAGE">Quản lý khuôn mặt</string>
   <string name="MESSAGES_FACE_MOVE">Di chuyển đến khuôn mặt hiện tại</string>
   <string name="MESSAGES_FACE_MOVE_BTN">chuyển tới</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Khách mới</string>
   <string name="MESSAGES_FACE_NONE">Không có mặt</string>
+  <string name="MESSAGES_FACE_PEOPLE">những người</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Chuyến thăm hôm nay</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s người ghé thăm hôm nay</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Truy cập %s lần trong vòng 30 ngày</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Lượt truy cập của ngày hôm qua</string>
   <string name="MESSAGES_FILTER_ALL">Tất cả các</string>
   <string name="MESSAGES_FILTER_STRANGER">Lạ</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Thêm vào khuôn mặt hiện tại</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Thiết bị đã xoá</string>
   <string name="MSG_UNSHARE">Huỷ chia sẻ cho %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Khám phá mới</string>
+  <string name="MSG_WARNING">Bài viết mới</string>
   <string name="MSG_WARN_OFF">Bạn đã tắt phát hiện chuyển động</string>
   <string name="MSG_WARN_ON">Bạn đã bật phát hiện chuyển động. Thiết bị sẽ thông báo cho bạn khi có sự kiện</string>
   <string name="MUTE">Tắt tiếng</string>

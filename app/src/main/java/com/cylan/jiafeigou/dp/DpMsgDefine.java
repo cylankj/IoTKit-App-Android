@@ -2793,4 +2793,60 @@ public class DpMsgDefine {
         public List<GrayItem> enable;
         public List<GrayItem> disable;
     }
+
+    @Message
+    public static class VisitorCountStatisticsReq {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int type;
+        @Index(2)
+        public long begin;
+        @Index(3)
+        public long end;
+    }
+
+    @Message
+    public static class VisitorCountStatisticsRsp {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int type;
+        @Index(2)
+        public long begin;
+        @Index(3)
+        public long end;
+        @Index(4)
+        public int count;
+        @Index(5)
+        public List<VisitorCountSub> visitorCountSubs;
+
+        @Override
+        public String toString() {
+            return "VisitorCountStatisticsRsp{" +
+                    "cid='" + cid + '\'' +
+                    ", type=" + type +
+                    ", begin=" + begin +
+                    ", end=" + end +
+                    ", count=" + count +
+                    ", visitorCountSubs=" + visitorCountSubs +
+                    '}';
+        }
+    }
+
+    @Message
+    public static class VisitorCountSub {
+        @Index(0)
+        public long begin;
+        @Index(1)
+        public int count;
+
+        @Override
+        public String toString() {
+            return "VisitorCountSub{" +
+                    "begin=" + begin +
+                    ", count=" + count +
+                    '}';
+        }
+    }
 }

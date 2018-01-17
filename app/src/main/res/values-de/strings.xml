@@ -71,6 +71,7 @@
   <string name="CID_USED">Dieses Gerät ist bereits verbunden, es wird aufgelöst wenn Sie weiter machen, setzen Sie noch fort</string>
   <string name="CLEAR">Leeren</string>
   <string name="CLEAR_DATA">Cache leeren</string>
+  <string name="CLOSE_BUTTON">Schließen</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Schließen Sie die Tür erfolgreich</string>
   <string name="CODE_ERR">Bitte den gültigen Spamschutzcode eingeben</string>
   <string name="COMFIRM_NEW_PASS">Neues Passwort wiederholen</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Symbol und Nachrichten löschen</string>
   <string name="MESSAGES_DELETE_ICON_POP">Löschen Sie das Symbol und alle zugehörigen Nachrichten?</string>
   <string name="MESSAGES_DELETE_POP">Löschen Sie das Gesicht und alle zugehörigen Nachrichten?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Passagierflussanalyse</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identifizieren</string>
   <string name="MESSAGES_FACE_INFO">Gesicht Informationen</string>
   <string name="MESSAGES_FACE_MABAGE">Gesicht Management</string>
   <string name="MESSAGES_FACE_MOVE">Gehen Sie zu einem bestehenden Gesicht</string>
   <string name="MESSAGES_FACE_MOVE_BTN">ziehen nach</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Neue Besucher</string>
   <string name="MESSAGES_FACE_NONE">Kein Gesicht</string>
+  <string name="MESSAGES_FACE_PEOPLE">Menschen</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Der heutige Besuch</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s Personen besucht heute</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Besuche %s mal innerhalb von 30 Tagen</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Der gestrige Besuch</string>
   <string name="MESSAGES_FILTER_ALL">Alle</string>
   <string name="MESSAGES_FILTER_STRANGER">Fremder</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">In dem bestehenden Gesicht</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Gerät gelöscht</string>
   <string name="MSG_UNSHARE">Teilen an Benutzer %s gelöscht</string>
   <string name="MSG_VIDEO">Live</string>
-  <string name="MSG_WARNING">Neue Entdeckungen</string>
+  <string name="MSG_WARNING">Neue Nachrichten</string>
   <string name="MSG_WARN_OFF">Sicherheitsschutz ausgeschaltet, kann wieder angemacht werden</string>
   <string name="MSG_WARN_ON">Sicherheitsschutz eingeschaltet,erkennt Ungewöhnliches, werden Sie sofort informiert</string>
   <string name="MUTE">Lautlos</string>

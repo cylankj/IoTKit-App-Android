@@ -71,6 +71,7 @@
   <string name="CID_USED">设备已被绑定，继续操作对方将会被解除绑定，是否继续?</string>
   <string name="CLEAR">清空</string>
   <string name="CLEAR_DATA">清空消息缓存</string>
+  <string name="CLOSE_BUTTON">关闭</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">关门成功</string>
   <string name="CODE_ERR">请输入有效的验证码</string>
   <string name="COMFIRM_NEW_PASS">确认新密码</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">删除图标和消息</string>
   <string name="MESSAGES_DELETE_ICON_POP">是否删除该图标及其所有消息？</string>
   <string name="MESSAGES_DELETE_POP">是否删除该面孔及其所有消息？</string>
+  <string name="MESSAGES_FACE_ANALYSIS">客流分析</string>
   <string name="MESSAGES_FACE_IDENTIFY">识别</string>
   <string name="MESSAGES_FACE_INFO">面孔信息</string>
   <string name="MESSAGES_FACE_MABAGE">面孔管理</string>
   <string name="MESSAGES_FACE_MOVE">移动到现有面孔</string>
   <string name="MESSAGES_FACE_MOVE_BTN">移动到</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">新增来访</string>
   <string name="MESSAGES_FACE_NONE">暂无面孔</string>
+  <string name="MESSAGES_FACE_PEOPLE">人</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">今日来访</string>
   <string name="MESSAGES_FACE_VISIT_SUM">今日来访 %s 人</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">最近30天来访 %s 次</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">昨日来访</string>
   <string name="MESSAGES_FILTER_ALL">全部</string>
   <string name="MESSAGES_FILTER_STRANGER">陌生人</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">添加到现有面孔</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">设备已删除</string>
   <string name="MSG_UNSHARE">已取消对%s用户的分享</string>
   <string name="MSG_VIDEO">看直播</string>
-  <string name="MSG_WARNING">有新的发现</string>
+  <string name="MSG_WARNING">有新的消息</string>
   <string name="MSG_WARN_OFF">移动侦测已关闭，可以再次开启</string>
   <string name="MSG_WARN_ON">移动侦测已开启，侦测到异常时，将及时发送消息</string>
   <string name="MUTE">静音</string>

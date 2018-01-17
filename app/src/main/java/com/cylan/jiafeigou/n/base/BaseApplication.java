@@ -60,13 +60,14 @@ public class BaseApplication extends MultiDexApplication implements Application.
     //    private static AppComponent appComponent;
     private static int stopViewCount = 0;
     private static int pauseViewCount = 0;
-//    private static BoxStore boxStore;
+    //    private static BoxStore boxStore;
 //
 //    private static Box<PropertyItem> propertyItemBox;
 //
 //    private static Box<Device> deviceBox;
     private volatile boolean needToInject = true;
     private static AppComponent appComponent;
+    private static Activity currentActivity;
 
 //    public static BoxStore getBoxStore() {
 //        return boxStore;
@@ -139,7 +140,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
-                AppLogger.i( "onTrimMemory: " + level);
+                AppLogger.i("onTrimMemory: " + level);
                 RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
                 break;
         }
@@ -149,12 +150,13 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        AppLogger.i( "onLowMemory: ");
+        AppLogger.i("onLowMemory: ");
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         AppLogger.i("life:onActivityCreated: " + activity.getClass().getSimpleName() + " " + savedInstanceState);
+
     }
 
     @Override
@@ -173,6 +175,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.i("life:onActivityResumed " + activity.getClass().getSimpleName());
         pauseViewCount++;
         cancelReportTask();
+        currentActivity = activity;
     }
 
     @Override
@@ -289,4 +292,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
 
+    public static Activity getCurrentActivity() {
+        return currentActivity;
+    }
 }

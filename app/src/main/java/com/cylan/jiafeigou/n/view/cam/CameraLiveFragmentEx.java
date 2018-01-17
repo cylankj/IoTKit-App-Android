@@ -114,6 +114,8 @@ import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 @RuntimePermissions()
 public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presenter> implements CamLiveContract.View, CameraMessageSender.MessageObserver,
         Switcher.SwitcherListener, VideoViewFactory.InterActListener, ILiveControl.Action, FlipImageView.OnFlipListener, HistoryWheelHandler.DatePickerListener {
+    @BindView(R.id.cam_live_control_layer)
+    RelativeLayout camLiveControlLayer;
     @BindView(R.id.imgV_cam_live_land_nav_back)
     TextView imgVCamLiveLandNavBack;
     @BindView(R.id.imgV_land_cam_switch_speaker)
@@ -346,7 +348,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onVideoPlayStopped(boolean live) {
         Log.d(CameraLiveHelper.TAG, "onLiveStop: " + device.getSn());
         enableSensor(false);
-        liveLoadingBar.setKeepScreenOn(false);
         performReLayoutAction();
         if (isNoPlayError()) {
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
@@ -652,7 +653,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             Log.d(CameraLiveHelper.TAG, "已经发起了播放请求,正在等待播放结果,超时或者播放成功?");
         }
         enableSensor(true);
-        liveLoadingBar.setKeepScreenOn(true);//需要保持屏幕常亮
         //|直播| 按钮
         performLayoutEnableAction();
         //现在显示的条件就是手动点击其他情况都不显示
@@ -1871,6 +1871,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         historyParentContainer.setLayoutParams(lp);
         liveViewModeContainer.setLayoutParams(glp);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
+        camLiveControlLayer.setKeepScreenOn(isLivePlaying());
         decideFlippedContent();
         decideLiveThumbContent();
         decideLiveViewMode();

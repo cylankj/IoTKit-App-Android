@@ -8,7 +8,6 @@ import android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION
 import android.os.IBinder
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.WindowManager
 import com.cylan.entity.JfgEnum
 import com.cylan.entity.jniCall.JFGDoorBellCaller
 import com.cylan.jiafeigou.R
@@ -22,6 +21,7 @@ import com.cylan.jiafeigou.support.network.NetMonitor
 import com.cylan.jiafeigou.support.network.NetworkCallback
 import com.cylan.jiafeigou.utils.ContextUtils
 import com.cylan.jiafeigou.utils.NetUtils
+
 
 /**
  * Created by yanzhendong on 2017/12/1.
@@ -98,7 +98,7 @@ class AppServices() : Service(), NetworkCallback {
             if (!BaseApplication.isBackground()) {
                 when (eventAction.code) {
                     16008, 1007, 16006 -> {
-                        val dialog = AlertDialog.Builder(this@AppServices, R.style.AlertDialog)
+                        val dialog = AlertDialog.Builder(BaseApplication.getCurrentActivity(), R.style.AlertDialog)
                                 .setTitle(R.string.RET_ELOGIN_ERROR)
                                 .setMessage(R.string.PWD_CHANGED)
                                 .setCancelable(false)
@@ -109,7 +109,6 @@ class AppServices() : Service(), NetworkCallback {
                                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
                                     ContextUtils.getContext().applicationContext.startActivity(intent);
                                 }).create()
-                        dialog.window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT)
                         dialog.show()
                     }
                 }

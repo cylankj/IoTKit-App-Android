@@ -71,6 +71,7 @@
   <string name="CID_USED">Cihaz kullanıldı, ve cihazı bağlamaya devam etmek isterseniz diğerleriyle olan bağlantısı kopartmaya zorlanacaktır, Devam edilsin mi?</string>
   <string name="CLEAR">Temizle</string>
   <string name="CLEAR_DATA">Mesajlar cebini temizleyiniz</string>
+  <string name="CLOSE_BUTTON">Kapat</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Kapıyı başarıyla kapat</string>
   <string name="CODE_ERR">Geçersiz kod</string>
   <string name="COMFIRM_NEW_PASS">Yeni şifreyi tekrar yazın</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Simgeyi ve mesajları sil</string>
   <string name="MESSAGES_DELETE_ICON_POP">Simgeyi ve ilgili tüm mesajları silinsin mi?</string>
   <string name="MESSAGES_DELETE_POP">Yüzü ve ilgili tüm mesajları silinsin mi?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Yolcu akış analizi</string>
   <string name="MESSAGES_FACE_IDENTIFY">belirlemek</string>
   <string name="MESSAGES_FACE_INFO">Yüz bilgilerini</string>
   <string name="MESSAGES_FACE_MABAGE">Yüz yönetimi</string>
   <string name="MESSAGES_FACE_MOVE">Mevcut bir yüze taşı</string>
   <string name="MESSAGES_FACE_MOVE_BTN">taşınmak</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Yeni ziyaretçiler</string>
   <string name="MESSAGES_FACE_NONE">Yüzsüz</string>
+  <string name="MESSAGES_FACE_PEOPLE">insanlar</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Bugünkü ziyaret</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s kişi bugün ziyaret</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">30 gün içinde %s defa ziyaret</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Dün ziyaret</string>
   <string name="MESSAGES_FILTER_ALL">Herşey</string>
   <string name="MESSAGES_FILTER_STRANGER">Yabancı</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Mevcut yüz ekle</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Cihaz silindi</string>
   <string name="MSG_UNSHARE">%s lik pay silindi</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Yeni keşif</string>
+  <string name="MSG_WARNING">Yeni mesajlar</string>
   <string name="MSG_WARN_OFF">Hareket algılamayı kapattınız.</string>
   <string name="MSG_WARN_ON">Hareket algılamayı açtınız. Cihaz, herhangi bir şey hareket ettiğinde size hemen bildirecektir.</string>
   <string name="MUTE">Sessiz</string>

@@ -71,6 +71,7 @@
   <string name="CID_USED">Данное оборудование уже привязано, если продолжить, то будут удалены все привязки, продолжить?</string>
   <string name="CLEAR">Очистить</string>
   <string name="CLEAR_DATA">Очистить кэш</string>
+  <string name="CLOSE_BUTTON">близко</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Закройте дверь успешно</string>
   <string name="CODE_ERR">Пожалуйста, введите верный пароль</string>
   <string name="COMFIRM_NEW_PASS">Снова введите новый пароль</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Удалить значок и сообщения</string>
   <string name="MESSAGES_DELETE_ICON_POP">Удалить значок и все связанные с ним сообщения?</string>
   <string name="MESSAGES_DELETE_POP">Удалить лицо и все связанные с ним сообщения?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Анализ пассажирского потока</string>
   <string name="MESSAGES_FACE_IDENTIFY">Выявить</string>
   <string name="MESSAGES_FACE_INFO">Лицо информация</string>
   <string name="MESSAGES_FACE_MABAGE">управление Face</string>
   <string name="MESSAGES_FACE_MOVE">Переход к существующему лицу</string>
   <string name="MESSAGES_FACE_MOVE_BTN">переехать в</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Новые посетители</string>
   <string name="MESSAGES_FACE_NONE">Без лица</string>
+  <string name="MESSAGES_FACE_PEOPLE">люди</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Сегодняшний визит</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s человек посетили сегодня</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Посетите %s раз в течение 30 дней</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Вчерашний визит</string>
   <string name="MESSAGES_FILTER_ALL">Все</string>
   <string name="MESSAGES_FILTER_STRANGER">Незнакомец</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Добавить к существующему лицу</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Оборудование больше не привязано</string>
   <string name="MSG_UNSHARE">Не отправлено %s Пользователю</string>
   <string name="MSG_VIDEO">Просмотр</string>
-  <string name="MSG_WARNING">Новые открытия</string>
+  <string name="MSG_WARNING">Новые сообщения</string>
   <string name="MSG_WARN_OFF">Обнаружение движения отключено</string>
   <string name="MSG_WARN_ON">Вы активировали обнаружение движения. Устройство информирует вас сразу, как сработает датчик обнаружения движения</string>
   <string name="MUTE">Бесшумный режим</string>

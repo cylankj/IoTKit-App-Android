@@ -71,6 +71,7 @@
   <string name="CID_USED">Este dispositivo ha sido enlazado, se eliminará el enlace con la operación actual, ¿ seguro de seguir el paso?</string>
   <string name="CLEAR">Vaciar</string>
   <string name="CLEAR_DATA">Limpiar caché</string>
+  <string name="CLOSE_BUTTON">Cerca</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Cierra la puerta con éxito</string>
   <string name="CODE_ERR">Introduzca el código de prueba válido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nueva contraseña</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Eliminar icono y mensajes</string>
   <string name="MESSAGES_DELETE_ICON_POP">¿Eliminar el icono y todos los mensajes relacionados?</string>
   <string name="MESSAGES_DELETE_POP">¿Eliminar la cara y todos los mensajes relacionados?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Análisis de flujo de pasajeros</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identificar</string>
   <string name="MESSAGES_FACE_INFO">Información de cara</string>
   <string name="MESSAGES_FACE_MABAGE">Gestión facial</string>
   <string name="MESSAGES_FACE_MOVE">Mover a una cara existente</string>
   <string name="MESSAGES_FACE_MOVE_BTN">mover a</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Nuevos visitantes</string>
   <string name="MESSAGES_FACE_NONE">No cara</string>
+  <string name="MESSAGES_FACE_PEOPLE">gente</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">La visita de hoy</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s personas visitaron hoy</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Visita %s veces dentro de 30 días</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">La visita de ayer</string>
   <string name="MESSAGES_FILTER_ALL">Todas</string>
   <string name="MESSAGES_FILTER_STRANGER">Desconocido</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Añadir a la cara existente</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Ha eliminado el enlace del dispositivo</string>
   <string name="MSG_UNSHARE">Compartido eliminado con usuario %s</string>
   <string name="MSG_VIDEO">Vivo</string>
-  <string name="MSG_WARNING">Nuevos descubrimientos</string>
+  <string name="MSG_WARNING">Nuevos mensajes</string>
   <string name="MSG_WARN_OFF">Protección de seguridad apagada, puede activar de nuevo</string>
   <string name="MSG_WARN_ON">Ha activado la protección de seguridad, si pasa un OVNI, se lo informaremos a primera hora</string>
   <string name="MUTE">Mudo</string>

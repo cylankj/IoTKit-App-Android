@@ -71,6 +71,7 @@
   <string name="CID_USED">Perangkat telah digunakan , dan jika Anda terus mengikat perangkat , ini akan melepaskan perangkat dari orang lain , Lanjutkan atau tidak ?</string>
   <string name="CLEAR">Bersih</string>
   <string name="CLEAR_DATA">Hapus Pesan</string>
+  <string name="CLOSE_BUTTON">Dekat</string>
   <string name="CLOSE_DOOR_SUCCE_MSG">Tutup pintunya dengan sukses</string>
   <string name="CODE_ERR">Kode salah</string>
   <string name="COMFIRM_NEW_PASS">Ketik kata sandi baru</string>
@@ -427,14 +428,19 @@
   <string name="MESSAGES_DELETE_ICON_MES">Hapus ikon dan pesan</string>
   <string name="MESSAGES_DELETE_ICON_POP">Hapus ikon dan semua pesan terkait?</string>
   <string name="MESSAGES_DELETE_POP">Hapus wajah dan semua pesan terkait?</string>
+  <string name="MESSAGES_FACE_ANALYSIS">Analisis arus penumpang</string>
   <string name="MESSAGES_FACE_IDENTIFY">Mengenali</string>
   <string name="MESSAGES_FACE_INFO">Informasi wajah</string>
   <string name="MESSAGES_FACE_MABAGE">Manajemen wajah</string>
   <string name="MESSAGES_FACE_MOVE">Pindah ke wajah yang ada</string>
   <string name="MESSAGES_FACE_MOVE_BTN">pindah ke</string>
+  <string name="MESSAGES_FACE_NEW_VISIT">Pengunjung baru</string>
   <string name="MESSAGES_FACE_NONE">Tanpa muka</string>
+  <string name="MESSAGES_FACE_PEOPLE">orang-orang</string>
+  <string name="MESSAGES_FACE_TADAY_VISIT">Kunjungan hari ini</string>
   <string name="MESSAGES_FACE_VISIT_SUM">%s orang berkunjung hari ini</string>
   <string name="MESSAGES_FACE_VISIT_TIMES">Kunjungi %s kali dalam 30 hari</string>
+  <string name="MESSAGES_FACE_YESTERDAY_VISIT">Kunjungan kemarin</string>
   <string name="MESSAGES_FILTER_ALL">Semua</string>
   <string name="MESSAGES_FILTER_STRANGER">Orang asing</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Tambahkan ke wajah yang ada</string>
@@ -469,7 +475,7 @@
   <string name="MSG_UNBIND">Perangkat telah dihapus</string>
   <string name="MSG_UNSHARE">Hapus berbagi dari %s</string>
   <string name="MSG_VIDEO">Video</string>
-  <string name="MSG_WARNING">Penemuan Baru</string>
+  <string name="MSG_WARNING">Pesan baru</string>
   <string name="MSG_WARN_OFF">Anda telah menutup deteksi gerakan</string>
   <string name="MSG_WARN_ON">Deteksi gerak telah dinyalakan, Anda akan diberi tahu saat gerakan terdeteksi. Anda telah membuka deteksi gerakan . Perangkat akan memberitahu anda segera ketika sesuatu bergerak</string>
   <string name="MUTE">Diam</string>

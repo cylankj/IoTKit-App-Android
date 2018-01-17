@@ -148,7 +148,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         Log.d(CameraLiveHelper.VERB_TAG, "live:" + (jfgMsgVideoRtcp.timestamp == 0));
                         boolean goodFrameRate = jfgMsgVideoRtcp.frameRate > 0;
                         if (goodFrameRate) {
-                            if (!CameraLiveHelper.isLive(liveActionHelper)) {
+                            if (!CameraLiveHelper.isLive(liveActionHelper) && jfgMsgVideoRtcp.timestamp > 0) {
                                 boolean liveActionCompleted = liveActionHelper.onUpdatePendingPlayLiveActionCompleted();
                                 if (!liveActionCompleted) {
                                     mView.onVideoPlayActionCompleted();
@@ -158,10 +158,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
                         if (videoPlaying) {
                             liveActionHelper.onUpdateVideoRtcp(jfgMsgVideoRtcp);
-                            if (liveActionHelper.recordedZeroTimestampCount > 3) {
-                                if (!liveActionHelper.onUpdateLive(true)) {
-                                    mView.onVideoPlayTypeChanged(true);
-                                }
+                            boolean live = liveActionHelper.onUpdateLive(liveActionHelper.recordedZeroTimestampCount > 0);
+                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
+                                mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
                             }
                             feedRtcp.feed(jfgMsgVideoRtcp);
                             mView.onRtcp(jfgMsgVideoRtcp);

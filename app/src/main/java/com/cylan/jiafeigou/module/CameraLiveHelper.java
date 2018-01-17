@@ -648,4 +648,8 @@ public class CameraLiveHelper {
     public static boolean shouldReportError(CameraLiveActionHelper helper) {
         return !isNoError(helper) && shouldReportError(helper, checkPlayError(helper));
     }
+
+    public static boolean checkIsLiveTypeChanged(CameraLiveActionHelper helper, boolean live) {
+        return helper.isLive != live;
+    }
 }

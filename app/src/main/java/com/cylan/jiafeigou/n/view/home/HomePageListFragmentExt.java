@@ -71,6 +71,7 @@ import com.mikepenz.fastadapter.listeners.OnClickListener;
 import com.mikepenz.fastadapter.listeners.OnLongClickListener;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -389,7 +390,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         @Override
         public synchronized void run() {
             if (resultList != null) {
-                mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(resultList));
+                mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(new ArrayList<>(resultList)));
                 emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
             }
 //        //不管怎么样都要刷新下,因为 homeItem 比较相等的方法并不能涵盖所有条件,不刷新可能导致主页消息更新不及时
