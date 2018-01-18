@@ -388,6 +388,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onVideoPlayActionCompleted() {
         Log.d(CameraLiveHelper.TAG, "onVideoPlayActionCompleted");
         performReLayoutAction();
+        performLayoutAnimation(false);
         liveLoadingBar.changeToPause(false);
 
     }
