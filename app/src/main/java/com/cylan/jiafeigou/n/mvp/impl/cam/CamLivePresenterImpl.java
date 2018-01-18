@@ -145,6 +145,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<JFGMsgVideoRtcp>() {
                     @Override
                     public void call(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
+                        if (!liveActionHelper.isPlaying) {//rtcp 可能停止不会很及时,导致退出页面后马上进入页面还有 rtcp 回调
+                            return;
+                        }
                         Log.d(CameraLiveHelper.VERB_TAG, "live:" + (jfgMsgVideoRtcp.timestamp == 0));
                         boolean goodFrameRate = jfgMsgVideoRtcp.frameRate > 0;
                         if (goodFrameRate) {

@@ -57,7 +57,7 @@ class AppServices() : Service(), NetworkCallback {
                 Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED)
             }
         }
-        isConnected = connected;
+        isConnected = connected
     }
 
 
