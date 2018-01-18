@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
@@ -41,6 +42,8 @@ public class WiFiListDialogFragment extends DialogFragment implements
     RecyclerView rvWifiList;
     @BindView(R.id.cLayout_dialog_wifi_list)
     CardView lLayoutDialogWifiList;
+    @BindView(R.id.refresh_switcher)
+    ViewSwitcher refreshSwitcher;
     private int currentHeight;
     private int maxHeight = 0;
     private int maxWidth;
@@ -74,8 +77,7 @@ public class WiFiListDialogFragment extends DialogFragment implements
     public void onResume() {
         super.onResume();
         initParams();
-        getDialog().getWindow()
-                .setLayout(maxWidth, currentHeight);
+        getDialog().getWindow().setLayout(maxWidth, currentHeight);
     }
 
     @Nullable
@@ -94,6 +96,7 @@ public class WiFiListDialogFragment extends DialogFragment implements
         rvWifiList.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvWifiList.setLayoutManager(layoutManager);
+        refreshSwitcher.setVisibility(View.GONE);
         if (resultList != null) {
             adapter.addAll(resultList);
         }

@@ -112,8 +112,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     CustomToolbar customToolbar;
     @BindView(R.id.act_bell_live_back)
     TextView landBack;
-    //    @BindView(R.id.root_view)
-//    ViewGroup rootView;
     @BindView(R.id.bottom_menu_switcher)
     ViewSwitcher bottomMenuSwitcher;
     @BindView(R.id.imgv_bell_door_lock)
@@ -195,9 +193,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private void decideBottomLayout() {
         Device device = sourceManager.getDevice(uuid);
         if (device == null) return;
-//        if (device.pid == 6) {
-//            device.pid = 1558;
-//        }
         if (JFGRules.hasDoorLock(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
             bellDoorLock.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgvBellLiveCapture.getLayoutParams();
@@ -514,6 +509,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         ratio = JFGRules.isNeedNormalRadio(device.pid) ? (float) resolution.height / resolution.width : ratio;
         ViewUtils.updateViewHeight(flBellLiveHolder, ratio);
+        if (mSurfaceView != null && mSurfaceView instanceof VideoViewFactory.IVideoView) {
+            ((VideoViewFactory.IVideoView) mSurfaceView).detectOrientationChanged();
+        }
     }
 
     @Override
@@ -774,7 +772,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
      *
      * @return
      */
-    private void initVideoView() {
+    private synchronized void initVideoView() {
         if (mSurfaceView == null) {
             Device device = DataSourceManager.getInstance().getDevice(uuid);
             mSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(device.pid, this);

@@ -690,4 +690,19 @@ public class DP {
         System.out.println("day:" + day + ",hour:" + hour + ",minute:" + minute);
     }
 
+    @Test
+    public void testForEach() {
+        List<P> items = new ArrayList<>();
+        items.add(new P());
+        items.add(new P());
+        items.add(null);
+        for (P item : items) {
+            System.out.println(item.age);
+        }
+    }
+
+    public static class P {
+        String name;
+        int age;
+    }
 }

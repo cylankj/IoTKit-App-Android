@@ -69,8 +69,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                     final String currentVersion = device.$(207, "");
                     AppLogger.d("current version: " + currentVersion);
                     try {
-                        seq = Command.getInstance()
-                                .checkDevVersion(device.pid, device.getUuid(), currentVersion);
+                        seq = Command.getInstance().checkDevVersion(device.pid, device.getUuid(), currentVersion);
                         Command.getInstance().CheckTagDeviceVersion(uuid);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());

@@ -102,6 +102,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                     }
                     return Observable.just(ret.getVersion());
                 })
+                .doOnTerminate(() -> showCondition = null)
                 .subscribe(ret -> {
                 }, AppLogger::e);
         SubscriptionSupervisor.subscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck", subscribe);

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -47,6 +46,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         try {
             if (DataSourceManager.getInstance().isOnline()) {
                 DataSourceManager.getInstance().syncDeviceProperty(uuid);
+//                checkNewVersion();
             }
         } catch (Exception e) {
         }
@@ -195,11 +195,27 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     }
 
     public void checkNewVersion() {
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            final String currentVersion = device.$(207, "");
+            AppLogger.d("current version: " + currentVersion);
+            try {
+                long seq = Command.getInstance().CheckTagDeviceVersion(uuid);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+                AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
             }
-        });
+        }).flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class))
+                .first(rsp -> rsp != null && TextUtils.equals(rsp.uuid, uuid))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(versionRsp -> {
+                    mView.onCheckDeviceVersionFinished(versionRsp.getVersion().getTagVersion());
+                }, throwable -> {
+                    AppLogger.e(throwable);
+                    mView.onCheckDeviceVersionFinished(null);
+                });
+        addStopSubscription(subscribe);
     }
 }

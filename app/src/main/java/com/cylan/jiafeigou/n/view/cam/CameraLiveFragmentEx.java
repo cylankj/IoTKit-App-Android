@@ -350,7 +350,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         enableSensor(false);
         performReLayoutAction();
         if (isNoPlayError()) {
-            Log.d("LOADING", "SHOW:" + true);
             liveLoadingBar.changeToPlaying(true);
         }
         if (hasPendingFinishAction) {
@@ -447,7 +446,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         performReLayoutAction();
         if (!isLivePlaying()) {
-            Log.d("LOADING", "SHOW:" + true);
             liveLoadingBar.changeToPlaying(true);
         }
     }
@@ -592,7 +590,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onLoadHistoryFailed() {
         Log.d(CameraLiveHelper.TAG, "加载历史录像失败了");
         btnLoadHistory.setEnabled(true);
-        Log.d("LOADING", "SHOW:" + canShowLoadingBar());
         liveLoadingBar.changeToPlaying(canShowLoadingBar());
         if (presenter.isHistoryEmpty()) {
             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
@@ -606,7 +603,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (isStandBy) {
             liveLoadingBar.changeToNone();
         } else {
-            Log.d("LOADING", "SHOW:" + canShowLoadingBar());
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
         }
     }
@@ -640,7 +636,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (isLivePlaying()) {
             liveLoadingBar.changeToPause(false);
         } else {
-            Log.d("LOADING", "SHOW:" + true);
             liveLoadingBar.changeToPlaying(true);
         }
     }
@@ -1365,7 +1360,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPlayErrorNoError() {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorNoError");
         performReLayoutAction();
-        Log.d("LOADING", "SHOW:" + canShowLoadingBar());
         liveLoadingBar.changeToPlaying(canShowLoadingBar());
     }
 
@@ -1394,7 +1388,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ToastUtil.showToast(getString(R.string.NO_SDCARD));
         performLayoutEnableAction();
         if (!isLivePlaying()) {
-            Log.d("LOADING", "SHOW:" + canShowLoadingBar());
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
         } else if (isNoPlayError()) {
             liveLoadingBar.changeToPause(!canHideLoadingBar());
@@ -1407,7 +1400,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
         performLayoutEnableAction();
         if (!isLivePlaying()) {
-            Log.d("LOADING", "SHOW:" + canShowLoadingBar());
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
         } else if (isNoPlayError()) {
             liveLoadingBar.changeToPause(!canHideLoadingBar());
@@ -1942,7 +1934,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             liveViewWithThumbnail.removeView(sightLayer);
             return;
         }
-        Log.d("LOADING", "SHOW:" + false);
         liveLoadingBar.changeToPlaying(false);
         if (sightLayer != null) {
             sightLayer.setVisibility(VISIBLE);
@@ -1988,7 +1979,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         boolean standBy = isStandBy();
         liveViewWithThumbnail.enableStandbyMode(standBy, this::onStandByClicked, JFGRules.isShareDevice(uuid));
         if (standBy) {
-            Log.d("LOADING", "SHOW:" + false);
             liveLoadingBar.changeToPlaying(false);
             return;
         }

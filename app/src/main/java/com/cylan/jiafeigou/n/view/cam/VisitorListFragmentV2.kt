@@ -524,16 +524,15 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     open fun refreshContent() {
+        if (view == null) {
+            return
+        }
         if (faceAdapter.isNormalView) {
-            face_header.post {
-                currentPosition = 0
-                presenter?.fetchVisitorList(0)
-            }
+            currentPosition = 0
+            presenter?.fetchVisitorList(0)
         } else {
-            face_header.post {
-                currentPosition = 0
-                presenter?.fetchStrangerVisitorList(0)
-            }
+            currentPosition = 0
+            presenter?.fetchStrangerVisitorList(0)
         }
     }
 

@@ -212,6 +212,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void monitorVideoResolution() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                .filter(jfgMsgVideoResolution -> TextUtils.equals(jfgMsgVideoResolution.peer, uuid) && liveActionHelper.isPlaying)
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JFGMsgVideoResolution>() {

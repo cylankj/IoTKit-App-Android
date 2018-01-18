@@ -25,6 +25,8 @@ public interface CamInfoContract {
         void setAliasRsp(int code);
 
         void deviceUpdate(JFGDPMsg msg) throws IOException;
+
+        void onCheckDeviceVersionFinished(String tagVersion);
     }
 
     interface Presenter extends BasePresenter {

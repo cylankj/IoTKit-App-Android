@@ -800,8 +800,10 @@ public class MiscUtils {
         ArrayList<Device> devices = new ArrayList<>(list);
         List<HomeItem> list1 = new ArrayList<>(list.size());
         for (Device item : devices) {
-            Log.d("FromDevice", "item:" + item.pid);
-            list1.add(new HomeItem().withUUID(item.uuid));
+            if (item != null) {
+                Log.d("FromDevice", "item:" + item.pid);
+                list1.add(new HomeItem().withUUID(item.uuid));
+            }
         }
         return list1;
     }

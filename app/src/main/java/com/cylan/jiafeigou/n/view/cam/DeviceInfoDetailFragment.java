@@ -492,6 +492,20 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @Override
+    public void onCheckDeviceVersionFinished(String tagVersion) {
+        AppLogger.d("onCheckDeviceVersionFinished:" + tagVersion);
+        String s = device.$(207, "");
+        rlHardwareUpdate.setSubTitle(s);
+        try {
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid());
+            rlHardwareUpdate.setSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
+
+            rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
     }

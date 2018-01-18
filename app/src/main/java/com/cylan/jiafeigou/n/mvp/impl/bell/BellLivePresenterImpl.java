@@ -2,25 +2,16 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
-import android.text.TextUtils;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseCallablePresenter;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.cache.db.view.IDPEntity;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.utils.JfgUtils;
 
 import java.io.File;
@@ -45,6 +36,11 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
     @Inject
     public BellLivePresenterImpl(BellLiveContract.View view) {
         super(view);
+    }
+
+    @Override
+    protected boolean disconnectBeforePlay() {
+        return true;
     }
 
     @Override
