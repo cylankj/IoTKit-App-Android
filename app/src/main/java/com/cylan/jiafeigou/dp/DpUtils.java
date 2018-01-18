@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.dp;
 
+import android.util.Log;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.module.message.DPList;
 import com.cylan.jiafeigou.module.message.DPListConverter;
@@ -46,6 +48,7 @@ public class DpUtils {
             return mp.createBufferUnpacker(data).read(clazz);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i("QQQQQ", "unpackDataWithoutThrow: "+e.getMessage()+",RAW:"+unpack(data));
             return defaultValue;
         }
     }

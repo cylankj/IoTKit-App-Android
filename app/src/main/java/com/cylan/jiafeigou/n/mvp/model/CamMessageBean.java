@@ -101,4 +101,12 @@ public class CamMessageBean implements Parcelable {
             return new CamMessageBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "CamMessageBean{" +
+                "message=" + message +
+                ", viewType=" + viewType +
+                '}';
+    }
 }

@@ -179,7 +179,8 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
                 DpMsgDefine.DPNet net = device == null ? new DpMsgDefine.DPNet() : device.$(201, new DpMsgDefine.DPNet());
                 if (!TextUtils.equals(routeName, net.ssid)) {
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));
-                    return;
+                    if (false)
+                        return;
                 }
                 if (presenter != null) {
                     presenter.sendWifiInfo(uuid, ssid, (String) value, security);

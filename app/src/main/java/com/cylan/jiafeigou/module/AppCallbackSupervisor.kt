@@ -97,7 +97,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     private val gson = Gson()
 
     override fun OnLocalMessage(s: String, i: Int, bytes: ByteArray) {
-        //        AppLogger.d("OnLocalMessage :" + account + ",i:" + i);
+        AppLogger.d("OnLocalMessage :s" + s + ",i:" + i + "bytes:" + DpUtils.unpack(bytes));
         val localUdpMsg = RxEvent.LocalUdpMsg(System.currentTimeMillis(), s, i.toShort(), bytes)
         BaseUdpMsgParser.getInstance().parserUdpMessage(localUdpMsg)
         RxBus.getCacheInstance().post(localUdpMsg)
@@ -532,6 +532,9 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
 
     override fun OnUniversalDataRsp(l: Long, i: Int, bytes: ByteArray) {
         Log.w(JConstant.CYLAN_TAG, "OnUniversalDataRsp: seq:" + l + ",msgId:" + i + ",bytes:" + DpUtils.unpack(bytes));
+        if (i == 8) {
+            Log.e("QQQQQ", "OnUniversalDataRsp: seq:" + l + " data:" + Arrays.toString(bytes))
+        }
         RxBus.getCacheInstance().post(RxEvent.UniversalDataRsp(l, i, bytes))
         publish(RxEvent.UniversalDataRsp(l, i, bytes))
     }
