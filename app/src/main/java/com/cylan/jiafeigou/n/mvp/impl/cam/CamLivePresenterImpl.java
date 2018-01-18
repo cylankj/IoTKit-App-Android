@@ -32,12 +32,15 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
+import com.cylan.jiafeigou.module.BellerSupervisor;
 import com.cylan.jiafeigou.module.CameraLiveActionHelper;
 import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.HistoryManager;
+import com.cylan.jiafeigou.module.HookerSupervisor;
 import com.cylan.jiafeigou.module.SubscriptionSupervisor;
+import com.cylan.jiafeigou.module.Supervisor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.push.BellPuller;
@@ -55,6 +58,8 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.panorama.CameraParam;
 import com.google.gson.Gson;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,6 +99,20 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         monitorVideoRtcp();
         monitorHistoryVideoError();
         monitorVideoResolution();
+        monitorBellLauncher();
+    }
+
+    private BellerSupervisor.BellerHooker bellerHooker = new BellerSupervisor.BellerHooker() {
+        @Override
+        protected void doHooker(@NotNull Supervisor.Action action, @NotNull BellerSupervisor.BellerParameter parameter) {
+            performStopVideoAction(true);
+            CameraLiveHelper.waitForStopCompleted(liveActionHelper);
+            super.doHooker(action, parameter);
+        }
+    };
+
+    private void monitorBellLauncher() {
+        HookerSupervisor.addHooker(bellerHooker);
     }
 
     @Override
@@ -604,6 +623,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 });
                 subscriber.add(subscription);
             } else {
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
+                DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
+                liveActionHelper.onUpdateDeviceSDCardStatus(sdStatus);
                 subscriber.onNext(liveActionHelper.deviceSDStatus);
                 subscriber.onCompleted();
             }
@@ -626,12 +648,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     } else if (hasSdcard) {
                         liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                         performPlayVideoAction(false, playTime);
+                    } else if (!hasSdcard) {
+                        liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
+                        mView.onHistoryCheckerErrorNoSDCard();
                     } else if (errorCode != 0) {
                         liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                         mView.onHistoryCheckerErrorSDCardInitRequired(errorCode);
-                    } else {
-                        liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
-                        mView.onHistoryCheckerErrorNoSDCard();
                     }
                 }, throwable -> {
                     throwable.printStackTrace();
@@ -1655,6 +1677,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         SubscriptionSupervisor.unsubscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
         liveActionHelper.onUpdateLastLiveThumbPicture(liveActionHelper, null);
         HistoryManager.getInstance().removeHistoryObserver(uuid);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        HookerSupervisor.removeHooker(bellerHooker);
     }
 
     @Override

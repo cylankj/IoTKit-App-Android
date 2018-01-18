@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.n.view.bell.BellLiveActivity
 import com.cylan.jiafeigou.support.Security
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ContextUtils
+import com.cylan.jiafeigou.utils.HandlerThreadUtils
 
 /**
  * Created by yanzhendong on 2017/12/4.
@@ -33,12 +34,12 @@ object BellerSupervisor : Supervisor {
         listenForRemote()
     }
 
-    abstract class BellerHooker : Supervisor.Hooker {
+    open abstract class BellerHooker : Supervisor.Hooker {
         override fun parameterType(): Array<Class<*>> = arrayOf(BellerParameter::class.java)
 
-        override fun hooker(action: Supervisor.Action) {
+        override fun hooker(action: Supervisor.Action): Any? {
             val parameter = action.parameter()
-            when (parameter) {
+            return when (parameter) {
                 is BellerParameter -> doHooker(action, parameter)
                 else -> action.process()
             }
@@ -178,6 +179,6 @@ object BellerSupervisor : Supervisor {
     }
 
     private fun performLauncher(cid: String, time: Long = System.currentTimeMillis() / 1000L, url: String = "") {
-        HookerSupervisor.performHooker(BellerAction(BellerParameter(cid, time, url)))
+        HandlerThreadUtils.post { HookerSupervisor.performHooker(BellerAction(BellerParameter(cid, time, url))) }
     }
 }

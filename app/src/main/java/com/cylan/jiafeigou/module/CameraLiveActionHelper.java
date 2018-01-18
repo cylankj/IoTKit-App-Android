@@ -87,7 +87,7 @@ public class CameraLiveActionHelper {
         Log.d(CameraLiveHelper.TAG, "onUpdateDeviceInformation");
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         this.isStandBy = JFGRules.isDeviceStandBy(device);
-        this.deviceSDStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, deviceSDStatus);
+        this.deviceSDStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         this.isSDCardExist = JFGRules.hasSdcard(this.deviceSDStatus);
         this.deviceNet = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         this.deviceTimezone = device.$(DpMsgMap.ID_214_DEVICE_TIME_ZONE, new DpMsgDefine.DPTimeZone());
