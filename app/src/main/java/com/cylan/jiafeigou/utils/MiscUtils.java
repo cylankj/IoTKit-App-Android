@@ -130,7 +130,7 @@ public class MiscUtils {
         if (byteData >= GIGA_BYTE && byteData < 1024L * GIGA_BYTE) {
             return (byteData >>> 30) + "T/s";
         }
-        return "AAAAA";
+        return "";
     }
 
 //    public static void main(String[] args) {
