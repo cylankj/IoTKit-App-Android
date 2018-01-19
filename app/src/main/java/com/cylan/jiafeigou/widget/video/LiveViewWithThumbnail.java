@@ -125,8 +125,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void showFlowView(boolean show, String content) {
-        tvLiveFlow.setVisibility(show ? VISIBLE : GONE);
         tvLiveFlow.setText(content);
+        tvLiveFlow.setVisibility(show?VISIBLE:INVISIBLE);
     }
 
     @Override

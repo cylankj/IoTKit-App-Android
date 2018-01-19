@@ -21,8 +21,9 @@
         android:layout_marginTop="@dimen/x14"
         android:background="@drawable/flow_bg"
         android:gravity="center"
+        android:text="0K/s"
         android:textColor="@color/color_white"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <FrameLayout
         android:id="@+id/fLayout_standby_mode"

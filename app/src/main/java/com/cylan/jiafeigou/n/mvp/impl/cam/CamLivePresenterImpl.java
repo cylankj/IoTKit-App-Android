@@ -73,6 +73,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
@@ -84,6 +85,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener, HistoryManager.HistoryObserver {
     private CameraLiveActionHelper liveActionHelper;
+    private CompositeSubscription compositeSubscription;
     /**
      * 帧率记录
      */
@@ -95,6 +97,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         feedRtcp.setMonitorListener(this);
         //清了吧.不需要缓存.
         HistoryManager.getInstance().clearHistory(uuid);
+        compositeSubscription = new CompositeSubscription();
         monitorVideoDisconnect();
         monitorVideoRtcp();
         monitorHistoryVideoError();
@@ -124,6 +127,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         monitorDeviceUnbind();
         monitorCheckNewVersionRsp();
         monitorSdcardFormatSub();
+
     }
 
     private void monitorVideoDisconnect() {
@@ -152,7 +156,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         throwable.printStackTrace();
                     }
                 });
-        addDestroySubscription(subscribe);
+//        addDestroySubscription(subscribe);
+        compositeSubscription.add(subscribe);
     }
 
     private void monitorVideoRtcp() {
@@ -194,7 +199,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.e(throwable);
                     }
                 });
-        addDestroySubscription(subscribe);
+//        addDestroySubscription(subscribe);
+        compositeSubscription.add(subscribe);
     }
 
     private void monitorHistoryVideoError() {
@@ -220,7 +226,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }
                     }
                 });
-        addDestroySubscription(subscribe);
+//        addDestroySubscription(subscribe);
+        compositeSubscription.add(subscribe);
     }
 
     private void monitorVideoResolution() {
@@ -266,7 +273,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.e(throwable);
                     }
                 });
-        addDestroySubscription(subscribe);
+//        addDestroySubscription(subscribe);
+        compositeSubscription.add(subscribe);
     }
 
     private void performBottomMenuRefresh() {
@@ -688,7 +696,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     return prepared;
                 })
-                .timeout(5, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -1660,6 +1667,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void destroy() {
         super.destroy();
         HookerSupervisor.removeHooker(bellerHooker);
+        if (compositeSubscription!=null){
+            compositeSubscription.unsubscribe();
+            compositeSubscription.clear();
+        }
     }
 
     @Override

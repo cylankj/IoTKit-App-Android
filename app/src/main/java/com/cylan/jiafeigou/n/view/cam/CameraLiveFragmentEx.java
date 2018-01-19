@@ -1123,7 +1123,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             imgVCamLiveLandPlay.setImageResource(R.drawable.icon_landscape_playing);
             presenter.performPlayVideoAction();
         }
-        AppLogger.d(CameraLiveHelper.TAG+ ":performTogglePlayingAction:isPlaying:" + livePlaying);
+        AppLogger.d(CameraLiveHelper.TAG + ":performTogglePlayingAction:isPlaying:" + livePlaying);
     }
 
     @OnClick(R.id.tv_live)
@@ -1754,7 +1754,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ivCamDoorLock.setVisibility(canShowDoorLook ? VISIBLE : GONE);
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
-        liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : GONE);
+        liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
         liveLoadingBar.showOrHide(!canHideLoadingBar());
         historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
 
@@ -1836,7 +1836,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         flLoadHistory.setBackgroundResource(isLand ? android.R.color.transparent : R.color.color_F7F8FA);
         vLine.setBackgroundResource(isLand ? android.R.color.transparent : R.color.color_f2f2f2);
         (imgVCamLiveLandPlay).setImageResource(isLivePlaying() ? R.drawable.icon_landscape_playing : R.drawable.icon_landscape_stop);
-        liveViewWithThumbnail.showFlowView(isLivePlaying(), null);
+        liveViewWithThumbnail.showFlowView(isLivePlaying(), "0K/s");
 
         //是否显示清晰度切换
         int mode = device.$(513, 0);
