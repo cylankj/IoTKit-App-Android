@@ -1140,18 +1140,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (playTime >= 0) {
                     liveActionHelper.lastPlayTime = playTime;
                 }
-                boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
-                if (videoPlaying) {
-                    performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), true, () -> {
-                        subscriber.onNext("停止直播已完成");
-                        subscriber.onCompleted();
-                    });
-                    AppLogger.d(CameraLiveHelper.TAG + ":获取历史录像,先断开直播,或者历史录像");
-                } else {
-                    subscriber.onNext("无需停止直播");
+                performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), true, () -> {
+                    subscriber.onNext("停止直播已完成");
                     subscriber.onCompleted();
-                }
-
+                });
+                AppLogger.d(CameraLiveHelper.TAG + ":获取历史录像,先断开直播,或者历史录像");
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -1667,7 +1660,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void destroy() {
         super.destroy();
         HookerSupervisor.removeHooker(bellerHooker);
-        if (compositeSubscription!=null){
+        if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
             compositeSubscription.clear();
         }
