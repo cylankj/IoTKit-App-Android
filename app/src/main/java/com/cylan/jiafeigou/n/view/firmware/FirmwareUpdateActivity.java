@@ -375,27 +375,23 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                             AlertDialogManager.getInstance().showDialog(this, getString(R.string.WIRED_UPGRADE_NON_LAN),
                                     getString(R.string.WIRED_UPGRADE_NON_LAN), getString(R.string.OK), null);
                             listener.checkResult(false);
+                            return;
                         } else if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
                             AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
                                     getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                     }, getString(R.string.CANCEL), null);
                             listener.checkResult(false);
-//            return false;
                             return;
                         }
                         //简单地认为是同一个局域网
                         listener.checkResult(true);
-
                     }
                 }, error -> {
                     error.printStackTrace();
                     AppLogger.e(error);
                 });
         presenter.addSubscription("FirmwareUpdateActivity.APObserver.scan", subscribe);
-
-
-//        return true;
     }
 
 
@@ -420,7 +416,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 public void checkResult(boolean pass) {
                     if (pass) {
                         //2.电量
-
                         Device device = DataSourceManager.getInstance().getDevice(uuid());
                         if (JFGRules.showBattery(device.pid, false)) {
                             int battery = device.$(206, 0);
