@@ -16,6 +16,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +38,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -716,8 +716,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public boolean onLongClick(View v, IAdapter<HomeItem> adapter, HomeItem item, int position) {
         final String alias = ((TextView) v.findViewById(R.id.tv_device_alias)).getText().toString();
-        AlertDialogManager.getInstance().showDialog(getActivity(), "deleteItem",
-                getString(R.string.SURE_DELETE_1, alias), getString(R.string.OK), (dialog, which) -> {
+        new AlertDialog.Builder(getContext())
+                .setMessage(getString(R.string.SURE_DELETE_1, alias))
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
                     LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), true);
                     Subscription subscribe = Observable.just(new DPEntity()
                             .setUuid(item.getUUid())
@@ -736,7 +737,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                                 AppLogger.e("err: " + MiscUtils.getErr(e));
                             }, () -> LoadingDialog.dismissLoading());
                     presenter.addSubscription("unbind", subscribe);
-                }, getString(R.string.CANCEL), null);
+                })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show();
         return true;
     }
 }

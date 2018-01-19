@@ -193,7 +193,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     FrameLayout flLoadHistory;
     private boolean enableAutoRotate = false;
     private String uuid;
-    private static final String TAG = "CameraLiveFragmentEx";
+    private static final String TAG = "CameraLiveFragmentEx:";
     private RoundCardPopup roundCardPopup;
     private HistoryWheelHandler historyWheelHandler;
     private CamLiveContract.Presenter presenter;
@@ -350,7 +350,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         enableSensor(false);
         performReLayoutAction();
         if (isNoPlayError()) {
-            liveLoadingBar.changeToPlaying(true);
+            liveLoadingBar.changeToPlaying(canShowLoadingBar());
         }
         if (hasPendingFinishAction) {
             hasPendingFinishAction = false;
@@ -1123,7 +1123,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             imgVCamLiveLandPlay.setImageResource(R.drawable.icon_landscape_playing);
             presenter.performPlayVideoAction();
         }
-        Log.d(CameraLiveHelper.TAG, "performTogglePlayingAction:isPlaying:" + livePlaying);
+        AppLogger.d(CameraLiveHelper.TAG+ ":performTogglePlayingAction:isPlaying:" + livePlaying);
     }
 
     @OnClick(R.id.tv_live)
@@ -1224,24 +1224,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onDeviceNetChanged(DpMsgDefine.DPNet net, boolean isLocalOnline) {
-        if (BuildConfig.DEBUG) {
-            Log.d(CameraLiveHelper.TAG, "onDeviceNetChanged,net is:" + net + " isLocalOnline:" + isLocalOnline);
-        }
+        AppLogger.d(CameraLiveHelper.TAG + ":onDeviceNetChanged,net is:" + net + " isLocalOnline:" + isLocalOnline);
         this.isLocalOnline = isLocalOnline;
         performLayoutEnableAction();
     }
 
     @Override
     public void onUpdateAlarmOpenChanged(boolean alarmOpened) {
-        if (BuildConfig.DEBUG) {
-            Log.d(CameraLiveHelper.TAG, "onUpdateAlarmOpenChanged,isAlarmOpened:" + alarmOpened);
-        }
+        AppLogger.d(CameraLiveHelper.TAG + ":onUpdateAlarmOpenChanged,isAlarmOpened:" + alarmOpened);
         setFlipped(!alarmOpened);
     }
 
     @Override
     public void onChangeSafeProtectionErrorAutoRecordClosed() {
-        Log.d(CameraLiveHelper.TAG, "onChangeSafeProtectionErrorAutoRecordClosed");
+        AppLogger.d(CameraLiveHelper.TAG + ":onChangeSafeProtectionErrorAutoRecordClosed");
         AlertDialogManager.getInstance().showDialog(getActivity(),
                 getString(R.string.Tap1_Camera_MotionDetection_OffTips),
                 getString(R.string.Tap1_Camera_MotionDetection_OffTips),
@@ -1261,7 +1257,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onChangeSafeProtectionErrorNeedConfirm() {
-        Log.d(CameraLiveHelper.TAG, "onChangeSafeProtectionErrorAutoRecordClosed");
+        AppLogger.d(CameraLiveHelper.TAG + ":onChangeSafeProtectionErrorAutoRecordClosed");
         AlertDialogManager.getInstance().showDialog((Activity) getContext(), "safeIsOpen", getString(R.string.Detection_Pop),
                 getString(R.string.OK), (dialog, which) -> {
                     presenter.performChangeSafeProtection(1);
@@ -1277,7 +1273,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPlayErrorSDFileIO() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorSDFileIO");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorSDFileIO");
         liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_Failed), null);
         AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_Failed),
                 getString(R.string.Historical_Failed), getString(R.string.OK), (DialogInterface dialog, int which) -> {
@@ -1287,7 +1283,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPlayErrorSDHistoryAll() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorSDHistoryAll");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorSDHistoryAll");
         liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_Read), null);
         AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_Read),
                 getString(R.string.Historical_Read), getString(R.string.OK), (DialogInterface dialog, int which) -> {
@@ -1297,7 +1293,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPlayErrorSDIO() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorSDIO");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorSDIO");
         liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_No), null);
         AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_No),
                 getString(R.string.Historical_No), getString(R.string.OK), (DialogInterface dialog, int which) -> {
@@ -1307,7 +1303,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPlayErrorVideoPeerDisconnect() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorVideoPeerDisconnect");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorVideoPeerDisconnect");
         if (isLivePlaying()) {
             liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Device_Disconnected), null);
         }
@@ -1315,19 +1311,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPlayErrorVideoPeerNotExist() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorVideoPeerNotExist");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorVideoPeerNotExist");
         liveLoadingBar.changeToLoadingError(true, getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
     }
 
     @Override
     public void onViewModeAvailable(int displayMode) {
-        Log.d(CameraLiveHelper.TAG, "onViewModeAvailable:" + displayMode);
+        AppLogger.d(CameraLiveHelper.TAG + ":onViewModeAvailable:" + displayMode);
         performChangeViewDisplayMode(displayMode, true);
     }
 
     @Override
     public void onViewModeHangError() {
-        Log.d(CameraLiveHelper.TAG, "onViewModeHangError");
+        AppLogger.d(CameraLiveHelper.TAG + ":onViewModeHangError");
         new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.SWITCH_VIEW_POP)
                 .setNegativeButton(R.string.CANCEL, null)
@@ -1339,7 +1335,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onViewModeNotSupportError() {
-        Log.d(CameraLiveHelper.TAG, "onViewModeNotSupportError");
+        AppLogger.d(CameraLiveHelper.TAG + ":onViewModeNotSupportError");
     }
 
     @Override
@@ -1352,40 +1348,40 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onVideoPlayPrepared(boolean live) {
-        Log.d(CameraLiveHelper.TAG, "onVideoPlayPrepared,live:" + live);
+        AppLogger.d(CameraLiveHelper.TAG + ":onVideoPlayPrepared,live:" + live);
         performLayoutEnableAction();
         liveLoadingBar.changeToLoading(true);
     }
 
     @Override
     public void onPlayErrorNoError() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorNoError");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorNoError");
         performReLayoutAction();
         liveLoadingBar.changeToPlaying(canShowLoadingBar());
     }
 
     @Override
     public void onPlayErrorWaitForFetchHistoryCompleted() {
-        Log.d(CameraLiveHelper.TAG, "onPlayErrorWaitForFetchHistoryCompleted");
+        AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorWaitForFetchHistoryCompleted");
         performReLayoutAction();
         liveLoadingBar.changeToLoading(true, ContextUtils.getContext().getString(R.string.LOADING), null);
     }
 
     @Override
     public void onSafeProtectionChanged(boolean safeProtectionOpened) {
-        Log.d(CameraLiveHelper.TAG, "onSafeProtectionChanged:" + safeProtectionOpened);
+        AppLogger.d(CameraLiveHelper.TAG + ":onSafeProtectionChanged:" + safeProtectionOpened);
         setFlipped(!safeProtectionOpened);
     }
 
     @Override
     public void onStreamModeChanged(int mode) {
-        Log.d(CameraLiveHelper.TAG, "onStreamModeChanged");
+        AppLogger.d(CameraLiveHelper.TAG + ":onStreamModeChanged");
         svSwitchStream.setMode(mode);
     }
 
     @Override
     public void onHistoryCheckerErrorNoSDCard() {
-        Log.d(CameraLiveHelper.TAG, "onHistoryCheckerErrorNoSDCard");
+        AppLogger.d(CameraLiveHelper.TAG + ":onHistoryCheckerErrorNoSDCard");
         ToastUtil.showToast(getString(R.string.NO_SDCARD));
         performLayoutEnableAction();
         if (!isLivePlaying()) {
@@ -1397,7 +1393,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onHistoryCheckerErrorSDCardInitRequired(int errorCode) {
-        Log.d(CameraLiveHelper.TAG, "onHistoryCheckerErrorSDCardInitRequired,errorCode is:" + errorCode);
+        AppLogger.d(CameraLiveHelper.TAG + ":onHistoryCheckerErrorSDCardInitRequired,errorCode is:" + errorCode);
         ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
         performLayoutEnableAction();
         if (!isLivePlaying()) {
@@ -1409,14 +1405,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onLoadHistoryPrepared(long playTime, boolean isHistoryCheckerRequired) {
-        Log.d(CameraLiveHelper.TAG, "onLoadHistoryPrepared");
+        AppLogger.d(CameraLiveHelper.TAG + ":onLoadHistoryPrepared");
         performLayoutEnableAction();
         liveLoadingBar.changeToLoading(true, isHistoryCheckerRequired ? getString(R.string.LOADING) : null, null);
     }
 
     @Override
     public void onVideoPlayTypeChanged(boolean isLive) {
-        Log.d(CameraLiveHelper.TAG, "onVideoPlayTypeChanged isLive:" + isLive);
+        AppLogger.d(CameraLiveHelper.TAG + ":onVideoPlayTypeChanged isLive:" + isLive);
         performReLayoutAction();
         liveLoadingBar.showOrHide(!canHideLoadingBar());
     }
@@ -1437,9 +1433,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onSnapshot(Bitmap bitmap, boolean tag) {
-        if (BuildConfig.DEBUG) {
-            Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
-        }
+        AppLogger.d(TAG + "onSnapshot: " + (bitmap == null));
     }
 
     @Override
@@ -1596,7 +1590,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void performLandLayoutAnimation(boolean showLayout) {
-        Log.d(TAG, "performLandLayoutAnimation,showLayout:" + showLayout);
+        AppLogger.d(TAG + "performLandLayoutAnimation,showLayout:" + showLayout);
         if (showLayout) {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(1).withStartAction(() -> {
                 liveLoadingBar.showOrHide(canShowLoadingBar());//全屏直播门铃 1.需要去掉中间播放按钮
@@ -1681,7 +1675,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void performPortLayoutAnimation(boolean showLayout) {
-        Log.d(TAG, "performPortLayoutAnimation,showLayout:" + showLayout);
+        AppLogger.d(TAG + "performPortLayoutAnimation,showLayout:" + showLayout);
         if (showLayout) {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
                 liveLoadingBar.showOrHide(canShowLoadingBar());

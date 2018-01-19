@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -21,12 +20,9 @@ import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindHelper;
 import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -36,9 +32,6 @@ import java.util.TimeZone;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-
-import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_LOGIN_FLOW;
-import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_RECOVERY_FLOW;
 
 /**
  * Created by cylan-hunt on 16-11-12.
@@ -74,14 +67,14 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         super.onNetworkChanged(context, intent);
-        int net = NetUtils.getJfgNetType();
-        if (net != 0) {
-            AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
-            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
-            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
-            PerformanceUtils.stopTrace(TAG_NET_RECOVERY_FLOW);
-            PerformanceUtils.startTrace(TAG_NET_LOGIN_FLOW);
-        }
+//        int net = NetUtils.getJfgNetType();
+//        if (net != 0) {
+//            AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
+////            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
+//            Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+//            PerformanceUtils.stopTrace(TAG_NET_RECOVERY_FLOW);
+//            PerformanceUtils.startTrace(TAG_NET_LOGIN_FLOW);
+//        }
     }
 
 

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.os.SystemClock;
 import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -419,33 +418,6 @@ public class CameraLiveHelper {
 
     public static boolean canStopVideoWithPlayError(int playError) {
         return true;
-    }
-
-
-    public static void waitForStopCompleted(CameraLiveActionHelper helper) {
-        int waitCount = 0;
-        final int retryCount = 30;
-        long sleepTime = 200;
-        do {
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "正在等待视频结束完成!!!");
-            }
-            SystemClock.sleep(sleepTime);
-            waitCount++;
-        } while (waitCount < retryCount && !helper.isPendingStopLiveActionCompleted);
-    }
-
-    public static void waitForCaptureCompleted(CameraLiveActionHelper helper) {
-        int waitCount = 0;
-        final int retryCount = 30;
-        long sleepTime = 200;
-        do {
-            if (BuildConfig.DEBUG) {
-                Log.d(CameraLiveHelper.TAG, "正在等待截图结束.....");
-            }
-            SystemClock.sleep(sleepTime);
-            waitCount++;
-        } while (waitCount < retryCount && !helper.isPendingCaptureActionCompleted);
     }
 
     public static boolean isNoError(CameraLiveActionHelper helper) {

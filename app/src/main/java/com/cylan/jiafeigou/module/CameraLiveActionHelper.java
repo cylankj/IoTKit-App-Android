@@ -210,6 +210,7 @@ public class CameraLiveActionHelper {
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = true;
         this.isPendingHistoryPlayActionCompleted = true;
+        this.isPendingPlayLiveActionTimeOutActionReached = false;
         this.isVideoResolutionReached = false;
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;

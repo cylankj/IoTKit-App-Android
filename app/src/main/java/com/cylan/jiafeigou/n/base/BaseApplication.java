@@ -9,12 +9,10 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dagger.component.AppComponent;
 import com.cylan.jiafeigou.dagger.component.DaggerAppComponent;
-import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -25,8 +23,6 @@ import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.lzy.okgo.OkGo;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
@@ -35,9 +31,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasFragmentInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import rx.Observable;
 import rx.Subscription;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
@@ -199,26 +193,26 @@ public class BaseApplication extends MultiDexApplication implements Application.
      * 退出后台3分钟,将向sdkReport网络状态
      */
     private void prepareReportTask() {
-        if (reportTask != null) {
-            reportTask.unsubscribe();
-        }
-        reportTask = Observable.just("report")
-                .subscribeOn(Schedulers.io())
-                .delay(3, TimeUnit.MINUTES)
-                .subscribe(ret -> {
-                    AppLogger.d("timeout for report");
-                    Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
-                }, throwable -> {
-                    AppLogger.d("timeout for report");
-                    Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
-                });
+//        if (reportTask != null) {
+//            reportTask.unsubscribe();
+//        }
+//        reportTask = Observable.just("report")
+//                .subscribeOn(Schedulers.io())
+//                .delay(3, TimeUnit.MINUTES)
+//                .subscribe(ret -> {
+//                    AppLogger.d("timeout for report");
+//                    Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+//                }, throwable -> {
+//                    AppLogger.d("timeout for report");
+//                    Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+//                });
     }
 
     private void cancelReportTask() {
-        if (reportTask != null) {
-            reportTask.unsubscribe();
-        }
-        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
+//        if (reportTask != null) {
+//            reportTask.unsubscribe();
+//        }
+//        Command.getInstance().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 
     public static boolean isBackground() {
