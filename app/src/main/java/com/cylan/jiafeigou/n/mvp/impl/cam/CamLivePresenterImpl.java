@@ -293,35 +293,45 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onDeviceStandByChanged(true);
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_FIRST_SIGHT: {
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onPlayErrorFirstSight();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_NETWORK: {
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onPlayErrorNoNetwork();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_DEVICE_OFF_LINE: {
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
                             mView.onDeviceChangedToOffLine();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW: {
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorException();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED: {
@@ -349,7 +359,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (shouldReportError && CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorWaitForPlayCompletedTimeout();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR: {
@@ -357,7 +369,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (liveActionHelper.isPlaying && shouldReportError) {
                             mView.onPlayErrorUnKnowPlayError(CameraLiveHelper.checkUnKnowErrorCode(liveActionHelper, false));
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_IN_CONNECTING: {
@@ -392,14 +406,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorVideoPeerDisconnect();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_NOT_EXIST: {
                         if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
                             mView.onPlayErrorVideoPeerNotExist();
                         }
-                        performStopVideoAction(false);
+                        if (liveActionHelper.isPlaying) {
+                            performStopVideoAction(false);
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED: {
@@ -655,7 +673,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         ",是否正在播放:" + videoPlaying + ",是否正在停止:" + !stopLiveActionCompleted + ",是否通知 UI 更新:" + notify);
                 if (needlessStopAction) {
                     liveActionHelper.onVideoPlayStopped(live, liveActionHelper.playCode);
-                    subscriber.onNext("当前情况下无需再停止直播了");
                     subscriber.onCompleted();
                     return;
                 }
@@ -700,10 +717,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (notify) {
-                            mView.onVideoPlayStopped(live);
-                        }
-                        performUpdateBottomMenuEnable();
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -712,6 +725,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (CameraLiveHelper.shouldReportError(liveActionHelper, playError)) {
                             performReportPlayError(playError);
                         }
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        if (notify) {
+                            mView.onVideoPlayStopped(live);
+                        }
+                        performUpdateBottomMenuEnable();
                     }
                 });
         addDestroySubscription(subscribe);

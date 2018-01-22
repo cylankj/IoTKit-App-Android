@@ -89,7 +89,9 @@ public class CameraLiveActionHelper {
         this.isStandBy = JFGRules.isDeviceStandBy(device);
         this.deviceSDStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         this.isSDCardExist = JFGRules.hasSdcard(this.deviceSDStatus);
-        this.deviceNet = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet dpNet = new DpMsgDefine.DPNet();
+        dpNet.net = -2;
+        this.deviceNet = device.$(DpMsgMap.ID_201_NET, dpNet);
         this.deviceTimezone = device.$(DpMsgMap.ID_214_DEVICE_TIME_ZONE, new DpMsgDefine.DPTimeZone());
         this.isDeviceAlarmOpened = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;

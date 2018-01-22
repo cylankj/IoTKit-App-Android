@@ -175,6 +175,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             default:
         }
         if (viewType == CamMessageBean.ViewType.FOOT) {
+            Log.d("Fuck", "why?");
             return;
         }
         if (onClickListener != null) {
@@ -251,6 +252,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         //考虑这个bean的条件.
         // TODO: 2017/8/16  不光要看 hasSDCard 还要看 err 是否为0 #118051
         // TODO: 2017/8/16 Android（1.1.0.534）720设备 报警中心界面 提示"检车到新的Micro SD卡，需要先初始化才能存储视频" 右下角没有查看详情 按钮
+        //直接根据505 字段属性来判断
         Device device = DataSourceManager.getInstance().getDevice(uuid);
 //        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         boolean hasSdcard;
@@ -262,8 +264,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 err = sdcardSummary.errCode;
             }
             break;
+            case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
+                DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) item.message;
+                return dpAlarm.isRecording == 1;
+            }
             default: {
-//                Device device = DataSourceManager.getInstance().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 hasSdcard = status.hasSdcard;
                 err = status.err;
@@ -467,7 +472,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         return new IMulItemViewType<CamMessageBean>() {
             @Override
             public int getViewTypeCount() {
-                return MAX_TYPE;
+                return Integer.MAX_VALUE;
             }
 
             @Override
@@ -531,27 +536,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         int count = getCount();
         return count > 0 && getItem(count - 1).viewType == CamMessageBean.ViewType.FOOT;
     }
-//    private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {
-//        @Override
-//        public boolean onException(Exception e, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
-//            AppLogger.e(String.format(Locale.getDefault(), "uuid:%s,UriErr:%s,index:%s,e:%s", uuid, model.getTime(), model.getIndex(), MiscUtils.getErr(e)));
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//            return false;
-//        }
-//    };
-
-
-//    private List<CamMessageBean>
-
-//    public void filterByFaceItemType(String personId) {
-//        // TODO: 2017/10/14 null 全部
-//        this.faceItemType = personId;
-//        notifyDataSetChanged();
-//    }
 
     public void onStrangerInformationReady(List<FaceItem> visitorList) {
 

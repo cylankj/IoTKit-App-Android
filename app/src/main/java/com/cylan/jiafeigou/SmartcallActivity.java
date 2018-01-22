@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -37,6 +38,7 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 /**
@@ -67,12 +69,18 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
         startService(new Intent(this, AppServices.class));
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !PermissionUtils.hasSelfPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+        } else {
+            showWriteStoragePermissions();
+        }
+
     }
 
     @Override

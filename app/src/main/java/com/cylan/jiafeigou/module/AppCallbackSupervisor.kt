@@ -537,5 +537,7 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
         }
         RxBus.getCacheInstance().post(RxEvent.UniversalDataRsp(l, i, bytes))
         publish(RxEvent.UniversalDataRsp(l, i, bytes))
+        Observable.create<String> {  }
+                .subscribe()
     }
 }

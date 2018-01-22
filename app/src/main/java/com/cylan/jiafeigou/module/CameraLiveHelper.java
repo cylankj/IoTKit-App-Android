@@ -169,6 +169,15 @@ public class CameraLiveHelper {
         return JFGRules.isDeviceOnline(net);
     }
 
+    public static boolean isDeviceOnline(CameraLiveActionHelper helper) {
+        DpMsgDefine.DPNet deviceNet = helper.deviceNet;
+        if (deviceNet == null) {
+            Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+            deviceNet = device.$(201, new DpMsgDefine.DPNet());
+        }
+        return JFGRules.isDeviceOnline(deviceNet) || deviceNet.net == -2;
+    }
+
     /**
      * @return 环境检查 0:当前环境可以播放;1:设备开启了待机;2:首次使用全景模式;3:无网络连接;4:设备离线;5:已经加载中
      */
@@ -182,7 +191,7 @@ public class CameraLiveHelper {
             playError = PLAY_ERROR_FIRST_SIGHT;
         } else if (!NetUtils.hasNetwork()) {
             playError = PLAY_ERROR_NO_NETWORK;
-        } else if (!isDeviceOnline(uuid)) {
+        } else if (!isDeviceOnline(helper)) {
             playError = PLAY_ERROR_DEVICE_OFF_LINE;
         } else if (helper.checkPlayTimeout(false)) {
             playError = PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT;

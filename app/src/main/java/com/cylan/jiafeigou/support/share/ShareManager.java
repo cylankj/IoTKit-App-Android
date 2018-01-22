@@ -380,10 +380,8 @@ public class ShareManager {
                 SHARE_MEDIA platform = getPlatform(shareItemType);
                 Bitmap bitmap = BitmapFactory.decodeFile(img);
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream(bitmap.getByteCount());
-                bitmap.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                 UMImage image = new UMImage(activity, outputStream.toByteArray());
-//                UMImage image = new UMImage(activity, new File(img));
-//                UMImage umImage = new UMImage(activity, new File(img));
 //                image.setThumb(umImage);
                 shareAction.setPlatform(platform);
                 shareAction.withMedia(image);

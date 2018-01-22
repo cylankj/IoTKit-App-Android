@@ -119,8 +119,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     TextView tvMsgFullSelect;
     @BindView(R.id.tv_msg_delete)
     TextView tvMsgDelete;
-    //    @BindView(R.id.iv_cam_message_arrow)
-//    ImageView arrow;
     @BindView(R.id.iv_back)
     TextView barBack;
     @BindView(R.id.c_layout_parent)
@@ -454,9 +452,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void setupFootView() {
+        Log.e("Fuck", "setupFootView");
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = CamMessageBean.ViewType.FOOT;
-        rvCamMessageList.post(() -> camMessageListAdapter.add(bean));
+        camMessageListAdapter.add(bean);
     }
 
     private void decideRefresh() {
@@ -535,14 +534,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 200);
                         tvCamMessageListEdit.setEnabled(success);
-//                    presenter.fetchVisitorMessageList(1, "", time, refresh);
                         break;
                     case FaceItem.FACE_TYPE_ACQUAINTANCE:
                         srLayoutCamListRefresh.setRefreshing(isRefresh);
                         success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                         tvCamMessageListEdit.setEnabled(success);
                         if (!TextUtils.isEmpty(personId)) {
                             presenter.fetchVisitorMessageList(2, personId, time, isRefresh);
@@ -553,7 +550,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-//                    lLayoutNoMessage.setVisibility(success ? View.INVISIBLE : View.VISIBLE);
                         tvCamMessageListEdit.setEnabled(success);
                         if (!TextUtils.isEmpty(personId)) {
                             presenter.fetchVisitorMessageList(1, personId, time, isRefresh);
@@ -587,9 +583,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      */
     private void startRequest(boolean refresh) {
         long time = 0;
-        if (!camMessageListAdapter.hasFooter() && camMessageListAdapter.getCount() > 0) {
-            setupFootView();
-        }
         if (camMessageListAdapter.getCount() > 0) {
             CamMessageBean cb = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1);
             if (cb.viewType == CamMessageBean.ViewType.FOOT && camMessageListAdapter.getCount() > 1) {
@@ -601,9 +594,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         srLayoutCamListRefresh.removeCallbacks(requestRunnable);
         requestRunnable.isRefresh = refresh;
         requestRunnable.time = time;
+        if (!camMessageListAdapter.hasFooter() && camMessageListAdapter.getCount() > 0) {
+            setupFootView();
+        }
         srLayoutCamListRefresh.postDelayed(requestRunnable, 500);
         //30秒超时时需要置为不刷新状态
-        srLayoutCamListRefresh.postDelayed(refreshTimeOutRunnable, 30);
+        srLayoutCamListRefresh.postDelayed(refreshTimeOutRunnable, 30000);
     }
 
     @Override
@@ -669,20 +665,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
+        srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         LoadingDialog.dismissLoading();
-        lLayoutNoMessage.post(() -> {
-            makeSureRemoveFoot();
-            camMessageListAdapter.addAll(beanArrayList);
-            int itemPosition = layoutManager.findFirstVisibleItemPosition();
-            setCurrentPosition(Math.max(0, itemPosition));
-            camMessageListAdapter.notifyDataSetHasChanged();
-            final int count = beanArrayList == null ? 0 : beanArrayList.size();
-            if (count == 0 && camMessageListAdapter.getCount() > 0) {
-                ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Loaded));
-                makeSureRemoveFoot();
-            }
-            decideEmptyViewLayout();
-        });
+        makeSureRemoveFoot();
+        camMessageListAdapter.addAll(beanArrayList);
+        int itemPosition = layoutManager.findFirstVisibleItemPosition();
+        setCurrentPosition(Math.max(0, itemPosition));
+        final int count = beanArrayList == null ? 0 : beanArrayList.size();
+        if (count == 0 && camMessageListAdapter.getCount() > 0) {
+            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Loaded));
+        }
+        decideEmptyViewLayout();
     }
 
     private void makeSureRemoveFoot() {
@@ -696,14 +689,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
-        lLayoutNoMessage.post(() -> {
-            makeSureRemoveFoot();
-            int size = ListUtils.getSize(beanArrayList);
-            for (int i = size - 1; i >= 0; i--) {
-                camMessageListAdapter.add(0, beanArrayList.get(i));//beanArrayList是一个降序
-            }
-            decideEmptyViewLayout();
-        });
+        srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
+        int size = ListUtils.getSize(beanArrayList);
+        for (int i = size - 1; i >= 0; i--) {
+            camMessageListAdapter.add(0, beanArrayList.get(i));//beanArrayList是一个降序
+        }
+        makeSureRemoveFoot();
+        decideEmptyViewLayout();
     }
 
 
@@ -742,10 +734,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onErr() {
-        srLayoutCamListRefresh.post(() -> {
-            srLayoutCamListRefresh.setRefreshing(false);
-            makeSureRemoveFoot();
-        });
+        srLayoutCamListRefresh.setRefreshing(false);
+        makeSureRemoveFoot();
         if (getView() != null && getActivity() != null) {
             LoadingDialog.dismissLoading();
         }
@@ -779,22 +769,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
+        srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         LoadingDialog.dismissLoading();
-
-        lLayoutNoMessage.post(() -> {
-            makeSureRemoveFoot();
-            camMessageListAdapter.appendVisitorList(personId, beanArrayList);
-            int itemPosition = layoutManager.findFirstVisibleItemPosition();
-            setCurrentPosition(Math.max(0, itemPosition));
-            final int count = beanArrayList == null ? 0 : beanArrayList.size();
-            if (count == 0 && camMessageListAdapter.getCount() > 0) {
-                AppLogger.w("没有数据");
-                ToastUtil.showToast(getString(R.string.Loaded));
-                makeSureRemoveFoot();
-            }
-            decideEmptyViewLayout();
-        });
-
+        camMessageListAdapter.appendVisitorList(personId, beanArrayList);
+        int itemPosition = layoutManager.findFirstVisibleItemPosition();
+        setCurrentPosition(Math.max(0, itemPosition));
+        final int count = beanArrayList == null ? 0 : beanArrayList.size();
+        if (count == 0 && camMessageListAdapter.getCount() > 0) {
+            AppLogger.w("没有数据");
+            ToastUtil.showToast(getString(R.string.Loaded));
+        }
+        makeSureRemoveFoot();
+        decideEmptyViewLayout();
     }
 
     private void decideEmptyViewLayout() {
@@ -815,6 +801,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
+        srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         LoadingDialog.dismissLoading();
         camMessageListAdapter.clear();
         camMessageListAdapter.insertVisitorList(personId, beans);
@@ -824,8 +811,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (count == 0 && camMessageListAdapter.getCount() > 0) {
             AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
-            makeSureRemoveFoot();
         }
+        makeSureRemoveFoot();
         decideEmptyViewLayout();
     }
 

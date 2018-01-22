@@ -1998,6 +1998,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void performReLayoutAction() {
+        if (!isAdded()) {
+            AppLogger.i(CameraLiveHelper.TAG + ":当前 activity 还未 attach");
+            return;
+        }
         performLayoutVisibilityAction();
         performLayoutEnableAction();
         performLayoutContentAction();

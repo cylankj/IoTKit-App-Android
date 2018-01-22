@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -176,7 +175,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         if (timeStart == 0 && !JFGRules.isFaceFragment(getDevice().pid)) {
             loadDataListFirst();
         }
-
         Subscription subscription = getMessageListQuery(timeStart, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -189,17 +187,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     ArrayList<CamMessageBean> list = new ArrayList<>();
                     for (DataPoint dataPoint : result) {
                         CamMessageBean bean = new CamMessageBean();
-//                        bean.id = dataPoint.getMsgId();
-//                        bean.version = dataPoint.getVersion();
-//                        if (bean.id == 222) {
-//                            bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
-//                        }
-//                        if (bean.id == 512 || bean.id == 505) {
-//                            bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
-//                        }
-//                        if (bean.id == 401) {
-//                            bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
-//                        }
                         bean.message = (BaseDataPoint) dataPoint;
                         if (!list.contains(bean))//防止重复
                         {
@@ -487,7 +474,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         mView.onVisitorListAppend(items);
                     }
                 }, e -> {
-                        e.printStackTrace();
+                    e.printStackTrace();
                     AppLogger.e(e);
                 });
         addSubscription(subscribe, "fetchMessageList_faceId");

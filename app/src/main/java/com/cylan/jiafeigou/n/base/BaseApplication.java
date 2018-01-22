@@ -183,6 +183,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
         stopViewCount--;
         if (stopViewCount == 0) {
+            currentActivity = null;
             prepareReportTask();
         }
     }

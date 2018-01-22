@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -32,7 +33,7 @@ public class VersionCheckHelper {
         return Observable.create(new Observable.OnSubscribe<RxEvent.VersionRsp>() {
             @Override
             public void call(Subscriber<? super RxEvent.VersionRsp> subscriber) {
-                RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
+                Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
                         .filter(new Func1<RxEvent.VersionRsp, Boolean>() {
                             @Override
                             public Boolean call(RxEvent.VersionRsp versionRsp) {
@@ -51,6 +52,7 @@ public class VersionCheckHelper {
                                 subscriber.onError(throwable);
                             }
                         });
+                subscriber.add(subscribe);
                 try {
                     Command.getInstance().CheckTagDeviceVersion(cid);
                 } catch (JfgException e) {
