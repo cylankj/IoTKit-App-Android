@@ -224,7 +224,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean showHistoryButton(CamMessageBean bean) {
-        if (isSharedDevice || !hasSdcard() || bean == null) {
+        if (isSharedDevice || bean == null) {
             return false;
         }
         switch ((int) bean.message.getMsgId()) {
@@ -241,7 +241,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     // TODO: 2017/8/4 当前查看视频不知道怎么处理
                     return false;
                 } else {
-                    return dpAlarm.isRecording == 1 && (System.currentTimeMillis() - dpAlarm.version) >= 30 * 60 * 1000L;
+                    return dpAlarm.isRecording == 1/* && (System.currentTimeMillis() - dpAlarm.version) >= 30 * 60 * 1000L*/;
                 }
             }
         }

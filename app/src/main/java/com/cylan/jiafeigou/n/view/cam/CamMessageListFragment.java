@@ -453,6 +453,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void setupFootView() {
         Log.e("Fuck", "setupFootView");
+        if (true) {
+            return;
+        }
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = CamMessageBean.ViewType.FOOT;
         camMessageListAdapter.add(bean);

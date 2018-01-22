@@ -708,9 +708,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (CameraLiveHelper.shouldReportError(liveActionHelper, playError)) {
                         performReportPlayError(playError);
                     }
-                    if (completedCallback != null) {
-                        completedCallback.onCompleted();
-                    }
+
                     return prepared;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -733,6 +731,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             mView.onVideoPlayStopped(live);
                         }
                         performUpdateBottomMenuEnable();
+                        if (completedCallback != null) {
+                            completedCallback.onCompleted();
+                        }
                     }
                 });
         addDestroySubscription(subscribe);
@@ -1161,7 +1162,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (playTime >= 0) {
                     liveActionHelper.lastPlayTime = playTime;
                 }
-                performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), true, () -> {
+                performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), false, () -> {
                     subscriber.onNext("停止直播已完成");
                     subscriber.onCompleted();
                 });
@@ -1171,12 +1172,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(prepared -> {
+                    liveActionHelper.isPendingHistoryPlayActionCompleted = false;
                     int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                     if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                         performReportPlayError(playError);
-                        liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                     }
-                    liveActionHelper.isPendingHistoryPlayActionCompleted = false;
                     runnable.run();
                     AppLogger.d(CameraLiveHelper.TAG + ":fetchHistoryDataListCompat 已经开始获取历史视频了,正在等待成功或者超时");
                     return prepared;
