@@ -170,7 +170,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (!liveActionHelper.isPlaying) {//rtcp 可能停止不会很及时,导致退出页面后马上进入页面还有 rtcp 回调
                             return;
                         }
-                        AppLogger.d(CameraLiveHelper.TAG + ":live:" + (jfgMsgVideoRtcp.timestamp == 0));
+//                        AppLogger.d(CameraLiveHelper.TAG + ":live:" + (jfgMsgVideoRtcp.timestamp == 0));
                         boolean goodFrameRate = jfgMsgVideoRtcp.frameRate > 0;
                         if (goodFrameRate) {
                             if (!CameraLiveHelper.isLive(liveActionHelper) && jfgMsgVideoRtcp.timestamp > 0) {
@@ -212,7 +212,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     public void call(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
                         AppLogger.d(CameraLiveHelper.TAG + ":monitorHistoryVideoError:" + jfgHistoryVideoErrorInfo);
                         liveActionHelper.onUpdateHistoryVideoError(jfgHistoryVideoErrorInfo);
-                        performStopVideoAction(false);
+                        int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
+                        if (CameraLiveHelper.shouldReportError(liveActionHelper, playError)) {
+                            performReportPlayError(playError);
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -392,7 +395,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_HISTORY_ALL: {
                         if (liveActionHelper.isPlaying) {
-                            mView.onPlayErrorSDHistoryAll();
+                            performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), false, new CompletedCallback() {
+                                @Override
+                                public void onCompleted() {
+                                    Subscription schedule1 = AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onPlayErrorSDHistoryAll());
+                                    addStopSubscription(schedule1);
+                                }
+                            });
                         }
                     }
                     break;
