@@ -242,6 +242,10 @@ public class CameraLiveHelper {
         return live && ((playing && playCode == 0) || playCode == 1002);
     }
 
+    public static boolean shouldDisconnectWithPlayCode(CameraLiveActionHelper helper, int playCode) {
+        return helper.isPlaying && playCode == 1002;
+    }
+
     public static boolean isVideoRealPlaying(CameraLiveActionHelper helper) {
         return helper.isPlaying && helper.isPendingPlayLiveActionCompleted
                 && helper.isPendingStopLiveActionCompleted && helper.isPendingHistoryPlayActionCompleted && NetUtils.getJfgNetType() != 0;

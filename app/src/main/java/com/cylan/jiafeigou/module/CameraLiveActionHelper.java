@@ -125,17 +125,17 @@ public class CameraLiveActionHelper {
     }
 
 
-    public void onVideoPlayStarted(boolean live) {
+    public void onVideoPlayStarted(boolean live, int playCode) {
         this.isPlaying = true;
-        this.isLoading = true;
+        this.playCode = playCode;
         this.isLiveBad = false;
         this.isLiveSlow = false;
-        this.isPendingPlayLiveActionCompleted = false;
-        this.isPendingStopLiveActionCompleted = true;
-        this.isPendingPlayLiveActionTimeOutActionReached = false;
-        this.isVideoResolutionReached = false;
+        this.isLoading = true;
         this.isLive = live;
+        this.isVideoResolutionReached = false;
         this.hasPendingResumeToPlayVideoAction = false;
+        this.isPendingStopLiveActionCompleted = true;
+        this.isPendingPlayLiveActionCompleted = playCode != 0;
     }
 
     public boolean onUpdateVideoSlowState(boolean slow) {
@@ -216,7 +216,10 @@ public class CameraLiveActionHelper {
         this.isVideoResolutionReached = false;
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
-        this.playCode = playCode;
+        if (this.playCode == CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
+            //可能之前就有错误,不加判断的话会直接覆盖掉之前的错误导致错误信息丢失
+            this.playCode = playCode;
+        }
     }
 
     public void onVideoPlayTimeOutReached() {
@@ -389,5 +392,9 @@ public class CameraLiveActionHelper {
         } else {
             recordedZeroTimestampCount++;
         }
+    }
+
+    public void onUpdateVideoPlayCode(boolean live, int playCode) {
+        this.playCode = playCode;
     }
 }

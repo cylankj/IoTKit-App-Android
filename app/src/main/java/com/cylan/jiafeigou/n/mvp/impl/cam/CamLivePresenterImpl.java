@@ -137,8 +137,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<JFGMsgVideoDisconn>() {
                     @Override
                     public void call(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
-                        boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
-                        if (videoPlaying) {
+                        Log.d(CameraLiveHelper.TAG, "monitorVideoDisconnect:" + jfgMsgVideoDisconn);
+                        if (liveActionHelper.isPlaying) {
                             if (BuildConfig.DEBUG) {
                                 Log.d(CameraLiveHelper.TAG, "monitorVideoDisconnect:" + jfgMsgVideoDisconn);
                             }
@@ -180,13 +180,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 }
                             }
                         }
-                        boolean videoPlaying = CameraLiveHelper.isVideoRealPlaying(liveActionHelper);
+                        boolean live = liveActionHelper.onUpdateLive(liveActionHelper.recordedZeroTimestampCount > 0);
+                        if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
+                            mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
+                        }
+                        boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
                         if (videoPlaying) {
                             liveActionHelper.onUpdateVideoRtcp(jfgMsgVideoRtcp);
-                            boolean live = liveActionHelper.onUpdateLive(liveActionHelper.recordedZeroTimestampCount > 0);
-                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
-                                mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
-                            }
                             feedRtcp.feed(jfgMsgVideoRtcp);
                             mView.onRtcp(jfgMsgVideoRtcp);
                         }
@@ -379,7 +379,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     break;
                     case CameraLiveHelper.PLAY_ERROR_IN_CONNECTING: {
                         if (liveActionHelper.isPlaying) {
-                            mView.onPlayErrorInConnecting();
+                            performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), false, () -> {
+                                mView.onPlayErrorInConnecting();
+                            });
                         }
                     }
                     break;
@@ -512,7 +514,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     int playError;
                     do {
                         try {
-                            if (CameraLiveHelper.shouldDisconnectFirst(liveActionHelper, playCode)) {
+                            if (CameraLiveHelper.shouldDisconnectWithPlayCode(liveActionHelper, playCode)) {
                                 AppLogger.d(CameraLiveHelper.TAG + ":需要先断开下直播再播放,playCode:" + playCode);
                                 Command.getInstance().stopPlay(uuid);
                             }
@@ -532,9 +534,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }
                         AppLogger.d(CameraLiveHelper.TAG + ":正在更新 PlayCode:" + playCode);
                     }
-                    while (CameraLiveHelper.shouldDisconnectFirst(liveActionHelper, playCode));
-                    liveActionHelper.playCode = playCode;
-                    liveActionHelper.onVideoPlayStarted(live);
+                    while (CameraLiveHelper.shouldDisconnectWithPlayCode(liveActionHelper, playCode));
+                    liveActionHelper.onVideoPlayStarted(live, playCode);
                     playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                     if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                         //开始播放历史视频或直播出现了错误

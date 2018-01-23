@@ -930,9 +930,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 boolean itemSelected = camMessageListAdapter.markItemSelected(position);
                 int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());
                 tvMsgDelete.setEnabled(size > 0);
-                if (!itemSelected) {
-                    tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
-                }
+                tvMsgFullSelect.setText(size == camMessageListAdapter.getCount() ? getString(R.string.CANCEL) : getString(R.string.SELECT_ALL));
             }
             break;
             case R.id.imgV_cam_message_pic0:

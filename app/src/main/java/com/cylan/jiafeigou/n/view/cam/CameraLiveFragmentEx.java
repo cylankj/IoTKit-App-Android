@@ -369,7 +369,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPlayErrorWaitForPlayCompletedTimeout() {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorWaitForPlayCompletedTimeout");
         performReLayoutAction();
-        liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.CONNECTING), null);
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.CONNECTING), null);
     }
 
     @Override
@@ -684,7 +684,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPlayErrorBadFrameRate() {
         Log.d(CameraLiveHelper.TAG, "当前帧率加载失败了");
         performReLayoutAction();
-        liveLoadingBar.changeToLoadingError(true, getContext().getString(R.string.NETWORK_TIMEOUT), getContext().getString(R.string.USER_HELP));
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.NETWORK_TIMEOUT), ContextUtils.getContext().getString(R.string.USER_HELP));
     }
 
     @Override
@@ -1181,12 +1181,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onLiveTimeLayoutClick(View v) {
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
-            ToastUtil.showNegativeToast(getContext().getString(R.string.NoNetworkTips));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.NoNetworkTips));
             return;
         }
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-            ToastUtil.showNegativeToast(getContext().getString(R.string.OFFLINE_ERR));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR));
             return;
         }
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
@@ -1195,7 +1195,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return;
         }
         if (!status.hasSdcard || status.err != 0) {
-            ToastUtil.showToast(getContext().getString(R.string.NO_SDCARD));
+            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.NO_SDCARD));
             return;
         }
         if (historyWheelHandler == null || presenter.isHistoryEmpty()) {
@@ -1312,7 +1312,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPlayErrorVideoPeerNotExist() {
         AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorVideoPeerNotExist");
-        liveLoadingBar.changeToLoadingError(true, getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.OFFLINE_ERR), ContextUtils.getContext().getString(R.string.USER_HELP));
     }
 
     @Override
@@ -1818,15 +1818,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void performLayoutContentAction() {
+        FragmentActivity activity = getActivity();
+        if (activity == null) {
+            AppLogger.i(CameraLiveHelper.TAG + ":performLayoutContentAction,context is null");
+            return;
+        }
         if (videoView == null) {
-            videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
+            videoView = VideoViewFactory.CreateRendererExt(device.pid, activity);
             liveViewWithThumbnail.setLiveView(videoView, uuid);
         }
         boolean isLand = isLand();
         imgVCamTriggerMic.setImageResource(hasDoorLock ? portBellMicRes[0] : portMicRes[0]);
         tvLive.setBackgroundColor(isLand ? Color.TRANSPARENT : Color.WHITE);
         //历史录像显示
-        ViewUtils.setBottomMargin(svSwitchStream, isLand ? (int) getResources().getDimension(R.dimen.y56) : (int) getResources().getDimension(R.dimen.y46));
+        ViewUtils.setBottomMargin(svSwitchStream, isLand ? (int) activity.getResources().getDimension(R.dimen.y56) : (int) getResources().getDimension(R.dimen.y46));
         //显示 昵称
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         imgVCamLiveLandNavBack.setText(alias);
@@ -1844,8 +1849,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
         if (isLand) {
             //隐藏所有的 showcase
-            LiveShowCase.hideHistoryWheelCase((Activity) getContext());
-            LiveShowCase.hideHistoryCase((Activity) getContext());
+            LiveShowCase.hideHistoryWheelCase(activity);
+            LiveShowCase.hideHistoryCase(activity);
         }
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) historyParentContainer.getLayoutParams();
@@ -1904,15 +1909,25 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     private void decideHistoryShowCase() {
         boolean canShowHistoryCase = canShowHistoryCase();
-        Fragment historyShowCaseFragment = getFragmentManager().findFragmentByTag(HistoryWheelShowCaseFragment.class.getSimpleName());
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager == null) {
+            AppLogger.d("decideHistoryShowCase: fragmentManager is null");
+            return;
+        }
+        Fragment historyShowCaseFragment = fragmentManager.findFragmentByTag(HistoryWheelShowCaseFragment.class.getSimpleName());
         if (isReallyVisibleToUser()) {
             if (!MiscUtils.isLand() && canShowHistoryCase) {
-                LiveShowCase.showHistoryWheelCase(getActivity(), historyParentContainer);
-                LiveShowCase.showHistoryCase((Activity) getContext(), tvLive);
+                FragmentActivity activity = getActivity();
+                if (activity == null) {
+                    AppLogger.d("decideHistoryShowCase: activity is null");
+                    return;
+                }
+                LiveShowCase.showHistoryWheelCase(activity, historyParentContainer);
+                LiveShowCase.showHistoryCase(activity, tvLive);
             }
         } else {
             if (historyShowCaseFragment != null) {
-                getFragmentManager().beginTransaction().remove(historyShowCaseFragment).commitAllowingStateLoss();
+                fragmentManager.beginTransaction().remove(historyShowCaseFragment).commitAllowingStateLoss();
             }
         }
     }
@@ -1934,8 +1949,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             sightLayer.setVisibility(VISIBLE);
             return;
         }
-        LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, liveViewWithThumbnail);
-        ((TextView) (liveViewWithThumbnail.findViewById(R.id.tv_sight_setting_content))).setText(getString(R.string.Tap1_Camera_Overlook) + ": " + getString(R.string.Tap1_Camera_OverlookTips));
+        Context context = getContext();
+        if (context == null) {
+            AppLogger.d(CameraLiveHelper.TAG + ":decideFirstSightSetting: context is null");
+            return;
+        }
+        LayoutInflater.from(context).inflate(R.layout.cam_sight_setting_overlay, liveViewWithThumbnail);
+        ((TextView) (liveViewWithThumbnail.findViewById(R.id.tv_sight_setting_content))).setText(context.getString(R.string.Tap1_Camera_Overlook) + ": " + context.getString(R.string.Tap1_Camera_OverlookTips));
         liveViewWithThumbnail.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener(this::onSightSettingCancelClicked);
         liveViewWithThumbnail.findViewById(R.id.btn_sight_setting_next).setOnClickListener(this::onSightSettingNextClicked);
     }
@@ -1991,7 +2011,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private void onStandByClicked(View view) {
-        Intent intent = new Intent(getContext(), CamSettingActivity.class);
+        Context context = getContext();
+        if (context == null) {
+            AppLogger.i(CameraLiveHelper.TAG + ":onStandByClicked: context is null");
+            return;
+        }
+        Intent intent = new Intent(context, CamSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid());
         startActivityForResult(intent, REQUEST_CODE, ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
         AppLogger.d("跳转到使用帮助");
