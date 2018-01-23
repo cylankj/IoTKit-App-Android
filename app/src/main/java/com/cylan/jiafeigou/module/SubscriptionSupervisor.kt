@@ -14,7 +14,8 @@ object SubscriptionSupervisor {
     const val CATEGORY_STOP = "CATEGORY_STOP"
     const val CATEGORY_DESTROY = "CATEGORY_DESTROY"
     const val CATEGORY_DEFAULT = "CATEGORY_DEFAULT"
-    @JvmStatic
+
+    @JvmStatic/*存在已知的并发问题*/
     fun subscribe(target: Any, category: String, tag: String, subscription: Subscription) {
         var subscriptionTarget = subscriptions[target.javaClass.name]
         Log.d(TAG, "subscribe for:target:${target.javaClass.name},category:$category,tag:$tag,subscription:$subscription")
