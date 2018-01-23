@@ -38,6 +38,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                         mView.onAdvertOver();
                     }
                 }, error -> {
+
                 });
         addDestroySubscription(subscribe);
     }

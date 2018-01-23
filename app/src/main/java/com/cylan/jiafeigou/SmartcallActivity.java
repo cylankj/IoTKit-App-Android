@@ -54,7 +54,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     TextView tvCopyRight;
     @BindView(R.id.welcome_switcher)
     ViewSwitcher welcomeSwitcher;
-    boolean hasDecided = false;
+    boolean isADOver = false;
 
     @Override
     protected boolean onSetContentView() {
@@ -151,11 +151,10 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
-//        deciderFirstAction();
         if (!AdsStrategy.hasAdsChecked()) {
             presenter.deciderShowAdvert();
         } else {
-            deciderFirstAction();
+            onAdvertOver();
         }
     }
 
@@ -186,7 +185,10 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @Override
     public void onAdvertOver() {
         AppLogger.d("onAdvertOver");
-        deciderFirstAction();
+        if (!isADOver) {
+            isADOver = true;
+            deciderFirstAction();
+        }
     }
 
     @Override
@@ -277,16 +279,10 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     public void enterUserGuide() {
         AppLogger.d("enterUserGuide");
         welcomeSwitcher.setDisplayedChild(1);
-//        Fragment fragment = getSupportFragmentManager().findFragmentByTag(GuideFragmentV3_2.class.getSimpleName());
-//        if (fragment != null) {
-//            getSupportFragmentManager().beginTransaction().show(fragment).commit();
-//        } else {
         Bundle bundle = new Bundle();
         bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.welcome_frame_container);
         GuideFragmentV3_2 fragment = GuideFragmentV3_2.newInstance();
         fragment.setArguments(bundle);
         ActivityUtils.replaceFragmentNoAnimation(R.id.welcome_frame_container, getSupportFragmentManager(), fragment);
-//        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.welcome_frame_container);
-//        }
     }
 }
