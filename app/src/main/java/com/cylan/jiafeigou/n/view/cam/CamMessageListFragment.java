@@ -247,7 +247,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                                 endlessLoading = true;
                                 mIsLastLoadFinish = false;
                                 Log.d("tag", "tag.....load more");
-                                startRequest(false);
+                                startRequest(false, false);
                             }
                         }
                     }
@@ -309,7 +309,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (hasExpanded) {
                     lLayoutNoMessage.setVisibility(View.GONE);
                 }
-                startRequest(false);
+                startRequest(true, false);
             }
 
             @Override
@@ -382,7 +382,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorFragment != null) {
             visitorFragment.exitStranger();
         }
-        startRequest(true);
+        startRequest(true, true);
         exitEditMode();
         AppLogger.d("还需要重新选中All");
     }
@@ -474,7 +474,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
         }
-        startRequest(true);
+        startRequest(true, true);
     }
 
     @Override
@@ -532,14 +532,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 boolean success;
                 switch (pageType) {
                     case FaceItem.FACE_TYPE_STRANGER:
-                        srLayoutCamListRefresh.setRefreshing(isRefresh);
                         success = camMessageListAdapter.showCachedVisitorList("stranger");
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 200);
                         tvCamMessageListEdit.setEnabled(success);
                         break;
                     case FaceItem.FACE_TYPE_ACQUAINTANCE:
-                        srLayoutCamListRefresh.setRefreshing(isRefresh);
                         success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
@@ -549,7 +547,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         }
                         break;
                     case FaceItem.FACE_TYPE_STRANGER_SUB:
-                        srLayoutCamListRefresh.setRefreshing(isRefresh);
                         success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
@@ -559,7 +556,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         }
                         break;
                     case FaceItem.FACE_TYPE_ALL:
-                        srLayoutCamListRefresh.setRefreshing(isRefresh);
 //                    lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
@@ -584,7 +580,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     /**
      */
-    private void startRequest(boolean refresh) {
+    private void startRequest(boolean refresh, boolean showRefresh) {
         long time = 0;
         if (camMessageListAdapter.getCount() > 0) {
             CamMessageBean cb = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1);
@@ -601,8 +597,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             setupFootView();
         }
         srLayoutCamListRefresh.postDelayed(requestRunnable, 500);
-        //30秒超时时需要置为不刷新状态
-        srLayoutCamListRefresh.postDelayed(refreshTimeOutRunnable, 30000);
+        srLayoutCamListRefresh.setRefreshing(showRefresh);
+        if (showRefresh) {
+            //30秒超时时需要置为不刷新状态
+            srLayoutCamListRefresh.postDelayed(refreshTimeOutRunnable, 30000);
+        }
     }
 
     @Override

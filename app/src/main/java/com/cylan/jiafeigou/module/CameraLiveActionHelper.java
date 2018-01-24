@@ -136,6 +136,7 @@ public class CameraLiveActionHelper {
         this.hasPendingResumeToPlayVideoAction = false;
         this.isPendingStopLiveActionCompleted = true;
         this.isPendingPlayLiveActionCompleted = playCode != 0;
+        this.recordedZeroTimestampCount = 0;
     }
 
     public boolean onUpdateVideoSlowState(boolean slow) {
@@ -180,6 +181,7 @@ public class CameraLiveActionHelper {
             this.isLiveSlow = false;
             this.isLoading = false;
             this.isPlaying = true;
+            this.recordedZeroTimestampCount = 0;
             PreferencesUtils.putFloat(getSavedResolutionKey(), (float) jfgMsgVideoResolution.height / jfgMsgVideoResolution.width);
         }
     }
@@ -196,6 +198,7 @@ public class CameraLiveActionHelper {
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
         this.lastUnKnowPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
+        this.recordedZeroTimestampCount = 0;
     }
 
     public void onVideoStopPrepared(boolean live) {
@@ -203,6 +206,7 @@ public class CameraLiveActionHelper {
         this.isPendingPlayLiveActionCompleted = true;
         this.isPendingHistoryPlayActionCompleted = true;
         this.isLive = live;
+        this.recordedZeroTimestampCount = 0;
     }
 
     public void onVideoPlayStopped(boolean live, int playCode) {
@@ -216,6 +220,7 @@ public class CameraLiveActionHelper {
         this.isVideoResolutionReached = false;
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
+        this.recordedZeroTimestampCount = 0;
         if (this.playCode == CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
             //可能之前就有错误,不加判断的话会直接覆盖掉之前的错误导致错误信息丢失
             this.playCode = playCode;

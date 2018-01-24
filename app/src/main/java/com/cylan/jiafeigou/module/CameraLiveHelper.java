@@ -243,7 +243,7 @@ public class CameraLiveHelper {
     }
 
     public static boolean shouldDisconnectWithPlayCode(CameraLiveActionHelper helper, int playCode) {
-        return helper.isPlaying && playCode == 1002;
+        return playCode == 1002;
     }
 
     public static boolean isVideoRealPlaying(CameraLiveActionHelper helper) {

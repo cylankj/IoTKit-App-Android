@@ -22,9 +22,8 @@ object SubscriptionSupervisor {
         if (subscriptionTarget == null) {
             synchronized(SubscriptionSupervisor::class) {
                 if (subscriptionTarget == null) {
-                    val s = SubscriptionTarget()
-                    subscriptions[target.javaClass.name] = s
-                    subscriptionTarget = s
+                    subscriptionTarget = SubscriptionTarget()
+                    subscriptions[target.javaClass.name] = subscriptionTarget!!
                 }
             }
         }
@@ -62,9 +61,8 @@ object SubscriptionSupervisor {
             if (subscriptionCategory == null) {
                 synchronized(SubscriptionTarget::class) {
                     if (subscriptionCategory == null) {
-                        val s = SubscriptionCategory()
-                        subscriptions[category] = s
-                        subscriptionCategory = s
+                        subscriptionCategory = SubscriptionCategory()
+                        subscriptions[category] = subscriptionCategory!!
                     }
                 }
             }
@@ -113,7 +111,7 @@ object SubscriptionSupervisor {
                             val subscription = it.value
                             if (!subscription.isUnsubscribed) {
                                 subscription.unsubscribe()
-
+                                Log.d(TAG, "Finally unsubscribe:" + it.key)
                             }
                         }
                     }
