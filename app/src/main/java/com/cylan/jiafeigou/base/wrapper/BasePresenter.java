@@ -140,7 +140,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
 
     protected String addStopSubscription(Subscription subscription) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
-        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):stop:" + traceElement.getMethodName();
+        String method = getClass().getName() + ":stop:" + traceElement.getMethodName();
         AppLogger.w("addSubscription" + method);
         SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_STOP, method, subscription);
         return method;
@@ -150,11 +150,13 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
         return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
                 mContext.getString(resId, args), cancelable,
                 dialog -> {
-
+                    if (cancelable) {
+                    }
                 }))
                 .doOnTerminate(LoadingDialog::dismissLoading)
                 .doOnUnsubscribe(LoadingDialog::dismissLoading);
     }
+
     protected <T> Observable.Transformer<T, T> applyLoading(boolean cancelable, String message) {
         return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
                 message, cancelable,
@@ -167,7 +169,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
 
     protected String addDestroySubscription(Subscription subscription) {
         StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
-        String method = getClass().getName() + "(L:" + traceElement.getLineNumber() + "):destroy:" + traceElement.getMethodName();
+        String method = getClass().getName() + ":destroy:" + traceElement.getMethodName();
         SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DESTROY, method, subscription);
         return method;
     }

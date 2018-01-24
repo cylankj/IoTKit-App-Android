@@ -69,6 +69,11 @@ public class LoadingDialog extends AppCompatDialog {
         dialog.setCanceledOnTouchOutside(dismissTouchOutside);
         dialog.setCancelable(dismissTouchOutside);
         dialog.setOnCancelListener(listener);
+        dialog.setOnDismissListener(dialog1 -> {
+            if (listener != null) {
+                listener.onCancel(dialog1);
+            }
+        });
         dialog.show();
     }
 
