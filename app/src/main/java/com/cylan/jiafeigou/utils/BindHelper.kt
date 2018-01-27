@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.utils
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
 import com.cylan.entity.jniCall.JFGDPMsg
@@ -32,13 +34,229 @@ import java.util.concurrent.TimeUnit
  * Created by yanzhendong on 2017/11/29.
  */
 object BindHelper {
-    const val TAG = "BindHelper"
+    const val TAG = "BindHelper:"
     private val TIME_OUT = (90 * 1000).toLong()
     private val INTERVAL = 3
 
 
-    open class BindContext {
+    data class BindContext(
+            var errorCode: Int = 0,
+            var errorMessage: String? = "",
+            var uuid: String = "",
+            var mac: String? = "",
+            var ssid: String? = "",
+            var password: String? = "",
+            var security: Int = -1,
+            var ipAddress: String? = "",
+            var languageType: Int = -1,
+            var serverAddress: String = "",
+            var devicePort: Int = -1,
+            var bindCode: String = "",
+            var net: Int = 0,
+            var pid: Int = 0,
+            var os: Int = 0,
+            var version: String? = ""
+    ) : Parcelable {
 
+        constructor(uuid: String) : this(uuid = uuid, errorCode = 0)
+
+        constructor(source: Parcel) : this(
+                source.readInt(),
+                source.readString(),
+                source.readString(),
+                source.readString(),
+                source.readString(),
+                source.readString(),
+                source.readInt(),
+                source.readString(),
+                source.readInt(),
+                source.readString(),
+                source.readInt(),
+                source.readString(),
+                source.readInt(),
+                source.readInt(),
+                source.readInt(),
+                source.readString()
+        )
+
+        override fun describeContents() = 0
+
+        override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+            writeInt(errorCode)
+            writeString(errorMessage)
+            writeString(uuid)
+            writeString(mac)
+            writeString(ssid)
+            writeString(password)
+            writeInt(security)
+            writeString(ipAddress)
+            writeInt(languageType)
+            writeString(serverAddress)
+            writeInt(devicePort)
+            writeString(bindCode)
+            writeInt(net)
+            writeInt(pid)
+            writeInt(os)
+            writeString(version)
+        }
+
+        companion object {
+            @JvmField
+            val CREATOR: Parcelable.Creator<BindContext> = object : Parcelable.Creator<BindContext> {
+                override fun createFromParcel(source: Parcel): BindContext = BindContext(source)
+                override fun newArray(size: Int): Array<BindContext?> = arrayOfNulls(size)
+            }
+        }
+
+        fun onUpdateWiFiConfig(ssid: String, password: String, security: Int) {
+            this.ssid = ssid
+            this.password = password
+            this.security = security
+        }
+    }
+
+    const val EVENT_TYPE_WIFI_CONFIG = 1
+    const val EVENT_TYPE_SERVER_CONFIG = 2
+    const val EVENT_TYPE_LANGUAGE_CONFIG = 3
+    const val EVENT_TYPE_BIND_CODE_CONFIG = 4
+    const val EVENT_TYPE_PING_ACTION = 5
+    const val EVENT_TYPE_RECEIVE_LOCAL_MESSAGE = 6
+
+    const val PARAMS_ERROR_NO_ERROR = 0
+
+    const val PARAMS_ERROR_UUID_ERROR = -1
+    const val PARAMS_ERROR_MAC_ERROR = -2
+    const val PARAMS_ERROR_SSID_ERROR = -3
+    const val PARAMS_ERROR_PASSWORD_ERROR = -4
+    const val PARAMS_ERROR_IP_ADDRESS_ERROR = -5
+
+    @JvmStatic
+    fun checkParamsForEventType(bindContext: BindContext, eventType: Int) {
+        when (eventType) {
+            EVENT_TYPE_WIFI_CONFIG -> {
+                when {
+                    bindContext.uuid.isNullOrEmpty() -> {
+                        bindContext.errorCode = PARAMS_ERROR_UUID_ERROR
+                        bindContext.errorMessage = "无效的uuid:${bindContext.uuid}"
+                    }
+                    bindContext.mac.isNullOrEmpty() -> {
+                        bindContext.errorCode = PARAMS_ERROR_MAC_ERROR
+                        bindContext.errorMessage = "无效的mac 地址:${bindContext.mac}"
+                    }
+                    bindContext.ssid.isNullOrEmpty() -> {
+                        bindContext.errorCode = PARAMS_ERROR_SSID_ERROR
+                        bindContext.errorMessage = "无效的 ssid:${bindContext.ssid}"
+                    }
+                    bindContext.password.isNullOrEmpty() -> {
+                        bindContext.errorCode = PARAMS_ERROR_PASSWORD_ERROR
+                        bindContext.errorMessage = "无效的 password:${bindContext.password}"
+                    }
+                    bindContext.ipAddress.isNullOrEmpty() -> {
+                        bindContext.errorCode = PARAMS_ERROR_IP_ADDRESS_ERROR
+                        bindContext.errorMessage = "无效的 ip 地址:${bindContext.ipAddress}"
+                    }
+
+                }
+            }
+        }
+    }
+
+    @JvmStatic
+    fun consideUsefulLocalMessage(bindContext: BindContext, localUdpMsg: RxEvent.LocalUdpMsg) {
+        checkParamsForEventType(bindContext, EVENT_TYPE_RECEIVE_LOCAL_MESSAGE)
+        if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
+
+            val udpHeader = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.UdpHeader::class.java, null)
+            when {
+                TextUtils.equals(udpHeader?.cmd, UdpConstant.PING_ACK) -> {
+                    val pingAck = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.PingAck::class.java, null)
+                    bindContext.net = pingAck?.net ?: bindContext.net
+                    bindContext.pid = pingAck?.pid ?: bindContext.pid
+                }
+                TextUtils.equals(udpHeader?.cmd, UdpConstant.F_PING_ACK) -> {
+                    val fPingAck = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.FPingAck::class.java, null)
+                    bindContext.os = fPingAck?.os ?: bindContext.os
+                    bindContext.version = fPingAck?.version ?: bindContext.version
+                    bindContext.mac = fPingAck?.mac ?: bindContext.mac
+                }
+            }
+
+        }
+    }
+
+    @JvmStatic
+    fun performPingAction(bindContext: BindContext) {
+        checkParamsForEventType(bindContext, EVENT_TYPE_PING_ACTION)
+        if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
+            val pingBytes = JfgUdpMsg.Ping().toBytes()
+            val fpingBytes = JfgUdpMsg.FPing().toBytes()
+            for (i in 0..2) {
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, pingBytes)
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, pingBytes)
+                Command.getInstance().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, fpingBytes)
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, fpingBytes)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun sendWiFiConfig(bindContext: BindContext) {
+        checkParamsForEventType(bindContext, EVENT_TYPE_WIFI_CONFIG)
+        if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
+            val setWifi = JfgUdpMsg.DoSetWifi(bindContext.uuid, bindContext.mac, bindContext.ssid, bindContext.password)
+            for (i in 1..3) {
+                Command.getInstance().sendLocalMessage(bindContext.ipAddress!!, UdpConstant.PORT, setWifi.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setWifi.toBytes())
+            }
+        }
+    }
+
+    @JvmStatic
+    fun performRepairAction(bindContext: BindContext, errorCode: Int) {
+
+    }
+
+    @JvmStatic
+    fun isNoError(bindContext: BindContext): Boolean {
+        return bindContext.errorCode == PARAMS_ERROR_NO_ERROR
+    }
+
+    @JvmStatic
+    fun sendServerConfig(bindContext: BindContext) {
+        checkParamsForEventType(bindContext, EVENT_TYPE_SERVER_CONFIG)
+        if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
+            //设置服务器
+            val setServer = JfgUdpMsg.SetServer(bindContext.uuid, bindContext.mac, bindContext.serverAddress, bindContext.devicePort, 80)
+            for (i in 0..2) {
+                Command.getInstance().sendLocalMessage(bindContext.ipAddress!!, UdpConstant.PORT, setServer.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setServer.toBytes())
+            }
+        }
+    }
+
+    @JvmStatic
+    fun sendLanguageConfig(bindContext: BindContext) {
+        checkParamsForEventType(bindContext, EVENT_TYPE_LANGUAGE_CONFIG)
+        if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
+            //设置语言
+            val setLanguage = JfgUdpMsg.SetLanguage(bindContext.uuid, bindContext.mac, bindContext.languageType)
+            for (i in 0..2) {
+                Command.getInstance().sendLocalMessage(bindContext.ipAddress!!, UdpConstant.PORT, setLanguage.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, setLanguage.toBytes())
+            }
+        }
+    }
+
+    @JvmStatic
+    fun sendBindCodeConfig(bindContext: BindContext) {
+        checkParamsForEventType(bindContext, EVENT_TYPE_BIND_CODE_CONFIG)
+        if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
+            val code = JfgUdpMsg.FBindDeviceCode(bindContext.uuid, bindContext.mac, bindContext.bindCode)
+            for (i in 0..1) {
+                Command.getInstance().sendLocalMessage(bindContext.ipAddress!!, UdpConstant.PORT, code.toBytes())
+                Command.getInstance().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, code.toBytes())
+            }
+        }
     }
 
 

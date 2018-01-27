@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam
 
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
@@ -94,8 +95,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     private val allFace = FaceItem().withSetSelected(true).withFaceType(FaceItem.FACE_TYPE_ALL)
     private val strangerFace = FaceItem().withFaceType(FaceItem.FACE_TYPE_STRANGER)
+    private val registerFace = FaceItem().withFaceType(FaceItem.FACE_TYPE_REGISTER_FACE).withSelectable(false)
     private val moreItem = LoadMoreItem()
-    private val preloadItems = listOf(allFace, strangerFace)
+    private val preloadItems = listOf(allFace, strangerFace, registerFace)
 
     private val visitorItems = mutableListOf<FaceItem>().apply {
         addAll(preloadItems)
@@ -293,6 +295,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                     makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
                     visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
                 }
+                FaceItem.FACE_TYPE_REGISTER_FACE -> {
+                    AppLogger.w("主列表的 注册人脸")
+
+                    val intent = Intent(context, RegisterFaceActivity::class.java)
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+                    startActivity(intent)
+                }
             }
             setExpanded(false)
             return@withOnClickListener true
@@ -485,7 +494,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
         if (!isExpanded) {
             val faceItem = visitorItems[currentPosition]
-            visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.visitor?.personId ?: "")
+            visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.visitor?.personId
+                    ?: "")
         }
     }
 
@@ -512,7 +522,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             presenter.fetchVisitsCount(strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
             if (!isExpanded) {
                 val faceItem = strangerItems[currentPosition]
-                visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.strangerVisitor?.faceId ?: "")
+                visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.strangerVisitor?.faceId
+                        ?: "")
             }
         }
         visitorListener?.onStrangerVisitorReady(visitorList)

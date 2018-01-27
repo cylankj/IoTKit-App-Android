@@ -14,7 +14,9 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SelectCidContract;
 import com.cylan.jiafeigou.n.mvp.contract.bind.WireBindContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.DoorPassWordSettingContact;
+import com.cylan.jiafeigou.n.mvp.contract.cam.FaceSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.MonitorAreaSettingContact;
+import com.cylan.jiafeigou.n.mvp.contract.cam.RegisterFaceContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -30,7 +32,9 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SelectCidPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.bind.WireBindPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DoorPasswordSettingPresenter;
+import com.cylan.jiafeigou.n.mvp.impl.cam.FaceSettingPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.cam.MonitorAreaSettingPresenter;
+import com.cylan.jiafeigou.n.mvp.impl.cam.RegisterFacePresenter;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
@@ -49,7 +53,9 @@ import com.cylan.jiafeigou.n.view.cam.FaceListContact;
 import com.cylan.jiafeigou.n.view.cam.FaceListFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerContact;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerFragment;
+import com.cylan.jiafeigou.n.view.cam.FaceSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.MonitorAreaSettingFragment;
+import com.cylan.jiafeigou.n.view.cam.RegisterFaceActivity;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
@@ -309,4 +315,16 @@ public abstract class MVPModule2 {
 
     @Binds
     public abstract SelectCidContract.View bindSelectCidView(SelectCidFragment fragment);
+
+    @Binds
+    public abstract RegisterFaceContract.View bindRegisterFaceView(RegisterFaceActivity activity);
+
+    @Binds
+    public abstract RegisterFaceContract.Presenter bindRegisterFacePresenter(RegisterFacePresenter presenter);
+
+    @Binds
+    public abstract FaceSettingContract.View bindFaceSettingView(FaceSettingFragment faceSettingFragment);
+
+    @Binds
+    public abstract FaceSettingContract.Presenter bindFaceSettingPresenter(FaceSettingPresenter presenter);
 }

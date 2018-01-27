@@ -18,5 +18,6 @@ interface WireBindContract {
     interface Presenter : JFGPresenter {
 
         fun scanDogWiFi()
+        fun isScanning(): Boolean
     }
 }

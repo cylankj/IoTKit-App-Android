@@ -106,7 +106,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             mView.onDismiss();
                         } else {
                             mHolderCaller = null;
-                            mView.onCallAnswerInOther();
                         }
                     }
                 }, e -> {

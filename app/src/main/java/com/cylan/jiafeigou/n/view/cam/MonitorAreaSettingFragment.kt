@@ -166,12 +166,12 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         params.height = monitorPictureHeight
         heightMargin = (monitorPictureHeight * monitorAreaMarginRadio).toInt()
         widthMargin = (monitorPictureWidth * monitorAreaMarginRadio).toInt()
-        monitor_picture.post { monitor_picture.layoutParams = params }
         effect_container.post {
             val layoutParams = effect_container.layoutParams as RelativeLayout.LayoutParams
             layoutParams.setMargins(widthMargin / 2, heightMargin / 2, widthMargin / 2, heightMargin / 2)
             effect_container.layoutParams = layoutParams
         }
+        monitor_picture.post { monitor_picture.layoutParams = params }
     }
 
     private fun toggleMonitorAreaMode(restore: Boolean) {

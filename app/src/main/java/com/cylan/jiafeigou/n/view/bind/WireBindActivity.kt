@@ -20,7 +20,9 @@ class WireBindActivity : BindAnimationActivity(),
         return true
     }
 
-    @Inject lateinit var mPresenter: WireBindPresenter
+    @Inject
+    lateinit var mPresenter: WireBindPresenter
+
     override fun onScanDogWiFiTimeout() {
         AppLogger.w("onScanDogWiFiTimeout")
     }
@@ -36,12 +38,13 @@ class WireBindActivity : BindAnimationActivity(),
     }
 
     override fun performBackIntercept(willExit: Boolean): Boolean {
-        AlertDialog.Builder(this)
-                .setMessage(R.string.Tap1_AddDevice_tips)
-                .setCancelable(false)
-                .setPositiveButton(R.string.OK, { _, _ -> finishExt() })
-                .setNegativeButton(R.string.CANCEL, null)
-                .show()
+        if (!mPresenter.isScan)
+            AlertDialog.Builder(this)
+                    .setMessage(R.string.Tap1_AddDevice_tips)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.OK, { _, _ -> finishExt() })
+                    .setNegativeButton(R.string.CANCEL, null)
+                    .show()
         return true
     }
 

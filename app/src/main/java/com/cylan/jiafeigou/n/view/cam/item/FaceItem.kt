@@ -97,7 +97,6 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.itemView.visibility = View.VISIBLE
                 //todo UI图导入
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_ALL)
-                holder.icon.setImageResource(R.drawable.news_icon_all_selector)
                 holder.icon.showBorder(isSelected)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(markHint)
@@ -112,10 +111,8 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
                 holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_FILTER_STRANGER)
                 holder.strangerIcon.visibility = View.GONE
                 holder.icon.showHint(true)
-                holder.icon.setImageResource(R.drawable.news_icon_stranger)
                 holder.icon.showBorder(false)
                 holder.icon.showHint(markHint)
-
                 GlideApp.with(holder.itemView.context)
                         .load(R.drawable.news_icon_stranger)
                         .dontAnimate()
@@ -159,6 +156,17 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
             }
             FACE_TYPE_EMPTY -> {
                 holder.itemView.visibility = View.INVISIBLE
+            }
+            FACE_TYPE_REGISTER_FACE -> {
+                holder.itemView.visibility = View.VISIBLE
+                holder.text.text = holder.itemView.context.getText(R.string.MESSAGES_REGISTER_FACE)
+                holder.icon.showBorder(isSelected)
+                holder.strangerIcon.visibility = View.GONE
+                holder.icon.showHint(markHint)
+                GlideApp.with(holder.itemView.context)
+                        .load(R.drawable.icon_register_face)
+                        .dontAnimate()
+                        .into(holder.icon)
             }
             else -> {
                 //todo 陌生人详情页的处理逻辑
@@ -210,6 +218,7 @@ class FaceItem() : AbstractItem<FaceItem, FaceItem.FaceItemViewHolder>(), Parcel
         const val FACE_TYPE_STRANGER_SUB: Int = 2
         const val FACE_TYPE_EMPTY = 3
         const val FACE_TYPE_MORE = 4
+        const val FACE_TYPE_REGISTER_FACE = 5
 
         @JvmField
         val CREATOR: Parcelable.Creator<FaceItem> = object : Parcelable.Creator<FaceItem> {

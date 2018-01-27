@@ -20,7 +20,10 @@ import javax.inject.Inject
  */
 class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BasePresenter<WireBindContract.View>(view)
         , WireBindContract.Presenter {
+    var isScan: Boolean = false
     override fun scanDogWiFi() {
+        val traceElement = Thread.currentThread().stackTrace[2]
+        val method = javaClass.name + ":stop:" + traceElement.methodName
         val subscribe = APObserver.scanDogWiFi()
                 .map {
                     it?.filter {
@@ -31,7 +34,21 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
                 .timeout(7, TimeUnit.SECONDS, Observable.just(null))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(false,R.string.addvideo_searching))
+                .doOnSubscribe {
+                    isScan = true
+                    LoadingDialog.showLoading(mView.activity(), mContext.getString(R.string.addvideo_searching), true, { _ ->
+                     SubscriptionSupervisor.unsubscribe(this@WireBindPresenter,SubscriptionSupervisor.CATEGORY_STOP,method)
+                    })
+                }
+                .doOnTerminate {
+                    LoadingDialog.dismissLoading()
+                    isScan=false
+                }
+                .doOnUnsubscribe {
+                    LoadingDialog.dismissLoading()
+                    isScan=false
+                }
+//                .compose(applyLoading(true, R.string.addvideo_searching))
                 .subscribe({
                     when (it) {
                         null -> {
@@ -47,5 +64,9 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
                 }
         AppLogger.w("scanDogWiFi")
         addStopSubscription(subscribe)
+    }
+
+    override fun isScanning(): Boolean {
+        return false
     }
 }

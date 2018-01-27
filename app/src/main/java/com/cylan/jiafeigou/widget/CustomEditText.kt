@@ -9,6 +9,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.CompoundButton
+import android.widget.EditText
 import android.widget.FrameLayout
 import butterknife.*
 import com.cylan.jiafeigou.R
@@ -109,4 +110,6 @@ class CustomEditText(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     }
 
     fun getEditer() = this.edit_text!!
+
+    fun getEditText(): EditText = this.edit_text
 }

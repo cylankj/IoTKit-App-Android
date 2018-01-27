@@ -78,6 +78,7 @@
   <string name="CONNECTING">设备无响应，请重试</string>
   <string name="CONNECTING_1">正在连接网络，请稍后</string>
   <string name="CONN_INTERRUPTED">连接中断，请检查摄像头网络</string>
+  <string name="CONTINUE_REGISTER">继续注册</string>
   <string name="CREATING">正在创建，请稍候&#8230;</string>
   <string name="CURRENT_PWD">请输入当前密码</string>
   <string name="Cable_Mode">有线模式</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">设备指示灯状态说明</string>
   <string name="DOOR_WRONG_PSW">密码错误</string>
   <string name="DOOR_WRONG_PSW_MSG">开门密码输入错误</string>
+  <string name="DOWNLOAD_MSG_PICTURE">下载消息图片</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">关闭后，人脸识别的报警消息将不下载图片</string>
   <string name="DailyGreatTips_Full">每日精彩收藏数量已达50条上限，是否前去删除？</string>
   <string name="Daily_Great_NO_CONTENTS">暂无精彩内容</string>
   <string name="Dec">12月</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">仅自己</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">公开</string>
   <string name="FACE_COLLAPSE">收起</string>
+  <string name="FACE_NOT_RECOGNIZED">人脸无法识别，请重试</string>
+  <string name="FACE_RECOGNITION">人脸识别</string>
   <string name="FAQ_SINA_WEIBO">新浪微博无法直播</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1、确保所绑定的账号已完成新浪微博的实名认证，并且不是黑名单账户。</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2、目前微博直播只支持中国大陆地区IP直播。</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%s被打开了</string>
   <string name="MESSAGE">消息中心</string>
   <string name="MESSAGES_ADD_FACE_TIPS">设置成功后，将存至所勾选面孔的“面孔管理”</string>
+  <string name="MESSAGES_AGE">%s岁</string>
+  <string name="MESSAGES_BLURRY">模糊</string>
   <string name="MESSAGES_DELETE_FACE_BTN">仅删除面孔</string>
   <string name="MESSAGES_DELETE_FACE_MES">删除面孔和消息</string>
   <string name="MESSAGES_DELETE_FCAE_POP">是否删除面孔？</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">删除图标和消息</string>
   <string name="MESSAGES_DELETE_ICON_POP">是否删除该图标及其所有消息？</string>
   <string name="MESSAGES_DELETE_POP">是否删除该面孔及其所有消息？</string>
+  <string name="MESSAGES_EXPLAIN">图片示例：</string>
   <string name="MESSAGES_FACE_ANALYSIS">客流分析</string>
   <string name="MESSAGES_FACE_IDENTIFY">识别</string>
   <string name="MESSAGES_FACE_INFO">面孔信息</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">最近30天来访 %s 次</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">昨日来访</string>
   <string name="MESSAGES_FILTER_ALL">全部</string>
-  <string name="MESSAGES_FILTER_STRANGER">陌生人</string>
+  <string name="MESSAGES_FILTER_STRANGER">访客</string>
+  <string name="MESSAGES_GENDER_FEMALE">女</string>
+  <string name="MESSAGES_GENDER_MALE">男</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">添加到现有面孔</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">新建面孔</string>
   <string name="MESSAGES_IDENTIFY_POP">可通过新建面孔或添加到现有面孔，提高面孔识别的准确率</string>
+  <string name="MESSAGES_POSITIVE_FACE">正脸</string>
+  <string name="MESSAGES_REGISTER_FACE">注册人脸</string>
+  <string name="MESSAGES_SIDE_FACE">侧脸</string>
   <string name="MESSAGES_TIME_DAY">%s天前</string>
   <string name="MESSAGES_TIME_HOUR">%s小时前</string>
   <string name="MESSAGES_TIME_MIN">%s分钟前</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">刷新试试</string>
   <string name="REFRESHING">正在刷新</string>
   <string name="REGISTERED">此账号已被注册</string>
+  <string name="REGISTER_FACE_TIPS">请上传清晰的正脸照</string>
+  <string name="REGISTRATION_FAILED">注册失败，请重试</string>
+  <string name="REGISTRATION_SECCESS">注册成功</string>
   <string name="RELEASE_TO_LOAD">释放加载更多</string>
   <string name="RELEASE_TO_REFRESH">释放立即刷新</string>
   <string name="REMAIN_SPACE">%s GB可用</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">请将手机和设备连至同一网络，再进行配置</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
+  <string name="WRONG_FORMAT">格式错误，仅支持.jpg/.png/.bmp</string>
   <string name="WeChat">微信</string>
   <string name="Weibo">微博</string>
   <string name="WiFiLight_BlueFlashing">蓝色闪烁：WiFi配置模式</string>

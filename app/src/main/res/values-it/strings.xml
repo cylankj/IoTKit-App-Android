@@ -78,6 +78,7 @@
   <string name="CONNECTING">Nessuna reazione, riprova per favore</string>
   <string name="CONNECTING_1">Connessione in corso</string>
   <string name="CONN_INTERRUPTED">Collegamento alla rete</string>
+  <string name="CONTINUE_REGISTER">Continua a registrarti</string>
   <string name="CREATING">Aggiungere&#8230;</string>
   <string name="CURRENT_PWD">Password attuale non valida</string>
   <string name="Cable_Mode">Modalità con cavo</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">Indicatore di stato LED</string>
   <string name="DOOR_WRONG_PSW">password errata</string>
   <string name="DOOR_WRONG_PSW_MSG">Password porta errata</string>
+  <string name="DOWNLOAD_MSG_PICTURE">Scarica l\'immagine del messaggio</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">Dopo la chiusura, il messaggio di allarme riconoscimento facciale non verrà scaricato</string>
   <string name="DailyGreatTips_Full">il numero di Raccolta dei Splendida della giornata ha raggiunto il limite massimo di 50, andando a eliminare?</string>
   <string name="Daily_Great_NO_CONTENTS">Nessun contenuto</string>
   <string name="Dec">Dec.</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Solo io</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">pubblico</string>
   <string name="FACE_COLLAPSE">Crollo</string>
+  <string name="FACE_NOT_RECOGNIZED">Volto non riconosciuto</string>
+  <string name="FACE_RECOGNITION">Riconoscimento facciale</string>
   <string name="FAQ_SINA_WEIBO">Non supportare il video live di Sina Weibo</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, per assicurarsi che l\'account abbia l\'autenticazione del nome reale di Sina Weibo e non sia un account di liste nere.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, l\'attuale Sina vivono solo supporto IP Cina continentale.</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%s è aperto</string>
   <string name="MESSAGE">Messaggi</string>
   <string name="MESSAGES_ADD_FACE_TIPS">Impostato con successo, verrà aggiunto alla faccia di controllo \"Gestione del viso\"</string>
+  <string name="MESSAGES_AGE">%s anni</string>
+  <string name="MESSAGES_BLURRY">Sfocato</string>
   <string name="MESSAGES_DELETE_FACE_BTN">Togliere la faccia</string>
   <string name="MESSAGES_DELETE_FACE_MES">Elimina i volti ei messaggi</string>
   <string name="MESSAGES_DELETE_FCAE_POP">Elimina il viso?</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Elimina icona e messaggi</string>
   <string name="MESSAGES_DELETE_ICON_POP">Eliminare l\'icona e tutti i messaggi correlati?</string>
   <string name="MESSAGES_DELETE_POP">Eliminare il volto e tutti i messaggi correlati?</string>
+  <string name="MESSAGES_EXPLAIN">Esempio di immagine:</string>
   <string name="MESSAGES_FACE_ANALYSIS">Analisi del flusso passeggeri</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identificare</string>
   <string name="MESSAGES_FACE_INFO">Informazioni sulla faccia</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">Visita %s volte entro 30 giorni</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">La visita di ieri</string>
   <string name="MESSAGES_FILTER_ALL">Tutti</string>
-  <string name="MESSAGES_FILTER_STRANGER">Sconosciuto</string>
+  <string name="MESSAGES_FILTER_STRANGER">I visitatori</string>
+  <string name="MESSAGES_GENDER_FEMALE">Femmina</string>
+  <string name="MESSAGES_GENDER_MALE">Maschio</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Aggiungi al volto esistente</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">Nuova faccia</string>
   <string name="MESSAGES_IDENTIFY_POP">Nuova faccia, o aggiungendo a un volto esistente, migliora l\'esattezza del riconoscimento facciale</string>
+  <string name="MESSAGES_POSITIVE_FACE">Faccia positiva</string>
+  <string name="MESSAGES_REGISTER_FACE">Registrati faccia</string>
+  <string name="MESSAGES_SIDE_FACE">Faccia laterale</string>
   <string name="MESSAGES_TIME_DAY">%s gior fa</string>
   <string name="MESSAGES_TIME_HOUR">%s h fa</string>
   <string name="MESSAGES_TIME_MIN">%s min fa</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">Ricaricare</string>
   <string name="REFRESHING">Aggiornamento&#8230;</string>
   <string name="REGISTERED">Questa email è già stata registrata</string>
+  <string name="REGISTER_FACE_TIPS">Si prega di caricare una foto chiara del viso</string>
+  <string name="REGISTRATION_FAILED">Registrazione fallita</string>
+  <string name="REGISTRATION_SECCESS">Registrazione avvenuta</string>
   <string name="RELEASE_TO_LOAD">Carica completa</string>
   <string name="RELEASE_TO_REFRESH">Sblocco</string>
   <string name="REMAIN_SPACE">%s GB Rimanenti</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">Si prega di collegare il telefono e il dispositivo alla stessa rete prima della configurazione</string>
   <string name="WONDER_TODAY_H_M">Oggi HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ieri HH:mm</string>
+  <string name="WRONG_FORMAT">Formato sbagliato, solo supporto .jpg/.png/.bmp</string>
   <string name="WeChat">WeChat</string>
   <string name="Weibo">Weibo</string>
   <string name="WiFiLight_BlueFlashing">Blu infiammante: WiFi configurazione modalità</string>

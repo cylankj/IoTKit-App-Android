@@ -78,6 +78,7 @@
   <string name="CONNECTING">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="CONNECTING_1">Bağlanılıyor</string>
   <string name="CONN_INTERRUPTED">Ağa bağlanıyor</string>
+  <string name="CONTINUE_REGISTER">Kaydolmaya devam et</string>
   <string name="CREATING">Ekleniyor&#8230;</string>
   <string name="CURRENT_PWD">Mevcut şifre</string>
   <string name="Cable_Mode">Kablo modu</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">LED Durum Göstergesi</string>
   <string name="DOOR_WRONG_PSW">yanlış şifre</string>
   <string name="DOOR_WRONG_PSW_MSG">Yanlış kapı şifresi</string>
+  <string name="DOWNLOAD_MSG_PICTURE">Mesaj resmi indir</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">Kapandıktan sonra yüz tanıma alarmı mesajı indirilmez</string>
   <string name="DailyGreatTips_Full">Koleksiyonun Günlük Mükemmel sayısı 50\'ye ulaştı, silinecek mi?</string>
   <string name="Daily_Great_NO_CONTENTS">İçerik yok</string>
   <string name="Dec">Dec.</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Sadece ben</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">kamu</string>
   <string name="FACE_COLLAPSE">Çöküş</string>
+  <string name="FACE_NOT_RECOGNIZED">Yüz tanınmadı</string>
+  <string name="FACE_RECOGNITION">Yüz tanıma</string>
   <string name="FAQ_SINA_WEIBO">Sina Weibo canlı video desteklemez</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, hesap Sina gerçek adı kimlik doğrulaması Weibo ve bir kara liste hesabı değil emin olmak için.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, mevcut Sina canlı sadece Çin anakara IP destekler.</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%s Açık</string>
   <string name="MESSAGE">Mesajlar</string>
   <string name="MESSAGES_ADD_FACE_TIPS">Başarıyla ayarlayın, kontrol yüzüne \"Yüz yönetimi\" eklenecektir.</string>
+  <string name="MESSAGES_AGE">%s yıl</string>
+  <string name="MESSAGES_BLURRY">Bulanık</string>
   <string name="MESSAGES_DELETE_FACE_BTN">Yüzü kaldır</string>
   <string name="MESSAGES_DELETE_FACE_MES">Yüzü ve mesajları sil</string>
   <string name="MESSAGES_DELETE_FCAE_POP">Yüzü silinsin mi?</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Simgeyi ve mesajları sil</string>
   <string name="MESSAGES_DELETE_ICON_POP">Simgeyi ve ilgili tüm mesajları silinsin mi?</string>
   <string name="MESSAGES_DELETE_POP">Yüzü ve ilgili tüm mesajları silinsin mi?</string>
+  <string name="MESSAGES_EXPLAIN">Resim örneği:</string>
   <string name="MESSAGES_FACE_ANALYSIS">Yolcu akış analizi</string>
   <string name="MESSAGES_FACE_IDENTIFY">belirlemek</string>
   <string name="MESSAGES_FACE_INFO">Yüz bilgilerini</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">30 gün içinde %s defa ziyaret</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">Dün ziyaret</string>
   <string name="MESSAGES_FILTER_ALL">Herşey</string>
-  <string name="MESSAGES_FILTER_STRANGER">Yabancı</string>
+  <string name="MESSAGES_FILTER_STRANGER">Ziyaretçi</string>
+  <string name="MESSAGES_GENDER_FEMALE">Kadın</string>
+  <string name="MESSAGES_GENDER_MALE">Erkek</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Mevcut yüz ekle</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">Yeni yüz</string>
   <string name="MESSAGES_IDENTIFY_POP">Yeni yüz veya mevcut bir yüze ekleyerek, yüz tanımanın doğruluğunu artırın</string>
+  <string name="MESSAGES_POSITIVE_FACE">Olumlu yüz</string>
+  <string name="MESSAGES_REGISTER_FACE">Yüzünü kaydet</string>
+  <string name="MESSAGES_SIDE_FACE">Yan yüz</string>
   <string name="MESSAGES_TIME_DAY">%s gün önce</string>
   <string name="MESSAGES_TIME_HOUR">%s sa. önce</string>
   <string name="MESSAGES_TIME_MIN">%s dk. önce</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">Tazele</string>
   <string name="REFRESHING">Yenileniyor&#8230;</string>
   <string name="REGISTERED">Hesap kayıtlı</string>
+  <string name="REGISTER_FACE_TIPS">net bir ön yüz fotoğrafını yükleyin</string>
+  <string name="REGISTRATION_FAILED">Kayıt başarısız</string>
+  <string name="REGISTRATION_SECCESS">Başarılı Kayıt</string>
   <string name="RELEASE_TO_LOAD">Yüklemek için serbest bırakın</string>
   <string name="RELEASE_TO_REFRESH">Yenilemek için serbest bırakın</string>
   <string name="REMAIN_SPACE">%s GB kullanılabilir</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">Lütfen yapılandırmayı yapmadan önce telefonu ve cihazı aynı ağa bağlayın</string>
   <string name="WONDER_TODAY_H_M">Bugün HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Dün HH:mm</string>
+  <string name="WRONG_FORMAT">Yanlış format, yalnızca .jpg/.png/.bmp\'yi destekleyin</string>
   <string name="WeChat">WeChat</string>
   <string name="Weibo">Weibo</string>
   <string name="WiFiLight_BlueFlashing">Mavi yanıp sönüyor: WiFi yapılandırma modu</string>

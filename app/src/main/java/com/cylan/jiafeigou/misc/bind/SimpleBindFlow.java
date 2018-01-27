@@ -246,7 +246,6 @@ public class SimpleBindFlow extends AFullBind {
                         }
                         return null;
                     })
-                    .timeout(3, TimeUnit.SECONDS)
                     .filter(pingAck -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) && pingAck.cid.endsWith(cidSuffix))
                     .timeout(3, TimeUnit.SECONDS)
                     .subscribe(pingAck -> {
@@ -256,12 +255,9 @@ public class SimpleBindFlow extends AFullBind {
                             subscriber.onCompleted();
                         }
                         //结束本身.
-                        subscriptionMap.remove("PingAck");
                     }, throwable -> {
                         subscriber.onError(new RxEvent.HelperBreaker(1));
-                        subscriptionMap.remove("PingAck");
                     });
-            subscriptionMap.add(sub, "PingAck");
             try {
                 for (int i = 0; i < 2; i++) {
                     Command.getInstance().sendLocalMessage(UdpConstant.IP,
@@ -274,6 +270,7 @@ public class SimpleBindFlow extends AFullBind {
             } catch (JfgException e) {
                 e.printStackTrace();
             }
+            subscriber.add(sub);
         });
     }
 

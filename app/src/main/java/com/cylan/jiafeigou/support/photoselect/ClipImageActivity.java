@@ -125,14 +125,21 @@ public class ClipImageActivity extends BaseActivity implements MineClipImageCont
                     }
                 }
             }
-
-            if (presenter != null) {
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                    ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
-                    return;
+            boolean just_crop = getIntent().getBooleanExtra("just_crop", false);
+            if (!just_crop) {
+                if (presenter != null) {
+                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
+                        return;
+                    }
+                    showUpLoadPro();
+                    presenter.upLoadUserHeadImag(mSaveUri.getPath());
                 }
-                showUpLoadPro();
-                presenter.upLoadUserHeadImag(mSaveUri.getPath());
+            } else {
+                Intent intent = getIntent();
+                intent.setData(mSaveUri);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         }
     }

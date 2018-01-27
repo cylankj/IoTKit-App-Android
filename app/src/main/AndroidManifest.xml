@@ -52,24 +52,14 @@
     <!-- <uses-permission android:name="android.permission.READ_SMS"/> -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
-
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
-
     <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
-
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -86,6 +76,7 @@
     <!-- 允许程序挂载和移除可移动存储设备 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!-- 用于密码修改后其他终端提示 -->
+
 
     <!-- //谷歌推送 -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -108,6 +99,8 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name=".n.base.BaseApplication"
         android:configChanges="locale|orientation|keyboardHidden"
@@ -115,9 +108,10 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
-        <!--<meta-data-->
-        <!--android:name="com.cylan.jiafeigou.base.module.JFGGlideCacheModule"-->
-        <!--android:value="GlideModule" />-->
+
+        <!-- <meta-data -->
+        <!-- android:name="com.cylan.jiafeigou.base.module.JFGGlideCacheModule" -->
+        <!-- android:value="GlideModule" /> -->
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${BUGLY_APPID}" />
@@ -240,13 +234,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <!--<activity-->
-            <!--android:name=".n.view.bell.DoorBellHomeActivity"-->
-            <!--android:configChanges="locale|orientation|keyboardHidden"-->
-            <!--android:launchMode="singleTask"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/CamActivityTheme"-->
-            <!--android:windowSoftInputMode="adjustPan|stateHidden" />-->
+        <!-- <activity -->
+        <!-- android:name=".n.view.bell.DoorBellHomeActivity" -->
+        <!-- android:configChanges="locale|orientation|keyboardHidden" -->
+        <!-- android:launchMode="singleTask" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:theme="@style/CamActivityTheme" -->
+        <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
         <activity
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -256,11 +250,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <!-- &lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt; -->
@@ -420,7 +416,6 @@
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
 
-
         <activity
             android:name=".n.view.activity.BindCamActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -529,7 +524,6 @@
         <permission
             android:name="${ApplicationId}.permission.MIPUSH_RECEIVE"
             android:protectionLevel="signature" />
-
 
         <service
             android:name="com.xiaomi.push.service.XMJobService"
@@ -739,12 +733,12 @@
             android:exported="false" />
 
         <activity android:name=".n.view.activity.ApSettingActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
 
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
         <activity
             android:name=".n.view.panorama.LiveSettingActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -762,7 +756,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
+        <activity
+            android:name=".n.view.cam.RegisterFaceActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>

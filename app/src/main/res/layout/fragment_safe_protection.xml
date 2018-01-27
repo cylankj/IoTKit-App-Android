@@ -67,6 +67,15 @@
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sw_face_detection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_red_hint="true"
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="@string/FACE_RECOGNITION"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sw_motion_interval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

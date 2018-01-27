@@ -78,6 +78,7 @@
   <string name="CONNECTING">No response, please try again</string>
   <string name="CONNECTING_1">Connecting</string>
   <string name="CONN_INTERRUPTED">Connecting to network</string>
+  <string name="CONTINUE_REGISTER">Continue to register</string>
   <string name="CREATING">Adding&#8230;</string>
   <string name="CURRENT_PWD">Current password</string>
   <string name="Cable_Mode">Cable mode</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">LED Status Indicator</string>
   <string name="DOOR_WRONG_PSW">wrong password</string>
   <string name="DOOR_WRONG_PSW_MSG">Wrong door password</string>
+  <string name="DOWNLOAD_MSG_PICTURE">Download message picture</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">After closing, face recognition alarm message will not be downloaded</string>
   <string name="DailyGreatTips_Full">Number of My Favorite Collection\'s has gonna to 50 upper limit, going to delete?</string>
   <string name="Daily_Great_NO_CONTENTS">No content</string>
   <string name="Dec">Dec.</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Only me</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Public</string>
   <string name="FACE_COLLAPSE">Collapse</string>
+  <string name="FACE_NOT_RECOGNIZED">Face not recognized, please try again</string>
+  <string name="FACE_RECOGNITION">Face recognition</string>
   <string name="FAQ_SINA_WEIBO">Do not support Sina Weibo live video</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, to ensure that the account has the Sina Weibo real-name authentication, and is not a blacklist account.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, the current Sina live only support China mainland IP.</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%s is opened</string>
   <string name="MESSAGE">Messages</string>
   <string name="MESSAGES_ADD_FACE_TIPS">Set successfully, it will be added to the check face \"Face management\"</string>
+  <string name="MESSAGES_AGE">%s years</string>
+  <string name="MESSAGES_BLURRY">Blurry</string>
   <string name="MESSAGES_DELETE_FACE_BTN">Remove face</string>
   <string name="MESSAGES_DELETE_FACE_MES">Delete face and messages</string>
   <string name="MESSAGES_DELETE_FCAE_POP">Delete the face？</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Delete icon and messages</string>
   <string name="MESSAGES_DELETE_ICON_POP">Delete the icon and all related messages?</string>
   <string name="MESSAGES_DELETE_POP">Delete the face and all related messages?</string>
+  <string name="MESSAGES_EXPLAIN">Picture Example:</string>
   <string name="MESSAGES_FACE_ANALYSIS">Passenger flow analysis</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identify</string>
   <string name="MESSAGES_FACE_INFO">Face information</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">Visit %s times within 30 days</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">Yesterday\'s visit</string>
   <string name="MESSAGES_FILTER_ALL">All</string>
-  <string name="MESSAGES_FILTER_STRANGER">Stranger</string>
+  <string name="MESSAGES_FILTER_STRANGER">Visitors</string>
+  <string name="MESSAGES_GENDER_FEMALE">Female</string>
+  <string name="MESSAGES_GENDER_MALE">Male</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Add to existing face</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">New face</string>
   <string name="MESSAGES_IDENTIFY_POP">New face, or by adding to an existing face, improve the accuracy of face recognition</string>
+  <string name="MESSAGES_POSITIVE_FACE">Positive face</string>
+  <string name="MESSAGES_REGISTER_FACE">Register face</string>
+  <string name="MESSAGES_SIDE_FACE">Side face</string>
   <string name="MESSAGES_TIME_DAY">%sd ago</string>
   <string name="MESSAGES_TIME_HOUR">%sh ago</string>
   <string name="MESSAGES_TIME_MIN">%sm ago</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">Refresh</string>
   <string name="REFRESHING">Refreshing</string>
   <string name="REGISTERED">Registered account</string>
+  <string name="REGISTER_FACE_TIPS">Please upload a clear face photo</string>
+  <string name="REGISTRATION_FAILED">Registration failed, please try again</string>
+  <string name="REGISTRATION_SECCESS">Registration success</string>
   <string name="RELEASE_TO_LOAD">Release-to-load</string>
   <string name="RELEASE_TO_REFRESH">Release-to-refresh</string>
   <string name="REMAIN_SPACE">%s GB usable</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">Please connect the phone and device to the same network before configuration</string>
   <string name="WONDER_TODAY_H_M">Today HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Yesterday HH:mm</string>
+  <string name="WRONG_FORMAT">Wrong format, only support .jpg/.png/.bmp</string>
   <string name="WeChat">WeChat</string>
   <string name="Weibo">Weibo</string>
   <string name="WiFiLight_BlueFlashing">Blue flashing: WiFi configuration mode</string>

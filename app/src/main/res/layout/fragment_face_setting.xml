@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true"
+        app:ct_icon="@drawable/nav_icon_back_selector"
+        app:ct_left_title="@string/FACE_RECOGNITION"
+        app:ct_left_title_color="@color/color_white"
+        app:ct_left_title_size="@dimen/sp18"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_face_detection_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/y20"
+        android:layout_marginTop="@dimen/y16"
+        android:text="@string/SETTINGS"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/siv_face_detection_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y7"
+        app:layout_constraintTop_toBottomOf="@+id/tv_face_detection_title"
+        app:sv_sub_title="@string/DOWNLOAD_MSG_PICTURE_EXPLAIN"
+        app:sv_switch_visibility="true"
+        app:sv_title="@string/DOWNLOAD_MSG_PICTURE"
+        app:sv_v_divider="true" />
+
+</android.support.constraint.ConstraintLayout>

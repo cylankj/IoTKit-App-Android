@@ -2849,4 +2849,9 @@ public class DpMsgDefine {
                     '}';
         }
     }
+
+    @Message
+    public static class DPUploadImage {
+
+    }
 }

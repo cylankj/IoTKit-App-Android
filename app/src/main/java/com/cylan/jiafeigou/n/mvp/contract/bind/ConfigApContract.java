@@ -87,5 +87,7 @@ public interface ConfigApContract {
         boolean isConnectDog();
 
         void finish();
+
+        void performSendWiFiConfig(String ssid, String password, int type);
     }
 }

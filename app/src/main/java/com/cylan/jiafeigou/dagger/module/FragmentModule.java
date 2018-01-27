@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.n.view.cam.CreateNewFaceFragment;
 import com.cylan.jiafeigou.n.view.cam.DoorPassWordSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceListFragment;
 import com.cylan.jiafeigou.n.view.cam.FaceManagerFragment;
+import com.cylan.jiafeigou.n.view.cam.FaceSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.MonitorAreaSettingFragment;
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
@@ -88,4 +89,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract SelectCidFragment selectCidFragment();
+
+    @ContributesAndroidInjector(modules = MVPModule2.class)
+    abstract FaceSettingFragment faceSettingFragment();
 }

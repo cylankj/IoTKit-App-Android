@@ -327,7 +327,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             R.id.fLayout_protection_repeat_period,
             R.id.sw_motion_AI,
             R.id.sw_motion_interval,
-            R.id.sw_monitoring_area
+            R.id.sw_monitoring_area,
+            R.id.sw_face_detection
     })
     public void onClick(View view) {
         switch (view.getId()) {
@@ -473,6 +474,12 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 MonitorAreaSettingFragment fragment = MonitorAreaSettingFragment.Companion.newInstance(uuid);
                 fragment.setCallBack(t -> updateDetails());
                 ActivityUtils.addFragmentToActivity(getFragmentManager(), fragment, android.R.id.content);
+            }
+            break;
+
+            case R.id.sw_face_detection: {
+                FaceSettingFragment fragment = FaceSettingFragment.newInstance(uuid);
+                ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, android.R.id.content);
             }
             break;
         }

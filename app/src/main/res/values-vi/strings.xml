@@ -78,6 +78,7 @@
   <string name="CONNECTING">Không phản hồi, hãy thử lại</string>
   <string name="CONNECTING_1">Đang kết nối mạng</string>
   <string name="CONN_INTERRUPTED">Đang kết nối mạng</string>
+  <string name="CONTINUE_REGISTER">Tiếp tục đăng ký</string>
   <string name="CREATING">Đang thêm vào&#8230;</string>
   <string name="CURRENT_PWD">Mật khẩu hiện tại</string>
   <string name="Cable_Mode">Chế độ cáp</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">Trạng thái đèn LED</string>
   <string name="DOOR_WRONG_PSW">sai mật khẩu</string>
   <string name="DOOR_WRONG_PSW_MSG">Mật khẩu cửa sai</string>
+  <string name="DOWNLOAD_MSG_PICTURE">Tải ảnh thông báo</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">Sau khi đóng, thông báo cảnh báo nhận dạng khuôn mặt sẽ không được tải xuống</string>
   <string name="DailyGreatTips_Full">số lượng các My Favorite Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
   <string name="Daily_Great_NO_CONTENTS">Không có nội dung</string>
   <string name="Dec">Dec.</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">chỉ tôi</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Công cộng</string>
   <string name="FACE_COLLAPSE">Sập</string>
+  <string name="FACE_NOT_RECOGNIZED">Mặt không được công nhận</string>
+  <string name="FACE_RECOGNITION">Nhận dạng khuôn mặt</string>
   <string name="FAQ_SINA_WEIBO">Không hỗ trợ Sina Weibo video trực tiếp</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, để đảm bảo rằng tài khoản có xác thực Sina tên Weibo, và không phải là một tài khoản danh sách đen.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, hiện tại Sina sống chỉ hỗ trợ Trung Quốc đại lục IP.</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%s mở</string>
   <string name="MESSAGE">Tin nhắn</string>
   <string name="MESSAGES_ADD_FACE_TIPS">Thiết lập thành công, nó sẽ được thêm vào mặt kiểm tra \"Quản lý khuôn mặt\"</string>
+  <string name="MESSAGES_AGE">%s năm</string>
+  <string name="MESSAGES_BLURRY">Mờ</string>
   <string name="MESSAGES_DELETE_FACE_BTN">Xóa khuôn mặt</string>
   <string name="MESSAGES_DELETE_FACE_MES">Xóa khuôn mặt và tin nhắn</string>
   <string name="MESSAGES_DELETE_FCAE_POP">Xóa khuôn mặt?</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Xóa biểu tượng và thư</string>
   <string name="MESSAGES_DELETE_ICON_POP">Xóa biểu tượng và tất cả các thư liên quan?</string>
   <string name="MESSAGES_DELETE_POP">Xóa khuôn mặt và tất cả các tin nhắn có liên quan?</string>
+  <string name="MESSAGES_EXPLAIN">Ví dụ hình ảnh:</string>
   <string name="MESSAGES_FACE_ANALYSIS">Phân tích dòng khách</string>
   <string name="MESSAGES_FACE_IDENTIFY">Nhận định</string>
   <string name="MESSAGES_FACE_INFO">Thông tin khuôn mặt</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">Truy cập %s lần trong vòng 30 ngày</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">Lượt truy cập của ngày hôm qua</string>
   <string name="MESSAGES_FILTER_ALL">Tất cả các</string>
-  <string name="MESSAGES_FILTER_STRANGER">Lạ</string>
+  <string name="MESSAGES_FILTER_STRANGER">Khách</string>
+  <string name="MESSAGES_GENDER_FEMALE">Giống cái</string>
+  <string name="MESSAGES_GENDER_MALE">Nam giới</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Thêm vào khuôn mặt hiện tại</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">Gương mặt mới</string>
   <string name="MESSAGES_IDENTIFY_POP">Khuôn mặt mới, hoặc bằng cách thêm vào khuôn mặt hiện tại, nâng cao độ chính xác của nhận dạng khuôn mặt</string>
+  <string name="MESSAGES_POSITIVE_FACE">Mặt tích cực</string>
+  <string name="MESSAGES_REGISTER_FACE">Đăng ký mặt</string>
+  <string name="MESSAGES_SIDE_FACE">Mặt mặt</string>
   <string name="MESSAGES_TIME_DAY">%s ngày trước</string>
   <string name="MESSAGES_TIME_HOUR">%s giờ trước</string>
   <string name="MESSAGES_TIME_MIN">%s phút trước</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">Làm mới</string>
   <string name="REFRESHING">Làm mới</string>
   <string name="REGISTERED">Tài khoản đã đăng ký rồi</string>
+  <string name="REGISTER_FACE_TIPS">Vui lòng tải lên hình ảnh khuôn mặt rõ ràng</string>
+  <string name="REGISTRATION_FAILED">Đăng ký không thành công</string>
+  <string name="REGISTRATION_SECCESS">Đăng ký thành công</string>
   <string name="RELEASE_TO_LOAD">Buông-để-tải</string>
   <string name="RELEASE_TO_REFRESH">Buông-để-làm-mới</string>
   <string name="REMAIN_SPACE">%s GB sử dụng</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">Vui lòng kết nối điện thoại và thiết bị với cùng một mạng trước khi cấu hình</string>
   <string name="WONDER_TODAY_H_M">Hôm nay HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Hôm qua HH:mm</string>
+  <string name="WRONG_FORMAT">Định dạng sai, chỉ hỗ trợ .jpg/.png/.bmp</string>
   <string name="WeChat">WeChat</string>
   <string name="Weibo">Weibo</string>
   <string name="WiFiLight_BlueFlashing">Màu xanh nhấp nháy: chế độ cấu hình WiFi</string>

@@ -78,6 +78,7 @@
   <string name="CONNECTING">Tidak ada respon , silahkan coba lagi</string>
   <string name="CONNECTING_1">Menghubungkan</string>
   <string name="CONN_INTERRUPTED">Menghubungkan ke jaringan</string>
+  <string name="CONTINUE_REGISTER">Lanjutkan untuk mendaftar</string>
   <string name="CREATING">Menambahkan&#8230;</string>
   <string name="CURRENT_PWD">Kata sandi sekarang</string>
   <string name="Cable_Mode">Mode kabel</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
   <string name="DOOR_WRONG_PSW">kata sandi salah</string>
   <string name="DOOR_WRONG_PSW_MSG">Password pintu salah</string>
+  <string name="DOWNLOAD_MSG_PICTURE">Download gambar pesan</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">Setelah ditutup, pesan alarm pengenalan wajah tidak akan didownload</string>
   <string name="DailyGreatTips_Full">Nomor koleksi untuk My Favorite telah mencapai batas atas 50, pergi ke menghapus?</string>
   <string name="Daily_Great_NO_CONTENTS">Tidak ada isi</string>
   <string name="Dec">Dec.</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Hanya aku</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Publik</string>
   <string name="FACE_COLLAPSE">Jatuh</string>
+  <string name="FACE_NOT_RECOGNIZED">Wajah tidak dikenali</string>
+  <string name="FACE_RECOGNITION">Pengenalan wajah</string>
   <string name="FAQ_SINA_WEIBO">Jangan mendukung Sina Weibo live video</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1, untuk memastikan bahwa akun tersebut memiliki autentikasi nama asli Sina Weibo, dan bukan akun daftar hitam.</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2, Sina saat ini tinggal hanya mendukung IP daratan China.</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%s sedang buka</string>
   <string name="MESSAGE">Pesan</string>
   <string name="MESSAGES_ADD_FACE_TIPS">Set berhasil, itu akan ditambahkan ke cek wajah \"Manajemen wajah\"</string>
+  <string name="MESSAGES_AGE">%s tahun</string>
+  <string name="MESSAGES_BLURRY">Buram</string>
   <string name="MESSAGES_DELETE_FACE_BTN">Hapus wajah</string>
   <string name="MESSAGES_DELETE_FACE_MES">Hapus wajah dan pesan</string>
   <string name="MESSAGES_DELETE_FCAE_POP">Hapus wajah?</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Hapus ikon dan pesan</string>
   <string name="MESSAGES_DELETE_ICON_POP">Hapus ikon dan semua pesan terkait?</string>
   <string name="MESSAGES_DELETE_POP">Hapus wajah dan semua pesan terkait?</string>
+  <string name="MESSAGES_EXPLAIN">Contoh Gambar:</string>
   <string name="MESSAGES_FACE_ANALYSIS">Analisis arus penumpang</string>
   <string name="MESSAGES_FACE_IDENTIFY">Mengenali</string>
   <string name="MESSAGES_FACE_INFO">Informasi wajah</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">Kunjungi %s kali dalam 30 hari</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">Kunjungan kemarin</string>
   <string name="MESSAGES_FILTER_ALL">Semua</string>
-  <string name="MESSAGES_FILTER_STRANGER">Orang asing</string>
+  <string name="MESSAGES_FILTER_STRANGER">Pengunjung</string>
+  <string name="MESSAGES_GENDER_FEMALE">Wanita</string>
+  <string name="MESSAGES_GENDER_MALE">Pria</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Tambahkan ke wajah yang ada</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">Wajah baru</string>
   <string name="MESSAGES_IDENTIFY_POP">Wajah baru, atau dengan menambah wajah yang ada, meningkatkan akurasi pengenalan wajah</string>
+  <string name="MESSAGES_POSITIVE_FACE">Wajah positif</string>
+  <string name="MESSAGES_REGISTER_FACE">Daftar wajah</string>
+  <string name="MESSAGES_SIDE_FACE">Sisi wajah</string>
   <string name="MESSAGES_TIME_DAY">%s hari yang lalu</string>
   <string name="MESSAGES_TIME_HOUR">%s j yang lalu</string>
   <string name="MESSAGES_TIME_MIN">%s m yang lalu</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">Refresh</string>
   <string name="REFRESHING">Refreshing</string>
   <string name="REGISTERED">Akun sudah terdaftar</string>
+  <string name="REGISTER_FACE_TIPS">Silahkan upload foto wajah yang jernih</string>
+  <string name="REGISTRATION_FAILED">Registrasi gagal</string>
+  <string name="REGISTRATION_SECCESS">Registrasi berhasil</string>
   <string name="RELEASE_TO_LOAD">Lepaskan untuk memuat</string>
   <string name="RELEASE_TO_REFRESH">Lepaskan untuk Refresh</string>
   <string name="REMAIN_SPACE">%s GB dapat digunakan</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">Sambungkan telepon dan perangkat ke jaringan yang sama sebelum konfigurasi</string>
   <string name="WONDER_TODAY_H_M">Hari ini HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Kemarin HH:mm</string>
+  <string name="WRONG_FORMAT">Format salah, hanya support .jpg/.png/.bmp</string>
   <string name="WeChat">WeChat</string>
   <string name="Weibo">Weibo</string>
   <string name="WiFiLight_BlueFlashing">Biru berkedip: WiFi konfigurasi mode</string>

@@ -18,8 +18,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
-import rx.subscriptions.CompositeSubscription;
-
 /**
  * Created by cylan-hunt on 16-7-29.
  */
@@ -154,6 +152,10 @@ public class SettingItemView0 extends RelativeLayout {
 
     public void setChecked(boolean checked) {
         switchButton.setChecked(checked, false);
+    }
+
+    public boolean isChecked(){
+        return switchButton.isChecked();
     }
 
     public void setChecked(boolean checked, boolean toggle) {

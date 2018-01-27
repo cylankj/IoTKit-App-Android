@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.utils.BindHelper;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -40,8 +41,10 @@ import java.util.concurrent.TimeoutException;
 
 import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -59,9 +62,25 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     private AFullBind aFullBind;
     private boolean onLocalFlowFinish = false;
 
+    private BindHelper.BindContext bindContext;
+
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
+        bindContext = new BindHelper.BindContext(uuid);
         aFullBind = new SimpleBindFlow(this);
+        monitorLocalUdpMessage();
+    }
+
+    private void monitorLocalUdpMessage() {
+        RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                .observeOn(Schedulers.io())
+                .retry()
+                .subscribe(localUdpMsg -> BindHelper.consideUsefulLocalMessage(bindContext, localUdpMsg), new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
     }
 
     @Override
@@ -84,7 +103,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         String shortCid = getCurrentBindCidInShort();
         if (TextUtils.isEmpty(shortCid)) {
             getView().check3gFinish();
-            return;
+//            return;
         }
         Subscription subscription = aFullBind.getBindObservable(false, shortCid)
                 .subscribeOn(Schedulers.io())
@@ -244,6 +263,17 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         if (aFullBind != null) {
             aFullBind.clean();
         }
+    }
+
+    @Override
+    public void performSendWiFiConfig(String ssid, String password, int type) {
+        Observable.create(new Observable.OnSubscribe<BindHelper.BindContext>() {
+            @Override
+            public void call(Subscriber<? super BindHelper.BindContext> subscriber) {
+                bindContext.onUpdateWiFiConfig(ssid, password, type);
+                AppLogger.d(BindHelper.TAG+"");
+            }
+        });
     }
 
     /**

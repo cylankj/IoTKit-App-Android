@@ -78,6 +78,7 @@
   <string name="CONNECTING">デバイスに反応がありません。再試行してください</string>
   <string name="CONNECTING_1">ネットワーク接続中、しばらくお待ちください</string>
   <string name="CONN_INTERRUPTED">接続中止、カメラのネットワークをチェックしてください</string>
+  <string name="CONTINUE_REGISTER">登録を続ける</string>
   <string name="CREATING">作成中、しばらくお待ちください&#8230;</string>
   <string name="CURRENT_PWD">現在のパスワードを入力してください</string>
   <string name="Cable_Mode">ワイヤアクセスモード</string>
@@ -190,6 +191,8 @@
   <string name="DOOR_WIFI_HINT">デバイスのライト状態説明</string>
   <string name="DOOR_WRONG_PSW">間違ったパスワード</string>
   <string name="DOOR_WRONG_PSW_MSG">間違ったドアパスワード</string>
+  <string name="DOWNLOAD_MSG_PICTURE">ダウンロードメッセージ画像</string>
+  <string name="DOWNLOAD_MSG_PICTURE_EXPLAIN">閉じた後、顔認識アラームメッセージはダウンロードされません</string>
   <string name="DailyGreatTips_Full">毎日の見どころのコレクションは削除に行くかどうか、50の上限に達していますか？</string>
   <string name="Daily_Great_NO_CONTENTS">コンテンツなし</string>
   <string name="Dec">Dec.</string>
@@ -264,6 +267,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">私だけ</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">公開</string>
   <string name="FACE_COLLAPSE">折りたたむ</string>
+  <string name="FACE_NOT_RECOGNIZED">顔が認識されない</string>
+  <string name="FACE_RECOGNITION">顔認識</string>
   <string name="FAQ_SINA_WEIBO">シーナブログのライブビデオをサポートしていない</string>
   <string name="FAQ_SINA_WEIBO_TEXT1">1、アカウントがシーナのブログの実名認証を持っていることを確認し、ブラックリストアカウントではありません。</string>
   <string name="FAQ_SINA_WEIBO_TEXT2">2、現在のシーナは中国本土のIPをサポートしています。</string>
@@ -421,6 +426,8 @@
   <string name="MAGNETISM_ON_PUSH">%sがオンにしました</string>
   <string name="MESSAGE">メッセージ</string>
   <string name="MESSAGES_ADD_FACE_TIPS">正常に設定され、チェックフェースに追加されます。 \"顔管理\"</string>
+  <string name="MESSAGES_AGE">%s年</string>
+  <string name="MESSAGES_BLURRY">ぼやけた</string>
   <string name="MESSAGES_DELETE_FACE_BTN">顔を削除</string>
   <string name="MESSAGES_DELETE_FACE_MES">顔やメッセージを削除する</string>
   <string name="MESSAGES_DELETE_FCAE_POP">顔を削除しますか？</string>
@@ -428,6 +435,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">アイコンとメッセージを削除する</string>
   <string name="MESSAGES_DELETE_ICON_POP">アイコンと関連するすべてのメッセージを削除しますか？</string>
   <string name="MESSAGES_DELETE_POP">顔と関連するすべてのメッセージを削除しますか？</string>
+  <string name="MESSAGES_EXPLAIN">画像例：</string>
   <string name="MESSAGES_FACE_ANALYSIS">旅客流量分析</string>
   <string name="MESSAGES_FACE_IDENTIFY">識別する</string>
   <string name="MESSAGES_FACE_INFO">顔情報</string>
@@ -442,10 +450,15 @@
   <string name="MESSAGES_FACE_VISIT_TIMES">30日以内に%s回訪問</string>
   <string name="MESSAGES_FACE_YESTERDAY_VISIT">昨日の訪問</string>
   <string name="MESSAGES_FILTER_ALL">すべて</string>
-  <string name="MESSAGES_FILTER_STRANGER">見知らぬ人</string>
+  <string name="MESSAGES_FILTER_STRANGER">訪問者</string>
+  <string name="MESSAGES_GENDER_FEMALE">女性</string>
+  <string name="MESSAGES_GENDER_MALE">男性</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">既存の顔に追加する</string>
   <string name="MESSAGES_IDENTIFY_CREATE_BTN">新顔</string>
   <string name="MESSAGES_IDENTIFY_POP">新しい顔、または既存の顔に追加することで、顔認識の精度を向上させる</string>
+  <string name="MESSAGES_POSITIVE_FACE">ポジティブ</string>
+  <string name="MESSAGES_REGISTER_FACE">登録顔</string>
+  <string name="MESSAGES_SIDE_FACE">横顔</string>
   <string name="MESSAGES_TIME_DAY">%s日前</string>
   <string name="MESSAGES_TIME_HOUR">%s時間前</string>
   <string name="MESSAGES_TIME_MIN">%s分前</string>
@@ -578,6 +591,9 @@
   <string name="REFRESH">更新してください</string>
   <string name="REFRESHING">更新中&#8230;</string>
   <string name="REGISTERED">このアカウントはすでに登録されています</string>
+  <string name="REGISTER_FACE_TIPS">クリアな顔の写真をアップロードしてください</string>
+  <string name="REGISTRATION_FAILED">登録に失敗しました</string>
+  <string name="REGISTRATION_SECCESS">登録完了</string>
   <string name="RELEASE_TO_LOAD">リリースしてロード</string>
   <string name="RELEASE_TO_REFRESH">リリースして更新</string>
   <string name="REMAIN_SPACE">%s GB使用可能</string>
@@ -1146,6 +1162,7 @@
   <string name="WIRED_UPGRADE_NON_LAN">設定前に電話機とデバイスを同じネットワークに接続してください</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
+  <string name="WRONG_FORMAT">形式が正しくない.jpg /.png /.bmpのみサポート</string>
   <string name="WeChat">WeChat</string>
   <string name="Weibo">Weibo</string>
   <string name="WiFiLight_BlueFlashing">青色の点滅：WiFi設定モード</string>
