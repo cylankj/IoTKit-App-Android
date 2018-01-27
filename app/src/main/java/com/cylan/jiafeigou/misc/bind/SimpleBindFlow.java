@@ -216,8 +216,6 @@ public class SimpleBindFlow extends AFullBind {
                 }, AppLogger::e);
     }
 
-    private MapSubscription subscriptionMap = new MapSubscription();
-
     /**
      * 此处的消息来源非常关键{@link com.cylan.jiafeigou.n.engine.GlobalUdpDataSource}
      * emit出来 {@link JfgUdpMsg.PingAck},两者都是异步.
@@ -319,13 +317,11 @@ public class SimpleBindFlow extends AFullBind {
                             subscriber.onNext(devicePortrait);
                             subscriber.onCompleted();
                             //结束本身.
-                            subscriptionMap.remove("FPingAck");
                         }
                     }, throwable -> {
                         subscriber.onError(new RxEvent.HelperBreaker(2));
-                        subscriptionMap.remove("FPingAck");
                     });
-            subscriptionMap.add(sub, "FPingAck");
+            subscriber.add(sub);
             try {
                 for (int i = 0; i < 2; i++) {
                     Command.getInstance().sendLocalMessage(UdpConstant.IP,

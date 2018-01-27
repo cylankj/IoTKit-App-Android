@@ -35,7 +35,12 @@ import permissions.dispatcher.*
 import java.io.File
 
 @RuntimePermissions
-class RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterFaceContract.View, TextWatcher {
+class
+RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterFaceContract.View, TextWatcher {
+    override fun onRegisterErrorPermissionDenied() {
+        AppLogger.w("onRegisterErrorPermissionDenied")
+    }
+
     override fun onRegisterErrorNoNetwork() {
         AppLogger.w("onRegisterErrorNoNetwork")
     }

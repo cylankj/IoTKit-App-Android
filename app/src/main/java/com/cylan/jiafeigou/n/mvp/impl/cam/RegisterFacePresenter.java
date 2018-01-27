@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.module.Command;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
@@ -36,8 +38,8 @@ import rx.schedulers.Schedulers;
 /**
  * Created by yanzhendong on 2018/1/26.
  */
-
 public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.View> implements RegisterFaceContract.Presenter {
+
     @Inject
     public RegisterFacePresenter(RegisterFaceContract.View view) {
         super(view);
@@ -49,7 +51,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
         OkGo.getInstance().setCertificates(new X509TrustManager() {
             @Override
             public X509Certificate[] getAcceptedIssuers() {
-                return null;
+                return new X509Certificate[]{};
             }
 
             @Override
@@ -156,11 +158,15 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                     return -1;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS)
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe(code -> {
                     if (code == -1) {
                         mView.onRegisterErrorDetectionFailed();
                     } else if (code == 200) {
                         mView.onRegisterSuccessful();
+                    } else {
+                        mView.onRegisterErrorPermissionDenied();
                     }
                 }, throwable -> {
                     throwable.printStackTrace();

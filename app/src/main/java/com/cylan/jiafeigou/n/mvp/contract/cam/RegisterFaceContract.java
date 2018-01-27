@@ -19,6 +19,8 @@ public interface RegisterFaceContract {
         void onRegisterSuccessful();
 
         void onRegisterTimeout();
+
+        void onRegisterErrorPermissionDenied();
     }
 
     interface Presenter extends JFGPresenter {
