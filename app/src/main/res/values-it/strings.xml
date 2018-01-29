@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Nessun video nel periodo selezionato</string>
   <string name="REFRESH">Ricaricare</string>
   <string name="REFRESHING">Aggiornamento&#8230;</string>
+  <string name="REGFACE_FACESMALL">La faccia è troppo piccola</string>
+  <string name="REGFACE_MULTIFACE">Troppi volti, non riconosciuti</string>
+  <string name="REGFACE_NOFACE">Nessun volto rilevato</string>
   <string name="REGISTERED">Questa email è già stata registrata</string>
   <string name="REGISTER_FACE_TIPS">Si prega di caricare una foto chiara del viso</string>
-  <string name="REGISTRATION_FAILED">Registrazione fallita</string>
+  <string name="REGISTRATION_FAILED">Registrati faccia fallita</string>
   <string name="REGISTRATION_SECCESS">Registrazione avvenuta</string>
   <string name="RELEASE_TO_LOAD">Carica completa</string>
   <string name="RELEASE_TO_REFRESH">Sblocco</string>

@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Bu sefer video yok</string>
   <string name="REFRESH">Tazele</string>
   <string name="REFRESHING">Yenileniyor&#8230;</string>
+  <string name="REGFACE_FACESMALL">Yüz çok küçük, tanınmıyor</string>
+  <string name="REGFACE_MULTIFACE">Çok fazla yüz, tanınmıyor</string>
+  <string name="REGFACE_NOFACE">Yüz tespiti yok</string>
   <string name="REGISTERED">Hesap kayıtlı</string>
   <string name="REGISTER_FACE_TIPS">net bir ön yüz fotoğrafını yükleyin</string>
-  <string name="REGISTRATION_FAILED">Kayıt başarısız</string>
+  <string name="REGISTRATION_FAILED">Kayıt yüzü başarısız oldu</string>
   <string name="REGISTRATION_SECCESS">Başarılı Kayıt</string>
   <string name="RELEASE_TO_LOAD">Yüklemek için serbest bırakın</string>
   <string name="RELEASE_TO_REFRESH">Yenilemek için serbest bırakın</string>

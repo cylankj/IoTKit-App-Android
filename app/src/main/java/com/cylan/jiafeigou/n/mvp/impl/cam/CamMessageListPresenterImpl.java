@@ -458,6 +458,15 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                                     bean.message = faceIdStatus;
                                     list.add(bean);
                                 }
+                            } else if (header.msgId == DpMsgMap.ID_526_CAM_AI_WARM_MSG) {
+                                bean = new CamMessageBean();
+                                DpMsgDefine.DPCameraAIWarmMsg cameraAIWarmMsg = DpUtils.unpackDataWithoutThrow(header.bytes, DpMsgDefine.DPCameraAIWarmMsg.class, null);
+                                if (cameraAIWarmMsg != null) {
+                                    cameraAIWarmMsg.version = header.version;
+                                    cameraAIWarmMsg.msgId = header.msgId;
+                                    bean.message = cameraAIWarmMsg;
+                                }
+                                list.add(bean);
                             }
                         }
                     }

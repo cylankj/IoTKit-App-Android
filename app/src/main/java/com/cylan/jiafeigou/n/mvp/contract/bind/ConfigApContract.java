@@ -51,6 +51,8 @@ public interface ConfigApContract {
         void onDeviceAlreadyExist();
 
         void onAccessLocationPermissionRejected();
+
+        void onSendWiFiConfigPrepared();
     }
 
     interface Presenter extends BasePresenter {

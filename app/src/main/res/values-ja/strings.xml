@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">この時間帯の動画が見つかりません</string>
   <string name="REFRESH">更新してください</string>
   <string name="REFRESHING">更新中&#8230;</string>
+  <string name="REGFACE_FACESMALL">特定するには小さすぎる顔</string>
+  <string name="REGFACE_MULTIFACE">顔が多すぎる、認識されていない</string>
+  <string name="REGFACE_NOFACE">顔が検出されていません</string>
   <string name="REGISTERED">このアカウントはすでに登録されています</string>
   <string name="REGISTER_FACE_TIPS">クリアな顔の写真をアップロードしてください</string>
-  <string name="REGISTRATION_FAILED">登録に失敗しました</string>
+  <string name="REGISTRATION_FAILED">顔の登録に失敗しました</string>
   <string name="REGISTRATION_SECCESS">登録完了</string>
   <string name="RELEASE_TO_LOAD">リリースしてロード</string>
   <string name="RELEASE_TO_REFRESH">リリースして更新</string>

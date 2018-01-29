@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">No hay video de esta duración</string>
   <string name="REFRESH">Renovar, por favor</string>
   <string name="REFRESHING">Cargando</string>
+  <string name="REGFACE_FACESMALL">La cara es demasiado pequeña</string>
+  <string name="REGFACE_MULTIFACE">Demasiadas caras, no reconocidas</string>
+  <string name="REGFACE_NOFACE">Sin rostro detectado</string>
   <string name="REGISTERED">Esta cuenta ha sido inscribida</string>
   <string name="REGISTER_FACE_TIPS">Cargue una foto de la cara clara</string>
-  <string name="REGISTRATION_FAILED">Registro fallido</string>
+  <string name="REGISTRATION_FAILED">La cara del registro falló</string>
   <string name="REGISTRATION_SECCESS">Registración exitosa</string>
   <string name="RELEASE_TO_LOAD">Lassen-to-load</string>
   <string name="RELEASE_TO_REFRESH">Soltar para actualizar</string>

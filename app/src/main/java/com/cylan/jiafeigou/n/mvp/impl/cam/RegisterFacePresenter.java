@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.lzy.okgo.OkGo;
 
@@ -202,15 +203,18 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                             mView.onRegisterErrorDetectionFailed();
                         }
                         break;
+                        default: {
+                            mView.onRegisterErrorRegisterFailed();
+                        }
                     }
                 }, throwable -> {
-                    throwable.printStackTrace();
-                    AppLogger.e(throwable);
                     if (throwable instanceof TimeoutException) {
                         mView.onRegisterTimeout();
                     } else {
                         mView.onRegisterErrorRegisterFailed();
                     }
+                    throwable.printStackTrace();
+                    AppLogger.e(MiscUtils.getErr(throwable));
                 });
         addStopSubscription(subscribe);
     }

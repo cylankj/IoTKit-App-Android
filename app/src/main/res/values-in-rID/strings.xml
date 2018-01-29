@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Tidak ada video saat ini</string>
   <string name="REFRESH">Refresh</string>
   <string name="REFRESHING">Refreshing</string>
+  <string name="REGFACE_FACESMALL">Wajah terlalu kecil, tidak dikenali</string>
+  <string name="REGFACE_MULTIFACE">Terlalu banyak wajah, tidak dikenali</string>
+  <string name="REGFACE_NOFACE">Tidak ada wajah yang terdeteksi</string>
   <string name="REGISTERED">Akun sudah terdaftar</string>
   <string name="REGISTER_FACE_TIPS">Silahkan upload foto wajah yang jernih</string>
-  <string name="REGISTRATION_FAILED">Registrasi gagal</string>
+  <string name="REGISTRATION_FAILED">Daftar wajah gagal</string>
   <string name="REGISTRATION_SECCESS">Registrasi berhasil</string>
   <string name="RELEASE_TO_LOAD">Lepaskan untuk memuat</string>
   <string name="RELEASE_TO_REFRESH">Lepaskan untuk Refresh</string>

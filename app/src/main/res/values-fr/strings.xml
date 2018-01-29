@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Pas de vidéo pendant cette période</string>
   <string name="REFRESH">Rafraîchir</string>
   <string name="REFRESHING">Rafraîchissement en cours&#8230;</string>
+  <string name="REGFACE_FACESMALL">Le visage est trop petit</string>
+  <string name="REGFACE_MULTIFACE">Trop de visages, non reconnus</string>
+  <string name="REGFACE_NOFACE">Aucun visage détecté</string>
   <string name="REGISTERED">Ce compte a été inscrit</string>
   <string name="REGISTER_FACE_TIPS">S\'il vous plaît télécharger une photo de visage claire</string>
-  <string name="REGISTRATION_FAILED">L\'inscription a échoué</string>
+  <string name="REGISTRATION_FAILED">Enregistrer le visage a échoué</string>
   <string name="REGISTRATION_SECCESS">Succès d\'inscription</string>
   <string name="RELEASE_TO_LOAD">Relâchez-à-charge</string>
   <string name="RELEASE_TO_REFRESH">Relâcher pour rafraîchir</string>

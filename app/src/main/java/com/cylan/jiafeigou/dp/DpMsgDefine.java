@@ -2854,4 +2854,68 @@ public class DpMsgDefine {
     public static class DPUploadImage {
 
     }
+
+    @Message
+    public static class DPCameraAIWarmMsg extends BaseDataPoint {
+        @Index(0)
+        public int time;
+        @Index(1)
+        public int isRecording;
+        @Index(2)
+        public int file;
+        @Index(3)
+        public int regionType;
+        @Index(4)
+        public List<PersonDetail> persons;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(this.time);
+            dest.writeInt(this.isRecording);
+            dest.writeInt(this.file);
+            dest.writeInt(this.regionType);
+            dest.writeList(this.persons);
+        }
+
+        public DPCameraAIWarmMsg() {
+        }
+
+        protected DPCameraAIWarmMsg(Parcel in) {
+            super(in);
+            this.time = in.readInt();
+            this.isRecording = in.readInt();
+            this.file = in.readInt();
+            this.regionType = in.readInt();
+            this.persons = new ArrayList<PersonDetail>();
+            in.readList(this.persons, PersonDetail.class.getClassLoader());
+        }
+
+        public static final Creator<DPCameraAIWarmMsg> CREATOR = new Creator<DPCameraAIWarmMsg>() {
+            @Override
+            public DPCameraAIWarmMsg createFromParcel(Parcel source) {
+                return new DPCameraAIWarmMsg(source);
+            }
+
+            @Override
+            public DPCameraAIWarmMsg[] newArray(int size) {
+                return new DPCameraAIWarmMsg[size];
+            }
+        };
+    }
+
+    @Message
+    public static class PersonDetail {
+        @Index(0)
+        public String name;
+        @Index(1)
+        public String sex;
+        @Index(2)
+        public String age;
+    }
 }

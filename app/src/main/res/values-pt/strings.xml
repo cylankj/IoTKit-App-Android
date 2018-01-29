@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Não há vídeo deste período</string>
   <string name="REFRESH">Tentar atualizar</string>
   <string name="REFRESHING">Atualizando</string>
+  <string name="REGFACE_FACESMALL">O rosto é muito pequeno</string>
+  <string name="REGFACE_MULTIFACE">Muitas faces, não reconhecidas</string>
+  <string name="REGFACE_NOFACE">Nenhum rosto detectado</string>
   <string name="REGISTERED">Conta registrada</string>
   <string name="REGISTER_FACE_TIPS">Carregue uma foto de rosto claro</string>
-  <string name="REGISTRATION_FAILED">O registro falhou, tente novamente</string>
+  <string name="REGISTRATION_FAILED">O rosto de registro falhou</string>
   <string name="REGISTRATION_SECCESS">Registro bem sucedido</string>
   <string name="RELEASE_TO_LOAD">Libere-para-carregar</string>
   <string name="RELEASE_TO_REFRESH">Libere-para-atualizar</string>

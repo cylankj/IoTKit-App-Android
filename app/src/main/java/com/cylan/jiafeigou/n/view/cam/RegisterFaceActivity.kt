@@ -50,19 +50,22 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     override fun onRegisterErrorNoFaceError() {
         AppLogger.w("onRegisterErrorNoFaceError")
+        ToastUtil.showToast(getString(R.string.FACE_NOT_RECOGNIZED))
     }
 
     override fun onRegisterErrorFaceSmallError() {
         AppLogger.w("onRegisterErrorFaceSmallError")
+        ToastUtil.showToast(getString(R.string.REGFACE_FACESMALL))
     }
 
     override fun onRegisterErrorMultiFaceError() {
         AppLogger.w("onRegisterErrorMultiFaceError")
+        ToastUtil.showToast(getString(R.string.REGFACE_MULTIFACE))
     }
 
     override fun onRegisterErrorNoFeaturesInFaceError() {
         AppLogger.w("onRegisterErrorNoFeaturesInFaceError")
-        ToastUtil.showToast(getString(R.string.FACE_NOT_RECOGNIZED))
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
     }
 
     override fun onRegisterErrorRegUserError() {
@@ -107,20 +110,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
         img_photo.setImageResource(R.drawable.icon_register_face1)
         img_select_photo.visibility = View.INVISIBLE
         photo_nick_name.getEditer().text.clear()
-        photo_nick_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
-            val originWidth = BoringLayout.getDesiredWidth("$dest", photo_nick_name.edit_text.paint)
-            val measuredWidth = photo_nick_name.edit_text.measuredWidth
-            var result = "$source"
-            var width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
 
-            Log.i(JConstant.CYLAN_TAG, "source:$source,dest:$dest,usedWidth:$originWidth inputWidth:$width,acceptWidth:${photo_nick_name.edit_text.measuredWidth}")
-
-            while (originWidth + width > measuredWidth) {
-                result = result.dropLast(1)
-                width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
-            }
-            result
-        })
     }
 
     override fun onRegisterTimeout() {
@@ -336,5 +326,19 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createCameraTempFile(savedInstanceState)
+        photo_nick_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
+            val originWidth = BoringLayout.getDesiredWidth("$dest", photo_nick_name.edit_text.paint)
+            val measuredWidth = photo_nick_name.edit_text.measuredWidth
+            var result = "$source"
+            var width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
+
+            Log.i(JConstant.CYLAN_TAG, "source:$source,dest:$dest,usedWidth:$originWidth inputWidth:$width,acceptWidth:${photo_nick_name.edit_text.measuredWidth}")
+
+            while (originWidth + width > measuredWidth) {
+                result = result.dropLast(1)
+                width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
+            }
+            result
+        })
     }
 }

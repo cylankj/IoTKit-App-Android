@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Записи не найдены</string>
   <string name="REFRESH">Обновить</string>
   <string name="REFRESHING">Обновление&#8230;</string>
+  <string name="REGFACE_FACESMALL">Лицо слишком маленькое</string>
+  <string name="REGFACE_MULTIFACE">Слишком много лиц, непризнанных</string>
+  <string name="REGFACE_NOFACE">Не обнаружено лица</string>
   <string name="REGISTERED">Аккаунт зарегистрирован</string>
   <string name="REGISTER_FACE_TIPS">Загрузите четкую фотографию лица</string>
-  <string name="REGISTRATION_FAILED">Ошибка регистрации</string>
+  <string name="REGISTRATION_FAILED">Ошибка регистрации лица</string>
   <string name="REGISTRATION_SECCESS">Вы успешно зарегистрировались</string>
   <string name="RELEASE_TO_LOAD">Отпустите к нагрузке</string>
   <string name="RELEASE_TO_REFRESH">Отпустите для обновления</string>

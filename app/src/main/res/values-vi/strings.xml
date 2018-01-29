@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Không có video nào lúc này</string>
   <string name="REFRESH">Làm mới</string>
   <string name="REFRESHING">Làm mới</string>
+  <string name="REGFACE_FACESMALL">Mặt là quá nhỏ, không được công nhận</string>
+  <string name="REGFACE_MULTIFACE">Quá nhiều khuôn mặt, không được nhận ra</string>
+  <string name="REGFACE_NOFACE">Không nhận diện khuôn mặt</string>
   <string name="REGISTERED">Tài khoản đã đăng ký rồi</string>
   <string name="REGISTER_FACE_TIPS">Vui lòng tải lên hình ảnh khuôn mặt rõ ràng</string>
-  <string name="REGISTRATION_FAILED">Đăng ký không thành công</string>
+  <string name="REGISTRATION_FAILED">Đăng ký mặt thất bại</string>
   <string name="REGISTRATION_SECCESS">Đăng ký thành công</string>
   <string name="RELEASE_TO_LOAD">Buông-để-tải</string>
   <string name="RELEASE_TO_REFRESH">Buông-để-làm-mới</string>

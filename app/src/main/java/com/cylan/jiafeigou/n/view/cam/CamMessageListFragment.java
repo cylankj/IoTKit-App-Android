@@ -493,13 +493,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private Runnable refreshRunnable = new Runnable() {
         @Override
         public void run() {
-            decideRefresh();//需要每次刷新,而不是第一次刷新
-
             if (!NetUtils.hasNetwork()) {
-//            Box<KeyValueStringItem> boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem.class);
                 KeyValueDao keyValueDao = BaseDBHelper.getInstance().getDaoSession().getKeyValueDao();
                 KeyValue keyValue = keyValueDao.loadByRowId(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
-//            KeyValueStringItem stringItem =  boxFor.get(CacheHolderKt.longHash(CamMessageListFragment.class.getName() + ":" + uuid + ":cachedItems"));
                 if (keyValue != null) {
                     try {
                         Map<String, List<CamMessageBean>> json = new ObjectMapper().readValue(keyValue.getValue(), new TypeReference<Map<String, List<CamMessageBean>>>() {
@@ -509,6 +505,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         e.printStackTrace();
                     }
                 }
+            }else {
+                decideRefresh();//需要每次刷新,而不是第一次刷新
             }
         }
     };
@@ -556,7 +554,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         }
                         break;
                     case FaceItem.FACE_TYPE_ALL:
-//                    lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
                         presenter.fetchVisitorMessageList(3, "", time, isRefresh);

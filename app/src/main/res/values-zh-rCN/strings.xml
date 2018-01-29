@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">没有此时间段的视频</string>
   <string name="REFRESH">刷新试试</string>
   <string name="REFRESHING">正在刷新</string>
+  <string name="REGFACE_FACESMALL">人脸太小，无法识别</string>
+  <string name="REGFACE_MULTIFACE">人脸太多，无法识别</string>
+  <string name="REGFACE_NOFACE">未检测到人脸，请重试</string>
   <string name="REGISTERED">此账号已被注册</string>
   <string name="REGISTER_FACE_TIPS">请上传清晰的正脸照</string>
-  <string name="REGISTRATION_FAILED">注册失败，请重试</string>
+  <string name="REGISTRATION_FAILED">注册人脸失败，请重试</string>
   <string name="REGISTRATION_SECCESS">注册成功</string>
   <string name="RELEASE_TO_LOAD">释放加载更多</string>
   <string name="RELEASE_TO_REFRESH">释放立即刷新</string>

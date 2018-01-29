@@ -162,8 +162,8 @@ object BindHelper {
     }
 
     @JvmStatic
-    fun checkParamsForFullBind(bindContext: BindContext) {
-
+    fun checkParamsForFullBind(bindContext: BindContext): Int {
+        return PARAMS_ERROR_NO_ERROR
     }
 
     @JvmStatic
@@ -217,8 +217,8 @@ object BindHelper {
     }
 
     @JvmStatic
-    fun performRepairAction(bindContext: BindContext, errorCode: Int) {
-
+    fun performRepairAction(bindContext: BindContext, errorCode: Int): Boolean {
+        return true
     }
 
     @JvmStatic

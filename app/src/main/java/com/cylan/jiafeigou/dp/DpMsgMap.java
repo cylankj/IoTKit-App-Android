@@ -90,6 +90,7 @@ public final class DpMsgMap {
     public static final int ID_519_CAM_WARNAREA = 519;
     public static final int ID_520_CAM_INFRARED = 520;
     public static final int ID_525_CAM_UPLOAD_IMAGE = 525;
+    public static final int ID_526_CAM_AI_WARM_MSG = 526;
     public static final int ID_401_BELL_CALL_STATE = 401;
 
     public static final int ID_701_SYS_PUSH_FLAG = 701;

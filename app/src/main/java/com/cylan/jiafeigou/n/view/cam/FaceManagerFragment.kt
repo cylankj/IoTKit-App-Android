@@ -123,6 +123,9 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
         face_manager_items.adapter = adapter
 
         custom_toolbar.setRightAction {
+            if (true) {
+                return@setRightAction
+            }
             if (getString(R.string.EDIT_THEME) == custom_toolbar.tvToolbarRight.text) {
                 setEditMode(true)
 //                bottom_menu.visibility = View.VISIBLE
@@ -152,7 +155,9 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
     @OnClick(R.id.tv_msg_delete)
     fun clickDeleteSelect() {
         AppLogger.w("clickDeleteSelect")
-        presenter.deleteFace(personId, adapter.selectedItems.map { it.faceInformation?.face_id ?: "" }.filter { !TextUtils.isEmpty(it) })
+        presenter.deleteFace(personId, adapter.selectedItems.map {
+            it.faceInformation?.face_id ?: ""
+        }.filter { !TextUtils.isEmpty(it) })
     }
 
     private fun showFaceManagerPopMenu(position: Int, v: View?, faceManagerItem: FaceManagerItem) {

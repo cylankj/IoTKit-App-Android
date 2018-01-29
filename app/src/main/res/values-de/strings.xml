@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">Kein Video in diesem Zeitraum</string>
   <string name="REFRESH">Aktualisierung</string>
   <string name="REFRESHING">Wird aktualisiert</string>
+  <string name="REGFACE_FACESMALL">Das Gesicht ist zu klein</string>
+  <string name="REGFACE_MULTIFACE">Zu viele Gesichter, unerkannt</string>
+  <string name="REGFACE_NOFACE">Kein Gesicht erkannt</string>
   <string name="REGISTERED">Dieser Account ist bereits registriert</string>
   <string name="REGISTER_FACE_TIPS">Bitte lade ein klares Gesichtsfoto hoch</string>
-  <string name="REGISTRATION_FAILED">Die Registrierung ist fehlgeschlagen</string>
+  <string name="REGISTRATION_FAILED">Registerfläche fehlgeschlagen</string>
   <string name="REGISTRATION_SECCESS">Registrierung erfolgreich</string>
   <string name="RELEASE_TO_LOAD">Lassen-to-load</string>
   <string name="RELEASE_TO_REFRESH">Loslassen und wird aktualisiert</string>

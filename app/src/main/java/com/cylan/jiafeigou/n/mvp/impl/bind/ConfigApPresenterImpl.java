@@ -147,6 +147,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         .filter(ret -> TextUtils.equals(uuid, ret.data.cid))
                         .timeout(2, TimeUnit.SECONDS))
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .timeout(5, TimeUnit.SECONDS)
                 .subscribe(s -> {
                     getView().onSetWifiFinished(null);
                     AppLogger.w("发送配置成功");
@@ -267,19 +268,34 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void performSendWiFiConfig(String ssid, String password, int type) {
-        Observable.create(new Observable.OnSubscribe<BindHelper.BindContext>() {
+        Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
-            public void call(Subscriber<? super BindHelper.BindContext> subscriber) {
+            public void call(Subscriber<? super Object> subscriber) {
                 bindContext.onUpdateWiFiConfig(ssid, password, type);
-                BindHelper.checkParamsForFullBind(bindContext);
                 BindHelper.checkParamsForEventType(bindContext, BindHelper.EVENT_TYPE_WIFI_CONFIG);
-                boolean isNoError = false;
-                isNoError = BindHelper.isNoError(bindContext);
-                if (isNoError) {
+                boolean noError = BindHelper.isNoError(bindContext);
+                if (!noError) {
+                    noError = BindHelper.performRepairAction(bindContext, bindContext.getErrorCode());
                 }
-                AppLogger.d(BindHelper.TAG + "");
+                if (!noError) {
+                    subscriber.onError(new IllegalStateException("非法的绑定环境:" + bindContext.getErrorCode() + ",错误信息为:" + bindContext.getErrorMessage()));
+                    return;
+                }
+
+                BindHelper.performPingAction(bindContext);
+                mView.onSendWiFiConfigPrepared();
             }
-        });
+        })
+                .flatMap(cmd -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class))
+                .first(localUdpMsg -> {
+                    BindHelper.considerUsefulLocalMessage(bindContext, localUdpMsg);
+                    BindHelper.checkParamsForEventType(bindContext, BindHelper.EVENT_TYPE_WIFI_CONFIG);
+                    return BindHelper.isNoError(bindContext);
+                })
+                .map(localUdpMsg -> {
+                    BindHelper.sendWiFiConfig(bindContext);
+                    return "";
+                });
     }
 
     /**

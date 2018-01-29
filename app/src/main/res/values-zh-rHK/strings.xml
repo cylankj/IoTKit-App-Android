@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">沒有此時段的錄影</string>
   <string name="REFRESH">更新試試</string>
   <string name="REFRESHING">正在更新</string>
+  <string name="REGFACE_FACESMALL">人臉太小，無法識別</string>
+  <string name="REGFACE_MULTIFACE">人臉太多，無法識別</string>
+  <string name="REGFACE_NOFACE">未檢測到人臉，請重試</string>
   <string name="REGISTERED">此帳號已被註冊</string>
   <string name="REGISTER_FACE_TIPS">請上傳清晰的正臉照</string>
-  <string name="REGISTRATION_FAILED">註冊失敗，請重試</string>
+  <string name="REGISTRATION_FAILED">註冊人臉失敗，請重試</string>
   <string name="REGISTRATION_SECCESS">註冊成功</string>
   <string name="RELEASE_TO_LOAD">釋放載入更多</string>
   <string name="RELEASE_TO_REFRESH">釋放以立即更新</string>

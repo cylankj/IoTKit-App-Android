@@ -590,9 +590,12 @@
   <string name="RECORD_NO_FIND">No video in this time period</string>
   <string name="REFRESH">Refresh</string>
   <string name="REFRESHING">Refreshing</string>
+  <string name="REGFACE_FACESMALL">Face is too small, unrecognized</string>
+  <string name="REGFACE_MULTIFACE">Too many faces, unrecognized</string>
+  <string name="REGFACE_NOFACE">No face detected, please retry</string>
   <string name="REGISTERED">Registered account</string>
   <string name="REGISTER_FACE_TIPS">Please upload a clear face photo</string>
-  <string name="REGISTRATION_FAILED">Registration failed, please try again</string>
+  <string name="REGISTRATION_FAILED">Register face failed, please retry</string>
   <string name="REGISTRATION_SECCESS">Registration success</string>
   <string name="RELEASE_TO_LOAD">Release-to-load</string>
   <string name="RELEASE_TO_REFRESH">Release-to-refresh</string>

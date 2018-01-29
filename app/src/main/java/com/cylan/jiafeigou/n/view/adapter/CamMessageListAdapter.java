@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -241,8 +242,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     // TODO: 2017/8/4 当前查看视频不知道怎么处理
                     return false;
                 } else {
-                    return dpAlarm.isRecording == 1&& (System.currentTimeMillis() - dpAlarm.version) >= 30 * 60 * 1000L;
+                    return dpAlarm.isRecording == 1 && (System.currentTimeMillis() - dpAlarm.version) >= 30 * 60 * 1000L;
                 }
+            }
+            case DpMsgMap.ID_526_CAM_AI_WARM_MSG: {
+                DpMsgDefine.DPCameraAIWarmMsg cameraAIWarmMsg = (DpMsgDefine.DPCameraAIWarmMsg) bean.message;
+                return cameraAIWarmMsg.isRecording == 1 && (System.currentTimeMillis() - cameraAIWarmMsg.version) >= 30 * 60 * 1000L;
             }
         }
         return false;
@@ -266,6 +271,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             break;
             case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
                 DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) item.message;
+                return dpAlarm.isRecording == 1;
+            }
+            case DpMsgMap.ID_526_CAM_AI_WARM_MSG: {
+                DpMsgDefine.DPCameraAIWarmMsg dpAlarm = (DpMsgDefine.DPCameraAIWarmMsg) item.message;
                 return dpAlarm.isRecording == 1;
             }
             default: {
@@ -314,6 +323,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
                 DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) item.message;
                 count = dpAlarm.fileIndex < 1 ? 1 : MiscUtils.getCount(dpAlarm.fileIndex);
+            }
+            break;
+            case DpMsgMap.ID_526_CAM_AI_WARM_MSG: {
+                DpMsgDefine.DPCameraAIWarmMsg dpAlarm = (DpMsgDefine.DPCameraAIWarmMsg) item.message;
+                count = dpAlarm.file < 1 ? 1 : MiscUtils.getCount(dpAlarm.file);
             }
             break;
             case DpMsgMap.ID_401_BELL_CALL_STATE: {
@@ -409,6 +423,31 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 }
             }
 
+            case DpMsgMap.ID_526_CAM_AI_WARM_MSG: {
+                DpMsgDefine.DPCameraAIWarmMsg dpAlarm = (DpMsgDefine.DPCameraAIWarmMsg) bean.message;
+                if (dpAlarm.persons != null && hasFaceHeader) {
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < dpAlarm.persons.size(); i++) {
+                        DpMsgDefine.PersonDetail personDetail = dpAlarm.persons.get(i);
+                        builder.append(personDetail.name).append("(")
+                                .append(TextUtils.equals("female", personDetail.sex) ?
+                                        ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_FEMALE) :
+                                        ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_MALE)
+                                )
+                                .append(",")
+                                .append(ContextUtils.getContext().getString(R.string.MESSAGES_AGE, personDetail.age))
+                                .append(")");
+                        if (i != dpAlarm.persons.size() - 1) {
+                            builder.append(",");
+                        }
+                    }
+                    String faceText = builder.toString();
+                    return tContent + (TextUtils.isEmpty(faceText) ?
+                            getContext().getString(R.string.DETECTED_AI) + " " + getContext().getString(R.string.MESSAGES_FILTER_STRANGER)
+                            : getContext().getString(R.string.DETECTED_AI) + " " + faceText);
+                }
+            }
+            break;
             case DpMsgMap.ID_401_BELL_CALL_STATE: {
                 DpMsgDefine.DPBellCallRecord dpBellCallRecord = (DpMsgDefine.DPBellCallRecord) bean.message;
                 return tContent + (dpBellCallRecord.isOK == 1 ? getContext().getString(R.string.DOOR_CALL) : getContext().getString(R.string.DOOR_UNCALL));
@@ -493,6 +532,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     case DpMsgMap.ID_505_CAMERA_ALARM_MSG: {
                         DpMsgDefine.DPAlarm dpAlarm = (DpMsgDefine.DPAlarm) camMessageBean.message;
                         count = dpAlarm.fileIndex < 1 ? 1 : MiscUtils.getCount(dpAlarm.fileIndex);
+                    }
+                    break;
+                    case DpMsgMap.ID_526_CAM_AI_WARM_MSG: {
+                        DpMsgDefine.DPCameraAIWarmMsg dpAlarm = (DpMsgDefine.DPCameraAIWarmMsg) camMessageBean.message;
+                        count = dpAlarm.file < 1 ? 1 : MiscUtils.getCount(dpAlarm.file);
                     }
                     break;
                     default: {
