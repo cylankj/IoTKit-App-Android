@@ -402,6 +402,11 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         AppLogger.d("onAccessLocationPermissionRejected");
     }
 
+    @Override
+    public void onSendWiFiConfigPrepared() {
+        AppLogger.d("onSendWiFiConfigPrepared");
+    }
+
 
     @Override
     public void onDismiss(ScanResult scanResult) {
