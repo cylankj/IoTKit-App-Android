@@ -21,6 +21,22 @@ public interface RegisterFaceContract {
         void onRegisterTimeout();
 
         void onRegisterErrorPermissionDenied();
+
+        void onRegisterErrorRegisterFailed();
+
+        void onRegisterErrorInvalidParams();
+
+        void onRegisterErrorServerInternalError();
+
+        void onRegisterErrorNoFaceError();
+
+        void onRegisterErrorFaceSmallError();
+
+        void onRegisterErrorMultiFaceError();
+
+        void onRegisterErrorNoFeaturesInFaceError();
+
+        void onRegisterErrorRegUserError();
     }
 
     interface Presenter extends JFGPresenter {

@@ -836,7 +836,7 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     private String getDpAccount() {
-        Account account = accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).unique();
+        Account account = accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).where(AccountDao.Properties.Server.eq(OptionsImpl.getServer())).unique();
         if (account == null) {
             AppLogger.e("dpAccount is null");
             return null;

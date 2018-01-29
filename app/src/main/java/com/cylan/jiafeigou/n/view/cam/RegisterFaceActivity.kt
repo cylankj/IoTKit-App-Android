@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.IMEUtils
+import com.cylan.jiafeigou.utils.ToastUtil
 import com.cylan.jiafeigou.utils.ViewUtils
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment
 import kotlinx.android.synthetic.main.activity_register_face.*
@@ -37,8 +38,46 @@ import java.io.File
 @RuntimePermissions
 class
 RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterFaceContract.View, TextWatcher {
+    override fun onRegisterErrorInvalidParams() {
+        AppLogger.w("onRegisterErrorInvalidParams")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
+    }
+
+    override fun onRegisterErrorServerInternalError() {
+        AppLogger.w("onRegisterErrorServerInternalError")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
+    }
+
+    override fun onRegisterErrorNoFaceError() {
+        AppLogger.w("onRegisterErrorNoFaceError")
+    }
+
+    override fun onRegisterErrorFaceSmallError() {
+        AppLogger.w("onRegisterErrorFaceSmallError")
+    }
+
+    override fun onRegisterErrorMultiFaceError() {
+        AppLogger.w("onRegisterErrorMultiFaceError")
+    }
+
+    override fun onRegisterErrorNoFeaturesInFaceError() {
+        AppLogger.w("onRegisterErrorNoFeaturesInFaceError")
+        ToastUtil.showToast(getString(R.string.FACE_NOT_RECOGNIZED))
+    }
+
+    override fun onRegisterErrorRegUserError() {
+        AppLogger.w("onRegisterErrorRegUserError")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
+    }
+
+    override fun onRegisterErrorRegisterFailed() {
+        AppLogger.w("onRegisterErrorRegisterFailed")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
+    }
+
     override fun onRegisterErrorPermissionDenied() {
         AppLogger.w("onRegisterErrorPermissionDenied")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
     }
 
     override fun onRegisterErrorNoNetwork() {
@@ -51,6 +90,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     override fun onRegisterErrorDetectionFailed() {
         AppLogger.w("onRegisterErrorDetectionFailed")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
     }
 
     override fun onRegisterSuccessful() {
@@ -85,6 +125,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     override fun onRegisterTimeout() {
         AppLogger.w("onRegisterTimeout")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
     }
 
     override fun afterTextChanged(s: Editable?) {
@@ -128,12 +169,17 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     fun onFinishedClicked(view: View) {
         IMEUtils.hide(this)
-        presenter.performRegisterFaceAction(photo_nick_name.getEditer().toString(), getRealFilePathFromUri(context, cropFileUri))
+        presenter.performRegisterFaceAction(photo_nick_name.getEditer().text.toString(), getRealFilePathFromUri(context, cropFileUri))
     }
 
     override fun onResume() {
         super.onResume()
         refreshSelectedFace()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        IMEUtils.hide(this)
     }
 
     /**

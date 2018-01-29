@@ -122,7 +122,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                         String aiAppApi = server + "/aiapp";
                         tokenParams = new JSONObject();
                         tokenParams.put("action", "RegisterPerson");
-                        tokenParams.put("auth_token", authToken);
+                        tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
                         tokenParams.put("time", time);
                         tokenParams.put("person_name", nickName);
                         tokenParams.put("account", account);
@@ -139,7 +139,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
 
                         tokenParams = new JSONObject();
                         tokenParams.put("action", "AddFace");
-                        tokenParams.put("auth_token", authToken);
+                        tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
                         tokenParams.put("time", time);
                         tokenParams.put("person_id", jsonObject.getString("person_id"));
                         tokenParams.put("image_url", remotePath);
@@ -161,12 +161,47 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                 .timeout(10, TimeUnit.SECONDS)
                 .compose(applyLoading(false, R.string.LOADING))
                 .subscribe(code -> {
-                    if (code == -1) {
-                        mView.onRegisterErrorDetectionFailed();
-                    } else if (code == 200) {
-                        mView.onRegisterSuccessful();
-                    } else {
-                        mView.onRegisterErrorPermissionDenied();
+                    switch (code) {
+                        case 100: {
+                            mView.onRegisterErrorPermissionDenied();
+                        }
+                        break;
+                        case 101: {
+                            mView.onRegisterErrorInvalidParams();
+                        }
+                        break;
+                        case 102: {
+                            mView.onRegisterErrorServerInternalError();
+                        }
+                        break;
+                        case 103: {
+                            mView.onRegisterErrorNoFaceError();
+                        }
+                        break;
+                        case 104: {
+                            mView.onRegisterErrorFaceSmallError();
+                        }
+                        break;
+                        case 105: {
+                            mView.onRegisterErrorMultiFaceError();
+                        }
+                        break;
+                        case 106: {
+                            mView.onRegisterErrorNoFeaturesInFaceError();
+                        }
+                        break;
+                        case 107: {
+                            mView.onRegisterErrorRegUserError();
+                        }
+                        break;
+                        case 200: {
+                            mView.onRegisterSuccessful();
+                        }
+                        break;
+                        case -1: {
+                            mView.onRegisterErrorDetectionFailed();
+                        }
+                        break;
                     }
                 }, throwable -> {
                     throwable.printStackTrace();
@@ -174,7 +209,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                     if (throwable instanceof TimeoutException) {
                         mView.onRegisterTimeout();
                     } else {
-                        mView.onRegisterErrorDetectionFailed();
+                        mView.onRegisterErrorRegisterFailed();
                     }
                 });
         addStopSubscription(subscribe);

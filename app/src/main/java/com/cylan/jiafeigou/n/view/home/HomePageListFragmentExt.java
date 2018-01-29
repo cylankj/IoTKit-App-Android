@@ -727,6 +727,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             .observeOn(Schedulers.io())
                             .flatMap(i -> BaseDPTaskDispatcher.getInstance().perform(i))
                             .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe(() -> LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), true))
+                            .doOnUnsubscribe(LoadingDialog::dismissLoading)
+                            .doOnTerminate(LoadingDialog::dismissLoading)
                             .subscribe(rsp -> {
                                 ToastUtil.showToast(getString(R.string.DELETED_SUC));
                                 if (presenter != null) {
@@ -735,7 +738,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             }, e -> {
                                 ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
                                 AppLogger.e("err: " + MiscUtils.getErr(e));
-                            }, () -> LoadingDialog.dismissLoading());
+                            });
                     presenter.addSubscription("unbind", subscribe);
                 })
                 .setNegativeButton(R.string.CANCEL, null)

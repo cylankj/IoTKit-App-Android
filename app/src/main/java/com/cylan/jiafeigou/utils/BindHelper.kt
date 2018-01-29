@@ -162,7 +162,12 @@ object BindHelper {
     }
 
     @JvmStatic
-    fun consideUsefulLocalMessage(bindContext: BindContext, localUdpMsg: RxEvent.LocalUdpMsg) {
+    fun checkParamsForFullBind(bindContext: BindContext) {
+
+    }
+
+    @JvmStatic
+    fun considerUsefulLocalMessage(bindContext: BindContext, localUdpMsg: RxEvent.LocalUdpMsg) {
         checkParamsForEventType(bindContext, EVENT_TYPE_RECEIVE_LOCAL_MESSAGE)
         if (bindContext.errorCode == PARAMS_ERROR_NO_ERROR) {
 

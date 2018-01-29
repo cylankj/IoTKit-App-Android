@@ -75,7 +75,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                 .observeOn(Schedulers.io())
                 .retry()
-                .subscribe(localUdpMsg -> BindHelper.consideUsefulLocalMessage(bindContext, localUdpMsg), new Action1<Throwable>() {
+                .subscribe(localUdpMsg -> BindHelper.considerUsefulLocalMessage(bindContext, localUdpMsg), new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
 
@@ -271,7 +271,13 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             @Override
             public void call(Subscriber<? super BindHelper.BindContext> subscriber) {
                 bindContext.onUpdateWiFiConfig(ssid, password, type);
-                AppLogger.d(BindHelper.TAG+"");
+                BindHelper.checkParamsForFullBind(bindContext);
+                BindHelper.checkParamsForEventType(bindContext, BindHelper.EVENT_TYPE_WIFI_CONFIG);
+                boolean isNoError = false;
+                isNoError = BindHelper.isNoError(bindContext);
+                if (isNoError) {
+                }
+                AppLogger.d(BindHelper.TAG + "");
             }
         });
     }
