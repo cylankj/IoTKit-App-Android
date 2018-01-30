@@ -123,7 +123,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
             reqContent.cid = uuid;
             reqContent.faceId = faceId;
             reqContent.msgType = type;
-            final long seq = Command.getInstance().sendUniservalDataSeq(7, DpUtils.pack(reqContent));
+            final long seq = Command.getInstance().sendUniservalDataSeq(16, DpUtils.pack(reqContent));
             Subscription su = RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
                     .filter(rsp -> rsp.seq == seq)
                     .subscribeOn(Schedulers.io())

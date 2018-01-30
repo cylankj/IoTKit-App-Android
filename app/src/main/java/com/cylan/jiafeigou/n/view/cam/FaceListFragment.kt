@@ -44,21 +44,21 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         visitors?.map {
             FaceListItem().withVisitorInformation(it)
         }?.apply {
-            adapter.setNewList(this)
-            when {
-                adapter.adapterItemCount == 0 -> {
-                    empty_view.visibility = View.VISIBLE
-                    headerAdapter.clear()
-                }
-                adapter.adapterItemCount > 0 -> {
-                    empty_view.visibility = View.GONE
-                    if (headerAdapter.adapterItemCount == 0) {
-                        headerAdapter.add(FaceListHeaderItem())
+                    adapter.setNewList(this)
+                    when {
+                        adapter.adapterItemCount == 0 -> {
+                            empty_view.visibility = View.VISIBLE
+                            headerAdapter.clear()
+                        }
+                        adapter.adapterItemCount > 0 -> {
+                            empty_view.visibility = View.GONE
+                            if (headerAdapter.adapterItemCount == 0) {
+                                headerAdapter.add(FaceListHeaderItem())
+                            }
+                        }
                     }
-                }
-            }
 
-        }
+                }
     }
 
     override fun onMoveFaceToPersonSuccess(personId: String) {
@@ -119,7 +119,7 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
         (adapter as FastItemAdapter<IItem<*, *>>).addAdapter(0, headerAdapter as ItemAdapter<IItem<*, *>>)
 
         adapter.withUseIdDistributor(true)
-
+        adapter.withSelectable(true)
         adapter.withMultiSelect(false)
         adapter.withAllowDeselection(false)
         (adapter as FastAdapter<IItem<*, *>>).withSelectionListener { _, _ ->

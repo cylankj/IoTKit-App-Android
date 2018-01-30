@@ -141,6 +141,11 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     }
 
     @Override
+    public void onSendWiFiConfigPrepared() {
+
+    }
+
+    @Override
     public void onDismiss(ScanResult scanResult) {
 
     }

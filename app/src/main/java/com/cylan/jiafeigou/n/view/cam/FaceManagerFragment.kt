@@ -161,6 +161,9 @@ class FaceManagerFragment : BaseFragment<FaceManagerContact.Presenter>(), FaceMa
     }
 
     private fun showFaceManagerPopMenu(position: Int, v: View?, faceManagerItem: FaceManagerItem) {
+        if (true) {
+            return
+        }
         val view = View.inflate(context, R.layout.layout_face_manager_pop_alert, null)
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWindow = PopupWindow(view, view.measuredWidth, view.measuredHeight)

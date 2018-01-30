@@ -27,6 +27,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -429,14 +431,24 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     StringBuilder builder = new StringBuilder();
                     for (int i = 0; i < dpAlarm.persons.size(); i++) {
                         DpMsgDefine.PersonDetail personDetail = dpAlarm.persons.get(i);
-                        builder.append(personDetail.name).append("(")
-                                .append(TextUtils.equals("female", personDetail.sex) ?
-                                        ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_FEMALE) :
-                                        ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_MALE)
-                                )
-                                .append(",")
-                                .append(ContextUtils.getContext().getString(R.string.MESSAGES_AGE, personDetail.age))
-                                .append(")");
+                        Number parse = null;
+                        try {
+                            parse = NumberFormat.getInstance().parse(personDetail.age);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        boolean isStranger = TextUtils.isEmpty(personDetail.name) && TextUtils.isEmpty(personDetail.age) && TextUtils.isEmpty(personDetail.sex);
+                        builder.append(TextUtils.isEmpty(personDetail.name) ? getContext().getString(R.string.MESSAGES_FILTER_STRANGER) : personDetail.name);
+                        if (!isStranger) {
+                            builder.append("(")
+                                    .append(TextUtils.equals("female", personDetail.sex) ?
+                                            ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_FEMALE) :
+                                            ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_MALE)
+                                    )
+                                    .append(",")
+                                    .append(ContextUtils.getContext().getString(R.string.MESSAGES_AGE, parse == null ? personDetail.age : parse.intValue()))
+                                    .append(")");
+                        }
                         if (i != dpAlarm.persons.size() - 1) {
                             builder.append(",");
                         }

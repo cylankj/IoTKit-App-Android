@@ -2910,12 +2910,45 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static class PersonDetail {
+    public static class PersonDetail implements Parcelable {
         @Index(0)
         public String name;
         @Index(1)
         public String sex;
         @Index(2)
         public String age;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.name);
+            dest.writeString(this.sex);
+            dest.writeString(this.age);
+        }
+
+        public PersonDetail() {
+        }
+
+        protected PersonDetail(Parcel in) {
+            this.name = in.readString();
+            this.sex = in.readString();
+            this.age = in.readString();
+        }
+
+        public static final Creator<PersonDetail> CREATOR = new Creator<PersonDetail>() {
+            @Override
+            public PersonDetail createFromParcel(Parcel source) {
+                return new PersonDetail(source);
+            }
+
+            @Override
+            public PersonDetail[] newArray(int size) {
+                return new PersonDetail[size];
+            }
+        };
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.PopupWindowCompat
@@ -308,9 +309,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
 
         faceAdapter.withOnLongClickListener { v, adapter, item, position ->
-            if (true) {//目前屏蔽掉长按事件
-                return@withOnLongClickListener true
-            }
+            //            if (true) {//目前屏蔽掉长按事件
+//                return@withOnLongClickListener true
+//            }
             //            visitorListener?.onLoadItemInformation(item)
             if (item.getFaceType() != FaceItem.FACE_TYPE_ALL && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER) {
                 showHeaderFacePopMenu(item, position, v, item.getFaceType())
@@ -584,6 +585,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         val popupWindow = PopupWindow(contentView, contentView.measuredWidth, contentView.measuredHeight)
         popupWindow.setBackgroundDrawable(ColorDrawable(0))
         popupWindow.isOutsideTouchable = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            popupWindow.elevation = 10.0F
+        }
         contentView.findViewById<View>(R.id.delete).setOnClickListener { v ->
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔")

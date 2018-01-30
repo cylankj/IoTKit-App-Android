@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -387,6 +388,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void fetchVisitorMessageList(int type, final String id, long sec, boolean refresh) {
+        Log.d(JConstant.CYLAN_TAG, "type is:" + type + ",id is:" + id);
         Subscription subscribe = Observable.just("fetchVisitorMessageList")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
@@ -398,7 +400,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         reqContent.msgType = type;
                         reqContent.seq = refresh ? 0 : sec;
                         AppLogger.i(reqContent.toString());
-                        return Command.getInstance().sendUniservalDataSeq(8, DpUtils.pack(reqContent));
+                        return Command.getInstance().sendUniservalDataSeq(17, DpUtils.pack(reqContent));
                     } catch (Exception e) {
                         AppLogger.e(MiscUtils.getErr(e));
                         throw new RuntimeException(e);
@@ -472,16 +474,15 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                     return list;
                 })
-                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
-//                    AppLogger.e("Fetch Result:" + items);
-                    AppLogger.e("Fetch Result: items.size: " + items.size());
                     if (refresh) {
                         mView.onVisitorListInsert(items);
                     } else {
                         mView.onVisitorListAppend(items);
                     }
+                    AppLogger.e("Fetch Result: items.size: " + (items == null ? 0 : items.size()));
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(e);

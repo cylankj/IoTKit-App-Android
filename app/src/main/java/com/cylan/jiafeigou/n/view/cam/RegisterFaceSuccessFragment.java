@@ -53,6 +53,11 @@ public class RegisterFaceSuccessFragment extends BaseFragment {
         getFragmentManager().popBackStack();
     }
 
+    @Override
+    public boolean useDaggerInject() {
+        return false;
+    }
+
     public static RegisterFaceSuccessFragment newInstance(String uuid) {
         RegisterFaceSuccessFragment fragment = new RegisterFaceSuccessFragment();
         Bundle argument = new Bundle();

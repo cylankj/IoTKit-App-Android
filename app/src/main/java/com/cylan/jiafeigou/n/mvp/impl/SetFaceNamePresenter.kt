@@ -40,7 +40,6 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
     access_token	【必填项】
      * */
     override fun setFaceName(personId: String, faceName: String) {
-        val method = method()
         val subscribe = Observable.create<DpMsgDefine.ResponseHeader> { subscriber ->
             try {
                 val account = DataSourceManager.getInstance().account.account
@@ -95,7 +94,7 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(false,R.string.LOADING))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({ rsp ->
                     if (rsp != null && rsp.ret == 0) {
                         mView.onSetFaceNameSuccess(faceName)
@@ -105,7 +104,10 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                     }
                 }
 
-                ) { e -> AppLogger.e(MiscUtils.getErr(e)) }
+                ) {
+                    mView.onSetFaceNameError(-1)
+                    AppLogger.e(MiscUtils.getErr(it))
+                }
         addDestroySubscription(subscribe)
     }
 }

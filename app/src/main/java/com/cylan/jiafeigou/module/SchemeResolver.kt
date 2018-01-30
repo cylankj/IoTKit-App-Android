@@ -97,6 +97,10 @@ object SchemeResolver {
                     else -> "cylan:///$cid/%${device.vid}/$cid/${dpBellCallRecord.time}?regionType=${dpBellCallRecord.type}"
                 }.apply { index(this, dpBellCallRecord.fileIndex) }
             }
+            DpMsgMap.ID_526_CAM_AI_WARM_MSG -> {
+                val dpAlarm = message as DpMsgDefine.DPCameraAIWarmMsg
+                "cylan:///long/$account/AI/$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.regionType}"
+            }
             else -> ""
         }
         Log.i(TAG, "SchemeResolver:parse for cid:$cid,message:$message,result is:$resolver")

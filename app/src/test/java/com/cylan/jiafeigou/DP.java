@@ -52,6 +52,7 @@ import org.msgpack.unpacker.Unpacker;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -704,5 +705,16 @@ public class DP {
     public static class P {
         String name;
         int age;
+    }
+
+    @Test
+    public void testFloat() throws Exception {
+        Number parse = NumberFormat.getInstance().parse("12.00");
+        System.out.println(parse.intValue());
+    }
+
+    @Test
+    public void testLength() {
+        System.out.println(" https://jiafeigou-test.oss-cn-hangzhou.aliyuncs.com:443/long/18603076876/AI/290300000043/1517279718.jpg?security-token=CAISrwR1q6Ft5B2yfSjIpLDdEvDWma5Q2bavcm3jvDInXsRdm%2FSS0Tz2IHpPendgAu8ev%2Fo%2FmGpR6PsYlq0rE8cfHdNHnA2MqsY5yxioRqackTrej9Vd%2Bm3OewW6Dxr8w7WMAYHQR8%2FcffGAck3NkjQJr5LxaTSlWS7TU%2FiOkoU1VskLeQO6YDFaZrJRPRAwh8IGEnHTOP2xSKCA4AzqAVFvpxB3hE5m9K272bf80BfFi0DgweJndu6TY5GvdJtrJ4wtEYX3ju53f6TM0SFX9l1W%2Bbxqy%2FYVoW%2Bf5onFWwALslLEUavd%2BcY9KxRiNOpoWfxGrfHymPx3vfGWi4ns11EXbLkPC3yHHNj4mJKDWoHoP90iJ7HgICaPgJLdNJj8vQ4lbnUGcR9HYMZmcC4oUkR0EmmCcvP8vxKoLw6oUPqCy7pkk8g3nVfp9NSHJleIXvCF3D0EfZQ9YwRwb0ZMmi6DO6YNaF5LaEg1ReTXH4dyZR5TqKzvoEjOWzZ8iXVQufK5JZGfs6sEO4LkRcAEg8hPZpVPvWYrQFPqDq6jkVtTK2BsUPEUsuPkMoTt76SekqfBI7zEC%2FkJt1RVdi2UsyeWVTRRKCT%2B65phCxeR8N%2BDy7fXodEyUlks59lRAACKdssos1F9%2F%2By26BvUqLe7CDfo3ApjooWDptcft3EJJKn037Wg2RfFp2GVbKUDn8PaZXZiWxzfeQYimqvM2CJc%2BEhQzTHoYU9Btg6LvmGrZ921CVXtGoABF3j6TtD3T1%2B8tgQ5bH4PnGLHvsBWPcZZapXV1hct5tgc3P3TqbuHL%2F5YLSvEABrf0ISOMyZWcGrY%2BgWseUbW1Qi%2FV45XyBm9rKIv99eaq9jIWliqx9lcJTgRbTkLAgS%2FCLXRjskFY7OAB6dfvaOiMwOsisOowrw8nMOyoaP1aNM%3D&OSSAccessKeyId=STS.EshYJbtqqntDpKRX2rRKqt193&Expires=1525069921&Signature=W%2BxWV4uECKWRrmnOhrIHE%2FapJ8U%3D".getBytes().length);
     }
 }

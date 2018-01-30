@@ -25,7 +25,7 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
     override fun onSetFaceNameError(ret: Int?) {
         AppLogger.e("设置 faceName 失败了:ret $ret")
         IMEUtils.hide(activity)
-        ToastUtil.showToast("语言包:设置 FaceName 失败了")
+        ToastUtil.showToast(getString(R.string.SETTINGS_FAILED))
     }
 
     override fun onSetFaceNameSuccess(faceName: String) {

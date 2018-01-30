@@ -13,7 +13,11 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.*
 import android.util.Log
+import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseActivity
@@ -85,6 +89,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     override fun onRegisterErrorNoNetwork() {
         AppLogger.w("onRegisterErrorNoNetwork")
+        ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1))
     }
 
     override fun onRegisterErrorWrongPictureFormat() {
@@ -326,6 +331,13 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createCameraTempFile(savedInstanceState)
+        photo_nick_name.getEditer().isFocusable = false
+        photo_nick_name.getEditer().setOnKeyListener { v, keyCode, event ->
+            if ((keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ENTER)) {
+                setEditTextFocusable(false)
+            }
+            return@setOnKeyListener true
+        }
         photo_nick_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
             val originWidth = BoringLayout.getDesiredWidth("$dest", photo_nick_name.edit_text.paint)
             val measuredWidth = photo_nick_name.edit_text.measuredWidth
@@ -341,4 +353,46 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
             result
         })
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev?.action == MotionEvent.ACTION_DOWN) {
+            val currentFocus = currentFocus
+            if (isShouldHideInput(currentFocus, ev)) {
+                setEditTextFocusable(false)
+                return true
+            } else {
+                setEditTextFocusable(true)
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    fun setEditTextFocusable(focusable: Boolean) {
+        if (focusable) {
+            photo_nick_name.getEditer().isFocusableInTouchMode = true
+            photo_nick_name.getEditer().requestFocus()
+        } else {
+            hideInputMethod(this)
+        }
+        photo_nick_name.getEditer().isFocusable = focusable
+    }
+
+    fun isShouldHideInput(v: View?, ev: MotionEvent): Boolean {
+        if (v != null && (v is EditText)) {
+            var leftTop: IntArray = intArrayOf(0, 0)
+            v.getLocationInWindow(leftTop);
+            val left = leftTop[0]
+            val top = leftTop[1]
+            val bottom = top + v.height
+            val right = left + v.width
+            return !(ev.x > left && ev.x < right && ev.y > top && ev.y < bottom)
+        }
+        return false
+    }
+
+    fun hideInputMethod(context: Context): Boolean {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        return imm?.hideSoftInputFromWindow(photo_nick_name?.windowToken, 0) ?: false
+    }
+
 }

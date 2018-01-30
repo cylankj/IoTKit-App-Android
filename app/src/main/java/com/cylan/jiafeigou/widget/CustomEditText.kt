@@ -58,6 +58,7 @@ class CustomEditText(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
         attributes.recycle()
 
+
         ButterKnife.bind(this, this)
     }
 

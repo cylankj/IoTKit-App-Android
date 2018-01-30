@@ -272,7 +272,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 bindContext.onUpdateWiFiConfig(ssid, password, type);
-                BindHelper.checkParamsForEventType(bindContext, BindHelper.EVENT_TYPE_WIFI_CONFIG);
+                BindHelper.checkParamsForEventType(bindContext,BindHelper.EVENT_TYPE_WIFI_CONFIG);
                 boolean noError = BindHelper.isNoError(bindContext);
                 if (!noError) {
                     noError = BindHelper.performRepairAction(bindContext, bindContext.getErrorCode());
@@ -281,15 +281,13 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     subscriber.onError(new IllegalStateException("非法的绑定环境:" + bindContext.getErrorCode() + ",错误信息为:" + bindContext.getErrorMessage()));
                     return;
                 }
-
-                BindHelper.performPingAction(bindContext);
                 mView.onSendWiFiConfigPrepared();
             }
         })
                 .flatMap(cmd -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class))
                 .first(localUdpMsg -> {
                     BindHelper.considerUsefulLocalMessage(bindContext, localUdpMsg);
-                    BindHelper.checkParamsForEventType(bindContext, BindHelper.EVENT_TYPE_WIFI_CONFIG);
+                    BindHelper.checkParamsForFullBind(bindContext);
                     return BindHelper.isNoError(bindContext);
                 })
                 .map(localUdpMsg -> {

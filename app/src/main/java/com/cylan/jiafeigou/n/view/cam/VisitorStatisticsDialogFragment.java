@@ -103,7 +103,7 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
                 statisticsReq.type = 0;
                 statisticsReq.end = timeNow;
                 statisticsReq.begin = TimeUtils.getSpecificDayStartTime(TimeUtils.getTodayStartTime() - 12 * 60 * 60 * 1000) / 1000;
-                long dataSeq = Command.getInstance().sendUniservalDataSeq(13, DpUtils.pack(statisticsReq));
+                long dataSeq = Command.getInstance().sendUniservalDataSeq(19, DpUtils.pack(statisticsReq));
                 subscriber.onNext(dataSeq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
