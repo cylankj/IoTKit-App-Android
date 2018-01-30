@@ -28,10 +28,13 @@ import org.json.JSONObject
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
+import javax.net.ssl.X509TrustManager
 
 /**
  * Created by yanzhendong on 2017/10/16.
@@ -40,6 +43,10 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
 
     @Inject
     lateinit var appCmd: AppCmd
+
+    init {
+        setSSL()
+    }
 
     /**
      * face_id	人脸注册图像标识【必填项】
@@ -259,7 +266,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         addDestroySubscription(subscribe)
     }
 
-  override  fun moveFaceToPersonV2(personId: String, faceId: String, personName: String) {
+    override fun moveFaceToPersonV2(personId: String, faceId: String, personName: String) {
         val subscribe = Observable.create<Int> {
             val authToken: String
             val time = System.currentTimeMillis() / 1000L
@@ -341,5 +348,22 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 }
         addDestroySubscription(subscribe)
 
+    }
+
+    private fun setSSL() {
+        OkGo.getInstance().setHostnameVerifier { hostname, session -> true }
+        OkGo.getInstance().setCertificates(object : X509TrustManager {
+            override fun getAcceptedIssuers(): Array<X509Certificate> {
+                return arrayOf()
+            }
+
+            @Throws(CertificateException::class)
+            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+            }
+
+            @Throws(CertificateException::class)
+            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+            }
+        })
     }
 }

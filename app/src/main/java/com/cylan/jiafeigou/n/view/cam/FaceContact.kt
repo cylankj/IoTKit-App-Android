@@ -56,12 +56,14 @@ interface CreateFaceContact {
         fun onCreateNewFaceTimeout()
 
         fun onFaceNotExistError()
+        fun onAuthorizationError()
     }
 
     interface Presenter : JFGPresenter {
 
         fun createNewFace(faceId: String, faceName: String)
 
+        fun createNewFaceV2(faceId: String, faceName: String)
     }
 }
 

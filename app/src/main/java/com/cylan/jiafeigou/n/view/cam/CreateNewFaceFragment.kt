@@ -23,6 +23,10 @@ import kotlinx.android.synthetic.main.fragment_face_create.*
  * Created by yanzhendong on 2017/10/9.
  */
 class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), CreateFaceContact.View {
+    override fun onAuthorizationError() {
+        AppLogger.w("onAuthorizationError")
+    }
+
     override fun onFaceNotExistError() {
         AppLogger.w("face_id 不存在 ,创建失败了")
         ToastUtil.showToast(getString(R.string.LIVE_CREATE_FAIL_TIPS))
@@ -79,7 +83,7 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
                 ToastUtil.showToast("语言包:名称不能为空")
             } else {
                 IMEUtils.hide(activity)
-                presenter.createNewFace(faceId!!, text)
+                presenter.createNewFaceV2(faceId!!, text)
             }
         }
         //默认不可点击,需要输入名称后才能点击
