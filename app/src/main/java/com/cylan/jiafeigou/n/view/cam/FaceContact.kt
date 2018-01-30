@@ -18,6 +18,7 @@ interface SetFaceNameContact {
 
     interface Presenter : JFGPresenter {
         fun setFaceName(personId: String, faceName: String)
+        fun renamePerson(personId: String, faceName: String)
     }
 }
 
@@ -87,6 +88,7 @@ interface FaceListContact {
         fun moveFaceToPerson(personId: String, faceId: String)
 
         fun loadPersonItem2()
+        fun moveFaceToPersonV2(personId: String, faceId: String, personName: String)
     }
 }
 

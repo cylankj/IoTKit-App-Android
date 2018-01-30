@@ -82,7 +82,8 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
             //TODO 修改或者新建面孔名称
             ToastUtil.showToast("语言包:名称不能为空")
         } else {
-            presenter.setFaceName(personId ?: "", newName)
+//            presenter.setFaceName(personId ?: "", newName)
+            presenter.renamePerson(personId ?: "", newName)
         }
     }
 

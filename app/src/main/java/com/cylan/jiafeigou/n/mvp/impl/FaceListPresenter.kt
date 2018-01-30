@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl
 
 import android.text.TextUtils
+import android.util.Log
 import com.cylan.jfgapp.interfases.AppCmd
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
@@ -21,9 +22,13 @@ import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheMode
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
@@ -33,7 +38,9 @@ import javax.inject.Inject
  */
 class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePresenter<FaceListContact.View>(view), FaceListContact.Presenter {
 
-    @Inject lateinit var appCmd: AppCmd
+    @Inject
+    lateinit var appCmd: AppCmd
+
     /**
      * face_id	人脸注册图像标识【必填项】
     person_id	人唯一标识【必填项】
@@ -202,7 +209,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(false,R.string.LOADING))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({ rsp ->
                     if (rsp != null && rsp.ret == 0) {
                         mView.onFaceInformationReady(rsp.data)
@@ -234,7 +241,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 .first()
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(false,R.string.LOADING))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({
 
                     mView.onVisitorInformationReady(it)
@@ -250,5 +257,89 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                     AppLogger.e(MiscUtils.getErr(it))
                 })
         addDestroySubscription(subscribe)
+    }
+
+  override  fun moveFaceToPersonV2(personId: String, faceId: String, personName: String) {
+        val subscribe = Observable.create<Int> {
+            val authToken: String
+            val time = System.currentTimeMillis() / 1000L
+            try {
+                val server = ("https://" + OptionsImpl.getServer() + ":8085").replace(":443", "")
+                val authPath = "/authtoken"
+                val authApi = server + authPath
+                var tokenParams = JSONObject()
+                val vid = OptionsImpl.getVid()
+                val serviceKey = OptionsImpl.getServiceKey(vid)
+                val serviceSeceret = OptionsImpl.getServiceSeceret(vid)
+                val account = DataSourceManager.getInstance().account.account
+                tokenParams.put("service_key", serviceKey)
+                tokenParams.put("time", time)
+                tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret))
+                var execute = OkGo.post(authApi)
+                        .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                        .execute()
+                var jsonObject = JSONObject(execute.body()!!.string())
+                Log.e("RegisterFacePresenter", "get token response:" + jsonObject)
+                var code = jsonObject.getInt("code")
+                if (code != 200) {
+                    it.onNext(code)
+                    it.onCompleted()
+                    return@create
+                }
+
+                authToken = jsonObject.getString("auth_token")
+                val aiAppApi = server + "/aiapp"
+                tokenParams = JSONObject()
+                tokenParams.put("action", "RegisterByFaceID")
+                tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x")
+                tokenParams.put("time", time)
+                tokenParams.put("person_id", personId)
+                tokenParams.put("account", account)
+                tokenParams.put("cid", uuid)
+                tokenParams.put("face_id", faceId)
+                tokenParams.put("person_name", personName)
+                execute = OkGo.post(aiAppApi)
+                        .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                        .execute()
+                jsonObject = JSONObject(execute.body()!!.string())
+                Log.e("RegisterFacePresenter", "register face response:" + jsonObject)
+                code = jsonObject.getInt("code")
+                it.onNext(code)
+                it.onCompleted()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                AppLogger.e(e)
+                it.onNext(-1)
+                it.onCompleted()
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .timeout(10, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    AppLogger.d("修改面孔信息返回的结果为:$it,person id is :$personId, face id is :$faceId, uuid is:$uuid")
+                    when (it) {
+                        200 -> {
+                            //移动 face 成功了
+                            mView.onMoveFaceToPersonSuccess("todo:person_id")
+                            AppLogger.w("修改面孔信息成功了")
+                        }
+                        -1 -> {
+                            //face_id 不存在
+                            mView.onFaceNotExistError()
+                            AppLogger.w("修改面孔信息失败:面孔不存在")
+                        }
+                        100 -> {
+                            //授权失败了
+                            mView.onAuthorizationError()
+                            AppLogger.w("修改面孔信息失败:授权失败")
+                        }
+                    }
+                }) {
+                    mView.onMoveFaceError()
+                    AppLogger.e(MiscUtils.getErr(it))
+                }
+        addDestroySubscription(subscribe)
+
     }
 }

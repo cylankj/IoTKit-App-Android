@@ -202,7 +202,8 @@ class FaceListFragment : BaseFragment<FaceListContact.Presenter>(), FaceListCont
                 }
                 else -> {
                     AppLogger.w("moveFaceToPerson with person id:${item.visitor?.personId},face id:$faceId")
-                    presenter.moveFaceToPerson(item.visitor!!.personId!!, faceId!!)
+                    presenter.moveFaceToPersonV2(item.visitor!!.personId!!, faceId!!,item.visitor!!.personName)
+//                    presenter.moveFaceToPerson(item.visitor!!.personId!!, faceId!!)
                 }
             }
         } else {

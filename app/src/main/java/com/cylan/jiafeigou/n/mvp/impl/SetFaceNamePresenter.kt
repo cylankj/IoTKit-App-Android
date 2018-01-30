@@ -5,9 +5,12 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.dp.DpMsgDefine
+import com.cylan.jiafeigou.dp.DpUtils
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.n.view.cam.SetFaceNameContact
+import com.cylan.jiafeigou.rx.RxBus
+import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.OptionsImpl
 import com.cylan.jiafeigou.support.Security
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -19,6 +22,7 @@ import com.lzy.okgo.cache.CacheMode
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -105,6 +109,43 @@ class SetFaceNamePresenter @Inject constructor(view: SetFaceNameContact.View) : 
                 }
 
                 ) {
+                    mView.onSetFaceNameError(-1)
+                    AppLogger.e(MiscUtils.getErr(it))
+                }
+        addDestroySubscription(subscribe)
+    }
+
+    override fun renamePerson(personId: String, faceName: String) {
+        val subscribe = Observable.create<Long> {
+            try {
+                val reqContent = DpMsgDefine.AIRenamePersonReq()
+                reqContent.cid = uuid
+                reqContent.personID = personId
+                reqContent.personName = faceName
+                AppLogger.i(reqContent.toString())
+                val seq = Command.getInstance().sendUniservalDataSeq(20, DpUtils.pack(reqContent)!!)
+                it.onNext(seq)
+                it.onCompleted()
+            } catch (e: Exception) {
+                AppLogger.e(MiscUtils.getErr(e))
+                it.onError(e)
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .flatMap { seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp::class.java).filter { it.seq == seq } }
+                .map { DpUtils.unpackDataWithoutThrow(it.data, DpMsgDefine.AIRenamePersonRsp::class.java, null) }
+                .first()
+                .timeout(10, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it != null && it.ret == 0) {
+                        mView.onSetFaceNameSuccess(faceName)
+                    } else {
+                        // TODO: 2017/10/13 怎么处理呢? 最好不处理
+                        mView.onSetFaceNameError(it?.ret)
+                    }
+
+                }) {
                     mView.onSetFaceNameError(-1)
                     AppLogger.e(MiscUtils.getErr(it))
                 }

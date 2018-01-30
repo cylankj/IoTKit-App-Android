@@ -2951,4 +2951,26 @@ public class DpMsgDefine {
             }
         };
     }
+
+    @Message
+    public static class AIRenamePersonReq {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public String personID;
+        @Index(2)
+        public String personName;
+    }
+
+    @Message
+    public static class AIRenamePersonRsp {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public String personID;
+        @Index(2)
+        public String personName;
+        @Index(3)
+        public int ret;
+    }
 }
