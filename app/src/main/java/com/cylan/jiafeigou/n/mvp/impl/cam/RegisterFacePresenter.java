@@ -122,19 +122,21 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                         authToken = jsonObject.getString("auth_token");
                         String aiAppApi = server + "/aiapp";
                         tokenParams = new JSONObject();
-                        tokenParams.put("action", "RegisterPerson");
+                        tokenParams.put("action", "RegisterByFace");
                         tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
                         tokenParams.put("time", time);
                         tokenParams.put("person_name", nickName);
                         tokenParams.put("account", account);
                         tokenParams.put("cid", uuid);
+                        tokenParams.put("image_url", remotePath);
+                        tokenParams.put("oss_type", DataSourceManager.getInstance().getStorageType());
                         execute = OkGo.post(aiAppApi)
                                 .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                                 .execute();
                         jsonObject = new JSONObject(execute.body().string());
-                        Log.e("RegisterFacePresenter", "register face response:" + jsonObject);
+                        Log.e("RegisterFacePresenter", "RegisterByFace response:" + jsonObject);
                         code = jsonObject.getInt("code");
-                        if (code != 200) {
+                        if (true) {
                             return code;
                         }
 
