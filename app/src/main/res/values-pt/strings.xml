@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Clique no botão \"+\" para adicionar</string>
   <string name="ADD_ERR_INFO">Seu celular está sem acesso à rede</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">Você só pode adicionar até 10 rostos</string>
   <string name="ADD_FAILED">Adição falhou. Por favor tente novamente</string>
   <string name="ADD_FAILED_1">Desculpe, adição falhou! \n O dispositivo não responde. Verifique se a rede está disponível</string>
   <string name="ADD_SHARE">Compartilhar</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">Fêmea</string>
   <string name="MESSAGES_GENDER_MALE">Masculino</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Adicionar ao rosto existente</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Nova face</string>
-  <string name="MESSAGES_IDENTIFY_POP">Novo rosto, ou adicionando a um rosto existente, melhore a precisão do reconhecimento facial</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Cadastre-se</string>
+  <string name="MESSAGES_IDENTIFY_POP">Cadastre-se, ou adicionando a um rosto existente, melhore a precisão do reconhecimento facial</string>
   <string name="MESSAGES_POSITIVE_FACE">Rosto positivo</string>
   <string name="MESSAGES_REGISTER_FACE">Cadastre-se</string>
   <string name="MESSAGES_SIDE_FACE">Face lateral</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Normal</string>
   <string name="SUBMIT_FAIL">Falha ao enviar</string>
   <string name="SUBMIT_LOG">Enviar logs</string>
+  <string name="SUCCESS_REGFACE">Cara registrada com sucesso %s</string>
   <string name="SUN">Domingo</string>
   <string name="SUN_1">Domingo</string>
   <string name="SUN_2">Dom</string>

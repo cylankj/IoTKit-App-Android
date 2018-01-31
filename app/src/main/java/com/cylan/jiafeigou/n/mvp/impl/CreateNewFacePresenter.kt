@@ -188,6 +188,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({
                     AppLogger.d("修改面孔信息返回的结果为:$it, face id is :$faceId, uuid is:$uuid")
                     when (it) {
@@ -205,6 +206,10 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                             //授权失败了
                             mView.onAuthorizationError()
                             AppLogger.w("修改面孔信息失败:授权失败")
+                        }
+                        else -> {
+                            mView.onCreateNewFaceError(it)
+                            AppLogger.w("创建面孔失败了,错误码")
                         }
                     }
                 }) {

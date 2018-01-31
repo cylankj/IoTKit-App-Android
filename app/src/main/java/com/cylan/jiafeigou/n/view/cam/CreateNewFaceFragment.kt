@@ -1,11 +1,14 @@
 package com.cylan.jiafeigou.n.view.cam
 
+import android.content.Context
 import android.os.Bundle
 import android.text.*
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import butterknife.OnClick
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cylan.jiafeigou.R
@@ -68,7 +71,8 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
         strangerVisitor = arguments!!.getParcelable("strangerVisitor")
         faceId = strangerVisitor?.faceId ?: ""
         GlideApp.with(this)
-                .load(JFGFaceGlideURL("", strangerVisitor?.image_url, strangerVisitor?.ossType ?: 0, true))
+                .load(JFGFaceGlideURL("", strangerVisitor?.image_url, strangerVisitor?.ossType
+                        ?: 0, true))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
@@ -121,6 +125,18 @@ class CreateNewFaceFragment : BaseFragment<CreateFaceContact.Presenter>(), Creat
             result
         })
 
+        name.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                hideInputMethod(context!!)
+            }
+            return@setOnKeyListener false
+        }
+
+    }
+
+    fun hideInputMethod(context: Context): Boolean {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        return imm?.hideSoftInputFromWindow(name?.windowToken, 0) ?: false
     }
 
     override fun onDetach() {

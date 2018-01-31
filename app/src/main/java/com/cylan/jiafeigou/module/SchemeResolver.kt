@@ -99,7 +99,7 @@ object SchemeResolver {
             }
             DpMsgMap.ID_526_CAM_AI_WARM_MSG -> {
                 val dpAlarm = message as DpMsgDefine.DPCameraAIWarmMsg
-                "cylan:///long/$account/AI/$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.regionType}"
+                "cylan:///7day/$account/AI/$cid/${dpAlarm.time}.jpg?regionType=${dpAlarm.regionType}"
             }
             else -> ""
         }

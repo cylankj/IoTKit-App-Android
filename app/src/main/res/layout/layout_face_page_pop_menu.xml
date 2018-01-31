@@ -1,49 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <!--android:background="@drawable/shadow"-->
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/color_white"
-        android:minWidth="@dimen/y150"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/y10"
-        android:paddingEnd="@dimen/y12"
-        android:paddingStart="@dimen/y12"
-        android:paddingTop="@dimen/y10">
+        android:layout_margin="5dp">
+        <!--android:background="@drawable/shadow"-->
 
-        <TextView
-            android:id="@+id/delete"
-            android:layout_width="match_parent"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/y12"
+            android:background="@color/color_white"
+            android:minWidth="@dimen/y150"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/y10"
+            android:paddingEnd="@dimen/y12"
+            android:paddingStart="@dimen/y12"
+            android:paddingTop="@dimen/y10">
 
-            android:text="@string/DELETE"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/sp16"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/y12"
+                android:text="@string/DELETE"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16"
+                android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/detect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/y12"
-            android:text="@string/MESSAGES_FACE_IDENTIFY"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/sp16" />
+            <TextView
+                android:id="@+id/detect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/y12"
+                android:text="@string/MESSAGES_FACE_IDENTIFY"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
 
-        <TextView
-            android:id="@+id/viewer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/y12"
-            android:text="@string/DOOR_BELL_LOOK"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/sp16" />
+            <TextView
+                android:id="@+id/viewer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/y12"
+                android:text="@string/DOOR_BELL_LOOK"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16"
+                />
 
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

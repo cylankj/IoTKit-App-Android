@@ -333,10 +333,10 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
         createCameraTempFile(savedInstanceState)
         photo_nick_name.getEditer().isFocusable = false
         photo_nick_name.getEditer().setOnKeyListener { v, keyCode, event ->
-            if ((keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ENTER)) {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 setEditTextFocusable(false)
             }
-            return@setOnKeyListener true
+            return@setOnKeyListener false
         }
         photo_nick_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
             val originWidth = BoringLayout.getDesiredWidth("$dest", photo_nick_name.edit_text.paint)

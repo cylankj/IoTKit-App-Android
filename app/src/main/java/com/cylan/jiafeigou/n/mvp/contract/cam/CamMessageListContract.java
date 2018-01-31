@@ -58,6 +58,8 @@ public interface CamMessageListContract {
 
         void removeItems(ArrayList<CamMessageBean> beanList);
 
+        void removeAIItems(ArrayList<CamMessageBean> beanList);
+
         void removeAllItems(ArrayList<CamMessageBean> beanList, boolean removeAll);
 
         List<WonderIndicatorWheelView.WheelItem> getDateList();

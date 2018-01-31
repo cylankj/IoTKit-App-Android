@@ -287,6 +287,34 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         addSubscription(subscription, "removeItems");
     }
 
+
+    @Override
+    public void removeAIItems(ArrayList<CamMessageBean> beanList) {
+        if (ListUtils.isEmpty(beanList)) {
+            return;
+        }
+        List<IDPEntity> list = buildMultiEntities(beanList);
+        Subscription subscription = BaseDPTaskDispatcher.getInstance().perform(list)
+                .subscribeOn(Schedulers.io())
+                .filter(result -> mView != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(idpTaskResult -> {
+                    if (idpTaskResult.getResultCode() == 0) {
+                        //good
+                        mView.onMessageDeleteSuc();
+                        AppLogger.d("需要加载下一页");
+                        if (ListUtils.getSize(mView.getList()) == 0) {
+                            //需要刷新日期.
+                            refreshDateList(false);
+                        }
+                    }
+                }, throwable -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                    mView.onErr();
+                });
+        addSubscription(subscription, "removeItems");
+    }
+
     @Override
     public void removeAllItems(ArrayList<CamMessageBean> beanList, boolean removeAll) {
 
@@ -467,6 +495,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                                     cameraAIWarmMsg.version = header.version;
                                     cameraAIWarmMsg.msgId = header.msgId;
                                     bean.message = cameraAIWarmMsg;
+                                }
+                                list.add(bean);
+                            } else if (header.msgId == DpMsgMap.ID_527_CAM_AI_ADD_PERSON_MSG) {
+                                bean = new CamMessageBean();
+                                String name = DpUtils.unpackDataWithoutThrow(header.bytes, String.class, null);
+                                if (name != null) {
+                                    DpMsgDefine.DPPrimary<String> stringDPPrimary = new DpMsgDefine.DPPrimary<>(name);
+                                    stringDPPrimary.version = header.version;
+                                    stringDPPrimary.msgId = header.msgId;
+                                    bean.message = stringDPPrimary;
+                                    bean.viewType = CamMessageBean.ViewType.TEXT;
                                 }
                                 list.add(bean);
                             }

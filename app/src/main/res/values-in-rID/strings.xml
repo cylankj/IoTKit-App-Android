@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Klik pada \"+\"untuk menambahkan perangkat anda</string>
   <string name="ADD_ERR_INFO">Tidak dapat menyambung ke jaringan</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">hanya menambahkan hingga 10 wajah</string>
   <string name="ADD_FAILED">Gagal menambahkan , silahkan coba lagi</string>
   <string name="ADD_FAILED_1">Gagal menambahkan</string>
   <string name="ADD_SHARE">Bagikan</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">Wanita</string>
   <string name="MESSAGES_GENDER_MALE">Pria</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Tambahkan ke wajah yang ada</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Wajah baru</string>
-  <string name="MESSAGES_IDENTIFY_POP">Wajah baru, atau dengan menambah wajah yang ada, meningkatkan akurasi pengenalan wajah</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Daftar wajah</string>
+  <string name="MESSAGES_IDENTIFY_POP">Daftar wajah, atau dengan menambah wajah yang ada, meningkatkan akurasi pengenalan wajah</string>
   <string name="MESSAGES_POSITIVE_FACE">Wajah positif</string>
   <string name="MESSAGES_REGISTER_FACE">Daftar wajah</string>
   <string name="MESSAGES_SIDE_FACE">Sisi wajah</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Standar</string>
   <string name="SUBMIT_FAIL">Gagal mengirim</string>
   <string name="SUBMIT_LOG">Mengirim Log</string>
+  <string name="SUCCESS_REGFACE">Berhasil mendaftarkan diri %s</string>
   <string name="SUN">Minggu</string>
   <string name="SUN_1">Minggu</string>
   <string name="SUN_2">Minggu</string>

@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Click \"+\" to add your device</string>
   <string name="ADD_ERR_INFO">Unable to connect to the network \n Please click the \"Back\" home page to view the status of the device</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">You can only add up to 10 faces</string>
   <string name="ADD_FAILED">Failed to add, please retry.</string>
   <string name="ADD_FAILED_1">Failed to add</string>
   <string name="ADD_SHARE">Share</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">Female</string>
   <string name="MESSAGES_GENDER_MALE">Male</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Add to existing face</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">New face</string>
-  <string name="MESSAGES_IDENTIFY_POP">New face, or by adding to an existing face, improve the accuracy of face recognition</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Register face</string>
+  <string name="MESSAGES_IDENTIFY_POP">Register face, or by adding to an existing face, improve the accuracy of face recognition</string>
   <string name="MESSAGES_POSITIVE_FACE">Positive face</string>
   <string name="MESSAGES_REGISTER_FACE">Register face</string>
   <string name="MESSAGES_SIDE_FACE">Side face</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Standard</string>
   <string name="SUBMIT_FAIL">Failed to send</string>
   <string name="SUBMIT_LOG">Send log</string>
+  <string name="SUCCESS_REGFACE">Successfully registered face %s</string>
   <string name="SUN">Sunday</string>
   <string name="SUN_1">Sun</string>
   <string name="SUN_2">Sun</string>

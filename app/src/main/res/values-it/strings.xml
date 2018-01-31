@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Prema \"+\" per aggiungere un apparecchio</string>
   <string name="ADD_ERR_INFO">Disconnesso \n premere \"Indietro\" per lo status del dispositivo</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">aggiungi solo fino a 10 volti</string>
   <string name="ADD_FAILED">Non aggiunto, riprova per favore</string>
   <string name="ADD_FAILED_1">Non aggiunto</string>
   <string name="ADD_SHARE">Condividi</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">Femmina</string>
   <string name="MESSAGES_GENDER_MALE">Maschio</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Aggiungi al volto esistente</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Nuova faccia</string>
-  <string name="MESSAGES_IDENTIFY_POP">Nuova faccia, o aggiungendo a un volto esistente, migliora l\'esattezza del riconoscimento facciale</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Registrati faccia</string>
+  <string name="MESSAGES_IDENTIFY_POP">Registrati faccia, o aggiungendo a un volto esistente, migliora l\'esattezza del riconoscimento facciale</string>
   <string name="MESSAGES_POSITIVE_FACE">Faccia positiva</string>
   <string name="MESSAGES_REGISTER_FACE">Registrati faccia</string>
   <string name="MESSAGES_SIDE_FACE">Faccia laterale</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Standard</string>
   <string name="SUBMIT_FAIL">Errore in invio</string>
   <string name="SUBMIT_LOG">Invio log</string>
+  <string name="SUCCESS_REGFACE">Faccia registrata con successo %s</string>
   <string name="SUN">Domenica</string>
   <string name="SUN_1">DOM</string>
   <string name="SUN_2">Dom</string>

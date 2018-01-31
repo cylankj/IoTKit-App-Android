@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Нажмите на + чтобы добавить устройство</string>
   <string name="ADD_ERR_INFO">Уважаемый пользователь, отсутствует подключение к Интернету\n пожалуйста, нажмите на кнопку \"вернуться\" на странице проверки состояния оборудования</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">Вы можете добавить только до 10 лиц</string>
   <string name="ADD_FAILED">Не удалось добавить, пожалуйста, попробуйте ещё раз</string>
   <string name="ADD_FAILED_1">Не удалось добавить \n отсутствует сигнал от оборудования, проверьте возможность использования сети</string>
   <string name="ADD_SHARE">Поделиться</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">женский</string>
   <string name="MESSAGES_GENDER_MALE">мужчина</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Добавить к существующему лицу</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Новое лицо</string>
-  <string name="MESSAGES_IDENTIFY_POP">Новое лицо или добавление к существующему лицу улучшает точность распознавания лица</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Зарегистрировать лицо</string>
+  <string name="MESSAGES_IDENTIFY_POP">Зарегистрируйте лицо или добавив к существующему лицу, улучшите точность распознавания лица</string>
   <string name="MESSAGES_POSITIVE_FACE">Положительное лицо</string>
   <string name="MESSAGES_REGISTER_FACE">Зарегистрировать лицо</string>
   <string name="MESSAGES_SIDE_FACE">Лицевая сторона</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Нормальный</string>
   <string name="SUBMIT_FAIL">Не удалось отправить</string>
   <string name="SUBMIT_LOG">Отправьте лог</string>
+  <string name="SUCCESS_REGFACE">Успешно зарегистрированное лицо %s</string>
   <string name="SUN">Вс</string>
   <string name="SUN_1">Кажд. вс</string>
   <string name="SUN_2">Вс</string>

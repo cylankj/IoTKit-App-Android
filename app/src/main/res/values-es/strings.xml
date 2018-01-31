@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Pulsa “+” para añadir un nuevo dispositivo</string>
   <string name="ADD_ERR_INFO">Cariño, no hay Internet \n haga clik en \"volver\" para averiguar el dispositivo en la página inicial</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">Solo puedes agregar hasta 10 caras</string>
   <string name="ADD_FAILED">Error al añadir, por favor, inténtelo de Nuevo</string>
   <string name="ADD_FAILED_1">Lo siento, no se puede añadir \n no reacciona el dispositivo, confirme la red de Internet por favor</string>
   <string name="ADD_SHARE">Compartir</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">Hembra</string>
   <string name="MESSAGES_GENDER_MALE">Masculino</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Añadir a la cara existente</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Nueva cara</string>
-  <string name="MESSAGES_IDENTIFY_POP">La nueva cara, o agregando a una cara existente, mejora la exactitud del reconocimiento facial</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Registrar cara</string>
+  <string name="MESSAGES_IDENTIFY_POP">Registrar cara, o agregando a una cara existente, mejora la exactitud del reconocimiento facial</string>
   <string name="MESSAGES_POSITIVE_FACE">Cara positiva</string>
   <string name="MESSAGES_REGISTER_FACE">Registrar cara</string>
   <string name="MESSAGES_SIDE_FACE">Cara lateral</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Normal</string>
   <string name="SUBMIT_FAIL">Entrega fracasada</string>
   <string name="SUBMIT_LOG">Entregar el diario</string>
+  <string name="SUCCESS_REGFACE">Cara exitosamente registrada %s</string>
   <string name="SUN">Dom</string>
   <string name="SUN_1">Cada domingo</string>
   <string name="SUN_2">Siete</string>

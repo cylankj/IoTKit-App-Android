@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">Cihazınızı eklemek için \"+\" ya tıklayın</string>
   <string name="ADD_ERR_INFO">Ağa bağlanılamıyor</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">En fazla 10 yüz ekleyebilirsiniz</string>
   <string name="ADD_FAILED">Ekleme başarısız, lütfen tekrar deneyin</string>
   <string name="ADD_FAILED_1">Ekleme başarısız</string>
   <string name="ADD_SHARE">Paylaş</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">Kadın</string>
   <string name="MESSAGES_GENDER_MALE">Erkek</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">Mevcut yüz ekle</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Yeni yüz</string>
-  <string name="MESSAGES_IDENTIFY_POP">Yeni yüz veya mevcut bir yüze ekleyerek, yüz tanımanın doğruluğunu artırın</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">Yüzünü kaydet</string>
+  <string name="MESSAGES_IDENTIFY_POP">Yüzü kaydettirin veya mevcut bir yüze ekleyerek, yüz tanımanın doğruluğunu geliştirin</string>
   <string name="MESSAGES_POSITIVE_FACE">Olumlu yüz</string>
   <string name="MESSAGES_REGISTER_FACE">Yüzünü kaydet</string>
   <string name="MESSAGES_SIDE_FACE">Yan yüz</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">Standart</string>
   <string name="SUBMIT_FAIL">Gönderme başarısız</string>
   <string name="SUBMIT_LOG">Kütük gönder</string>
+  <string name="SUCCESS_REGFACE">Başarıyla kayıtlı yüz %s</string>
   <string name="SUN">Pazar</string>
   <string name="SUN_1">Pazar</string>
   <string name="SUN_2">Pazar</string>

@@ -434,7 +434,7 @@ public class TimeUtils {
     public static boolean isSameDay(long time1, long time2) {
         time1 = startOfDay(time1);
         time2 = startOfDay(time2);
-        return time1 == time2;
+        return Math.abs(time1 - time2) < 1000;
     }
 
     public static long wrapToLong(long time) {

@@ -569,8 +569,14 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
     }
 
+    private var popupWindow: PopupWindow? = null
+
     private fun showHeaderFacePopMenu(item: FaceItem, position: Int, faceItem: View, faceType: Int) {
-        val contentView = View.inflate(context, R.layout.layout_face_page_pop_menu, null)
+        popupWindow?.dismiss()
+        popupWindow = PopupWindow(View.inflate(context, R.layout.layout_face_page_pop_menu, null), ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+        popupWindow!!.setBackgroundDrawable(ColorDrawable(0))
+        popupWindow!!.isOutsideTouchable = true
+        val contentView = popupWindow!!.contentView
         // TODO: 2017/10/9 查看和识别二选一 ,需要判断,并且只有人才有查看识别二选一
         when (faceType) {
             FaceItem.FACE_TYPE_ACQUAINTANCE -> {
@@ -581,30 +587,28 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 contentView.findViewById<View>(R.id.viewer).visibility = View.GONE
             }
         }
-        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWindow = PopupWindow(contentView, contentView.measuredWidth, contentView.measuredHeight)
-        popupWindow.setBackgroundDrawable(ColorDrawable(0))
-        popupWindow.isOutsideTouchable = true
+//        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            popupWindow.elevation = 10.0F
+            popupWindow!!.elevation = 10.0F
         }
         contentView.findViewById<View>(R.id.delete).setOnClickListener { v ->
             // TODO: 2017/10/9 删除操作
             AppLogger.w("将删除面孔")
-            popupWindow.dismiss()
+            popupWindow!!.dismiss()
             showDeleteFaceAlert(item)
         }
 
         contentView.findViewById<View>(R.id.detect).setOnClickListener { v ->
             // TODO: 2017/10/9 识别操作
             AppLogger.w("将识别面孔")
-            popupWindow.dismiss()
+            popupWindow!!.dismiss()
             showDetectFaceAlert(item.strangerVisitor)
         }
 
         contentView.findViewById<View>(R.id.viewer).setOnClickListener { _ ->
             AppLogger.w("将查看面孔详细信息")
-            popupWindow.dismiss()
+            popupWindow!!.dismiss()
 
             if (item != null) {
                 val fragment = FaceInformationFragment.newInstance(uuid, item.visitor)
@@ -619,7 +623,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        var position = IntArray(2)
 //        anchor.getLocationOnScreen(position)
 //        popupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, position[0], position[1] + anchor.measuredHeight)
-        PopupWindowCompat.showAsDropDown(popupWindow, anchor, 0, 0, Gravity.NO_GRAVITY)
+        PopupWindowCompat.showAsDropDown(popupWindow!!, anchor, 0, 0, Gravity.NO_GRAVITY)
     }
 
     private fun showDetectFaceAlert(strangerVisitor: DpMsgDefine.StrangerVisitor?) {

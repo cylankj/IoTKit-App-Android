@@ -13,6 +13,7 @@
   <string name="ACCOUNT_XL">Weibo</string>
   <string name="ADD_EQUIPMENT">\"+\" デバイスの追加]をクリックします</string>
   <string name="ADD_ERR_INFO">ネットワークへの接続が切断されました\n\"戻す\"をクリックして、ホームページでデバイスの確認をしてください。</string>
+  <string name="ADD_EXISTINGFACE_BEYOND10">10人の顔しか追加できません</string>
   <string name="ADD_FAILED">追加できませんでした。再試行してください。</string>
   <string name="ADD_FAILED_1">申し訳ありません、追加できませんでした。\n デバイスに反応がありません。ネットワーク環境をチェックしてください</string>
   <string name="ADD_SHARE">シェアを追加</string>
@@ -454,8 +455,8 @@
   <string name="MESSAGES_GENDER_FEMALE">女性</string>
   <string name="MESSAGES_GENDER_MALE">男性</string>
   <string name="MESSAGES_IDENTIFY_ADD_BTN">既存の顔に追加する</string>
-  <string name="MESSAGES_IDENTIFY_CREATE_BTN">新顔</string>
-  <string name="MESSAGES_IDENTIFY_POP">新しい顔、または既存の顔に追加することで、顔認識の精度を向上させる</string>
+  <string name="MESSAGES_IDENTIFY_CREATE_BTN">登録顔</string>
+  <string name="MESSAGES_IDENTIFY_POP">登録顔、または既存の顔に追加することで、顔認識の精度を向上させる</string>
   <string name="MESSAGES_POSITIVE_FACE">ポジティブ</string>
   <string name="MESSAGES_REGISTER_FACE">登録顔</string>
   <string name="MESSAGES_SIDE_FACE">横顔</string>
@@ -739,6 +740,7 @@
   <string name="STANDARD">スタンダードモード</string>
   <string name="SUBMIT_FAIL">提出失敗！</string>
   <string name="SUBMIT_LOG">ログ送信</string>
+  <string name="SUCCESS_REGFACE">顔%sを登録しました</string>
   <string name="SUN">日曜日</string>
   <string name="SUN_1">毎週日曜日</string>
   <string name="SUN_2">日曜日</string>
