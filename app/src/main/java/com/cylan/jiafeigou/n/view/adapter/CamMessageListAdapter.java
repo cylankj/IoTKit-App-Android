@@ -207,7 +207,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         //设置删除可见性,共享设备不可删除消息
 //        Device device = DataSourceManager.getInstance().getDevice(uuid);
         //720 设备享有所有权限
-        holder.setVisibility(R.id.tv_cam_message_item_delete, faceFragment && item.viewType != CamMessageBean.ViewType.TEXT ? View.INVISIBLE : View.VISIBLE);
+        holder.setVisibility(R.id.tv_cam_message_item_delete, faceFragment ? View.INVISIBLE : View.VISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);
@@ -523,7 +523,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             }
             case DpMsgMap.ID_527_CAM_AI_ADD_PERSON_MSG: {
                 DpMsgDefine.DPPrimary<String> person = (DpMsgDefine.DPPrimary<String>) bean.message;
-                return String.format("语言包:已成功创建%s", person.value);
+                return getContext().getString(R.string.SUCCESS_REGFACE, person.value);
             }
         }
         return "";
