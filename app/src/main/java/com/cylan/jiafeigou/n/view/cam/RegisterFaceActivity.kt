@@ -2,10 +2,7 @@ package com.cylan.jiafeigou.n.view.cam
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentResolver
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -205,7 +202,9 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     @NeedsPermission(Manifest.permission.CAMERA)
     fun openCameraWithPermission() {
         if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.CAMERA)) {
-            outPutUri = Uri.fromFile(tempFile)
+            val contentValues = ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, tempFile!!.absolutePath)
+            outPutUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
             val intent = Intent()
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.action = MediaStore.ACTION_IMAGE_CAPTURE

@@ -52,13 +52,16 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 
     @Override
     public void fetchVisitorList(long version) {
-        Subscription subscription = VisitorLoader.loadAllVisitorList(uuid,version)
+        Subscription subscription = VisitorLoader.loadAllVisitorList(uuid, version)
                 .subscribeOn(Schedulers.io())
                 .map(ret -> {
                     List<FaceItem> result = new ArrayList<>();
                     if (ret != null && ret.dataList != null) {
                         FaceItem item;
                         for (DpMsgDefine.Visitor visitor : ret.dataList) {
+                            if (visitor.detailList == null || visitor.detailList.size() == 0) {
+                                continue;
+                            }
                             item = new FaceItem();
                             item.withFaceType(FaceItem.FACE_TYPE_ACQUAINTANCE);
                             item.withVisitor(visitor);
@@ -71,7 +74,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
                 .timeout(30, TimeUnit.SECONDS)
-                .subscribe(visitorList -> mView.onVisitorListReady(visitorList,version), e -> {
+                .subscribe(visitorList -> mView.onVisitorListReady(visitorList, version), e -> {
                     e.printStackTrace();
                 });
         addSubscription(subscription, FETCH_VISITOR_LIST);
@@ -107,7 +110,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
-                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList,version), AppLogger::e);
+                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList, version), AppLogger::e);
         addSubscription(subscription, FETCH_STRANGER_VISITOR_LIST);
     }
 

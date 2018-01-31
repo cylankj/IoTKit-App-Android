@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -120,7 +121,9 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     @NeedsPermission(Manifest.permission.CAMERA)
     public void openCameraWithPermission() {
         if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.CAMERA)) {
-            outPutUri = Uri.fromFile(tempFile);
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, tempFile.getAbsolutePath());
+            outPutUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);

@@ -201,6 +201,11 @@ public class MiscUtils {
                 time = dpBellCallRecord.time;
             }
             break;
+            case DpMsgMap.ID_526_CAM_AI_WARM_MSG: {
+                DpMsgDefine.DPCameraAIWarmMsg dpCameraAIWarmMsg = (DpMsgDefine.DPCameraAIWarmMsg) bean.message;
+                time = dpCameraAIWarmMsg.time;
+            }
+            break;
             default: {
                 time = 0;
             }
