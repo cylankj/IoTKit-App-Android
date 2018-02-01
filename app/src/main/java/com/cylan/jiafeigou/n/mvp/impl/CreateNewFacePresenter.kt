@@ -161,7 +161,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                 }
 
                 authToken = jsonObject.getString("auth_token")
-                var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
+                var imageUrl = String.format(Locale.getDefault(), "/long/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
                 val aiAppApi = server + "/aiapp"
                 tokenParams = JSONObject()
                 tokenParams.put("action", "RegisterByFace")
@@ -170,8 +170,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                 tokenParams.put("person_name", faceName)
                 tokenParams.put("account", account)
                 tokenParams.put("cid", uuid)
-                tokenParams.put("image_url", imageUrl)
-                tokenParams.put("oss_type", DataSourceManager.getInstance().storageType)
+                tokenParams.put("face_id", faceId)
                 execute = OkGo.post(aiAppApi)
                         .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                         .execute()
