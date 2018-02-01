@@ -83,6 +83,7 @@
         android:layout_marginTop="@dimen/y50"
         android:drawablePadding="@dimen/y14"
         android:drawableTop="@drawable/pic_positive_face"
+        android:gravity="center"
         android:text="@string/MESSAGES_EXPLAIN"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"

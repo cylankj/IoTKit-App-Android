@@ -758,7 +758,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.cam.RegisterFaceActivity"
-            android:configChanges="locale|orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"

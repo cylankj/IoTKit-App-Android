@@ -555,6 +555,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
         if (faceAdapter.isNormalView) {
             currentPosition = 0
+            faceItemType = FaceItem.FACE_TYPE_ALL
             presenter?.fetchVisitorList(0)
         } else {
             currentPosition = 0
