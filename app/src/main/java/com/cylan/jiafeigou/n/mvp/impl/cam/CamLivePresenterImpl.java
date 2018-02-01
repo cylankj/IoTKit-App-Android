@@ -293,7 +293,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             public void call() {
                 switch (playError) {
                     case CameraLiveHelper.PLAY_ERROR_STANDBY: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
+                        if (shouldReportError) {
                             mView.onDeviceStandByChanged(true);
                         }
                         if (liveActionHelper.isPlaying) {
@@ -302,7 +302,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_FIRST_SIGHT: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
+                        if (shouldReportError) {
                             mView.onPlayErrorFirstSight();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -311,7 +311,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_NETWORK: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
+                        if (shouldReportError) {
                             mView.onPlayErrorNoNetwork();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -320,7 +320,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_DEVICE_OFF_LINE: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper) && shouldReportError) {
+                        if (shouldReportError) {
                             mView.onDeviceChangedToOffLine();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -329,9 +329,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
-                            mView.onPlayErrorException();
-                        }
+                        mView.onPlayErrorException();
                         if (liveActionHelper.isPlaying) {
                             performStopVideoAction(false);
                         }
@@ -344,7 +342,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_BAD_FRAME_RATE: {
-                        if (shouldReportError && CameraLiveHelper.isVideoStopped(liveActionHelper)) {
+                        if (shouldReportError) {
                             mView.onPlayErrorBadFrameRate();
                         }
                         if (liveActionHelper.isPlaying && CameraLiveHelper.checkFrameBad(liveActionHelper)) {
@@ -359,7 +357,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT: {
-                        if (shouldReportError && CameraLiveHelper.isVideoStopped(liveActionHelper)) {
+                        if (shouldReportError) {
                             mView.onPlayErrorWaitForPlayCompletedTimeout();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -414,20 +412,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_DISCONNECT: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
-                            mView.onPlayErrorVideoPeerDisconnect();
-                        }
+                        mView.onPlayErrorVideoPeerDisconnect();
                         if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(true);
+                            performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_NOT_EXIST: {
-                        if (CameraLiveHelper.isVideoStopped(liveActionHelper)) {
-                            mView.onPlayErrorVideoPeerNotExist();
-                        }
+                        mView.onPlayErrorVideoPeerNotExist();
                         if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(true);
+                            performStopVideoAction(false);
                         }
                     }
                     break;
