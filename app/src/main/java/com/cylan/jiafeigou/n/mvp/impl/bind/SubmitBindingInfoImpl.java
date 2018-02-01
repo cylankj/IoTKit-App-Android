@@ -186,7 +186,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     AppLogger.e(error);
                     if (error instanceof RxEvent.HelperBreaker) {
                         RxEvent.BindDeviceEvent bindDeviceEvent = (RxEvent.BindDeviceEvent) ((RxEvent.HelperBreaker) error).object;
-
                         switch (bindDeviceEvent.bindResult) {
                             case BindUtils.BIND_FAILED: {
                                 if (mView != null) {
@@ -206,6 +205,11 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                 }
                             }
                             break;
+                            default: {
+                                if (mView != null) {
+                                    mView.onBindFailed();
+                                }
+                            }
                         }
                     } else if (error instanceof IllegalArgumentException) {
                         if (mView != null) {
