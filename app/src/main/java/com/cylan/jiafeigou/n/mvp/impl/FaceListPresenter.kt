@@ -323,6 +323,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({
                     AppLogger.d("修改面孔信息返回的结果为:$it,person id is :$personId, face id is :$faceId, uuid is:$uuid")
                     when (it) {
@@ -340,6 +341,10 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
                             //授权失败了
                             mView.onAuthorizationError()
                             AppLogger.w("修改面孔信息失败:授权失败")
+                        }
+                        else -> {
+                            AppLogger.w("修改面孔信息失败:未知错误")
+                            mView.onMoveFaceError();
                         }
                     }
                 }) {
