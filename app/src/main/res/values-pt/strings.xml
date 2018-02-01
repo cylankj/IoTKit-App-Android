@@ -436,7 +436,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Apagar ícone e mensagens</string>
   <string name="MESSAGES_DELETE_ICON_POP">Apague o ícone e todas as mensagens relacionadas?</string>
   <string name="MESSAGES_DELETE_POP">Apague o rosto e todas as mensagens relacionadas?</string>
-  <string name="MESSAGES_EXPLAIN">Exemplo de imagem:</string>
+  <string name="MESSAGES_EXPLAIN">Exemplo de imagem</string>
   <string name="MESSAGES_FACE_ANALYSIS">Análise de fluxo de passageiros</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identificar</string>
   <string name="MESSAGES_FACE_INFO">Informação do rosto</string>

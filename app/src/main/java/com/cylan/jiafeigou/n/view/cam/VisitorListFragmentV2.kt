@@ -203,6 +203,29 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     fun canScrollVertically(direction: Int) = face_header.canScrollVertically(direction)
 
+    fun decideLoadMore() {
+        if (!isLoadingFinished) {
+            return
+        }
+        val visibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition()
+        if (visibleItemPosition >= 0) {
+            val visibleItemCount = gridLayoutManager.childCount
+            val totalItemCount = gridLayoutManager.itemCount
+            if (visibleItemCount + visibleItemPosition >= totalItemCount && isLoadingFinished && isExpanded) {
+                Log.d("tag", "tag.....load more")
+                isLoadingFinished = false
+                face_header.post {
+                    if (isExpanded) {
+                        if (footerAdapter.adapterItemCount == 0)
+                            footerAdapter.add(moreItem)
+                    }
+                    onLoadMore()
+                }
+
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view)
@@ -230,26 +253,17 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //            }
 //        })
         face_header.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Log.e("AAAAA", "Scroller state changed:" + newState)
+                decideLoadMore()
+            }
+
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val visibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition()
-                if (visibleItemPosition >= 0) {
-                    if (dy > 0) { //check for scroll down
-                        val visibleItemCount = gridLayoutManager.childCount
-                        val totalItemCount = gridLayoutManager.itemCount
-                        if (visibleItemCount + visibleItemPosition >= totalItemCount && isLoadingFinished && isExpanded) {
-                            Log.d("tag", "tag.....load more")
-                            isLoadingFinished = false
-                            face_header.post {
-                                if (isExpanded) {
-                                    if (footerAdapter.adapterItemCount == 0)
-                                        footerAdapter.add(moreItem)
-                                }
-                                onLoadMore()
-                            }
-
-                        }
-                    }
+                if (dy > 0) { //check for scroll down
+                    decideLoadMore()
                 }
             }
         })

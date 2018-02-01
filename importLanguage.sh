@@ -45,6 +45,11 @@ if [ -d "./doby" ]; then
         mkdir -p ${RootPath}/app/src/_doby/res
     fi
     cp -rf ./doby/* ${RootPath}/app/src/_doby/res
+
+    if [ ! -d "${RootPath}/app/src/_aidemo/res" ]; then
+        mkdir -p ${RootPath}/app/src/_aidemo/res
+    fi
+    cp -rf ./doby/* ${RootPath}/app/src/_aidemo/res
 fi
 echo "自动更新语言包完成了!!!"
 

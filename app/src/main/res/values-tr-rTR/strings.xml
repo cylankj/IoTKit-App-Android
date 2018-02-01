@@ -436,7 +436,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Simgeyi ve mesajları sil</string>
   <string name="MESSAGES_DELETE_ICON_POP">Simgeyi ve ilgili tüm mesajları silinsin mi?</string>
   <string name="MESSAGES_DELETE_POP">Yüzü ve ilgili tüm mesajları silinsin mi?</string>
-  <string name="MESSAGES_EXPLAIN">Resim örneği:</string>
+  <string name="MESSAGES_EXPLAIN">Resim örneği</string>
   <string name="MESSAGES_FACE_ANALYSIS">Yolcu akış analizi</string>
   <string name="MESSAGES_FACE_IDENTIFY">belirlemek</string>
   <string name="MESSAGES_FACE_INFO">Yüz bilgilerini</string>

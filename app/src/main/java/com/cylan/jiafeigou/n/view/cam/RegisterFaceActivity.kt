@@ -202,6 +202,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     @NeedsPermission(Manifest.permission.CAMERA)
     fun openCameraWithPermission() {
         if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.CAMERA)) {
+            createCameraTempFile(null)
             val contentValues = ContentValues(1);
             contentValues.put(MediaStore.Images.Media.DATA, tempFile!!.absolutePath)
             outPutUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
@@ -329,7 +330,6 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        createCameraTempFile(savedInstanceState)
         photo_nick_name.getEditer().isFocusable = false
         photo_nick_name.getEditer().setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER) {

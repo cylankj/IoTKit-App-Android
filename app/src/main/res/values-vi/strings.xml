@@ -436,7 +436,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Xóa biểu tượng và thư</string>
   <string name="MESSAGES_DELETE_ICON_POP">Xóa biểu tượng và tất cả các thư liên quan?</string>
   <string name="MESSAGES_DELETE_POP">Xóa khuôn mặt và tất cả các tin nhắn có liên quan?</string>
-  <string name="MESSAGES_EXPLAIN">Ví dụ hình ảnh:</string>
+  <string name="MESSAGES_EXPLAIN">Ví dụ hình ảnh</string>
   <string name="MESSAGES_FACE_ANALYSIS">Phân tích dòng khách</string>
   <string name="MESSAGES_FACE_IDENTIFY">Nhận định</string>
   <string name="MESSAGES_FACE_INFO">Thông tin khuôn mặt</string>

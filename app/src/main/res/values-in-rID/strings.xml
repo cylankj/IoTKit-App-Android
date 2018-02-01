@@ -436,7 +436,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Hapus ikon dan pesan</string>
   <string name="MESSAGES_DELETE_ICON_POP">Hapus ikon dan semua pesan terkait?</string>
   <string name="MESSAGES_DELETE_POP">Hapus wajah dan semua pesan terkait?</string>
-  <string name="MESSAGES_EXPLAIN">Contoh Gambar:</string>
+  <string name="MESSAGES_EXPLAIN">Contoh Gambar</string>
   <string name="MESSAGES_FACE_ANALYSIS">Analisis arus penumpang</string>
   <string name="MESSAGES_FACE_IDENTIFY">Mengenali</string>
   <string name="MESSAGES_FACE_INFO">Informasi wajah</string>

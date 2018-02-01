@@ -436,7 +436,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">删除图标和消息</string>
   <string name="MESSAGES_DELETE_ICON_POP">是否删除该图标及其所有消息？</string>
   <string name="MESSAGES_DELETE_POP">是否删除该人脸及其所有消息？</string>
-  <string name="MESSAGES_EXPLAIN">图片示例：</string>
+  <string name="MESSAGES_EXPLAIN">图片示例</string>
   <string name="MESSAGES_FACE_ANALYSIS">客流分析</string>
   <string name="MESSAGES_FACE_IDENTIFY">识别</string>
   <string name="MESSAGES_FACE_INFO">人脸信息</string>

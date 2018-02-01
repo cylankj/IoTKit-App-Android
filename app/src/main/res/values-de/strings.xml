@@ -436,7 +436,7 @@
   <string name="MESSAGES_DELETE_ICON_MES">Symbol und Nachrichten löschen</string>
   <string name="MESSAGES_DELETE_ICON_POP">Löschen Sie das Symbol und alle zugehörigen Nachrichten?</string>
   <string name="MESSAGES_DELETE_POP">Löschen Sie das Gesicht und alle zugehörigen Nachrichten?</string>
-  <string name="MESSAGES_EXPLAIN">Bild Beispiel:</string>
+  <string name="MESSAGES_EXPLAIN">Bild Beispiel</string>
   <string name="MESSAGES_FACE_ANALYSIS">Passagierflussanalyse</string>
   <string name="MESSAGES_FACE_IDENTIFY">Identifizieren</string>
   <string name="MESSAGES_FACE_INFO">Gesicht Informationen</string>
