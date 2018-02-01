@@ -327,7 +327,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //                return@withOnLongClickListener true
 //            }
             //            visitorListener?.onLoadItemInformation(item)
-            if (item.getFaceType() != FaceItem.FACE_TYPE_ALL && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER) {
+            if (item.getFaceType() != FaceItem.FACE_TYPE_ALL && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER_SUB) {
                 showHeaderFacePopMenu(item, position, v, item.getFaceType())
             }
             return@withOnLongClickListener true
@@ -535,11 +535,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //        makeContentView(false)
         strangerItems.getOrNull(currentPosition)?.apply {
             presenter.fetchVisitsCount(strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
-            if (!isExpanded) {
-                val faceItem = strangerItems[currentPosition]
-                visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.strangerVisitor?.faceId
-                        ?: "")
-            }
+//            if (!isExpanded) {
+            val faceItem = strangerItems[currentPosition]
+            visitorListener?.onLoadItemInformation(faceItem.getFaceType(), faceItem.strangerVisitor?.faceId
+                    ?: "")
+//            }
         }
         visitorListener?.onStrangerVisitorReady(visitorList)
         isLoadingFinished = true
