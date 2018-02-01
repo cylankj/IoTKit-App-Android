@@ -180,9 +180,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 }
                             }
                         }
-                        boolean live = liveActionHelper.onUpdateLive(liveActionHelper.recordedZeroTimestampCount > 0);
-                        if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
-                            mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
+                        if (CameraLiveHelper.isVideoPlaying(liveActionHelper)) {
+                            boolean live = liveActionHelper.onUpdateLive(liveActionHelper.recordedZeroTimestampCount > 0);
+                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
+                                mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
+                            }
                         }
                         boolean videoPlaying = CameraLiveHelper.isVideoPlaying(liveActionHelper);
                         if (videoPlaying) {

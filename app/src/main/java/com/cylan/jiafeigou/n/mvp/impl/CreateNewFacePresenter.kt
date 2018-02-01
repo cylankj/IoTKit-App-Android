@@ -134,7 +134,7 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
 
     override fun createNewFaceV2(faceId: String, faceName: String) {
         val subscribe = Observable.create<Int> {
-            val authToken: String
+            var authToken: String
             val time = System.currentTimeMillis() / 1000L
             try {
                 val server = ("https://" + OptionsImpl.getServer() + ":8085").replace(":443", "")
@@ -161,20 +161,22 @@ class CreateNewFacePresenter @Inject constructor(view: CreateFaceContact.View) :
                 }
 
                 authToken = jsonObject.getString("auth_token")
+                var imageUrl = String.format(Locale.getDefault(), "/7day/%s/%s/AI/%s/%s.jpg", vid, account, uuid, faceId)
                 val aiAppApi = server + "/aiapp"
                 tokenParams = JSONObject()
-                tokenParams.put("action", "RegisterByFaceID")
+                tokenParams.put("action", "RegisterByFace")
                 tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x")
                 tokenParams.put("time", time)
+                tokenParams.put("person_name", faceName)
                 tokenParams.put("account", account)
                 tokenParams.put("cid", uuid)
-                tokenParams.put("face_id", faceId)
-                tokenParams.put("person_name", faceName)
+                tokenParams.put("image_url", imageUrl)
+                tokenParams.put("oss_type", DataSourceManager.getInstance().storageType)
                 execute = OkGo.post(aiAppApi)
                         .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                         .execute()
                 jsonObject = JSONObject(execute.body()!!.string())
-                Log.e("RegisterFacePresenter", "register face response:" + jsonObject)
+                Log.e("RegisterFacePresenter", "RegisterByFace response:" + jsonObject)
                 code = jsonObject.getInt("code")
                 it.onNext(code)
                 it.onCompleted()
