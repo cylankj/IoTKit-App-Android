@@ -418,7 +418,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             mView.onPlayErrorVideoPeerDisconnect();
                         }
                         if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
+                            performStopVideoAction(true);
                         }
                     }
                     break;
@@ -427,7 +427,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             mView.onPlayErrorVideoPeerNotExist();
                         }
                         if (liveActionHelper.isPlaying) {
-                            performStopVideoAction(false);
+                            performStopVideoAction(true);
                         }
                     }
                     break;
