@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.*
@@ -20,6 +19,7 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseActivity
 import com.cylan.jiafeigou.misc.AlertDialogManager
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.misc.JConstant.MEDIA_PATH
 import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.n.mvp.contract.cam.RegisterFaceContract
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -323,7 +323,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
         if (savedInstanceState != null && savedInstanceState.containsKey("tempFile")) {
             tempFile = savedInstanceState.getSerializable("tempFile") as File
         } else {
-            tempFile = File(Environment.getExternalStorageDirectory().path + "/image/", System.currentTimeMillis().toString() + ".jpg")
+            tempFile = File(MEDIA_PATH, System.currentTimeMillis().toString() + ".jpg")
         }
     }
 

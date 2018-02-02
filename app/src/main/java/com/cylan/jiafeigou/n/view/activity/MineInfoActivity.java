@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -121,6 +120,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     @NeedsPermission(Manifest.permission.CAMERA)
     public void openCameraWithPermission() {
         if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.CAMERA)) {
+            createCameraTempFile(null);
             ContentValues contentValues = new ContentValues(1);
             contentValues.put(MediaStore.Images.Media.DATA, tempFile.getAbsolutePath());
             outPutUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
@@ -434,7 +434,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         if (savedInstanceState != null && savedInstanceState.containsKey("tempFile")) {
             tempFile = (File) savedInstanceState.getSerializable("tempFile");
         } else {
-            tempFile = new File(Environment.getExternalStorageDirectory().getPath() + "/image/", System.currentTimeMillis() + ".jpg");
+            tempFile = new File(JConstant.MEDIA_PATH, System.currentTimeMillis() + ".jpg");
         }
     }
 
