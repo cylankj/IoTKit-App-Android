@@ -300,7 +300,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
 
     private Pair<DPEntity, Integer> handleUnreadCount(Device mDevice) {
         if (JFGRules.isCamera(mDevice.pid)) {
-            return new Pair<>(MiscUtils.getMaxVersionEntity(mDevice.getProperty(1001), mDevice.getProperty(1002), mDevice.getProperty(1003)),
+            return new Pair<>(MiscUtils.getMaxVersionEntity(mDevice.getProperty(1001), mDevice.getProperty(1002), mDevice.getProperty(1003), mDevice.getProperty(1006)),
                     mDevice.$(1001, 0) + mDevice.$(1002, 0) + mDevice.$(1003, 0));
         } else if (JFGRules.isBell(mDevice.pid)) {
             return new Pair<>(MiscUtils.getMaxVersionEntity(mDevice.getProperty(1004), mDevice.getProperty(1005)),

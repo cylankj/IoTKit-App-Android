@@ -108,6 +108,7 @@ public final class DpMsgMap {
     public static final int ID_1003_CAM_222_UNREAD_COUNT = 1003;
     public static final int ID_1004_BELL_UNREAD_COUNT = 1004;
     public static final int ID_1005_BELL_UNREAD_COUNT_V2 = 1005;
+    public static final int ID_1005_COUNT_UN_READ_CAM_AI_WARM_MSG = 1006;
 
 
     public static final int ID_2000_V3_DATE_LIST_REQ = 2000;

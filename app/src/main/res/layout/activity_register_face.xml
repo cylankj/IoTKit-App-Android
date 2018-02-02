@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     tools:context="com.cylan.jiafeigou.n.view.cam.RegisterFaceActivity">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -25,6 +26,7 @@
         android:layout_width="@dimen/y120"
         android:layout_height="@dimen/y120"
         android:layout_marginTop="@dimen/y48"
+        android:focusable="true"
         android:src="@drawable/icon_register_face1"
         app:civ_border_color="#E7E7E7"
         app:civ_border_width="@dimen/y1"

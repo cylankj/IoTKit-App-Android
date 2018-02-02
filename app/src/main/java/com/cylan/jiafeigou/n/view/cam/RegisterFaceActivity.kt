@@ -254,8 +254,6 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
             } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
                 cropFileUri = data.data
                 refreshSelectedFace()
-
-
             } else if (requestCode == OPEN_CAMERA) {
                 if (resultCode == Activity.RESULT_OK) {
                     gotoClipActivity(outPutUri)
@@ -331,7 +329,8 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        photo_nick_name.getEditer().isFocusable = false
+        photo_nick_name.isFocusable = true
+        photo_nick_name.isFocusableInTouchMode = true
         photo_nick_name.getEditer().setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 setEditTextFocusable(false)
@@ -359,8 +358,6 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
             val currentFocus = currentFocus
             if (isShouldHideInput(currentFocus, ev)) {
                 setEditTextFocusable(false)
-            } else {
-                setEditTextFocusable(true)
             }
         }
         return super.dispatchTouchEvent(ev)
@@ -373,7 +370,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
         } else {
             hideInputMethod(this)
         }
-        photo_nick_name.getEditer().isFocusable = focusable
+        photo_nick_name.getEditer().clearFocus()
     }
 
     fun isShouldHideInput(v: View?, ev: MotionEvent): Boolean {

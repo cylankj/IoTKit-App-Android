@@ -1027,7 +1027,11 @@ public class DataSourceManager implements JFGSourceManager {
                     //cam 1001 1002  1003
                     try {
                         List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true)
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true)
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true)
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1006, 0, true)
+                                .build();
                         BaseDPTaskDispatcher.getInstance().perform(idpEntities)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
