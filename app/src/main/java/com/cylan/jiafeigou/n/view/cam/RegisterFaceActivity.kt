@@ -121,7 +121,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     }
 
     override fun afterTextChanged(s: Editable?) {
-
+        s?.trim()
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -250,7 +250,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_CANCELED) {
             if (requestCode == Constants.REQUEST_CODE && data != null) {
-                gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)))
+                gotoClipActivity(Uri.fromFile(File(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES))))
             } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
                 cropFileUri = data.data
                 refreshSelectedFace()

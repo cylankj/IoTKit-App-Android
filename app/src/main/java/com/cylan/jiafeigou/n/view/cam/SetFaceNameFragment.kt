@@ -3,9 +3,8 @@ package com.cylan.jiafeigou.n.view.cam
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
+import android.text.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.IMEUtils
 import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.ToastUtil
+import kotlinx.android.synthetic.main.custom_edit_text.view.*
 import kotlinx.android.synthetic.main.fragment_set_face_name.*
 
 /**
@@ -68,6 +68,21 @@ class SetFaceNameFragment : BaseFragment<SetFaceNameContact.Presenter>(), SetFac
                 var empty = TextUtils.isEmpty(s) || TextUtils.isEmpty(s?.trim())
                 custom_toolbar.setRightEnable(!empty)
             }
+        })
+
+        edit_face_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
+            val originWidth = BoringLayout.getDesiredWidth("$dest", edit_face_name.paint)
+            val measuredWidth = edit_face_name.measuredWidth
+            var result = "$source"
+            var width = BoringLayout.getDesiredWidth(result, edit_face_name.paint)
+
+            Log.i(JConstant.CYLAN_TAG, "source:$source,dest:$dest,usedWidth:$originWidth inputWidth:$width,acceptWidth:${edit_face_name.measuredWidth}")
+
+            while (originWidth + width > measuredWidth) {
+                result = result.dropLast(1)
+                width = BoringLayout.getDesiredWidth(result, edit_face_name.paint)
+            }
+            result
         })
     }
 
