@@ -23,6 +23,8 @@ class CustomEditText(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
     constructor(context: Context) : this(context, null)
 
+    var showClear: Boolean = true
+
     init {
         View.inflate(context, R.layout.custom_edit_text, this)
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.CustomEditText)
@@ -64,11 +66,17 @@ class CustomEditText(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
     @OnTextChanged(R.id.edit_text)
     fun onTextChanged(text: CharSequence?) {
+        if (!showClear){
+            return
+        }
         clear.visibility = if (TextUtils.isEmpty(text?.trim())) View.GONE else View.VISIBLE
     }
 
     @OnFocusChange(R.id.edit_text)
     fun onEditFocusChanged(view: View, focus: Boolean) {
+        if (!showClear){
+            return
+        }
         if (focus && !TextUtils.isEmpty(edit_text.text)) {
             clear.visibility = View.VISIBLE
         } else if (!focus || TextUtils.isEmpty(edit_text.text)) {
@@ -84,6 +92,9 @@ class CustomEditText(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
     @OnClick(R.id.clear)
     fun clearText() {
+        if (!showClear){
+            return
+        }
         edit_text.text.clear()
     }
 
@@ -113,4 +124,6 @@ class CustomEditText(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     fun getEditer() = this.edit_text!!
 
     fun getEditText(): EditText = this.edit_text
+
+
 }

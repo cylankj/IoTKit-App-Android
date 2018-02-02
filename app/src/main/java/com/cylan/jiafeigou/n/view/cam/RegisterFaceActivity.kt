@@ -143,6 +143,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
         super.initViewAndListener()
         custom_toolbar.setBackAction { finish() }
         custom_toolbar.setRightAction(this::onFinishedClicked)
+        photo_nick_name.showClear = false
         photo_nick_name.addTextChangedListener(this)
     }
 
@@ -358,7 +359,6 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
             val currentFocus = currentFocus
             if (isShouldHideInput(currentFocus, ev)) {
                 setEditTextFocusable(false)
-                return true
             } else {
                 setEditTextFocusable(true)
             }

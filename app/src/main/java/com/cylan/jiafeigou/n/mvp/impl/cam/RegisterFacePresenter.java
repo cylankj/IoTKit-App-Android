@@ -114,9 +114,9 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                         JSONObject jsonObject = new JSONObject(execute.body().string());
                         Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
                         int code = jsonObject.getInt("code");
-                        if (code != 200) {
-                            return code;
-                        }
+//                        if (code != 200) {
+//                            return code;
+//                        }
 
 
                         authToken = jsonObject.getString("auth_token");
@@ -160,8 +160,8 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                     }
                     return -1;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))
                 .subscribe(code -> {
                     switch (code) {
