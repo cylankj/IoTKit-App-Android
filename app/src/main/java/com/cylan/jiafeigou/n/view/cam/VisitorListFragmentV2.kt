@@ -115,7 +115,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     private var isLoadingFinished = true
     private var faceItemType: Int = FaceItem.FACE_TYPE_ALL
 
-    private class FaceAdapter(var isNormalView: Boolean) : FastItemAdapter<FaceItem>()
+    private class FaceAdapter(var isNormalView: Boolean) : FastItemAdapter<IItem<*, *>>()
 
     private lateinit var gridLayoutManager: GridLayoutManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,11 +151,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     private fun makeContentView(isNormalView: Boolean) {
         if (isNormalView && faceAdapter.isNormalView) {
             currentPosition = 0
-            faceAdapter.set(visitorItems)
+            faceAdapter.set(visitorItems as List<IItem<*, *>>?)
             faceAdapter.select(0)
         } else if (!isNormalView && !faceAdapter.isNormalView) {
             currentPosition = 0
-            faceAdapter.set(strangerItems)
+            faceAdapter.set(strangerItems as List<IItem<*, *>>?)
             faceAdapter.select(0)
         }
         resizeContentHeight()
@@ -243,7 +243,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                 }
             }
         }
-        faceAdapter.setNewList(visitorItems)
+        faceAdapter.setNewList(visitorItems as List<IItem<*, *>>?)
         (faceAdapter as FastItemAdapter<IItem<*, *>>).addAdapter(1, footerAdapter as ItemAdapter<IItem<*, *>>)
         face_header.adapter = faceAdapter
 //        face_header.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
@@ -268,57 +268,59 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             }
         })
         faceAdapter.withOnClickListener { v, adapter, item, position ->
-            when (item.getFaceType()) {
-                FaceItem.FACE_TYPE_ALL -> {
-                    currentPosition = 0
-                    faceItemType = FaceItem.FACE_TYPE_ALL
-                    presenter.fetchVisitorList(0)
-                    cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                    presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
-                    makeVisitorCount(visitorCountMap[""] ?: 0, true)
-                    visitorListener?.onLoadItemInformation(item.getFaceType(), "")
-                }
-                FaceItem.FACE_TYPE_STRANGER -> {
-                    currentPosition = 0
-                    faceItemType = FaceItem.FACE_TYPE_STRANGER
+            if (item is FaceItem) {
+                when (item.getFaceType()) {
+                    FaceItem.FACE_TYPE_ALL -> {
+                        currentPosition = 0
+                        faceItemType = FaceItem.FACE_TYPE_ALL
+                        presenter.fetchVisitorList(0)
+                        cam_message_indicator_watcher_text.visibility = View.VISIBLE
+                        presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
+                        makeVisitorCount(visitorCountMap[""] ?: 0, true)
+                        visitorListener?.onLoadItemInformation(item.getFaceType(), "")
+                    }
+                    FaceItem.FACE_TYPE_STRANGER -> {
+                        currentPosition = 0
+                        faceItemType = FaceItem.FACE_TYPE_STRANGER
 //                    cam_message_indicator_watcher_text.visibility = View.GONE
-                    faceAdapter.isNormalView = false
+                        faceAdapter.isNormalView = false
 //                    makeContentView(false)
-                    faceAdapter.set(strangerItems)
-                    faceAdapter.select(0)
-                    presenter.fetchStrangerVisitorList(0)
-                    val id = strangerItems.getOrNull(0)?.strangerVisitor?.faceId ?: ""
-                    makeVisitorCount(visitorCountMap[id] ?: 0, false)
-                    visitorListener?.onLoadItemInformation(FaceItem.FACE_TYPE_STRANGER, id)
-                    resizeContentHeight()
-                }
-                FaceItem.FACE_TYPE_ACQUAINTANCE -> {
-                    val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_ACQUAINTANCE) item.visitor?.personId else item.strangerVisitor?.faceId
-                    AppLogger.w("主列表的 faceId?personId")
-                    cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                    faceItemType = FaceItem.FACE_TYPE_ACQUAINTANCE
-                    presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_ACQUAINTANCE)
-                    makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
-                    visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
-                }
-                FaceItem.FACE_TYPE_STRANGER_SUB -> {
-                    val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_STRANGER_SUB) item.strangerVisitor?.faceId else item.visitor?.personId
-                    AppLogger.w("主列表的 faceId?personId")
-                    cam_message_indicator_watcher_text.visibility = View.VISIBLE
-                    faceItemType = FaceItem.FACE_TYPE_STRANGER_SUB
-                    presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_STRANGER)
-                    makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
-                    visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
-                }
-                FaceItem.FACE_TYPE_REGISTER_FACE -> {
-                    AppLogger.w("主列表的 注册人脸")
+                        faceAdapter.set(strangerItems as List<IItem<*, *>>?)
+                        faceAdapter.select(0)
+                        presenter.fetchStrangerVisitorList(0)
+                        val id = strangerItems.getOrNull(0)?.strangerVisitor?.faceId ?: ""
+                        makeVisitorCount(visitorCountMap[id] ?: 0, false)
+                        visitorListener?.onLoadItemInformation(FaceItem.FACE_TYPE_STRANGER, id)
+                        resizeContentHeight()
+                    }
+                    FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                        val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_ACQUAINTANCE) item.visitor?.personId else item.strangerVisitor?.faceId
+                        AppLogger.w("主列表的 faceId?personId")
+                        cam_message_indicator_watcher_text.visibility = View.VISIBLE
+                        faceItemType = FaceItem.FACE_TYPE_ACQUAINTANCE
+                        presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_ACQUAINTANCE)
+                        makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
+                        visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
+                    }
+                    FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                        val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_STRANGER_SUB) item.strangerVisitor?.faceId else item.visitor?.personId
+                        AppLogger.w("主列表的 faceId?personId")
+                        cam_message_indicator_watcher_text.visibility = View.VISIBLE
+                        faceItemType = FaceItem.FACE_TYPE_STRANGER_SUB
+                        presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_STRANGER)
+                        makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
+                        visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
+                    }
+                    FaceItem.FACE_TYPE_REGISTER_FACE -> {
+                        AppLogger.w("主列表的 注册人脸")
 
-                    val intent = Intent(context, RegisterFaceActivity::class.java)
-                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
-                    startActivity(intent)
+                        val intent = Intent(context, RegisterFaceActivity::class.java)
+                        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid)
+                        startActivity(intent)
+                    }
                 }
+                setExpanded(false)
             }
-            setExpanded(false)
             return@withOnClickListener true
         }
 
@@ -327,9 +329,12 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 //                return@withOnLongClickListener true
 //            }
             //            visitorListener?.onLoadItemInformation(item)
-            if (item.getFaceType() != FaceItem.FACE_TYPE_ALL && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER && item.getFaceType() != FaceItem.FACE_TYPE_STRANGER_SUB) {
-                showHeaderFacePopMenu(item, position, v, item.getFaceType())
+            (item as?FaceItem)?.apply {
+                if (getFaceType() != FaceItem.FACE_TYPE_ALL && getFaceType() != FaceItem.FACE_TYPE_STRANGER && getFaceType() != FaceItem.FACE_TYPE_STRANGER_SUB) {
+                    showHeaderFacePopMenu(this, position, v, getFaceType())
+                }
             }
+
             return@withOnLongClickListener true
         }
         faceAdapter.withSelectionListener { item, selected ->
@@ -466,15 +471,15 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             visitorItems.clear()
             visitorItems.addAll(preloadItems)
             visitorItems.addAll(visitorList)
-            faceAdapter.set(visitorItems)
+            faceAdapter.set(visitorItems as List<IItem<*, *>>?)
             faceAdapter.select(currentPosition)
         } else {
             //append
             visitorItems.addAll(visitorList)
             if (!faceAdapter.isNormalView) {
-                faceAdapter.set(visitorItems)
+                faceAdapter.set(visitorItems as List<IItem<*, *>>?)
             } else {
-                faceAdapter.add(visitorList)
+                faceAdapter.add(visitorList as List<IItem<*, *>>?)
             }
         }
         resizeContentHeight()
@@ -500,7 +505,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     open fun exitStranger() {
         faceAdapter.isNormalView = true
         currentPosition = 0
-        faceAdapter.set(visitorItems)
+        faceAdapter.set(visitorItems as List<IItem<*, *>>?)
         faceAdapter.select(currentPosition)
         gridLayoutManager.scrollToPosition(0)
         resizeContentHeight()
@@ -519,15 +524,15 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         if (version == 0L) {
             strangerItems.clear()
             strangerItems.addAll(visitorList)
-            faceAdapter.set(strangerItems)
+            faceAdapter.set(strangerItems as List<IItem<*, *>>?)
             faceAdapter.select(currentPosition)
         } else {
             //append
             strangerItems.addAll(visitorList)
             if (faceAdapter.isNormalView) {
-                faceAdapter.set(strangerItems)
+                faceAdapter.set(strangerItems as List<IItem<*, *>>?)
             } else {
-                faceAdapter.add(visitorList)
+                faceAdapter.add(visitorList as List<IItem<*, *>>?)
             }
         }
         resizeContentHeight()
