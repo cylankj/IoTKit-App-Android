@@ -19,7 +19,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1002_CAM_512UNREAD_COUNT_V2;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1003_CAM_222_UNREAD_COUNT;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1004_BELL_UNREAD_COUNT;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1005_BELL_UNREAD_COUNT_V2;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1005_COUNT_UN_READ_CAM_AI_WARM_MSG;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1006_COUNT_UN_READ_CAM_AI_WARM_MSG;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_201_NET;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_203_SD_FORMAT_RSP;
@@ -99,7 +99,7 @@ public class BasePropertyParser implements IPropertyParser {
         //设备端插入和拔出网线均会上报该消息。
         properties.put(225, new DPProperty(int.class, DPProperty.LEVEL_HOME, CAMERA));
 
-        properties.put(ID_1005_COUNT_UN_READ_CAM_AI_WARM_MSG, new DPProperty(int.class, DPProperty.LEVEL_HOME, CAMERA));
+        properties.put(ID_1006_COUNT_UN_READ_CAM_AI_WARM_MSG, new DPProperty(int.class, DPProperty.LEVEL_HOME, CAMERA));
         properties.put(ID_1005_BELL_UNREAD_COUNT_V2, new DPProperty(int.class, DPProperty.LEVEL_HOME, DOORBELL));
         properties.put(ID_1004_BELL_UNREAD_COUNT, new DPProperty(int.class, DPProperty.LEVEL_HOME, DOORBELL));
 

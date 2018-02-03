@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -40,6 +41,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     private var monitorPictureReady: Boolean = false
     private var restoreMonitorLayout: Boolean = true
     private var monitorAreaMarginRadio = 0.0f//听说不能全部图片区域选择?,先写好先
+    private var radio: Float = 0F
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_monitor_area_setting, container, false)
     }
@@ -81,6 +83,13 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         alertErrorGetMonitorPicture()
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (monitorPictureReady) {
+            updateMonitorAreaRadio(radio)
+        }
+    }
+
     override fun tryGetLocalMonitorPicture() {
         val localUrl: String? = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
         localUrl?.apply {
@@ -117,7 +126,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
                             updateMonitorAreaPicture(resource)
                             toggleMonitorAreaMode(restoreMonitorLayout)
-                            finish.isEnabled=true;
+                            finish.isEnabled = true;
                         }
                     }
 
@@ -141,6 +150,30 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         }
     }
 
+    //radio高宽比
+    fun updateMonitorAreaRadio(radio: Float) {
+        val metrics = Resources.getSystem().displayMetrics
+        val monitorPictureWidth: Int
+        val monitorPictureHeight: Int
+        val heightMargin: Int
+        val widthMargin: Int
+        monitorPictureHeight = (metrics.widthPixels * radio).toInt()
+        monitorPictureWidth = (metrics.heightPixels / radio).toInt()
+        val params = monitor_picture.layoutParams
+        params.width = monitorPictureWidth
+        params.height = monitorPictureHeight
+        heightMargin = (monitorPictureHeight * monitorAreaMarginRadio).toInt()
+        widthMargin = (monitorPictureWidth * monitorAreaMarginRadio).toInt()
+        effect_container?.post {
+            val layoutParams = effect_container?.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.apply {
+                layoutParams.setMargins(widthMargin / 2, heightMargin / 2, widthMargin / 2, heightMargin / 2)
+                effect_container.layoutParams = layoutParams
+            }
+        }
+        monitor_picture?.post { monitor_picture.layoutParams = params }
+    }
+
     fun updateMonitorAreaPicture(drawable: Bitmap) {
         monitorPictureReady = true
         monitor_picture.setImageBitmap(drawable)
@@ -152,6 +185,11 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         val monitorPictureHeight: Int
         val heightMargin: Int
         val widthMargin: Int
+        this.radio = Math.min(pictureRadio, screenRadio)
+        updateMonitorAreaRadio(radio)
+        if (true) {
+            return
+        }
         if (pictureRadio >= screenRadio) {
             //图片的高宽比 大于 屏幕的 高宽比 则此时需要高度铺满屏幕高度,宽度计算出来
             monitorPictureHeight = metrics.heightPixels

@@ -66,7 +66,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
-        bindContext = new BindHelper.BindContext(uuid);
+        bindContext = new BindHelper.BindContext(uuid == null ? "00000000" : uuid);
         aFullBind = new SimpleBindFlow(this);
         monitorLocalUdpMessage();
     }
@@ -272,7 +272,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 bindContext.onUpdateWiFiConfig(ssid, password, type);
-                BindHelper.checkParamsForEventType(bindContext,BindHelper.EVENT_TYPE_WIFI_CONFIG);
+                BindHelper.checkParamsForEventType(bindContext, BindHelper.EVENT_TYPE_WIFI_CONFIG);
                 boolean noError = BindHelper.isNoError(bindContext);
                 if (!noError) {
                     noError = BindHelper.performRepairAction(bindContext, bindContext.getErrorCode());

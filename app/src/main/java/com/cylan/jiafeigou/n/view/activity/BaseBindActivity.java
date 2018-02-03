@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -40,11 +39,11 @@ public class BaseBindActivity<T extends BasePresenter> extends BaseFullScreenFra
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         BaseBindActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (permissions.length == 1) {
-            if (TextUtils.equals(permissions[0], ACCESS_FINE_LOCATION) && grantResults[0] > -1) {
-                BaseBindActivityPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
-            }
-        }
+//        if (permissions.length == 1) {
+//            if (TextUtils.equals(permissions[0], ACCESS_FINE_LOCATION) && grantResults[0] > -1) {
+//                BaseBindActivityPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
+//            }
+//        }
     }
 
 

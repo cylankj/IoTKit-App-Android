@@ -5,7 +5,6 @@ import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
-import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -79,9 +78,9 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Deprecated
     public DPEntity getProperty(int msgId) {
-        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) {
-            return null;
-        }
+//        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) {
+//            return null;
+//        }
         return properties.get(msgId);
     }
 

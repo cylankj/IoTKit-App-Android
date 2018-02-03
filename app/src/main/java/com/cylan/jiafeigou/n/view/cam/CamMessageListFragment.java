@@ -478,7 +478,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
         }
-        if (pageType == FaceItem.FACE_TYPE_ALL || !TextUtils.isEmpty(personId)) {
+        if (pageType == FaceItem.FACE_TYPE_ALL || !TextUtils.isEmpty(personId) || pageType == FaceItem.FACE_TYPE_DP) {
             startRequest(true, true);
         }
     }

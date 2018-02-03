@@ -13,12 +13,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
@@ -275,18 +277,47 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void removeHint() {
-        try {
-            DataSourceManager.getInstance().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
-            if (vIndicator == null) {
-                return;
+        long[] msgIdList = {526, 527, 505, 401};
+        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                long seq = Command.getInstance().robotCountDataClear(uuid, msgIdList, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
             }
-            View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
-            if (vHint != null && vHint instanceof HintTextView) {
-                ((HintTextView) vHint).showHint(false);
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> rsp.seq == seq))
+                .filter(rsp -> rsp.rets.get(0).ret == 0)
+                .subscribe(rsp -> {
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    for (long i : msgIdList) {
+                        device.updateProperty((int) i, null);
+                    }
+                }, error -> {
+                });
+        if (vIndicator == null) {
+            return;
         }
+        View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
+        if (vHint != null && vHint instanceof HintTextView) {
+            ((HintTextView) vHint).showHint(false);
+        }
+//        try {
+//
+//            DataSourceManager.getInstance().clearValue(uuid, 1001, 1002, 1003, 1004, 1005, 1006, 526, 527);
+//            if (vIndicator == null) {
+//                return;
+//            }
+//            View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
+//            if (vHint != null && vHint instanceof HintTextView) {
+//                ((HintTextView) vHint).showHint(false);
+//            }
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
