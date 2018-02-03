@@ -30,6 +30,7 @@
             android:layout_marginTop="@dimen/y8"
             android:background="@null"
             android:hint="@string/LOCATION_NAME_ERROR"
+            android:maxLength="24"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/color_333333"

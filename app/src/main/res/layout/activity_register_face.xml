@@ -68,6 +68,7 @@
         android:layout_marginTop="@dimen/y10"
         android:gravity="center_horizontal|bottom"
         android:hint="@string/LOCATION_NAME_ERROR"
+        android:inputType="text"
         android:textColor="@color/color_666666"
         android:textColorHint="@color/color_cecece"
         app:layout_constraintEnd_toEndOf="parent"

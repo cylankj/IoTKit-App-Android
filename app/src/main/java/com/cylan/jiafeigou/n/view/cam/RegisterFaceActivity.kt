@@ -7,8 +7,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.*
-import android.util.Log
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -18,7 +20,6 @@ import butterknife.OnClick
 import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.wrapper.BaseActivity
 import com.cylan.jiafeigou.misc.AlertDialogManager
-import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.misc.JConstant.MEDIA_PATH
 import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.n.mvp.contract.cam.RegisterFaceContract
@@ -121,7 +122,6 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     }
 
     override fun afterTextChanged(s: Editable?) {
-        s?.trim()
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -157,12 +157,12 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     }
 
     fun refreshFinishEnable() {
-        custom_toolbar.setRightEnable(cropFileUri != null && !TextUtils.isEmpty(photo_nick_name.getEditer().text))
+        custom_toolbar.setRightEnable(cropFileUri != null && !TextUtils.isEmpty(photo_nick_name.getEditer().text?.trim()))
     }
 
     fun onFinishedClicked(view: View) {
         IMEUtils.hide(this)
-        presenter.performRegisterFaceAction(photo_nick_name.getEditer().text.toString(), getRealFilePathFromUri(context, cropFileUri))
+        presenter.performRegisterFaceAction(photo_nick_name.getEditer().text?.toString()?.trim(), getRealFilePathFromUri(context, cropFileUri))
     }
 
     override fun onResume() {
@@ -337,20 +337,21 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
             }
             return@setOnKeyListener false
         }
-        photo_nick_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
-            val originWidth = BoringLayout.getDesiredWidth("$dest", photo_nick_name.edit_text.paint)
-            val measuredWidth = photo_nick_name.edit_text.measuredWidth
-            var result = "$source"
-            var width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
-
-            Log.i(JConstant.CYLAN_TAG, "source:$source,dest:$dest,usedWidth:$originWidth inputWidth:$width,acceptWidth:${photo_nick_name.edit_text.measuredWidth}")
-
-            while (originWidth + width > measuredWidth) {
-                result = result.dropLast(1)
-                width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
-            }
-            result
-        })
+        photo_nick_name.edit_text.filters = arrayOf(InputFilter.LengthFilter(24))
+//        photo_nick_name.edit_text.filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
+//            val originWidth = BoringLayout.getDesiredWidth("$dest", photo_nick_name.edit_text.paint)
+//            val measuredWidth = photo_nick_name.edit_text.measuredWidth
+//            var result = "$source"
+//            var width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
+//
+//            Log.i(JConstant.CYLAN_TAG, "source:$source,dest:$dest,usedWidth:$originWidth inputWidth:$width,acceptWidth:${photo_nick_name.edit_text.measuredWidth}")
+//
+//            while (originWidth + width > measuredWidth) {
+//                result = result.dropLast(1)
+//                width = BoringLayout.getDesiredWidth(result, photo_nick_name.edit_text.paint)
+//            }
+//            result
+//        })
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
