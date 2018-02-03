@@ -85,7 +85,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        if (monitorPictureReady) {
+        if (isResumed && isAdded && monitorPictureReady) {
             updateMonitorAreaRadio(radio)
         }
     }
@@ -171,7 +171,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                 effect_container.layoutParams = layoutParams
             }
         }
-        monitor_picture?.post { monitor_picture.layoutParams = params }
+        monitor_picture?.post { monitor_picture?.layoutParams = params }
     }
 
     fun updateMonitorAreaPicture(drawable: Bitmap) {
