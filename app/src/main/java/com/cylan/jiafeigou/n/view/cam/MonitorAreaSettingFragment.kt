@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.module.GlideApp
 import com.cylan.jiafeigou.n.mvp.contract.cam.MonitorAreaSettingContact
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.ContextUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.cylan.jiafeigou.utils.ToastUtil
 import com.cylan.jiafeigou.utils.ViewUtils
@@ -41,7 +43,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     private var monitorPictureReady: Boolean = false
     private var restoreMonitorLayout: Boolean = true
     private var monitorAreaMarginRadio = 0.0f//听说不能全部图片区域选择?,先写好先
-    private var radio: Float = 0F
+    private var pictureRadio: Float = 0F
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_monitor_area_setting, container, false)
     }
@@ -49,16 +51,17 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun initViewAndListener() {
         super.initViewAndListener()
         effect_container.keepScreenOn = true
-        ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
+
         effect_container.setSizeUpdateListener(this::onMonitorAreaChanged)
         effect_container.setOnSystemUiVisibilityChangeListener { ViewUtils.setSystemUiVisibility(monitor_picture, false) }
         monitorWidth = context!!.resources.getDimensionPixelSize(R.dimen.y206)
         monitorHeight = context!!.resources.getDimensionPixelSize(R.dimen.y136)
-        presenter.loadMonitorAreaSetting()
+
     }
 
     override fun onStart() {
         super.onStart()
+        ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
         ViewUtils.setSystemUiVisibility(monitor_picture, false)
     }
 
@@ -85,8 +88,27 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        if (isResumed && isAdded && monitorPictureReady) {
-            updateMonitorAreaRadio(radio)
+        Log.e("AAAAA", "onConfigurationChanged")
+        refreshRadio()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e("AAAAA", "isResumed:" + isResumed + ",isAdded:" + isAdded + ",isReady:" + monitorPictureReady + ",picradio:" + pictureRadio)
+        if (!monitorPictureReady) {
+            presenter.loadMonitorAreaSetting()
+        } else {
+            effect_container.post {
+                refreshRadio()
+            }
+        }
+    }
+
+    fun refreshRadio() {
+        updateMonitorAreaRadio()
+        if (monitorAreaArray.size > 0) {
+            //说明区域数据已经先回来了
+            toggleMonitorAreaMode(false)
         }
     }
 
@@ -151,8 +173,15 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     }
 
     //radio高宽比
-    fun updateMonitorAreaRadio(radio: Float) {
+    fun updateMonitorAreaRadio() {
+        val isLand = ContextUtils.getContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (!isLand) {
+            ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+            return
+        }
         val metrics = Resources.getSystem().displayMetrics
+        val screenRadio: Float = metrics.heightPixels.toFloat() / metrics.widthPixels.toFloat()
+        val radio = Math.min(pictureRadio, screenRadio)
         val monitorPictureWidth: Int
         val monitorPictureHeight: Int
         val heightMargin: Int
@@ -177,43 +206,17 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     fun updateMonitorAreaPicture(drawable: Bitmap) {
         monitorPictureReady = true
         monitor_picture.setImageBitmap(drawable)
-        val params = monitor_picture.layoutParams
-        val pictureRadio: Float = drawable.height.toFloat() / drawable.width.toFloat()
-        val metrics = Resources.getSystem().displayMetrics
-        val screenRadio: Float = metrics.heightPixels.toFloat() / metrics.widthPixels.toFloat()
-        val monitorPictureWidth: Int
-        val monitorPictureHeight: Int
-        val heightMargin: Int
-        val widthMargin: Int
-        this.radio = Math.min(pictureRadio, screenRadio)
-        updateMonitorAreaRadio(radio)
-        if (true) {
-            return
-        }
-        if (pictureRadio >= screenRadio) {
-            //图片的高宽比 大于 屏幕的 高宽比 则此时需要高度铺满屏幕高度,宽度计算出来
-            monitorPictureHeight = metrics.heightPixels
-            monitorPictureWidth = (metrics.heightPixels.toFloat() / pictureRadio).toInt()
-
-        } else {
-            //图片的高宽比小于屏幕的高宽比 则此时需要宽度铺满屏幕宽度,高度计算出来
-            monitorPictureWidth = metrics.widthPixels
-            monitorPictureHeight = (metrics.widthPixels.toFloat() * pictureRadio).toInt()
-        }
-        params.width = monitorPictureWidth
-        params.height = monitorPictureHeight
-        heightMargin = (monitorPictureHeight * monitorAreaMarginRadio).toInt()
-        widthMargin = (monitorPictureWidth * monitorAreaMarginRadio).toInt()
-        effect_container.post {
-            val layoutParams = effect_container.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.setMargins(widthMargin / 2, heightMargin / 2, widthMargin / 2, heightMargin / 2)
-            effect_container.layoutParams = layoutParams
-        }
-        monitor_picture.post { monitor_picture.layoutParams = params }
+        pictureRadio = drawable.height.toFloat() / drawable.width.toFloat()
+        updateMonitorAreaRadio()
     }
 
     private fun toggleMonitorAreaMode(restore: Boolean) {
         this.restoreMonitorLayout = restore
+        val isLand = ContextUtils.getContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (!isLand) {
+            ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+            return
+        }
         if (!monitorPictureReady) {
             //图片还没准备好 不允许进行模式切换
             return

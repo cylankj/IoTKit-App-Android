@@ -76,7 +76,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private boolean hasSdcard() {
         DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-
         return this.status = status.hasSdcard && status.err == 0;
     }
 
@@ -117,7 +116,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         } else {
             selectedMap.clear();
         }
-        notifyItemRangeChanged(0, getCount());
+        notifyDataSetChanged();
     }
 
     /**
@@ -166,7 +165,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, CamMessageBean item) {
-
         switch (viewType) {
             case CamMessageBean.ViewType.TEXT:
                 handleTextContentLayout(holder, item);

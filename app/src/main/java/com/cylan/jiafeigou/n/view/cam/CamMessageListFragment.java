@@ -681,6 +681,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Loaded));
         }
         decideEmptyViewLayout();
+        reselectAllIfNeeded();
+    }
+
+    private void reselectAllIfNeeded() {
+        boolean selectAll = TextUtils.equals(tvMsgFullSelect.getText(), getString(R.string.CANCEL));
+        Log.e("AAAAA", "count:" + camMessageListAdapter.getCount() + ",editMode:" + camMessageListAdapter.isEditMode() + ",selectAll:" + selectAll);
+        if (camMessageListAdapter.isEditMode() && selectAll) {
+            camMessageListAdapter.markAllAsSelected(true, 0);
+        }
     }
 
     private void makeSureRemoveFoot() {
@@ -701,6 +710,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         makeSureRemoveFoot();
         decideEmptyViewLayout();
+        reselectAllIfNeeded();
     }
 
 
@@ -786,6 +796,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         makeSureRemoveFoot();
         decideEmptyViewLayout();
+        reselectAllIfNeeded();
     }
 
     private void decideEmptyViewLayout() {
@@ -819,6 +830,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         }
         makeSureRemoveFoot();
         decideEmptyViewLayout();
+        reselectAllIfNeeded();
     }
 
     @Override

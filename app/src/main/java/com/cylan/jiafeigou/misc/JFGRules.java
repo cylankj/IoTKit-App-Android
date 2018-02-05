@@ -661,7 +661,7 @@ public class JFGRules {
     }
 
     public static boolean isDeviceOnline(DpMsgDefine.DPNet net) {
-        return net != null && net.net > 0 && !TextUtils.isEmpty(net.ssid);
+        return net != null && net.net > 0 /*&& !TextUtils.isEmpty(net.ssid)*/;
     }
 
     public static boolean isDeviceOnline(String uuid) {
