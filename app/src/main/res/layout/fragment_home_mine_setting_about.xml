@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y60"
             android:layout_marginTop="@dimen/y56"
-            android:src="@drawable/and_logo_about_180x180" />
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/tv_app_version"
@@ -44,11 +44,11 @@
             android:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
-            android:layout_marginTop="@dimen/y74"
             android:id="@+id/sv_official_website"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_marginStart="@dimen/x15"
+            android:layout_marginTop="@dimen/y74"
             hunt:sv_sub_title="@string/show_web"
             hunt:sv_title="@string/WEB"
             hunt:sv_v_divider="true" />

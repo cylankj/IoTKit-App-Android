@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.cam;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +42,7 @@ public class RegisterFaceSuccessFragment extends BaseFragment {
     @OnClick(R.id.finish)
     void finish() {
         AppLogger.w("finish");
+        getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 

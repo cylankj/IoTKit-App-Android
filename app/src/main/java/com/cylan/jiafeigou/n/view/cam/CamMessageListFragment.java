@@ -140,13 +140,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private VisitorListFragmentV2 visitorFragment;
 
     private boolean hasFaceHeader = false;
-    private int pageType = FaceItem.FACE_TYPE_ALL;
-    private String personId;
     //    private boolean hasFirstRequested = false;
     private Rect appbarRect = new Rect();
     private Rect messageRect = new Rect();
     private Rect headerRect = new Rect();
-    private boolean hasExpanded = false;
 
     public CamMessageListFragment() {
         // Required empty public constructor
@@ -169,7 +166,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         presenter = new CamMessageListPresenterImpl(this, uuid);
         hasFaceHeader = JFGRules.isFaceFragment(getDevice().pid);
-        pageType = hasFaceHeader ? FaceItem.FACE_TYPE_ALL : FaceItem.FACE_TYPE_DP;
     }
 
     @Override
@@ -304,9 +300,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         visitorFragment.setVisitorListener(new VisitorListFragmentV2.VisitorListener() {
             @Override
             public void onLoadItemInformation(int faceType, @NotNull String personOrFaceId) {
-                personId = personOrFaceId;
                 changeContentByHeaderClick(faceType);
-                if (hasExpanded) {
+                if (hasExpanded()) {
                     lLayoutNoMessage.setVisibility(View.GONE);
                 }
                 startRequest(true, false);
@@ -314,8 +309,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
             @Override
             public void onExpanded(boolean expanded) {
-                hasExpanded = expanded;
-                if (hasExpanded) {
+                if (expanded) {
                     ibQuickTop.setVisibility(View.GONE);
                 }
                 ViewGroup.LayoutParams layoutParams = aplCamMessageAppbar.getLayoutParams();
@@ -332,8 +326,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             @Override
             public void onStrangerVisitorReady(@NotNull List<FaceItem> visitorList) {
                 camMessageListAdapter.onStrangerInformationReady(visitorList);
-                pageType = FaceItem.FACE_TYPE_STRANGER_SUB;
-                if (hasExpanded) {
+                if (hasExpanded()) {
                     srLayoutCamListRefresh.setRefreshing(false);
                 }
 //                justForDemo(false);
@@ -343,7 +336,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             @Override
             public void onVisitorReady(@NotNull List<FaceItem> visitorList) {
                 camMessageListAdapter.onVisitorInformationReady(visitorList);
-                if (hasExpanded) {
+                if (hasExpanded()) {
                     srLayoutCamListRefresh.setRefreshing(false);
                 }
 //                justForDemo(true);
@@ -352,6 +345,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         //显示 所有面孔列表
         ActivityUtils.replaceFragment(getFragmentManager(),
                 visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
+    }
+
+    private boolean hasExpanded() {
+        return visitorFragment != null && visitorFragment.getViewExpanded();
     }
 
     private void layoutBarMenu(int barType) {
@@ -377,7 +374,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @OnClick(R.id.iv_back)
     public void clickStrangerBack() {
         AppLogger.w("clickStrangerBack");
-        this.pageType = FaceItem.FACE_TYPE_ALL;
         layoutBarMenu(BAR_TYPE_FACE_COMMON);
         if (visitorFragment != null) {
             visitorFragment.exitStranger();
@@ -392,7 +388,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private void changeContentByHeaderClick(int faceType) {
-        this.pageType = faceType;
         camMessageListAdapter.clear();
         lLayoutNoMessage.setVisibility(View.VISIBLE);
         if (faceType == FaceItem.FACE_TYPE_STRANGER) {
@@ -463,22 +458,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void decideRefresh() {
         srLayoutCamListRefresh.setRefreshing(true);
-//        if (hasFaceHeader && hasExpanded) {
-//            if (visitorFragment != null) {
-//                visitorFragment.refreshContent();
-//            }
-//            return;
-//        }
-        if (hasExpanded && pageType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
-            pageType = FaceItem.FACE_TYPE_ALL;
-            personId = null;
-        }
+        int pageType = getPageType();
+        boolean hasExpanded = hasExpanded();
+        String currentPersonId = getCurrentPersonId();
         if (hasFaceHeader && (pageType == FaceItem.FACE_TYPE_ALL || hasExpanded)) {
             //这里不能调用 startRequest ,因为需要先等 header 的数据回来才能请求下面的数据,
             //等 header 数据回来后会自动调用 startRequest 的
             refreshFaceHeader();
         }
-        if (pageType == FaceItem.FACE_TYPE_ALL || !TextUtils.isEmpty(personId) || pageType == FaceItem.FACE_TYPE_DP) {
+        if (pageType == FaceItem.FACE_TYPE_ALL || !TextUtils.isEmpty(currentPersonId) || pageType == FaceItem.FACE_TYPE_DP) {
             startRequest(true, true);
         }
     }
@@ -534,6 +522,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         public void run() {
             if (presenter != null) {
                 boolean success;
+                String personId = getCurrentPersonId();
+                int pageType = getPageType();
                 switch (pageType) {
                     case FaceItem.FACE_TYPE_STRANGER:
                         success = camMessageListAdapter.showCachedVisitorList("stranger");
@@ -547,7 +537,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
                         tvCamMessageListEdit.setEnabled(success);
                         if (!TextUtils.isEmpty(personId)) {
-                            presenter.fetchVisitorMessageList(2, personId, time, isRefresh);
+                            presenter.fetchVisitorMessageList(2, getCurrentPersonId(), time, isRefresh);
                         }
                         break;
                     case FaceItem.FACE_TYPE_STRANGER_SUB:
@@ -786,7 +776,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         srLayoutCamListRefresh.setRefreshing(false);
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         LoadingDialog.dismissLoading();
-        camMessageListAdapter.appendVisitorList(personId, beanArrayList);
+        camMessageListAdapter.appendVisitorList(getCurrentPersonId(), beanArrayList);
         int itemPosition = layoutManager.findFirstVisibleItemPosition();
         setCurrentPosition(Math.max(0, itemPosition));
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
@@ -801,7 +791,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void decideEmptyViewLayout() {
         lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
-        rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() > 0 || pageType == FaceItem.FACE_TYPE_STRANGER_SUB || pageType == FaceItem.FACE_TYPE_STRANGER ? View.VISIBLE : View.GONE);
+        rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() > 0 || getPageType() == FaceItem.FACE_TYPE_STRANGER_SUB || getPageType() == FaceItem.FACE_TYPE_STRANGER ? View.VISIBLE : View.GONE);
         tvCamMessageListDate.setVisibility(camMessageListAdapter.getItemCount() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvCamMessageListEdit.setVisibility(camMessageListAdapter.getItemCount() > 0 ? View.VISIBLE : View.INVISIBLE);
         boolean reset = tvCamMessageListDate.getTag() == null ||
@@ -812,6 +802,40 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
     }
 
+    private int getPageType() {
+        if (!hasFaceHeader) {
+            return FaceItem.FACE_TYPE_DP;
+        }
+        if (visitorFragment == null) {
+            return FaceItem.FACE_TYPE_ALL;
+        }
+        int faceItemType = visitorFragment.getFaceItemType();
+        boolean hasExpanded = hasExpanded();
+        if (hasExpanded && faceItemType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
+            return FaceItem.FACE_TYPE_ALL;
+        }
+        return faceItemType;
+    }
+
+    private String getCurrentPersonId() {
+        if (visitorFragment == null) {
+            return "";
+        }
+        FaceItem faceItem = visitorFragment.getSelectedFaceItem();
+        if (faceItem == null) {
+            return "";
+        }
+        int pageType = getPageType();
+        DpMsgDefine.Visitor visitor = faceItem.getVisitor();
+        DpMsgDefine.StrangerVisitor strangerVisitor = faceItem.getStrangerVisitor();
+        if (pageType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
+            return visitor == null ? "" : visitor.personId;
+        } else if (pageType == FaceItem.FACE_TYPE_STRANGER_SUB) {
+            return strangerVisitor == null ? "" : strangerVisitor.faceId;
+        }
+        return "";
+    }
+
     @Override
     public void onVisitorListInsert(ArrayList<CamMessageBean> beans) {
         endlessLoading = false;
@@ -820,7 +844,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
         LoadingDialog.dismissLoading();
         camMessageListAdapter.clear();
-        camMessageListAdapter.insertVisitorList(personId, beans);
+        camMessageListAdapter.insertVisitorList(getCurrentPersonId(), beans);
         int itemPosition = layoutManager.findFirstVisibleItemPosition();
         setCurrentPosition(Math.max(0, itemPosition));
         final int count = beans == null ? 0 : beans.size();

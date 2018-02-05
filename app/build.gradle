@@ -94,6 +94,9 @@ android {
         _doby {
             java.srcDirs = ['src/_doby/java']
         }
+        _aidemo {
+            java.srcDirs = ['src/_doby/java']
+        }
 //        _cell_c {
 //            java.srcDirs = ['src/_cell_c/java']
 //        }
@@ -263,7 +266,7 @@ android {
                                     "FACEBOOK_APP_KEY"     : "1698182270477391",
                                     //<error>Desktop applications only support the oauth_callback value 'oob'</error>
                                     //新增的app需要在twitter后台,填上callbackUrl
-                                    'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
+                                    'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb',
             ]
         }
 //        _cell_c {
