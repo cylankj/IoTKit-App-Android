@@ -31,11 +31,15 @@ import com.lzy.okgo.request.PostRequest;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -57,6 +61,25 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 
     public BaseVisitorPresenter(VisitorListContract.View view) {
         super(view);
+        setSSL();
+    }
+
+    private static void setSSL() {
+        OkGo.getInstance().setHostnameVerifier((hostname, session) -> true);
+        OkGo.getInstance().setCertificates(new X509TrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[]{};
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+        });
     }
 
     @Override
@@ -408,7 +431,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                         }
                         break;
                         case 200: {
-                            mView.onDeleteFaceSuccess(type,delMsg);
+                            mView.onDeleteFaceSuccess(type, delMsg);
                         }
                         break;
                         case -1: {

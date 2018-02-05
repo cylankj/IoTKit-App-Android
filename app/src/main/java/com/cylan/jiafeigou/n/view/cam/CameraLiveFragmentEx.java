@@ -276,7 +276,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStop() {
         super.onStop();
         if (BuildConfig.DEBUG) {
-            Log.d(CameraLiveHelper.TAG, "View 生命周期OnStop已经调用了");
+            Log.d(CameraLiveHelper.TAG, "View 生命周期OnStop已经调用了,Fragment is" + this);
         }
         liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
         presenter.performStopVideoAction(true);
@@ -301,6 +301,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.onResume();
         hasPendingFinishAction = false;
         liveLoadingBar.removeCallbacks(backgroundCheckerRunnable);
+        Log.e(CameraLiveHelper.TAG, "OnResume,isReallyVisible:" + isReallyVisibleToUser() + ",fragment is :" + this);
         if (isReallyVisibleToUser()) {
             presenter.performCheckVideoPlayError();
         }

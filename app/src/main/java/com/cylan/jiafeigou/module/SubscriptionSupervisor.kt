@@ -17,7 +17,7 @@ object SubscriptionSupervisor {
 
     @JvmStatic/*存在已知的并发问题*/
     fun subscribe(target: Any, category: String, tag: String, subscription: Subscription) {
-        var subscriptionTarget = subscriptions[target.javaClass.name]
+        var subscriptionTarget = subscriptions[target.javaClass.name + ":" + target.toString()]
         Log.d(TAG, "subscribe for:target:${target.javaClass.name},category:$category,tag:$tag,subscription:$subscription")
         if (subscriptionTarget == null) {
             synchronized(SubscriptionSupervisor::class) {
@@ -32,7 +32,7 @@ object SubscriptionSupervisor {
 
     @JvmStatic
     fun unsubscribe(target: Any, category: String?, tag: String?) {
-        unsubscribe(target.javaClass.name, category, tag)
+        unsubscribe(target.javaClass.name + ":" + target.toString(), category, tag)
     }
 
     @JvmStatic

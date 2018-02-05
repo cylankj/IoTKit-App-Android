@@ -434,7 +434,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 liveActionHelper.lastReportedPlayError = playError;
             }
         });
-        addStopSubscription(schedule);
+//        addStopSubscription(schedule);
     }
 
     public void performUpdateBottomMenuEnable() {

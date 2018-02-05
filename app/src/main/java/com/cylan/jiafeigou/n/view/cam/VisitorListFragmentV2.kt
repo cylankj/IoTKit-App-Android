@@ -61,18 +61,22 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         VisitorListContract.View {
     override fun onDeleteFaceErrorPermissionError() {
         AppLogger.w("onDeleteFaceErrorPermissionError")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
     }
 
     override fun onDeleteFaceErrorInvalidParams() {
         AppLogger.w("onDeleteFaceErrorInvalidParams")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
     }
 
     override fun onDeleteFaceErrorServerInternalError() {
         AppLogger.w("onDeleteFaceErrorServerInternalError")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
     }
 
     override fun onDeleteFaceTimeout() {
         AppLogger.w("onDeleteFaceTimeout")
+        ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
     }
 
     override fun onDeleteFaceSuccess(type: Int, delMsg: Int) {
@@ -692,6 +696,26 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     }
 
     private fun showDeleteFaceAlert(item: FaceItem) {
+
+        AlertDialog.Builder(context!!)
+                .setMessage(R.string.MESSAGES_DELETE_POP)
+                .setPositiveButton(R.string.OK, { _, _ ->
+                    when (item.getFaceType()) {
+                        FaceItem.FACE_TYPE_ACQUAINTANCE -> {
+                            presenter.deleteFaceV2(2, item.visitor?.personId!!, 1)
+                        }
+                        FaceItem.FACE_TYPE_STRANGER_SUB -> {
+                            presenter.deleteFaceV2(1, item.strangerVisitor?.faceId!!, 1)
+
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show()
+        if (true) {
+            return
+        }
+
         val dialog = AlertDialog.Builder(context!!)
                 .setView(R.layout.layout_face_delete_pop_alert)
                 .show()
