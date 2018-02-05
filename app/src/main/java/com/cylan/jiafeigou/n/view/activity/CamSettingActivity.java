@@ -148,6 +148,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.siv_setting_device_door_look)
     SettingItemView0 sivDeviceDoorLock;
     private SimpleDialogFragment mClearRecordFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -623,7 +624,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 //设备在线
                 String localSSid = NetUtils.getNetName(ContextUtils.getContext());
                 String remoteSSid = net.ssid;
-                if (!TextUtils.equals(localSSid, remoteSSid) && net.net == 1) {
+                boolean cylanDevice = JFGRules.isCylanDevice(localSSid);
+                String shortCid = BindUtils.filterCylanDeviceShortCid(localSSid);
+                if (!TextUtils.equals(localSSid, remoteSSid) && !cylanDevice && !device.uuid.endsWith(shortCid) && net.net == 1) {
                     AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
                             getString(R.string.setwifi_check, remoteSSid),
                             getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
