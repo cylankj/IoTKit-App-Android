@@ -15,6 +15,10 @@ interface VisitorListContract {
         fun onVisitsTimeRsp(faceId: String, cnt: Int, type: Int)
         fun onDeleteFaceSuccess(type: Int, delMsg: Int)
         fun onDeleteFaceError()
+        fun onDeleteFaceErrorPermissionError()
+        fun onDeleteFaceErrorInvalidParams()
+        fun onDeleteFaceErrorServerInternalError()
+        fun onDeleteFaceTimeout()
     }
 
     interface Presenter : BasePresenter {
@@ -23,6 +27,8 @@ interface VisitorListContract {
         fun fetchVisitsCount(faceId: String?, type: Int)
         //    cid, type, id, delMsg
         fun deleteFace(type: Int, id: String, delMsg: Int)
+
+        fun deleteFaceV2(type: Int, id: String, delMsg: Int)
     }
 
 }

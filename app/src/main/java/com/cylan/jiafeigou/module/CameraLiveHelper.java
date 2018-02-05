@@ -14,6 +14,7 @@ import android.util.Log;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.signature.ObjectKey;
+import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -271,7 +272,9 @@ public class CameraLiveHelper {
         boolean videoLoading = isVideoLoading(helper);
         boolean videoPlaying = isVideoRealPlaying(helper);
         boolean hasNoPlayError = isNoError(helper);
-        return !videoLoading && videoPlaying && hasNoPlayError;
+        boolean b = !videoLoading && videoPlaying && hasNoPlayError;
+        Log.e("AAAAA", "videoLoading:" + videoLoading + ",videoPlaying:" + videoPlaying + ",noError:" + hasNoPlayError);
+        return b;
     }
 
     public static boolean checkDoorLockEnable(CameraLiveActionHelper helper) {
@@ -604,9 +607,10 @@ public class CameraLiveHelper {
     }
 
     public static boolean canHideStreamSwitcher(CameraLiveActionHelper helper) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         boolean videoPlaying = isVideoRealPlaying(helper);
         boolean live = isLive(helper);
-        return !videoPlaying || !live;
+        return !videoPlaying || !live || !JFGRules.showSdHd(device.pid, device.$(DpMsgMap.ID_207_DEVICE_VERSION, ""), false);
     }
 
     public static boolean canHideViewMode(CameraLiveActionHelper helper) {
@@ -636,5 +640,11 @@ public class CameraLiveHelper {
 
     public static boolean checkIsLiveTypeChanged(CameraLiveActionHelper helper, boolean live) {
         return helper.isLive != live;
+    }
+
+    public static boolean checkIsVideoLiveWithRtcp(CameraLiveActionHelper helper, JFGMsgVideoRtcp videoRtcp) {
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        boolean hasSDFeature = JFGRules.hasSDFeature(device.pid);
+        return hasSDFeature ? helper.recordedZeroTimestampCount > 0 : helper.isLive;
     }
 }

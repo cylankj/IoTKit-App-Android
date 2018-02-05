@@ -176,7 +176,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     fun updateMonitorAreaRadio() {
         val isLand = ContextUtils.getContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (!isLand) {
-            ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             return
         }
         val metrics = Resources.getSystem().displayMetrics
@@ -214,7 +213,6 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         this.restoreMonitorLayout = restore
         val isLand = ContextUtils.getContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (!isLand) {
-            ViewUtils.setRequestedOrientation(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             return
         }
         if (!monitorPictureReady) {

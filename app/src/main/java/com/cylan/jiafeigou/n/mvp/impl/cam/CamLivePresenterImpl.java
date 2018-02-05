@@ -185,10 +185,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             liveActionHelper.onUpdateVideoRtcp(jfgMsgVideoRtcp);
                             feedRtcp.feed(jfgMsgVideoRtcp);
                             mView.onRtcp(jfgMsgVideoRtcp);
-                            boolean live = liveActionHelper.onUpdateLive(liveActionHelper.recordedZeroTimestampCount > 0);
-                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
-                                mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
-                            }
+//                            boolean isVideoLive = CameraLiveHelper.checkIsVideoLiveWithRtcp(liveActionHelper, jfgMsgVideoRtcp);
+//                            boolean live = liveActionHelper.onUpdateLive(isVideoLive);
+//                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
+//                                mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
+//                            }
                         }
                     }
                 }, new Action1<Throwable>() {

@@ -59,6 +59,21 @@ import kotlinx.android.synthetic.main.fragment_visitor_list.*
  */
 open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         VisitorListContract.View {
+    override fun onDeleteFaceErrorPermissionError() {
+        AppLogger.w("onDeleteFaceErrorPermissionError")
+    }
+
+    override fun onDeleteFaceErrorInvalidParams() {
+        AppLogger.w("onDeleteFaceErrorInvalidParams")
+    }
+
+    override fun onDeleteFaceErrorServerInternalError() {
+        AppLogger.w("onDeleteFaceErrorServerInternalError")
+    }
+
+    override fun onDeleteFaceTimeout() {
+        AppLogger.w("onDeleteFaceTimeout")
+    }
 
     override fun onDeleteFaceSuccess(type: Int, delMsg: Int) {
         AppLogger.w("删除面孔消息成功了")
@@ -601,7 +616,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         when (faceType) {
             FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                 contentView.findViewById<View>(R.id.detect).visibility = View.GONE
-                contentView.findViewById<View>(R.id.delete).visibility = View.GONE
+                contentView.findViewById<View>(R.id.delete).visibility = View.VISIBLE
             }
             FaceItem.FACE_TYPE_STRANGER, FaceItem.FACE_TYPE_STRANGER_SUB -> {
                 contentView.findViewById<View>(R.id.viewer).visibility = View.GONE

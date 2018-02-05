@@ -106,6 +106,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView0 swMonitoringArea;
     @BindView(R.id.rl_monitoring_area_container)
     RelativeLayout rlMonitorAreaContainer;
+    @BindView(R.id.sw_face_detection)
+    SettingItemView0 swFaceDetection;
     private Device device;
 
     private boolean grayEnable = false;
@@ -235,6 +237,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
         boolean infrared_enhanced_recognition = property.hasProperty(device.pid, "INFRARED_ENHANCED_RECOGNITION");
         boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE");
+        boolean faceRecognition = property.hasProperty(device.pid, "FACE_RECOGNITION");
         int pid = device.pid;
         if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
             warmInterval = false;
@@ -253,6 +256,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
         swInfraredStrengthen.setVisibility(show && infrared_enhanced_recognition ? View.VISIBLE : View.GONE);
         rlMonitorAreaContainer.setVisibility(show && detection_zone_setting ? View.VISIBLE : View.GONE);
+        swFaceDetection.setVisibility(show && faceRecognition ? View.VISIBLE : View.GONE);
     }
 
     @Override

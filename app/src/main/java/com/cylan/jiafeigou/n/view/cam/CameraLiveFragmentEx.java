@@ -1661,7 +1661,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 rbViewModeSwitchParent.setVisibility(INVISIBLE);
             }).start();
             liveViewWithThumbnail.getTvLiveFlow().animate().setDuration(ANIMATION_DURATION).translationY(-liveTopBannerView.getHeight()).withEndAction(() -> {
-
+                liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
             }).start();
         }
     }
@@ -1700,6 +1700,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             historyParentContainer.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
                 historyParentContainer.setVisibility(JFGRules.isShareDevice(uuid) ? INVISIBLE : VISIBLE);
             }).start();
+            liveViewWithThumbnail.getTvLiveFlow().animate().setDuration(ANIMATION_DURATION).translationY(0).withEndAction(() -> {
+                liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
+            }).start();
 
         } else {
             liveLoadingBar.animate().setDuration(ANIMATION_DURATION).alpha(isLivePlaying() ? 0 : 1).translationY(0).withEndAction(() -> {
@@ -1727,6 +1730,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     .start();
             historyParentContainer.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
 
+            }).start();
+            liveViewWithThumbnail.getTvLiveFlow().animate().setDuration(ANIMATION_DURATION).translationY(0).withEndAction(() -> {
+                liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
             }).start();
         }
     }
@@ -1784,12 +1790,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         tvLive.setEnabled(isHistory);
         ivModeXunHuan.setEnabled(canXunHuanEnable());
         ivViewModeSwitch.setEnabled(canModeSwitchEnable());
+
         imgVCamTriggerCapture.setEnabled(canCaptureEnable);
         imgVLandCamTriggerCapture.setEnabled(canCaptureEnable);
+
         imgVCamTriggerMic.setEnabled(canMicrophoneEnable);
         imgVLandCamTriggerMic.setEnabled(canMicrophoneEnable);
+
         imgVCamSwitchSpeaker.setEnabled(canSpeakerEnable);
-        imgVLandCamSwitchSpeaker.setEnabled(canCaptureEnable);
+        imgVLandCamSwitchSpeaker.setEnabled(canSpeakerEnable);
+
         ivCamDoorLock.setEnabled(canDoorLockEnable());
         imgVCamZoomToFullScreen.setEnabled(isPlaying);
         liveViewWithThumbnail.setEnabled(true);

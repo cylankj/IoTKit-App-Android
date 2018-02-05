@@ -79,6 +79,8 @@ public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presen
         if (!isSuccessful) {
             sivFaceDetectionSetting.setChecked(!sivFaceDetectionSetting.isChecked());
             ToastUtil.showToast(getString(R.string.SETTINGS_FAILED));
+        } else {
+            ToastUtil.showToast(getString(R.string.PWD_OK_2));
         }
     }
 }

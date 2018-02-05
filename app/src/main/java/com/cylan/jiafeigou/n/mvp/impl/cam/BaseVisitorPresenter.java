@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
@@ -21,15 +22,23 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.request.PostRequest;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import rx.Observable;
@@ -319,5 +328,106 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     });
             addSubscription(getMethodName(), subscribe);
         }
+    }
+
+    @Override
+    public void deleteFaceV2(int type, @NotNull String id, int delMsg) {
+        long time = System.currentTimeMillis() / 1000;
+        String account = DataSourceManager.getInstance().getAccount().getAccount();
+        String remotePath = String.format(Locale.getDefault(), "/long/%s/AI/%d.png", account, time);
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+            boolean hasNetwork = NetUtils.hasNetwork();
+            if (!hasNetwork) {
+                mView.onDeleteFaceError();
+            } else {
+                subscriber.onNext(true);
+            }
+            subscriber.onCompleted();
+        })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(s -> {
+                    String authToken;
+                    try {
+                        String server = ("https://" + OptionsImpl.getServer() + ":8085").replace(":443", "");
+                        String authPath = "/authtoken";
+                        String authApi = server + authPath;
+                        JSONObject tokenParams = new JSONObject();
+                        String vid = OptionsImpl.getVid();
+                        String serviceKey = OptionsImpl.getServiceKey(vid);
+                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
+                        tokenParams.put("service_key", serviceKey);
+                        tokenParams.put("time", time);
+                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
+                        Response execute = OkGo.post(authApi)
+                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                                .execute();
+                        JSONObject jsonObject = new JSONObject(execute.body().string());
+                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
+                        int code = jsonObject.getInt("code");
+//                        if (code != 200) {
+//                            return code;
+//                        }
+
+
+                        authToken = jsonObject.getString("auth_token");
+                        String aiAppApi = server + "/aiapp";
+                        tokenParams = new JSONObject();
+                        tokenParams.put("action", "DeletePerson");
+                        tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
+                        tokenParams.put("time", time);
+                        tokenParams.put("person_id", id);
+                        execute = OkGo.post(aiAppApi)
+                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                                .execute();
+                        jsonObject = new JSONObject(execute.body().string());
+                        Log.e("BaseVisitorPresenter", "DeletePerson response:" + jsonObject);
+                        code = jsonObject.getInt("code");
+                        return code;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        AppLogger.e(e);
+                    }
+                    return -1;
+                })
+                .timeout(10, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(applyLoading(false, R.string.LOADING))
+                .subscribe(code -> {
+                    switch (code) {
+                        case 100: {
+                            mView.onDeleteFaceErrorPermissionError();
+                        }
+                        break;
+                        case 101: {
+                            mView.onDeleteFaceErrorInvalidParams();
+                        }
+                        break;
+                        case 102: {
+                            mView.onDeleteFaceErrorServerInternalError();
+                        }
+                        break;
+                        case 200: {
+                            mView.onDeleteFaceSuccess(type,delMsg);
+                        }
+                        break;
+                        case -1: {
+                            mView.onDeleteFaceError();
+                        }
+                        break;
+                        default: {
+                            mView.onDeleteFaceError();
+                        }
+                    }
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        mView.onDeleteFaceTimeout();
+                    } else {
+                        mView.onDeleteFaceError();
+                    }
+                    throwable.printStackTrace();
+                    AppLogger.e(MiscUtils.getErr(throwable));
+                });
+        addStopSubscription(subscribe);
     }
 }
