@@ -51,6 +51,10 @@ public class HistoryManager {
         historyVideoMap.remove(uuid);
     }
 
+    public boolean hasHistoryObserver(String uuid) {
+        return historyObserverHashMap.get(uuid) != null;
+    }
+
 
     public interface HistoryObserver {
         void onHistoryChanged(Collection<JFGVideo> history);

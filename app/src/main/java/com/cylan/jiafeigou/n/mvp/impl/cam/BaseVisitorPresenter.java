@@ -380,18 +380,28 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                         tokenParams.put("service_key", serviceKey);
                         tokenParams.put("time", time);
                         tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
-                        Response execute = OkGo.post(authApi)
-                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-                                .execute();
-                        JSONObject jsonObject = new JSONObject(execute.body().string());
-                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
-                        int code = jsonObject.getInt("code");
+                        Response execute;
+                        JSONObject jsonObject = null;
+                        int code;
+                        try {
+
+                            execute = OkGo.post(authApi)
+                                    .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                                    .execute();
+                            jsonObject = new JSONObject(execute.body().string());
+                            Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
+                            code = jsonObject.getInt("code");
+                        } catch (Exception e) {
+
+                        }
 //                        if (code != 200) {
+
 //                            return code;
 //                        }
 
-
-                        authToken = jsonObject.getString("auth_token");
+                        if (jsonObject != null) {
+                            authToken = jsonObject.getString("auth_token");
+                        }
                         String aiAppApi = server + "/aiapp";
                         tokenParams = new JSONObject();
                         tokenParams.put("action", "DeletePerson");
