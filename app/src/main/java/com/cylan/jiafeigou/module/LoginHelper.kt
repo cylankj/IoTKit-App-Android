@@ -82,11 +82,11 @@ object LoginHelper {
                     .subscribe({
                         AppLogger.d("performLogin:receive ResultLogin:" + it)
                         if (it.code == 0) {
-//                            val subscription = Schedulers.io().createWorker().schedulePeriodically({
+                            val subscription = Schedulers.io().createWorker().schedulePeriodically({
                             val account = Command.getInstance().account
                             AppLogger.d("performLogin:login successful,starting get account with username:$username,ret:$account")
-//                            }, 0, 2, TimeUnit.SECONDS)
-//                            subscriber.add(subscription)
+                            }, 0, 2, TimeUnit.SECONDS)
+                            subscriber.add(subscription)
                             PushPickerIntentService.start()
                         } else {
                             if (it.code == JError.ErrorLoginInvalidPass) {
