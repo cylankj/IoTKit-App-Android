@@ -238,7 +238,7 @@ android {
                                     'appAuthRedirectScheme': 'com.googleusercontent.apps.464988505094-5jp3299cje1p1vqtncdddfasgdgvh5bb'
             ]
         }
-        _aidemo {
+        _aiface {
             applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode

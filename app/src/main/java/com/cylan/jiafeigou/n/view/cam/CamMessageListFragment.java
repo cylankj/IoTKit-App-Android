@@ -1151,4 +1151,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             layoutManager.scrollToPosition(0);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("AAAAA", "----------" + ",requestCode:" + requestCode + ",resultCode:" + resultCode);
+    }
 }

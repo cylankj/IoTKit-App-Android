@@ -279,7 +279,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                Log.e("AAAAA", "Scroller state changed:" + newState)
                 decideLoadMore()
             }
 
@@ -301,6 +300,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         presenter.fetchVisitsCount("", FILTER_TYPE_ALL)
                         makeVisitorCount(visitorCountMap[""] ?: 0, true)
                         visitorListener?.onLoadItemInformation(item.getFaceType(), "")
+                        setExpanded(false)
                     }
                     FaceItem.FACE_TYPE_STRANGER -> {
                         currentPosition = 0
@@ -314,7 +314,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         val id = strangerItems.getOrNull(0)?.strangerVisitor?.faceId ?: ""
                         makeVisitorCount(visitorCountMap[id] ?: 0, false)
                         visitorListener?.onLoadItemInformation(FaceItem.FACE_TYPE_STRANGER, id)
-                        resizeContentHeight()
+                        setExpanded(false)
                     }
                     FaceItem.FACE_TYPE_ACQUAINTANCE -> {
                         val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_ACQUAINTANCE) item.visitor?.personId else item.strangerVisitor?.faceId
@@ -324,6 +324,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_ACQUAINTANCE)
                         makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
                         visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
+                        setExpanded(false)
                     }
                     FaceItem.FACE_TYPE_STRANGER_SUB -> {
                         val faceId = if (item.getFaceType() == FaceItem.FACE_TYPE_STRANGER_SUB) item.strangerVisitor?.faceId else item.visitor?.personId
@@ -333,6 +334,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         presenter.fetchVisitsCount(faceId!!, FILTER_TYPE_STRANGER)
                         makeVisitorCount(visitorCountMap[faceId] ?: 0, false)
                         visitorListener?.onLoadItemInformation(item.getFaceType(), faceId)
+                        setExpanded(false)
                     }
                     FaceItem.FACE_TYPE_REGISTER_FACE -> {
                         AppLogger.w("主列表的 注册人脸")
@@ -341,7 +343,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
                         startActivityForResult(intent, REQUEST_CODE_REGISTER_FACE)
                     }
                 }
-                setExpanded(false)
             }
             return@withOnClickListener true
         }
@@ -777,6 +778,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.e("AAAAA", "requestCode:" + requestCode + ",resultCode:" + resultCode)
         if (requestCode == REQUEST_CODE_REGISTER_FACE) {
             if (resultCode == Activity.RESULT_OK) {
                 currentPosition = 0
