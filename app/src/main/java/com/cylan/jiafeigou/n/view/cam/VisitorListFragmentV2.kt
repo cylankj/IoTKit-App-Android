@@ -499,6 +499,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             visitorItems.addAll(visitorList)
             faceAdapter.set(visitorItems as List<IItem<*, *>>?)
             faceAdapter.select(currentPosition)
+            gridLayoutManager.scrollToPositionWithOffset(currentPosition, 0)
         } else {
             //append
             visitorItems.addAll(visitorList)
@@ -554,6 +555,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             strangerItems.addAll(visitorList)
             faceAdapter.set(strangerItems as List<IItem<*, *>>?)
             faceAdapter.select(currentPosition)
+            gridLayoutManager.scrollToPositionWithOffset(currentPosition, 0)
         } else {
             //append
             strangerItems.addAll(visitorList)
@@ -797,7 +799,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     fun getSelectedFaceItem(): FaceItem? {
         return faceAdapter.getItem(currentPosition) as? FaceItem
     }
-
 
     interface VisitorListener {
         fun onLoadItemInformation(faceType: Int, personOrFaceId: String)

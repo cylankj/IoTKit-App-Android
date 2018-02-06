@@ -78,44 +78,49 @@ object LoginHelper {
         return Observable.create<RxEvent.AccountArrived> { subscriber ->
             val languageType = JFGRules.getLanguageType(ContextUtils.getContext())
             var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin::class.java)
+                    .subscribeOn(Schedulers.io())
                     .subscribe({
+                        AppLogger.d("performLogin:receive ResultLogin:" + it)
                         if (it.code == 0) {
-                            val subscription = Schedulers.io().createWorker().schedulePeriodically({
-                                val account = Command.getInstance().account
-                                Log.d(JConstant.CYLAN_TAG, "performLogin:login successful,starting get account with username:$username,ret:$account")
-                            }, 0, 2, TimeUnit.SECONDS)
-                            subscriber.add(subscription)
+//                            val subscription = Schedulers.io().createWorker().schedulePeriodically({
+                            val account = Command.getInstance().account
+                            AppLogger.d("performLogin:login successful,starting get account with username:$username,ret:$account")
+//                            }, 0, 2, TimeUnit.SECONDS)
+//                            subscriber.add(subscription)
                             PushPickerIntentService.start()
                         } else {
                             if (it.code == JError.ErrorLoginInvalidPass) {
                                 Log.d(JConstant.CYLAN_TAG, "performLogin: login failed,the username or password is invalid,username is:$username")
                                 clearPassword()
                             }
-                            subscriber.onError(RxEvent.HelperBreaker(it.code, it))
+                            if (!subscriber.isUnsubscribed) {
+                                subscriber.onError(RxEvent.HelperBreaker(it.code, it))
+                            }
                         }
                     }) {
-                        it.printStackTrace()
-                        AppLogger.e(it)
                         if (!subscriber.isUnsubscribed) {
                             subscriber.onError(it)
                         }
+                        AppLogger.e(it)
+                        it.printStackTrace()
                     }
             subscriber.add(subscribe)
 
             subscribe = RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived::class.java)
-//                    .first { TextUtils.equals(it.account.account, username) }
-                    .first()
+                    .subscribeOn(Schedulers.io())
                     .subscribe({
                         Log.d(JConstant.CYLAN_TAG, "performLogin:account is arrived,login process is completed.the account is:$it")
                         loginType = signType
-                        subscriber.onNext(it)
-                        subscriber.onCompleted()
+                        if (!subscriber.isUnsubscribed) {
+                            subscriber.onNext(it)
+                            subscriber.onCompleted()
+                        }
                     }) {
-                        it.printStackTrace()
-                        AppLogger.e(it)
                         if (!subscriber.isUnsubscribed) {
                             subscriber.onError(it)
                         }
+                        it.printStackTrace()
+                        AppLogger.e(it)
                     }
             subscriber.add(subscribe)
 
@@ -133,7 +138,7 @@ object LoginHelper {
                 }
                 signType >= 3 -> {
                     Log.d(JConstant.CYLAN_TAG, "performLogin with open loginType:$signType,with username:$username,with password:$password")
-                    Command.getInstance().openLogin(languageType, username!!, password!!, signType)
+
                     subscribe = Schedulers.io().createWorker().schedule({
                         if (!isLoginSuccessful()) {
                             val user = getUser()
@@ -144,10 +149,10 @@ object LoginHelper {
                         }
                     }, 5, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
+                    Command.getInstance().openLogin(languageType, username!!, password!!, signType)
                 }
                 else -> {
                     Log.d(JConstant.CYLAN_TAG, "performLogin with normal loginType:$signType,with username:$username,with password:$password")
-                    Command.getInstance().login(languageType, username!!, password!!, true)
                     subscribe = Schedulers.io().createWorker().schedule({
                         if (!isLoginSuccessful()) {
                             val user = getUser()
@@ -158,6 +163,7 @@ object LoginHelper {
                         }
                     }, 5, TimeUnit.SECONDS)
                     subscriber.add(subscribe)
+                    Command.getInstance().login(languageType, username!!, password!!, true)
                 }
             }
 

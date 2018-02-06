@@ -66,6 +66,7 @@ BaseJFGResultParser {
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
                 AppLogger.w("登录成功了");
+                RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
                 //最短3s种一次。
                 if (MethodFilter.run("parserResultLoginSuc", 5 * 1000)) {
                     if (login) {
@@ -77,7 +78,6 @@ BaseJFGResultParser {
                         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
                         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                     }
-                    RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
                 }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:

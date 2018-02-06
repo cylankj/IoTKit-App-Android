@@ -66,4 +66,9 @@ public class RegisterFaceSuccessFragment extends BaseFragment {
         return fragment;
     }
 
+    @Override
+    public boolean beforeInterceptBackEvent() {
+        finish();
+        return true;
+    }
 }

@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -308,6 +309,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     private void performLoginInternal(int loginType, String account, String password) {
         Subscription subscription = LoginHelper.performLogin(account, password, loginType)
+                .subscribeOn(Schedulers.io())
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountArrived -> {
@@ -319,8 +321,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         getView().onLoginTimeout();
                     }
                 }, error -> {
-                    error.printStackTrace();
-                    AppLogger.e(error);
                     if (error instanceof RxEvent.HelperBreaker) {
                         int breakerCode = ((RxEvent.HelperBreaker) error).breakerCode;
 //                        LoginHelper.saveUser(account, "", 1);
@@ -351,6 +351,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             }
                         }
                     }
+                    AppLogger.e(MiscUtils.getErr(error));
+                    error.printStackTrace();
                 });
         addDestroySubscription(subscription);
     }

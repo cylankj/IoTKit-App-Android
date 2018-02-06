@@ -277,7 +277,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void removeHint() {
-        long[] msgIdList = {526, 527, 505, 401};
+        long[] msgIdList = {401, 222, 40, 505, 512, 526, 527};
         Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 long seq = Command.getInstance().robotCountDataClear(uuid, msgIdList, 0);
@@ -336,7 +336,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("AAAAA", "-----sssss-----" + ",requestCode:" + requestCode + ",resultCode:" + resultCode);
         switch (requestCode) {
             case REQUEST_CODE:
                 if (resultCode == RESULT_OK) {

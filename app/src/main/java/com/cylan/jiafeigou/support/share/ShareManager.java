@@ -192,6 +192,7 @@ public class ShareManager {
                 } else {
                     ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
                 }
+                LoadingDialog.dismissLoading();
             }
             clean();
         }

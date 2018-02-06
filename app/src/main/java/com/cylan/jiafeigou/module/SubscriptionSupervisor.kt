@@ -20,14 +20,10 @@ object SubscriptionSupervisor {
         var subscriptionTarget = subscriptions[target.javaClass.name + ":" + target.toString()]
         Log.d(TAG, "subscribe for:target:${target.javaClass.name},category:$category,tag:$tag,subscription:$subscription")
         if (subscriptionTarget == null) {
-            synchronized(SubscriptionSupervisor::class) {
-                if (subscriptionTarget == null) {
-                    subscriptionTarget = SubscriptionTarget()
-                    subscriptions[target.javaClass.name] = subscriptionTarget!!
-                }
-            }
+            subscriptionTarget = SubscriptionTarget()
+            subscriptions[target.javaClass.name] = subscriptionTarget!!
         }
-        subscriptionTarget!!.subscribe(category, tag, subscription)
+        subscriptionTarget.subscribe(category, tag, subscription)
     }
 
     @JvmStatic
@@ -59,12 +55,8 @@ object SubscriptionSupervisor {
         fun subscribe(category: String, tag: String, subscription: Subscription) {
             var subscriptionCategory = subscriptions[category]
             if (subscriptionCategory == null) {
-                synchronized(SubscriptionTarget::class) {
-                    if (subscriptionCategory == null) {
-                        subscriptionCategory = SubscriptionCategory()
-                        subscriptions[category] = subscriptionCategory!!
-                    }
-                }
+                subscriptionCategory = SubscriptionCategory()
+                subscriptions[category] = subscriptionCategory!!
             }
             subscriptionCategory!!.subscribe(tag, subscription)
         }
@@ -73,13 +65,11 @@ object SubscriptionSupervisor {
             subscriptions
                     .filter { TextUtils.isEmpty(category) || TextUtils.equals(it.key, category) }
                     .forEach {
-                        synchronized(SubscriptionTarget::class) {
-                            if (TextUtils.isEmpty(category)) {
-                                subscriptions.remove(it.key)
-                            }
-                            Log.d(TAG, "unsubscribe for category :$category,tag:$tag,value:${it.value}")
-                            it.value.unsubscribe(tag)
+                        if (TextUtils.isEmpty(category)) {
+                            subscriptions.remove(it.key)
                         }
+                        Log.d(TAG, "unsubscribe for category :$category,tag:$tag,value:${it.value}")
+                        it.value.unsubscribe(tag)
                     }
         }
 
@@ -94,10 +84,8 @@ object SubscriptionSupervisor {
         fun subscribe(tag: String, subscription: Subscription) {
             val subscription1 = subscriptions[tag]
             if (subscription1 != null) {
-                synchronized(SubscriptionCategory::class) {
-                    if (!subscription1.isUnsubscribed) {
-                        subscription1.unsubscribe()
-                    }
+                if (!subscription1.isUnsubscribed) {
+                    subscription1.unsubscribe()
                 }
             }
             subscriptions[tag] = subscription
@@ -106,13 +94,11 @@ object SubscriptionSupervisor {
         fun unsubscribe(tag: String?) {
             subscriptions.filter { TextUtils.isEmpty(tag) || TextUtils.equals(it.key, tag) }
                     .forEach {
-                        synchronized(SubscriptionCategory::class) {
-                            subscriptions.remove(it.key)
-                            val subscription = it.value
-                            if (!subscription.isUnsubscribed) {
-                                subscription.unsubscribe()
-                                Log.d(TAG, "Finally unsubscribe:" + it.key)
-                            }
+                        subscriptions.remove(it.key)
+                        val subscription = it.value
+                        if (!subscription.isUnsubscribed) {
+                            subscription.unsubscribe()
+                            Log.d(TAG, "Finally unsubscribe:" + it.key)
                         }
                     }
         }

@@ -78,13 +78,15 @@ public class AdsStrategy {
                                 } else {
                                     GlideApp.with(ContextUtils.getContext()).downloadOnly().load(adsDescription.url)
                                             .signature(new ObjectKey(String.valueOf(adsDescription.expireTime)))
-                                            .submit().get();
-                                    PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), gson.toJson(adsDescription));
-                                    subscriber.onNext("");
-                                    subscriber.onCompleted();
+                                            .into(new SimpleTarget<File>() {
+                                                @Override
+                                                public void onResourceReady(File resource, Transition<? super File> transition) {
+                                                    PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), gson.toJson(adsDescription));
+                                                    subscriber.onNext("");
+                                                    subscriber.onCompleted();
+                                                }
+                                            });
                                 }
-
-
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 AppLogger.e(e);

@@ -249,11 +249,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         registerWay = way == JConstant.LOCALE_SIMPLE_CN ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
             //中国大陆
-            tvRegisterSubmit.setText(getString(R.string.GET_CODE));
+            tvRegisterSubmit.setText(ContextUtils.getContext().getString(R.string.GET_CODE));
         } else {
             //只显示邮箱注册
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-            etRegisterInputBox.setHint(getString(R.string.EMAIL));
+            etRegisterInputBox.setHint(ContextUtils.getContext().getString(R.string.EMAIL));
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 65);
         }
     }
@@ -408,20 +408,20 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 break;
             case R.id.tv_qqLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
-                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
                 presenter.performAuthentication(3);
                 break;
             case R.id.tv_xlLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
-                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
                 //新功能了 http://120.24.247.124/jfgou/1.3.0/#g=1&p=android微博登录授权
                 if (!PackageUtils.isAppInstalled(getContext().getApplicationContext().getPackageManager(),
                         "com.sina.weibo")) {
-                    ToastUtil.showToast(getString(R.string.Tap0_Login_NoInstalled, getString(R.string.Weibo)));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Tap0_Login_NoInstalled, getString(R.string.Weibo)));
                     return;
                 }
                 presenter.performAuthentication(4);
@@ -446,7 +446,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             break;
             case R.id.tv_twitterLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
-                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
                 presenter.performAuthentication(6);
@@ -454,7 +454,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             case R.id.tv_facebookLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
-                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
                 presenter.performAuthentication(7);
@@ -468,7 +468,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      */
     private void switchBox() {
         final String content = rLayoutLoginToolbar.getTitle().toString();
-        if (TextUtils.equals(content, getString(R.string.LOGIN))) {
+        if (TextUtils.equals(content, ContextUtils.getContext().getString(R.string.LOGIN))) {
             //register
             rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_register);
             rLayoutLoginToolbar.setToolbarRightTitle(R.string.LOGIN);
@@ -476,7 +476,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsLayoutSwitcher.showNext();
             isRegetCode = false;
-        } else if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
+        } else if (TextUtils.equals(content, ContextUtils.getContext().getString(R.string.Tap0_register))) {
             rLayoutLoginToolbar.setToolbarTitle(R.string.LOGIN);
             rLayoutLoginToolbar.setToolbarRightTitle(R.string.Tap0_register);
             //延时200ms,
@@ -504,7 +504,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void login(View view) {
         final String netName = NetUtils.getNetName(ContextUtils.getContext());
         if (netName != null && TextUtils.equals(netName, "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
-            ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
             return;
         }
 //        if (netName != null && netName.contains("DOG"))
@@ -513,7 +513,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         boolean b = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
                 || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();
         if (!b) {
-            ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.ACCOUNT_ERR));
             return;
         }
 
@@ -587,12 +587,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (code == JError.ErrorOK) {
             jump2NextPage();
         } else if (code == JError.ErrorSMSCodeTimeout) {
-            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.RET_ESMS_CODE_TIMEOUT));
             if (verificationCodeLogic != null) {
                 verificationCodeLogic.initTimer();
             }
         } else {
-            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Tap0_wrongcode));
         }
     }
 
@@ -629,7 +629,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void registerResult(int result) {
         if (result == JError.ErrorAccountAlreadyExist) {
-            showSimpleDialog(getString(R.string.RET_EREGISTER_PHONE_EXIST), getString(R.string.CANCEL), getString(R.string.Tap0_register_GoToLogin), false);
+            showSimpleDialog(ContextUtils.getContext().getString(R.string.RET_EREGISTER_PHONE_EXIST), ContextUtils.getContext().getString(R.string.CANCEL), ContextUtils.getContext().getString(R.string.Tap0_register_GoToLogin), false);
         } else if (result == JError.ErrorOK) {
             if (!(getActivity() instanceof NewHomeActivity)) {
                 getActivity().finish();
@@ -673,7 +673,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void loginTimeout() {
         resetView();
-        ToastUtil.showNegativeToast(getContext().getString(R.string.LOGIN_ERR));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.LOGIN_ERR));
     }
 
     @OnTextChanged(R.id.et_register_input_box)
@@ -763,7 +763,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             if (isRegetCode) {
                 //重新获取验证码也要检测一下账号
                 if (presenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
-                    ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                    ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.GetCode_FrequentlyTips));
                     isRegetCode = false;
                     return;
                 }
@@ -781,13 +781,13 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 if (TextUtils.equals(tempPhone, ViewUtils.getTextViewContent(etRegisterInputBox))) {
                     verifyCode();
                 } else {
-                    ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.RET_ESMS_CODE_TIMEOUT));
                 }
 
             } else {
                 //第一次检测账号是否注册返回执行获取验证码
                 if (presenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
-                    ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                    ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.GetCode_FrequentlyTips));
                     return;
                 }
                 if (verificationCodeLogic == null) {
@@ -798,13 +798,13 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 //显示验证码输入框
                 handleVerificationCodeBox(true);
-                tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
+                tvRegisterSubmit.setText(ContextUtils.getContext().getString(R.string.CARRY_ON));
                 tvRegisterSubmit.setEnabled(false);
                 lLayoutAgreement.setVisibility(View.GONE);
             }
 
         } else {
-            ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
+            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.RET_EREGISTER_PHONE_EXIST));
         }
 
     }
@@ -841,11 +841,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {
-                Toast.makeText(getActivity(), getString(R.string.EMAIL_2), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), ContextUtils.getContext().getString(R.string.EMAIL_2), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (fLayoutVerificationCodeInputBox.isShown()) {
-                ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
+                ToastUtil.showToast(ContextUtils.getContext().getString(R.string.PHONE_NUMBER_2));
                 return;
             }
         }
@@ -858,25 +858,25 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     private void handleRegisterByMail() {
         lLayoutAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.GONE);
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
-            tvRegisterWayContent.setText(getString(R.string.PHONE_SIGNUP));
+            tvRegisterWayContent.setText(ContextUtils.getContext().getString(R.string.PHONE_SIGNUP));
             etRegisterInputBox.setText("");
-            etRegisterInputBox.setHint(getString(R.string.EMAIL_1));
+            etRegisterInputBox.setHint(ContextUtils.getContext().getString(R.string.EMAIL_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             //设置长度
             ViewUtils.setChineseExclude(etRegisterInputBox, 65);
             registerWay = JConstant.REGISTER_BY_EMAIL;
-            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
+            tvRegisterSubmit.setText(ContextUtils.getContext().getString(R.string.CARRY_ON));
             handleVerificationCodeBox(false);
         } else if (registerWay == JConstant.REGISTER_BY_EMAIL) {
-            tvRegisterWayContent.setText(getString(R.string.EMAIL_SIGNUP));
+            tvRegisterWayContent.setText(ContextUtils.getContext().getString(R.string.EMAIL_SIGNUP));
             etRegisterInputBox.setText("");
-            etRegisterInputBox.setHint(getString(R.string.PHONE_NUMBER_1));
+            etRegisterInputBox.setHint(ContextUtils.getContext().getString(R.string.PHONE_NUMBER_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_CLASS_PHONE);
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 11);
             ViewUtils.setChineseExclude(etRegisterInputBox, 11);
             ViewUtils.setChineseExclude(etVerificationInput, 6);
             registerWay = JConstant.REGISTER_BY_PHONE;
-            tvRegisterSubmit.setText(getString(R.string.GET_CODE));
+            tvRegisterSubmit.setText(ContextUtils.getContext().getString(R.string.GET_CODE));
         }
     }
 
@@ -897,7 +897,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             case R.id.tv_meter_get_code:
                 final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
                 if (!validPhoneNum) {
-                    ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.PHONE_NUMBER_2));
                     return;
                 }
                 isRegetCode = true;
@@ -907,7 +907,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 break;
             case R.id.tv_register_submit:
                 if (NetUtils.getNetType(getContext()) == -1) {
-                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
                 handleRegisterConfirm();
@@ -998,9 +998,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             if (this.viewWeakReference.get() != null) {
                 this.viewWeakReference.get().setText(
-                        viewWeakReference.get()
-                                .getContext()
-                                .getString(R.string.Button_ReObtain));
+                        ContextUtils.getContext().getString(R.string.Button_ReObtain));
             }
         }
 
@@ -1022,7 +1020,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                         return;
                     }
                     TextView tv = viewWeakReference.get();
-                    tv.setText(tv.getContext().getString(R.string.Button_ReObtain));
+                    tv.setText(ContextUtils.getContext().getString(R.string.Button_ReObtain));
                     tv.setEnabled(true);
                 }
             };
@@ -1039,7 +1037,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void showLoading() {
         if (isAdded()) {
-            LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), true);
+            LoadingDialog.showLoading(getActivity(), ContextUtils.getContext().getString(R.string.LOADING), true);
         }
     }
 
@@ -1063,10 +1061,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (code == 0) {
 
         } else if (code == -1) {
-            ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Tap0_Authorizationfailed));
             hideLoading();
         } else if (code == 1) {
-            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_DeleteSucces));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Tap3_ShareDevice_DeleteSucces));
             hideLoading();
         }
     }
@@ -1090,36 +1088,36 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onAccountNotExist() {
         AppLogger.d("onAccountNotExist");
-        ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
     }
 
     @Override
     public void onInvalidPassword() {
         AppLogger.d("onInvalidPassword");
-        ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.RET_ELOGIN_ERROR));
     }
 
     @Override
     public void onOpenLoginInvalidToken() {
         AppLogger.d("onOpenLoginInvalidToken");
-        ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.LOGIN_ERR) + ":162");
     }
 
     @Override
     public void onConnectError() {
         AppLogger.d("onConnectError");
-        ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.NoNetworkTips));
     }
 
     @Override
     public void onLoginFailed(int errorCode) {
         AppLogger.d("onLoginFailed");
-        ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":" + errorCode);
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.LOGIN_ERR) + ":" + errorCode);
     }
 
     @Override
     public void onLoginTimeout() {
         AppLogger.d("onLoginTimeout");
-        ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Tips_Device_TimeoutRetry));
     }
 }
