@@ -196,12 +196,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             appbarRect.set(aplCamMessageAppbar.getLeft(), aplCamMessageAppbar.getTop(), aplCamMessageAppbar.getRight(), aplCamMessageAppbar.getBottom());
             aplCamMessageAppbar.getGlobalVisibleRect(appbarRect);
             int appbarTop = aplCamMessageAppbar.getTop();
+            if (appbarRect.contains(rawX, rawY)) {
+                return appbarTop >= 0 && !(visitorFragment != null && visitorFragment.canScrollVertically(-1));
+            }
             if (messageRect.contains(rawX, rawY) || headerRect.contains(rawX, rawY)) {
                 boolean scrollVertically = rvCamMessageList.canScrollVertically(-1);
                 return !scrollVertically && appbarTop >= 0;
-            }
-            if (appbarRect.contains(rawX, rawY)) {
-                return appbarTop >= 0 && !(visitorFragment != null && visitorFragment.canScrollVertically(-1));
             }
             return true;
         });

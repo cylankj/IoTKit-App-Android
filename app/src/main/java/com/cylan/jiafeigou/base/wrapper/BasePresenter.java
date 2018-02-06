@@ -148,7 +148,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
 
     protected <T> Observable.Transformer<T, T> applyLoading(boolean cancelable, int resId, Object... args) {
         return tObservable -> (Observable<T>) tObservable.doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(),
-                mContext.getString(resId, args), cancelable,
+                ContextUtils.getContext().getString(resId, args), cancelable,
                 dialog -> {
                     if (cancelable) {
                     }

@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -162,6 +163,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).filter(rsp -> rsp.seq == seq))
                 .first()
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .compose(applyLoading(false, R.string.LOADING))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.DeleteDataRsp>() {
                     @Override

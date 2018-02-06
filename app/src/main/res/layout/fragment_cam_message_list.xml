@@ -29,65 +29,73 @@
         <RelativeLayout
             android:id="@+id/rLayout_cam_message_list_top"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="match_parent"
             android:background="@color/color_white"
             android:visibility="visible"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-            <TextView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:paddingRight="@dimen/x15"
-                android:text="@string/BACK"
-                android:textColor="@color/common_btn_color_state"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/tv_cam_message_list_date"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:drawablePadding="@dimen/x10"
-                android:focusable="true"
-                android:gravity="center_vertical" />
-
-
-            <TextView
-                android:id="@+id/tv_cam_message_list_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end|center_vertical"
-                android:clickable="true"
-                android:enabled="false"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:paddingRight="@dimen/x15"
-                android:text="@string/EDIT_THEME"
-                android:textColor="@color/common_btn_color_state" />
-
-            <View
+            <RelativeLayout
+                android:id="@+id/message_header"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:background="@color/color_d2d2d2" />
+                android:layout_height="@dimen/y48">
+
+                <TextView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/x15"
+                    android:paddingRight="@dimen/x15"
+                    android:text="@string/BACK"
+                    android:textColor="@color/common_btn_color_state"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/tv_cam_message_list_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:drawablePadding="@dimen/x10"
+                    android:focusable="true"
+                    android:gravity="center_vertical" />
+
+
+                <TextView
+                    android:id="@+id/tv_cam_message_list_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="end|center_vertical"
+                    android:clickable="true"
+                    android:enabled="false"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/x15"
+                    android:paddingRight="@dimen/x15"
+                    android:text="@string/EDIT_THEME"
+                    android:textColor="@color/common_btn_color_state" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y1"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_d2d2d2" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_cam_message_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/fLayout_cam_msg_edit_bar"
+                android:layout_below="@+id/message_header"
+                app:layout_behavior="com.cylan.jiafeigou.widget.CameraMessageBehavior" />
+
+
         </RelativeLayout>
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_cam_message_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="com.cylan.jiafeigou.widget.CameraMessageBehavior" />
 
         <TextView
             android:id="@+id/lLayout_no_message"
@@ -101,17 +109,6 @@
             android:textColor="#aaaaaa"
             android:textSize="@dimen/sp15"
             app:layout_behavior="com.cylan.jiafeigou.widget.CameraMessageCenterBehavior" />
-
-        <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
-            android:id="@+id/fLayout_cam_message_list_timeline"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y86"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
-            android:layout_marginTop="@dimen/y5"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="invisible" />
 
         <FrameLayout
             android:id="@+id/fLayout_cam_msg_edit_bar"
@@ -149,6 +146,18 @@
                 android:text="@string/DELETE"
                 android:textColor="@color/common_btn_color_state" />
         </FrameLayout>
+
+        <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
+            android:id="@+id/fLayout_cam_message_list_timeline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y86"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/y5"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="invisible" />
+
 
         <ImageButton
             android:id="@+id/quick_top"

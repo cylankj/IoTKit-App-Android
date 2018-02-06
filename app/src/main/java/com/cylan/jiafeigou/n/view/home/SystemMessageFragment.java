@@ -19,6 +19,8 @@ import com.cylan.jiafeigou.n.mvp.impl.home.SysMessagePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
@@ -166,8 +168,7 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
 
             case R.id.tv_delete:
                 presenter.deleteSystemMessageFromServer(messageAdapter.getSelectedItems());
-                messageAdapter.notifyDataSetHasChanged();
-                rlDeleteDialog.setVisibility(View.GONE);
+                messageAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -206,6 +207,7 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
     private void decideEmptyView() {
         boolean isEmpty = messageAdapter.getList() == null || messageAdapter.getList().size() == 0;
         rlSystemMessages.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
+
         llNoMesg.setVisibility(isEmpty ? View.VISIBLE : View.INVISIBLE);
 
     }
@@ -213,9 +215,13 @@ public class SystemMessageFragment extends IBaseFragment implements SysMessageCo
     @Override
     public void onDeleteSystemMessageRsp(RxEvent.DeleteDataRsp rsp) {
         if (rsp != null && rsp.resultCode == 0) {
+            messageAdapter.setEditMode(false);
+            rlDeleteDialog.setVisibility(View.GONE);
             messageAdapter.removeAll(messageAdapter.getSelectedItems());
+            decideEmptyView();
+        } else {
+            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Tips_DeleteFail));
         }
-        decideEmptyView();
     }
 
 }
