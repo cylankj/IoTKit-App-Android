@@ -61,7 +61,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
 
     public BaseVisitorPresenter(VisitorListContract.View view) {
         super(view);
-        setSSL();
+//        setSSL();
     }
 
     private static void setSSL() {
@@ -370,7 +370,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 .map(s -> {
                     String authToken;
                     try {
-                        String server = ("https://" + OptionsImpl.getServer() + ":8085").replace(":443", "");
+                        String server = ("http://" + OptionsImpl.getServer() + ":8082").replace(":443", "");
                         String authPath = "/authtoken";
                         String authApi = server + authPath;
                         JSONObject tokenParams = new JSONObject();
@@ -383,25 +383,20 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                         Response execute;
                         JSONObject jsonObject = null;
                         int code;
-                        try {
 
-                            execute = OkGo.post(authApi)
-                                    .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-                                    .execute();
-                            jsonObject = new JSONObject(execute.body().string());
-                            Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
-                            code = jsonObject.getInt("code");
-                        } catch (Exception e) {
+                        execute = OkGo.post(authApi)
+                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+                                .execute();
+                        jsonObject = new JSONObject(execute.body().string());
+                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
+                        code = jsonObject.getInt("code");
 
-                        }
 //                        if (code != 200) {
 
 //                            return code;
 //                        }
 
-                        if (jsonObject != null) {
-                            authToken = jsonObject.getString("auth_token");
-                        }
+                        authToken = jsonObject.getString("auth_token");
                         String aiAppApi = server + "/aiapp";
                         tokenParams = new JSONObject();
                         tokenParams.put("action", "DeletePerson");
