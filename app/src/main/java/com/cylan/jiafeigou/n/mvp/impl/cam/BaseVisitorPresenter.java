@@ -186,7 +186,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     public Observable<RxEvent.UniversalDataRsp> deleteFaceByDp(int type, String id, int delMsg) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                long seq = Command.getInstance().sendUniservalDataSeq(9, DpUtils.pack(new DpMsgDefine.DelVisitorReq(uuid, type, id, delMsg)));
+                long seq = Command.getInstance().sendUniservalDataSeq(18, DpUtils.pack(new DpMsgDefine.DelVisitorReq(uuid, type, id, delMsg)));
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -356,9 +356,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     @Override
     public void deleteFaceV2(int type, @NotNull String id, int delMsg) {
         long time = System.currentTimeMillis() / 1000;
-        String account = DataSourceManager.getInstance().getAccount().getAccount();
-        String remotePath = String.format(Locale.getDefault(), "/long/%s/AI/%d.png", account, time);
-        Subscription subscribe = Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+        Observable<Integer> observable = Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
             boolean hasNetwork = NetUtils.hasNetwork();
             if (!hasNetwork) {
                 mView.onDeleteFaceError();
@@ -412,6 +410,11 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                         AppLogger.e(e);
                     }
                     return -1;
+                });
+        Subscription subscribe = Observable.zip(deleteFaceByDp(type, id, delMsg), observable,
+                (universalDataRsp, responseHeader) -> {
+                    Integer result = DpUtils.unpackDataWithoutThrow(universalDataRsp.data, int.class, -1);
+                    return responseHeader;
                 })
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
