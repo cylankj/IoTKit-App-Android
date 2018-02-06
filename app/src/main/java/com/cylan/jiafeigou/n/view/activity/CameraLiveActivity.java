@@ -336,6 +336,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.e("AAAAA", "-----sssss-----" + ",requestCode:" + requestCode + ",resultCode:" + resultCode);
         switch (requestCode) {
             case REQUEST_CODE:
                 if (resultCode == RESULT_OK) {

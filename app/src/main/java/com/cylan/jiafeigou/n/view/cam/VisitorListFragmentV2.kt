@@ -87,10 +87,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         when (type) {
             1 -> {
                 //陌生人
+                faceItemType = FaceItem.FACE_TYPE_STRANGER_SUB
                 presenter.fetchStrangerVisitorList(0)
             }
             2 -> {
                 //熟人
+                faceItemType = FaceItem.FACE_TYPE_ALL
+                visitorListener?.onLoadItemInformation(FaceItem.FACE_TYPE_ALL, "")
                 presenter.fetchVisitorList(0)
             }
         }
@@ -782,6 +785,11 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         if (requestCode == REQUEST_CODE_REGISTER_FACE) {
             if (resultCode == Activity.RESULT_OK) {
                 currentPosition = 0
+                faceItemType = if (faceAdapter.isNormalView) {
+                    FaceItem.FACE_TYPE_ALL
+                } else {
+                    FaceItem.FACE_TYPE_STRANGER_SUB
+                }
             }
         }
     }

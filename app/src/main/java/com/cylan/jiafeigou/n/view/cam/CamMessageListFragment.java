@@ -315,12 +315,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 ViewGroup.LayoutParams layoutParams = aplCamMessageAppbar.getLayoutParams();
                 layoutParams.height = expanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
                 aplCamMessageAppbar.setLayoutParams(layoutParams);
-//                if (expanded) {
-//                    lLayoutNoMessage.setVisibility(View.GONE);
-//                } else {
-//                    lLayoutNoMessage.setVisibility((camMessageListAdapter != null && camMessageListAdapter.getCount() > 0) ? View.GONE : View.VISIBLE);
-//                }
-//                srLayoutCamListRefresh.setEnabled(!expanded);
             }
 
             @Override
@@ -329,8 +323,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (hasExpanded()) {
                     srLayoutCamListRefresh.setRefreshing(false);
                 }
-//                justForDemo(false);
-
             }
 
             @Override
@@ -339,12 +331,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (hasExpanded()) {
                     srLayoutCamListRefresh.setRefreshing(false);
                 }
-//                justForDemo(true);
             }
         });
         //显示 所有面孔列表
-        ActivityUtils.replaceFragment(getFragmentManager(),
-                visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
+        ActivityUtils.replaceFragment(getFragmentManager(), visitorFragment, R.id.fLayout_message_face, "visitorFragment", false);
     }
 
     private boolean hasExpanded() {

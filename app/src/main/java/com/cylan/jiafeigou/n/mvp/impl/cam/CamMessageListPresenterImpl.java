@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -511,7 +512,14 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                             }
                         }
                     }
-                    return list;
+                    TreeSet<CamMessageBean> messageBeans = new TreeSet<>((bean1, bean2) -> {
+                        if (bean1.message.msgId == bean2.message.msgId && bean1.message.version == bean2.message.version) {
+                            return 0;
+                        }
+                        return (int) (bean2.message.version - bean1.message.version);
+                    });
+                    messageBeans.addAll(list);
+                    return new ArrayList<>(messageBeans);
                 })
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
