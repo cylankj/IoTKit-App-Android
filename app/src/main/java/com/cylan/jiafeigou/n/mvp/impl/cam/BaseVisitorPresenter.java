@@ -35,7 +35,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -372,43 +371,39 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                     try {
                         String server = ("http://" + OptionsImpl.getServer() + ":8082").replace(":443", "");
                         String authPath = "/authtoken";
-                        String authApi = server + authPath;
-                        JSONObject tokenParams = new JSONObject();
-                        String vid = OptionsImpl.getVid();
-                        String serviceKey = OptionsImpl.getServiceKey(vid);
-                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
-                        tokenParams.put("service_key", serviceKey);
-                        tokenParams.put("time", time);
-                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
-                        Response execute;
-                        JSONObject jsonObject = null;
-                        int code;
-
-                        execute = OkGo.post(authApi)
-                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-                                .execute();
-                        jsonObject = new JSONObject(execute.body().string());
-                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
-                        code = jsonObject.getInt("code");
+//                        String authApi = server + authPath;
+//                        JSONObject tokenParams = new JSONObject();
+//                        String vid = OptionsImpl.getVid();
+//                        String serviceKey = OptionsImpl.getServiceKey(vid);
+//                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
+//                        tokenParams.put("service_key", serviceKey);
+//                        tokenParams.put("time", time);
+//                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
+//                        execute = OkGo.post(authApi)
+//                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+//                                .execute();
+//                        jsonObject = new JSONObject(execute.body().string());
+//                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
+//                        code = jsonObject.getInt("code");
 
 //                        if (code != 200) {
 
 //                            return code;
 //                        }
 
-                        authToken = jsonObject.getString("auth_token");
+//                        authToken = jsonObject.getString("auth_token");
                         String aiAppApi = server + "/aiapp";
-                        tokenParams = new JSONObject();
+                        JSONObject tokenParams = new JSONObject();
                         tokenParams.put("action", "DeletePerson");
                         tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
                         tokenParams.put("time", time);
                         tokenParams.put("person_id", id);
-                        execute = OkGo.post(aiAppApi)
+                        Response execute = OkGo.post(aiAppApi)
                                 .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                                 .execute();
-                        jsonObject = new JSONObject(execute.body().string());
+                        JSONObject jsonObject = new JSONObject(execute.body().string());
                         Log.e("BaseVisitorPresenter", "DeletePerson response:" + jsonObject);
-                        code = jsonObject.getInt("code");
+                        int code = jsonObject.getInt("code");
                         return code;
                     } catch (Exception e) {
                         e.printStackTrace();

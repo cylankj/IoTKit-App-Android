@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.RegisterFaceContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.lzy.okgo.OkGo;
@@ -96,32 +95,32 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                             return jfgMsgHttpResult.requestId == reqId;
                         }))
                 .map(s -> {
-                    String authToken;
+//                    String authToken;
                     try {
                         String server = ("http://" + OptionsImpl.getServer() + ":8082").replace(":443", "");
                         String authPath = "/authtoken";
-                        String authApi = server + authPath;
-                        JSONObject tokenParams = new JSONObject();
+//                        String authApi = server + authPath;
+//                        JSONObject tokenParams = new JSONObject();
                         String vid = OptionsImpl.getVid();
-                        String serviceKey = OptionsImpl.getServiceKey(vid);
-                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
-                        tokenParams.put("service_key", serviceKey);
-                        tokenParams.put("time", time);
-                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
-                        Response execute = OkGo.post(authApi)
-                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-                                .execute();
-                        JSONObject jsonObject = new JSONObject(execute.body().string());
-                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
-                        int code = jsonObject.getInt("code");
-//                        if (code != 200) {
-//                            return code;
-//                        }
+//                        String serviceKey = OptionsImpl.getServiceKey(vid);
+//                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
+//                        tokenParams.put("service_key", serviceKey);
+//                        tokenParams.put("time", time);
+//                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
+//                        Response execute = OkGo.post(authApi)
+//                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
+//                                .execute();
+//                        JSONObject jsonObject = new JSONObject(execute.body().string());
+//                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
+//                        int code = jsonObject.getInt("code");
+////                        if (code != 200) {
+////                            return code;
+////                        }
 
 
-                        authToken = jsonObject.getString("auth_token");
+//                        authToken = jsonObject.optString("auth_token");
                         String aiAppApi = server + "/aiapp";
-                        tokenParams = new JSONObject();
+                        JSONObject tokenParams = new JSONObject();
                         tokenParams.put("action", "RegisterByFace");
                         tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
                         tokenParams.put("time", time);
@@ -130,12 +129,12 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                         tokenParams.put("cid", uuid);
                         tokenParams.put("image_url", remotePath);
                         tokenParams.put("oss_type", DataSourceManager.getInstance().getStorageType());
-                        execute = OkGo.post(aiAppApi)
+                        Response execute = OkGo.post(aiAppApi)
                                 .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                                 .execute();
-                        jsonObject = new JSONObject(execute.body().string());
+                        JSONObject jsonObject = new JSONObject(execute.body().string());
                         Log.e("RegisterFacePresenter", "RegisterByFace response:" + jsonObject);
-                        code = jsonObject.getInt("code");
+                        int code = jsonObject.getInt("code");
                         if (true) {
                             return code;
                         }
