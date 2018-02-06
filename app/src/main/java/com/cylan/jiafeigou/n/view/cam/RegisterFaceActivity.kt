@@ -102,6 +102,7 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     override fun onRegisterSuccessful() {
         AppLogger.w("onRegisterSuccessful")
         IMEUtils.hide(this)
+        setResult(Activity.RESULT_OK)
         val fragment = RegisterFaceSuccessFragment.newInstance(uuid)
         fragment.setCallBack {
             resetDefaultLayout()
