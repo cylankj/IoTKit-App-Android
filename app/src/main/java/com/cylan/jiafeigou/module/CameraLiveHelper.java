@@ -239,8 +239,8 @@ public class CameraLiveHelper {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "shouldDisconnectFirst? playCode is:" + playCode + ",如果 playCode 为1002 也应该断开,其他情况以后慢慢添加");
         }
-        boolean live = helper.isLive;
-        return live && ((playing && playCode == 0) || playCode == 1002);
+        boolean live = helper.isLive || helper.isDynamicLiving;
+        return live && ((playing /*&& playCode == 0*/) || playCode == 1002);
     }
 
     public static boolean shouldDisconnectWithPlayCode(CameraLiveActionHelper helper, int playCode) {
@@ -446,8 +446,8 @@ public class CameraLiveHelper {
 
     public static boolean shouldReportError(CameraLiveActionHelper helper, int playError) {
         int lastPlayError = helper.lastReportedPlayError;
-        return playError != PLAY_ERROR_NO_ERROR && (lastPlayError != playError
-                || playError == CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR);
+        return playError != PLAY_ERROR_NO_ERROR /* && (lastPlayError != playError
+                || playError == CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR)*/;
     }
 
     public static long LongTimestamp(long timestamp) {

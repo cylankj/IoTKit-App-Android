@@ -1192,7 +1192,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (status.hasSdcard && status.err != 0) {
-            ToastUtil.showNegativeToast(getContext().getString(R.string.VIDEO_SD_DESC));
+            ToastUtil.showNegativeToast( ContextUtils.getContext().getString(R.string.VIDEO_SD_DESC));
             return;
         }
         if (!status.hasSdcard || status.err != 0) {
@@ -1200,7 +1200,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return;
         }
         if (historyWheelHandler == null || presenter.isHistoryEmpty()) {
-            ToastUtil.showToast(getResources().getString(R.string.History_video_Firstly));
+            ToastUtil.showToast( ContextUtils.getContext().getString(R.string.History_video_Firstly));
             return;
         }
         if (historyWheelHandler != null) {
@@ -1240,16 +1240,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onChangeSafeProtectionErrorAutoRecordClosed() {
         AppLogger.d(CameraLiveHelper.TAG + ":onChangeSafeProtectionErrorAutoRecordClosed");
         AlertDialogManager.getInstance().showDialog(getActivity(),
-                getString(R.string.Tap1_Camera_MotionDetection_OffTips),
-                getString(R.string.Tap1_Camera_MotionDetection_OffTips),
-                getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                ContextUtils.getContext().getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                ContextUtils.getContext().getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                ContextUtils.getContext().  getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                     presenter.performChangeSafeProtection(1);
                     //关闭移动侦测的同时也关闭自动录像
-                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+                    ToastUtil.showToast( ContextUtils.getContext().getString(R.string.SCENE_SAVED));
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
-                }, getString(R.string.CANCEL), (dialog, which) -> {
+                },  ContextUtils.getContext().getString(R.string.CANCEL), (dialog, which) -> {
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
@@ -1275,9 +1275,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPlayErrorSDFileIO() {
         AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorSDFileIO");
-        liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_Failed), null);
-        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_Failed),
-                getString(R.string.Historical_Failed), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Historical_Failed), null);
+        AlertDialogManager.getInstance().showDialog(getActivity(), ContextUtils.getContext().getString(R.string.Historical_Failed),
+                ContextUtils.getContext().getString(R.string.Historical_Failed), ContextUtils.getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     presenter.performPlayVideoAction(true, 0);
                 });
     }
@@ -1285,9 +1285,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPlayErrorSDHistoryAll() {
         AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorSDHistoryAll");
-        liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_Read), null);
-        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_Read),
-                getString(R.string.Historical_Read), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Historical_Read), null);
+        AlertDialogManager.getInstance().showDialog(getActivity(), ContextUtils.getContext().getString(R.string.Historical_Read),
+                ContextUtils.getContext().getString(R.string.Historical_Read), ContextUtils.getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     presenter.performPlayVideoAction(true, 0);
                 });
     }
@@ -1295,9 +1295,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPlayErrorSDIO() {
         AppLogger.d(CameraLiveHelper.TAG + ":onPlayErrorSDIO");
-        liveLoadingBar.changeToLoadingError(true, getString(R.string.Historical_No), null);
-        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Historical_No),
-                getString(R.string.Historical_No), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+        liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.Historical_No), null);
+        AlertDialogManager.getInstance().showDialog(getActivity(), ContextUtils.getContext().getString(R.string.Historical_No),
+                ContextUtils.getContext().getString(R.string.Historical_No), ContextUtils.getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     presenter.performPlayVideoAction(true, 0);
                 });
     }

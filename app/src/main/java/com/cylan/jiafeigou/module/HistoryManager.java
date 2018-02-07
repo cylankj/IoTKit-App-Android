@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class HistoryManager {
     private static HistoryManager instance;
-    private ConcurrentHashMap<String, HistoryObserver> historyObserverHashMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, HashSet<HistoryObserver>> historyObserverHashMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, TreeSet<JFGVideo>> historyVideoMap = new ConcurrentHashMap<>();
     private HashSet<String> notifyQueen = new HashSet<>();
     private ReentrantLock lock = new ReentrantLock();
@@ -61,15 +61,23 @@ public class HistoryManager {
     }
 
     public void addHistoryObserver(String uuid, HistoryObserver observer) {
-        historyObserverHashMap.put(uuid, observer);
+        HashSet<HistoryObserver> historyObservers = historyObserverHashMap.get(uuid);
+        if (historyObservers == null) {
+            historyObservers = new HashSet<>();
+            historyObserverHashMap.put(uuid, historyObservers);
+        }
+        historyObservers.add(observer);
         TreeSet<JFGVideo> jfgVideos = historyVideoMap.get(uuid);
         if (jfgVideos != null && jfgVideos.size() > 0) {
             observer.onHistoryChanged(getHistory(uuid));
         }
     }
 
-    public void removeHistoryObserver(String uuid) {
-        historyObserverHashMap.remove(uuid);
+    public void removeHistoryObserver(String uuid, HistoryObserver observer) {
+        HashSet<HistoryObserver> historyObservers = historyObserverHashMap.get(uuid);
+        if (historyObservers != null) {
+            historyObservers.remove(observer);
+        }
     }
 
     public boolean hasHistory(String uuid) {
@@ -113,9 +121,14 @@ public class HistoryManager {
                         }
 
                         for (String peer : notifyQueen) {
-                            HistoryObserver historyObserver = historyObserverHashMap.get(peer);
-                            if (historyObserver != null) {
-                                historyObserver.onHistoryChanged(new ArrayList<>(historyVideoMap.get(peer)));
+                            HashSet<HistoryObserver> historyObservers = historyObserverHashMap.get(peer);
+                            if (historyObservers != null) {
+                                try {
+                                    for (HistoryObserver historyObserver : historyObservers) {
+                                        historyObserver.onHistoryChanged(new ArrayList<>(historyVideoMap.get(peer)));
+                                    }
+                                } catch (Exception e) {
+                                }
                             }
                         }
                     } finally {

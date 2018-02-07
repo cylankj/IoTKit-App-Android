@@ -183,7 +183,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             feedRtcp.feed(jfgMsgVideoRtcp);
                             mView.onRtcp(jfgMsgVideoRtcp);
 //                            boolean isVideoLive = CameraLiveHelper.checkIsVideoLiveWithRtcp(liveActionHelper, jfgMsgVideoRtcp);
-//                            boolean live = liveActionHelper.onUpdateLive(isVideoLive);
+//                            liveActionHelper.isDynamicLiving = isVideoLive;
 //                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
 //                                mView.onVideoPlayTypeChanged(liveActionHelper.isLive);
 //                            }
@@ -383,27 +383,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_FILE_IO: {
-                        if (liveActionHelper.isPlaying) {
-                            mView.onPlayErrorSDFileIO();
-                        }
+                        mView.onPlayErrorSDFileIO();
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_HISTORY_ALL: {
-                        if (liveActionHelper.isPlaying) {
-                            performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), false, new CompletedCallback() {
-                                @Override
-                                public void onCompleted() {
-                                    Subscription schedule1 = AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onPlayErrorSDHistoryAll());
-                                    addStopSubscription(schedule1);
-                                }
-                            });
-                        }
+                        mView.onPlayErrorSDHistoryAll();
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_IO: {
-                        if (liveActionHelper.isPlaying) {
-                            mView.onPlayErrorSDIO();
-                        }
+                        mView.onPlayErrorSDIO();
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_DISCONNECT: {
@@ -478,8 +466,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                 });
                 subscriber.add(subscription);
-                AppLogger.d(CameraLiveHelper.TAG + ":updateVideoPlayType,isLive:" + live);
                 boolean shouldDisconnectFirst = CameraLiveHelper.shouldDisconnectFirst(liveActionHelper);
+                AppLogger.d(CameraLiveHelper.TAG + ":updateVideoPlayType,isLive:" + live);
                 if (shouldDisconnectFirst) {
                     //播放前需要先断开
                     AppLogger.d(CameraLiveHelper.TAG + ":播放前的断开直播过程:是否 Live:" + live);
@@ -1155,9 +1143,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
 
     private void fetchHistoryDataListCompat(Runnable runnable, long playTime) {
-        if (!HistoryManager.getInstance().hasHistoryObserver(uuid)) {
-            HistoryManager.getInstance().addHistoryObserver(uuid, this);
-        }
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
@@ -1676,7 +1661,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         super.stop();
         SubscriptionSupervisor.unsubscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
         liveActionHelper.onUpdateLastLiveThumbPicture(liveActionHelper, null);
-        HistoryManager.getInstance().removeHistoryObserver(uuid);
+        HistoryManager.getInstance().removeHistoryObserver(uuid, this);
     }
 
     @Override
@@ -1688,6 +1673,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void onHistoryChanged(Collection<JFGVideo> history) {
         AppLogger.d(CameraLiveHelper.TAG + ":onHistoryChanged:" + history);
+        if (mView == null) {
+            return;
+        }
         Subscription schedule = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
             @Override
             public void call() {

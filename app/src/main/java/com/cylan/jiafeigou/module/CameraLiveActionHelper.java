@@ -61,7 +61,7 @@ public class CameraLiveActionHelper {
     public volatile boolean isPendingPlayLiveActionTimeOutActionReached = false;
     public volatile boolean isLastLiveThumbPictureChanged = true;
     public volatile boolean isVideoResolutionReached;
-
+    public volatile boolean isDynamicLiving = isLive;
 
     public volatile boolean hasPendingResumeToPlayVideoAction = false;
     public final boolean hasSDCardFeature;
@@ -186,7 +186,8 @@ public class CameraLiveActionHelper {
         }
     }
 
-    public void onVideoPlayPrepared(boolean live) {
+    public boolean onVideoPlayPrepared(boolean live) {
+        final boolean preLive = this.isLive;
         this.isPlaying = false;
         this.isLoading = false;
         this.isLiveBad = false;
@@ -199,6 +200,7 @@ public class CameraLiveActionHelper {
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
         this.lastUnKnowPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
         this.recordedZeroTimestampCount = 0;
+        return preLive;
     }
 
     public void onVideoStopPrepared(boolean live) {
@@ -240,6 +242,10 @@ public class CameraLiveActionHelper {
 
     public void onUpdateHistoryVideoError(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
         this.playCode = jfgHistoryVideoErrorInfo.code;
+        this.isPendingPlayLiveActionTimeOutActionReached = false;
+        this.isPendingPlayLiveActionCompleted = true;
+        this.isPendingStopLiveActionCompleted = true;
+        this.isPendingHistoryPlayActionCompleted = true;
     }
 
     public boolean onUpdatePendingPlayLiveActionCompleted() {
