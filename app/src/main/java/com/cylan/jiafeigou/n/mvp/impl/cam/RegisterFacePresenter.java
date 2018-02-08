@@ -7,9 +7,11 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.cam.RegisterFaceContract;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -17,6 +19,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.lzy.okgo.OkGo;
 
 import org.json.JSONObject;
+import org.msgpack.type.Value;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -94,35 +97,30 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                             Log.e("RegisterFacePresenter", "http put file result:" + jfgMsgHttpResult.ret + ",reqid:" + jfgMsgHttpResult.requestId + ",except:" + reqId);
                             return jfgMsgHttpResult.requestId == reqId;
                         }))
-                .map(s -> {
-//                    String authToken;
+                .map(req -> {
+                    try {
+                        return Command.getInstance().sendUniservalDataSeq(14, DpUtils.pack(0));
+                    } catch (JfgException e) {
+                        AppLogger.e(MiscUtils.getErr(e));
+                        e.printStackTrace();
+                    }
+                    return -1L;
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).filter(rsp -> rsp.seq == seq))
+                .map(rsp -> {
+                    Value unpack = DpUtils.unpack(rsp.data);
+                    if (unpack != null && unpack.isArrayValue()) {
+                        return unpack.asArrayValue().get(0).asRawValue().getString();
+                    }
+                    return null;
+                })
+                .map(authToken -> {
                     try {
                         String server = ("http://" + OptionsImpl.getServer() + ":8082").replace(":443", "");
-                        String authPath = "/authtoken";
-//                        String authApi = server + authPath;
-//                        JSONObject tokenParams = new JSONObject();
-                        String vid = OptionsImpl.getVid();
-//                        String serviceKey = OptionsImpl.getServiceKey(vid);
-//                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
-//                        tokenParams.put("service_key", serviceKey);
-//                        tokenParams.put("time", time);
-//                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
-//                        Response execute = OkGo.post(authApi)
-//                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-//                                .execute();
-//                        JSONObject jsonObject = new JSONObject(execute.body().string());
-//                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
-//                        int code = jsonObject.getInt("code");
-////                        if (code != 200) {
-////                            return code;
-////                        }
-
-
-//                        authToken = jsonObject.optString("auth_token");
                         String aiAppApi = server + "/aiapp";
                         JSONObject tokenParams = new JSONObject();
                         tokenParams.put("action", "RegisterByFace");
-                        tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
+                        tokenParams.put("auth_token", authToken);
                         tokenParams.put("time", time);
                         tokenParams.put("person_name", nickName);
                         tokenParams.put("account", account);
@@ -134,31 +132,14 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                                 .execute();
                         JSONObject jsonObject = new JSONObject(execute.body().string());
                         Log.e("RegisterFacePresenter", "RegisterByFace response:" + jsonObject);
-                        int code = jsonObject.getInt("code");
-                        if (true) {
-                            return code;
-                        }
-
-                        tokenParams = new JSONObject();
-                        tokenParams.put("action", "AddFace");
-                        tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
-                        tokenParams.put("time", time);
-                        tokenParams.put("person_id", jsonObject.getString("person_id"));
-                        tokenParams.put("image_url", remotePath);
-                        tokenParams.put("oss_type", DataSourceManager.getInstance().getStorageType());
-                        execute = OkGo.post(aiAppApi)
-                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-                                .execute();
-                        jsonObject = new JSONObject(execute.body().string());
-                        code = jsonObject.getInt("code");
-                        Log.e("RegisterFacePresenter", "add face response:" + jsonObject);
-                        return code;
+                        return jsonObject.optInt("code", -1);
                     } catch (Exception e) {
                         e.printStackTrace();
                         AppLogger.e(e);
                     }
                     return -1;
                 })
+                .first()
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))

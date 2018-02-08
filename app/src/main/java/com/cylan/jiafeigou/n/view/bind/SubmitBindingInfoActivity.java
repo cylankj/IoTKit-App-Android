@@ -176,6 +176,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     onBindNext();
                 }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    onBindNext();
                 }, false);
         if (presenter != null) {
             presenter.unsubscribe();

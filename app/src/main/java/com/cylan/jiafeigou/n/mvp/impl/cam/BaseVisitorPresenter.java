@@ -30,6 +30,7 @@ import com.lzy.okgo.request.PostRequest;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.msgpack.type.Value;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -366,36 +367,30 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
         })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .map(s -> {
-                    String authToken;
+                .map(req -> {
+                    try {
+                        return Command.getInstance().sendUniservalDataSeq(14, DpUtils.pack(0));
+                    } catch (JfgException e) {
+                        AppLogger.e(MiscUtils.getErr(e));
+                        e.printStackTrace();
+                    }
+                    return -1L;
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class).filter(rsp -> rsp.seq == seq))
+                .map(rsp -> {
+                    Value unpack = DpUtils.unpack(rsp.data);
+                    if (unpack != null && unpack.isArrayValue()) {
+                        return unpack.asArrayValue().get(0).asRawValue().getString();
+                    }
+                    return null;
+                })
+                .map(authToken -> {
                     try {
                         String server = ("http://" + OptionsImpl.getServer() + ":8082").replace(":443", "");
-                        String authPath = "/authtoken";
-//                        String authApi = server + authPath;
-//                        JSONObject tokenParams = new JSONObject();
-//                        String vid = OptionsImpl.getVid();
-//                        String serviceKey = OptionsImpl.getServiceKey(vid);
-//                        String serviceSeceret = OptionsImpl.getServiceSeceret(vid);
-//                        tokenParams.put("service_key", serviceKey);
-//                        tokenParams.put("time", time);
-//                        tokenParams.put("sign", AESUtil.HmacSHA1Encrypt(String.format(Locale.getDefault(), "%s\n%d", authPath, time), serviceSeceret));
-//                        execute = OkGo.post(authApi)
-//                                .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
-//                                .execute();
-//                        jsonObject = new JSONObject(execute.body().string());
-//                        Log.e("RegisterFacePresenter", "get token response:" + jsonObject);
-//                        code = jsonObject.getInt("code");
-
-//                        if (code != 200) {
-
-//                            return code;
-//                        }
-
-//                        authToken = jsonObject.getString("auth_token");
                         String aiAppApi = server + "/aiapp";
                         JSONObject tokenParams = new JSONObject();
                         tokenParams.put("action", "DeletePerson");
-                        tokenParams.put("auth_token", /*authToken*/"JFG_SERVER_PASS_TOKEN_x20180124x");
+                        tokenParams.put("auth_token", authToken);
                         tokenParams.put("time", time);
                         tokenParams.put("person_id", id);
                         Response execute = OkGo.post(aiAppApi)
@@ -403,14 +398,14 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                                 .execute();
                         JSONObject jsonObject = new JSONObject(execute.body().string());
                         Log.e("BaseVisitorPresenter", "DeletePerson response:" + jsonObject);
-                        int code = jsonObject.getInt("code");
-                        return code;
+                        return jsonObject.optInt("code", -1);
                     } catch (Exception e) {
                         e.printStackTrace();
                         AppLogger.e(e);
                     }
                     return -1;
-                });
+                })
+                .first();
         Subscription subscribe = Observable.zip(deleteFaceByDp(type, id, delMsg), observable,
                 (universalDataRsp, responseHeader) -> {
                     Integer result = DpUtils.unpackDataWithoutThrow(universalDataRsp.data, int.class, -1);
