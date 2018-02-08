@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
@@ -535,5 +536,31 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     AppLogger.e(e);
                 });
         addSubscription(subscribe, "fetchMessageList_faceId");
+    }
+
+    @Override
+    public void removeHint() {
+        long[] msgIdList = {401, 222, 40, 505, 512, 526};
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                long seq = Command.getInstance().robotCountDataClear(uuid, msgIdList, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> rsp.seq == seq))
+                .filter(rsp -> rsp.rets.get(0).ret == 0)
+                .subscribe(rsp -> {
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    for (long i : msgIdList) {
+                        device.updateProperty((int) i, null);
+                    }
+                }, error -> {
+                });
+        addStopSubscription(subscribe);
     }
 }

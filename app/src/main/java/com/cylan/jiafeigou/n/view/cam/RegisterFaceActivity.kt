@@ -325,6 +325,10 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
             tempFile = savedInstanceState.getSerializable("tempFile") as File
         } else {
             tempFile = File(MEDIA_PATH, System.currentTimeMillis().toString() + ".jpg")
+            val parentFile = tempFile!!.parentFile
+            if (!parentFile.exists()) {
+                parentFile.mkdirs()
+            }
         }
     }
 

@@ -72,6 +72,8 @@ public interface CamMessageListContract {
          * int64,     timeMsec // 时间戳，单位：毫秒
          */
         void fetchVisitorMessageList(int type, String id, long sec, boolean refresh);
+
+        void removeHint();
     }
 }
 
