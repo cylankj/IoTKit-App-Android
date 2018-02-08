@@ -542,13 +542,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     case FaceItem.FACE_TYPE_ALL:
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-                        if (time == 0) {
+                        if (isRefresh) {
                             presenter.removeHint();
                         }
                         presenter.fetchVisitorMessageList(3, "", time, isRefresh);
                         break;
                     case FaceItem.FACE_TYPE_DP:
-                        if (time == 0) {
+                        if (isRefresh) {
                             presenter.removeHint();
                         }
                         presenter.fetchMessageListByFaceId(time, false, isRefresh);

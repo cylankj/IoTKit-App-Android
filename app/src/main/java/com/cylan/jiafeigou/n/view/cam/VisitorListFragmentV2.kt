@@ -62,7 +62,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         VisitorListContract.View {
     override fun onReceiveNewMessage(msgCount: Int) {
         AppLogger.w("onReceiveNewMessage:" + msgCount)
-        if (msgCount > 0 && !allFace.markHint) {
+        if (msgCount > 0) {
             allFace.markHint = true
             if (faceAdapter.isNormalView) {
                 faceAdapter.notifyItemChanged(0)
