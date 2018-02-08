@@ -327,7 +327,7 @@ public class JConstant {
     public static final String KEY_DEVICE_NEW_VERSION = "key_DEVICE_NEW_VERSION";
 
     public static String getRoot() {
-        return ContextUtils.getContext().getString(R.string.log);
+        return ContextUtils.getContext().getString(R.string.app_name);
     }
 
     /**
