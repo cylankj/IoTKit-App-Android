@@ -173,7 +173,7 @@ public class BaseDBHelper implements IDBHelper {
 
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
-                    if (device != null && device.available()) {
+                    if (device != null) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
                     if (dpEntity == null) {
@@ -199,10 +199,7 @@ public class BaseDBHelper implements IDBHelper {
                     dpEntity = null;
                 }
             }
-//            itemBox.put(propertyItems);
-            if (!BaseApplication.isBackground()) {
-                mEntityDao.insertOrReplaceInTx(result);
-            }
+            mEntityDao.insertOrReplaceInTx(result);
             return result;
         });
     }

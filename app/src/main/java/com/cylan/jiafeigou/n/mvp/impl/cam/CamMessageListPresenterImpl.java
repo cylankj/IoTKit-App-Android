@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
@@ -540,27 +541,28 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void removeHint() {
+        AppLogger.e("removeHint");
         long[] msgIdList = {401, 222, 40, 505, 512, 526};
-        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            try {
-                long seq = Command.getInstance().robotCountDataClear(uuid, msgIdList, 0);
-                subscriber.onNext(seq);
-                subscriber.onCompleted();
-            } catch (JfgException e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-            }
-        })
+        Subscription subscribe = Observable.fromCallable(() -> Command.getInstance().robotCountDataClear(uuid, msgIdList, 0))
                 .subscribeOn(Schedulers.io())
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> rsp.seq == seq))
-                .filter(rsp -> rsp.rets.get(0).ret == 0)
-                .subscribe(rsp -> {
-                    Device device = DataSourceManager.getInstance().getDevice(uuid);
-                    for (long i : msgIdList) {
-                        device.updateProperty((int) i, null);
+                .delay(500, TimeUnit.MILLISECONDS)
+                .subscribe(aLong -> {
+                    try {
+                        ArrayList<JFGDPMsg> params = new ArrayList<>();
+                        params.add(new JFGDPMsg(1001, 0));
+                        params.add(new JFGDPMsg(1002, 0));
+                        params.add(new JFGDPMsg(1003, 0));
+                        params.add(new JFGDPMsg(1004, 0));
+                        params.add(new JFGDPMsg(1005, 0));
+                        params.add(new JFGDPMsg(1006, 0));
+                        Command.getInstance().robotGetData(uuid, params, 1, false, 0);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 }, error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
+                    error.printStackTrace();
                 });
-        addStopSubscription(subscribe);
+        addDestroySubscription(subscribe);
     }
 }

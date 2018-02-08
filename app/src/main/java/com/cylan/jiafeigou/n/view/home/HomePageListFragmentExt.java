@@ -148,11 +148,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //暂时禁用 NestedScroll 避免出现首页白块
         srLayoutMainContentHolder.setNestedScrollingEnabled(false);
         if (presenter != null) {
-//            PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, true);
-//            srLayoutMainContentHolder.setRefreshing(false);
-//            enableNestedScroll();
-//            if (isVisibleToUser && isResumed() && getActivity() != null) {
-//            }
             appbar.addOnOffsetChangedListener(this);
             srLayoutMainContentHolder.setOnRefreshListener(this);
             onItemsRsp(DataSourceManager.getInstance().getAllDevice());
