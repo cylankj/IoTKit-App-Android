@@ -59,7 +59,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     @Override
     public void start() {
         super.start();
-        monitorSdcardStatusSub();
+        monitorDeviceSyncSub();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      *
      * @return
      */
-    private void monitorSdcardStatusSub() {
+    private void monitorDeviceSyncSub() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter((RxEvent.DeviceSyncRsp data) -> (getView() != null && TextUtils.equals(uuid, data.uuid)))
                 .filter(ret -> ret.dpList != null)

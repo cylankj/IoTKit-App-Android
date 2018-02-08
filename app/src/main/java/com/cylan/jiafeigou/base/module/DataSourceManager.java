@@ -1011,101 +1011,94 @@ public class DataSourceManager implements JFGSourceManager {
      *
      * @param arrayList
      */
-    private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
+    private int[] notifyIDs = new int[]{401, 222, 40, 505, 512, 526};
 
+    private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
-        if (device != null && !TextUtils.isEmpty(device.account)) {
-            ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
-            for (int i = 0; i < ListUtils.getSize(list); i++) {
-                long msgId = list.get(i).id;
-                JFGDPMsg msg = list.get(i);
-                if (msgId == 505 || msgId == 512 || msgId == 222) {
-                    if (BaseApplication.isBackground()) {
-                        continue;
-                    }
-                    //cam 1001 1002  1003
-                    try {
-                        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true)
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true)
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true)
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1006, 0, true)
-                                .build();
-                        BaseDPTaskDispatcher.getInstance().perform(idpEntities)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(baseDPTaskResult -> {
-                                    if (getAccount() == null || !getJFGAccount().isEnablePush()) {
-                                        return;
-                                    }
-                                    Device dd = DataSourceManager.getInstance().getDevice(uuid);
-                                    String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
-                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
-                                    INotify.NotifyBean bean = new INotify.NotifyBean();
-                                    bean.sound = getAccount() != null && getAccount().getEnableSound();
-                                    bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
-                                    bean.time = System.currentTimeMillis();
-                                    bean.resId = R.mipmap.ic_launcher;
-                                    bean.notificationId = (uuid + "cam").hashCode();
-                                    bean.content = alias;
-                                    int count = entity.getValue(0);
-                                    bean.subContent = ContextUtils.getContext().getString(R.string.receive_new_news, count > 99 ? "99+" : count);
-                                    final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
-                                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                                    intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
-                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                    NotifyManager.getNotifyManager().sendNotify(bean);
-                                }, AppLogger::e);
-                    } catch (Exception e) {
-                        AppLogger.e("err:" + MiscUtils.getErr(e));
-                    }
-                } else if (msgId == 401) {
-                    DpMsgDefine.DPBellCallRecord dataPoint = BasePropertyParser.getInstance().parser((int) msgId, msg.packValue, msg.version);
-                    if (dataPoint.isOK == 1) {
-                        return; //已接听了,不需要发送通知了
-                    }
-                    AppLogger.w("may fire a notification: " + msgId);
+        if (device == null || TextUtils.isEmpty(device.account)) {
+            return;
+        }
+        ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
+        boolean shouldRefreshUnReadCount = false;
 
-                    //for bell 1004 1005
-                    INotify.NotifyBean bean = new INotify.NotifyBean();
-                    try {
-                        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
-                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
-                        BaseDPTaskDispatcher.getInstance().perform(idpEntities)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(baseDPTaskResult -> {
-                                    if (getAccount() == null || !getJFGAccount().isEnablePush()) {
-                                        return;
-                                    }
-                                    Device dd = getDevice(uuid);
-                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                    final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
-                                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                                    intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
-                                    int count = entity.getValue(0);
-                                    final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :
-                                            String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
-                                    final String subTitle = count == 0 ?
-                                            ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
-                                    bean.time = System.currentTimeMillis();
-                                    bean.resId = R.mipmap.ic_launcher;
-                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                    bean.time = entity.getVersion();
-                                    bean.notificationId = (uuid + "bell").hashCode();
-                                    bean.content = title;
-                                    bean.subContent = subTitle;
-                                    bean.sound = getAccount() != null && getAccount().getEnableSound();
-                                    bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
-                                    NotifyManager.getNotifyManager().sendNotify(bean);
-                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-                    } catch (Exception e) {
-                        AppLogger.e("err:" + MiscUtils.getErr(e));
-                    }
+        shouldFor:
+        for (int i = 0; i < ListUtils.getSize(list); i++) {
+            long msgId = list.get(i).id;
+            for (int notifyID : notifyIDs) {
+                if (notifyID == msgId) {
+                    shouldRefreshUnReadCount = true;
+                    break shouldFor;
                 }
             }
         }
-
+        if (shouldRefreshUnReadCount) {
+            List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
+                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true)
+                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true)
+                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true)
+                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
+                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true)
+                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1006, 0, true)
+                    .build();
+            BaseDPTaskDispatcher.getInstance().perform(idpEntities)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(baseDPTaskResult -> {
+                        if (getAccount() == null || !getJFGAccount().isEnablePush()) {
+                            return;
+                        }
+                        Device dd = DataSourceManager.getInstance().getDevice(uuid);
+                        String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
+                        DPEntity entity = MiscUtils.getMaxVersionEntity(
+                                dd.getProperty(1001),
+                                dd.getProperty(1002),
+                                dd.getProperty(1003),
+                                dd.getProperty(1004),
+                                dd.getProperty(1005),
+                                dd.getProperty(1006)
+                        );
+                        int count = dd.$(1001, 0) +
+                                dd.$(1002, 0) +
+                                dd.$(1003, 0) +
+                                dd.$(1004, 0) +
+                                dd.$(1005, 0) +
+                                dd.$(1006, 0);
+                        if (count == 0) {
+                            return;
+                        }
+                        boolean isBell = JFGRules.isBell(dd.pid);
+                        String content;
+                        String subContent;
+                        if (isBell) {
+                            JFGDPMsg msg = list.get(0);
+                            if (msg.id == 401) {
+                                DpMsgDefine.DPBellCallRecord bellCallRecord = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPBellCallRecord.class, new DpMsgDefine.DPBellCallRecord());
+                                if (bellCallRecord != null && bellCallRecord.isOK == 1) {
+                                    return;
+                                }
+                            }
+                            content = String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
+                            subContent = ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
+                        } else {
+                            content = alias;
+                            subContent = ContextUtils.getContext().getString(R.string.receive_new_news, count > 99 ? "99+" : count);
+                        }
+                        INotify.NotifyBean bean = new INotify.NotifyBean();
+                        final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
+                        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                        intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
+                        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        bean.sound = getAccount() != null && getAccount().getEnableSound();
+                        bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
+                        bean.time = System.currentTimeMillis();
+                        bean.resId = R.mipmap.ic_launcher;
+                        bean.notificationId = (uuid + "camera").hashCode();
+                        bean.time = entity.getVersion();
+                        bean.content = content;
+                        bean.subContent = subContent;
+                        NotifyManager.getNotifyManager().sendNotify(bean);
+                    });
+        }
     }
 
     @Override
@@ -1133,6 +1126,7 @@ public class DataSourceManager implements JFGSourceManager {
      *
      * @return
      */
+
     private Subscription makeAccountSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
                 .onBackpressureBuffer()

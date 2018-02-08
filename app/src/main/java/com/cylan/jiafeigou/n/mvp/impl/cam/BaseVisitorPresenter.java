@@ -7,6 +7,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -62,6 +63,30 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
     public BaseVisitorPresenter(VisitorListContract.View view) {
         super(view);
 //        setSSL();
+        subscriberDeviceSync();
+    }
+
+    private void subscriberDeviceSync() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter((RxEvent.DeviceSyncRsp data) -> (getView() != null && TextUtils.equals(uuid, data.uuid)))
+                .subscribeOn(Schedulers.io())
+                .map(deviceSyncRsp -> {
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    int count = device.$(1001, 0) +
+                            device.$(1002, 0) +
+                            device.$(1003, 0) +
+                            device.$(1004, 0) +
+                            device.$(1005, 0) +
+                            device.$(1006, 0);
+                    return count;
+                })
+
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(msgCount -> {
+                    mView.onReceiveNewMessage(msgCount);
+                    AppLogger.d("收到,属性同步了");
+                }, e -> AppLogger.d(e.getMessage()));
+        addStopSubscription(subscribe);
     }
 
     private static void setSSL() {

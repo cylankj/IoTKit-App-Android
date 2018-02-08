@@ -277,7 +277,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void removeHint() {
-        long[] msgIdList = {401, 222, 40, 505, 512, 526, 527};
+        long[] msgIdList = {401, 222, 40, 505, 512, 526};
         Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 long seq = Command.getInstance().robotCountDataClear(uuid, msgIdList, 0);

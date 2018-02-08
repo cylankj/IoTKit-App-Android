@@ -60,6 +60,16 @@ import kotlinx.android.synthetic.main.fragment_visitor_list.*
  */
 open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(),
         VisitorListContract.View {
+    override fun onReceiveNewMessage(msgCount: Int) {
+        AppLogger.w("onReceiveNewMessage:" + msgCount)
+        if (msgCount > 0 && !allFace.markHint) {
+            allFace.markHint = true
+            if (faceAdapter.isNormalView) {
+                faceAdapter.notifyItemChanged(0)
+            }
+        }
+    }
+
     override fun onDeleteFaceErrorPermissionError() {
         AppLogger.w("onDeleteFaceErrorPermissionError")
         ToastUtil.showToast(getString(R.string.Tips_DeleteFail))
@@ -296,6 +306,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             if (item is FaceItem) {
                 when (item.getFaceType()) {
                     FaceItem.FACE_TYPE_ALL -> {
+                        item.markHint = false
                         currentPosition = 0
                         faceItemType = FaceItem.FACE_TYPE_ALL
                         presenter.fetchVisitorList(0)
@@ -589,6 +600,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         }
         if (faceAdapter.isNormalView) {
             currentPosition = 0
+            allFace.markHint = false
             faceItemType = FaceItem.FACE_TYPE_ALL
             presenter?.fetchVisitorList(0)
         } else {
@@ -798,6 +810,16 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     fun getSelectedFaceItem(): FaceItem? {
         return faceAdapter.getItem(currentPosition) as? FaceItem
+    }
+
+    fun getCurrentPersonID(): String? {
+        val faceItem = faceAdapter.getItem(currentPosition) as? FaceItem
+        if (faceItemType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
+            return faceItem?.visitor?.personId ?: ""
+        } else if (faceItemType == FaceItem.FACE_TYPE_STRANGER_SUB) {
+            return faceItem?.strangerVisitor?.faceId
+        }
+        return null
     }
 
     interface VisitorListener {

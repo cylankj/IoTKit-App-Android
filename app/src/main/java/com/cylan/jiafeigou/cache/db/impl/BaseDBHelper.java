@@ -146,7 +146,7 @@ public class BaseDBHelper implements IDBHelper {
                 if (BasePropertyParser.getInstance().isProperty((int) msg.id)) {
                     DataPoint dataPoint = BasePropertyParser.getInstance().parser((int) msg.id, msg.packValue, msg.version);
                     dpEntity.setValue(dataPoint, msg.packValue, msg.version);
-                    if (device != null && device.available()) {
+                    if (device != null) {
                         device.updateProperty((int) msg.id, dpEntity);
                     }
                 }
@@ -167,10 +167,7 @@ public class BaseDBHelper implements IDBHelper {
                 return null;
             }
             Set<DPEntity> result = new HashSet<>();
-//            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
-//            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
-//            PropertyItem item = null;
             Device device = DataSourceManager.getInstance().getDevice(dataRsp.identity);
 
 
@@ -194,7 +191,7 @@ public class BaseDBHelper implements IDBHelper {
                     if (BasePropertyParser.getInstance().isProperty((int) msg.id)) {
                         DataPoint dataPoint = BasePropertyParser.getInstance().parser((int) msg.id, msg.packValue, msg.version);
                         dpEntity.setValue(dataPoint, msg.packValue, msg.version);
-                        if (device != null && device.available()) {
+                        if (device != null) {
                             device.updateProperty((int) msg.id, dpEntity);
                         }
                     }

@@ -19,6 +19,7 @@ interface VisitorListContract {
         fun onDeleteFaceErrorInvalidParams()
         fun onDeleteFaceErrorServerInternalError()
         fun onDeleteFaceTimeout()
+        fun onReceiveNewMessage(msgCount: Int)
     }
 
     interface Presenter : BasePresenter {

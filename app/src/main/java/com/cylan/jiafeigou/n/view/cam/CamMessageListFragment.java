@@ -511,7 +511,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         @Override
         public void run() {
             if (presenter != null) {
-                boolean success;
+                boolean success = false;
                 String personId = getCurrentPersonId();
                 int pageType = getPageType();
                 switch (pageType) {
@@ -531,13 +531,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         }
                         break;
                     case FaceItem.FACE_TYPE_STRANGER_SUB:
-                        success = camMessageListAdapter.showCachedVisitorList(personId);
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
                         lLayoutNoMessage.postDelayed(emptyCheckerRunnable, 100);
-                        tvCamMessageListEdit.setEnabled(success);
                         if (!TextUtils.isEmpty(personId)) {
+                            success = camMessageListAdapter.showCachedVisitorList(personId);
                             presenter.fetchVisitorMessageList(1, personId, time, isRefresh);
                         }
+                        tvCamMessageListEdit.setEnabled(success);
                         break;
                     case FaceItem.FACE_TYPE_ALL:
                         lLayoutNoMessage.removeCallbacks(emptyCheckerRunnable);
@@ -811,19 +811,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (visitorFragment == null) {
             return "";
         }
-        FaceItem faceItem = visitorFragment.getSelectedFaceItem();
-        if (faceItem == null) {
-            return "";
-        }
-        int pageType = getPageType();
-        DpMsgDefine.Visitor visitor = faceItem.getVisitor();
-        DpMsgDefine.StrangerVisitor strangerVisitor = faceItem.getStrangerVisitor();
-        if (pageType == FaceItem.FACE_TYPE_ACQUAINTANCE) {
-            return visitor == null ? "" : visitor.personId;
-        } else if (pageType == FaceItem.FACE_TYPE_STRANGER_SUB) {
-            return strangerVisitor == null ? "" : strangerVisitor.faceId;
-        }
-        return "";
+        return visitorFragment.getCurrentPersonID();
     }
 
     @Override

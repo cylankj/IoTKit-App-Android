@@ -444,9 +444,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                         }
                         boolean isStranger = TextUtils.isEmpty(personDetail.name) && TextUtils.isEmpty(personDetail.age) && TextUtils.isEmpty(personDetail.sex);
                         builder.append(TextUtils.isEmpty(personDetail.name) ? getContext().getString(R.string.MESSAGES_FILTER_STRANGER) : personDetail.name);
-                        if (!isStranger) {
-                            builder.append("(")
-                                    .append(TextUtils.equals("female", personDetail.sex) ?
+                        if (!isStranger && !TextUtils.isEmpty(personDetail.sex) && !TextUtils.isEmpty(personDetail.age)) {
+                            builder.append("(").
+                                    append(TextUtils.equals("female", personDetail.sex) ?
                                             ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_FEMALE) :
                                             ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_MALE)
                                     )
