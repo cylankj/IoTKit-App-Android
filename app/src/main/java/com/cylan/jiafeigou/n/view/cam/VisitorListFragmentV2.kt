@@ -124,7 +124,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     var visitorListener: VisitorListener? = null
 
-    private lateinit var faceAdapter: FaceAdapter
+    private var faceAdapter: FaceAdapter = FaceAdapter(true)
     private var footerAdapter: ItemAdapter<LoadMoreItem> = ItemAdapter.items<LoadMoreItem>()
 
 
@@ -262,7 +262,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view)
-        faceAdapter = FaceAdapter(true)
+
         gridLayoutManager = GridLayoutManager(context, 3)
         face_header.layoutManager = gridLayoutManager
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
