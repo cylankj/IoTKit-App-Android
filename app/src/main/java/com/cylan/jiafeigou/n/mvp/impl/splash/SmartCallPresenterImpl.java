@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,9 +39,9 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                         mView.onAdvertOver();
                     }
                 }, error -> {
-
+                    AppLogger.e(MiscUtils.getErr(error));
                 });
-        addDestroySubscription(subscribe);
+        addStopSubscription(subscribe);
     }
 
     @Override

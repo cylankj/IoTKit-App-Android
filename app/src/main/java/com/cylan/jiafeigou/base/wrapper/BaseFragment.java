@@ -198,11 +198,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             lifecycleAdapter.destroy();
         }
         super.onDestroy();
-
-//        if (unbinder != null) {
-//            unbinder.unbind();
-//            unbinder = null;
-//        }
     }
 
     @Override
@@ -212,9 +207,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         performActivityResult();
         if (callBack != null) {
             callBack.callBack(cache);
-        }
-        if (presenter != null && presenter.isSubscribed()) {
-            presenter.unsubscribe();
         }
         final FragmentActivity activity = getActivity();
         if (activity instanceof BaseActivity) {
@@ -229,7 +221,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 //        }
 //        unbinder = null;
 //        callBack = null;
-//        presenter = null;
+        presenter = null;
 //        lifecycleAdapter = null;
 //        lifecycleSubject = null;
 //        mCachedRootView = null;

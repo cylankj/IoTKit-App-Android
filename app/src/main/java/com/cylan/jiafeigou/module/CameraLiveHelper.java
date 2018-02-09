@@ -3,10 +3,8 @@ package com.cylan.jiafeigou.module;
 import android.Manifest;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -62,13 +60,13 @@ public class CameraLiveHelper {
     public static final int PLAY_ERROR_VIDEO_PEER_DISCONNECT = 16;
     public static final int PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED = 17;
 
-    private static final int MAX_CACHE_SIZE = (int) (Runtime.getRuntime().totalMemory() / 8);
-    public static LruCache<String, byte[]> sLiveThumbLruCache = new LruCache<String, byte[]>(MAX_CACHE_SIZE) {
-        @Override
-        protected int sizeOf(String key, byte[] value) {
-            return value.length;
-        }
-    };
+//    private static final int MAX_CACHE_SIZE = (int) (Runtime.getRuntime().totalMemory() / 8);
+//    public static LruCache<String, byte[]> sLiveThumbLruCache = new LruCache<String, byte[]>(MAX_CACHE_SIZE) {
+//        @Override
+//        protected int sizeOf(String key, byte[] value) {
+//            return value.length;
+//        }
+//    };
 
     public static String printError(int playError) {
         switch (playError) {
@@ -357,17 +355,17 @@ public class CameraLiveHelper {
 
         if (lastLiveThumbPicture != null && !lastLiveThumbPicture.isRecycled()) {
             helper.isLastLiveThumbPictureChanged = false;
-        } else if (isPanoramaView || true) {//glide 与直接调用 getCache 性能一样
-            lastLiveThumbPicture = getCache(helper);
-            if (lastLiveThumbPicture == null) {
-                long before = System.currentTimeMillis();
-                lastLiveThumbPicture = BitmapFactory.decodeFile(filePath);
-                long after = System.currentTimeMillis();
-                Log.d(VERB_TAG, "decode bitmap cost:" + (after - before) + "ms");
-                helper.isLastLiveThumbPictureChanged = true;
-            } else {
-                helper.isLastLiveThumbPictureChanged = false;
-            }
+        } else if (false) {//glide 与直接调用 getCache 性能一样
+//            lastLiveThumbPicture = getCache(helper);
+//            if (lastLiveThumbPicture == null) {
+//                long before = System.currentTimeMillis();
+//                lastLiveThumbPicture = BitmapFactory.decodeFile(filePath);
+//                long after = System.currentTimeMillis();
+//                Log.d(VERB_TAG, "decode bitmap cost:" + (after - before) + "ms");
+//                helper.isLastLiveThumbPictureChanged = true;
+//            } else {
+//                helper.isLastLiveThumbPictureChanged = false;
+//            }
         } else {
             try {
                 String fileToken = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + helper.uuid);
@@ -393,34 +391,34 @@ public class CameraLiveHelper {
         return stream.toByteArray();
     }
 
-    public static byte[] putCache(CameraLiveActionHelper helper, Bitmap bitmap, boolean forceReplace) {
-        String key = makeCacheKey(helper);
-        byte[] bytes = sLiveThumbLruCache.get(key);
-        if (bytes != null && !forceReplace) {
-            return bytes;
-        }
-        if (forceReplace && bitmap != null && !bitmap.isRecycled()) {
-            long before = System.currentTimeMillis();
-            bytes = bitmapToByteArray(bitmap);
-            long after = System.currentTimeMillis();
-            sLiveThumbLruCache.put(key, bytes);
-            Log.d(VERB_TAG, "encode bitmap cost:" + (after - before) + "ms," + "length is:" + (bytes.length / 1024) + "KB");
-        }
-        return bytes;
-    }
+//    public static byte[] putCache(CameraLiveActionHelper helper, Bitmap bitmap, boolean forceReplace) {
+//        String key = makeCacheKey(helper);
+//        byte[] bytes = sLiveThumbLruCache.get(key);
+//        if (bytes != null && !forceReplace) {
+//            return bytes;
+//        }
+//        if (forceReplace && bitmap != null && !bitmap.isRecycled()) {
+//            long before = System.currentTimeMillis();
+//            bytes = bitmapToByteArray(bitmap);
+//            long after = System.currentTimeMillis();
+//            sLiveThumbLruCache.put(key, bytes);
+//            Log.d(VERB_TAG, "encode bitmap cost:" + (after - before) + "ms," + "length is:" + (bytes.length / 1024) + "KB");
+//        }
+//        return bytes;
+//    }
 
-    public static Bitmap getCache(CameraLiveActionHelper helper) {
-        String key = makeCacheKey(helper);
-        byte[] bytes = sLiveThumbLruCache.get(key);
-        Bitmap cacheBitmap = null;
-        if (bytes != null) {
-            long before = System.currentTimeMillis();
-            cacheBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            long after = System.currentTimeMillis();
-            Log.d(VERB_TAG, "getCache for key:" + key + ",is " + cacheBitmap + ",decodeByteArray cost:" + (after - before) + "ms");
-        }
-        return cacheBitmap;
-    }
+//    public static Bitmap getCache(CameraLiveActionHelper helper) {
+//        String key = makeCacheKey(helper);
+////        byte[] bytes = sLiveThumbLruCache.get(key);
+//        Bitmap cacheBitmap = null;
+////        if (bytes != null) {
+//            long before = System.currentTimeMillis();
+//            cacheBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//            long after = System.currentTimeMillis();
+//            Log.d(VERB_TAG, "getCache for key:" + key + ",is " + cacheBitmap + ",decodeByteArray cost:" + (after - before) + "ms");
+////        }
+//        return cacheBitmap;
+//    }
 
 
     public static String makeCacheKey(CameraLiveActionHelper helper) {

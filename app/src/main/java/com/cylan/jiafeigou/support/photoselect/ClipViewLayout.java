@@ -150,7 +150,6 @@ public class ClipViewLayout extends RelativeLayout {
         Matrix m = new Matrix();
         m.setRotate(rotation);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-
         //图片的缩放比
         float scale;
         if (bitmap.getWidth() >= bitmap.getHeight()) {//宽图

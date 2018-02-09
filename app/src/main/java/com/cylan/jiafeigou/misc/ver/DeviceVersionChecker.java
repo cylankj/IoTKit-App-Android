@@ -31,6 +31,8 @@ import rx.schedulers.Schedulers;
 public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVersion> {
 
 
+    private Subscription subscribe;
+
     @Override
     public boolean checkCondition() {
         if (portrait == null) {
@@ -61,7 +63,19 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
 //        }
         final String uuid = portrait.getCid();
 
-        Subscription subscribe = Observable.just("go").subscribeOn(Schedulers.io())
+        //                    BinVersion oldVersion = getVersionFrom(uuid);
+//                    long time = oldVersion.getLastShowTime();
+//                    oldVersion = ret.getVersion();
+//                    oldVersion.setLastShowTime(time);
+//                    oldVersion.setTotalSize(totalSize(oldVersion));
+//                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
+//                    setBinVersion(oldVersion);
+//                    finalShow();
+//                    return Observable.just(ret.getVersion());
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
+        subscribe = Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
@@ -110,7 +124,6 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck", subscribe);
     }
 
     @Override
@@ -126,6 +139,12 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                 RxBus.getCacheInstance().post(binVersion);
                 AppLogger.d("检查到有新固件:" + binVersion);
             }
+        }
+    }
+
+    public void clean() {
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
         }
     }
 }

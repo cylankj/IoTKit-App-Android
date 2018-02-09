@@ -269,7 +269,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         welcomeSwitcher.setDisplayedChild(1);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(BeforeLoginFragment.class.getSimpleName());
         if (fragment != null) {
-            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+            getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
         } else {
             fragment = BeforeLoginFragment.newInstance(null);
             ActivityUtils.replaceFragmentNoAnimation(R.id.welcome_frame_container, getSupportFragmentManager(), fragment);

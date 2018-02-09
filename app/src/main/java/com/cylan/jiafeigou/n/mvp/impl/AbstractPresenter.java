@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
@@ -102,26 +101,38 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     }
 
     protected void addSubscription(Subscription subscription) {
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, subscription.toString(), subscription);
+        if (!stopCompositeSubscription.isUnsubscribed()) {
+            stopCompositeSubscription.add(subscription);
+        } else if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     protected void addSubscription(Subscription subscription, String tag) {
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag, subscription);
+        if (!mapSubscription.isUnsubscribed()) {
+            mapSubscription.add(subscription, tag);
+        } else if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     protected boolean isunSubscribed(@NonNull String tag) {
-        Subscription subscription = SubscriptionSupervisor.get(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag);
+//        Subscription subscription = SubscriptionSupervisor.get(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag);
+//        return subscription == null || subscription.isUnsubscribed();
+        Subscription subscription = mapSubscription.getSub(tag);
         return subscription == null || subscription.isUnsubscribed();
     }
 
     @Override
     public boolean unSubscribe(@NonNull String tag) {
-        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag);
+        mapSubscription.remove(tag);
+//        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag);
         return true;
     }
 
     public boolean containsSubscription(@NonNull final String tag) {
-        return SubscriptionSupervisor.get(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag) != null;
+        return mapSubscription.getSub(tag) != null;
+//        return SubscriptionSupervisor.get(this, SubscriptionSupervisor.CATEGORY_DEFAULT, tag) != null;
     }
 
     @CallSuper
@@ -129,7 +140,8 @@ public abstract class AbstractPresenter<T extends JFGView> extends BasePresenter
     public void stop() {
         super.stop();
         Log.d("stop", "stop: " + this.getClass().getSimpleName());
-        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, null);
+        mapSubscription.clear();
+//        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, null);
         NetMonitor.getNetMonitor().unregister(this);
         unRegisterHeadSetObservable();
         abandonAudioFocus();

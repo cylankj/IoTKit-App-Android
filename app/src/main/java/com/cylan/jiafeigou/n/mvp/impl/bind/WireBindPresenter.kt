@@ -4,7 +4,6 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.base.wrapper.BasePresenter
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader
-import com.cylan.jiafeigou.module.SubscriptionSupervisor
 import com.cylan.jiafeigou.n.mvp.contract.bind.WireBindContract
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.APObserver
@@ -36,17 +35,15 @@ class WireBindPresenter @Inject constructor(view: WireBindContract.View) : BaseP
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
                     isScan = true
-                    LoadingDialog.showLoading(mView.activity(), mContext.getString(R.string.addvideo_searching), true, { _ ->
-                     SubscriptionSupervisor.unsubscribe(this@WireBindPresenter,SubscriptionSupervisor.CATEGORY_STOP,method)
-                    })
+                    LoadingDialog.showLoading(mView.activity(), mContext.getString(R.string.addvideo_searching), false, null)
                 }
                 .doOnTerminate {
                     LoadingDialog.dismissLoading()
-                    isScan=false
+                    isScan = false
                 }
                 .doOnUnsubscribe {
                     LoadingDialog.dismissLoading()
-                    isScan=false
+                    isScan = false
                 }
 //                .compose(applyLoading(true, R.string.addvideo_searching))
                 .subscribe({

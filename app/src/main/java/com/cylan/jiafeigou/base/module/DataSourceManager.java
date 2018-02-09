@@ -1097,7 +1097,7 @@ public class DataSourceManager implements JFGSourceManager {
                         bean.content = content;
                         bean.subContent = subContent;
                         NotifyManager.getNotifyManager().sendNotify(bean);
-                    });
+                    }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
         }
     }
 

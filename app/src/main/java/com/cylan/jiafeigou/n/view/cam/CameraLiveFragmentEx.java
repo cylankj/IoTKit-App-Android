@@ -1192,7 +1192,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (status.hasSdcard && status.err != 0) {
-            ToastUtil.showNegativeToast( ContextUtils.getContext().getString(R.string.VIDEO_SD_DESC));
+            ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.VIDEO_SD_DESC));
             return;
         }
         if (!status.hasSdcard || status.err != 0) {
@@ -1200,7 +1200,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return;
         }
         if (historyWheelHandler == null || presenter.isHistoryEmpty()) {
-            ToastUtil.showToast( ContextUtils.getContext().getString(R.string.History_video_Firstly));
+            ToastUtil.showToast(ContextUtils.getContext().getString(R.string.History_video_Firstly));
             return;
         }
         if (historyWheelHandler != null) {
@@ -1242,14 +1242,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         AlertDialogManager.getInstance().showDialog(getActivity(),
                 ContextUtils.getContext().getString(R.string.Tap1_Camera_MotionDetection_OffTips),
                 ContextUtils.getContext().getString(R.string.Tap1_Camera_MotionDetection_OffTips),
-                ContextUtils.getContext().  getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                ContextUtils.getContext().getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                     presenter.performChangeSafeProtection(1);
                     //关闭移动侦测的同时也关闭自动录像
-                    ToastUtil.showToast( ContextUtils.getContext().getString(R.string.SCENE_SAVED));
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.SCENE_SAVED));
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
-                },  ContextUtils.getContext().getString(R.string.CANCEL), (dialog, which) -> {
+                }, ContextUtils.getContext().getString(R.string.CANCEL), (dialog, which) -> {
                     if (isLand()) {
                         ViewUtils.setSystemUiVisibility(liveLoadingBar, false);
                     }
@@ -2041,5 +2041,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         performLayoutVisibilityAction();
         performLayoutEnableAction();
         performLayoutContentAction();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter = null;
     }
 }

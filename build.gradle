@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
         //要对应java1.8，2.2.0才能使用unit测试。idea/misc.xml
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
         // NOTE: Do not place your application dependencies here; they belong

@@ -252,7 +252,7 @@ public class ActivityUtils {
     public static void replaceFragmentNoAnimation(int id, FragmentManager fragmentManager, Fragment fragment) {
         fragmentManager.beginTransaction()
                 .replace(id, fragment, fragment.getClass().getSimpleName())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     /**

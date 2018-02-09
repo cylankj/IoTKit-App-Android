@@ -85,7 +85,7 @@ class YouTubeLiveSettingPresenter @Inject constructor(view: YouTubeLiveSetting.V
                         .subscribe({
                             //                    mView.onLiveEventResponse(it)
                         }, {
-
+                            AppLogger.e(MiscUtils.getErr(it))
                         })
         addDestroySubscription(subscribe)
     }

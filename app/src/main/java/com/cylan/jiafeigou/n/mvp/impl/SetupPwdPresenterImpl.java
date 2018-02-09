@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -57,6 +58,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
         LoginHelper.saveUser(login.userName, MD5Util.lowerCaseMD5(login.pwd), 1);
         LoginHelper.performAutoLogin().subscribe(ret -> {
         }, error -> {
+            AppLogger.e(MiscUtils.getErr(error));
         });
     }
 

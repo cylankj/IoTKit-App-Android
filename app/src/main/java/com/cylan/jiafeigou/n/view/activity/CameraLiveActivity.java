@@ -297,6 +297,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                         device.updateProperty((int) i, null);
                     }
                 }, error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
                 });
         if (vIndicator == null) {
             return;

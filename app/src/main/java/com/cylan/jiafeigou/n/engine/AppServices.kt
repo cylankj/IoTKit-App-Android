@@ -65,7 +65,6 @@ class AppServices() : Service(), NetworkCallback {
         super.onDestroy()
         HookerSupervisor.removeHooker(appHooker)
         NetMonitor.getNetMonitor().unregister(this)
-        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "LoginHelper.performAutoLogin()")
     }
 
     private inner class AppHooker : HookerSupervisor.ActionHooker() {

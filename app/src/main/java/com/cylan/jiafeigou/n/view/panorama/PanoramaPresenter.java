@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData;
 import com.cylan.jiafeigou.rtmp.youtube.util.YouTubeApi;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -91,7 +90,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private volatile boolean upgrade = false;
     @Inject
     JFGSourceManager sourceManager;
-    private AbstractVersion<AbstractVersion.BinVersion> version;
+    private PanDeviceVersionChecker version;
 
     @Inject
     public PanoramaPresenter(PanoramaCameraContact.View view) {
@@ -825,6 +824,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshConnectionMode(-1);
                     }
                 }, e -> {
+                    AppLogger.e(MiscUtils.getErr(e));
                 });
         addStopSubscription(subscribe);
     }
@@ -839,6 +839,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     //必须手动断开,因为rxBus订阅不会断开
                     throw new RxEvent.HelperBreaker(version);
                 }, AppLogger::e);
+        if (version != null) {
+            version.clean();
+        }
         version = new PanDeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
@@ -1265,7 +1268,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void stop() {
         super.stop();
         if (version != null) {
-            SubscriptionSupervisor.unsubscribe(version, SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
+            version.clean();
         }
     }
 }

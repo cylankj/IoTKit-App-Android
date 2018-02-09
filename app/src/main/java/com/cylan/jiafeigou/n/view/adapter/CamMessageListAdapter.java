@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.cam.item.FaceItem;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -28,7 +29,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -436,22 +436,23 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     StringBuilder builder = new StringBuilder();
                     for (int i = 0; i < dpAlarm.persons.size(); i++) {
                         DpMsgDefine.PersonDetail personDetail = dpAlarm.persons.get(i);
-                        Number parse = null;
-                        try {
-                            parse = NumberFormat.getInstance().parse(personDetail.age);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
                         boolean isStranger = TextUtils.isEmpty(personDetail.name) && TextUtils.isEmpty(personDetail.age) && TextUtils.isEmpty(personDetail.sex);
                         builder.append(TextUtils.isEmpty(personDetail.name) ? getContext().getString(R.string.MESSAGES_FILTER_STRANGER) : personDetail.name);
                         if (!isStranger && !TextUtils.isEmpty(personDetail.sex) && !TextUtils.isEmpty(personDetail.age)) {
+                            Number parse = null;
+                            try {
+                                parse = NumberFormat.getInstance().parse(personDetail.age);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                AppLogger.e(MiscUtils.getErr(e));
+                            }
                             builder.append("(").
                                     append(TextUtils.equals("female", personDetail.sex) ?
                                             ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_FEMALE) :
                                             ContextUtils.getContext().getString(R.string.MESSAGES_GENDER_MALE)
                                     )
                                     .append(",")
-                                    .append(ContextUtils.getContext().getString(R.string.MESSAGES_AGE, parse == null ? String.valueOf(personDetail.age) : String.valueOf(parse.intValue())))
+                                    .append(ContextUtils.getContext().getString(R.string.MESSAGES_AGE, parse == null ? "" + personDetail.age : String.valueOf(parse.intValue())))
                                     .append(")");
                         }
                         if (i != dpAlarm.persons.size() - 1) {

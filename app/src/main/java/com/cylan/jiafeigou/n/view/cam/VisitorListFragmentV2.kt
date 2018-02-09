@@ -246,16 +246,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
             val visibleItemCount = gridLayoutManager.childCount
             val totalItemCount = gridLayoutManager.itemCount
             if (visibleItemCount + visibleItemPosition >= totalItemCount && isLoadingFinished && viewExpanded) {
-                Log.d("tag", "tag.....load more")
+                AppLogger.w("VisitorListFragmentV2 OnLoadMore")
                 isLoadingFinished = false
-                face_header.post {
-                    if (viewExpanded) {
-                        if (footerAdapter.adapterItemCount == 0)
-                            footerAdapter.add(moreItem)
-                    }
-                    onLoadMore()
+                if (viewExpanded) {
+                    if (footerAdapter.adapterItemCount == 0)
+                        footerAdapter.add(moreItem)
                 }
-
+                onLoadMore()
             }
         }
     }
@@ -292,7 +289,9 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                decideLoadMore()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isLoadingFinished) {
+//                    decideLoadMore()
+                }
             }
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -408,8 +407,8 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
     fun onLoadMore() {
         Log.d("VisitorListFragmentV2", "onLoadMore")
-        face_header.removeCallbacks(moreRunnable)
-        face_header.postDelayed(moreRunnable, 500)
+        face_header?.removeCallbacks(moreRunnable)
+        face_header?.postDelayed(moreRunnable, 1000)
     }
 
     @OnClick(R.id.more_text)
@@ -417,6 +416,13 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         Log.d("VisitorFragment", "clickedExpandArrow")
         viewExpanded = !viewExpanded
         setExpanded(viewExpanded)
+        if (!viewExpanded) {
+            (faceAdapter.getItem(currentPosition) as? FaceItem)?.apply {
+                visitorListener?.onLoadItemInformation(faceItemType, if (faceAdapter.isNormalView) visitor?.personId
+                        ?: "" else strangerVisitor?.faceId
+                        ?: "")
+            }
+        }
     }
 
     private fun setExpanded(expanded: Boolean) {
@@ -531,15 +537,7 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         face_header.postDelayed({
             footerAdapter.clear()
             isLoadingFinished = true
-        }, 500)
-    }
-
-    private fun decideShowFooter() {
-        footerAdapter.clear()
-        if (viewExpanded) {
-            footerAdapter.add(moreItem)
-        }
-        isLoadingFinished = true
+        }, 700)
     }
 
     open fun exitStranger() {
@@ -581,17 +579,17 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceItemType = faceItem?.getFaceType() ?: FaceItem.FACE_TYPE_STRANGER_SUB
         faceItem?.apply {
             presenter.fetchVisitsCount(strangerVisitor?.faceId!!, FILTER_TYPE_STRANGER)
-//            if (!isExpanded) {
-            visitorListener?.onLoadItemInformation(faceItemType, faceItem.strangerVisitor?.faceId
-                    ?: "")
-//            }
+            if (!viewExpanded) {
+                visitorListener?.onLoadItemInformation(faceItemType, faceItem.strangerVisitor?.faceId
+                        ?: "")
+            }
         }
         visitorListener?.onStrangerVisitorReady(visitorList)
         isLoadingFinished = true
         face_header.postDelayed({
             footerAdapter.clear()
             isLoadingFinished = true
-        }, 500)
+        }, 700)
     }
 
     open fun refreshContent() {

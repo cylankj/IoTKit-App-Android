@@ -22,23 +22,19 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
  */
 public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListContract.View>
         implements HomePageListContract.Presenter {
-    private CompositeSubscription recordSub;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
@@ -49,12 +45,30 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         super.start();
         getShareDevicesListRsp();
         devicesUpdate();
-        internalUpdateUuidList();
         robotDeviceDataSync();
         JFGAccountUpdate();
         deviceRecordStateSub();
         deviceUnbindSub();
         timeCheckerSub();
+        monitorRefreshEvent();
+    }
+
+    private void monitorRefreshEvent() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RequiredRefreshEvent.class)
+                .throttleLast(1000, TimeUnit.MILLISECONDS)
+                .retry()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(requiredRefreshEvent -> {
+                    subUuidList();
+                }, error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
+                    monitorRefreshEvent();
+                });
+        addStopSubscription(subscribe);
+    }
+
+    private static class RequiredRefreshEvent {
+        public static RequiredRefreshEvent INSTANCE = new RequiredRefreshEvent();
     }
 
     private void timeCheckerSub() {
@@ -62,28 +76,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         //过了好久没有收到同步消息,这时如果没有定时任务,主页还会显示刚刚,这就不正确了,所以加入了定时任务,来定时
         //更新主页的时间
         Subscription subscribe = Observable.interval(5, TimeUnit.MINUTES)
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        subUuidList();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-
-                    }
+                .retry()
+                .subscribe(aLong -> RxBus.getCacheInstance().post(RequiredRefreshEvent.INSTANCE), throwable -> {
+                    timeCheckerSub();
                 });
         addStopSubscription(subscribe);
     }
 
     private void initDeviceRecordState() {
         List<Device> device = DataSourceManager.getInstance().getAllDevice();
-//        String uuid = null;
-//        boolean apDirect = false;
-        if (recordSub != null && !recordSub.isUnsubscribed()) {
-            recordSub.unsubscribe();
-        }
-        recordSub = new CompositeSubscription();
         if (device != null) {
             for (Device device1 : device) {
                 if (device1 == null) {
@@ -91,11 +92,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 }
                 if (JFGRules.isPan720(device1.pid) && JFGRules.isDeviceOnline(device1.uuid)) {//只有在线才发消息,否则没有意义
                     Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
-                        if (recordSub != null && !recordSub.isUnsubscribed()) {
-                            recordSub.unsubscribe();
-                        }
                     }, e -> AppLogger.e(e.getMessage()));
-                    recordSub.add(subscribe);
+                    addSubscription("deviceRecordMonitor", subscribe);
                 }
             }
         }
@@ -108,26 +106,27 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     if (getView() != null) {
                         getView().onRefreshDeviceList();
                     }
+                }, error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
                 });
         addStopSubscription(subscribe);
     }
 
     private void deviceUnbindSub() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
-                .subscribe(event -> {
-                    subUuidList();
-                }, e -> {
+                .retry()
+                .subscribe(event -> RxBus.getCacheInstance().post(RequiredRefreshEvent.INSTANCE), e -> {
                     e.printStackTrace();
                     AppLogger.e(e);
+                    deviceUnbindSub();
                 });
         addStopSubscription(subscribe);
     }
 
     private void getShareDevicesListRsp() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {
-                    RxBus.getCacheInstance().post(new InternalHelp());
+                    RxBus.getCacheInstance().post(RequiredRefreshEvent.INSTANCE);
                     AppLogger.w("shareListRsp");
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
@@ -142,8 +141,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private void devicesUpdate() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> subUuidList(), throwable -> {
+                .subscribe(ret -> RxBus.getCacheInstance().post(RequiredRefreshEvent.INSTANCE), throwable -> {
                     devicesUpdate();
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
@@ -184,7 +182,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void subUuidList() {
         List<Device> list = DataSourceManager.getInstance().getAllDevice();
         AppLogger.w("subUuidList?" + ListUtils.getSize(list));
-        getView().onItemsRsp(new ArrayList<>(list));
+        getView().onItemsRsp(list);
         getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 
@@ -196,17 +194,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void robotDeviceDataSync() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(msg -> subUuidList(), AppLogger::e);
+                .subscribe(msg -> RxBus.getCacheInstance().post(RequiredRefreshEvent.INSTANCE), error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
+                    robotDeviceDataSync();
+                });
         addStopSubscription(subscribe);
     }
-
-    private void internalUpdateUuidList() {
-        Subscription subscribe = RxBus.getCacheInstance().toObservable(InternalHelp.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> subUuidList(), AppLogger::e);
-        addStopSubscription(subscribe);
-    }
-
 
     @Override
     public void fetchDeviceList(boolean manually) {
@@ -240,14 +233,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 //            NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 //            updateConnectInfo(null);
         } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-            RxBus.getCacheInstance().post(new InternalHelp());
+            RxBus.getCacheInstance().post(RequiredRefreshEvent.INSTANCE);
             initDeviceRecordState();
         }
         WifiInfo wifiInfo = NetUtils.getWifiManager().getConnectionInfo();
         AppLogger.w("网络变化?" + (wifiInfo == null ? null : (wifiInfo.getSupplicantState()) + "," + wifiInfo.getSSID()));
     }
-
-    private static final class InternalHelp {
-    }
-
 }

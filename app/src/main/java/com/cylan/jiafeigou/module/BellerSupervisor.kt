@@ -153,14 +153,18 @@ object BellerSupervisor : Supervisor {
     }
 
     @JvmStatic
-    fun receivePushBeller(context: Context, message: String, bundle: Bundle) {
+    fun receivePushBeller(context: Context, message: String?, bundle: Bundle) {
         Log.d(TAG, "receive push beller,message:$message,bundle:$bundle")
+        AppLogger.d("receivePushBeller,message:$message,bundle:$bundle")
         //[16,'500000000385','',1488012270,1]
-        val items = message.split(",")
-        val cid = items[1].replace("\'", "")
-        val time = items[3].toLong()
-        val url = items[4].replace("\'", "")
-        performLauncher(cid, time, url)
+        val items = message?.split(",")
+        val cid = items?.getOrNull(1)?.replace("\'", "")
+        val time = items?.getOrNull(3)?.toLong()
+        val url = items?.getOrNull(4)?.replace("\'", "")
+        if (cid.isNullOrEmpty() || time == null || url.isNullOrEmpty()) {
+            return
+        }
+        performLauncher(cid!!, time, url!!)
     }
 
     @JvmStatic

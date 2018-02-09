@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -70,6 +71,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
                     if (throwable instanceof TimeoutException) {
                         mView.onErr(ERR_NO_RAW_LIST);
                     }
+                    AppLogger.e(MiscUtils.getErr(throwable));
                 });
         addSubscription(subscription, "startScan");
 

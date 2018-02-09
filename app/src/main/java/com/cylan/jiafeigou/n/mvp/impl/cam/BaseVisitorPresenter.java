@@ -133,6 +133,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 .timeout(30, TimeUnit.SECONDS)
                 .subscribe(visitorList -> mView.onVisitorListReady(visitorList, version), e -> {
                     e.printStackTrace();
+                    AppLogger.e(e);
                 });
         addSubscription(subscription, FETCH_VISITOR_LIST);
     }
@@ -197,7 +198,7 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                         AppLogger.w("获取未读数:" + rrsp.toString());
                         mView.onVisitsTimeRsp(rrsp.faceFaceId, rrsp.count, type);
                     }, throwable -> {
-
+                        AppLogger.e(MiscUtils.getErr(throwable));
                     });
             addSubscription(su, "fetchVisitsCount");
 

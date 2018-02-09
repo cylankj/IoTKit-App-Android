@@ -4,6 +4,8 @@ package com.cylan.jiafeigou.n.view.bind;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -28,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -36,6 +39,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.zxing.Result;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -109,7 +113,11 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     Intent intent = new Intent(Settings.ACTION_SETTINGS);
                     intent.setData(Uri.parse("package:" + getContext().getPackageName()));
-                    startActivityForResult(intent, 0);
+                    PackageManager packageManager = ContextUtils.getContext().getPackageManager();
+                    List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    if (list.size() > 0) {
+                        startActivityForResult(intent, 0);
+                    }
                 },
                 getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {

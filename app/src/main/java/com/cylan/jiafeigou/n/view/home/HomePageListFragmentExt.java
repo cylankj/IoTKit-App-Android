@@ -15,6 +15,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,11 +68,11 @@ import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.commons.utils.DiffCallback;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
 import com.mikepenz.fastadapter.listeners.OnLongClickListener;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -132,29 +133,18 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.presenter = new HomePageListPresenterImpl(this);
+
     }
 
-    private Runnable refreshDeviceRunnable = new Runnable() {
-        @Override
-        public void run() {
-            presenter.fetchDeviceList(false);
-        }
-    };
 
     @Override
     public void onStart() {
         super.onStart();
-        rVDevicesList.removeCallbacks(refreshDeviceRunnable);
         //暂时禁用 NestedScroll 避免出现首页白块
-        srLayoutMainContentHolder.setNestedScrollingEnabled(false);
         if (presenter != null) {
-            appbar.addOnOffsetChangedListener(this);
-            srLayoutMainContentHolder.setOnRefreshListener(this);
-            onItemsRsp(DataSourceManager.getInstance().getAllDevice());
             updateAccount.run();
             //延迟两秒钟在请求
-            rVDevicesList.postDelayed(refreshDeviceRunnable, 2000L);
-
+            presenter.fetchDeviceList(false);
         } else {
             AppLogger.e("presenter is null");
         }
@@ -169,10 +159,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (showUserCase) {
             PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
             HomePageCoverFragment fragment = new HomePageCoverFragment();
-            imgBtnAddDevices.post(() -> getFragmentManager()
-                    .beginTransaction().add(android.R.id.content, fragment)
-                    .addToBackStack("HomePageCoverFragment")
-                    .commitAllowingStateLoss());
+            FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) {
+                fragmentManager.beginTransaction().add(android.R.id.content, fragment)
+                        .addToBackStack("HomePageCoverFragment")
+                        .commitAllowingStateLoss();
+            }
         }
 
         if (showTipAnimation) {
@@ -235,7 +227,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
-
+        srLayoutMainContentHolder.setNestedScrollingEnabled(false);
+        srLayoutMainContentHolder.setOnRefreshListener(this);
+        appbar.addOnOffsetChangedListener(this);
         initListAdapter();
         initProgressBarColor();
         initSomeViewMargin();
@@ -306,7 +300,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onStop() {
         super.onStop();
-        rVDevicesList.removeCallbacks(refreshDeviceRunnable);
         if (set != null) {
             set.cancel();
             set = null;
@@ -372,37 +365,35 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-
-    private class ItemRspRunnable implements Runnable {
-        private volatile List<Device> resultList;
-
-        public void setResultList(List<Device> resultList) {
-            if (resultList != null) {
-                this.resultList = resultList;
-            }
+    private DiffCallback<HomeItem> diffCallback = new DiffCallback<HomeItem>() {
+        @Override
+        public boolean areItemsTheSame(HomeItem oldItem, HomeItem newItem) {
+            return TextUtils.equals(oldItem.getUUid(), newItem.getUUid());
         }
 
         @Override
-        public synchronized void run() {
-            if (resultList != null) {
-                mItemAdapter.setNewList(MiscUtils.getHomeItemListFromDevice(new ArrayList<>(resultList)));
-                emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-            }
-//        //不管怎么样都要刷新下,因为 homeItem 比较相等的方法并不能涵盖所有条件,不刷新可能导致主页消息更新不及时
-//        mItemAdapter.notifyAdapterDataSetChanged();
-
+        public boolean areContentsTheSame(HomeItem oldItem, HomeItem newItem) {
+            return false;
         }
-    }
 
-    private ItemRspRunnable itemRspRunnable = new ItemRspRunnable();//放在频繁刷新
+        @Nullable
+        @Override
+        public Object getChangePayload(HomeItem oldItem, int oldItemPosition, HomeItem newItem, int newItemPosition) {
+            return null;
+        }
+    };
 
     @UiThread
     @Override
     public void onItemsRsp(List<Device> resultList) {
-        rVDevicesList.removeCallbacks(itemRspRunnable);
-        itemRspRunnable.setResultList(resultList);
-        rVDevicesList.postDelayed(itemRspRunnable, 700);
-        onRefreshFinish();
+        if (resultList != null) {
+            List<HomeItem> homeItems = MiscUtils.getHomeItemListFromDevice(resultList);
+            mItemAdapter.setNewList(homeItems);
+        }
+        emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        if (!refreshFinish) {
+            onRefreshFinish();
+        }
     }
 
     private void enableNestedScroll() {
@@ -475,8 +466,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private Runnable updateAccount = new Runnable() {
         @Override
         public void run() {
-//            if (!isAdded()) return;
-
+            if (!isAdded()) return;
             JFGAccount greetBean = DataSourceManager.getInstance().getJFGAccount();
             tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
@@ -598,20 +588,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         //不使用post,因为会泄露
-
-//        List<PropertyItem> all = BaseApplication.getPropertyItemBox().getAll();
-//        Log.e("AAAA", all.toString());
         if (refreshFinish) {
             srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
-
             Log.d("fetch", "fetch:initSubscription ");
             if (presenter != null) {
                 presenter.fetchDeviceList(true);
             }
         }
-
-//        presenter.refreshDevices();
-
         refreshFinish = false;
     }
 

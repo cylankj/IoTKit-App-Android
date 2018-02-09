@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
  */
 public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingContact.View> implements PanoramaSettingContact.Presenter {
 
-    private AbstractVersion<AbstractVersion.BinVersion> version;
+    private PanDeviceVersionChecker version;
 
     @Inject
     public PanoramaSettingPresenter(PanoramaSettingContact.View view) {
@@ -52,6 +52,9 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
                     throw new RxEvent.HelperBreaker(version);
                 }, AppLogger::e);
         addStopSubscription(subscribe);
+        if (version!=null){
+            version.clean();
+        }
         version = new PanDeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
@@ -61,8 +64,8 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
     @Override
     public void stop() {
         super.stop();
-        if (version != null) {
-            SubscriptionSupervisor.unsubscribe(version, SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
+        if (version!=null){
+            version.clean();
         }
     }
 

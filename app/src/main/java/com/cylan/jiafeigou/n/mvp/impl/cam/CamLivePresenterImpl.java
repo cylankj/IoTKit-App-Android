@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.module.DoorLockHelper;
 import com.cylan.jiafeigou.module.HistoryManager;
 import com.cylan.jiafeigou.module.HookerSupervisor;
-import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.module.Supervisor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
@@ -88,6 +87,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 帧率记录
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
+    private PanDeviceVersionChecker version;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
@@ -767,16 +767,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         subscriber.onCompleted();
                         if (bitmap != null) {
                             final String cover = JConstant.MEDIA_PATH + File.separator + uuid + "_cover.png";
-                            byte[] bytes = CameraLiveHelper.putCache(liveActionHelper, bitmap, true);
-                            if (bytes != null) {
-                                BitmapUtils.saveByteArray2File(bytes, cover);
-                                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
-                                if (saveInPhotoAndNotify) {
-                                    final String fileName = uuid + System.currentTimeMillis() + ".png";
-                                    final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
-                                    BitmapUtils.saveByteArray2File(bytes, filePath);
-                                }
+//                            byte[] bytes = CameraLiveHelper.putCache(liveActionHelper, bitmap, true);
+//                            if (bytes != null) {
+//                                BitmapUtils.saveByteArray2File(bytes, cover);
+                            BitmapUtils.saveBitmap2file(bitmap, cover);
+                            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
+                            if (saveInPhotoAndNotify) {
+                                final String fileName = uuid + System.currentTimeMillis() + ".png";
+                                final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+//                                    BitmapUtils.saveByteArray2File(bytes, filePath);
+                                BitmapUtils.saveBitmap2file(bitmap, filePath);
                             }
+//                            }
                         }
                     }
 
@@ -1103,7 +1105,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
                     mView.showFirmwareDialog();
                 }, AppLogger::e);
-        PanDeviceVersionChecker version = new PanDeviceVersionChecker();
+        if (version != null) {
+            version.clean();
+        }
+        version = new PanDeviceVersionChecker();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.setShowCondition(() -> {
@@ -1449,9 +1454,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 subscriber.onCompleted();
                 boolean isThumbPictureChanged = CameraLiveHelper.checkIsThumbPictureChanged(liveActionHelper);
                 AppLogger.d(CameraLiveHelper.TAG + ":是否有可用的预览图片:" + lastLiveThumbPicture);
-                if (isThumbPictureChanged) {
-                    CameraLiveHelper.putCache(liveActionHelper, lastLiveThumbPicture, true);
-                }
+//                if (isThumbPictureChanged) {
+//                    CameraLiveHelper.putCache(liveActionHelper, lastLiveThumbPicture, true);
+//                }
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -1659,7 +1664,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void stop() {
         super.stop();
-        SubscriptionSupervisor.unsubscribe("com.cylan.jiafeigou.misc.ver.DeviceVersionChecker", SubscriptionSupervisor.CATEGORY_DEFAULT, "DeviceVersionChecker.startCheck");
+        if (version != null) {
+            version.clean();
+        }
         liveActionHelper.onUpdateLastLiveThumbPicture(liveActionHelper, null);
         HistoryManager.getInstance().removeHistoryObserver(uuid, this);
     }

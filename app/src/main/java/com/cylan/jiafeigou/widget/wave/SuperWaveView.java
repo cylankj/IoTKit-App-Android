@@ -97,15 +97,23 @@ public class SuperWaveView extends View {
         return (int) (Resources.getSystem().getDisplayMetrics().density * dp + 0.5f);
     }
 
+    private Runnable onSizeChangedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            for (int i = 0; i < waveCount; i++) {
+                waveShader[i] = createShader(createSinePath(generatePhase(),
+                        generateWaterLevel(i),
+                        generateAmplitude()), i);
+                wavePaint[i].setShader(waveShader[i]);
+            }
+        }
+    };
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        for (int i = 0; i < waveCount; i++) {
-            waveShader[i] = createShader(createSinePath(generatePhase(),
-                    generateWaterLevel(i),
-                    generateAmplitude()), i);
-            wavePaint[i].setShader(waveShader[i]);
-        }
+        removeCallbacks(onSizeChangedRunnable);
+        post(onSizeChangedRunnable);
     }
 
     private final float[] phaseArray = {2.0f, 2.0f, 2.0f, 2.0f, 2.0f};
@@ -181,7 +189,7 @@ public class SuperWaveView extends View {
 
     private void drawShader(Canvas canvas, final int index) {
         // perform paint shader according to mShowWave state
-        if (waveShader != null) {
+        if (waveShader != null && waveShader[index] != null) {
             // first call after mShowWave, assign it to our paint
             if (wavePaint[index].getShader() == null) {
                 wavePaint[index].setShader(waveShader[index]);

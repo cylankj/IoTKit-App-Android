@@ -17,9 +17,10 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.module.SubscriptionSupervisor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.List;
@@ -49,6 +50,8 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
 
     private int todayCount = 0;
     private int allCount = 0;
+
+    Subscription subscription;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +85,9 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, null);
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
     public static VisitorStatisticsDialogFragment newInstance(String uuid) {
@@ -95,7 +100,10 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
 
 
     private void performLoadVisitorStatistics() {
-        Subscription subscribe1 = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        subscription = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 DpMsgDefine.VisitorCountStatisticsReq statisticsReq = new DpMsgDefine.VisitorCountStatisticsReq();
                 long timeNow = System.currentTimeMillis() / 1000;
@@ -127,9 +135,8 @@ public class VisitorStatisticsDialogFragment extends DialogFragment {
                         performRefreshContent(todayCount, visitorCountStatisticsRsp.count);
                     }
                 }, throwable -> {
-
+                    AppLogger.e(MiscUtils.getErr(throwable));
                 });
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DEFAULT, "performLoadVisitorStatistics", subscribe1);
     }
 
     private void performRefreshContent(int todayCount, int allCount) {

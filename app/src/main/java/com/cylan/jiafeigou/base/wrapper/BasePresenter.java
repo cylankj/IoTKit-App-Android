@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dagger.annotation.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.module.SubscriptionSupervisor;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -34,6 +34,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -49,6 +50,9 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     protected IDPTaskDispatcher mTaskDispatcher;//在不支持 inject 的时候为空,小心使用
     protected String uuid;
     protected View mView;
+    protected CompositeSubscription stopCompositeSubscription = new CompositeSubscription();
+    protected CompositeSubscription destroyCompositeSubscription = new CompositeSubscription();
+    protected MapSubscription mapSubscription= new MapSubscription();
 
     protected volatile boolean subscribed = false;
 
@@ -80,16 +84,16 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     @CallSuper
     public void unsubscribe() {
         subscribed = false;
+        mView = null;
 //        mContext = null;
 //        mTaskDispatcher = null;
 //        mLoadingManager = null;
-//        mView = null;
     }
 
     @Override
     @CallSuper
     public void destroy() {
-        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_DESTROY, null);
+        destroyCompositeSubscription.clear();
     }
 
     @Override
@@ -131,7 +135,7 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
             }
         }
-        SubscriptionSupervisor.unsubscribe(this, SubscriptionSupervisor.CATEGORY_STOP, null);
+        stopCompositeSubscription.clear();
     }
 
     protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
@@ -139,11 +143,18 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     }
 
     protected String addStopSubscription(Subscription subscription) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
-        String method = getClass().getName() + ":stop:" + traceElement.getMethodName();
-        AppLogger.w("addSubscription" + method);
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_STOP, method, subscription);
-        return method;
+//        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
+//        String method = getClass().getName() + ":stop:" + traceElement.getMethodName();
+//        AppLogger.w("addSubscription" + method);
+//        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_STOP, method, subscription);
+        if (!stopCompositeSubscription.isUnsubscribed()) {
+            stopCompositeSubscription.add(subscription);
+        } else {
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
+        }
+        return "";
     }
 
     protected <T> Observable.Transformer<T, T> applyLoading(boolean cancelable, int resId, Object... args) {
@@ -168,10 +179,15 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
 
 
     protected String addDestroySubscription(Subscription subscription) {
-        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
-        String method = getClass().getName() + ":destroy:" + traceElement.getMethodName();
-        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DESTROY, method, subscription);
-        return method;
+//        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
+//        String method = getClass().getName() + ":destroy:" + traceElement.getMethodName();
+//        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_DESTROY, method, subscription);
+        if (!destroyCompositeSubscription.isUnsubscribed()) {
+            destroyCompositeSubscription.add(subscription);
+        } else if (subscription != null) {
+            subscription.unsubscribe();
+        }
+        return "";
     }
 
     protected String getMethodName() {

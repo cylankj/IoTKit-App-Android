@@ -32,6 +32,8 @@ import dagger.android.HasActivityInjector;
 import dagger.android.HasFragmentInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import rx.Subscription;
+import rx.plugins.RxJavaErrorHandler;
+import rx.plugins.RxJavaPlugins;
 
 /**
  * Created by hunt on 16-5-14.
@@ -63,18 +65,18 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static AppComponent appComponent;
     private static Activity currentActivity;
 
-//    public static BoxStore getBoxStore() {
-//        return boxStore;
-//    }
-//
-//    //
-//    public static Box<PropertyItem> getPropertyItemBox() {
-//        return propertyItemBox;
-//    }
-//
-//    public static Box<Device> getDeviceBox() {
-//        return deviceBox;
-//    }
+    private RxJavaErrorHandler defaultErrorHandler = new RxJavaErrorHandler() {
+        @Override
+        public void handleError(Throwable e) {
+            super.handleError(e);
+            AppLogger.e(e);
+        }
+
+        @Override
+        protected String render(Object item) throws InterruptedException {
+            return super.render(item);
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -82,9 +84,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
             injectIfNecessary();
         }
         super.onCreate();
-
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
+            RxJavaPlugins.getInstance().registerErrorHandler(defaultErrorHandler);
             //设计师不需要这个固定通知栏.20170531
 //            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
