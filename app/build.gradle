@@ -255,7 +255,7 @@ android {
                                     "weChatAppSecret"      : "b867a2e433701bc00dffda2099655d7e",
                                     "sinaAppKey"           : "\\ 2444488421",
                                     "sinaAppSecret"        : "dfba216fe44f0d6613cdda1557790a31",
-                                    "SERVER"               : "alitest2.jfgou.com:443",
+                                    "SERVER"               : "yun3.jfgou.com:443",
                                     "GCM_APP_ID"           : "\\ 985304692675",
                                     "ApplicationId"        : applicationId,
                                     "XiaoMiAppId"          : "\\ 5981759669387",
