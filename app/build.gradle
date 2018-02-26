@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 apply plugin: 'kotlin-android'
@@ -173,11 +173,11 @@ android {
         pickFirst 'META-INF/*'
     }
 
-//    flavorDimensions "cylan"
+    flavorDimensions "cylan"
     productFlavors {
         _yun {
             //vid vkey已经搬到Security.java
-//            dimension "cylan"
+            dimension "cylan"
             //官方运营
             applicationId "com.cylan.cleverdog"
             versionName vName
@@ -208,7 +208,7 @@ android {
             ]
         }
         _doby {
-//            dimension "cylan"
+            dimension "cylan"
             applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode
@@ -240,7 +240,7 @@ android {
             ]
         }
         _aiface {
-//            dimension "cylan"
+            dimension "cylan"
             applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode

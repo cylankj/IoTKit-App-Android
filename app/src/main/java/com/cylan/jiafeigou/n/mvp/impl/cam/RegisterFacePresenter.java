@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
-import android.util.Log;
-
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
@@ -94,7 +92,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                 })
                 .flatMap(reqId -> RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
                         .first(jfgMsgHttpResult -> {
-                            Log.e("RegisterFacePresenter", "http put file result:" + jfgMsgHttpResult.ret + ",reqid:" + jfgMsgHttpResult.requestId + ",except:" + reqId);
+                            AppLogger.e("RegisterFacePresenter," + "http put file result:" + jfgMsgHttpResult.ret + ",reqid:" + jfgMsgHttpResult.requestId + ",except:" + reqId);
                             return jfgMsgHttpResult.requestId == reqId;
                         }))
                 .map(req -> {
@@ -131,7 +129,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                                 .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                                 .execute();
                         JSONObject jsonObject = new JSONObject(execute.body().string());
-                        Log.e("RegisterFacePresenter", "RegisterByFace response:" + jsonObject);
+                        AppLogger.e("RegisterFacePresenter,"+ "RegisterByFace response:" + jsonObject);
                         return jsonObject.optInt("code", -1);
                     } catch (Exception e) {
                         e.printStackTrace();

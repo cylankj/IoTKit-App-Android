@@ -41,8 +41,9 @@ public class SnPresenter extends AbstractFragmentPresenter<SnContract.View> impl
                     }
                 })
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.UniversalDataRsp.class)
-                        .filter(ret -> ret.seq == aLong && ret.data != null)
-                        .timeout(3, TimeUnit.SECONDS))
+                        .filter(ret -> ret.seq == aLong && ret.data != null))
+                .first()
+                .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     int pid = DpUtils.unpackDataWithoutThrow(ret.data, int.class, -1);

@@ -15,6 +15,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import permissions.dispatcher.PermissionUtils;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,8 +73,8 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
     private void mineTabNewInfoRsp() {
         Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.InfoUpdate.class)
                 .subscribeOn(Schedulers.io())
+                .throttleFirst(2, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null)
                 .subscribe(ret -> {
                     TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineFragment");
                     mView.refreshHint(node != null && node.getTraversalCount() > 0);

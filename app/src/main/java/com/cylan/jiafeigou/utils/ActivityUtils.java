@@ -40,7 +40,7 @@ public class ActivityUtils {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);
         transaction.addToBackStack(fragment.getClass().getSimpleName());
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     public static void addFragment(@NonNull FragmentManager fragmentManager,
@@ -65,7 +65,7 @@ public class ActivityUtils {
         if (addToStack) {
             transaction.addToBackStack(fragment.getClass().getSimpleName());
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
@@ -78,7 +78,7 @@ public class ActivityUtils {
                         R.anim.slide_down_out)
                 .add(containerId, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
@@ -155,7 +155,7 @@ public class ActivityUtils {
                         R.anim.slide_out_right,
                         R.anim.slide_out_right)
                 .add(containerId, fragment, tag)
-                .commit();
+                .commitAllowingStateLoss();
         return true;
     }
 
@@ -243,7 +243,7 @@ public class ActivityUtils {
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(id, fragment, fragment.getClass().getSimpleName())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     /**

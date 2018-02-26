@@ -41,18 +41,22 @@ import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
 import com.cylan.jiafeigou.widget.page.EViewPager;
 import com.google.gson.Gson;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 @Badge(parentTag = "NewHomeActivity")
-public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
+public class CameraLiveActivity extends BaseFullScreenFragmentActivity implements ViewPager.OnPageChangeListener {
 
     @BindView(R.id.vp_camera_live)
     EViewPager vpCameraLive;
@@ -63,13 +67,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private PagerSlidingTabStrip vIndicator;
 
     private Device device;
-    private Subscription newMsgSub;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("what the hell uuid is null");
             finishExt();
@@ -103,6 +108,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        compositeSubscription.clear();
         if (MiscUtils.isLand()) {
             handleSystemBar(false, 1);
         }
@@ -111,10 +117,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
 
     private void makeNewMsgSub() {
-        if (newMsgSub != null) {
-            newMsgSub.unsubscribe();
-        }
-        newMsgSub = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> TextUtils.equals(ret.uuid, device.uuid) && vpCameraLive.getCurrentItem() == 0)
                 .flatMap(ret -> Observable.from(ret.dpList))
@@ -125,7 +128,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                     if (vHint != null && vHint instanceof HintTextView) {
                         ((HintTextView) vHint).showHint(true);
                     }
-                }, AppLogger::e);
+                }, e -> AppLogger.e(MiscUtils.getErr(e)));
+        compositeSubscription.add(subscribe);
     }
 
     private boolean filterNewMsgId(long id) {
@@ -233,8 +237,16 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (newMsgSub != null) {
-            newMsgSub.unsubscribe();
+        compositeSubscription.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.clear();
+        if (unbinder != null) {
+            unbinder.unbind();
+            unbinder = null;
         }
     }
 
@@ -263,7 +275,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         customToolbar.post(() -> {
             vIndicator = (PagerSlidingTabStrip) customToolbar.findViewById(R.id.v_indicator);
             vIndicator.setViewPager(vpCameraLive);
-            vIndicator.setOnPageChangeListener(new SimplePageListener());
+            vIndicator.setOnPageChangeListener(this);
             imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
             updateRedHint();
             customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> {
@@ -278,7 +290,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private void removeHint() {
         long[] msgIdList = {401, 222, 40, 505, 512, 526};
-        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 long seq = Command.getInstance().robotCountDataClear(uuid, msgIdList, 0);
                 subscriber.onNext(seq);
@@ -291,6 +303,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 .subscribeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> rsp.seq == seq))
                 .filter(rsp -> rsp.rets.get(0).ret == 0)
+                .timeout(10, TimeUnit.SECONDS)
+                .first()
                 .subscribe(rsp -> {
                     Device device = DataSourceManager.getInstance().getDevice(uuid);
                     for (long i : msgIdList) {
@@ -299,6 +313,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 }, error -> {
                     AppLogger.e(MiscUtils.getErr(error));
                 });
+        compositeSubscription.add(subscribe);
         if (vIndicator == null) {
             return;
         }
@@ -306,19 +321,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         if (vHint != null && vHint instanceof HintTextView) {
             ((HintTextView) vHint).showHint(false);
         }
-//        try {
-//
-//            DataSourceManager.getInstance().clearValue(uuid, 1001, 1002, 1003, 1004, 1005, 1006, 526, 527);
-//            if (vIndicator == null) {
-//                return;
-//            }
-//            View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
-//            if (vHint != null && vHint instanceof HintTextView) {
-//                ((HintTextView) vHint).showHint(false);
-//            }
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
     }
 
     /**
@@ -346,33 +348,31 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
     }
 
-    private class SimplePageListener implements ViewPager.OnPageChangeListener {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            if (position == 1) {
-                removeHint();
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
+    @Override
+    public void onPageSelected(int position) {
+        if (position == 1) {
+            removeHint();
         }
     }
 
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
-    class SimpleAdapterPager extends FragmentPagerAdapter {
+    }
+
+    static class SimpleAdapterPager extends FragmentPagerAdapter {
         private String uuid;
+        private Device device;
 
         public SimpleAdapterPager(FragmentManager fm, String uuid) {
             super(fm);
             this.uuid = uuid;
+            this.device = DataSourceManager.getInstance().getDevice(uuid);
         }
 
         @Override
@@ -384,6 +384,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             } else {
                 return CamMessageListFragment.newInstance(bundle);
             }
+            
         }
 
         @Override
@@ -403,4 +404,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
     }
 
+    @Override
+    public void finishExt() {
+        super.finishExt();
+    }
 }

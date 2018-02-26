@@ -143,10 +143,6 @@ public abstract class BasePresenter<View extends JFGView> implements JFGPresente
     }
 
     protected String addStopSubscription(Subscription subscription) {
-//        StackTraceElement traceElement = Thread.currentThread().getStackTrace()[3];
-//        String method = getClass().getName() + ":stop:" + traceElement.getMethodName();
-//        AppLogger.w("addSubscription" + method);
-//        SubscriptionSupervisor.subscribe(this, SubscriptionSupervisor.CATEGORY_STOP, method, subscription);
         if (!stopCompositeSubscription.isUnsubscribed()) {
             stopCompositeSubscription.add(subscription);
         } else {

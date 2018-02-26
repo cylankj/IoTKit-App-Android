@@ -168,7 +168,9 @@ public class BaseVisitorPresenter extends AbstractFragmentPresenter<VisitorListC
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(r -> mView != null)
-                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList, version), AppLogger::e);
+                .subscribe(visitorList -> mView.onStrangerVisitorListReady(visitorList, version), e -> {
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
         addSubscription(subscription, FETCH_STRANGER_VISITOR_LIST);
     }
 
