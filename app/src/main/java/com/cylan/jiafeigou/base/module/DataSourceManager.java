@@ -858,7 +858,10 @@ public class DataSourceManager implements JFGSourceManager {
                     @Override
                     public void call(Pair<Iterable<Device>, Set<String>> iterableSetPair) {
                         try {
-                            unBindDevices(iterableSetPair.second).subscribe();
+                            unBindDevices(iterableSetPair.second).subscribe(rsp -> {
+                            }, error -> {
+                                AppLogger.e(MiscUtils.getErr(error));
+                            });
                         } catch (Exception e) {
                             AppLogger.e(e);
                         }

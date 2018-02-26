@@ -556,13 +556,17 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void deviceUpdate(Device device) {
-        updateDetails();
+        if (isAdded() && isResumed()) {
+            updateDetails();
+        }
     }
 
     @Override
     public void deviceUpdate(JFGDPMsg msg) throws IOException {
-        if (msg.id == 501 || msg.id == 502 || msg.id == 503 || msg.id == 504 || msg.id == 514 || msg.id == 515) {
-            updateDetails();
+        if (isAdded() && isResumed()) {
+            if (msg.id == 501 || msg.id == 502 || msg.id == 503 || msg.id == 504 || msg.id == 514 || msg.id == 515) {
+                updateDetails();
+            }
         }
     }
 }

@@ -18,7 +18,9 @@ import com.cylan.jiafeigou.module.LoginHelper;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -195,6 +197,8 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             LoginHelper.saveUser(DataSourceManager.getInstance().getAccount().getAccount(), MD5Util.lowerCaseMD5(getNewPassword()), 1);
             LoginHelper.performAutoLogin().subscribe(ret -> {
             }, error -> {
+                error.printStackTrace();
+                AppLogger.e(MiscUtils.getErr(error));
             });
             getActivity().getSupportFragmentManager().popBackStack();
         }

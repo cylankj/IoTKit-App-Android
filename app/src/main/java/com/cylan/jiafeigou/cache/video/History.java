@@ -173,7 +173,10 @@ public class History {
                     return null;
                 })
                 .retry()
-                .subscribe();
+                .subscribe(rsp -> {
+                }, error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
+                });
     }
 
     public void queryHistory(String uuid, int endTime, int way, int count) {

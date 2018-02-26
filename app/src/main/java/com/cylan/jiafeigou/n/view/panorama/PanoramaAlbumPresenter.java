@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
@@ -89,12 +90,13 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private void subscribeNetwork() {
-        Subscription subscribe =  RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
                     BaseDeviceInformationFetcher.getInstance().init(uuid);
                 }, e -> {
+                    AppLogger.e(MiscUtils.getErr(e));
                 });
         addStopSubscription(subscribe);
     }

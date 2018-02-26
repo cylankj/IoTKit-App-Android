@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -95,7 +96,8 @@ public class AdsStrategy {
                                 }
                             }
                         }, e -> {
-
+                            e.printStackTrace();
+                            AppLogger.e(MiscUtils.getErr(e));
                         });
                 subscriber.add(subscribe);
                 try {

@@ -42,7 +42,8 @@ class AppServices() : Service(), NetworkCallback {
         super.onCreate()
         HookerSupervisor.addHooker(appHooker)
         BellerSupervisor.monitorBeller()
-        NetMonitor.getNetMonitor().registerNet(this, arrayOf(ConnectivityManager.CONNECTIVITY_ACTION, NETWORK_STATE_CHANGED_ACTION))
+        var actions: Array<String> = arrayOf(ConnectivityManager.CONNECTIVITY_ACTION, NETWORK_STATE_CHANGED_ACTION)
+        NetMonitor.getNetMonitor().registerNet(this, actions)
     }
 
 

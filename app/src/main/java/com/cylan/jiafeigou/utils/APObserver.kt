@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant
 import com.cylan.jiafeigou.module.Command
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
+import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.udpMsgPack.JfgUdpMsg
 import com.google.gson.Gson
 import org.msgpack.MessagePack
@@ -90,6 +91,7 @@ object APObserver {
                         subscriber.onNext(it)
                     }) {
                         it.printStackTrace()
+                        AppLogger.e(MiscUtils.getErr(it))
                     }
             subscriber.add(subscribe)
             subscribe = Schedulers.io().createWorker().schedulePeriodically({

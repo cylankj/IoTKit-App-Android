@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.MonitorAreaSettingContact
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.MiscUtils
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -66,7 +67,10 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                         mView.onRestoreDefaultMonitorAreaSetting()
                     }
                 })
-                {}
+                {
+                    it.printStackTrace()
+                    AppLogger.e(MiscUtils.getErr(it))
+                }
         addDestroySubscription(subscribe)
     }
 
@@ -140,11 +144,13 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
                     }
                 }) {
                     it.printStackTrace()
+                    AppLogger.e(MiscUtils.getErr(it))
                 }
         addDestroySubscription(subscribe)
     }
 
-    @Inject lateinit var appCmd: AppCmd
+    @Inject
+    lateinit var appCmd: AppCmd
     private val TAKE_PICTURE_ACTION =
             +1 shl 0/*转发给对端:0-否，1-是*/ +
                     +1 shl 1/*get/set:0-get，1-set*/ +

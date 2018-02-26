@@ -31,7 +31,8 @@ import javax.inject.Inject
  * Created by yanzhendong on 2017/10/10.
  */
 class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : BasePresenter<FaceManagerContact.View>(view), FaceManagerContact.Presenter {
-    @Inject lateinit var appCmd: AppCmd
+    @Inject
+    lateinit var appCmd: AppCmd
 
     override fun deleteFace(personId: String?, listOf: List<String>) {
         val method = method()
@@ -87,7 +88,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(applyLoading(false,R.string.LOADING))
+                .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({
                     when {
                         it.ret == 0 -> {
@@ -120,7 +121,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     acquaintanceListRsp
                 }
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))
-                .compose(applyLoading(false,R.string.LOADING))
+                .compose(applyLoading(false, R.string.LOADING))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     when (it) {
@@ -132,7 +133,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                         }
                     }
                 }) {
-
+                    AppLogger.e(MiscUtils.getErr(it))
                 }
         addStopSubscription(subscribe)
     }
@@ -199,7 +200,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                         .subscribeOn(Schedulers.io())
                         .timeout(10, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .compose(applyLoading(false,R.string.LOADING))
+                        .compose(applyLoading(false, R.string.LOADING))
                         .subscribe({ rsp ->
                             when {
                                 rsp == null -> {
