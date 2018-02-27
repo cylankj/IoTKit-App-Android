@@ -28,10 +28,6 @@ public interface NewHomeActivityContract {
 
 
     interface Presenter extends BasePresenter {
-        //void loadTable();
-
-        //void doSample();
-
-//        void startUpdate();
+        void performLoginVerify();
     }
 }

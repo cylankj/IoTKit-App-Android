@@ -73,10 +73,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     HintRadioButton btnHomeMine;
 
     private SharedElementCallBackListener sharedElementCallBackListener;
-    //
-//    private HomePageListFragmentExt homePageListFragmentExt;
-//    private HomeWonderfulFragmentExt homeWonderfulFragmentExt;
-//    private HomeMineFragment homeMineFragment;
     private int index = -1;
 
     @Override
@@ -96,8 +92,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         initMainContentAdapter();
         initShowWonderPageSub();
         AfterLoginService.resumeTryCheckVersion();
-
-//        showHomeFragment(0);
         vpHomeContent.setCurrentItem(0);
     }
 
@@ -140,6 +134,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onStart() {
         super.onStart();
+        presenter.performLoginVerify();
         Subscription subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.NeedUpdateGooglePlayService.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action(this), AppLogger::e);

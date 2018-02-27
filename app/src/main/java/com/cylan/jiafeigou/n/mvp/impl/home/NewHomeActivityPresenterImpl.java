@@ -31,13 +31,6 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
     public NewHomeActivityPresenterImpl(NewHomeActivityContract.View view) {
         super(view);
         view.initView();
-        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
-        if (account == null && PermissionUtils.hasSelfPermissions(ContextUtils.getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //为什么在这个页面操作：被回收，可以在任何一个页面。
-            AppLogger.e("被系统回收了，或者Oppo手机，任何一个权限由->禁止，就会kill.导致整个appInit出错");
-            //                AutoSignIn.getInstance().autoLogin();
-            Schedulers.io().createWorker().schedule(LoginHelper::performAutoLogin);
-        }
     }
 
     private void updateRsp() {
@@ -80,5 +73,19 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                     mView.refreshHint(node != null && node.getTraversalCount() > 0);
                 }, throwable -> mineTabNewInfoRsp());
         addStopSubscription(subscribe);
+    }
+
+    @Override
+    public void performLoginVerify() {
+        JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
+        if (account == null && PermissionUtils.hasSelfPermissions(ContextUtils.getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //为什么在这个页面操作：被回收，可以在任何一个页面。
+            AppLogger.e("被系统回收了，或者Oppo手机，任何一个权限由->禁止，就会kill.导致整个appInit出错");
+            Subscription subscribe = LoginHelper.performAutoLogin().subscribe(accountArrived -> {
+            }, error -> {
+                AppLogger.e(MiscUtils.getErr(error));
+            });
+            addDestroySubscription(subscribe);
+        }
     }
 }

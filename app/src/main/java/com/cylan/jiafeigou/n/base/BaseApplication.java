@@ -32,8 +32,6 @@ import dagger.android.HasActivityInjector;
 import dagger.android.HasFragmentInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import rx.Subscription;
-import rx.plugins.RxJavaErrorHandler;
-import rx.plugins.RxJavaPlugins;
 
 /**
  * Created by hunt on 16-5-14.
@@ -64,20 +62,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private volatile boolean needToInject = true;
     private static AppComponent appComponent;
     private static Activity currentActivity;
-
-    private RxJavaErrorHandler defaultErrorHandler = new RxJavaErrorHandler() {
-        @Override
-        public void handleError(Throwable e) {
-            super.handleError(e);
-            AppLogger.e(e);
-        }
-
-        @Override
-        protected String render(Object item) throws InterruptedException {
-            return super.render(item);
-        }
-    };
-
     @Override
     public void onCreate() {
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getPackageName())) {
@@ -86,20 +70,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
-            RxJavaPlugins.getInstance().registerErrorHandler(defaultErrorHandler);
             //设计师不需要这个固定通知栏.20170531
-//            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
             PerformanceUtils.startTrace("appInit");
             stopViewCount = 0;
-            //Dagger2 依赖注入
-//            try {
-//                boxStore = MyObjectBox.builder().androidContext(this).buildDefault();
-//                propertyItemBox = boxStore.boxFor(PropertyItem.class);
-//                deviceBox = boxStore.boxFor(Device.class);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
             DataSourceManager.getInstance();//以后会去掉 datasource
             OkGo.init(this);
             initializationManager.initialization();
