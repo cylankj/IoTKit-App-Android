@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.login;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.rx.RxEvent;
 
 /**
  * Created by chen on 5/30/16.
@@ -18,7 +17,7 @@ public interface SetupPwdContract {
          *
          * @param register , 返回结果。
          */
-        void submitResult(RxEvent.ResultRegister register);
+        void submitResult(int code);
 
         void loginResult(int code);
 

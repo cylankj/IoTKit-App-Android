@@ -115,16 +115,16 @@ public class RegisterPwdFragment extends SetupPwdFragment
     }
 
     @Override
-    public void submitResult(RxEvent.ResultRegister register) {
+    public void submitResult(int code) {
         if (!isAdded() && getView() != null) {
-            getView().postDelayed(() -> switchResult(register), 100);
+            getView().postDelayed(() -> switchResult(code), 100);
         } else {
-            switchResult(register);
+            switchResult(code);
         }
     }
 
-    private void switchResult(RxEvent.ResultRegister register) {
-        switch (register.code) {
+    private void switchResult(int code) {
+        switch (code) {
             case JError.ErrorAccountAlreadyExist:
 //                ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
                 autoLogin();//#115668 手机注册 在设置密码页面输入密码点击确定后，轻提示注册成功，应进入到首页
@@ -139,9 +139,9 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 autoLogin();
                 break;
             default:
-                ToastUtil.showToast("error:" + register.code);
+                ToastUtil.showToast("error:" + code);
         }
-        if (register.code != JError.ErrorOK) {
+        if (code != JError.ErrorOK) {
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, "");
         }

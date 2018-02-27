@@ -801,7 +801,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         switch (state) {
             case STATE_FINISH: {
                 setLiveRectTime(time, true);
-                presenter.performPlayVideoAction(false, time);
+                presenter.performHistoryPlayAndCheckerAction(time);
             }
             break;
             default: {

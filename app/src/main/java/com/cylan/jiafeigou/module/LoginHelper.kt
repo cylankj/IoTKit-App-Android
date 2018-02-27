@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.rx.RxEvent
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ContextUtils
+import com.cylan.jiafeigou.utils.MiscUtils
 import com.cylan.jiafeigou.utils.NetUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import rx.Observable
@@ -83,8 +84,8 @@ object LoginHelper {
                         AppLogger.d("performLogin:receive ResultLogin:" + it)
                         if (it.code == 0) {
                             val subscription = Schedulers.io().createWorker().schedulePeriodically({
-                            val account = Command.getInstance().account
-                            AppLogger.d("performLogin:login successful,starting get account with username:$username,ret:$account")
+                                val account = Command.getInstance().account
+                                AppLogger.d("performLogin:login successful,starting get account with username:$username,ret:$account")
                             }, 0, 2, TimeUnit.SECONDS)
                             subscriber.add(subscription)
                             PushPickerIntentService.start()
@@ -199,6 +200,24 @@ object LoginHelper {
     @JvmStatic
     fun isOpenLogin(): Boolean {
         return loginType >= 3
+    }
+
+    @JvmStatic
+    fun performRegisterAction(account: String, password: String, type: Int, token: String): Observable<Int> {
+        return Observable.create<Int> { subscriber ->
+            val subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister::class.java)
+                    .subscribe({
+                        subscriber.onNext(it.code)
+                        subscriber.onCompleted()
+                    }) {
+                        AppLogger.e(MiscUtils.getErr(it))
+                        subscriber.onNext(-1)
+                        subscriber.onCompleted()
+                    }
+            subscriber.add(subscribe)
+            Command.getInstance().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, password, type, token)
+        }
+                .subscribeOn(Schedulers.io())
     }
 
 }

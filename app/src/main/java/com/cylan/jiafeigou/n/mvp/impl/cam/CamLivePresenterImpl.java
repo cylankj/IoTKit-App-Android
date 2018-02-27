@@ -416,7 +416,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 liveActionHelper.lastReportedPlayError = playError;
             }
         });
-//        addStopSubscription(schedule);
+        addDestroySubscription(schedule);
     }
 
     public void performUpdateBottomMenuEnable() {
@@ -558,7 +558,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void performPlayVideoAction() {
         boolean live = CameraLiveHelper.isLive(liveActionHelper);
         long lastPlayTime = CameraLiveHelper.getLastPlayTime(live, liveActionHelper);
+//        if (live) {
         performPlayVideoActionInternal(live, lastPlayTime, true);
+//        } else {
+//            performHistoryPlayAndCheckerAction(lastPlayTime);
+//        }
     }
 
 
@@ -943,6 +947,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         boolean preOnline = JFGRules.isDeviceOnline(preNet);
         AppLogger.d(CameraLiveHelper.TAG + ":decideReportDevice201Event,netChanged:" + netChanged + ",isOnline now:" + deviceOnline + ",isOnline pre:" + preOnline);
         if (netChanged) {
+            liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
+            liveActionHelper.onUpdateLive(deviceOnline || liveActionHelper.isLive);
             mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
             if (deviceOnline) {
                 mView.onDeviceChangedToOnline();

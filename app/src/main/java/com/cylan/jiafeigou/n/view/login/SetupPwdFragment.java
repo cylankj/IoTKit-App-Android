@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -192,7 +191,7 @@ public class SetupPwdFragment extends IBaseFragment<SetupPwdContract.Presenter> 
 
 
     @Override
-    public void submitResult(RxEvent.ResultRegister register) {
+    public void submitResult(int code) {
 
     }
 
