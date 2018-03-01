@@ -41,6 +41,46 @@ public class TreeHelper {
         }
     }
 
+    public void markNodeReadOnce(String key) {
+        if (!TextUtils.isEmpty(key) && RawTree.asRefreshTreeSet.contains(key)) {
+            TreeNode node = findTreeNodeByName(key);
+            if (node != null) {
+                node.setCacheData(new CacheObject().setCount(0).setObject(null));
+            }
+            return;
+        }
+        TreeNode node = findTreeNodeByName(key);
+        if (node != null) {
+            node.setCacheData(new CacheObject().setObject(null).setCount(0));
+        }
+    }
+
+    public void addTreeNode(String newKey) {
+        Iterator<String> iterator = RawTree.treeMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            final String key = iterator.next();
+            final String value = RawTree.treeMap.get(key);
+            TreeNode node = new TreeNode();
+            node.setNodeName(key);
+            if (TextUtils.equals(key, newKey)) {
+                boolean needShow = !TextUtils.equals(PreferencesUtils.getString(newKey, null), newKey);
+                if (TextUtils.equals(key, "WechatGuideFragment")) {
+                    needShow = ContextUtils.getContext().getResources().getBoolean(R.bool.show_wechat_entrance);
+                }
+                if (needShow) {
+                    final String result = PreferencesUtils.getString(key);
+                    if (TextUtils.isEmpty(result)) {
+                        //新的页面,需要标记红点.
+                        node.setCacheData(new CacheObject().setCount(1).setObject(1));
+                    }
+                }
+            }
+            node.setParentName(value);
+            treeNodeList.add(node);
+        }
+        initTree(treeNodeList);
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
+    }
 
     public TreeHelper() {
         Iterator<String> iterator = RawTree.treeMap.keySet().iterator();

@@ -37,6 +37,8 @@ public interface RegisterFaceContract {
         void onRegisterErrorNoFeaturesInFaceError();
 
         void onRegisterErrorRegUserError();
+
+        void onDeBounceSubmit(boolean enable);
     }
 
     interface Presenter extends JFGPresenter {

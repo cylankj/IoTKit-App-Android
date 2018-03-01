@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
 import com.cylan.jiafeigou.n.view.cam.item.AISelectionItem;
-import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -37,7 +36,7 @@ import butterknife.BindView;
  * Use the {@link AIRecognitionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-@Badge(parentTag = "SafeProtectionFragment", asRefresh = true)
+//@Badge(parentTag = "SafeProtectionFragment", asRefresh = true)
 public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Presenter> implements AIRecognitionContact.View {
 
     @BindView(R.id.rv_ai_selection)

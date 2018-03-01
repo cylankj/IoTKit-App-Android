@@ -252,6 +252,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
         swMotionAI.setVisibility(enableAI && show && grayEnable ? View.VISIBLE : View.GONE);
+        if (enableAI && grayEnable) {
+            BaseApplication.getAppComponent().getTreeHelper().addTreeNode(AIRecognitionFragment.class.getSimpleName());
+        }
         swMotionInterval.setVisibility(warmInterval && show ? View.VISIBLE : View.GONE);
 
         swInfraredStrengthen.setVisibility(show && infrared_enhanced_recognition ? View.VISIBLE : View.GONE);

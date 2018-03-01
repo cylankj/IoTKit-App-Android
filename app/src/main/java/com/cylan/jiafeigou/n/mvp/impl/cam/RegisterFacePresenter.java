@@ -80,6 +80,8 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
             subscriber.onCompleted();
         })
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> mView.onDeBounceSubmit(false))
+                .doOnTerminate(() -> mView.onDeBounceSubmit(true))
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     try {
@@ -129,7 +131,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                                 .requestBody(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), tokenParams.toString()))
                                 .execute();
                         JSONObject jsonObject = new JSONObject(execute.body().string());
-                        AppLogger.e("RegisterFacePresenter,"+ "RegisterByFace response:" + jsonObject);
+                        AppLogger.e("RegisterFacePresenter," + "RegisterByFace response:" + jsonObject);
                         return jsonObject.optInt("code", -1);
                     } catch (Exception e) {
                         e.printStackTrace();

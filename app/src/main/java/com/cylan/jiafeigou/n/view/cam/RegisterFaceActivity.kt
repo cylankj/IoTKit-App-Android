@@ -40,6 +40,11 @@ import java.io.File
 @RuntimePermissions
 class
 RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterFaceContract.View, TextWatcher {
+    override fun onDeBounceSubmit(enable: Boolean) {
+        AppLogger.w("onDeBounceSubmit:" + enable)
+        custom_toolbar.setRightEnable(enable)
+    }
+
     override fun onRegisterErrorInvalidParams() {
         AppLogger.w("onRegisterErrorInvalidParams")
         ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
@@ -162,8 +167,8 @@ RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterF
     }
 
     fun onFinishedClicked(view: View) {
-        IMEUtils.hide(this)
         presenter.performRegisterFaceAction(photo_nick_name.getEditer().text?.toString()?.trim(), getRealFilePathFromUri(context, cropFileUri))
+        IMEUtils.hide(this)
     }
 
     override fun onResume() {

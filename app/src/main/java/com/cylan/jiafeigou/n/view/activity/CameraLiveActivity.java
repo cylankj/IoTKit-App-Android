@@ -186,17 +186,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity implement
 
     private void updateRedHint() {
         if (imgVCameraTitleTopSetting != null) {
-
-
-//            if (JFGRules.hasProtection(device.pid)) {
-//                //说明当前设备支持安全防护
-//
-//            }
-//            if (JFGRules.hasHistory(device.pid)) {
-//                //说明当前设备支持自动录像
-//
-//            }
             // TODO: 2017/7/12 因为当前 TreeHelper 把当前类当做了父类,因此需要先特殊处理,以后再完善,共享账号
+            //很坑, 有些页面需要显示小红点,但是是针对设备的,即某些设备有这个页面,某些设备没有这个页面,用 treeHelper
+            //则全部统一对待,对于那些不需要显示这些有小红点页面的设备来说,小红点永远不会消失
             if (this.device != null && this.device.available() && TextUtils.isEmpty(this.device.shareAccount)) {
                 TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(this.getClass().getSimpleName());
                 boolean result = hasNewFirmware();
@@ -384,7 +376,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity implement
             } else {
                 return CamMessageListFragment.newInstance(bundle);
             }
-            
+
         }
 
         @Override
