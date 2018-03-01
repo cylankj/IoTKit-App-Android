@@ -2,8 +2,13 @@ package com.cylan.jiafeigou.rx;
 
 import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import org.msgpack.MessagePack;
+import org.msgpack.type.Value;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;

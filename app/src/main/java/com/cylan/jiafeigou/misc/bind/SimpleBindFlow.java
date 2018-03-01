@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.module.Command;
-import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -128,7 +127,7 @@ public class SimpleBindFlow extends AFullBind {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter((Object o) -> {
                     //没有设备画像
-                    return devicePortrait == null && !check3G;
+                    return checkDevicePortrait() && !check3G;
                 })
                 .map(new Func1<Object, UdpConstant.UdpDevicePortrait>() {
                     @Override
@@ -224,7 +223,7 @@ public class SimpleBindFlow extends AFullBind {
      * @return
      */
     private Observable<JfgUdpMsg.PingAck> pingObservable(final String cidSuffix) {
-        return Observable.create(subscriber -> {
+        return Observable.create((Observable.OnSubscribe<JfgUdpMsg.PingAck>) subscriber -> {
             final Subscription sub = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                     .map(localUdpMsg -> {
                         JfgUdpMsg.UdpHeader udpHeader = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.UdpHeader.class, null);
@@ -245,7 +244,6 @@ public class SimpleBindFlow extends AFullBind {
                         return null;
                     })
                     .filter(pingAck -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) && pingAck.cid.endsWith(cidSuffix))
-                    .timeout(3, TimeUnit.SECONDS)
                     .subscribe(pingAck -> {
                         AppLogger.d(BIND_TAG + "得到ping消息");
                         if (subscriber != null && !subscriber.isUnsubscribed()) {
@@ -269,7 +267,8 @@ public class SimpleBindFlow extends AFullBind {
                 e.printStackTrace();
             }
             subscriber.add(sub);
-        });
+        })
+                .timeout(3, TimeUnit.SECONDS, Observable.just(null));
     }
 
     /**
@@ -280,7 +279,7 @@ public class SimpleBindFlow extends AFullBind {
      * @return
      */
     private Observable<UdpConstant.UdpDevicePortrait> fPingObservable(JfgUdpMsg.PingAck pingAck) {
-        return Observable.create(subscriber -> {
+        return Observable.create((Observable.OnSubscribe<UdpConstant.UdpDevicePortrait>) subscriber -> {
             final Subscription sub = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                     .map(localUdpMsg -> {
                         JfgUdpMsg.UdpHeader udpHeader = DpUtils.unpackDataWithoutThrow(localUdpMsg.data, JfgUdpMsg.UdpHeader.class, null);
@@ -300,9 +299,7 @@ public class SimpleBindFlow extends AFullBind {
                         }
                         return null;
                     })
-                    .timeout(3, TimeUnit.SECONDS)
                     .filter(ret -> pingAck != null && ret != null && TextUtils.equals(pingAck.cid, ret.cid))
-                    .timeout(3, TimeUnit.SECONDS)
                     .subscribe(ret -> {
                         AppLogger.d(BIND_TAG + "得到fping消息");
                         if (devicePortrait == null) {
@@ -334,7 +331,7 @@ public class SimpleBindFlow extends AFullBind {
             } catch (JfgException e) {
                 e.printStackTrace();
             }
-        });
+        }).timeout(3, TimeUnit.SECONDS, Observable.just(null));
     }
 
     @Override
@@ -348,14 +345,19 @@ public class SimpleBindFlow extends AFullBind {
 
     }
 
+    private boolean checkDevicePortrait() {
+        if (devicePortrait == null) {
+            return false;
+        }
+        return !TextUtils.isEmpty(devicePortrait.ipAddress);
+    }
+
     @Override
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
         Observable.just(1)
                 .subscribeOn(Schedulers.io())
                 .delay(200, TimeUnit.MILLISECONDS)
-                .filter((Integer integer) -> {
-                    return devicePortrait != null;
-                })
+                .filter((Integer integer) -> checkDevicePortrait())
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));

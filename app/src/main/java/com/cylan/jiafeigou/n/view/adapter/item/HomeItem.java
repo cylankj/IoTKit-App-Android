@@ -38,8 +38,6 @@ import static android.view.View.VISIBLE;
  */
 
 public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
-
-    //    private Device mDevice;
     private String uuid;
     private Context mContext;
 
@@ -52,6 +50,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     public HomeItem withUUID(String uuid) {
         this.uuid = uuid;
 //        mDevice = device;
+
         return this;
     }
 
@@ -410,31 +409,6 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-//        public void bindSubscibe(com.cylan.jiafeigou.server.cache.Device device) {
-//            this.device = device;
-//            // TODO: 2017/8/21 不支持 RxJava1 暂时不做
-////            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
-////
-////            BaseApplication.getDeviceBox().query().build().subscribe().
-////
-////            String uuid = String.valueOf(device.uuid());
-////            long[] properties = new long[]{
-////                    CacheHolderKt.msgIdKey(uuid, 201),
-////                    CacheHolderKt.msgIdKey(uuid, 206),
-////                    CacheHolderKt.msgIdKey(uuid, 508),
-////                    CacheHolderKt.msgIdKey(uuid, 501),
-////
-////
-////            };
-////            itemBox.query().in(PropertyItem_.__ID_PROPERTY, properties)
-//        }
-//
-//        public void unbindSubscibe() {
-//
-//        }
-
-
     }
 
 
