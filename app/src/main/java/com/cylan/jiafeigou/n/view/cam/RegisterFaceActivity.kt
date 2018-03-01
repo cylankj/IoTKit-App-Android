@@ -40,6 +40,11 @@ import java.io.File
 @RuntimePermissions
 class
 RegisterFaceActivity : BaseActivity<RegisterFaceContract.Presenter>(), RegisterFaceContract.View, TextWatcher {
+    override fun onRegisterErrorNotPositiveFaceError() {
+        AppLogger.w("onRegisterErrorNotPositiveFaceError")
+        ToastUtil.showToast(getString(R.string.REGISTRATION_FAILED))
+    }
+
     override fun onDeBounceSubmit(enable: Boolean) {
         AppLogger.w("onDeBounceSubmit:" + enable)
         custom_toolbar.setRightEnable(enable)

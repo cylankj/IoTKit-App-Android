@@ -81,7 +81,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
         })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> mView.onDeBounceSubmit(false))
-                .doOnTerminate(() -> mView.onDeBounceSubmit(true))
+
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     try {
@@ -143,6 +143,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                 .timeout(10, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))
+                .doOnTerminate(() -> mView.onDeBounceSubmit(true))
                 .subscribe(code -> {
                     switch (code) {
                         case 100: {
@@ -175,6 +176,10 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                         break;
                         case 107: {
                             mView.onRegisterErrorRegUserError();
+                        }
+                        break;
+                        case 111: {
+                           mView.onRegisterErrorNotPositiveFaceError();
                         }
                         break;
                         case 200: {
