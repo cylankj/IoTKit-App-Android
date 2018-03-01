@@ -1103,6 +1103,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         } else if (!editerMode && editMode) {
             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
         }
+        rvCamMessageList.setPadding(
+                rvCamMessageList.getPaddingLeft(),
+                rvCamMessageList.getPaddingTop(),
+                rvCamMessageList.getPaddingRight(),
+                editerMode ? fLayoutCamMsgEditBar.getMeasuredHeight() : 0
+        );
         return editerMode != editMode;
     }
 
