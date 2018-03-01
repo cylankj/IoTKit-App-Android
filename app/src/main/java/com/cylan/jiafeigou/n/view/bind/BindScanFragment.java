@@ -111,12 +111,18 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                    intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+                    Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    settingIntent.setData(Uri.parse("package:" + ContextUtils.getContext().getPackageName()));
+                    startActivity(settingIntent);
                     PackageManager packageManager = ContextUtils.getContext().getPackageManager();
-                    List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    List<ResolveInfo> list = packageManager.queryIntentActivities(settingIntent, PackageManager.MATCH_DEFAULT_ONLY);
                     if (list.size() > 0) {
-                        startActivityForResult(intent, 0);
+                        startActivityForResult(settingIntent, 0);
+                    } else {
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
+                        }
                     }
                 },
                 getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
