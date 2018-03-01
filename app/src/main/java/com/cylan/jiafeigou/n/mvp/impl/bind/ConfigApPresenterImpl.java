@@ -37,7 +37,6 @@ import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
@@ -126,7 +125,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
-        aFullBind.getBindObservable(false, /*"290300000012"*/uuid)
+        Subscription subscribe = aFullBind.getBindObservable(false, /*"290300000012"*/uuid)
                 .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(s -> {
@@ -153,33 +152,11 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     AppLogger.w("发送配置成功");
                 }, throwable -> {
                     AppLogger.e("err:" + throwable.getLocalizedMessage());
-                    if (throwable instanceof TimeoutException) {
+                    if (getView() != null) {
                         getView().sendWifiInfoFailed();
-                        AppLogger.e("发送配置失败");
                     }
                 });
-
-
-//
-//        Device device = DataSourceManager.getInstance().getDevice(uuid);
-//        String mac = device.$(202, "");
-//        BindHelper.sendWiFiConfig(uuid, mac, ssid, pwd, type)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<JfgUdpMsg.DoSetWifiAck>() {
-//                    @Override
-//                    public void call(JfgUdpMsg.DoSetWifiAck doSetWifiAck) {
-//                        getView().onSetWifiFinished(uuid);
-//                        MiscUtils.recoveryWiFi();
-//                    }
-//                }, new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        if (throwable instanceof TimeoutException) {
-//                            getView().sendWifiInfoFailed();
-//                            AppLogger.e("发送配置失败");
-//                        }
-//                    }
-//                });
+        addSubscription(subscribe,"sendWifiInfo");
     }
 
     @Override

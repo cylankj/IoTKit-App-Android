@@ -303,6 +303,13 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
             intent.setClass(context, BindCamActivity.class);
+        } else {
+            //default
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, DOG_AP);
+            intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTipsTitle));
+            intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
+            intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.setClass(context, BindCamActivity.class);
         }
         return intent;
     }

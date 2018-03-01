@@ -43,7 +43,7 @@
         <item name="android:windowActionBar">false</item>
     </style>
 
-    <style name="AppSplash" parent="AppTheme">
+    <style name="AppSplash" parent="CamActivityTheme">
         <item name="android:windowFullscreen">true</item>
     </style>
 
