@@ -175,6 +175,7 @@
         <activity
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppSplash"
             android:windowSoftInputMode="adjustPan|stateHidden">
@@ -186,7 +187,7 @@
         </activity>
         <activity
             android:name="com.tencent.tauth.AuthActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -199,7 +200,7 @@
         </activity>
         <activity
             android:name=".NewHomeActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -223,7 +224,7 @@
         <activity
             android:name=".n.view.activity.CameraLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:parentActivityName=".NewHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -231,7 +232,7 @@
         <activity
             android:name=".n.view.activity.CamSettingActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -366,7 +367,7 @@
         <activity
             android:name=".n.view.panorama.PanoramaSettingActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -421,49 +422,49 @@
         <activity
             android:name=".n.view.activity.BindCamActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.activity.ConfigWifiActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".n.view.activity.BindBellActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.activity.BindPanoramaCamActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.bind.BindGuideActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.bind.SubmitBindingInfoActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.activity.ConfigWifiActivity_2"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -582,14 +583,14 @@
         <activity
             android:name=".n.view.cam.SdcardDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.firmware.FirmwareUpdateActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden">
@@ -604,12 +605,12 @@
         <activity
             android:name=".n.view.panorama.PanoramaDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:theme="@style/CamActivityTheme" />
         <activity
             android:name=".n.view.mine.FeedbackActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme" />
         <activity
@@ -631,14 +632,14 @@
             android:name="com.umeng.socialize.editorpage.ShareActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:excludeFromRecents="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/share_style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name="${ApplicationId}.WBShareActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden">
@@ -651,14 +652,14 @@
         <activity
             android:name="com.umeng.facebook.FacebookActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/share_style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".support.share.ShareMediaActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/share_style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -704,28 +705,28 @@
         <activity
             android:name=".n.view.panorama.ConnectionActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.panorama.PanoramaMessageWrapperActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.panorama.PanoramaCameraActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".support.share.H5ShareEditorActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -747,14 +748,14 @@
         <activity
             android:name=".n.view.mine.HomeMineHelpActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.bind.WireBindActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
