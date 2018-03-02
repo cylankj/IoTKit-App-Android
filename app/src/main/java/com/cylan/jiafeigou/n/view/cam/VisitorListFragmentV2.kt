@@ -161,8 +161,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
 
         val keyValueDao = BaseDBHelper.getInstance().daoSession.keyValueDao
         keyValueDao.loadByRowId("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash())
-
-//        val boxFor = BaseApplication.getBoxStore().boxFor(KeyValueStringItem::class)
         val valueItem = keyValueDao.loadByRowId("${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash())// boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceAdapter:dateItems".longHash()]
         val valueItem1 = keyValueDao.loadByRowId("${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash())//boxFor["${VisitorListFragmentV2::javaClass.name}:$uuid:faceStrangerAdapter:dateItems".longHash()]
         valueItem?.value?.apply {
@@ -279,12 +277,6 @@ open class VisitorListFragmentV2 : IBaseFragment<VisitorListContract.Presenter>(
         faceAdapter.setNewList(visitorItems as List<IItem<*, *>>?)
         (faceAdapter as FastItemAdapter<IItem<*, *>>).addAdapter(1, footerAdapter as ItemAdapter<IItem<*, *>>)
         face_header.adapter = faceAdapter
-//        face_header.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
-//            override fun onLoadMore(currentPage: Int) {
-//                AppLogger.w("loadMore")
-//                onLoadMore()
-//            }
-//        })
         face_header.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {

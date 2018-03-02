@@ -40,6 +40,8 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.zxing.Result;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;

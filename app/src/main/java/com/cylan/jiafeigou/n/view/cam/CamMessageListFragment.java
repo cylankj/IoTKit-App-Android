@@ -438,9 +438,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void setupFootView() {
         Log.e("Fuck", "setupFootView");
-        if (true) {
-            return;
-        }
+//        if (true) {
+//            return;
+//        }
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = CamMessageBean.ViewType.FOOT;
         camMessageListAdapter.add(bean);
@@ -690,11 +690,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
+        makeSureRemoveFoot();
         int size = ListUtils.getSize(beanArrayList);
         for (int i = size - 1; i >= 0; i--) {
             camMessageListAdapter.add(0, beanArrayList.get(i));//beanArrayList是一个降序
         }
-        makeSureRemoveFoot();
         decideEmptyViewLayout();
         reselectAllIfNeeded();
     }
@@ -771,6 +771,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
+        makeSureRemoveFoot();
         LoadingDialog.dismissLoading();
         camMessageListAdapter.appendVisitorList(getCurrentPersonId(), beanArrayList);
         int itemPosition = layoutManager.findFirstVisibleItemPosition();
@@ -780,7 +781,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
         }
-        makeSureRemoveFoot();
         decideEmptyViewLayout();
         reselectAllIfNeeded();
     }
@@ -826,6 +826,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         srLayoutCamListRefresh.removeCallbacks(refreshTimeOutRunnable);
+        makeSureRemoveFoot();
         LoadingDialog.dismissLoading();
         camMessageListAdapter.clear();
         camMessageListAdapter.insertVisitorList(getCurrentPersonId(), beans);
@@ -836,7 +837,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             AppLogger.w("没有数据");
             ToastUtil.showToast(getString(R.string.Loaded));
         }
-        makeSureRemoveFoot();
         decideEmptyViewLayout();
         reselectAllIfNeeded();
     }
