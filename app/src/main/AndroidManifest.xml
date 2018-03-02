@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.cylan.jiafeigou"
     android:versionCode="999"
     android:versionName="888">
@@ -200,7 +199,7 @@
         </activity>
         <activity
             android:name=".NewHomeActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -225,6 +224,7 @@
             android:name=".n.view.activity.CameraLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
+            android:parentActivityName=".NewHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -247,7 +247,8 @@
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:excludeFromRecents="true"
             android:keepScreenOn="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
+            android:parentActivityName=".NewHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden">

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -1090,7 +1091,10 @@ public class DataSourceManager implements JFGSourceManager {
                         final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
                         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                         intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
-                        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        bean.pendingIntent = TaskStackBuilder
+                                .create(ContextUtils.getContext())
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(bean.notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
                         bean.sound = getAccount() != null && getAccount().getEnableSound();
                         bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
                         bean.time = System.currentTimeMillis();

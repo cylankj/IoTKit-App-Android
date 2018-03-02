@@ -3,12 +3,12 @@ package com.cylan.jiafeigou.module
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.TaskStackBuilder
 import android.text.TextUtils
 import android.util.Log
 import com.cylan.entity.jniCall.JFGDoorBellCaller
 import com.cylan.jiafeigou.base.module.DataSourceManager
 import com.cylan.jiafeigou.misc.JConstant
-import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity
 import com.cylan.jiafeigou.support.Security
 import com.cylan.jiafeigou.support.log.AppLogger
@@ -104,8 +104,9 @@ object BellerSupervisor : Supervisor {
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.putExtra(JConstant.IS_IN_BACKGROUND, BaseApplication.isBackground())
-            ContextUtils.getContext().startActivity(intent)
+            TaskStackBuilder.create(ContextUtils.getContext())
+                    .addNextIntentWithParentStack(intent)
+                    .startActivities()
             return parameter
         }
 
