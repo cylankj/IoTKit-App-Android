@@ -51,6 +51,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_509_CAMERA_MOUNT_MODE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_510_CAMERA_COORDINATE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_511_CAMERAWARNANDWONDER;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_512_CAMERA_ALARM_MSG_V3;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_513_CAM_RESOLUTION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_514_CAM_WARNINTERVAL;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_515_CAM_ObjectDetect;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_518_CAM_SETFACEIDSTATUS;
@@ -115,7 +116,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(516, new DPProperty(DpMsgDefine.DPCameraLiveRtmpCtrl.class));
         properties.put(ID_515_CAM_ObjectDetect, new DPProperty(int[].class, DPProperty.LEVEL_HOME, CAMERA, DOORBELL, PROPERTY));
         properties.put(ID_514_CAM_WARNINTERVAL, new DPProperty(int.class, DPProperty.LEVEL_HOME, CAMERA, DOORBELL, PROPERTY));
-//        properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, CAMERA, DOORBELL));//清晰度,分辨率
+        properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, DPProperty.LEVEL_DEFAULT, CAMERA, DOORBELL));//清晰度,分辨率
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
         properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(DpMsgDefine.DpCoordinate.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));

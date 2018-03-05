@@ -625,7 +625,9 @@ public class CameraLiveHelper {
     }
 
     public static int checkViewStreamMode(CameraLiveActionHelper helper) {
-        return helper.deviceStreamMode;
+        Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+        Integer streamMode = device.$(DpMsgMap.ID_513_CAM_RESOLUTION, 0);
+        return streamMode;
     }
 
     public static boolean checkIsDeviceSDCardExistStateChanged(CameraLiveActionHelper helper, boolean isSDCardExist) {
