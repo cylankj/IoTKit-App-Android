@@ -2,6 +2,9 @@ package com.cylan.jiafeigou.support.zscan.core;
 
 import android.hardware.Camera;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
+
 import java.util.List;
 
 public class CameraUtils {
@@ -25,6 +28,8 @@ public class CameraUtils {
             }
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
+            e.printStackTrace();
+            AppLogger.e(MiscUtils.getErr(e));
         }
         return c; // returns null if camera is unavailable
     }

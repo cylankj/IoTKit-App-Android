@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -30,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.support.zscan.core.CameraUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -40,8 +42,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.zxing.Result;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -137,8 +137,14 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @NeedsPermission(Manifest.permission.CAMERA)
     public void onCameraPermission() {
         customToolbar.setVisibility(View.VISIBLE);
-        zxVScan.startCamera();
-        zxVScan.setResultHandler(BindScanFragment.this);
+        Camera cameraInstance = CameraUtils.getCameraInstance(-1);
+        if (cameraInstance == null) {
+            onNeverAskAgainCameraPermission();
+        } else {
+            cameraInstance.release();
+            zxVScan.startCamera();
+            zxVScan.setResultHandler(BindScanFragment.this);
+        }
     }
 
 
