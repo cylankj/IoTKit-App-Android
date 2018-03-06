@@ -650,7 +650,12 @@ public class CameraLiveHelper {
     }
 
     public static DpMsgDefine.Rect4F checkMotionArea(CameraLiveActionHelper helper) {
-        return null;
+        DpMsgDefine.Rect4F deviceMotionArea = helper.deviceMotionArea;
+        if (deviceMotionArea == null) {
+            Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
+            deviceMotionArea = device.$(DpMsgMap.ID_519_CAM_WARNAREA, new DpMsgDefine.Rect4F());
+        }
+        return deviceMotionArea;
     }
 
     public static boolean checkIsDeviceMotionAreaOpened(CameraLiveActionHelper helper) {
@@ -658,6 +663,6 @@ public class CameraLiveHelper {
     }
 
     public static boolean checkIsDeviceMotionAreaEnable(CameraLiveActionHelper helper) {
-        return isVideoPlaying(helper)&&isLive(helper);
+        return isVideoPlaying(helper) && isLive(helper);
     }
 }

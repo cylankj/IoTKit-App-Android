@@ -1824,7 +1824,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         imgVCamZoomToFullScreen.setEnabled(isPlaying);
         liveViewWithThumbnail.setEnabled(true);
         boolean motionAreaEnable = canMotionAreaEnable();
-        imgVLandCamMotionArea.setAlpha(motionAreaEnable ? 1 : 0.3F);
+//        imgVLandCamMotionArea.setAlpha(motionAreaEnable ? 1 : 0.3F);
         imgVLandCamMotionArea.setEnabled(motionAreaEnable);
         btnLoadHistory.setEnabled(canLoadHistoryEnable());
         svSwitchStream.setEnabled(canStreamSwitcherEnable());
