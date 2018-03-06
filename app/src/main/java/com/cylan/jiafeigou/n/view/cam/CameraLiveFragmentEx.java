@@ -124,6 +124,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     ImageView imgVLandCamTriggerMic;
     @BindView(R.id.imgV_land_cam_trigger_capture)
     ImageView imgVLandCamTriggerCapture;
+    @BindView(R.id.imgV_land_cam_switch_motion_area)
+    ImageView imgVLandCamMotionArea;
     //横屏 top bar
     @BindView(R.id.layout_a)
     FrameLayout liveTopBannerView;
@@ -1419,6 +1421,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
+    public void onDeviceMotionChanged(boolean motionAreaEnabled, DpMsgDefine.Rect4F motionArea) {
+        AppLogger.d("onDeviceMotionChanged:" + motionArea);
+        imgVLandCamMotionArea.setSelected(motionAreaEnabled);
+        liveViewWithThumbnail.updateMotionAreaParameters(motionArea, motionAreaEnabled);
+    }
+
+    @Override
     public void switcher(View view, int mode) {
         if (view.getId() != R.id.sv_switch_stream) {
             presenter.performChangeStreamModeAction(mode);
@@ -1492,6 +1501,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             });
             doorLockDialog.show(fragmentManager, "CameraLiveFragmentEx.onDoorLockClick");
         }
+    }
+
+    @OnClick(R.id.imgV_land_cam_switch_motion_area)
+    public void onToggleMotionAreaClicked() {
+        AppLogger.d("onToggleMotionAreaClicked");
+        presenter.performLiveMotionAreaCheckerAction();
     }
 
     private static final int ANIMATION_DURATION = 250;
@@ -1602,7 +1617,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
             liveTopBannerView.animate().setDuration(ANIMATION_DURATION).alpha(1).translationY(0).withStartAction(() -> {
                 liveTopBannerView.setVisibility(VISIBLE);
-                ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+                ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : GONE);
                 ivModeXunHuan.setEnabled(canXunHuanEnable());
             }).start();
 
@@ -1755,7 +1770,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         historyWheelContainer.setVisibility(showHistoryWheel ? VISIBLE : INVISIBLE);
         tvLive.setVisibility(historyWheelContainer.getDisplayedChild() == 1 || !isHistoryEmpty() ? VISIBLE : GONE);
         vFlag.setVisibility(historyWheelContainer.getDisplayedChild() == 1 || !isHistoryEmpty() ? VISIBLE : GONE);
-        ivModeXunHuan.setVisibility(canShowXunHuan ? VISIBLE : INVISIBLE);
+        ivModeXunHuan.setVisibility(canShowXunHuan ? VISIBLE : GONE);
         imgVCamTriggerMic.setVisibility(canShowMicrophone ? VISIBLE : GONE);
         imgVLandCamTriggerMic.setVisibility(canShowMicrophone ? VISIBLE : GONE);
         ivCamDoorLock.setVisibility(canShowDoorLook ? VISIBLE : GONE);
@@ -1782,6 +1797,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         return presenter != null && presenter.canShowMicrophone();
     }
 
+    private boolean canShowMotionArea() {
+        return presenter != null && presenter.canShowMotionArea();
+    }
+
     private void performLayoutEnableAction() {
         boolean isHistory = !isLive();
         boolean isPlaying = isLivePlaying();
@@ -1804,8 +1823,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ivCamDoorLock.setEnabled(canDoorLockEnable());
         imgVCamZoomToFullScreen.setEnabled(isPlaying);
         liveViewWithThumbnail.setEnabled(true);
+        boolean motionAreaEnable = canMotionAreaEnable();
+        imgVLandCamMotionArea.setAlpha(motionAreaEnable ? 1 : 0.3F);
+        imgVLandCamMotionArea.setEnabled(motionAreaEnable);
         btnLoadHistory.setEnabled(canLoadHistoryEnable());
         svSwitchStream.setEnabled(canStreamSwitcherEnable());
+    }
+
+    private boolean canMotionAreaEnable() {
+        return presenter != null && presenter.canMotionAreaEnable();
     }
 
     private boolean canSpeakerEnable() {
@@ -1880,6 +1906,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             lp.addRule(RelativeLayout.BELOW, R.id.v_guide); //set below v_guide
             liveViewWithThumbnail.updateLayoutParameters((int) (displayMetrics.widthPixels * liveViewRadio), RelativeLayout.LayoutParams.MATCH_PARENT);
         }
+        boolean canShowMotionArea = canShowMotionArea();
+        imgVLandCamMotionArea.setSelected(canShowMotionArea);
+        liveViewWithThumbnail.updateMotionAreaParameters(getMotionArea(), canShowMotionArea);
         historyParentContainer.setLayoutParams(lp);
         liveViewModeContainer.setLayoutParams(glp);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
@@ -1892,6 +1921,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         decideHistoryShowCase();
         decidePendingResumeAction();
         decideStreamModeSetting();
+    }
+
+    private DpMsgDefine.Rect4F getMotionArea() {
+        return presenter == null ? null : presenter.getMotionArea();
     }
 
     private void decideStreamModeSetting() {

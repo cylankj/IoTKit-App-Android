@@ -73,7 +73,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                         getView().onAutoLoginFailed();
                     }
                 });
-        addStopSubscription(subscribe);
+        addDestroySubscription(subscribe);
     }
 }
 

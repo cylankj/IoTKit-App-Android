@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 /**
@@ -27,6 +28,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private FrameLayout standByLayout;//待机
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
+    private ImageView imgLiveMotionArea;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -40,6 +42,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         super(context, attrs, defStyleAttr);
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.layout_live_view_with_thumbnail, this, true);
         imgThumbnail = (ImageView) viewGroup.findViewById(R.id.imgv_live_thumbnail);
+        imgLiveMotionArea = viewGroup.findViewById(R.id.imgv_live_motion_area);
         imgThumbnail.setOnClickListener(v -> {//do nothing
             Log.d("wat", "wat");
             if (listener != null) {
@@ -124,9 +127,32 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     @Override
+    public void updateMotionAreaParameters(DpMsgDefine.Rect4F rect4F, boolean enable) {
+        AppLogger.d("updateMotionAreaParameters:rect:" + rect4F + ",enable:" + enable);
+        if (!enable) {
+            imgLiveMotionArea.setVisibility(GONE);
+            return;
+        }
+        FrameLayout.LayoutParams layoutParams = (LayoutParams) imgLiveMotionArea.getLayoutParams();
+        int measuredWidth = getMeasuredWidth();
+        int measuredHeight = getMeasuredHeight();
+        float widthRadio = rect4F == null ? 1 : rect4F.right - rect4F.left;
+        float heightRadio = rect4F == null ? 1 : rect4F.bottom - rect4F.top;
+        layoutParams.width = (int) (measuredWidth * widthRadio);
+        layoutParams.height = (int) (measuredHeight * heightRadio);
+        int marginLeft = (int) (measuredWidth * (rect4F == null ? 0 : rect4F.left));
+        int marginTop = (int) (measuredHeight * (rect4F == null ? 0 : rect4F.top));
+        int marginRight = 0;
+        int marginBottom = 0;
+        layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
+        imgLiveMotionArea.setLayoutParams(layoutParams);
+        imgLiveMotionArea.setVisibility(VISIBLE);
+    }
+
+    @Override
     public void showFlowView(boolean show, String content) {
         tvLiveFlow.setText(content);
-        tvLiveFlow.setVisibility(show?VISIBLE:INVISIBLE);
+        tvLiveFlow.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
     @Override
@@ -200,7 +226,6 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             }
         }
     }
-
     public void hideThumbPicture() {
         imgThumbnail.setVisibility(INVISIBLE);
     }

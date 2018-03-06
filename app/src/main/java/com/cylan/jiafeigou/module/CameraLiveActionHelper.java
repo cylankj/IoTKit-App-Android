@@ -42,6 +42,8 @@ public class CameraLiveActionHelper {
     public volatile DpMsgDefine.DPTimeZone deviceTimezone;
     public volatile DpMsgDefine.DpCoordinate deviceCoordinate;
     public volatile DpMsgDefine.DPSdStatus deviceSDStatus;
+    public volatile DpMsgDefine.Rect4F deviceMotionArea;
+    public volatile boolean deviceMotionAreaOpened;
     public volatile String deviceViewMountMode;
     public volatile int deviceDisplayMode;
     public volatile boolean isDeviceAlarmOpened;
@@ -407,5 +409,17 @@ public class CameraLiveActionHelper {
 
     public void onUpdateVideoPlayCode(boolean live, int playCode) {
         this.playCode = playCode;
+    }
+
+    public DpMsgDefine.Rect4F onUpdateMotionArea(DpMsgDefine.Rect4F rect4F) {
+        DpMsgDefine.Rect4F rect4F1 = this.deviceMotionArea;
+        this.deviceMotionArea = rect4F;
+        return rect4F1;
+    }
+
+    public boolean onUpdateMotionAreaOpened(boolean isMotionAreaOpened) {
+        boolean motionAreaOpened = this.deviceMotionAreaOpened;
+        this.deviceMotionAreaOpened = isMotionAreaOpened;
+        return motionAreaOpened;
     }
 }

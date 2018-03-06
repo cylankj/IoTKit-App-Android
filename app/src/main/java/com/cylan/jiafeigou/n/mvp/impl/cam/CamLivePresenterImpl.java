@@ -63,6 +63,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -1362,6 +1363,83 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public int getStreamMode() {
         return CameraLiveHelper.checkViewStreamMode(liveActionHelper);
+    }
+
+    @Override
+    public boolean canShowMotionArea() {
+        return CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper);
+    }
+
+    @Override
+    public DpMsgDefine.Rect4F getMotionArea() {
+        DpMsgDefine.Rect4F motionArea = CameraLiveHelper.checkMotionArea(liveActionHelper);
+//        if (motionArea == null) {
+//            performLiveMotionAreaCheckerAction();
+//        }
+        return motionArea;
+    }
+
+    @Override
+    public boolean canMotionAreaEnable() {
+        return CameraLiveHelper.checkIsDeviceMotionAreaEnable(liveActionHelper);
+    }
+
+    @Override
+    public void performLiveMotionAreaCheckerAction() {
+        liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
+        if (!liveActionHelper.deviceMotionAreaOpened) {
+            mView.onDeviceMotionChanged(false, liveActionHelper.deviceMotionArea);
+            return;
+        }
+        DpMsgDefine.Rect4F motionArea = CameraLiveHelper.checkMotionArea(liveActionHelper);
+        if (motionArea != null) {
+            mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), motionArea);
+            return;
+        }
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            ArrayList<JFGDPMsg> params = new ArrayList<>(Collections.singletonList(new JFGDPMsg(DpMsgMap.ID_519_CAM_WARNAREA, 0)));
+            try {
+                long seq = Command.getInstance().robotGetData(uuid, params, 1, false, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                AppLogger.e(MiscUtils.getErr(e));
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(robotoGetDataRsp -> robotoGetDataRsp.seq == seq))
+                .first()
+                .map(robotoGetDataRsp -> {
+                    if (robotoGetDataRsp != null
+                            && robotoGetDataRsp.map != null
+                            && robotoGetDataRsp.map.get(DpMsgMap.ID_519_CAM_WARNAREA) != null) {
+                        ArrayList<JFGDPMsg> msgs = robotoGetDataRsp.map.get(DpMsgMap.ID_519_CAM_WARNAREA);
+                        if (msgs.size() > 0) {
+                            JFGDPMsg msg = msgs.get(0);
+                            DpMsgDefine.DPCameraWarnArea dpCameraWarnArea = DpUtils.unpackDataWithoutThrow(msg.packValue, DpMsgDefine.DPCameraWarnArea.class, null);
+                            AppLogger.w("读取服务器上保存的侦测区域值为:" + dpCameraWarnArea);
+                            return dpCameraWarnArea;
+                        }
+                    }
+                    return null;
+                })
+                .timeout(10, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dpCameraWarnArea -> {
+                    if (dpCameraWarnArea != null && dpCameraWarnArea.rects != null && dpCameraWarnArea.rects.size() > 0) {
+                        DpMsgDefine.Rect4F rect4F = dpCameraWarnArea.rects.get(0);
+//                        boolean isMotionAreaChanged = CameraLiveHelper.checkIsMotionAreaChanged(liveActionHelper,rect4F);
+                        liveActionHelper.onUpdateMotionArea(rect4F);
+//                        if (isMotionAreaChanged) {
+                        mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), dpCameraWarnArea.enable ? liveActionHelper.deviceMotionArea : null);
+//                        }
+                    }
+                }, error -> {
+                    AppLogger.e(MiscUtils.getErr(error));
+                });
+        addStopSubscription(subscribe);
     }
 
     @Override

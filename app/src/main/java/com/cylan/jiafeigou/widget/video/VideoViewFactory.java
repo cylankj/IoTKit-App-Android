@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.panorama.CameraParam;
 
@@ -81,17 +82,22 @@ public class VideoViewFactory {
         void setLiveView(IVideoView iVideoView, String uuid);
 
         void updateLayoutParameters(int height, int weight);
+
+        void updateMotionAreaParameters(DpMsgDefine.Rect4F rect4F, boolean enable);
+
         /**
          * 流量
          */
         void showFlowView(boolean show, String content);
 
         void detectOrientationChanged(boolean port);
+
         void showMobileDataInterface(View.OnClickListener clickListener);
 
         void showVideoView(boolean show);
 
         void showLiveThumbPicture(Bitmap bitmap, boolean normalView);
+
     }
 
     public interface InterActListener {

@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.panorama.Panoramic360ViewRS;
@@ -646,5 +647,17 @@ public class CameraLiveHelper {
         Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
         boolean hasSDFeature = JFGRules.hasSDFeature(device.pid);
         return hasSDFeature ? helper.recordedZeroTimestampCount > 0 : helper.isLive;
+    }
+
+    public static DpMsgDefine.Rect4F checkMotionArea(CameraLiveActionHelper helper) {
+        return null;
+    }
+
+    public static boolean checkIsDeviceMotionAreaOpened(CameraLiveActionHelper helper) {
+        return helper.deviceMotionAreaOpened = (MiscUtils.isLand() && helper.deviceMotionAreaOpened && isVideoPlaying(helper));
+    }
+
+    public static boolean checkIsDeviceMotionAreaEnable(CameraLiveActionHelper helper) {
+        return isVideoPlaying(helper)&&isLive(helper);
     }
 }

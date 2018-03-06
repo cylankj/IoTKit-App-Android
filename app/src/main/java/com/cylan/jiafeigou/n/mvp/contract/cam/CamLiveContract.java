@@ -144,6 +144,8 @@ public interface CamLiveContract {
         void onLoadHistoryPrepared(long playTime, boolean isHistoryCheckerRequired);
 
         void onVideoPlayTypeChanged(boolean isLive);
+
+        void onDeviceMotionChanged(boolean motionAreaEnabled, DpMsgDefine.Rect4F motionArea);
     }
 
     interface Presenter extends BasePresenter {
@@ -224,6 +226,8 @@ public interface CamLiveContract {
 
         boolean canShowHistoryWheel();
 
+        void performLiveMotionAreaCheckerAction();
+
         boolean canShowFlip();
 
         boolean canShowFirstSight();
@@ -270,6 +274,11 @@ public interface CamLiveContract {
 
         int getStreamMode();
 
+        boolean canShowMotionArea();
+
+        DpMsgDefine.Rect4F getMotionArea();
+
+        boolean canMotionAreaEnable();
     }
 }
 

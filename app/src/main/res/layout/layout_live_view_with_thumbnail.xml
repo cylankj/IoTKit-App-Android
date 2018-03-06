@@ -11,6 +11,13 @@
         android:scaleType="fitXY"
         android:src="@drawable/default_diagram_mask" />
 
+    <ImageView
+        android:id="@+id/imgv_live_motion_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="#30FF4081"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/tv_live_flow"
         android:layout_width="@dimen/x60"

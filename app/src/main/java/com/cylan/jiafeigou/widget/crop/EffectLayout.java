@@ -18,7 +18,7 @@ import com.cylan.jiafeigou.R;
  * Created by hds on 17-11-15.
  */
 
-public class EffectLayout extends FrameLayout implements Shaper {
+public class  EffectLayout extends FrameLayout implements Shaper {
 
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
