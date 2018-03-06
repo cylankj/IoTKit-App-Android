@@ -1352,7 +1352,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onVideoPlayPrepared(boolean live) {
         AppLogger.d(CameraLiveHelper.TAG + ":onVideoPlayPrepared,live:" + live);
-        performLayoutEnableAction();
+        performReLayoutAction();
         liveLoadingBar.changeToLoading(true);
     }
 

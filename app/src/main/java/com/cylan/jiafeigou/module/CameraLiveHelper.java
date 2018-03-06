@@ -653,7 +653,11 @@ public class CameraLiveHelper {
         DpMsgDefine.Rect4F deviceMotionArea = helper.deviceMotionArea;
         if (deviceMotionArea == null) {
             Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-            deviceMotionArea = device.$(DpMsgMap.ID_519_CAM_WARNAREA, new DpMsgDefine.Rect4F());
+            DpMsgDefine.Rect4F rect4F = new DpMsgDefine.Rect4F();
+            deviceMotionArea = device.$(DpMsgMap.ID_519_CAM_WARNAREA, rect4F);
+            if (rect4F == deviceMotionArea) {
+                deviceMotionArea = null;
+            }
         }
         return deviceMotionArea;
     }

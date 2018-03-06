@@ -81,7 +81,6 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
         })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> mView.onDeBounceSubmit(false))
-
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     try {
