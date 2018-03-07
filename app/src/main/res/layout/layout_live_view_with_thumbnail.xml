@@ -15,8 +15,8 @@
         android:id="@+id/imgv_live_motion_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="#30FF4081"
-        android:visibility="gone" />
+        android:src="@drawable/motion_area_shape"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/tv_live_flow"
