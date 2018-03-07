@@ -27,6 +27,7 @@ interface MonitorAreaSettingContact {
 
         fun onRestoreDefaultMonitorAreaSetting()
         fun tryGetLocalMonitorPicture()
+        fun onLoadMotionAreaSettingFinished(remoteURL: String?, motionAreaSetting: List<DpMsgDefine.Rect4F>?)
     }
 
     interface Presenter : JFGPresenter {

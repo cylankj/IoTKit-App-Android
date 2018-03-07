@@ -7,51 +7,64 @@
     android:clickable="true"
     android:focusable="true">
 
-    <ImageView
-        android:id="@+id/monitor_picture"
+    <FrameLayout
+        android:id="@+id/monitor_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:adjustViewBounds="true"
-        android:clickable="false"
-        android:focusable="false"
-        android:scaleType="fitXY"
-        android:src="@drawable/default_diagram_mask" />
+        android:layout_centerInParent="true">
 
-    <View
-        android:id="@+id/cover_layer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/monitor_picture"
-        android:layout_alignEnd="@+id/monitor_picture"
-        android:layout_alignStart="@+id/monitor_picture"
-        android:layout_alignTop="@+id/monitor_picture"
-        android:alpha="0.4"
-        android:background="@color/color_black"
-        android:clickable="false"
-        android:focusable="false" />
+        <ImageView
+            android:id="@+id/monitor_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:scaleType="fitXY"
+            android:src="@drawable/default_diagram_mask" />
 
-    <com.cylan.jiafeigou.widget.crop.CropLayout
-        android:id="@+id/effect_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/monitor_picture"
-        android:layout_alignEnd="@+id/monitor_picture"
-        android:layout_alignStart="@+id/monitor_picture"
-        android:layout_alignTop="@id/monitor_picture"
-        android:layout_centerInParent="true" />
+        <View
+            android:id="@+id/cover_layer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.4"
+            android:background="@color/color_black"
+            android:clickable="false"
+            android:focusable="false" />
 
-    <com.cylan.jiafeigou.widget.SimpleProgressBar
-        android:id="@+id/load_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="@dimen/x5"
-        android:visibility="visible"
-        app:progress_point_radius="@dimen/y2"
-        app:progress_radius="@dimen/y20"
-        app:progress_stroke_color="@color/color_white"
-        app:progress_swipe_degree="310" />
+        <com.cylan.jiafeigou.widget.crop.CropLayout
+            android:id="@+id/effect_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <com.cylan.jiafeigou.widget.crop.EffectLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/effect_view"
+                android:layout_width="@dimen/y206"
+                android:layout_height="@dimen/y136"
+                android:layout_gravity="center"
+                android:minHeight="@dimen/y80"
+                android:minWidth="@dimen/y80"
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/effect_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/y20"
+                    android:layout_marginStart="@dimen/y20"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="4"
+                    android:text="@string/DETECTION_AREA_GUIDE"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp15" />
+            </com.cylan.jiafeigou.widget.crop.EffectLayout>
+
+        </com.cylan.jiafeigou.widget.crop.CropLayout>
+    </FrameLayout>
+
 
     <TextView
         android:id="@+id/drag_and_drop"
@@ -72,6 +85,18 @@
         android:textColor="@color/color_white"
         android:textSize="@dimen/sp16"
         android:visibility="gone" />
+
+    <com.cylan.jiafeigou.widget.SimpleProgressBar
+        android:id="@+id/load_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/x5"
+        android:visibility="visible"
+        app:progress_point_radius="@dimen/y2"
+        app:progress_radius="@dimen/y20"
+        app:progress_stroke_color="@color/color_white"
+        app:progress_swipe_degree="310" />
 
     <ImageView
         android:id="@+id/back"
