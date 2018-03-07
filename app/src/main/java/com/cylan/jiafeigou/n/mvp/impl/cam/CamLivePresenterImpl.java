@@ -1397,7 +1397,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return;
         }
         DpMsgDefine.Rect4F motionArea = CameraLiveHelper.checkMotionArea(liveActionHelper);
-        if (motionArea != null) {
+        if (false) {
             mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), motionArea);
             return;
         }
