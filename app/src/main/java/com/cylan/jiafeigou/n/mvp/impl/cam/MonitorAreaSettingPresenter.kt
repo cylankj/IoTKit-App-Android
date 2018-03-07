@@ -33,9 +33,6 @@ class MonitorAreaSettingPresenter @Inject constructor(view: MonitorAreaSettingCo
         val subscribe = Observable.zip(loadSavedMonitorArea(), loadSavedMonitorPicture(), { areaSetting, savedPicture -> Pair(areaSetting, savedPicture) })
                 .timeout(32, TimeUnit.SECONDS, Observable.just(null))
                 .subscribe({
-//                    var remoteURL = if (it?.second?.ret != 0) null else "cylan:///$uuid/tmp/${it.second?.time}.jpg?regionType=${it.second?.ossType}"
-//                    var motionAreaSetting = if (it?.first?.enable == true) it.first?.rects!! else null
-//                    mView.onLoadMotionAreaSettingFinished(remoteURL,motionAreaSetting)
                     if (it?.second?.ret != 0) {
                         mView.onGetMonitorPictureError();
                     } else if (it.second?.ret == 0) {

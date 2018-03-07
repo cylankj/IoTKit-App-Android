@@ -35,8 +35,6 @@ import kotlinx.android.synthetic.main.fragment_monitor_area_setting.*
  * Created by yanzhendong on 2017/11/15.
  */
 class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presenter>(), MonitorAreaSettingContact.View {
-
-
     private var monitorWidth: Int = 0
     private var monitorHeight: Int = 0
     private var monitorAreaArray = mutableListOf<DpMsgDefine.Rect4F>()
@@ -44,6 +42,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     private var localPictureLoadActionCompleted: Boolean = false
     private var remotePictureLoadActionCompleted: Boolean = false
     private var isMotionAreaSettingCompleted: Boolean = false
+    private var isMotionAreaSettingStarted: Boolean = false
     private var pictureRadio: Float = 0F
     private var screenRadio: Float = 0F
     private var screenWidth: Int = 0
@@ -68,7 +67,8 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         super.onStart()
         ViewUtils.setRequestedOrientation(activity as Activity, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
         ViewUtils.setSystemUiVisibility(monitor_picture, false)
-        if (!isMotionAreaSettingCompleted) {
+        if (!isMotionAreaSettingCompleted && !isMotionAreaSettingStarted) {
+            isMotionAreaSettingStarted = true
             presenter.loadMonitorAreaSetting()
         }
     }
@@ -80,6 +80,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onGetMonitorPictureSuccess(url: String) {
         AppLogger.w("onGetMonitorPictureSuccess:$url")
         isMotionAreaSettingCompleted = true
+        isMotionAreaSettingStarted = false
         tryGetMonitorPicture(url)
     }
 
@@ -87,6 +88,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onGetMonitorPictureError() {
         AppLogger.w("onGetMonitorPictureError")
         isMotionAreaSettingCompleted = true
+        isMotionAreaSettingStarted = false
         remotePictureLoadActionCompleted = localPictureLoadActionCompleted
         hideLoadingBar()
         alertErrorGetMonitorPicture()
@@ -276,6 +278,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onRestoreMonitorAreaSetting(rects: List<DpMsgDefine.Rect4F>) {
         AppLogger.w("onRestoreMonitorAreaSetting:$rects")
         isMotionAreaSettingCompleted = true
+        isMotionAreaSettingStarted = false
         monitorAreaArray.clear()
         monitorAreaArray.addAll(rects)
         if (remotePictureLoadActionCompleted) {
@@ -286,6 +289,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onRestoreDefaultMonitorAreaSetting() {
         AppLogger.w("onRestoreDefaultMonitorAreaSetting")
         isMotionAreaSettingCompleted = true
+        isMotionAreaSettingStarted = false
         if (remotePictureLoadActionCompleted) {
             toggleMonitorAreaMode(true)
         }
