@@ -87,7 +87,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
     override fun onGetMonitorPictureError() {
         AppLogger.w("onGetMonitorPictureError")
         isMotionAreaSettingCompleted = true
-        remotePictureLoadActionCompleted = true
+        remotePictureLoadActionCompleted = localPictureLoadActionCompleted
         hideLoadingBar()
         alertErrorGetMonitorPicture()
     }
@@ -146,7 +146,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
-                        remotePictureLoadActionCompleted = true
+                        remotePictureLoadActionCompleted = localPictureLoadActionCompleted
                         alertErrorGetMonitorPicture()
                     }
                 })
