@@ -1430,7 +1430,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     return null;
                 })
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(dpCameraWarnArea -> {
                     if (dpCameraWarnArea != null && dpCameraWarnArea.rects != null && dpCameraWarnArea.rects.size() > 0) {
@@ -1440,6 +1440,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                        if (isMotionAreaChanged) {
                         mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), dpCameraWarnArea.enable ? liveActionHelper.deviceMotionArea : null);
 //                        }
+                    } else {
+                        //如果超时或者未设置侦测区域,默认全屏侦测区域
+                        mView.onDeviceMotionChanged(true, null);
                     }
                 }, error -> {
                     AppLogger.e(MiscUtils.getErr(error));
