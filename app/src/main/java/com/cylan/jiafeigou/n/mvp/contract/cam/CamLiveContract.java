@@ -279,6 +279,8 @@ public interface CamLiveContract {
         DpMsgDefine.Rect4F getMotionArea();
 
         boolean canMotionAreaEnable();
+
+        boolean canShowMotionAreaOption();
     }
 }
 

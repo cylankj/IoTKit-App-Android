@@ -1385,6 +1385,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public boolean canShowMotionAreaOption() {
+        return CameraLiveHelper.canShowMotionAreaOption(liveActionHelper);
+    }
+
+    @Override
     public void performLiveMotionAreaCheckerAction() {
         liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
         if (!liveActionHelper.deviceMotionAreaOpened) {

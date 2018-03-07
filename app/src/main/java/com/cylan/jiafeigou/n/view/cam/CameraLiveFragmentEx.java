@@ -1779,10 +1779,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         liveViewWithThumbnail.getTvLiveFlow().setVisibility(isLivePlaying() ? VISIBLE : INVISIBLE);
         liveLoadingBar.showOrHide(!canHideLoadingBar());
         historyParentContainer.setVisibility(canShowHistoryWheel() ? VISIBLE : INVISIBLE);
-
         //菜单View默认隐藏
         svSwitchStream.setVisibility(canShowStreamSwitcher() ? VISIBLE : INVISIBLE);
         liveViewModeContainer.setVisibility(canShowViewModeMenu() ? VISIBLE : INVISIBLE);
+        imgVLandCamMotionArea.setVisibility(canShowMotionAreaOption() ? VISIBLE : GONE);
+    }
+
+    private boolean canShowMotionAreaOption() {
+        return presenter!=null&&presenter.canShowMotionAreaOption();
     }
 
     private boolean canShowXunHuan() {

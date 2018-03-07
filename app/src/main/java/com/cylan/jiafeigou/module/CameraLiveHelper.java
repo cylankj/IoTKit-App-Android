@@ -669,4 +669,8 @@ public class CameraLiveHelper {
     public static boolean checkIsDeviceMotionAreaEnable(CameraLiveActionHelper helper) {
         return isVideoPlaying(helper) && isLive(helper);
     }
+
+    public static boolean canShowMotionAreaOption(CameraLiveActionHelper helper) {
+        return helper.hasMotionAreaSettingFeature;
+    }
 }
