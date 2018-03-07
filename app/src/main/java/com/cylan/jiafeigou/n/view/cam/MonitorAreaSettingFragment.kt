@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -104,7 +105,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     override fun tryGetLocalMonitorPicture() {
         val localUrl: String? = PreferencesUtils.getString(JConstant.MONITOR_AREA_PICTURE + ":$uuid")
-        localUrl?.apply {
+        if (!TextUtils.isEmpty(localUrl)) {
             GlideApp.with(this@MonitorAreaSettingFragment)
                     .asBitmap()
                     .load(this)
@@ -167,7 +168,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
 
     //radio高宽比
     fun updateMonitorAreaRadio() {
-        val radio = Math.min(pictureRadio, screenRadio)
+        val radio = Math.min(if (pictureRadio == 0F) screenRadio else pictureRadio, screenRadio)
         monitorPictureWidth = (screenHeight / radio).toInt()
         monitorPictureHeight = (screenWidth * radio).toInt()
         val params = monitor_container.layoutParams
