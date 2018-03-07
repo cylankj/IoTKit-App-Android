@@ -108,7 +108,7 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
         if (!TextUtils.isEmpty(localUrl)) {
             GlideApp.with(this@MonitorAreaSettingFragment)
                     .asBitmap()
-                    .load(this)
+                    .load(localUrl)
                     .onlyRetrieveFromCache(true)
                     .skipMemoryCache(true)
                     .into(object : SimpleTarget<Bitmap>() {
