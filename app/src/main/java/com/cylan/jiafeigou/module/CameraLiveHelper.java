@@ -666,6 +666,6 @@ public class CameraLiveHelper {
     }
 
     public static boolean shouldReloadLiveThumbPicture(CameraLiveActionHelper helper) {
-        return true;
+        return !isVideoPlaying(helper);
     }
 }
