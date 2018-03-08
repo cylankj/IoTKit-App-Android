@@ -29,6 +29,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
     private ImageView imgLiveMotionArea;
+    private DpMsgDefine.Rect4F motionAreaSetting;
+    private boolean motionAreaEnabled;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -129,6 +131,14 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void updateMotionAreaParameters(DpMsgDefine.Rect4F rect4F, boolean enable) {
         AppLogger.d("updateMotionAreaParameters:rect:" + rect4F + ",enable:" + enable);
+        this.motionAreaEnabled = enable;
+        this.motionAreaSetting = rect4F;
+        updateMotionAreaParameterInternal();
+    }
+
+    private void updateMotionAreaParameterInternal() {
+        final boolean enable = motionAreaEnabled;
+        final DpMsgDefine.Rect4F rect4F = motionAreaSetting;
         if (!enable) {
             imgLiveMotionArea.setVisibility(GONE);
             return;
@@ -145,8 +155,15 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         int marginRight = 0;
         int marginBottom = 0;
         layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
-        imgLiveMotionArea.setLayoutParams(layoutParams);
         imgLiveMotionArea.setVisibility(VISIBLE);
+        imgLiveMotionArea.setLayoutParams(layoutParams);
+    }
+
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        updateMotionAreaParameterInternal();
     }
 
     @Override
@@ -226,6 +243,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             }
         }
     }
+
     public void hideThumbPicture() {
         imgThumbnail.setVisibility(INVISIBLE);
     }

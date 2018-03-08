@@ -226,7 +226,7 @@ public interface CamLiveContract {
 
         boolean canShowHistoryWheel();
 
-        void performLiveMotionAreaCheckerAction();
+        void performLiveMotionAreaCheckerAction(boolean toggleMotionAreaSetting);
 
         boolean canShowFlip();
 

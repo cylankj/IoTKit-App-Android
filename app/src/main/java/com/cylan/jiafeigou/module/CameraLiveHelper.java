@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.panorama.Panoramic360ViewRS;
@@ -650,20 +649,12 @@ public class CameraLiveHelper {
     }
 
     public static DpMsgDefine.Rect4F checkMotionArea(CameraLiveActionHelper helper) {
-        DpMsgDefine.Rect4F deviceMotionArea = helper.deviceMotionArea;
-        if (deviceMotionArea == null) {
-            Device device = DataSourceManager.getInstance().getDevice(helper.uuid);
-            DpMsgDefine.Rect4F rect4F = new DpMsgDefine.Rect4F();
-            deviceMotionArea = device.$(DpMsgMap.ID_519_CAM_WARNAREA, rect4F);
-            if (rect4F == deviceMotionArea) {
-                deviceMotionArea = null;
-            }
-        }
-        return deviceMotionArea;
+        return helper.deviceMotionAreaEnabled ? helper.deviceMotionArea : null;
     }
 
     public static boolean checkIsDeviceMotionAreaOpened(CameraLiveActionHelper helper) {
-        return helper.deviceMotionAreaOpened = (MiscUtils.isLand() && helper.deviceMotionAreaOpened && isVideoPlaying(helper));
+//        return helper.deviceMotionAreaOpened = (MiscUtils.isLand() && helper.deviceMotionAreaOpened && isVideoPlaying(helper));
+        return helper.deviceMotionAreaOpened = (/*MiscUtils.isLand() &&*/ helper.deviceMotionAreaOpened && isVideoPlaying(helper));
     }
 
     public static boolean checkIsDeviceMotionAreaEnable(CameraLiveActionHelper helper) {

@@ -44,6 +44,7 @@ public class CameraLiveActionHelper {
     public volatile DpMsgDefine.DPSdStatus deviceSDStatus;
     public volatile DpMsgDefine.Rect4F deviceMotionArea;
     public volatile boolean deviceMotionAreaOpened;
+    public volatile boolean deviceMotionAreaEnabled;
     public volatile String deviceViewMountMode;
     public volatile int deviceDisplayMode;
     public volatile boolean isDeviceAlarmOpened;
@@ -84,7 +85,7 @@ public class CameraLiveActionHelper {
         this.hasViewModeFeature = JFGRules.showSwitchModeButton(device.pid);
         this.hasMicrophoneFeature = JFGRules.hasMicFeature(device.pid);
         this.deviceDisplayMode = PreferencesUtils.getInt(getSavedDisplayModeKey(), this.deviceDisplayMode);
-        this.hasMotionAreaSettingFeature=  JFGRules.hasProperty(device.pid, "DETECTION_ZONE");
+        this.hasMotionAreaSettingFeature = JFGRules.hasProperty(device.pid, "DETECTION_ZONE");
     }
 
     public void onUpdateDeviceInformation() {
@@ -227,6 +228,7 @@ public class CameraLiveActionHelper {
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
         this.recordedZeroTimestampCount = 0;
+        this.deviceMotionAreaOpened = false;
         if (this.playCode == CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
             //可能之前就有错误,不加判断的话会直接覆盖掉之前的错误导致错误信息丢失
             this.playCode = playCode;
@@ -423,5 +425,11 @@ public class CameraLiveActionHelper {
         boolean motionAreaOpened = this.deviceMotionAreaOpened;
         this.deviceMotionAreaOpened = isMotionAreaOpened;
         return motionAreaOpened;
+    }
+
+    public boolean onUpdateMotionAreaEnabled(boolean isMotionAreaEnabled) {
+        boolean motionAreaEnabled = this.deviceMotionAreaEnabled;
+        this.deviceMotionAreaEnabled = isMotionAreaEnabled;
+        return motionAreaEnabled;
     }
 }

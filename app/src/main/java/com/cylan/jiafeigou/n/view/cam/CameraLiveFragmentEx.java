@@ -390,6 +390,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onVideoPlayActionCompleted() {
         Log.d(CameraLiveHelper.TAG, "onVideoPlayActionCompleted");
+        presenter.performLiveMotionAreaCheckerAction(true);
         performReLayoutAction();
         performLayoutAnimation(false);
         liveLoadingBar.changeToPause(false);
@@ -1506,7 +1507,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @OnClick(R.id.imgV_land_cam_switch_motion_area)
     public void onToggleMotionAreaClicked() {
         AppLogger.d("onToggleMotionAreaClicked");
-        presenter.performLiveMotionAreaCheckerAction();
+        presenter.performLiveMotionAreaCheckerAction(true);
     }
 
     private static final int ANIMATION_DURATION = 250;
@@ -1786,7 +1787,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private boolean canShowMotionAreaOption() {
-        return presenter!=null&&presenter.canShowMotionAreaOption();
+        return presenter != null && presenter.canShowMotionAreaOption();
     }
 
     private boolean canShowXunHuan() {

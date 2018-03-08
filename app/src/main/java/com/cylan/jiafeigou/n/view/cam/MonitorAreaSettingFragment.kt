@@ -141,8 +141,8 @@ class MonitorAreaSettingFragment : BaseFragment<MonitorAreaSettingContact.Presen
                             AppLogger.w("设置区域设置图片")
                             PreferencesUtils.putString(JConstant.MONITOR_AREA_PICTURE + ":$uuid", url)
                             updateMonitorAreaPicture(resource)
-                            toggleMonitorAreaMode(false)
-                            finish.isEnabled = true;
+                            toggleMonitorAreaMode(monitorAreaArray.size == 0)
+                            finish.isEnabled = true
                             hideLoadingBar()
                         }
                     }

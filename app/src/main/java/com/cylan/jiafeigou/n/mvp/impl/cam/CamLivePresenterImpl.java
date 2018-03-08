@@ -1372,11 +1372,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public DpMsgDefine.Rect4F getMotionArea() {
-        DpMsgDefine.Rect4F motionArea = CameraLiveHelper.checkMotionArea(liveActionHelper);
-//        if (motionArea == null) {
-//            performLiveMotionAreaCheckerAction();
-//        }
-        return motionArea;
+        return CameraLiveHelper.checkMotionArea(liveActionHelper);
     }
 
     @Override
@@ -1390,8 +1386,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public void performLiveMotionAreaCheckerAction() {
-        liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
+    public void performLiveMotionAreaCheckerAction(boolean toggleMotionAreaSetting) {
+        if (toggleMotionAreaSetting) {
+            liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
+        }
         if (!liveActionHelper.deviceMotionAreaOpened) {
             mView.onDeviceMotionChanged(false, liveActionHelper.deviceMotionArea);
             return;
@@ -1436,9 +1434,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (dpCameraWarnArea != null && dpCameraWarnArea.rects != null && dpCameraWarnArea.rects.size() > 0) {
                         DpMsgDefine.Rect4F rect4F = dpCameraWarnArea.rects.get(0);
 //                        boolean isMotionAreaChanged = CameraLiveHelper.checkIsMotionAreaChanged(liveActionHelper,rect4F);
+                        liveActionHelper.onUpdateMotionAreaEnabled(dpCameraWarnArea.enable);
                         liveActionHelper.onUpdateMotionArea(rect4F);
+//                        liveActionHelper.onUpdateMotionAreaOpened(dpCameraWarnArea.enable);
 //                        if (isMotionAreaChanged) {
-                        mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), dpCameraWarnArea.enable ? liveActionHelper.deviceMotionArea : null);
+                        mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), CameraLiveHelper.checkMotionArea(liveActionHelper));
 //                        }
                     } else {
                         //如果超时或者未设置侦测区域,默认全屏侦测区域
