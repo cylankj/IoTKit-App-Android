@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
@@ -50,7 +49,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -1397,6 +1395,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (toggleMotionAreaSetting) {
             liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
         }
+        liveActionHelper.onUpdateMotionArea(null);
         if (!liveActionHelper.deviceMotionAreaOpened) {
             mView.onDeviceMotionChanged(false, liveActionHelper.deviceMotionArea);
             return;

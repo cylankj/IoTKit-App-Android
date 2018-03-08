@@ -654,7 +654,7 @@ public class CameraLiveHelper {
 
     public static boolean checkIsDeviceMotionAreaOpened(CameraLiveActionHelper helper) {
 //        return helper.deviceMotionAreaOpened = (MiscUtils.isLand() && helper.deviceMotionAreaOpened && isVideoPlaying(helper));
-        return (/*MiscUtils.isLand() &&*/ helper.deviceMotionAreaOpened && isVideoPlaying(helper) && isLive(helper));
+        return (/*MiscUtils.isLand() &&*/ helper.deviceMotionAreaOpened && helper.deviceMotionArea != null && isVideoPlaying(helper) && isLive(helper));
     }
 
     public static boolean checkIsDeviceMotionAreaEnable(CameraLiveActionHelper helper) {
