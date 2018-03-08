@@ -281,6 +281,8 @@ public interface CamLiveContract {
         boolean canMotionAreaEnable();
 
         boolean canShowMotionAreaOption();
+
+        boolean shouldReloadLiveThumbPicture();
     }
 }
 

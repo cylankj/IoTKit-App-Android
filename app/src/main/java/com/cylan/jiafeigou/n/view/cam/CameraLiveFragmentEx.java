@@ -658,8 +658,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         enableSensor(true);
         //|直播| 按钮
-        performLayoutVisibilityAction();
-        performLayoutEnableAction();
+        performReLayoutAction();
         //现在显示的条件就是手动点击其他情况都不显示
         liveLoadingBar.changeToLoading(canShowLoadingBar());
         imgVCamZoomToFullScreen.setEnabled(false);//测试用
@@ -673,14 +672,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onPlayErrorLowFrameRate() {
         Log.d(CameraLiveHelper.TAG, "当前帧率低");
         liveLoadingBar.changeToLoading(canShowLoadingBar());
-        performLayoutEnableAction();
+        performReLayoutAction();
     }
 
     @Override
     public void onPlayFrameResumeGood() {
         Log.d(CameraLiveHelper.TAG, "当前帧率已恢复正常");
         liveLoadingBar.changeToPause(false);
-        performLayoutEnableAction();
+        performReLayoutAction();
     }
 
     @Override
@@ -1229,7 +1228,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onDeviceNetChanged(DpMsgDefine.DPNet net, boolean isLocalOnline) {
         AppLogger.d(CameraLiveHelper.TAG + ":onDeviceNetChanged,net is:" + net + " isLocalOnline:" + isLocalOnline);
         this.isLocalOnline = isLocalOnline;
-        performLayoutEnableAction();
+        performReLayoutAction();
     }
 
     @Override
@@ -1386,7 +1385,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onHistoryCheckerErrorNoSDCard() {
         AppLogger.d(CameraLiveHelper.TAG + ":onHistoryCheckerErrorNoSDCard");
         ToastUtil.showToast(getString(R.string.NO_SDCARD));
-        performLayoutEnableAction();
+        performReLayoutAction();
         if (!isLivePlaying()) {
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
         } else if (isNoPlayError()) {
@@ -1398,7 +1397,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onHistoryCheckerErrorSDCardInitRequired(int errorCode) {
         AppLogger.d(CameraLiveHelper.TAG + ":onHistoryCheckerErrorSDCardInitRequired,errorCode is:" + errorCode);
         ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
-        performLayoutEnableAction();
+        performReLayoutAction();
         if (!isLivePlaying()) {
             liveLoadingBar.changeToPlaying(canShowLoadingBar());
         } else if (isNoPlayError()) {
@@ -1409,7 +1408,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onLoadHistoryPrepared(long playTime, boolean isHistoryCheckerRequired) {
         AppLogger.d(CameraLiveHelper.TAG + ":onLoadHistoryPrepared");
-        performLayoutEnableAction();
+        performReLayoutAction();
         liveLoadingBar.changeToLoading(true, isHistoryCheckerRequired ? getString(R.string.LOADING) : null, null);
     }
 
@@ -2049,13 +2048,17 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             liveViewWithThumbnail.showBlackBackground();
             return;
         }
-        if (!isLivePlaying() && isReallyVisibleToUser()) {//显示缩略图
+        if (shouldReloadLiveThumbPicture() && isReallyVisibleToUser()) {
             presenter.performLoadLiveThumbPicture();
             return;
         }
         if (isLivePlaying() && isReallyVisibleToUser()) {
             liveViewWithThumbnail.hideThumbPicture();
         }
+    }
+
+    private boolean shouldReloadLiveThumbPicture() {
+        return presenter != null && presenter.shouldReloadLiveThumbPicture();
     }
 
     private void onStandByClicked(View view) {

@@ -664,4 +664,8 @@ public class CameraLiveHelper {
     public static boolean canShowMotionAreaOption(CameraLiveActionHelper helper) {
         return helper.hasMotionAreaSettingFeature;
     }
+
+    public static boolean shouldReloadLiveThumbPicture(CameraLiveActionHelper helper) {
+        return true;
+    }
 }

@@ -65,6 +65,7 @@ public class CameraLiveActionHelper {
     public volatile boolean isLastLiveThumbPictureChanged = true;
     public volatile boolean isVideoResolutionReached;
     public volatile boolean isDynamicLiving = isLive;
+    public volatile boolean shouldReloadLiveThumb = true;
 
     public volatile boolean hasPendingResumeToPlayVideoAction = false;
     public final boolean hasSDCardFeature;
@@ -74,6 +75,7 @@ public class CameraLiveActionHelper {
     public final boolean hasViewModeFeature;
     public final boolean hasMicrophoneFeature;
     public final boolean hasMotionAreaSettingFeature;
+
 
     public CameraLiveActionHelper(String uuid) {
         this.uuid = uuid;
@@ -272,6 +274,7 @@ public class CameraLiveActionHelper {
             this.isPlaying = false;
             this.isLiveSlow = false;
             this.isLoading = false;
+            this.shouldReloadLiveThumb = true;
         }
         return isNetworkConnected;
     }
