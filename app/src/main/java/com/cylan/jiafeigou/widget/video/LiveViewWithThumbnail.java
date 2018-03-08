@@ -126,6 +126,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         lp.height = height;
         lp.width = width;
         ((View) videoView).setLayoutParams(lp);
+        post(this::updateMotionAreaParameterInternal);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         AppLogger.d("updateMotionAreaParameters:rect:" + rect4F + ",enable:" + enable);
         this.motionAreaEnabled = enable;
         this.motionAreaSetting = rect4F;
-        updateMotionAreaParameterInternal();
+        post(this::updateMotionAreaParameterInternal);
     }
 
     private void updateMotionAreaParameterInternal() {
@@ -163,7 +164,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        updateMotionAreaParameterInternal();
+        post(this::updateMotionAreaParameterInternal);
     }
 
     @Override
