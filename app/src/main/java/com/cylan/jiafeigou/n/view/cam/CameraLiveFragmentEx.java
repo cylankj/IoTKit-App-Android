@@ -390,11 +390,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onVideoPlayActionCompleted() {
         Log.d(CameraLiveHelper.TAG, "onVideoPlayActionCompleted");
-        presenter.performLiveMotionAreaCheckerAction(true);
         performReLayoutAction();
         performLayoutAnimation(false);
         liveLoadingBar.changeToPause(false);
-
+        presenter.performLiveMotionAreaCheckerAction(false);
     }
 
     @Override

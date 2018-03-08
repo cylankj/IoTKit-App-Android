@@ -86,6 +86,7 @@ public class CameraLiveActionHelper {
         this.hasMicrophoneFeature = JFGRules.hasMicFeature(device.pid);
         this.deviceDisplayMode = PreferencesUtils.getInt(getSavedDisplayModeKey(), this.deviceDisplayMode);
         this.hasMotionAreaSettingFeature = JFGRules.hasProperty(device.pid, "DETECTION_ZONE");
+        this.deviceMotionAreaOpened = PreferencesUtils.getBoolean(getSavedMotionAreaSettingKey(), true);
     }
 
     public void onUpdateDeviceInformation() {
@@ -228,7 +229,6 @@ public class CameraLiveActionHelper {
         this.isLive = live;
         this.lastReportedPlayError = CameraLiveHelper.PLAY_ERROR_NO_ERROR;
         this.recordedZeroTimestampCount = 0;
-        this.deviceMotionAreaOpened = false;
         if (this.playCode == CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
             //可能之前就有错误,不加判断的话会直接覆盖掉之前的错误导致错误信息丢失
             this.playCode = playCode;
@@ -362,6 +362,11 @@ public class CameraLiveActionHelper {
         return "DEVICE_SAVED_DISPLAY_MODE_KEY_" + uuid;
     }
 
+    public String getSavedMotionAreaSettingKey() {
+        return "DEVICE_SAVED_SAVED_MOTION_AREA_SETTING_KEY_" + uuid;
+    }
+
+
     public int onUpdateDeviceDisplayMode(int displayMode) {
         int deviceDisplayMode = this.deviceDisplayMode;
         this.deviceDisplayMode = displayMode;
@@ -424,6 +429,7 @@ public class CameraLiveActionHelper {
     public boolean onUpdateMotionAreaOpened(boolean isMotionAreaOpened) {
         boolean motionAreaOpened = this.deviceMotionAreaOpened;
         this.deviceMotionAreaOpened = isMotionAreaOpened;
+        PreferencesUtils.putBoolean(getSavedMotionAreaSettingKey(), this.deviceMotionAreaOpened);
         return motionAreaOpened;
     }
 
