@@ -34,10 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y0"
             android:layout_weight="1"
+            android:visibility="gone"
             app:clipBorderWidth="@dimen/x2"
             app:clipType="rectangle"
-            app:mHorizontalPadding="@dimen/x30"
-            android:visibility="gone" />
+            app:mHorizontalPadding="@dimen/x30" />
 
     </FrameLayout>
 
@@ -52,9 +52,9 @@
             android:layout_width="@dimen/x80"
             android:layout_height="match_parent"
             android:gravity="bottom"
-            android:paddingLeft="@dimen/x14"
-            android:text="取消"
             android:paddingBottom="@dimen/y24"
+            android:paddingLeft="@dimen/x14"
+            android:text="@string/CANCEL"
             android:textColor="#ffffff"
             android:textSize="@dimen/sp16" />
 
@@ -64,9 +64,9 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:gravity="bottom|end"
-            android:text="使用"
-            android:paddingRight="@dimen/x14"
             android:paddingBottom="@dimen/y24"
+            android:paddingRight="@dimen/x14"
+            android:text="@string/Tap3_Userinfo_UsePhoto"
             android:textColor="#ffffff"
             android:textSize="@dimen/sp16" />
     </RelativeLayout>
