@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Please via \"Settings\"->\"WLAN\", choose \"DOG-ML-******\" join on your phone, password 11111111</string>
   <string name="WIFI_SET_4">Return to %s</string>
   <string name="WIFI_SET_5GTIPS">Note: This device does not support 5G WIFI currently</string>
+  <string name="WIFI_SET_AI">Please via \"Settings\"->\"WLAN\",choose \"AI-**-******\"join on your phone, Password is 11111111</string>
   <string name="WIFI_SET_RS">Please via \"Settings\"->\"WLAN\", choose \"RS-CAM-******\" join on your phone, password 11111111</string>
   <string name="WIFI_SET_VER">Please via \"Settings\"->\"WLAN\", choose \"%s\" join on your phone, password 11111111</string>
   <string name="WIRED_GUIDE">Use network cable to connect device and router, ensure device and APP use same network</string>

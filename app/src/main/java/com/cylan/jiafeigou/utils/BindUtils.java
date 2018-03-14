@@ -254,8 +254,8 @@ public class BindUtils {
             intent.setClass(context, BindPanoramaCamActivity.class);
         } else if (JFGRules.isHalfCamera(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_hemisphere);
-            intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bell_doby);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+            intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_bind_guide);
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, context.getString(R.string.dog_ssid_prefix));
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.HALF_CAMERA));
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_Outdoor_CameraTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, "");
@@ -263,11 +263,11 @@ public class BindUtils {
             intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isOutDoorCamera(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_outdoor);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, context.getString(R.string.dog_ssid_prefix));
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_Outdoor_CameraTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
-            intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
+            intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_bind_guide);
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.Camera_Outdoor));
             intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isCatEeyBell(pid)) {

@@ -21,4 +21,6 @@
     <string name="agreementSuffix">"_DobyNew"</string>
     <string name="log">"Doby"</string>
     <integer name="max_password_length">32</integer>
+    <string name="dog_ssid_prefix">AI-**-******</string>
+    <item name="dog_bind_guide" format="reference" type="raw">@raw/bind_guide_ai</item>
 </resources>

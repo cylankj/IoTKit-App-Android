@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">システム設定-> WiFiにDOG-ML -******を選択し追加してください,パスワード11111111</string>
   <string name="WIFI_SET_4">戻る%s</string>
   <string name="WIFI_SET_5GTIPS">注意：ただいま5GHz式のWiFi電波が適用されません</string>
+  <string name="WIFI_SET_AI">システム設定->WiFiにAI-**-******を選択し追加してください,パスワード11111111</string>
   <string name="WIFI_SET_RS">システム設定-> WiFiにRS-CAM -******を選択し追加してください,パスワード11111111</string>
   <string name="WIFI_SET_VER">システム設定-> WiFiに %s を選択し追加してください,パスワード11111111</string>
   <string name="WIRED_GUIDE">デバイスとルータを接続するネットワークケーブルを使用して、デバイスを確保し、APPは、同じネットワークを使用</string>

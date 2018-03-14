@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Sur l\'phone via Réglages->WLAN, se connecter à DOG-ML-******, mot de passe 11111111</string>
   <string name="WIFI_SET_4">Retour à %s</string>
   <string name="WIFI_SET_5GTIPS">Note:Ne supporte pas le WiFi 5G</string>
+  <string name="WIFI_SET_AI">Sur l\'phone via Réglages->WLAN, se connecter à AI-**-******, mot de passe 11111111</string>
   <string name="WIFI_SET_RS">Sur l\'phone via Réglages->WLAN, se connecter à RS-CAM-******, mot de passe 11111111</string>
   <string name="WIFI_SET_VER">Sur l\'phone via Réglages->WLAN, se connecter à %s, mot de passe 11111111</string>
   <string name="WIRED_GUIDE">Utilisez un câble réseau pour connecter un appareil et un routeur, vérifier que le dispositif et APP utiliser le même réseau</string>

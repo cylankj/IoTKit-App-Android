@@ -22,5 +22,7 @@
     <string name="facebook_app_id">fb444251309281886</string>
     <string name="agreementSuffix">""</string>
     <string name="log">"Smarthome"</string>
+    <string name="dog_ssid_prefix">DOG-**-******</string>
     <integer name="max_password_length">32</integer>
+    <item name="dog_bind_guide" format="reference" type="raw">@raw/dog_doby</item>
 </resources>

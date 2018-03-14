@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Ajustes de phone ->Red de área local inalámbrica,elija DOG-ML****** entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WIFI_SET_4">lver a %s</string>
   <string name="WIFI_SET_5GTIPS">Nota:No es compatible con el WiFi 5G</string>
+  <string name="WIFI_SET_AI">Ajustes de phone ->Red de área local inalámbrica,elija AI-****** entre, si necesitan contraseña, introduzca 11111111</string>
   <string name="WIFI_SET_RS">Ajustes de phone ->Red de área local inalámbrica,elija RS-CAM****** entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WIFI_SET_VER">Ajustes de phone ->Red de área local inalámbrica,elija %s entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WIRED_GUIDE">Utilice cable de red para conectar el dispositivo y el router, asegúrese de dispositivo y la aplicación Utilizar misma red</string>

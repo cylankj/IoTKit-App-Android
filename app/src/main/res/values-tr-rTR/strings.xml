@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Lütfen Ayarlamalar->WLAN aracaılığıyla DOG-ML-****** yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
   <string name="WIFI_SET_4">%s e geri dön</string>
   <string name="WIFI_SET_5GTIPS">İpuçları:5Ghz WiFi sinyali şu an izinsiz</string>
+  <string name="WIFI_SET_AI">Lütfen Ayarlamalar->WLAN aracılığıyla AI-**-****** u seçin , phone\'nuzdan katılın, Şifre 11111111</string>
   <string name="WIFI_SET_RS">Lütfen Ayarlamalar->WLAN aracaılığıyla RS-CAM-****** yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
   <string name="WIFI_SET_VER">Lütfen Ayarlamalar->WLAN aracaılığıyla %s yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
   <string name="WIRED_GUIDE">cihaz ve yönlendirici bağlamak için ağ kablosunu kullanın, cihazı sağlamak ve APP aynı ağ kullanın</string>

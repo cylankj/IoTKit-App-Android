@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Por favor, selecione \"DOG-ML******\" na definições de WiFi. Se precisar de senha, digite 11111111</string>
   <string name="WIFI_SET_4">Retorne para o %s</string>
   <string name="WIFI_SET_5GTIPS">Nota:WiFi em 5GHz não é suportado</string>
+  <string name="WIFI_SET_AI">Por favor, selecione \"AI-**-******\" na definições de WiFi. Se precisar de senha, digite 11111111</string>
   <string name="WIFI_SET_RS">Por favor, selecione \"RS-CAM******\" na definições de WiFi. Se precisar de senha, digite 11111111</string>
   <string name="WIFI_SET_VER">Por favor, selecione \"%s\" na definições de WiFi. Se precisar de senha, digite 11111111</string>
   <string name="WIRED_GUIDE">Use cabo de rede para conectar dispositivo e router, certifique-se de dispositivo e APP usar mesma rede</string>

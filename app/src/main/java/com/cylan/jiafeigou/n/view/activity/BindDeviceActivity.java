@@ -134,12 +134,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_cam_outdoor:
                 ViewUtils.deBounceClick(view);
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_outdoor);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, getString(R.string.dog_ssid_prefix));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_Outdoor_CameraTipsTitle));
 //                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.HALF_CAMERA_ADD_TIPS));
-                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_bind_guide);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Camera_Outdoor));
                 break;
             case R.id.v_to_bind_camera_cloud:
@@ -196,8 +196,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             case R.id.v_to_bind_half_camera: {
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_hemisphere);
-                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bell_doby);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_bind_guide);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, getString(R.string.dog_ssid_prefix));
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.HALF_CAMERA));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_Outdoor_CameraTipsTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, "");

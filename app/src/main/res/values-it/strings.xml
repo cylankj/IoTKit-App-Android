@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Andare in \"Settings\"->\"WLAN\",scegliere \"DOG-ML-******\" collegare il telefono,password è 11111111</string>
   <string name="WIFI_SET_4">Tornare a %s</string>
   <string name="WIFI_SET_5GTIPS">Nota: il segnale WiFi 5Ghz non è ancora supportato</string>
+  <string name="WIFI_SET_AI">Andare in \"Settings\"->\"WLAN\",scegliere \"AI-**-******\" collegare il telefono, Password è 11111111</string>
   <string name="WIFI_SET_RS">Andare in \"Settings\"->\"WLAN\",scegliere \"RS-CAM-******\" collegare il telefono,password è 11111111</string>
   <string name="WIFI_SET_VER">Andare in \"Settings\"->\"WLAN\",scegliere \"%s\" collegare il telefono,password è 11111111</string>
   <string name="WIRED_GUIDE">Usare un cavo di rete per collegare il dispositivo e router, assicurarsi dispositivo e APP utilizzare stessa rete</string>

@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">请在系统设置->无线局域网，选择“DOG-ML-******”加入，密码8个1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
+  <string name="WIFI_SET_AI">请在系统设置->无线局域网，选择“AI-**-******”加入，密码8个1</string>
   <string name="WIFI_SET_RS">请在系统设置->无线局域网，选择“RS-CAM-******”加入，密码8个1</string>
   <string name="WIFI_SET_VER">请在系统设置->无线局域网，选择“%s”加入，密码8个1</string>
   <string name="WIRED_GUIDE">请将设备用网线连接到路由器，并确保和客户端处于同一网络</string>

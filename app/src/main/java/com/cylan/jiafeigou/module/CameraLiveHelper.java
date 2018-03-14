@@ -271,7 +271,7 @@ public class CameraLiveHelper {
         boolean videoPlaying = isVideoRealPlaying(helper);
         boolean hasNoPlayError = isNoError(helper);
         boolean b = !videoLoading && videoPlaying && hasNoPlayError;
-        Log.e("AAAAA", "videoLoading:" + videoLoading + ",videoPlaying:" + videoPlaying + ",noError:" + hasNoPlayError);
+        Log.d("AAAAA", "videoLoading:" + videoLoading + ",videoPlaying:" + videoPlaying + ",noError:" + hasNoPlayError);
         return b;
     }
 
@@ -654,7 +654,7 @@ public class CameraLiveHelper {
 
     public static boolean checkIsDeviceMotionAreaOpened(CameraLiveActionHelper helper) {
 //        return helper.deviceMotionAreaOpened = (MiscUtils.isLand() && helper.deviceMotionAreaOpened && isVideoPlaying(helper));
-        return (/*MiscUtils.isLand() &&*/ helper.deviceMotionAreaOpened && helper.deviceMotionArea != null && isVideoPlaying(helper) && isLive(helper));
+        return (/*MiscUtils.isLand() &&*/helper.hasMotionAreaSettingFeature && helper.deviceMotionAreaOpened && isVideoPlaying(helper) && isLive(helper));
     }
 
     public static boolean checkIsDeviceMotionAreaEnable(CameraLiveActionHelper helper) {

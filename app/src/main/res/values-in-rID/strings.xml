@@ -1158,6 +1158,7 @@
   <string name="WIFI_SET_3_1">Silahkan melalui \"Pengaturan\"->\"WLAN\", pilih \"DOG-ML-******\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
   <string name="WIFI_SET_4">Kembali ke %s</string>
   <string name="WIFI_SET_5GTIPS">Tips:Sinyal 5G WIFI tidak memungkinkan sekarang</string>
+  <string name="WIFI_SET_AI">Silahkan melalui \"Pengaturan\"->\"WLAN\",pilih \"AI-**-******\"sambungkan ke iPhone anda, Kata sandinya adalah 11111111</string>
   <string name="WIFI_SET_RS">Silahkan melalui \"Pengaturan\"->\"WLAN\", pilih \"RS-CAM-******\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
   <string name="WIFI_SET_VER">Silahkan melalui \"Pengaturan\"->\"WLAN\", pilih \"%s\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
   <string name="WIRED_GUIDE">Gunakan kabel jaringan untuk menghubungkan perangkat dan router, pastikan perangkat dan APP menggunakan jaringan yang sama</string>
