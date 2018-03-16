@@ -268,6 +268,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Sadece ben</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">kamu</string>
   <string name="FACE_COLLAPSE">Çöküş</string>
+  <string name="FACE_MINSIZE">Yüz minimum boyutu</string>
+  <string name="FACE_MINSIZE_TIP">Daha büyük değer, daha yüksek tanıma doğruluğu</string>
   <string name="FACE_NOT_RECOGNIZED">Yüz tanınmadı</string>
   <string name="FACE_RECOGNITION">Yüz tanıma</string>
   <string name="FAQ_SINA_WEIBO">Sina Weibo canlı video desteklemez</string>

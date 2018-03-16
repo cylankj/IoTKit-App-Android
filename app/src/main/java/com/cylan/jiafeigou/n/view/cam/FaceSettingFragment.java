@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FaceSettingContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -23,11 +24,14 @@ import butterknife.BindView;
  * Created by yanzhendong on 2018/1/25.
  */
 
-public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presenter> implements FaceSettingContract.View {
+public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presenter> implements FaceSettingContract.View, FaceDetectionSizeChooseFragment.ChooseCallback {
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.siv_face_detection_setting)
     SettingItemView0 sivFaceDetectionSetting;
+    @BindView(R.id.siv_face_detection_size_setting)
+    SettingItemView0 sivFaceDetectionSizeSetting;
+    private int detectionSize = 120;
 
     @Nullable
     @Override
@@ -39,7 +43,7 @@ public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presen
     @Override
     public void onResume() {
         super.onResume();
-        presenter.performCheckFaceDetectionSetting();
+        presenter.performCheckAndInitFaceSetting();
     }
 
     @Override
@@ -47,6 +51,13 @@ public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presen
         super.onViewCreated(view, savedInstanceState);
         customToolbar.setBackAction(this::onBackClicked);
         sivFaceDetectionSetting.setOnCheckedChangeListener(this::onFaceDetectionChanged);
+        sivFaceDetectionSizeSetting.setOnClickListener(this::onFaceDetectionSizeClicked);
+    }
+
+    private void onFaceDetectionSizeClicked(View view) {
+        FaceDetectionSizeChooseFragment sizeChooseFragment = FaceDetectionSizeChooseFragment.newInstance("", detectionSize);
+        sizeChooseFragment.setChooseCallback(this);
+        sizeChooseFragment.show(getFragmentManager(), FaceDetectionSizeChooseFragment.class.getSimpleName());
     }
 
     void onFaceDetectionChanged(CompoundButton button, boolean isChecked) {
@@ -82,5 +93,29 @@ public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presen
         } else {
             ToastUtil.showToast(getString(R.string.PWD_OK_2));
         }
+    }
+
+    @Override
+    public void onQueryFaceDetectionSizeFinished(DpMsgDefine.DPDetectionSize size) {
+        AppLogger.d("onQueryFaceDetectionSizeFinished:" + size);
+        if (size != null) {
+            detectionSize = size.x;
+        }
+        sivFaceDetectionSizeSetting.setSubTitle(String.format("%spx", detectionSize));
+    }
+
+    @Override
+    public void onChangeFaceDetectionSizeFinished(Boolean success, DpMsgDefine.DPDetectionSize detectionSize) {
+        if (!success) {
+            ToastUtil.showToast(getString(R.string.SETTINGS_FAILED));
+        } else {
+            this.detectionSize = detectionSize.x;
+            sivFaceDetectionSizeSetting.setSubTitle(String.format("%spx", this.detectionSize));
+        }
+    }
+
+    @Override
+    public void onChoose(int size) {
+        presenter.performChangeFaceDetectionSizeAction(new DpMsgDefine.DPDetectionSize(size, size));
     }
 }

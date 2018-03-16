@@ -268,6 +268,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Только я</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">общественного</string>
   <string name="FACE_COLLAPSE">коллапс</string>
+  <string name="FACE_MINSIZE">Минимальный размер лица</string>
+  <string name="FACE_MINSIZE_TIP">Чем больше значение, тем выше точность распознавания</string>
   <string name="FACE_NOT_RECOGNIZED">Лицо не распознается</string>
   <string name="FACE_RECOGNITION">Распознавание лица</string>
   <string name="FAQ_SINA_WEIBO">Не поддерживайте живое видео в блоге Sina</string>

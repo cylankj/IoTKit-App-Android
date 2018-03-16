@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
@@ -31,19 +32,44 @@
         android:layout_marginTop="@dimen/y16"
         android:text="@string/SETTINGS"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="@dimen/sp14"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+        android:textSize="@dimen/sp14" />
 
     <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/siv_face_detection_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y7"
-        app:layout_constraintTop_toBottomOf="@+id/tv_face_detection_title"
         app:sv_sub_title="@string/DOWNLOAD_MSG_PICTURE_EXPLAIN"
         app:sv_switch_visibility="true"
         app:sv_title="@string/DOWNLOAD_MSG_PICTURE"
         app:sv_v_divider="true" />
 
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:id="@+id/rl_monitoring_area_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/siv_face_detection_size_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_sub_title="120px"
+            app:sv_switch_visibility="false"
+            app:sv_title="@string/FACE_MINSIZE"
+            app:sv_v_divider="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/siv_face_detection_size_setting"
+            android:paddingEnd="@dimen/y20"
+            android:paddingStart="@dimen/y20"
+            android:paddingTop="@dimen/y8"
+            android:text="@string/FACE_MINSIZE_TIP"
+            android:textColor="@color/color_888888"
+            android:textSize="@dimen/sp13" />
+    </RelativeLayout>
+
+</LinearLayout>

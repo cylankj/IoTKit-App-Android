@@ -2973,4 +2973,28 @@ public class DpMsgDefine {
         @Index(3)
         public int ret;
     }
+
+    @Message
+    public static class DPDetectionSize {
+        @Index(0)
+        public int x;
+        @Index(1)
+        public int y;
+
+        public DPDetectionSize() {
+        }
+
+        public DPDetectionSize(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public String toString() {
+            return "DPDetectionSize{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
+        }
+    }
 }

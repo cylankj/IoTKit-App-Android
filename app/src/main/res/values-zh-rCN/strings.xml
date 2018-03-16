@@ -268,6 +268,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">仅自己</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">公开</string>
   <string name="FACE_COLLAPSE">收起</string>
+  <string name="FACE_MINSIZE">人脸最小尺寸</string>
+  <string name="FACE_MINSIZE_TIP">数值越大，人脸识别精准度越高</string>
   <string name="FACE_NOT_RECOGNIZED">人脸无法识别，请重试</string>
   <string name="FACE_RECOGNITION">人脸识别</string>
   <string name="FAQ_SINA_WEIBO">新浪微博无法直播</string>

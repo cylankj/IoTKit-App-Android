@@ -268,6 +268,8 @@
   <string name="FACEBOOK_PERMISSIONS_ONLYME">Nur ich</string>
   <string name="FACEBOOK_PERMISSIONS_PUBLIC">Öffentlich</string>
   <string name="FACE_COLLAPSE">Kollaps</string>
+  <string name="FACE_MINSIZE">Gesicht minimale Größe</string>
+  <string name="FACE_MINSIZE_TIP">Je größer der Wert, desto höher die Erkennungsgenauigkeit</string>
   <string name="FACE_NOT_RECOGNIZED">Gesicht nicht erkannt</string>
   <string name="FACE_RECOGNITION">Gesichtserkennung</string>
   <string name="FAQ_SINA_WEIBO">Nicht unterstützen Sina Weibo Live Video</string>
