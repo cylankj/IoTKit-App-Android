@@ -69,7 +69,7 @@ public class FaceDetectionSizeChooseFragment extends DialogFragment implements O
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
-                return 63;
+                return 64;
             }
 
             @Override

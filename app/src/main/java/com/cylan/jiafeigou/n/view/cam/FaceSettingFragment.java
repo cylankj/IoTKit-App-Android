@@ -110,6 +110,7 @@ public class FaceSettingFragment extends BaseFragment<FaceSettingContract.Presen
             ToastUtil.showToast(getString(R.string.SETTINGS_FAILED));
         } else {
             this.detectionSize = detectionSize.x;
+            ToastUtil.showToast(getString(R.string.PWD_OK_2));
             sivFaceDetectionSizeSetting.setSubTitle(String.format("%spx", this.detectionSize));
         }
     }
