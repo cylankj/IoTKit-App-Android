@@ -129,7 +129,7 @@ public class FaceSettingPresenter extends BasePresenter<FaceSettingContract.View
             try {
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 params.add(new JFGDPMsg(DpMsgMap.ID_529_CAM_AI_FACE_SIZE_MSG, System.currentTimeMillis(), DpUtils.pack(detectionSize)));
-                long seq = Command.getInstance().robotSetData(uuid, params);
+                long seq = Command.getInstance().robotSetDataByTime(uuid, params);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
