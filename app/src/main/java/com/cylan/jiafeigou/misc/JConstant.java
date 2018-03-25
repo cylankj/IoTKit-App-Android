@@ -199,7 +199,20 @@ public class JConstant {
     public static final String ROBOT_SERVICES_SECERET = "ROBOT_SERVICES_SECERET";
     public static final String SHOW_MONITOR_AREA_TIPS = "SHOW_MONITOR_AREA_TIPS";
     public static final String MONITOR_AREA_PICTURE = "MONITOR_AREA_PICTURE";
+    public static final String KEY_BIND_DEVICE_PRODUCT_SERIES = "KEY_BIND_DEVICE_PRODUCT_SERIES";
 
+    public enum DEVICE_PRODUCT_SERIES {
+        SERIES_SMART_CAMERA,
+        SERIES_SMART_CAMERA_OUTDOOR,
+        SERIES_SMART_CAMERA_OUTDOOR_4G,
+        SERIES_SMART_CAMERA_BATTERY,
+        SERIES_SMART_CAMERA_PANORAMA,
+        SERIES_SMART_CAMERA_HALF,
+        SERIES_SMART_CAMERA_CONSUME,
+        SERIES_SMART_DOORBELL_BATTERY,
+        SERIES_SMART_DOORBELL_NO_BATTERY,
+        SERIES_SMART_DOORBELL_CAT_EYE
+    }
 
     public static String getFaceText(String[] face_id, Map<String, String> faceMap, String defaultText) {
         if (face_id == null || faceMap == null || faceMap.size() == 0) {
@@ -409,9 +422,10 @@ public class JConstant {
             case 2:
                 return R.drawable.icon_home_net_2g;
             case 3:
+                return R.drawable.icon_home_net_3g;
             case 4:
             case 5:
-                return R.drawable.icon_home_net_3g;
+                return R.drawable.home_icon_net_4g;
             case 10:
                 return R.drawable.home_icon_wired;
             default:
@@ -467,6 +481,9 @@ public class JConstant {
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_online;
         }
+        if (JFGRules.is4GCamera(pid)) {
+            return R.drawable.home_icon_outcam;
+        }
         AppLogger.e("bad pid: " + pid);
         return R.drawable.icon_home_camera_online;
     }
@@ -489,6 +506,9 @@ public class JConstant {
         }
         if (pid == 92) {
             return R.drawable.home_icon_hemisphere_disabled;
+        }
+        if (JFGRules.is4GCamera(pid)) {
+            return R.drawable.home_icon_outcam_disabled;
         }
         if (JFGRules.isCamera(pid)) {
             return R.drawable.icon_home_camera_offline;

@@ -147,6 +147,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svSettingDeviceAp;
     @BindView(R.id.siv_setting_device_door_look)
     SettingItemView0 sivDeviceDoorLock;
+    @BindView(R.id.sv_setting_device_mobile_mode)
+    SettingItemView0 sivDeviceMobileNetMode;
     private SimpleDialogFragment mClearRecordFragment;
 
     @Override
@@ -193,7 +195,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
         sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
         sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
-
+        // TODO: 2018/3/25
+        sivDeviceMobileNetMode.setVisibility(device.pid == 16 ? View.VISIBLE : View.GONE);
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
 
@@ -791,6 +794,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
         svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid, false) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby);
+        //是否显示移动网络
+        boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
+        sivDeviceMobileNetMode.setSubTitle(getMobileNet(hasSimCard, net));
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
             boolean s = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
@@ -1323,5 +1329,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             presenter.addSub(ssu, "ssuu");
         }
 
+    }
+
+    private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {
+        if (!hasSimcard) {
+            return getString(R.string.OFF);
+        }
+        return net.ssid;
     }
 }

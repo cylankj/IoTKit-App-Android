@@ -765,6 +765,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.activity.Config4GActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
     </application>
 
 </manifest>

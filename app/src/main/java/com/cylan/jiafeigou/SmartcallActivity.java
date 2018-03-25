@@ -80,7 +80,6 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         } else {
             showWriteStoragePermissions();
         }
-
     }
 
     @Override

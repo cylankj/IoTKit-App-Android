@@ -399,7 +399,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showMobileNet(int pid, boolean share) {
-        return is3GCam(pid);
+        return is3GCam(pid) || is4GCamera(pid);
     }
 
     /**
@@ -632,6 +632,10 @@ public class JFGRules {
 
     public static boolean hasSDCardError(DpMsgDefine.DPSdStatus status) {
         return status != null && status.err != 0;
+    }
+
+    public static boolean is4GCamera(int pid) {
+        return pid == 16;
     }
 
     public static class PlayErr {

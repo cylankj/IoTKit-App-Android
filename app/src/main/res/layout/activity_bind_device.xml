@@ -109,6 +109,17 @@
                 hunt:textSize="@dimen/sp16" />
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_cam_outdoor_4g"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/home_icon_outcam"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="智能摄像机(4G版)"
+                hunt:textColor="@color/color_666666"
+                hunt:textSize="@dimen/sp16" />
+
+            <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/v_to_bind_camera_cloud"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y67"

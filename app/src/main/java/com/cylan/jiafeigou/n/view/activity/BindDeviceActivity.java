@@ -84,6 +84,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA);
                 startActivity(intent);
                 break;
             }
@@ -114,6 +115,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
         intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
         intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+        intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_PANORAMA);
         startActivity(intent);
         ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_panorama_camera));
 
@@ -125,7 +127,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             R.id.v_to_bind_bell_no_battery,
             R.id.v_to_bind_cam_outdoor,
             R.id.v_to_bind_cat_eye_cam,
-            R.id.v_to_bind_half_camera
+            R.id.v_to_bind_half_camera,
+            R.id.v_to_bind_cam_outdoor_4g
     })
     public void onClickBind(View view) {
         Intent intent = new Intent(this, BindAnimationActivity.class);
@@ -141,6 +144,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.HALF_CAMERA_ADD_TIPS));
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_bind_guide);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Camera_Outdoor));
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_OUTDOOR);
                 break;
             case R.id.v_to_bind_camera_cloud:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
@@ -151,6 +155,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.DOOR_BLUE_BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_BATTERY);
                 break;
             case R.id.v_to_bind_consumer_cam:
                 //原来睿视
@@ -162,6 +167,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_CONSUME);
                 break;
             case R.id.v_to_bind_bell_battery:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.add_ring);
@@ -172,6 +178,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_DoorbellTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.DOOR_BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_DOORBELL_BATTERY);
                 break;
             case R.id.v_to_bind_bell_no_battery:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
@@ -182,7 +189,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.DOOR_BLUE_BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
-
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_DOORBELL_NO_BATTERY);
                 break;
             case R.id.v_to_bind_cat_eye_cam:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
@@ -193,6 +200,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_DOORBELL_CAT_EYE);
                 break;
             case R.id.v_to_bind_half_camera: {
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_hemisphere);
@@ -203,6 +211,20 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, "");
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.HALF_CAMERA_ADD_TIPS));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_HALF);
+            }
+            break;
+            case R.id.v_to_bind_cam_outdoor_4g: {
+                ViewUtils.deBounceClick(view);
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_4g);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "AI-**-******");
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, "开机后，等待黄灯闪烁");
+                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, "确保设备未插入SIM卡");
+                intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
+                intent.putExtra(JConstant.KEY_NEXT_STEP, "已闪烁,无SIM卡");
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide_ai);
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, "智能摄像机(4G版)");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_OUTDOOR_4G);
             }
             break;
             default:

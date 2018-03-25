@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -693,6 +694,11 @@ public class NetUtils {
     public static boolean createHotSpot(final String ssid, final String pwd) {
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         return createHotSpot(wifiManager, ssid, pwd);
+    }
+
+    public static String getJFGNetworkName(DpMsgDefine.DPNet net) {
+        // TODO: 2018/3/25
+        return "中国移动";
     }
 
 

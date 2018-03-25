@@ -237,6 +237,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
             intent.setClass(context, BindAnimationActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_CONSUME);
         } else if (JFGRules.isCloudCam(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
@@ -246,11 +247,13 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.DOOR_BLUE_BLINKING));
             intent.setClass(context, BindAnimationActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_OUTDOOR);
         } else if (JFGRules.isPanoramaCamera(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTipShort));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
             intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_PANORAMA);
             intent.setClass(context, BindPanoramaCamActivity.class);
         } else if (JFGRules.isHalfCamera(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.drawable.add_image_hemisphere);
@@ -261,6 +264,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, "");
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.HALF_CAMERA_ADD_TIPS));
             intent.setClass(context, BindAnimationActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_HALF);
         } else if (JFGRules.isOutDoorCamera(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_outdoor);
             intent.putExtra(JConstant.KEY_SSID_PREFIX, context.getString(R.string.dog_ssid_prefix));
@@ -270,6 +274,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_bind_guide);
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.Camera_Outdoor));
             intent.setClass(context, BindAnimationActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_OUTDOOR);
         } else if (JFGRules.isCatEeyBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
@@ -278,6 +283,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_DOORBELL_CAT_EYE);
             intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isNoPowerBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
@@ -288,6 +294,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.DOOR_BLUE_BLINKING));
             intent.setClass(context, BindAnimationActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_DOORBELL_NO_BATTERY);
         } else if (JFGRules.isBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
@@ -297,12 +304,14 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.DOOR_BLUE_BLINKING));
             intent.setClass(context, BindAnimationActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_DOORBELL_BATTERY);
         } else if (JFGRules.isCamera(pid)) {
             intent.putExtra(JConstant.KEY_SSID_PREFIX, DOG_AP);
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
             intent.setClass(context, BindCamActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA);
         } else {
             //default
             intent.putExtra(JConstant.KEY_SSID_PREFIX, DOG_AP);
@@ -310,6 +319,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
             intent.setClass(context, BindCamActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA);
         }
         return intent;
     }

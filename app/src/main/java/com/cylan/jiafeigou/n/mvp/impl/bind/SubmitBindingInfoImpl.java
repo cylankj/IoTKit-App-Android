@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -106,6 +107,10 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
                     _501.packValue = DpUtils.pack(false);
                     list.add(_501);
+                }
+                if (JFGRules.isFaceFragment(device.pid)) {
+                    JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_514_CAM_WARNINTERVAL, System.currentTimeMillis(), DpUtils.pack(60));
+                    list.add(msg);
                 }
                 list.add(_timeZone);
                 AppLogger.d("设置睿视属性?" + isRs);

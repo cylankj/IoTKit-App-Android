@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dagger.module;
 
 import com.cylan.jiafeigou.base.wrapper.DaggerActivity;
 import com.cylan.jiafeigou.dagger.annotation.ActivityScope;
+import com.cylan.jiafeigou.n.view.activity.Config4GActivity;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellRecordDetailActivity;
 import com.cylan.jiafeigou.n.view.bind.WireBindActivity;
@@ -84,4 +85,8 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MVPModule2.class)
     abstract RegisterFaceActivity registerFaceActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = MVPModule2.class)
+    abstract Config4GActivity config4GActivity();
 }

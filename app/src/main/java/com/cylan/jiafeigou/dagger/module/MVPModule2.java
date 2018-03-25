@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
+import com.cylan.jiafeigou.n.mvp.contract.bind.Config4GContract;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SelectCidContract;
 import com.cylan.jiafeigou.n.mvp.contract.bind.WireBindContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
@@ -29,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.bind.Config4GPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SelectCidPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.bind.WireBindPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DoorPasswordSettingPresenter;
@@ -39,6 +41,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AIRecognitionPresenter;
+import com.cylan.jiafeigou.n.view.activity.Config4GActivity;
 import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
@@ -327,4 +330,10 @@ public abstract class MVPModule2 {
 
     @Binds
     public abstract FaceSettingContract.Presenter bindFaceSettingPresenter(FaceSettingPresenter presenter);
+
+    @Binds
+    public abstract Config4GContract.View bindConfig4GView(Config4GActivity activity);
+
+    @Binds
+    public abstract Config4GContract.Presenter bindConfig4GPresenter(Config4GPresenter presenter);
 }

@@ -265,6 +265,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 } else if (JFGRules.isBell(pid)) {
                     getActivity().findViewById(R.id.v_to_bind_bell_battery)
                             .performClick();
+                } else if (JFGRules.is4GCamera(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_cam_outdoor_4g).performClick();
                 } else if (JFGRules.isCamera(pid)) {
                     getActivity().findViewById(R.id.v_to_bind_camera)
                             .performClick();

@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.view.activity.Config4GActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -183,6 +184,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             }
 
             String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+            JConstant.DEVICE_PRODUCT_SERIES productSeries = (JConstant.DEVICE_PRODUCT_SERIES) getIntent().getSerializableExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES);
             if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), uuid())
                     && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
                 Bundle bundle = new Bundle();
@@ -191,6 +193,12 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
                 bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
                 ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
                 ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), newInstance, android.R.id.content);
+            } else if (productSeries == JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_OUTDOOR_4G) {
+                Intent intent = getIntent();
+                intent.setClass(this, Config4GActivity.class);
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+                startActivity(intent);
+                finish();
             } else {
                 Intent intent = getIntent();
                 intent.setClass(this, ConfigWifiActivity.class);
