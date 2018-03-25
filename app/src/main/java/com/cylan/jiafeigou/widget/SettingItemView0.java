@@ -154,7 +154,7 @@ public class SettingItemView0 extends RelativeLayout {
         switchButton.setChecked(checked, false);
     }
 
-    public boolean isChecked(){
+    public boolean isChecked() {
         return switchButton.isChecked();
     }
 

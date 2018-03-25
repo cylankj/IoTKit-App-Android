@@ -1001,8 +1001,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
         svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
         svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
-        svSettingSafeProtection.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
-        svSettingSafeProtection.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
+        svSettingSafeProtection.setEnabled(!dpStandby.standby && !apNet);//ap 模式下有网操作选项需要置灰
+//        svSettingSafeProtection.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
         svSettingSafeProtection.setSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : presenter.getAlarmSubTitle(getContext()));
 //        svSettingSafeProtection.setAlpha(apNet ? 0.5f : 1f);
 
