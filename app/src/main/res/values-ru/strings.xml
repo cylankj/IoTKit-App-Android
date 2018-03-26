@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Дверной звонок</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Нажмите клавишу вызова устройства, чтобы включить режим энергосбережения после успешного завершения вызова</string>
   <string name="CAMERA">Камера</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Мигает без SIM-карты</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">После включения подождите, пока мигает желтый светодиод</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Убедитесь, что устройство без SIM-карты</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">Вставлена SIM-карта</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Детектирование &#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Вставьте SIM-карту в гнездо для карты</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Убедитесь, что SIM-карта доступна</string>
+  <string name="CAMERA4G_NOSIM">Нет доступной SIM-карты</string>
+  <string name="CAMERA_4G">Камера (версия 4G)</string>
   <string name="CANCEL">Отмена</string>
   <string name="CARRY_ON">Продолжить</string>
   <string name="CHANGE_EMAIL">Изменить адрес электронной почты</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">M</string>
   <string name="MINUTE_Cloud">минута</string>
   <string name="MOBILE_DATA">Мобильная сеть передачи данных</string>
+  <string name="MOBILE_NETWORK">Мобильная сеть</string>
   <string name="MOBILE_TIPS">Когда эта функция включена, устройство будет приоритетно использовать мобильные данные, даже если существует известное WiFi соединение</string>
   <string name="MODEL">Модель</string>
   <string name="MODIFY_DOOR_PSW">Изменить пароль двери</string>

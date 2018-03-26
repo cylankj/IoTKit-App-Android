@@ -1759,6 +1759,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         boolean canShowMicrophone = canShowMicrophone();
         boolean canShowDoorLook = canShowDoorLook();
         boolean canShowXunHuan = canShowXunHuan();
+        boolean canShowSpeaker = canShowSpeaker();
         liveTopBannerView.setVisibility(isLand ? VISIBLE : INVISIBLE);
         bottomControllerContainer.setVisibility(isLand ? INVISIBLE : VISIBLE);
         layoutLandFlip.setVisibility(showFlip && isLand ? VISIBLE : GONE);
@@ -1772,6 +1773,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ivModeXunHuan.setVisibility(canShowXunHuan ? VISIBLE : GONE);
         imgVCamTriggerMic.setVisibility(canShowMicrophone ? VISIBLE : GONE);
         imgVLandCamTriggerMic.setVisibility(canShowMicrophone ? VISIBLE : GONE);
+        imgVCamSwitchSpeaker.setVisibility(canShowSpeaker ? VISIBLE : GONE);
+        imgVLandCamSwitchSpeaker.setVisibility(canShowSpeaker ? VISIBLE : GONE);
         ivCamDoorLock.setVisibility(canShowDoorLook ? VISIBLE : GONE);
         ivViewModeSwitch.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         vDivider.setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
@@ -1798,6 +1801,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     private boolean canShowMicrophone() {
         return presenter != null && presenter.canShowMicrophone();
+    }
+
+    private boolean canShowSpeaker() {
+        return presenter != null && presenter.canShowSpeaker();
     }
 
     private boolean canShowMotionArea() {

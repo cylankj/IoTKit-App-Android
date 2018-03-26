@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Doorbell</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">After press the device call key, it will turn on or off energy saving mode</string>
   <string name="CAMERA">Camera</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Flashing without SIM card</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">After turn on, wait for the yellow led flashing</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Make sure the device without a SIM card</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">SIM card inserted</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Detecting&#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Insert the SIM card into the card slot</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Make sure the SIM card is available</string>
+  <string name="CAMERA4G_NOSIM">No available SIM card</string>
+  <string name="CAMERA_4G">Camera (4G Version)</string>
   <string name="CANCEL">Cancel</string>
   <string name="CARRY_ON">Continue</string>
   <string name="CHANGE_EMAIL">Change E-mail</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">M</string>
   <string name="MINUTE_Cloud">min</string>
   <string name="MOBILE_DATA">Mobile data network</string>
+  <string name="MOBILE_NETWORK">Mobile network</string>
   <string name="MOBILE_TIPS">When it\'s on,device will use mobile data instead of WIFI.</string>
   <string name="MODEL">Model</string>
   <string name="MODIFY_DOOR_PSW">Modify the door password</string>

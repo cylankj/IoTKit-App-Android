@@ -115,7 +115,7 @@
                 android:background="@color/color_white"
                 hunt:leftDrawable="@drawable/home_icon_outcam"
                 hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-                hunt:text="智能摄像机(4G版)"
+                hunt:text="@string/CAMERA_4G"
                 hunt:textColor="@color/color_666666"
                 hunt:textSize="@dimen/sp16" />
 

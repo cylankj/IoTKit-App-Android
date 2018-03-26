@@ -1301,6 +1301,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
+    public boolean canShowSpeaker() {
+        return CameraLiveHelper.canShowSpeaker(liveActionHelper);
+    }
+
+
+    @Override
     public boolean canStreamSwitcherEnable() {
         return CameraLiveHelper.canStreamSwitcherEnable(liveActionHelper);
     }
@@ -1392,6 +1398,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public void performLiveMotionAreaCheckerAction(boolean toggleMotionAreaSetting) {
+        if (!liveActionHelper.hasMotionAreaSettingFeature) {
+            //没有这个功能,则直接 return;
+            return;
+        }
         if (toggleMotionAreaSetting) {
             liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
         }

@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Doorbell</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Drücken Sie die Gerätetaste, um den Energiesparmodus einzuschalten, nachdem der Anruf erfolgreich war</string>
   <string name="CAMERA">Camera</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Blinkt ohne SIM-Karte</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Nach dem Einschalten, warten, bis die gelbe LED blinkt</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Achten Sie darauf, das Gerät ohne SIM-Karte</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">SIM-Karte eingelegt</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Erkennen &#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Legen Sie die SIM-Karte in den Kartenschlitz</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Stellen Sie sicher, dass die SIM-Karte ist</string>
+  <string name="CAMERA4G_NOSIM">Keine verfügbare SIM-Karte</string>
+  <string name="CAMERA_4G">Kamera (4G Version)</string>
   <string name="CANCEL">Abbrechen</string>
   <string name="CARRY_ON">Fortsetzen</string>
   <string name="CHANGE_EMAIL">Email ändern</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">M</string>
   <string name="MINUTE_Cloud">min</string>
   <string name="MOBILE_DATA">Mobile Datennetz</string>
+  <string name="MOBILE_NETWORK">Mobilfunknetz</string>
   <string name="MOBILE_TIPS">Wenn diese Funktion aktiviert wird, werden mobile Daten als Vorrang verwendet, selbst wenn es verfügbares WLAN gibt.</string>
   <string name="MODEL">Modell</string>
   <string name="MODIFY_DOOR_PSW">Ändern Sie das Türpasswort</string>

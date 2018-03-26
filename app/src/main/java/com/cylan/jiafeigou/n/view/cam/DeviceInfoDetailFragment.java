@@ -167,10 +167,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
 
         //是否显示移动网络
-        boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
+        boolean hasWiFi = JFGRules.hasWiFi(device.pid);
+        boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false) || !hasWiFi;
         tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid, false) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setSubTitle(getMobileNet(hasSimCard, net));
+
+        //是否显示 WiFi 信息,没有 WiFi 功能的不显示
+        tvDeviceWifiState.setVisibility(hasWiFi ? View.VISIBLE : View.GONE);
 
         //控制时区显示与隐藏
         boolean showTimezone = JFGRules.showTimeZone(device.pid, false);

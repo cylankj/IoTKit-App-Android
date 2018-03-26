@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Bell pintu</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Tekan tombol panggil perangkat untuk mengaktifkan mode hemat daya setelah panggilan berhasil</string>
   <string name="CAMERA">Kamera</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Berkedip tanpa kartu SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Setelah dihidupkan, tunggu lampu kuning berkedip</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Pastikan perangkat tanpa kartu SIM</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">Kartu SIM dimasukkan</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Mendeteksi &#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Masukkan kartu SIM ke dalam slot kartu</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Pastikan kartu SIM tersedia</string>
+  <string name="CAMERA4G_NOSIM">Tidak ada kartu SIM yang tersedia</string>
+  <string name="CAMERA_4G">Kamera (Versi 4G)</string>
   <string name="CANCEL">Batal</string>
   <string name="CARRY_ON">Lanjut</string>
   <string name="CHANGE_EMAIL">Ubah E-mail</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">Menit</string>
   <string name="MINUTE_Cloud">menit</string>
   <string name="MOBILE_DATA">jaringan data seluler</string>
+  <string name="MOBILE_NETWORK">Jaringan seluler</string>
   <string name="MOBILE_TIPS">Saat fungsi ini menyala, perangkat akan menggunakan data seluler dalam preferensi untuk menggunakan koneksi WiFI.</string>
   <string name="MODEL">Model</string>
   <string name="MODIFY_DOOR_PSW">Ubah kata kunci pintu</string>

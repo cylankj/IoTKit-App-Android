@@ -638,6 +638,10 @@ public class JFGRules {
         return pid == 16;
     }
 
+    public static boolean hasWiFi(int pid) {
+        return PropertiesLoader.getInstance().hasProperty(pid, "WIFI", false);
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

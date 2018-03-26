@@ -74,6 +74,7 @@ public class CameraLiveActionHelper {
     public final boolean hasSightFeature;
     public final boolean hasViewModeFeature;
     public final boolean hasMicrophoneFeature;
+    public final boolean hasSpeakerFeature;
     public final boolean hasMotionAreaSettingFeature;
 
 
@@ -89,6 +90,7 @@ public class CameraLiveActionHelper {
         this.deviceDisplayMode = PreferencesUtils.getInt(getSavedDisplayModeKey(), this.deviceDisplayMode);
         this.hasMotionAreaSettingFeature = JFGRules.hasProperty(device.pid, "DETECTION_ZONE");
         this.deviceMotionAreaOpened = PreferencesUtils.getBoolean(getSavedMotionAreaSettingKey(), true);
+        this.hasSpeakerFeature = device.pid != 84 && device.pid != 92;
     }
 
     public void onUpdateDeviceInformation() {

@@ -46,7 +46,7 @@ object APObserver {
     }
 
     @JvmStatic
-    fun scanDogWiFi(delay: Long): Observable<MutableList<ScanResult>> {
+    fun scanDogWiFiRaw(): Observable<ScanResult> {
         return Observable.create<ScanResult> { subscriber ->
             var subscribe = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg::class.java)
                     .map {
@@ -106,6 +106,11 @@ object APObserver {
             subscriber.add(subscribe)
         }
                 .subscribeOn(Schedulers.io())
+    }
+
+    @JvmStatic
+    fun scanDogWiFi(delay: Long): Observable<MutableList<ScanResult>> {
+        return scanDogWiFiRaw()
                 .buffer(delay, TimeUnit.SECONDS)
                 .first()
                 .map {

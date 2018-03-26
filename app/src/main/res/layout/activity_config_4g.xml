@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y20"
         android:gravity="center"
-        android:text="长按设置键3秒"
+        android:text="@string/Tap1_AddDevice_Outdoor_CameraTipsTitle"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp26"
         hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
@@ -72,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y50"
             android:gravity="center"
-            android:text="已连接"
+            android:text="@string/WIRED_MODE_CONNECTED"
             android:textColor="@color/color_4b9fd5"
             android:textSize="@dimen/sp16" />
     </LinearLayout>

@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Campainha</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Pressione a tecla de chamada do dispositivo para ligar o modo de economia de energia após a conclusão da chamada</string>
   <string name="CAMERA">Câmera</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Piscando sem cartão SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Depois de ligar, espere o led amarelo piscar</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Verifique se o dispositivo sem um cartão SIM</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">Cartão SIM inserido</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Detecção&#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Insira o cartão SIM no slot de cartão</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Verifique se o cartão SIM está disponível</string>
+  <string name="CAMERA4G_NOSIM">Nenhum cartão SIM disponível</string>
+  <string name="CAMERA_4G">Câmera (versão 4G)</string>
   <string name="CANCEL">Cancelar</string>
   <string name="CARRY_ON">Continuar</string>
   <string name="CHANGE_EMAIL">Alterar o e-mail</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">M</string>
   <string name="MINUTE_Cloud">min</string>
   <string name="MOBILE_DATA">rede de dados móveis</string>
+  <string name="MOBILE_NETWORK">Rede móvel</string>
   <string name="MOBILE_TIPS">Se ativar esta função, os dados móveis 3G/4G serão usados preferencialmente sobre o WiFi</string>
   <string name="MODEL">Modelo</string>
   <string name="MODIFY_DOOR_PSW">Modificar a senha da porta</string>

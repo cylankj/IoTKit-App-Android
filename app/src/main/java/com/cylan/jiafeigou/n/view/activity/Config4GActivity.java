@@ -14,6 +14,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.module.GlideApp;
 import com.cylan.jiafeigou.n.mvp.contract.bind.Config4GContract;
 import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoActivity;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.APObserver;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -67,11 +70,12 @@ public class Config4GActivity extends BaseActivity<Config4GContract.Presenter> i
 
     @Override
     public void onSIMCheckerFailed() {
-
+        AppLogger.e("onSIMCheckerFailed");
+        ToastUtil.showToast(ContextUtils.getContext().getString(R.string.CAMERA4G_NOSIM));
     }
 
     @Override
-    public void onSIMCheckerSuccess() {
+    public void onSIMCheckerSuccess(APObserver.ScanResult scanResult) {
         if (getIntent().hasExtra(JUST_SEND_INFO) && !getIntent().getBooleanExtra("just_config", false)) {
             runOnUiThread(() -> ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG)));
             Intent intent = new Intent(this, NewHomeActivity.class);
@@ -80,7 +84,7 @@ public class Config4GActivity extends BaseActivity<Config4GContract.Presenter> i
         } else {
             Intent intent = getIntent();// new Intent(this, SubmitBindingInfoActivity.class);
             intent.setClass(this, SubmitBindingInfoActivity.class);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, scanResult.getUuid());
             intent.putExtra(KEY_BIND_DEVICE, getIntent().getStringExtra(KEY_BIND_DEVICE));
             startActivity(intent);
         }

@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Dzwonek</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Naciśnij przycisk wywołania urządzenia, aby włączyć / wyłączyć tryb oszczędzania energii po udanym połączeniu</string>
   <string name="CAMERA">Aparat fotograficzny</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Miga bez karty SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Po włączeniu poczekaj, aż zaświeci się żółta dioda</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Upewnij się, że urządzenie nie zawiera karty SIM</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">Włożona karta SIM</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Wykrywanie &#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Włóż kartę SIM do gniazda kart</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Upewnij się, że karta SIM jest dostępna</string>
+  <string name="CAMERA4G_NOSIM">Brak dostępnej karty SIM</string>
+  <string name="CAMERA_4G">Kamera (wersja 4G)</string>
   <string name="CANCEL">Anuluj</string>
   <string name="CARRY_ON">Kontynuuj</string>
   <string name="CHANGE_EMAIL">Zmień adres e-mail</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">Punkty</string>
   <string name="MINUTE_Cloud">Minuty</string>
   <string name="MOBILE_DATA">Dane sieci komórkowej</string>
+  <string name="MOBILE_NETWORK">Sieć mobilna</string>
   <string name="MOBILE_TIPS">Po włączeniu połączenie będzie odbywać się za pomocą komórkowego połączenia danych a nie Wifi</string>
   <string name="MODEL">Model</string>
   <string name="MODIFY_DOOR_PSW">Zmodyfikuj hasło do drzwi</string>

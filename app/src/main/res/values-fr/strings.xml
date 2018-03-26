@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Visiophone</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Appuyez sur la touche d\'appel de l\'appareil pour activer le mode d\'économie d\'énergie une fois l\'appel réussi</string>
   <string name="CAMERA">Caméra</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Clignotant sans carte SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Après son tour, attendre la led jaune clignotant</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Assurez-vous que l\'appareil sans carte SIM</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">Carte SIM insérée</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Détecter &#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Insérez la carte SIM dans la fente pour carte</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Assurez-vous que la carte SIM est disponible</string>
+  <string name="CAMERA4G_NOSIM">Pas de carte SIM disponible</string>
+  <string name="CAMERA_4G">Caméra (version 4G)</string>
   <string name="CANCEL">Annuler</string>
   <string name="CARRY_ON">Continuer</string>
   <string name="CHANGE_EMAIL">Changer l\'adresse Email</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">M</string>
   <string name="MINUTE_Cloud">minutes</string>
   <string name="MOBILE_DATA">réseau de données mobile</string>
+  <string name="MOBILE_NETWORK">Réseau mobile</string>
   <string name="MOBILE_TIPS">Lorsque cette fonction est activée, l\'appareil utilisera en priorité les données mobiles, même si une connexion Wifi existe.</string>
   <string name="MODEL">Type</string>
   <string name="MODIFY_DOOR_PSW">Modifier le mot de passe de porte</string>

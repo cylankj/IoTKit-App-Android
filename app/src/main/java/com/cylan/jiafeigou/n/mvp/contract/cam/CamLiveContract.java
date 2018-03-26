@@ -248,6 +248,8 @@ public interface CamLiveContract {
 
         boolean canShowMicrophone();
 
+        boolean canShowSpeaker();
+
         boolean canStreamSwitcherEnable();
 
         boolean isVideoLoading();

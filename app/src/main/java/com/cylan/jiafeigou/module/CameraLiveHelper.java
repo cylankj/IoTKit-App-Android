@@ -577,6 +577,10 @@ public class CameraLiveHelper {
         return helper.hasMicrophoneFeature;
     }
 
+    public static boolean canShowSpeaker(CameraLiveActionHelper helper) {
+        return helper.hasSpeakerFeature;
+    }
+
     public static boolean canStreamSwitcherEnable(CameraLiveActionHelper helper) {
         return isVideoRealPlaying(helper);
     }

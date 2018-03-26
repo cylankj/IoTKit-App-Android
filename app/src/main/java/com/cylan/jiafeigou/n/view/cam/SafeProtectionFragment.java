@@ -239,18 +239,22 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean detection_zone_setting = property.hasProperty(device.pid, "DETECTION_ZONE");
         boolean faceRecognition = property.hasProperty(device.pid, "FACE_RECOGNITION");
         int pid = device.pid;
-        if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
+        if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17 || pid == 83 || pid == 84 || pid == 92) {
             warmInterval = false;
+        }
+        boolean isAI = false;
+        if (pid == 83 || pid == 84 || pid == 92) {
+            isAI = true;
         }
 
         tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
-        flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);
+        flProtectionTitle.setVisibility(protection && show && !isAI ? View.VISIBLE : View.GONE);
 
         swMotionDetection.setVisibility(protection ? View.VISIBLE : View.GONE);
-        fLayoutProtectionSensitivity.setVisibility(protection && show ? View.VISIBLE : View.GONE);
-        fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
+        fLayoutProtectionSensitivity.setVisibility(protection && show && !isAI ? View.VISIBLE : View.GONE);
+        fLayoutProtectionWarnEffect.setVisibility(warmsound && show && !isAI ? View.VISIBLE : View.GONE);
 
-        ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
+        ll24RecordContainer.setVisibility(protection && show && !isAI ? View.VISIBLE : View.GONE);
         swMotionAI.setVisibility(enableAI && show && grayEnable ? View.VISIBLE : View.GONE);
         if (enableAI && grayEnable) {
             BaseApplication.getAppComponent().getTreeHelper().addTreeNode(AIRecognitionFragment.class.getSimpleName());

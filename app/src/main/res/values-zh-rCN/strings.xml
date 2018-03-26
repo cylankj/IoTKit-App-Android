@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">智能门铃</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">按下设备呼叫键呼叫成功后即开启／关闭省电模式</string>
   <string name="CAMERA">摄像头</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">已闪烁，无SIM卡</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">开机后，等待黄灯闪烁</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">确保设备未插入SIM卡</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">已插入SIM卡</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">正在检测&#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">将SIM卡插入卡槽</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">确保SIM卡正常可用</string>
+  <string name="CAMERA4G_NOSIM">未检测到可用SIM卡</string>
+  <string name="CAMERA_4G">智能摄像机(4G版)</string>
   <string name="CANCEL">取消</string>
   <string name="CARRY_ON">继续</string>
   <string name="CHANGE_EMAIL">更改邮箱</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">分</string>
   <string name="MINUTE_Cloud">分钟</string>
   <string name="MOBILE_DATA">移动数据网络</string>
+  <string name="MOBILE_NETWORK">移动网络</string>
   <string name="MOBILE_TIPS">开启后，将断开WiFi网络，使用移动数据连接</string>
   <string name="MODEL">型号</string>
   <string name="MODIFY_DOOR_PSW">修改开门密码</string>

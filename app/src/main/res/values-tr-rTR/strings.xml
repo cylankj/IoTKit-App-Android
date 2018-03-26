@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Kapızili</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Çağrı başarılı olduğunda güç tasarrufu modunu açmak için cihaz çağrı tuşuna basın</string>
   <string name="CAMERA">Kamera</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">SIM kartsız yanıp söner</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Sarı yanıp sönen led için açtıktan sonra bekle</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">SIM kart olmadan emin cihazı olun</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">SIM kart takılı</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Algılanıyor &#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">SIM kartı kart yuvasına takın</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">SIM kart kullanılabilir emin olun</string>
+  <string name="CAMERA4G_NOSIM">Kullanılabilir SIM kart yok</string>
+  <string name="CAMERA_4G">Kamera (4G Sürüm)</string>
   <string name="CANCEL">İptal et</string>
   <string name="CARRY_ON">Devam et</string>
   <string name="CHANGE_EMAIL">E-posta değiştir</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">D</string>
   <string name="MINUTE_Cloud">dakika</string>
   <string name="MOBILE_DATA">Mobil veri ağı</string>
+  <string name="MOBILE_NETWORK">Mobil ağ</string>
   <string name="MOBILE_TIPS">Bu fonksiyon açıkken WiFi bağlantı kullanmaya tercihen cihaz, mobil veri kullanacaktır.</string>
   <string name="MODEL">Model</string>
   <string name="MODIFY_DOOR_PSW">Kapı şifresini değiştir</string>

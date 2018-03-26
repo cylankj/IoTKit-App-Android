@@ -218,12 +218,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 ViewUtils.deBounceClick(view);
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cam_4g);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, "AI-**-******");
-                intent.putExtra(JConstant.KEY_ANIM_TITLE, "开机后，等待黄灯闪烁");
-                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, "确保设备未插入SIM卡");
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.CAMERA4G_CONNECTAP_GUIDE1));
+                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.CAMERA4G_CONNECTAP_GUIDE2));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
-                intent.putExtra(JConstant.KEY_NEXT_STEP, "已闪烁,无SIM卡");
+                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.CAMERA4G_CONNECTAP_BUTTON));
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide_ai);
-                intent.putExtra(JConstant.KEY_BIND_DEVICE, "智能摄像机(4G版)");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.CAMERA_4G));
                 intent.putExtra(JConstant.KEY_BIND_DEVICE_PRODUCT_SERIES, JConstant.DEVICE_PRODUCT_SERIES.SERIES_SMART_CAMERA_OUTDOOR_4G);
             }
             break;

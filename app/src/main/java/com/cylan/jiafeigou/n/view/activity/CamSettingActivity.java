@@ -180,12 +180,21 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private void initProductLayout(Device device) {
         IProperty productProperty = PropertiesLoader.getInstance();
-        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
-        svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
-        svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
-        svSettingDeviceAutoRecord.setVisibility(productProperty.hasProperty(device.pid, "AUTORECORD") ? View.VISIBLE : View.GONE);
-        svSettingDevicePIR.setVisibility(productProperty.hasProperty(device.pid, "INFRAREDVISION") ? View.VISIBLE : View.GONE);
-        svSettingDeviceSDCard.setVisibility(productProperty.hasProperty(device.pid, "SD") ? View.VISIBLE : View.GONE);
+        boolean hasWiFiFeature = productProperty.hasProperty(device.pid, "WIFI");
+        boolean isBell = productProperty.isSerial("BELL", device.pid);
+        boolean hasProtectionFeature = productProperty.hasProperty(device.pid, "PROTECTION");
+        boolean hasApDirectConnectingFeature = productProperty.hasProperty(device.pid, "APCONNECTTING");
+        boolean hasInfraredvisionFeature = productProperty.hasProperty(device.pid, "INFRAREDVISION");
+        boolean hasLogoSettingFeature = productProperty.hasProperty(device.pid, "LOGO 设置");
+        boolean hasSDCardFeature = productProperty.hasProperty(device.pid, "SD");
+        boolean hasAutoRecordFeature = productProperty.hasProperty(device.pid, "AUTORECORD");
+        boolean hasClearRecordFeature = productProperty.hasProperty(device.pid, "EMPTIED");
+
+        svSettingDeviceClearRecord.setVisibility(isBell ? View.VISIBLE : View.INVISIBLE);
+        svSettingSafeProtection.setVisibility(hasProtectionFeature ? View.VISIBLE : View.GONE);
+        svSettingDeviceAutoRecord.setVisibility(hasAutoRecordFeature ? View.VISIBLE : View.GONE);
+        svSettingDevicePIR.setVisibility(hasInfraredvisionFeature ? View.VISIBLE : View.GONE);
+        svSettingDeviceSDCard.setVisibility(hasSDCardFeature ? View.VISIBLE : View.GONE);
         sbtnSetting110v.setVisibility(productProperty.hasProperty(device.pid, "NTSC") ? View.VISIBLE : View.GONE);
         svSettingDeviceRotate.setVisibility(productProperty.hasProperty(device.pid, "HANGUP") ? View.VISIBLE : View.GONE);
         svSettingDeviceStandbyMode.setVisibility(productProperty.hasProperty(device.pid, "STANDBY") ? View.VISIBLE : View.GONE);
@@ -196,11 +205,32 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
         sivDeviceDoorLock.setVisibility(productProperty.hasProperty(device.pid, "DOOR_LOCK") ? View.VISIBLE : View.GONE);
         // TODO: 2018/3/25
-        sivDeviceMobileNetMode.setVisibility(device.pid == 16 ? View.VISIBLE : View.GONE);
+        sivDeviceMobileNetMode.setVisibility(View.GONE);
         //康凯斯门铃测试项
         svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
-
         svSettingDeviceAp.setVisibility(JFGRules.isPan720(device.getPid()) ? View.VISIBLE : View.GONE);
+        svSettingDeviceRotate.setVisibility(JFGRules.showRotate(device.pid, false) ? View.VISIBLE : View.GONE);
+        //清空呼叫记录设置 ,只有门铃才有清空呼叫记录
+        svSettingDeviceClearRecord.setVisibility(hasClearRecordFeature ? View.VISIBLE : View.GONE);
+        //ap直连
+        if (hasApDirectConnectingFeature) {
+            svSettingDeviceDirectMode.setVisibility(View.VISIBLE);
+            svSettingDeviceHomeMode.setVisibility(View.VISIBLE);
+            //家居模式和 WiFi 配置重复了
+            svSettingDeviceWifi.setVisibility(View.GONE);
+            tvNetWorkSettingTitle.setVisibility(View.GONE);
+            attributeUpdate();
+        } else {
+            svSettingDeviceDirectMode.setVisibility(View.GONE);
+            svSettingDeviceHomeMode.setVisibility(View.GONE);
+            svSettingDeviceWifi.setVisibility(hasWiFiFeature ? View.VISIBLE : View.GONE);
+            //家居模式和 WiFi 配置重复了
+            tvNetWorkSettingTitle.setVisibility(hasWiFiFeature ? View.VISIBLE : View.GONE);
+        }
+        //暂定为 LoGo 设置
+        svSettingDeviceLogo.setVisibility(hasLogoSettingFeature ? View.VISIBLE : View.GONE);
+
+
 
     }
 
@@ -708,17 +738,22 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             return;
         }
+
         boolean apNet = ApFilter.isApNet();
         boolean is720 = JFGRules.isPan720(device.pid);
+
         ////////////////////////////////////////////////////////////////////////
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) {
             sdStatus = new DpMsgDefine.DPSdStatus();
         }
+        String statusContent = getSdcardState(sdStatus.hasSdcard, sdStatus.err);
+        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+            svSettingDeviceSDCard.setSubTitle(statusContent, android.R.color.holo_red_dark);
+        } else {
+            svSettingDeviceSDCard.setSubTitle(statusContent, R.color.color_8c8c8c);
+        }
         String detailInfo = presenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
-//        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
-//            svSettingDeviceDetail.setSubTitle(detailInfo, android.R.color.holo_red_dark);
-//        } else
         svSettingDeviceDetail.setSubTitle(detailInfo, R.color.color_8C8C8C);
         ////////////////////////standby////////////////////////////////////////////
         DpMsgDefine.DPStandby dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
@@ -787,16 +822,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         boolean isMobileNet = net.net > 1;
         svSettingDeviceWifi.setSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
-
-
         tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
-        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid, false) && simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid, false)&&JFGRules.hasWiFi(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby);
-        //是否显示移动网络
-        boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
-        sivDeviceMobileNetMode.setSubTitle(getMobileNet(hasSimCard, net));
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
             boolean s = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
@@ -823,9 +853,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 
         /////////////////////////旋转/////////////////////////////////////////
-        if (!JFGRules.showRotate(device.pid, false)) {
-            svSettingDeviceRotate.setVisibility(View.GONE);
-        } else {
+        if (JFGRules.showRotate(device.pid, false)) {
             int state = device.$(DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
             svSettingDeviceRotate.setChecked(state == 1);
             svSettingDeviceRotate.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -834,6 +862,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 presenter.updateInfoReq(check, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
+
+        } else {
+
         }
         /////////////////////////////////////////////////////////////////////
         if (device != null && JFGRules.showDelayRecordBtn(device.pid)) {
@@ -892,26 +923,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 //        svSettingDeviceWifi.setEnabled(!wiredModeOnline);
         svSettingDeviceWiredMode.setSubTitle(useWiredNetwork ? getString(R.string.WIRED_MODE_CONNECTED) : getString(R.string.DOOR_NOT_CONNECT));
-//        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-//            if (NetUtils.getJfgNetType() == 0) {
-//                ToastUtil.showToast(getString(R.string.NoNetworkTips));
-//                return;
-//            }
-//            if (!isChecked) {
-//                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", getString(R.string.Cable_Mode_Switch_Cancel),
-//                        getString(R.string.OK), (dialog, which) -> {
-//                            svSettingDeviceWiredMode.setChecked(false);
-//                            svSettingDeviceWifi.setEnabled(true);
-//                            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(0), 226);
-//                        }, getString(R.string.CANCEL), (dialog, which) -> {
-//                            svSettingDeviceWiredMode.setChecked(false);
-//                        }, false);
-//                return;
-//            }
-//            presenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
-//            //wifi配置开启,,关闭
-//            svSettingDeviceWifi.setEnabled(false);
-//        });
         svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid, false) ? View.VISIBLE : View.GONE);
         //总的条件:相同的ssid名字
         if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
@@ -951,52 +962,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     }, getString(R.string.CANCEL), null, false);
         });
         IProperty productProperty = PropertiesLoader.getInstance();
-        //SD 卡的显示与隐藏
-        if (productProperty.hasProperty(device.pid, "SD")) {
-            svSettingDeviceSDCard.setVisibility(View.VISIBLE);
-            DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-            String statusContent = getSdcardState(status.hasSdcard, status.err);
-            if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-                svSettingDeviceSDCard.setSubTitle(statusContent, android.R.color.holo_red_dark);
-            } else {
-                svSettingDeviceSDCard.setSubTitle(statusContent, R.color.color_8c8c8c);
-            }
-        } else {
-            svSettingDeviceSDCard.setVisibility(View.GONE);
-        }
-
-
-        //PIR 设置
-        if (productProperty.hasProperty(device.pid, "INFRAREDVISION")) {
-            svSettingDevicePIR.setVisibility(View.VISIBLE);
-        } else {
-            svSettingDevicePIR.setVisibility(View.GONE);
-        }
-
-        //ap直连
-        if (productProperty.hasProperty(device.pid, "APCONNECTTING")) {
-            svSettingDeviceDirectMode.setVisibility(View.VISIBLE);
-            svSettingDeviceHomeMode.setVisibility(View.VISIBLE);
-            //家居模式和 WiFi 配置重复了
-            svSettingDeviceWifi.setVisibility(View.GONE);
-            tvNetWorkSettingTitle.setVisibility(View.GONE);
-            attributeUpdate();
-        } else {
-            svSettingDeviceDirectMode.setVisibility(View.GONE);
-            svSettingDeviceHomeMode.setVisibility(View.GONE);
-            //家居模式和 WiFi 配置重复了
-            svSettingDeviceWifi.setVisibility(View.VISIBLE);
-            tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
-        }
-
-        if (productProperty.hasProperty(device.pid, "LOGO 设置")) {
-            //暂定为 LoGo 设置
-            svSettingDeviceLogo.setVisibility(View.VISIBLE);
-        } else {
-            svSettingDeviceLogo.setVisibility(View.GONE);
-        }
-
-
         //////////////////////////////////////////////////////安全防护////////////////////////////////////////////////////
         node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
         svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
@@ -1008,7 +973,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         /////////////////////////////////////////////////////录像设置//////////////////////////////////////////////////////
         if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
-            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
 //             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
 //            svSettingDeviceAutoRecord.setSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
             ////////////////////////显示红点//////////////////////////////////////////////
@@ -1021,47 +985,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
 //            svSettingDeviceAutoRecord.setAlpha(apNet ? 0.5f : 1f);
-        } else {
-            svSettingDeviceAutoRecord.setVisibility(View.GONE);
         }
-
-
-        //清空呼叫记录设置 ,只有门铃才有清空呼叫记录
-        svSettingDeviceClearRecord.setVisibility(productProperty.hasProperty(device.pid, "EMPTIED") ? View.VISIBLE : View.GONE);
-
-//        if (productProperty.hasProperty(device.pid, "VIDEO")) {
-////            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
-////             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-//            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
-//            Boolean aBoolean = device.$(305, false);
-////            svSettingDeviceAutoRecord.setSubTitle(aBoolean ? getString(R.string.ON) : getString(R.string.OFF));
-//
-////            svSettingDeviceAutoRecord.setSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
-////            ////////////////////////显示红点//////////////////////////////////////////////
-////            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
-////            ////////////////////////////autoRecord////////////////////////////////////////
-////            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
-////            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
-////            svSettingDeviceAutoRecord.setSubTitle(dpStandby.standby ? "" : presenter.getAutoRecordTitle(getContext()));
-////            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
-//        }
-//        else {
-//            svSettingDeviceAutoRecord.setVisibility(View.GONE);
-//        }
-
-//        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
-//        svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
-//
-//        svSettingDevicePIR.setVisibility(productProperty.hasProperty(device.pid, "INFRAREDVISION") ? View.VISIBLE : View.GONE);
-//        svSettingDeviceSDCard.setVisibility(productProperty.hasProperty(device.pid, "SD") ? View.VISIBLE : View.GONE);
-//        sbtnSetting110v.setVisibility(productProperty.hasProperty(device.pid, "NTSC") ? View.VISIBLE : View.GONE);
-//        svSettingDeviceRotate.setVisibility(productProperty.hasProperty(device.pid, "HANGUP") ? View.VISIBLE : View.GONE);
-//        svSettingDeviceStandbyMode.setVisibility(productProperty.hasProperty(device.pid, "STANDBY") ? View.VISIBLE : View.GONE);
-//        svSettingDeviceLedIndicator.setVisibility(productProperty.hasProperty(device.pid, "LED") ? View.VISIBLE : View.GONE);
-////        svSettingDeviceMobileNetwork.setVisibility(productProperty.hasProperty(device.pid, "") ? View.VISIBLE : View.GONE);
-//        svSettingDeviceSoftAp.setVisibility(productProperty.hasProperty(device.pid, "AP") ? View.VISIBLE : View.GONE);
-//        svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
-//        sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -1329,12 +1253,5 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             presenter.addSub(ssu, "ssuu");
         }
 
-    }
-
-    private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {
-        if (!hasSimcard) {
-            return getString(R.string.OFF);
-        }
-        return net.ssid;
     }
 }

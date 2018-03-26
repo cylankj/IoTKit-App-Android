@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">Doorbell</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Pulse la tecla de llamada del dispositivo para activar el modo de ahorro de energía después de que la llamada se haya realizado correctamente</string>
   <string name="CAMERA">Camera</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Parpadeando sin tarjeta SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Después de encender, espere a que el led amarillo parpadee</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Asegúrese de que el dispositivo sin una tarjeta SIM</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">Tarjeta SIM insertada</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">Detector&#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">Inserta la tarjeta SIM en la ranura para tarjetas</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">Asegúrate de que la tarjeta SIM esté disponible</string>
+  <string name="CAMERA4G_NOSIM">No hay tarjeta SIM disponible</string>
+  <string name="CAMERA_4G">Cámara (versión 4G)</string>
   <string name="CANCEL">Cancelar</string>
   <string name="CARRY_ON">Continuar</string>
   <string name="CHANGE_EMAIL">Cambiar de la dirección de email</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">M</string>
   <string name="MINUTE_Cloud">minutos</string>
   <string name="MOBILE_DATA">red de datos móviles</string>
+  <string name="MOBILE_NETWORK">Red móvil</string>
   <string name="MOBILE_TIPS">Usará primero datos móviles aunque haya WiFi conocido abriendo esta función</string>
   <string name="MODEL">Modelo</string>
   <string name="MODIFY_DOOR_PSW">Modificar la contraseña de la puerta</string>

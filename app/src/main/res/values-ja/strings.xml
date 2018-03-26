@@ -56,6 +56,15 @@
   <string name="CALL_CAMERA_NAME">スマートベル</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">通話が成功した後、デバイスコールキーを押して省電力モードをオンにします</string>
   <string name="CAMERA">カメラ</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">SIMカードなしで点滅</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">後に黄色が点滅主導のを待ち、オン</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">SIMカードのないデバイスを確認する</string>
+  <string name="CAMERA4G_INSERTSIM_BUTTON">SIMカードが挿入され</string>
+  <string name="CAMERA4G_INSERTSIM_DETECTING">検出中&#8230;</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE1">カードスロットにSIMカードを挿入</string>
+  <string name="CAMERA4G_INSERTSIM_GUIDE2">SIMカードが使用可能であることを確認する</string>
+  <string name="CAMERA4G_NOSIM">使用可能なSIMカードません</string>
+  <string name="CAMERA_4G">カメラ（4G版）</string>
   <string name="CANCEL">キャンセル</string>
   <string name="CARRY_ON">継続</string>
   <string name="CHANGE_EMAIL">メールアドレスを変更する</string>
@@ -468,6 +477,7 @@
   <string name="MINUTE">分</string>
   <string name="MINUTE_Cloud">分</string>
   <string name="MOBILE_DATA">モバイルデータネットワーク</string>
+  <string name="MOBILE_NETWORK">モバイルネットワーク</string>
   <string name="MOBILE_TIPS">当機能を有効にすると、WiFi接続が切断され、モバイルデータを使用します</string>
   <string name="MODEL">型番</string>
   <string name="MODIFY_DOOR_PSW">ドアのパスワードを変更する</string>
