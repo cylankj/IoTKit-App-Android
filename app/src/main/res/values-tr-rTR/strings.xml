@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Kapızili</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Çağrı başarılı olduğunda güç tasarrufu modunu açmak için cihaz çağrı tuşuna basın</string>
   <string name="CAMERA">Kamera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">SIM kartsız yanıp söner</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Sarı yanıp sönen led için açtıktan sonra bekle</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">SIM kart olmadan emin cihazı olun</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Sarı ışık yanıp sönüyor</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Güç açıldıktan sonra, SIM kartı çekin ve takın</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">ışığı yanıp sönmesini bekleyin</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">SIM kart takılı</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Algılanıyor &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">SIM kartı kart yuvasına takın</string>

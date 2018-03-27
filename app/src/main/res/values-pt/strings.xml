@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Campainha</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Pressione a tecla de chamada do dispositivo para ligar o modo de economia de energia após a conclusão da chamada</string>
   <string name="CAMERA">Câmera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Piscando sem cartão SIM</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Depois de ligar, espere o led amarelo piscar</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Verifique se o dispositivo sem um cartão SIM</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">A luz amarela está piscando</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Depois de ligar, puxe e ligue o cartão SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">espere a luz piscar</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Cartão SIM inserido</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Detecção&#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Insira o cartão SIM no slot de cartão</string>

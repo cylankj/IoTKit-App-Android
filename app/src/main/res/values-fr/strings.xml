@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Visiophone</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Appuyez sur la touche d\'appel de l\'appareil pour activer le mode d\'économie d\'énergie une fois l\'appel réussi</string>
   <string name="CAMERA">Caméra</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Clignotant sans carte SIM</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Après son tour, attendre la led jaune clignotant</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Assurez-vous que l\'appareil sans carte SIM</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">La lumière jaune clignote</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Après la mise sous tension, tirez et branchez la carte SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">Attendez que la lumière clignote</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Carte SIM insérée</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Détecter &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Insérez la carte SIM dans la fente pour carte</string>

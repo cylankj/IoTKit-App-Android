@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Chuông cửa</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Bấm phím gọi điện thoại để bật chế độ tiết kiệm điện sau khi cuộc gọi thành công</string>
   <string name="CAMERA">Camera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Nháy không có thẻ SIM</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Sau khi bật, chờ đèn vàng nhấp nháy</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Đảm bảo thiết bị không có thẻ SIM</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Đèn vàng nhấp nháy</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Sau khi bật nguồn, hãy kéo và cắm thẻ SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">chờ đèn nhấp nháy</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Chèn thẻ SIM</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Đang phát hiện &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Lắp thẻ SIM vào khe thẻ</string>

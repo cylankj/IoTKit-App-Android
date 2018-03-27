@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Bell pintu</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Tekan tombol panggil perangkat untuk mengaktifkan mode hemat daya setelah panggilan berhasil</string>
   <string name="CAMERA">Kamera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Berkedip tanpa kartu SIM</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Setelah dihidupkan, tunggu lampu kuning berkedip</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Pastikan perangkat tanpa kartu SIM</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Lampu kuning berkedip</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Setelah dihidupkan, tarik dan pasang kartu SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">tunggu hingga lampu berkedip</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Kartu SIM dimasukkan</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Mendeteksi &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Masukkan kartu SIM ke dalam slot kartu</string>

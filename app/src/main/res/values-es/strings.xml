@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Doorbell</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Pulse la tecla de llamada del dispositivo para activar el modo de ahorro de energía después de que la llamada se haya realizado correctamente</string>
   <string name="CAMERA">Camera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Parpadeando sin tarjeta SIM</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Después de encender, espere a que el led amarillo parpadee</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Asegúrese de que el dispositivo sin una tarjeta SIM</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">La luz amarilla parpadea</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Después del encendido, tire y enchufe la tarjeta SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">espere la luz a parpadear</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Tarjeta SIM insertada</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Detector&#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Inserta la tarjeta SIM en la ranura para tarjetas</string>

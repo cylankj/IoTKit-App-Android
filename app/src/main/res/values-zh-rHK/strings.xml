@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">智能門鈴</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">按下設備呼叫鍵呼叫成功後即開啟／關閉省電模式</string>
   <string name="CAMERA">攝像機</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">已閃爍，無SIM卡</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">開機後，等待黃燈閃爍</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">確保設備未插入SIM卡</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">黃燈已閃爍</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">開機後，拔插SIM卡</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">等待黃燈閃爍</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">已插入SIM卡</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">正在檢測&#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">將SIM卡插入卡槽</string>

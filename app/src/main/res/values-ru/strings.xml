@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Дверной звонок</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Нажмите клавишу вызова устройства, чтобы включить режим энергосбережения после успешного завершения вызова</string>
   <string name="CAMERA">Камера</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Мигает без SIM-карты</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">После включения подождите, пока мигает желтый светодиод</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Убедитесь, что устройство без SIM-карты</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Желтый свет мигает</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">После включения питания вытащите и вставьте SIM-карту</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">подождите, пока свет мигает</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Вставлена SIM-карта</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Детектирование &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Вставьте SIM-карту в гнездо для карты</string>

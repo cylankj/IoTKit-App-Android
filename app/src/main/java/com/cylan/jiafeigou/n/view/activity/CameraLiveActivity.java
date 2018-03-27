@@ -236,10 +236,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity implement
     protected void onDestroy() {
         super.onDestroy();
         compositeSubscription.clear();
-        if (unbinder != null) {
-            unbinder.unbind();
-            unbinder = null;
-        }
+//        if (unbinder != null) {
+//            unbinder.unbind();
+//            unbinder = null;
+//        }
     }
 
     /**

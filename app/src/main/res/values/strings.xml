@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Doorbell</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">After press the device call key, it will turn on or off energy saving mode</string>
   <string name="CAMERA">Camera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Flashing without SIM card</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">After turn on, wait for the yellow led flashing</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Make sure the device without a SIM card</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Yellow light is blinking</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">After power on, pull and plug SIM card</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">wait the light to blink</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">SIM card inserted</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Detecting&#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Insert the SIM card into the card slot</string>

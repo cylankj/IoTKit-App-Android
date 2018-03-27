@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Doorbell</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Drücken Sie die Gerätetaste, um den Energiesparmodus einzuschalten, nachdem der Anruf erfolgreich war</string>
   <string name="CAMERA">Camera</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Blinkt ohne SIM-Karte</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Nach dem Einschalten, warten, bis die gelbe LED blinkt</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Achten Sie darauf, das Gerät ohne SIM-Karte</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Gelbes Licht blinkt</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Nach dem Einschalten, ziehen und SIM-Karte stecken</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">warte das Licht um zu blinken</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">SIM-Karte eingelegt</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Erkennen &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Legen Sie die SIM-Karte in den Kartenschlitz</string>

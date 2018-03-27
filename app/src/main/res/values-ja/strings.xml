@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">スマートベル</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">通話が成功した後、デバイスコールキーを押して省電力モードをオンにします</string>
   <string name="CAMERA">カメラ</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">SIMカードなしで点滅</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">後に黄色が点滅主導のを待ち、オン</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">SIMカードのないデバイスを確認する</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">黄色のライトが点滅しています</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">電源を入れた後、SIMカードを抜き差しします</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">光が点滅するのを待つ</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">SIMカードが挿入され</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">検出中&#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">カードスロットにSIMカードを挿入</string>

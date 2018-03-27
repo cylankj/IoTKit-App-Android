@@ -56,9 +56,9 @@
   <string name="CALL_CAMERA_NAME">Dzwonek</string>
   <string name="CALL_SUCCESS_OPEN_SAVE">Naciśnij przycisk wywołania urządzenia, aby włączyć / wyłączyć tryb oszczędzania energii po udanym połączeniu</string>
   <string name="CAMERA">Aparat fotograficzny</string>
-  <string name="CAMERA4G_CONNECTAP_BUTTON">Miga bez karty SIM</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE1">Po włączeniu poczekaj, aż zaświeci się żółta dioda</string>
-  <string name="CAMERA4G_CONNECTAP_GUIDE2">Upewnij się, że urządzenie nie zawiera karty SIM</string>
+  <string name="CAMERA4G_CONNECTAP_BUTTON">Żółte światło miga</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE1">Po włączeniu, pociągnij i podłącz kartę SIM</string>
+  <string name="CAMERA4G_CONNECTAP_GUIDE2">zaczekaj, aż zacznie migać światło</string>
   <string name="CAMERA4G_INSERTSIM_BUTTON">Włożona karta SIM</string>
   <string name="CAMERA4G_INSERTSIM_DETECTING">Wykrywanie &#8230;</string>
   <string name="CAMERA4G_INSERTSIM_GUIDE1">Włóż kartę SIM do gniazda kart</string>
