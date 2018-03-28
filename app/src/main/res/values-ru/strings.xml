@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Проводной режим</string>
   <string name="Cable_Mode_Start_Hotspot">Перед включением убедитесь, что ваш телефон и устройство подключены к одному маршрутизатору</string>
   <string name="Cable_Mode_Switch_Cancel">Закрытие может привести к обрыву связи устройств, закрыть или нет?</string>
-  <string name="Camera_Outdoor">Камера (наружная версия)</string>
+  <string name="Camera_Outdoor">Камера AI</string>
   <string name="CancelingTips">Отмена&#8230;</string>
   <string name="Cellular_Data_Method">Мобильные данные:</string>
   <string name="Cellular_Data_Set_Up">Включите мобильные данные в устройстве, используйте нижеуказанные настройки: Настройки> Мобильные данные</string>

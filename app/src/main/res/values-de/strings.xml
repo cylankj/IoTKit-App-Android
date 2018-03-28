@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Kabelmodus</string>
   <string name="Cable_Mode_Start_Hotspot">Bevor Sie sich einschalten, stellen Sie sicher, dass Ihr Telefon und Ihr Gerät mit demselben Router verbunden sind</string>
   <string name="Cable_Mode_Switch_Cancel">Deaktivieren kann zum Offline des Gerätes führen, möchten Sie deaktivieren?</string>
-  <string name="Camera_Outdoor">Kamera (Außenversion)</string>
+  <string name="Camera_Outdoor">AI Kamera</string>
   <string name="CancelingTips">Abbrechen&#8230;</string>
   <string name="Cellular_Data_Method">Mobile Daten:</string>
   <string name="Cellular_Data_Set_Up">Aktivieren Sie mobile Daten im Gerät, verwenden Sie bitte unten, Einstellungen> Mobile Daten</string>

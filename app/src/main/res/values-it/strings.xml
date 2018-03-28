@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Modalità con cavo</string>
   <string name="Cable_Mode_Start_Hotspot">Prima di accendere, assicurarsi che il telefono e il dispositivo siano collegati allo stesso router</string>
   <string name="Cable_Mode_Switch_Cancel">Il dispositivo potrebbe essere non in linea se chiudi, sei sicuro di chiudere?</string>
-  <string name="Camera_Outdoor">Camera (versione outdoor)</string>
+  <string name="Camera_Outdoor">Fotocamera AI</string>
   <string name="CancelingTips">Annullando&#8230;</string>
   <string name="Cellular_Data_Method">Dati mobili:</string>
   <string name="Cellular_Data_Set_Up">Abilita i dati mobili nel dispositivo, per favore usa il modo seguente, Impostazioni> Dati mobili</string>

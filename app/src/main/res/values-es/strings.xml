@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Modo cableado</string>
   <string name="Cable_Mode_Start_Hotspot">Antes de encender, asegúrese de que su teléfono y dispositivo estén conectados al mismo enrutador</string>
   <string name="Cable_Mode_Switch_Cancel">Al cerrar podría hacer el dispositivo desconectarse,¿confirmas de cerrar?</string>
-  <string name="Camera_Outdoor">Cámara (versión exterior)</string>
+  <string name="Camera_Outdoor">Cámara AI</string>
   <string name="CancelingTips">Cancelado&#8230;</string>
   <string name="Cellular_Data_Method">Datos móviles:</string>
   <string name="Cellular_Data_Set_Up">Habilitar datos móviles en el dispositivo, utilice a continuación, Configuración> Datos móviles</string>

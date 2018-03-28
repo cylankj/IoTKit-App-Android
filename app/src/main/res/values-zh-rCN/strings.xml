@@ -94,7 +94,7 @@
   <string name="Cable_Mode">有线模式</string>
   <string name="Cable_Mode_Start_Hotspot">开启前请确定手机和设备已连接到同一路由器</string>
   <string name="Cable_Mode_Switch_Cancel">关闭可能会使设备离线，确定关闭？</string>
-  <string name="Camera_Outdoor">智能摄像机(户外版)</string>
+  <string name="Camera_Outdoor">AI摄像机</string>
   <string name="CancelingTips">正在取消&#8230;</string>
   <string name="Cellular_Data_Method">移动数据网络：</string>
   <string name="Cellular_Data_Set_Up">在设备的【设置>移动网络】中启用移动数据网络。</string>

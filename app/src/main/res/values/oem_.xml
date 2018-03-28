@@ -25,4 +25,5 @@
     <string name="dog_ssid_prefix">DOG-**-******</string>
     <integer name="max_password_length">32</integer>
     <item name="dog_bind_guide" format="reference" type="raw">@raw/dog_doby</item>
+    <string name="app_oem_name">@string/app_name</string>
 </resources>

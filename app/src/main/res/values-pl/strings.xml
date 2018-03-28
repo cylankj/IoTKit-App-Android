@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Tryb przewodowy</string>
   <string name="Cable_Mode_Start_Hotspot">Przed włączeniem upewnij się, że telefon i urządzenie są podłączone do tego samego routera</string>
   <string name="Cable_Mode_Switch_Cancel">Jeśli jest wyłączony, może spowodować odłączenie urządzenia od sieci, potwierdzasz?</string>
-  <string name="Camera_Outdoor">Kamera (zewnętrzna)</string>
+  <string name="Camera_Outdoor">Kamera AI</string>
   <string name="CancelingTips">Anulowanie &#8230;</string>
   <string name="Cellular_Data_Method">Mobilna sieć danych:</string>
   <string name="Cellular_Data_Set_Up">Włącz mobilną sieć danych w Ustawienia > Sieć komórkowa.</string>

@@ -23,4 +23,5 @@
     <integer name="max_password_length">32</integer>
     <string name="dog_ssid_prefix">AI-**-******</string>
     <item name="dog_bind_guide" format="reference" type="raw">@raw/bind_guide_ai</item>
+    <string name="app_oem_name">AIFace</string>
 </resources>

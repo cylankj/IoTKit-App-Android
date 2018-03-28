@@ -94,7 +94,7 @@
   <string name="Cable_Mode">有線模式</string>
   <string name="Cable_Mode_Start_Hotspot">開啟前請確定手機和設備已連接到同一路由器</string>
   <string name="Cable_Mode_Switch_Cancel">關閉可能會使設備離線，確定關閉？</string>
-  <string name="Camera_Outdoor">智能攝像機 (戶外版)</string>
+  <string name="Camera_Outdoor">AI攝像機</string>
   <string name="CancelingTips">正在取消&#8230;</string>
   <string name="Cellular_Data_Method">移動數據網絡：</string>
   <string name="Cellular_Data_Set_Up">在設備的“設置”>“移動網絡”中啟動移動數據網絡。</string>

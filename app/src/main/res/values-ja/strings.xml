@@ -94,7 +94,7 @@
   <string name="Cable_Mode">ワイヤアクセスモード</string>
   <string name="Cable_Mode_Start_Hotspot">オンにする前に、携帯電話と端末が同じルータに接続されていることを確認してください</string>
   <string name="Cable_Mode_Switch_Cancel">オフにするとデバイスがオフライン状態になりますが、オフにしますか。</string>
-  <string name="Camera_Outdoor">カメラ（屋外版）</string>
+  <string name="Camera_Outdoor">AIカメラ</string>
   <string name="CancelingTips">キャンセル中&#8230;</string>
   <string name="Cellular_Data_Method">モバイルデータネットワーク：</string>
   <string name="Cellular_Data_Set_Up">端末でモバイルデータを有効にするには、以下の方法で[設定]> [モバイルデータ]を使用してください</string>

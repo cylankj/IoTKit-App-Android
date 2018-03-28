@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Cable mode</string>
   <string name="Cable_Mode_Start_Hotspot">Before you turn on, make sure your phone and device are connected to the same router</string>
   <string name="Cable_Mode_Switch_Cancel">If off, it may cause offline of the device, confirm off?</string>
-  <string name="Camera_Outdoor">Camera (Outdoor Version)</string>
+  <string name="Camera_Outdoor">AI Camera</string>
   <string name="CancelingTips">Canceling&#8230;</string>
   <string name="Cellular_Data_Method">Mobile data:</string>
   <string name="Cellular_Data_Set_Up">Enable Mobile data in the device, please use below way, Settings> Mobile data</string>

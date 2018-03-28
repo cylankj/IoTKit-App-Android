@@ -613,11 +613,11 @@ public class JFGRules {
     }
 
     public static boolean isHalfCamera(int pid) {
-        return pid == 92;
+        return pid == 92 || pid == 1564;
     }
 
     public static boolean isOutDoorCamera(int pid) {
-        return pid == 84 || pid == 82;
+        return pid == 84 || pid == 82 || pid == 1406 || pid == 1495;
     }
 
     public static boolean isStandBy(DpMsgDefine.DPStandby standby) {
@@ -635,7 +635,7 @@ public class JFGRules {
     }
 
     public static boolean is4GCamera(int pid) {
-        return pid == 16;
+        return pid == 16 || pid == 1415;
     }
 
     public static boolean hasWiFi(int pid) {

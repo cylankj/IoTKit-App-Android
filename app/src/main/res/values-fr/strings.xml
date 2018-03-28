@@ -94,7 +94,7 @@
   <string name="Cable_Mode">Mode par fil</string>
   <string name="Cable_Mode_Start_Hotspot">Avant de vous allumer, assurez-vous que votre téléphone et votre appareil sont connectés au même routeur</string>
   <string name="Cable_Mode_Switch_Cancel">Désactivation va mettre l\'appareil en mode hors connexion, êtes-vous sûr de désactiver?</string>
-  <string name="Camera_Outdoor">Caméra (version extérieure)</string>
+  <string name="Camera_Outdoor">Al Camera</string>
   <string name="CancelingTips">Annulation&#8230;</string>
   <string name="Cellular_Data_Method">Les données mobiles:</string>
   <string name="Cellular_Data_Set_Up">Activer les données mobiles dans l\'appareil, utilisez ci-dessous, Paramètres> Données mobiles</string>
