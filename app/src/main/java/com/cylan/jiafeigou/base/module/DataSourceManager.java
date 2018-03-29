@@ -1018,6 +1018,9 @@ public class DataSourceManager implements JFGSourceManager {
     private int[] notifyIDs = new int[]{401, 222, 40, 505, 512, 526};
 
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
+        if (!BaseApplication.isBackground()) {
+            return;
+        }
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
         if (device == null || TextUtils.isEmpty(device.account)) {
