@@ -669,7 +669,7 @@
       "AP": "0",
       "APCONNECTTING": "0",
       "AUTORECORD": "0",
-      "BATTERY": "0",
+      "BATTERY": "1",
       "CIDPREFIX": "3400",
       "CLOUD_STORAGE": "0",
       "DETECTION_ZONE": "0",
@@ -691,7 +691,7 @@
       "NTSC": "0",
       "OS": "16",
       "PID": "1415",
-      "POWER": "0",
+      "POWER": "1,50",
       "PRODUCT": "智能摄像机(4G版)",
       "PROTECTION": "0",
       "REMOTE_VIEW": "0",
@@ -2591,5 +2591,5 @@
       1564
     ]
   },
-  "version": "20180328"
+  "version": "20180330"
 }

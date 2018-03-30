@@ -378,12 +378,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPlayErrorUnKnowPlayError(int errorCode) {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorUnKnowPlayError:" + errorCode);
+        performReLayoutAction();
         liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.NO_NETWORK_2), null);
     }
 
     @Override
     public void onPlayErrorInConnecting() {
         Log.d(CameraLiveHelper.TAG, "onPlayErrorInConnecting");
+        performReLayoutAction();
         liveLoadingBar.changeToLoadingError(true, ContextUtils.getContext().getString(R.string.CONNECTING), null); //正在直播...
     }
 
