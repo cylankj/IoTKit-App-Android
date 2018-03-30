@@ -8,7 +8,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.module.CameraLiveHelper;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -63,7 +62,8 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
         //这个只能在当前播放的历史录像和当前设备时区一致的情况下才会正确,
         //如果录像时是一个时区,然后后来改变了设备时区,那么时间也是不对的,
         //最好是在 rtcp 时带上设备的时区才是最稳妥的
-        dateFormat.setTimeZone(timeZone);
+        //#129872 不设置时区了,用手机自带的
+//        dateFormat.setTimeZone(timeZone);
     }
 }
 

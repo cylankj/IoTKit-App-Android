@@ -584,6 +584,7 @@ public class JFGRules {
         try {
             Integer intOS = Integer.valueOf(os);
             switch (intOS) {
+                case 16:
                 case 83:
                 case 84:
                 case 92:
