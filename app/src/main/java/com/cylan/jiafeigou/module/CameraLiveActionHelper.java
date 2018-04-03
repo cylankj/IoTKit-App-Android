@@ -21,7 +21,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class CameraLiveActionHelper {
+public class  CameraLiveActionHelper {
     public String uuid;
     public volatile boolean isLive = true;
     public volatile boolean isPlaying = false;

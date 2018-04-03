@@ -53,6 +53,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.panorama.CameraParam;
@@ -89,7 +90,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
     private PanDeviceVersionChecker version;
-
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
         liveActionHelper = new CameraLiveActionHelper(uuid);

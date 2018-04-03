@@ -69,7 +69,7 @@ public class Config4GActivity extends BaseActivity<Config4GContract.Presenter> i
     }
 
     @Override
-    public void onSIMCheckerFailed() {
+    public void onSIMCheckerFailed(APObserver.ScanResult scanResult) {
         AppLogger.e("onSIMCheckerFailed");
         ToastUtil.showToast(ContextUtils.getContext().getString(R.string.CAMERA4G_NOSIM));
     }

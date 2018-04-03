@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.misc.bind.IBindResult;
 import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -156,7 +157,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         getView().sendWifiInfoFailed();
                     }
                 });
-        addSubscription(subscribe,"sendWifiInfo");
+        addSubscription(subscribe, "sendWifiInfo");
     }
 
     @Override

@@ -340,7 +340,7 @@ public class JConstant {
     public static final String KEY_DEVICE_NEW_VERSION = "key_DEVICE_NEW_VERSION";
 
     public static String getRoot() {
-        return ContextUtils.getContext().getString(R.string.app_name);
+        return ContextUtils.getContext().getString(R.string.app_root_dir);
     }
 
     /**
@@ -478,11 +478,11 @@ public class JConstant {
         if (pid == 92) {
             return R.drawable.home_icon_hemisphere;
         }
-        if (JFGRules.isCamera(pid)) {
-            return R.drawable.icon_home_camera_online;
-        }
         if (JFGRules.is4GCamera(pid)) {
             return R.drawable.home_icon_outcam;
+        }
+        if (JFGRules.isCamera(pid)) {
+            return R.drawable.icon_home_camera_online;
         }
         AppLogger.e("bad pid: " + pid);
         return R.drawable.icon_home_camera_online;

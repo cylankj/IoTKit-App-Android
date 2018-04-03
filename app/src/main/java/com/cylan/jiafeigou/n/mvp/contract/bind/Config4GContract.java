@@ -12,7 +12,7 @@ public interface Config4GContract {
 
 
     interface View extends BaseView {
-        void onSIMCheckerFailed();
+        void onSIMCheckerFailed(APObserver.ScanResult scanResult);
 
         void onSIMCheckerSuccess(APObserver.ScanResult scanResult);
     }
