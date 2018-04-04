@@ -19,7 +19,7 @@ public class ApFilter {
     /**
      * 可以模仿 {@link android.util.Patterns.IP_ADDRESS}
      */
-    private static final Pattern DEVICE_REG = Pattern.compile("(DOG|DOORBELL|BELL|RS-CAM|AI-10|AI-11|AI-13)");
+    private static final Pattern DEVICE_REG = Pattern.compile("(DOG|DOORBELL|BELL|RS-CAM|AI)");
 
     public static boolean accept(String ssid) {
         return DEVICE_REG.matcher(ssid).find();
