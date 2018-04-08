@@ -264,20 +264,18 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity implement
     }
 
     private void initToolbar(final boolean newMsg) {
-        customToolbar.post(() -> {
-            vIndicator = (PagerSlidingTabStrip) customToolbar.findViewById(R.id.v_indicator);
-            vIndicator.setViewPager(vpCameraLive);
-            vIndicator.setOnPageChangeListener(this);
-            imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
-            updateRedHint();
-            customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> {
-                final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-                if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
-                    ((CameraLiveFragmentEx) fragment).onBackPressed(true);
-                }
-            });
+        vIndicator = customToolbar.findViewById(R.id.v_indicator);
+        vIndicator.setViewPager(vpCameraLive);
+        vIndicator.setOnPageChangeListener(this);
+        imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
+        customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> {
+            final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+                ((CameraLiveFragmentEx) fragment).onBackPressed(true);
+            }
         });
+        updateRedHint();
     }
 
     private void removeHint() {

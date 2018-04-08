@@ -247,6 +247,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private List<IDPEntity> buildMultiEntities(ArrayList<CamMessageBean> beanList) {
         List<IDPEntity> entities = new ArrayList<>();
         for (CamMessageBean bean : beanList) {
+            if (bean.message == null) {
+                continue;
+            }
             DPEntity dpEntity = new DPEntity();
             dpEntity.setUuid(uuid);
             dpEntity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());

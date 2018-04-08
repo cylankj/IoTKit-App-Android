@@ -597,7 +597,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d(CameraLiveHelper.TAG, "加载历史录像失败了");
         btnLoadHistory.setEnabled(true);
         liveLoadingBar.changeToPlaying(canShowLoadingBar());
-        if (presenter.isHistoryEmpty()) {
+        if (presenter!=null&&presenter.isHistoryEmpty()) {
             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
         }
     }
@@ -726,7 +726,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (isReallyVisibleToUser() && !JFGRules.isShareDevice(uuid)) {
             getAlertDialogManager().showDialog(getActivity(), getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF), getString(R.string.OK),
                     (DialogInterface d, int which) -> {
-                        if (isLivePlaying() && !isLive() && canPlayVideoNow()) {
+                        if (isLivePlaying() && !isLive() && canPlayVideoNow() && presenter != null) {
                             presenter.performPlayVideoAction(true, 0);
                         }
 
@@ -803,8 +803,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         switch (state) {
             case STATE_FINISH: {
-                setLiveRectTime(time, true);
-                presenter.performHistoryPlayAndCheckerAction(time);
+                if (presenter != null) {
+                    setLiveRectTime(time, true);
+                    presenter.performHistoryPlayAndCheckerAction(time);
+                }
             }
             break;
             default: {
