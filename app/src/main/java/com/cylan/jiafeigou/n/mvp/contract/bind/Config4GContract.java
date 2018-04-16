@@ -15,10 +15,20 @@ public interface Config4GContract {
         void onSIMCheckerFailed(APObserver.ScanResult scanResult);
 
         void onSIMCheckerSuccess(APObserver.ScanResult scanResult);
+
+        void onApnUpdateRequired(APObserver.ScanResult scanResult);
+
+        void onApnUpdateError();
+
+        void onApnUpdateTimeout();
+
+        void onApnUpdateSuccess();
     }
 
     interface Presenter extends JFGPresenter {
         void performSIMCheckerAndGoNext();
+
+        void performSendApnTableAndGoNext();
     }
 
 }

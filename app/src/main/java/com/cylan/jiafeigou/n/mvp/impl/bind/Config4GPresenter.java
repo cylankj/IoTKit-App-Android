@@ -2,18 +2,23 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.module.Command;
 import com.cylan.jiafeigou.n.mvp.contract.bind.Config4GContract;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.APObserver;
 import com.cylan.jiafeigou.utils.BindHelper;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.WifiUtils;
 import com.google.gson.Gson;
@@ -106,5 +111,48 @@ public class Config4GPresenter extends BasePresenter<Config4GContract.View> impl
                     mView.onSIMCheckerFailed(scanResult);
                 });
         addStopSubscription(subscribe);
+    }
+
+    @Override
+    public void performSendApnTableAndGoNext() {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            String localIp = NetUtils.getReadableIp();
+            //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
+            String localUrl = "http://" + localIp + ":8765/" + getApnTablePath();
+            AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
+            try {
+                for (int i = 0; i < 2; i++) {
+                    int success = Command.getInstance().sendLocalMessage(scanResult.getIp(), scanResult.getPort(), new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, scanResult.getIp(), 8765).toBytes());
+                    subscriber.onNext(0L);
+                    subscriber.onCompleted();
+                }
+            } catch (JfgException e) {
+                AppLogger.e("发送升级包失败?" + MiscUtils.getErr(e));
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(i -> RxBus.getCacheInstance().toObservable(RxEvent.FMsgEvent.class))
+                .timeout(1, TimeUnit.MINUTES, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (mView != null) {
+                        if (result == null) {
+                            mView.onApnUpdateTimeout();
+                        }else {
+                            mView.onApnUpdateSuccess();
+                        }
+                    }
+                }, error -> {
+                    error.printStackTrace();
+                    AppLogger.e(MiscUtils.getErr(error));
+                    if (mView != null) {
+                        mView.onApnUpdateError();
+                    }
+                });
+        addDestroySubscription(subscribe);
+    }
+
+    private String getApnTablePath() {
+        return "apn.zip";
     }
 }

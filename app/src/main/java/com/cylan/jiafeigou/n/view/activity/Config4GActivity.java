@@ -89,4 +89,24 @@ public class Config4GActivity extends BaseActivity<Config4GContract.Presenter> i
             startActivity(intent);
         }
     }
+
+    @Override
+    public void onApnUpdateRequired(APObserver.ScanResult scanResult) {
+        AppLogger.d("Config4GActivity,onApnUpdateRequired");
+    }
+
+    @Override
+    public void onApnUpdateError() {
+        AppLogger.d("Config4GActivity,onApnUpdateError");
+    }
+
+    @Override
+    public void onApnUpdateTimeout() {
+        AppLogger.d("Config4GActivity,onApnUpdateTimeout");
+    }
+
+    @Override
+    public void onApnUpdateSuccess() {
+        AppLogger.d("Config4GActivity,onApnUpdateSuccess");
+    }
 }
