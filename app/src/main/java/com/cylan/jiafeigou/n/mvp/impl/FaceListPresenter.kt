@@ -118,7 +118,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
             }
         }
                 .subscribeOn(Schedulers.io())
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({ rsp ->
@@ -321,7 +321,7 @@ class FaceListPresenter @Inject constructor(view: FaceListContact.View) : BasePr
             }
         }
                 .subscribeOn(Schedulers.io())
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({

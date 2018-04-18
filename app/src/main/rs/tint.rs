@@ -7,7 +7,7 @@ static uchar mixRGB (uchar src, uchar mask, float inAlpha, float maskAlpha, floa
   return (uchar) (((src * (1 - maskAlpha) + mask * maskAlpha) / (inAlpha + maskAlpha - maskAlpha * inAlpha)) * outAlpha);
 }
 
-uchar4 __attribute__((kernel)) mask(uchar4 in) {
+uchar4 RS_KERNEL mask(uchar4 in) {
   uchar4 out = in;
   float inAlpha = (float)in.a / 255;
   float maskAlpha = (float)maskColor.a / 255;
@@ -17,6 +17,6 @@ uchar4 __attribute__((kernel)) mask(uchar4 in) {
   out.g = mixRGB(in.g, maskColor.g, inAlpha, maskAlpha, outAlpha);
   out.b = mixRGB(in.b, maskColor.b, inAlpha, maskAlpha, outAlpha);
   out.a = (uchar) (outAlpha * 255);
-
   return out;
 }
+

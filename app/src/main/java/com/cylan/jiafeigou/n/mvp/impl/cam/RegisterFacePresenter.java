@@ -139,7 +139,7 @@ public class RegisterFacePresenter extends BasePresenter<RegisterFaceContract.Vi
                     return -1;
                 })
                 .first()
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))
                 .doOnTerminate(() -> mView.onDeBounceSubmit(true))

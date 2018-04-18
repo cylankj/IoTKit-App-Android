@@ -86,7 +86,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
             }
         }
                 .subscribeOn(Schedulers.io())
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(applyLoading(false, R.string.LOADING))
                 .subscribe({
@@ -120,7 +120,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     val acquaintanceListRsp = DpUtils.unpackData(it.data, DpMsgDefine.AcquaintanceListRsp::class.java)
                     acquaintanceListRsp
                 }
-                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .compose(applyLoading(false, R.string.LOADING))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -198,7 +198,7 @@ class FaceManagerPresenter @Inject constructor(view: FaceManagerContact.View) : 
                     }
                 }
                         .subscribeOn(Schedulers.io())
-                        .timeout(10, TimeUnit.SECONDS)
+                        .timeout(30, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .compose(applyLoading(false, R.string.LOADING))
                         .subscribe({ rsp ->
