@@ -94,21 +94,27 @@ public class Config4GPresenter extends BasePresenter<Config4GContract.View> impl
                     if (scanResult != null) {
                         switch (scanResult.getNet()) {
                             case 2: {
-                                mView.onSIMCheckerSuccess(scanResult);
+                                if (mView != null) {
+                                    mView.onSIMCheckerSuccess(scanResult);
+                                }
                             }
                             break;
                             case -1: {
 
                             }
                             default: {
-                                mView.onSIMCheckerFailed(scanResult);
+                                if (mView != null) {
+                                    mView.onSIMCheckerFailed(scanResult);
+                                }
                             }
                         }
                     }
                 }, error -> {
                     error.printStackTrace();
                     AppLogger.e(error);
-                    mView.onSIMCheckerFailed(scanResult);
+                    if (mView != null) {
+                        mView.onSIMCheckerFailed(scanResult);
+                    }
                 });
         addStopSubscription(subscribe);
     }
@@ -138,7 +144,7 @@ public class Config4GPresenter extends BasePresenter<Config4GContract.View> impl
                     if (mView != null) {
                         if (result == null) {
                             mView.onApnUpdateTimeout();
-                        }else {
+                        } else {
                             mView.onApnUpdateSuccess();
                         }
                     }

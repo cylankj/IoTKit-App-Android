@@ -169,6 +169,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         //数据初始化
         mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
         mMediaList = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
+        if (mMediaList == null || mMediaList.size() == 0) {
+            finish();
+        }
         mCurrentMediaBean = mMediaList.get(mStartPosition);
         mCurrentViewType = mCurrentMediaBean.msgType;
         if (savedInstanceState != null) {

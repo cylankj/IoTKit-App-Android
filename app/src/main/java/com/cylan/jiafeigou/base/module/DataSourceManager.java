@@ -994,7 +994,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (ListUtils.isEmpty(list)) {
             return;
         }
-        if (getAccount() == null || !getJFGAccount().isEnablePush()) {
+        if (getAccount() == null || getJFGAccount() == null || !getJFGAccount().isEnablePush()) {
             return;
         }
         INotify.NotifyBean bean = new INotify.NotifyBean();

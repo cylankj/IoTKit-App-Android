@@ -83,8 +83,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity implement
         boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
 //        //just for test
 //        hasNewMsg = true;
-        initToolbar(hasNewMsg);
         initAdapter();
+        initToolbar(hasNewMsg);
         if (hasNewMsg && vpCameraLive.getAdapter().getCount() > 1) {
             //跳转到
             vpCameraLive.setCurrentItem(1);
