@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.ActionMode;
 import android.view.MenuItem;
@@ -295,6 +296,9 @@ public class ImageSelectActivity extends HelperActivity {
                         selectedImages.add(image.id);
                     }
                 }
+            }
+            if (TextUtils.isEmpty(album)) {
+                album = "";
             }
 
             Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,

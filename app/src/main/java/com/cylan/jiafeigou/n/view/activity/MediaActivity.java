@@ -171,6 +171,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mMediaList = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
         if (mMediaList == null || mMediaList.size() == 0) {
             finish();
+            return;
         }
         mCurrentMediaBean = mMediaList.get(mStartPosition);
         mCurrentViewType = mCurrentMediaBean.msgType;
