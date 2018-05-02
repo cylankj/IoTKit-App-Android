@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 
 import org.json.JSONArray;
@@ -107,6 +106,9 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
 
     @Override
     public void getAIStrategy() {
+        if (true) {
+            return;
+        }
         Subscription subscribe = Observable.create(new Observable.OnSubscribe<JSONObject>() {
             @Override
             public void call(Subscriber<? super JSONObject> subscriber) {
@@ -166,7 +168,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 .subscribe(new Action1<JSONObject>() {
                     @Override
                     public void call(JSONObject jsonObject) {
-                      mView.onAIStrategyRsp(jsonObject);
+                        mView.onAIStrategyRsp(jsonObject);
                     }
                 }, new Action1<Throwable>() {
                     @Override
