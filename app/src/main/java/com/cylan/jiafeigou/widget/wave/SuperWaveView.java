@@ -101,9 +101,15 @@ public class SuperWaveView extends View {
         @Override
         public void run() {
             for (int i = 0; i < waveCount; i++) {
-                waveShader[i] = createShader(createSinePath(generatePhase(),
+                Shader shader = createShader(createSinePath(generatePhase(),
                         generateWaterLevel(i),
                         generateAmplitude()), i);
+                if (shader == null) {
+                    removeCallbacks(onSizeChangedRunnable);
+                    post(onSizeChangedRunnable);
+                    return;
+                }
+                waveShader[i] = shader;
                 wavePaint[i].setShader(waveShader[i]);
             }
         }
@@ -135,6 +141,11 @@ public class SuperWaveView extends View {
     }
 
     private Shader createShader(final Path path, final int index) {
+        int measuredWidth = getMeasuredWidth();
+        int measuredHeight = getMeasuredHeight();
+        if (measuredWidth <= 0 || measuredHeight <= 0) {
+            return null;
+        }
         Bitmap bitmap = Bitmap.createBitmap(getMeasuredWidth(),
                 getMeasuredHeight(),
                 Bitmap.Config.ARGB_8888);
