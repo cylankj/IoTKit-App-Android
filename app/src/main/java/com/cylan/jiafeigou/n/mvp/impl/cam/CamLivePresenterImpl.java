@@ -53,7 +53,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.panorama.CameraParam;
@@ -90,6 +89,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
     private PanDeviceVersionChecker version;
+
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
         liveActionHelper = new CameraLiveActionHelper(uuid);
@@ -173,7 +173,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (goodFrameRate) {
                             if (!CameraLiveHelper.isLive(liveActionHelper) && jfgMsgVideoRtcp.timestamp > 0) {
                                 boolean liveActionCompleted = liveActionHelper.onUpdatePendingPlayLiveActionCompleted();
-                                if (!liveActionCompleted) {
+                                if (!liveActionCompleted&&mView!=null) {
                                     mView.onVideoPlayActionCompleted();
                                 }
                             }
@@ -182,7 +182,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         if (videoPlaying) {
                             liveActionHelper.onUpdateVideoRtcp(jfgMsgVideoRtcp);
                             feedRtcp.feed(jfgMsgVideoRtcp);
-                            mView.onRtcp(jfgMsgVideoRtcp);
+                            if (mView!=null) {
+                                mView.onRtcp(jfgMsgVideoRtcp);
+                            }
 //                            boolean isVideoLive = CameraLiveHelper.checkIsVideoLiveWithRtcp(liveActionHelper, jfgMsgVideoRtcp);
 //                            liveActionHelper.isDynamicLiving = isVideoLive;
 //                            if (CameraLiveHelper.checkIsLiveTypeChanged(liveActionHelper, live)) {
@@ -249,8 +251,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         try {
                             AppLogger.d(CameraLiveHelper.TAG + ":正在更新分辨率");
                             performBottomMenuRefresh();
-                            mView.onResolution(jfgMsgVideoResolution);
-                            mView.onVideoPlayActionCompleted();
+                            if (mView!=null) {
+                                mView.onResolution(jfgMsgVideoResolution);
+                                mView.onVideoPlayActionCompleted();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             AppLogger.e(e);
@@ -289,7 +293,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             public void call() {
                 switch (playError) {
                     case CameraLiveHelper.PLAY_ERROR_STANDBY: {
-                        if (shouldReportError) {
+                        if (shouldReportError && mView != null) {
                             mView.onDeviceStandByChanged(true);
                         }
                         if (liveActionHelper.isPlaying) {
@@ -298,7 +302,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_FIRST_SIGHT: {
-                        if (shouldReportError) {
+                        if (shouldReportError && mView != null) {
                             mView.onPlayErrorFirstSight();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -307,7 +311,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_NETWORK: {
-                        if (shouldReportError) {
+                        if (shouldReportError && mView != null) {
                             mView.onPlayErrorNoNetwork();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -316,7 +320,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_DEVICE_OFF_LINE: {
-                        if (shouldReportError) {
+                        if (shouldReportError && mView != null) {
                             mView.onDeviceChangedToOffLine();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -325,20 +329,22 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_JFG_EXCEPTION_THROW: {
-                        mView.onPlayErrorException();
+                        if (mView != null) {
+                            mView.onPlayErrorException();
+                        }
                         if (liveActionHelper.isPlaying) {
                             performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED: {
-                        if (liveActionHelper.isPlaying) {
+                        if (liveActionHelper.isPlaying && mView != null) {
                             mView.onPlayErrorWaitForPlayCompleted();
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_BAD_FRAME_RATE: {
-                        if (shouldReportError) {
+                        if (shouldReportError && mView != null) {
                             mView.onPlayErrorBadFrameRate();
                         }
                         if (liveActionHelper.isPlaying && CameraLiveHelper.checkFrameBad(liveActionHelper)) {
@@ -347,13 +353,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_LOW_FRAME_RATE: {
-                        if (liveActionHelper.isPlaying) {
+                        if (liveActionHelper.isPlaying && mView != null) {
                             mView.onPlayErrorLowFrameRate();
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_PLAY_COMPLETED_TIME_OUT: {
-                        if (shouldReportError) {
+                        if (shouldReportError && mView != null) {
                             mView.onPlayErrorWaitForPlayCompletedTimeout();
                         }
                         if (liveActionHelper.isPlaying) {
@@ -363,7 +369,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     break;
                     case CameraLiveHelper.PLAY_ERROR_UN_KNOW_PLAY_ERROR: {
                         AppLogger.d(CameraLiveHelper.TAG + ":PLAY_ERROR_UN_KNOW_PLAY_ERROR:" + liveActionHelper.lastUnKnowPlayError);
-                        if (liveActionHelper.isPlaying && shouldReportError) {
+                        if (liveActionHelper.isPlaying && shouldReportError && mView != null) {
                             mView.onPlayErrorUnKnowPlayError(CameraLiveHelper.checkUnKnowErrorCode(liveActionHelper, false));
                         }
                         if (liveActionHelper.isPlaying) {
@@ -374,43 +380,59 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     case CameraLiveHelper.PLAY_ERROR_IN_CONNECTING: {
                         if (liveActionHelper.isPlaying) {
                             performStopVideoActionInternal(CameraLiveHelper.isLive(liveActionHelper), false, () -> {
-                                mView.onPlayErrorInConnecting();
+                                if (mView != null) {
+                                    mView.onPlayErrorInConnecting();
+                                }
                             });
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_NO_ERROR: {
-                        mView.onPlayErrorNoError();
+                        if (mView != null) {
+                            mView.onPlayErrorNoError();
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_FILE_IO: {
-                        mView.onPlayErrorSDFileIO();
+                        if (mView != null) {
+                            mView.onPlayErrorSDFileIO();
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_HISTORY_ALL: {
-                        mView.onPlayErrorSDHistoryAll();
+                        if (mView != null) {
+                            mView.onPlayErrorSDHistoryAll();
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_SD_IO: {
-                        mView.onPlayErrorSDIO();
+                        if (mView != null) {
+                            mView.onPlayErrorSDIO();
+                        }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_DISCONNECT: {
-                        mView.onPlayErrorVideoPeerDisconnect();
+                        if (mView != null) {
+                            mView.onPlayErrorVideoPeerDisconnect();
+                        }
                         if (liveActionHelper.isPlaying) {
                             performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_VIDEO_PEER_NOT_EXIST: {
-                        mView.onPlayErrorVideoPeerNotExist();
+                        if (mView != null) {
+                            mView.onPlayErrorVideoPeerNotExist();
+                        }
                         if (liveActionHelper.isPlaying) {
                             performStopVideoAction(false);
                         }
                     }
                     break;
                     case CameraLiveHelper.PLAY_ERROR_WAIT_FOR_FETCH_HISTORY_COMPLETED: {
-                        mView.onPlayErrorWaitForFetchHistoryCompleted();
+                        if (mView != null) {
+                            mView.onPlayErrorWaitForFetchHistoryCompleted();
+                        }
                     }
                     break;
                 }
@@ -424,11 +446,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
             @Override
             public void call() {
-                boolean microphoneEnable = CameraLiveHelper.checkMicrophoneEnable(liveActionHelper);
-                boolean speakerEnable = CameraLiveHelper.checkSpeakerEnable(liveActionHelper);
-                boolean doorLockEnable = CameraLiveHelper.checkDoorLockEnable(liveActionHelper);
-                boolean captureEnable = CameraLiveHelper.checkCaptureEnable(liveActionHelper);
-                mView.onUpdateBottomMenuEnable(microphoneEnable, speakerEnable, doorLockEnable, captureEnable);
+                if (mView != null) {
+                    boolean microphoneEnable = CameraLiveHelper.checkMicrophoneEnable(liveActionHelper);
+                    boolean speakerEnable = CameraLiveHelper.checkSpeakerEnable(liveActionHelper);
+                    boolean doorLockEnable = CameraLiveHelper.checkDoorLockEnable(liveActionHelper);
+                    boolean captureEnable = CameraLiveHelper.checkCaptureEnable(liveActionHelper);
+                    mView.onUpdateBottomMenuEnable(microphoneEnable, speakerEnable, doorLockEnable, captureEnable);
+                }
             }
         });
         addStopSubscription(subscription);
@@ -438,9 +462,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
             @Override
             public void call() {
-                boolean microphoneOn = CameraLiveHelper.checkMicrophoneOn(liveActionHelper, liveActionHelper.isSpeakerOn);
-                final boolean speakerOn = CameraLiveHelper.checkSpeakerOn(liveActionHelper, microphoneOn);
-                mView.onUpdateBottomMenuOn(speakerOn, microphoneOn);
+                if (mView != null) {
+                    boolean microphoneOn = CameraLiveHelper.checkMicrophoneOn(liveActionHelper, liveActionHelper.isSpeakerOn);
+                    final boolean speakerOn = CameraLiveHelper.checkSpeakerOn(liveActionHelper, microphoneOn);
+                    mView.onUpdateBottomMenuOn(speakerOn, microphoneOn);
+                }
             }
         });
         addStopSubscription(subscription);
@@ -463,7 +489,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 Subscription subscription = AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
                     @Override
                     public void call() {
-                        mView.onVideoPlayPrepared(live);
+                        if (mView != null) {
+                            mView.onVideoPlayPrepared(live);
+                        }
                     }
                 });
                 subscriber.add(subscription);
@@ -598,7 +626,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         Subscription subscribe = Observable.create((Observable.OnSubscribe<DpMsgDefine.DPSdStatus>) subscriber -> {
             liveActionHelper.isPendingHistoryPlayActionCompleted = false;
             boolean isHistoryCheckerRequired = isHistoryEmpty();
-            mView.onLoadHistoryPrepared(playTime, isHistoryCheckerRequired);
+            if (mView!=null) {
+                mView.onLoadHistoryPrepared(playTime, isHistoryCheckerRequired);
+            }
             if (isHistoryCheckerRequired) {
                 Subscription subscription = performCheckSDCardErrorInternal().subscribe(errorCode -> {
                     subscriber.onNext(errorCode);
@@ -634,16 +664,22 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         performPlayVideoAction(false, playTime);
                     } else if (!hasSdcard) {
                         liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
-                        mView.onHistoryCheckerErrorNoSDCard();
+                        if (mView!=null) {
+                            mView.onHistoryCheckerErrorNoSDCard();
+                        }
                     } else if (errorCode != 0) {
                         liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
-                        mView.onHistoryCheckerErrorSDCardInitRequired(errorCode);
+                        if (mView!=null) {
+                            mView.onHistoryCheckerErrorSDCardInitRequired(errorCode);
+                        }
                     }
                 }, throwable -> {
                     throwable.printStackTrace();
                     AppLogger.e(throwable);
                     liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
-                    mView.onHistoryCheckerErrorNoSDCard();
+                    if (mView!=null) {
+                        mView.onHistoryCheckerErrorNoSDCard();
+                    }
                 });
         addStopSubscription(subscribe);
     }
@@ -719,7 +755,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, new Action0() {
                     @Override
                     public void call() {
-                        if (notify) {
+                        if (notify&&mView!=null) {
                             mView.onVideoPlayStopped(live);
                         }
                         performUpdateBottomMenuEnable();
@@ -805,7 +841,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(new Action1<Bitmap>() {
                     @Override
                     public void call(Bitmap bitmap) {
-                        if (saveInPhotoAndNotify) {
+                        if (saveInPhotoAndNotify&&mView!=null) {
                             mView.onCaptureFinished(bitmap);
                         }
                     }
@@ -912,7 +948,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (CameraLiveHelper.checkIsDeviceSDCardExistStateChanged(liveActionHelper, isSDCardExist)) {
             if (!liveActionHelper.isSDCardExist) {
                 AppLogger.d(CameraLiveHelper.TAG + ":SD 卡已被拔出");
-                mView.onDeviceSDCardOut();
+                if (mView!=null) {
+                    mView.onDeviceSDCardOut();
+                }
                 if (CameraLiveHelper.isVideoRealPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
                     performStopVideoAction(false);
                 }
@@ -922,21 +960,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void decideReportDevice501Action(Boolean alarmOpen) {
         alarmOpen = liveActionHelper.onUpdateDeviceAlarmOpenState(alarmOpen);
-        if (CameraLiveHelper.checkIsDeviceAlarmOpenStateChanged(liveActionHelper, alarmOpen)) {
+        if (CameraLiveHelper.checkIsDeviceAlarmOpenStateChanged(liveActionHelper, alarmOpen)&&mView!=null) {
             mView.onUpdateAlarmOpenChanged(liveActionHelper.isDeviceAlarmOpened);
         }
     }
 
     private void decideReportDevice510Event(DpMsgDefine.DpCoordinate dpCoordinate) {
         dpCoordinate = liveActionHelper.onUpdateDeviceCoordinate(dpCoordinate);
-        if (CameraLiveHelper.checkIsDeviceCoordinateChanged(liveActionHelper, dpCoordinate)) {
+        if (CameraLiveHelper.checkIsDeviceCoordinateChanged(liveActionHelper, dpCoordinate)&&mView!=null) {
             mView.onUpdateCameraCoordinate(dpCoordinate);
         }
     }
 
     private void decideReportDevice214Event(DpMsgDefine.DPTimeZone dpTimeZone) {
         dpTimeZone = liveActionHelper.onUpdateDeviceTimezone(dpTimeZone);
-        if (CameraLiveHelper.checkIsDeviceTimeZoneChanged(liveActionHelper, dpTimeZone)) {
+        if (CameraLiveHelper.checkIsDeviceTimeZoneChanged(liveActionHelper, dpTimeZone)&&mView!=null) {
             mView.onDeviceTimeZoneChanged(liveActionHelper.deviceTimezone.offset);
         }
     }
@@ -950,11 +988,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (netChanged) {
             liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
             liveActionHelper.onUpdateLive(deviceOnline || liveActionHelper.isLive);
-            mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
+            if (mView!=null) {
+                mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
+            }
             if (deviceOnline) {
-                mView.onDeviceChangedToOnline();
+                if (mView!=null) {
+                    mView.onDeviceChangedToOnline();
+                }
             } else {
-                mView.onDeviceChangedToOffLine();
+                if (mView!=null) {
+                    mView.onDeviceChangedToOffLine();
+                }
                 performStopVideoAction(false);
             }
         }
@@ -962,7 +1006,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void decideReportDevice509Event(String _509) {
         _509 = liveActionHelper.onUpdateDeviceMountMode(_509);
-        if (CameraLiveHelper.checkIsDeviceViewMountModeChanged(liveActionHelper, _509)) {
+        if (CameraLiveHelper.checkIsDeviceViewMountModeChanged(liveActionHelper, _509)&&mView!=null) {
             mView.onUpdateLiveViewMode(_509);
         }
     }
@@ -970,7 +1014,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private void decideReportDevice218Event(Integer formatted) {
         boolean isSDCardFormatted = liveActionHelper.onUpdateSDCardFormatted(formatted);
         if (isSDCardFormatted != liveActionHelper.isSDCardFormatted) {
-            if (liveActionHelper.isSDCardFormatted) {
+            if (liveActionHelper.isSDCardFormatted&&mView!=null) {
                 mView.onDeviceSDCardFormat();
             }
         }
@@ -978,7 +1022,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private void decideReportDevice508Event(DpMsgDefine.DPStandby standby) {
         boolean isStandBy = liveActionHelper.onUpdateStandBy(JFGRules.isStandBy(standby));
-        if (isStandBy != liveActionHelper.isStandBy) {
+        if (isStandBy != liveActionHelper.isStandBy&&mView!=null) {
             mView.onDeviceStandByChanged(liveActionHelper.isStandBy);
             if (liveActionHelper.isStandBy) {
                 performStopVideoAction(false);
@@ -992,7 +1036,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         battery = liveActionHelper.onUpdateDeviceBattery(battery);
         if (CameraLiveHelper.checkIsDeviceBatteryChanged(liveActionHelper, battery)) {
             if (JFGRules.popPowerDrainOut(getDevice().pid)) {
-                if (battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                if (battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0&&mView!=null) {
                     mView.onBatteryDrainOut();
                 }
             }
@@ -1002,7 +1046,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private void decideReportDevice222Event(DpMsgDefine.DPSdcardSummary sdStatus) {
         boolean isSDCardExist = liveActionHelper.onUpdateDeviceSDCardStatus(sdStatus);
         if (CameraLiveHelper.checkIsDeviceSDCardExistStateChanged(liveActionHelper, isSDCardExist)) {
-            if (!liveActionHelper.isSDCardExist) {
+            if (!liveActionHelper.isSDCardExist&&mView!=null) {
                 AppLogger.d(CameraLiveHelper.TAG + ":SD 卡已被拔出");
                 mView.onDeviceSDCardOut();
                 if (CameraLiveHelper.isVideoRealPlaying(liveActionHelper) && !CameraLiveHelper.isLive(liveActionHelper)) {
@@ -1094,7 +1138,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 option.lastLowBatteryTime = System.currentTimeMillis();
                                 device.setOption(option);
                                 DataSourceManager.getInstance().updateDevice(device);
-                                mView.onBatteryDrainOut();
+                                if (mView!=null) {
+                                    mView.onBatteryDrainOut();
+                                }
                             }
 //                            mView.onBatteryDrainOut();
                         }
@@ -1189,7 +1235,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.d(CameraLiveHelper.TAG + ":fetchHistoryDataListCompat 30秒已经过去了:" + historyPlayActionCompleted);
                         if (!historyPlayActionCompleted) {
                             liveActionHelper.onUpdateLive(true);
-                            mView.onLoadHistoryFailed();
+                            if (mView!=null) {
+                                mView.onLoadHistoryFailed();
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -1200,7 +1248,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         boolean historyPlayActionCompleted = liveActionHelper.onUpdatePendingHistoryPlayActionCompleted();
                         if (!historyPlayActionCompleted) {
                             liveActionHelper.onUpdateLive(true);
-                            mView.onLoadHistoryFailed();
+                            if (mView!=null) {
+                                mView.onLoadHistoryFailed();
+                            }
                         }
                     }
                 });
@@ -1219,13 +1269,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .doOnSubscribe(() -> LoadingDialog.showLoading(mView.activity(), mView.getContext().getString(R.string.DOOR_OPENING), false))
                 .doOnTerminate(LoadingDialog::dismissLoading)
                 .subscribe(success -> {
-                    if (success == null) {
+                    if (success == null&&mView!=null) {
                         mView.onOpenDoorError();
-                    } else if (success == 0) {
+                    } else if (mView!=null&&success == 0) {
                         mView.onOpenDoorSuccess();
-                    } else if (success == 2) {
+                    } else if (mView!=null&&success == 2) {
                         mView.onOpenDoorPasswordError();
-                    } else {
+                    } else if(mView!=null){
                         mView.onOpenDoorError();
                     }
                 }, e -> {
@@ -1406,7 +1456,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             liveActionHelper.onUpdateMotionAreaOpened(!CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper));
         }
         if (!liveActionHelper.deviceMotionAreaOpened || !liveActionHelper.isLive) {
-            mView.onDeviceMotionChanged(false, liveActionHelper.deviceMotionArea);
+            if (mView!=null) {
+                mView.onDeviceMotionChanged(false, liveActionHelper.deviceMotionArea);
+            }
             return;
         }
         liveActionHelper.onUpdateMotionArea(null);
@@ -1454,11 +1506,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         liveActionHelper.onUpdateMotionArea(rect4F);
 //                        liveActionHelper.onUpdateMotionAreaOpened(dpCameraWarnArea.enable);
 //                        if (isMotionAreaChanged) {
-                        mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), CameraLiveHelper.checkMotionArea(liveActionHelper));
+                        if (mView!=null) {
+                            mView.onDeviceMotionChanged(CameraLiveHelper.checkIsDeviceMotionAreaOpened(liveActionHelper), CameraLiveHelper.checkMotionArea(liveActionHelper));
+                        }
 //                        }
                     } else {
                         //如果超时或者未设置侦测区域,默认全屏侦测区域
-                        mView.onDeviceMotionChanged(true, null);
+                        if (mView!=null) {
+                            mView.onDeviceMotionChanged(true, null);
+                        }
                     }
                 }, error -> {
                     AppLogger.e(MiscUtils.getErr(error));
@@ -1576,9 +1632,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     @Override
                     public void call(Bitmap bitmap) {
                         boolean isPanoramaView = CameraLiveHelper.checkIsPanoramaView(liveActionHelper);
-                        if (isPanoramaView) {
+                        if (isPanoramaView&&mView!=null) {
                             mView.onUpdatePanoramaThumbPicture(bitmap);
-                        } else {
+                        } else if (mView!=null){
                             mView.onUpdateNormalThumbPicture(bitmap);
                         }
                     }
@@ -1587,7 +1643,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         AppLogger.e(throwable);
-                        mView.onUpdateNormalThumbPicture(null);
+                        if (mView!=null) {
+                            mView.onUpdateNormalThumbPicture(null);
+                        }
                     }
                 });
         addStopSubscription(subscribe);
@@ -1607,7 +1665,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     .subscribe(ret -> {
                         boolean localOnlineState = liveActionHelper.onUpdateDeviceLocalOnlineState(true);
                         boolean localOnlineChanged = CameraLiveHelper.checkIsDeviceLocalOnlineChanged(liveActionHelper, localOnlineState);
-                        if (localOnlineChanged) {
+                        if (localOnlineChanged&&mView!=null) {
                             mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
                         }
                     }, e -> {
@@ -1615,7 +1673,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.e(e);
                         boolean localOnlineState = liveActionHelper.onUpdateDeviceLocalOnlineState(false);
                         boolean localOnlineChanged = CameraLiveHelper.checkIsDeviceLocalOnlineChanged(liveActionHelper, localOnlineState);
-                        if (localOnlineChanged) {
+                        if (localOnlineChanged&&mView!=null) {
                             mView.onDeviceNetChanged(liveActionHelper.deviceNet, liveActionHelper.isLocalOnline);
                         }
                     });
@@ -1634,15 +1692,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         //若自动录像未关闭 则提示:关闭“移动侦测”，将停止“侦测报警录像”
         //无卡不需要显示 //oldOption 不等于2 说明没有关闭自动录像则提示:关闭“移动侦测”，将停止“侦测报警录像”
         if (event == 0 && safeProtectionOpened && !autoRecordEnabled && hasSDCard) {
-            mView.onChangeSafeProtectionErrorAutoRecordClosed();
+            if (mView!=null) {
+                mView.onChangeSafeProtectionErrorAutoRecordClosed();
+            }
         } else if (event == 0 && safeProtectionOpened) {
-            mView.onChangeSafeProtectionErrorNeedConfirm();
+            if (mView!=null) {
+                mView.onChangeSafeProtectionErrorNeedConfirm();
+            }
         } else {
             //之前未开启,则开启
             safeProtectionOpened = !safeProtectionOpened;
             DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(safeProtectionOpened);
             updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
-            mView.onSafeProtectionChanged(safeProtectionOpened);
+            if (mView!=null) {
+                mView.onSafeProtectionChanged(safeProtectionOpened);
+            }
         }
     }
 
@@ -1651,13 +1715,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         int viewModeError = CameraLiveHelper.checkViewModeError(liveActionHelper);
         if (viewModeError == 0) {
             liveActionHelper.onUpdateDeviceDisplayMode(displayMode);
-            mView.onViewModeAvailable(displayMode);
+            if (mView!=null) {
+                mView.onViewModeAvailable(displayMode);
+            }
         } else if (viewModeError == 1) {
-            mView.onViewModeHangError();
+            if (mView!=null) {
+                mView.onViewModeHangError();
+            }
         } else if (viewModeError == 2) {
-            mView.onViewModeForceHangError(displayMode);
+            if (mView!=null) {
+                mView.onViewModeForceHangError(displayMode);
+            }
         } else if (viewModeError == 3) {
-            mView.onViewModeNotSupportError();
+            if (mView!=null) {
+                mView.onViewModeNotSupportError();
+            }
         }
     }
 
@@ -1744,7 +1816,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
         if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
             performReportPlayError(playError);
-        } else if (!slow) {
+        } else if (!slow&&mView!=null) {
             mView.onPlayFrameResumeGood();
         }
     }
@@ -1765,7 +1837,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 int playError = CameraLiveHelper.checkPlayError(liveActionHelper);
                 if (playError != CameraLiveHelper.PLAY_ERROR_NO_ERROR) {
                     performReportPlayError(playError);
-                } else if (liveActionHelper.isNetworkConnected) {
+                } else if (liveActionHelper.isNetworkConnected&&mView!=null) {
                     mView.onNetworkResumeGood();
                 }
             }
