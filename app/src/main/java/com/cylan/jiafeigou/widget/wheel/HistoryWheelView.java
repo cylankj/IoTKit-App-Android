@@ -86,7 +86,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
     private double fontHeight;
     private EdgeEffect mEdgeEffectLeft;
     private EdgeEffect mEdgeEffectRight;
-    private boolean mOverScrollerMode = true;
+    private boolean mOverScrollerMode = false;
     private boolean mIsTouchEventFinished = true;
 
     @IntDef({SnapDirection.MOVE_DIRECTION, SnapDirection.LEFT, SnapDirection.RIGHT, SnapDirection.AUTO})
@@ -277,7 +277,7 @@ public class HistoryWheelView extends View implements GestureDetector.OnGestureL
         }
 
         if (distanceX != 0) {
-            mScroller.startScroll(mScroller.getCurrX(), 0, (int) distanceX, 0);
+            mScroller.startScroll(mScroller.getFinalX(), 0, (int) distanceX, 0);
             invalidate();
         }
 
