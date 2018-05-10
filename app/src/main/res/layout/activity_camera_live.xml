@@ -15,10 +15,15 @@
         app:ct_background_color="@color/color_0ba8cf"
         app:ct_enable_theme="true"
         app:ct_fit_system_window="true" />
-
+    <Button
+        android:id="@+id/register"
+        android:text="注册人脸"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <com.cylan.jiafeigou.widget.page.EViewPager
         android:id="@+id/vp_camera_live"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>
