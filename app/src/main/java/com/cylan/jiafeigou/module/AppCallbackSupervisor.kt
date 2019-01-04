@@ -218,8 +218,8 @@ object AppCallbackSupervisor : AppCallBack, Supervisor {
     }
 
     override fun OnlineStatus(b: Boolean) {
+        AppLogger.w("OnlineStatus :" + b)
         if (b != DataSourceManager.getInstance().isOnline) {
-            AppLogger.w("OnlineStatus :" + b)
             RxBus.getCacheInstance().post(RxEvent.OnlineStatusRsp(b))
             DataSourceManager.getInstance().isOnline = b//设置用户在线信息
         }

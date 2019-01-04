@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
-import com.cylan.jiafeigou.n.view.cam.RegisterFaceActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
@@ -75,14 +74,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
-        findViewById(R.id.register).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CameraLiveActivity.this, RegisterFaceActivity.class);
-                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                startActivityForResult(intent, 2);
-            }
-        });
+//        findViewById(R.id.register).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(CameraLiveActivity.this, RegisterFaceActivity.class);
+//                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//                startActivityForResult(intent, 2);
+//            }
+//        });
         unbinder = ButterKnife.bind(this);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("what the hell uuid is null");

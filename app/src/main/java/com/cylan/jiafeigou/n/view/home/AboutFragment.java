@@ -1,15 +1,12 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -23,6 +20,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
 import com.cylan.jiafeigou.n.view.mine.WebsiteFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.GooglePrivacyHelper;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -95,14 +93,15 @@ public class AboutFragment extends Fragment {
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.sv_hot_line:
-                intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + getHotPhone()));
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    AboutFragment.this.requestPermissions(
-                            new String[]{Manifest.permission.CALL_PHONE},
-                            MY_PERMISSIONS_REQUEST_CALL_PHONE);
-                    return;
-                }
-                getContext().startActivity(intent);
+                GooglePrivacyHelper.callPhone(getContext(), getHotPhone());
+//                intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + getHotPhone()));
+//                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                    AboutFragment.this.requestPermissions(
+//                            new String[]{Manifest.permission.CALL_PHONE},
+//                            MY_PERMISSIONS_REQUEST_CALL_PHONE);
+//                    return;
+//                }
+//                getContext().startActivity(intent);
                 break;
             case R.id.sv_official_website:
                 enterWeb();
@@ -129,19 +128,19 @@ public class AboutFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_CALL_PHONE:
-                //如果请求被取消，那么 result 数组将为空
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // 已经获取对应权限
-                    getContext().startActivity(intent);
-                } else {
-                    setPermissionDialog(getString(R.string.callto));
-                }
-                break;
-        }
+//
+//        switch (requestCode) {
+//            case MY_PERMISSIONS_REQUEST_CALL_PHONE:
+//                //如果请求被取消，那么 result 数组将为空
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    // 已经获取对应权限
+//                    getContext().startActivity(intent);
+//                } else {
+//                    setPermissionDialog(getString(R.string.callto));
+//                }
+//                break;
+//        }
     }
 
     public void setPermissionDialog(String permission) {

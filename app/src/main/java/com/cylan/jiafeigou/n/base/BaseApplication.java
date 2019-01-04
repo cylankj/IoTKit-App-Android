@@ -62,6 +62,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private volatile boolean needToInject = true;
     private static AppComponent appComponent;
     private static Activity currentActivity;
+
     @Override
     public void onCreate() {
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getPackageName())) {
@@ -194,6 +195,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     public static boolean isBackground() {
         return stopViewCount == 0;
+    }
+
+    public static boolean isLastActivity() {
+        return stopViewCount == 1;
     }
 
     @Override

@@ -41,6 +41,7 @@ import com.lzy.okgo.cache.CacheMode;
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -713,8 +714,37 @@ public class DP {
         System.out.println(parse.intValue());
     }
 
+    @Message
+    public static class AA {
+        public String ss = "DDDDDD";
+    }
+
+    @Message
+    public static class BB {
+        public byte[] bytes;
+    }
+
     @Test
-    public void testLength() {
-        System.out.println(" https://jiafeigou-test.oss-cn-hangzhou.aliyuncs.com:443/long/18603076876/AI/290300000043/1517279718.jpg?security-token=CAISrwR1q6Ft5B2yfSjIpLDdEvDWma5Q2bavcm3jvDInXsRdm%2FSS0Tz2IHpPendgAu8ev%2Fo%2FmGpR6PsYlq0rE8cfHdNHnA2MqsY5yxioRqackTrej9Vd%2Bm3OewW6Dxr8w7WMAYHQR8%2FcffGAck3NkjQJr5LxaTSlWS7TU%2FiOkoU1VskLeQO6YDFaZrJRPRAwh8IGEnHTOP2xSKCA4AzqAVFvpxB3hE5m9K272bf80BfFi0DgweJndu6TY5GvdJtrJ4wtEYX3ju53f6TM0SFX9l1W%2Bbxqy%2FYVoW%2Bf5onFWwALslLEUavd%2BcY9KxRiNOpoWfxGrfHymPx3vfGWi4ns11EXbLkPC3yHHNj4mJKDWoHoP90iJ7HgICaPgJLdNJj8vQ4lbnUGcR9HYMZmcC4oUkR0EmmCcvP8vxKoLw6oUPqCy7pkk8g3nVfp9NSHJleIXvCF3D0EfZQ9YwRwb0ZMmi6DO6YNaF5LaEg1ReTXH4dyZR5TqKzvoEjOWzZ8iXVQufK5JZGfs6sEO4LkRcAEg8hPZpVPvWYrQFPqDq6jkVtTK2BsUPEUsuPkMoTt76SekqfBI7zEC%2FkJt1RVdi2UsyeWVTRRKCT%2B65phCxeR8N%2BDy7fXodEyUlks59lRAACKdssos1F9%2F%2By26BvUqLe7CDfo3ApjooWDptcft3EJJKn037Wg2RfFp2GVbKUDn8PaZXZiWxzfeQYimqvM2CJc%2BEhQzTHoYU9Btg6LvmGrZ921CVXtGoABF3j6TtD3T1%2B8tgQ5bH4PnGLHvsBWPcZZapXV1hct5tgc3P3TqbuHL%2F5YLSvEABrf0ISOMyZWcGrY%2BgWseUbW1Qi%2FV45XyBm9rKIv99eaq9jIWliqx9lcJTgRbTkLAgS%2FCLXRjskFY7OAB6dfvaOiMwOsisOowrw8nMOyoaP1aNM%3D&OSSAccessKeyId=STS.EshYJbtqqntDpKRX2rRKqt193&Expires=1525069921&Signature=W%2BxWV4uECKWRrmnOhrIHE%2FapJ8U%3D".getBytes().length);
+    public void testLength() throws Exception {
+        MessagePack messagePack = new MessagePack();
+        BB bb = new BB();
+        byte[] write = messagePack.write(new AA());
+        bb.bytes = write;
+        byte[] write1 = messagePack.write(bb);
+        System.out.println(Arrays.toString(write));
+        System.out.println(Arrays.toString(write1));
+    }
+
+
+    @Message
+    class ForwardRequest {
+        @Index(0)
+        public int msgId;
+        @Index(1)
+        public String caller;
+        @Index(2)
+        public String callee;
+        @Index(3)
+        public long seq;
     }
 }

@@ -356,7 +356,7 @@ object BindHelper {
                     .observeOn(Schedulers.io())
                     .filter { bindDeviceEvent ->
                         bindSubscriber.unsubscribe()
-                        if (bindDeviceEvent.bindResult != JError.ErrorOK) {
+                        if (bindDeviceEvent.bindResult != JError.ErrorOK && bindDeviceEvent.bindResult != JError.ErrorCIDBinding) {
                             subscriber.onError(RxEvent.HelperBreaker(bindDeviceEvent))
                         }
                         bindDeviceEvent.bindResult == JError.ErrorOK

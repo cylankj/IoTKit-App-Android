@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +44,7 @@ import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.GooglePrivacyHelper;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -53,7 +52,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
-import com.cylan.jiafeigou.widget.dialog.ShareToListDialog;
 import com.google.gson.Gson;
 import com.tencent.mm.opensdk.modelbiz.JumpToBizProfile;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -61,16 +59,12 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE;
 
@@ -159,36 +153,37 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 presenter.clearCache();
                 break;
             case R.id.sv_home_setting_recommend:
-                //推荐给亲友
-                Observable.just("loadList")
-                        .subscribeOn(Schedulers.io())
-                        .map(s -> {
-                            if (!ListUtils.isEmpty(finalList)) {
-                                return finalList;
-                            }
-                            final Intent intent = new Intent(Intent.ACTION_SEND);
-                            intent.setType("text/plain");
-                            intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getLinkShareByApp());
-                            List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
-                            finalList = new LinkedList<>();
-                            for (ResolveInfo info : list) {
-                                final String name = info.activityInfo.packageName;
-                                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
-                                    if (addFirst(name)) {
-                                        finalList.add(0, new ResolveInfoEx().setInfo(info));
-                                    } else {
-                                        finalList.add(new ResolveInfoEx().setInfo(info));
-                                    }
-                                }
-                            }
-                            return finalList;
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(ret -> {
-                            ShareToListDialog dialog = new ShareToListDialog();
-                            dialog.updateDataList(ret);
-                            dialog.show(getActivity().getSupportFragmentManager(), "share");
-                        }, AppLogger::e);
+                GooglePrivacyHelper.shareApp(getContext(),LinkManager.getLinkShareByApp());
+//                //推荐给亲友
+//                Observable.just("loadList")
+//                        .subscribeOn(Schedulers.io())
+//                        .map(s -> {
+//                            if (!ListUtils.isEmpty(finalList)) {
+//                                return finalList;
+//                            }
+//                            final Intent intent = new Intent(Intent.ACTION_SEND);
+//                            intent.setType("text/plain");
+//                            intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getLinkShareByApp());
+//                            List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
+//                            finalList = new LinkedList<>();
+//                            for (ResolveInfo info : list) {
+//                                final String name = info.activityInfo.packageName;
+//                                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
+//                                    if (addFirst(name)) {
+//                                        finalList.add(0, new ResolveInfoEx().setInfo(info));
+//                                    } else {
+//                                        finalList.add(new ResolveInfoEx().setInfo(info));
+//                                    }
+//                                }
+//                            }
+//                            return finalList;
+//                        })
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(ret -> {
+//                            ShareToListDialog dialog = new ShareToListDialog();
+//                            dialog.updateDataList(ret);
+//                            dialog.show(getActivity().getSupportFragmentManager(), "share");
+//                        }, AppLogger::e);
                 break;
             case R.id.btn_to_info:
                 showLogOutDialog(view);

@@ -5,8 +5,6 @@
     android:versionCode="999"
     android:versionName="888">
 
-    <uses-sdk android:minSdkVersion="14" />
-
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -43,7 +41,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- 允许程序不通过拨号界面拨打电话 -->
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!--<uses-permission android:name="android.permission.CALL_PHONE" />-->
     <!-- 允许程序读取用户联系人数据 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- 写入联系人，但不可读取 -->
@@ -51,9 +49,9 @@
     <!-- 允许程序访问手机状态信息 -->
     <!-- <uses-permission android:name="android.permission.RECEIVE_SMS"/> -->
     <!-- <uses-permission android:name="android.permission.READ_SMS"/> -->
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!--<uses-permission android:name="android.permission.SEND_SMS" />-->
+    <!--<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />-->
+    <!--<uses-permission android:name="android.permission.WRITE_SETTINGS" />-->
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
@@ -75,7 +73,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 允许程序挂载和移除可移动存储设备 -->
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!--<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />-->
     <!-- 用于密码修改后其他终端提示 -->
 
 
@@ -100,7 +98,7 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
 
     <application
         android:name=".n.base.BaseApplication"

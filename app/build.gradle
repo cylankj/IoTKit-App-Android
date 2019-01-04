@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 apply plugin: 'kotlin-android'
@@ -52,7 +52,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    compileOptions.incremental = false
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
@@ -94,9 +94,9 @@ android {
         _doby {
             java.srcDirs = ['src/_doby/java']
         }
-        _aidemo {
-            java.srcDirs = ['src/_doby/java']
-        }
+//        _aidemo {
+//            java.srcDirs = ['src/_doby/java']
+//        }
 //        _cell_c {
 //            java.srcDirs = ['src/_cell_c/java']
 //        }
@@ -173,11 +173,11 @@ android {
         pickFirst 'META-INF/*'
     }
 
-
+    flavorDimensions "cylan"
     productFlavors {
         _yun {
             //vid vkey已经搬到Security.java
-
+            dimension "cylan"
             //官方运营
             applicationId "com.cylan.cleverdog"
             versionName vName
@@ -208,6 +208,7 @@ android {
             ]
         }
         _doby {
+            dimension "cylan"
             applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode
@@ -239,6 +240,7 @@ android {
             ]
         }
         _aiface {
+            dimension "cylan"
             applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode
@@ -399,16 +401,16 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.danikula:videocache:2.7.0'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.4.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
     compile 'org.greenrobot:greendao:3.2.0'
-    compile 'com.google.dagger:dagger:2.12'
-    compile 'com.google.dagger:dagger-android:2.12'
-    compile 'com.google.dagger:dagger-android-support:2.12'
-    kapt 'com.google.dagger:dagger-android-processor:2.12'
-    kapt 'com.google.dagger:dagger-compiler:2.12'
-    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.google.dagger:dagger:2.17'
+    compile 'com.google.dagger:dagger-android:2.17'
+    compile 'com.google.dagger:dagger-android-support:2.17'
+    kapt 'com.google.dagger:dagger-android-processor:2.17'
+    kapt 'com.google.dagger:dagger-compiler:2.17'
+    compile 'com.squareup.okhttp3:okhttp:3.12.0'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
@@ -434,7 +436,7 @@ dependencies {
 //    compile "io.objectbox:objectbox-android:$objectBoxVersion"
 //    compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
 //    kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
-    kapt "com.android.databinding:compiler:2.3.3"
+    kapt "com.android.databinding:compiler:3.1.4"
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.1'
 
     //youtube-live-api
@@ -462,6 +464,7 @@ dependencies {
     compile 'com.trello:rxlifecycle-components:1.0'
     kapt 'com.github.bumptech.glide:compiler:4.3.1'
     compile 'com.github.bumptech.glide:okhttp3-integration:4.3.1'
+    compile 'com.android.support:multidex:1.0.3'
 //    compile 'com.cylan.library:iotsdk:1.1.261' // 留意查看最新的版本号
 // If you want to use Kotlin syntax with Android Lifecycle
 }

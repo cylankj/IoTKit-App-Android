@@ -86,17 +86,17 @@
                     android:background="@color/color_d2d2d2" />
             </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_cam_message_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/fLayout_cam_msg_edit_bar"
-                android:layout_below="@+id/message_header"
-                app:layout_behavior="com.cylan.jiafeigou.widget.CameraMessageBehavior" />
+
 
 
         </RelativeLayout>
-
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cam_message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/fLayout_cam_msg_edit_bar"
+            android:layout_below="@+id/message_header"
+            app:layout_behavior="com.cylan.jiafeigou.widget.CameraMessageBehavior" />
         <TextView
             android:id="@+id/lLayout_no_message"
             android:layout_width="wrap_content"
